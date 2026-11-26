@@ -16,23 +16,54 @@ html :is([data-alc="6"],[data-aln="6"]){--alc:var(--alx6,#FF7FC4)}
 html :is([data-alc="7"],[data-aln="7"]){--alc:var(--alx7,#E5872B)}
 
 /* every amendment mark that is not a puck's seat, the day's own version tag or the amendments panel */
-.alx-b :is([data-alc],[data-aln]):not(.seat):not(.verchip):not(.alx-k):not(.alpanel *),
-.alx-c :is([data-alc],[data-aln]):not(.seat):not(.verchip):not(.alx-k):not(.alpanel *){
+.alx-b :is([data-alc],[data-aln]):not(.seat):not(.verchip):not(.alx-k):not(.alpanel *):not(.rmkcell):not(.sb-rcell),
+.alx-c :is([data-alc],[data-aln]):not(.seat):not(.verchip):not(.alx-k):not(.alpanel *):not(.rmkcell):not(.sb-rcell){
   color:var(--alc) !important;-webkit-text-fill-color:var(--alc);outline:none !important}
+:is(.alx-b,.alx-c) :is(.rmkcell,.sb-rcell):is([data-alc],[data-aln]){outline:none !important}
 .alx-b :is([data-alc],[data-aln]):not(.seat):not(.verchip):not(.alx-k):not(.alpanel *)::after,
 .alx-c :is([data-alc],[data-aln]):not(.seat):not(.verchip):not(.alx-k):not(.alpanel *)::after{content:none !important}
 .alx-b :is([data-alc],[data-aln]):not(.seat):not(.verchip):not(.alx-k):not(.alpanel *){text-decoration:none !important}
 
-/* the recommendation's line: under the words, in the same colour */
-.alx-c [data-alc]:not(.seat):not(.verchip):not(.alx-k):not(.alpanel *):not(input):not(textarea){
-  text-decoration:underline solid var(--alc) !important;text-decoration-thickness:1px !important;text-underline-offset:3px !important}
-.alx-c [data-aln]:not(.seat):not(.verchip):not(.alx-k):not(.alpanel *):not(input):not(textarea){
-  text-decoration:underline dotted var(--alc) !important;text-decoration-thickness:1.5px !important;text-underline-offset:3px !important}
-/* a box on the board cannot underline its own words: the box's foot carries the line instead (drawn inside the box, so
-   nothing moves) */
-.alx-c :is(input,textarea)[data-alc]{box-shadow:inset 0 -2px 0 var(--alc) !important}
-.alx-c :is(input,textarea)[data-aln]{background-image:repeating-linear-gradient(90deg,var(--alc) 0 3px,transparent 3px 6px) !important;
-  background-size:100% 2px !important;background-repeat:no-repeat !important;background-position:0 100% !important}
+/* THE RECOMMENDATION'S LINE, AND ITS CLEARANCE (round 2, 26 Nov 26 - his picture: the line under "1B: BFM-7" ran into the
+   TPOD / 2 TKS chips below it, and 15:15's sat on its row's edge). The line is the text's own underline, pulled up into the
+   letters' own room: a 1px line directly under the baseline (offset 0), so it ends 1px under the letters' feet, where
+   the first round's ended 4 to 4.5px under them and left the line box. Measured, a line ending 3px or even 2px down still
+   came within 2px of the stores chips, the next row's edge and the row a block's label sits on, so 1px it is; the waiting
+   line is the same line dotted (1px, not 1.5). Nothing is given extra room, so no row, marked or not, moves. test.mjs
+   and shoot.mjs measure the gap under every line (src/measure.js): at least 2px to anything drawn, and never cut off. */
+.alx-c [data-alc]:not(.seat):not(.verchip):not(.alx-k):not(.alpanel *):not(input):not(textarea):not(.rmkcell):not(.sb-rcell){
+  text-decoration:underline solid var(--alc) !important;text-decoration-thickness:1px !important;text-underline-offset:0 !important;text-decoration-skip-ink:none !important}
+.alx-c [data-aln]:not(.seat):not(.verchip):not(.alx-k):not(.alpanel *):not(input):not(textarea):not(.rmkcell):not(.sb-rcell){
+  text-decoration:underline dotted var(--alc) !important;text-decoration-thickness:1px !important;text-underline-offset:0 !important;text-decoration-skip-ink:none !important}
+/* A JET WHOSE STORES CHANGED (the remark cell carries that mark): the remark's own words did not change, so they keep their
+   colour and get no line; the stores chips take the amendment's colour instead - their own 1px edge solid once out, dotted
+   while waiting. A line here would have to run under the chips, on the row's edge. */
+.alx-b :is(.rmkcell,.sb-rcell):is([data-alc],[data-aln]) :is(.stchip,.stcfg),.alx-c :is(.rmkcell,.sb-rcell):is([data-alc],[data-aln]) :is(.stchip,.stcfg){
+  color:var(--alc) !important;border-color:var(--alc) !important}
+.alx-c :is(.rmkcell,.sb-rcell)[data-aln] :is(.stchip,.stcfg){border-style:dotted !important}
+/* a box on the board cannot underline its own words: a line is drawn INSIDE the box, under the words, 4px up from the
+   box's foot and 6px in from its sides, so it never lies on the box's own edge (a picture laid in the box: nothing moves) */
+.alx-c :is(input,textarea):is([data-alc],[data-aln]){background-repeat:no-repeat !important;background-size:calc(100% - 12px) 1.5px !important;background-position:6px calc(100% - 4px) !important}
+.alx-c :is(input,textarea)[data-alc]{background-image:linear-gradient(var(--alc),var(--alc)) !important}
+.alx-c :is(input,textarea)[data-aln]{background-image:repeating-linear-gradient(90deg,var(--alc) 0 2px,transparent 2px 4px) !important}
+
+/* ---- THE MISSING-TIME OUTLINE beside the amendment marks. The outline itself is the 25 Nov end-time try-out's own
+   (docs/mock/2026-11-25-endtime-tryout/src/tryout.css, board.mjs): a 1px line drawn inside the empty box, grey while
+   drafting (.et-miss), red once a sign-off or Publish was refused or the day is published (.et-red). Classes set by the
+   script on the boxes the rule reads; View-only Sched is given none. ---- */
+:is(#eWeek,.week) .et-miss{box-shadow:inset 0 0 0 1px var(--ink-3) !important;border-radius:4px}
+:is(#eWeek,.week) .et-miss.et-red{box-shadow:inset 0 0 0 1px var(--hard) !important}
+:is(#eWeek,.week) .et-miss:empty{display:inline-block;min-width:34px}
+#schedBoard input.et-miss{box-shadow:inset 0 0 0 1px var(--ink-3) !important}
+#schedBoard input.et-miss.et-red{box-shadow:inset 0 0 0 1px var(--hard) !important}
+/* an emptied time on a published day keeps its waiting mark: the dotted line runs the width a time takes (an unseen
+   "00:00" carries it, as in the end-time try-out), inside the outline, which steps 3px out to the left and below so the
+   two never lie on each other; the negative margins keep the row and the time's place exactly where they were */
+:is(#eWeek,.week) .et-miss[data-aln]:empty::after{content:'00:00' !important;display:inline !important;margin:0 0 0 -1ch !important;font:inherit !important;
+  color:transparent !important;-webkit-text-fill-color:transparent;white-space:pre;pointer-events:none}
+:is(#eWeek,.week) .et-miss[data-aln]:empty{padding-left:3px;margin-left:-3px;padding-bottom:4px;margin-bottom:-4px}
+.alx-c :is(#eWeek,.week) .et-miss[data-aln]:empty{text-decoration-thickness:1.5px !important}
+html .et-off :is(#eWeek,.week,#schedBoard) .et-miss{box-shadow:none !important}
 
 /* ---- a changed puck ---- */
 :is(.alx-pk-tab,.alx-pk-num,.alx-pk-name,.alx-pk-none) .seat:is([data-alc],[data-aln])::after{content:none !important}
@@ -56,8 +87,8 @@ html :is([data-alc="7"],[data-aln="7"]){--alc:var(--alx7,#E5872B)}
 .alx-key{display:none}
 .alx-c .alx-key{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;padding:5px 12px 6px;
   font:700 10px/1.2 'Barlow Condensed','Inter Tight',sans-serif;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3)}
-.alx-key .alx-k{color:var(--alc);letter-spacing:.05em;text-decoration:underline solid var(--alc);text-decoration-thickness:1px;text-underline-offset:3px;white-space:nowrap}
-.alx-key .alx-k.w{text-decoration-style:dotted;text-decoration-thickness:1.5px}
+.alx-key .alx-k{color:var(--alc);letter-spacing:.05em;text-decoration:underline solid var(--alc);text-decoration-thickness:1px;text-underline-offset:0;white-space:nowrap}
+.alx-key .alx-k.w{text-decoration-style:dotted}
 .alx-key .alx-k::after{content:none !important}
 .alx-key .alx-k.w::after{content:' waiting' !important;display:inline !important;margin:0 !important;font:inherit !important;letter-spacing:.05em;vertical-align:baseline !important}
 #schedBoard .alx-key{padding-left:0}

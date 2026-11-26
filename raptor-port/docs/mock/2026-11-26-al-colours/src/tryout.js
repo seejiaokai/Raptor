@@ -4,8 +4,8 @@
   const A = window.ALX, $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)]
   const stage = $('#ttStage'), strip = $('.tt-strip'), note = $('#ttNote'), cands = $('#ttCands')
   /* the short list a tapped swatch may be given: the proposed seven, today's seven, and three more near-misses */
-  const CANDS = [...A.NEW.slice(1), ...A.TODAY.slice(1), '#B5F03C', '#FFB37A', '#7CCBFF']
-  const START = { surf: 'edit', look: 'a', puck: 'chip', pal: 'today', cb: 'off', st: 'waiting' }
+  const CANDS = [...A.NEW.slice(1), ...A.TODAY.slice(1), '#8FA6FF', '#4FEBC8', '#FF9548', '#19AFFE', '#E6A3A7']
+  const START = { surf: 'edit', look: 'a', puck: 'chip', pal: 'today', cb: 'off', st: 'waiting', miss: 'red' }
   const PRESET = { a: { puck: 'chip', pal: 'today' }, b: { puck: 'name', pal: 'today' }, c: { puck: 'tab', pal: 'new' } }
   let S = { ...START }, custom = null, picking = 0
 
@@ -18,6 +18,11 @@
     $$('.tt-surf .alx-key').forEach(k => k.remove())
     if (S.look === 'c' && on) A.key(on)
     stage.classList.toggle('cb', S.cb === 'on')
+    /* the missing-time outline: every empty time box of a duty desk on the captured day (the 1st wave's SXO END, emptied on
+       the published day and still waiting) is given the end-time rule's class; classes only, never a style from script */
+    stage.classList.toggle('et-off', S.miss === 'off')
+    $$('.tt-surf:not([data-surf="view"]) :is([data-txt^="dr:"],[data-bfld^="dr:"])').forEach(e => { const k = e.getAttribute('data-txt') || e.getAttribute('data-bfld'), empty = (e.tagName === 'INPUT' ? e.value : e.textContent).trim() === ''
+      const is = /\.(str|end)$/.test(k) && empty; e.classList.toggle('et-miss', is); e.classList.toggle('et-red', is && S.miss === 'red') })
     $$('[data-set]').forEach(b => { const v = b.dataset.set === 'pal' ? (custom ? '' : S.pal) : S[b.dataset.set]; const is = v === b.dataset.val; b.classList.toggle('on', is); b.setAttribute('aria-checked', is ? 'true' : 'false') })
     $$('.tt-sw').forEach(b => { const n = +b.dataset.n; b.style.background = list()[n]; b.setAttribute('aria-pressed', picking === n ? 'true' : 'false'); b.title = 'AL' + n + (n === 7 ? ' and later' : '') + ': ' + (A.NAMES[list()[n]] || list()[n]) + '. Tap to try another colour.' })
     cands.classList.toggle('on', !!picking)
@@ -41,7 +46,9 @@
     else if (b.id === 'ttReset') { S = { ...START }; custom = null; picking = 0 }
     paint()
   })
-  cands.insertAdjacentHTML('beforeend', CANDS.map(c => `<button type="button" class="tt-cand" data-c="${c}" style="background:${c}" title="${A.NAMES[c] || c}" aria-label="${A.NAMES[c] || c}"></button>`).join(''))
+  /* each choice's colour is set on the button itself after it is made (a style written into the markup by a script may be
+     blocked where the page is published) */
+  for (const c of CANDS) { const b = document.createElement('button'); b.type = 'button'; b.className = 'tt-cand'; b.dataset.c = c; b.title = A.NAMES[c] || c; b.setAttribute('aria-label', A.NAMES[c] || c); b.style.setProperty('background', c); cands.appendChild(b) }
   window.addEventListener('resize', paint)
   paint()
 })()

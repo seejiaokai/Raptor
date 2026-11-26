@@ -4,8 +4,10 @@
    ALX.key(day)  adds the recommendation's key line under a day's signed line, from the marks that day shows */
 window.ALX = (() => {
   const TODAY = ['', '#3BC6E8', '#E5C24A', '#3DE86B', '#FFFFFF', '#B388FF', '#FF7FC4', '#E5872B']
-  const NEW = ['', '#FFE815', '#8FA6FF', '#4FEBC8', '#FF9548', '#EDC4FF', '#9FB07A', '#6FB0B2']
-  const NAMES = { '#FFE815': 'Lemon', '#8FA6FF': 'Periwinkle', '#4FEBC8': 'Mint', '#FF9548': 'Orange', '#EDC4FF': 'Lilac', '#9FB07A': 'Sage', '#6FB0B2': 'Teal',
+  /* round 2: every one clear of the schedule's own section, puck and warning colours (search2.mjs); round 1's periwinkle,
+     mint and orange sat on the Common Programme's, Available crew's and Personal Inputs' colours */
+  const NEW = ['', '#F8F337', '#FF95D9', '#9DF7F0', '#D9A88C', '#A9C8FF', '#9FB07A', '#D9B3FF']
+  const NAMES = { '#F8F337': 'Lemon', '#FF95D9': 'Pink', '#9DF7F0': 'Ice', '#D9A88C': 'Clay', '#A9C8FF': 'Sky', '#9FB07A': 'Sage', '#D9B3FF': 'Lilac', '#8FA6FF': 'Periwinkle (round 1)', '#4FEBC8': 'Mint (round 1)', '#FF9548': 'Orange (round 1)', '#19AFFE': 'Azure', '#E6A3A7': 'Rose',
     '#3BC6E8': 'Cyan', '#E5C24A': 'Yellow', '#3DE86B': 'Green', '#FFFFFF': 'White', '#B388FF': 'Purple', '#FF7FC4': 'Pink', '#E5872B': 'Dark orange' }
   function palette(list) {
     /* Each AL's colour is a variable on <html> (--alx1..--alx7) that looks.css's fixed rules read. The first version wrote

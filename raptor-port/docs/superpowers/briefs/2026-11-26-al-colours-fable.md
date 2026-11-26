@@ -159,3 +159,89 @@ Critique findings worth his eye, all on the page: today's AL1 box on the board i
 - **Artifact rules:** the page is one HTML file (821 KB) with relative `img/` pictures, no outside scripts or fonts;
   always dark (it is a picture of a dark app). I did not publish it or load the artifact skills; the host publishes.
 - `docs/file-map.md` has no row for the new mock folder; left for the host (I was told not to commit).
+
+## Round 2 (26 Nov 26): clearance, the sims, the missing-time rule, look-alikes
+
+Three follow-ups from him, answered on the same page (new sections `#clear`, `#sims`, `#missing`, `#alike`; three new
+lines at the top of "What to look at now", marked new).
+
+### A mistake of mine in round 1, and the palette change
+
+Round 1 checked the proposed colours against the warning, button and puck colours only, not the sections' own stripe
+and heading colours. Three of its first four sat on one: periwinkle 7 from the Common Programme, mint 7 from Available
+crew, orange 4 from Personal Inputs (teal 12 from the flying waves' cyan). He caught it ("green on duties, orange on
+red, blue on blue"). The schedule colours are now one list, `sched.mjs` (19 colours read off the running app by
+`sections.mjs`), and every amendment colour is measured against all of them (CIEDE2000; under 12 is flagged).
+
+New sequence: AL1 lemon `#F8F337`, AL2 pink `#FF95D9`, AL3 ice `#9DF7F0`, AL4 clay `#D9A88C`, AL5 sky `#A9C8FF`,
+AL6 sage `#9FB07A`, AL7+ lilac `#D9B3FF`. None is under 12 from any schedule colour (nearest: clay 12.5 from Personal
+Inputs, sky 12.5 from grey words, sage 14.7 from Duties, lilac 15.2 from grey words, ice 16.6 from Available crew, lemon
+16.8 from the in-time lines, pink 23.8). Contrast on the week panel 14.0, 8.3, 13.3, 7.8, 9.7, 7.0, 9.3.
+
+The cost, stated on the page: only lemon and pink are strong colours with nothing near them; from AL3 on the set is
+pale tints, so among themselves the seven are less distinct than today (hardest pair 13.8 against 20.4) and worse for a
+red-green reader than round 1 (first three 9.3 against 26.8; sky and lilac identical to them). Colour is therefore a
+help only; the line under the words and the day's "Changed in" line carry the meaning.
+
+**His call, flagged on the page:** pink for AL2. He said "can we don't use pink" about the Leave War's kinds; I do not
+know if that is app-wide. Alternatives offered in the try-out's swatch list: azure `#19AFFE` (13 from the waves' cyan)
+or rose `#E6A3A7` (18 from the warning red).
+
+### Clearance: what was chosen
+
+The line is the text's own underline at offset 0, 1px thick, skip-ink off (solid once out, dotted while waiting); it
+ends 1px under the baseline, inside the line box. Round 1's ended 4 to 4.5px under and left the line box. Offsets of
+2px and 1px were tried and still came under 2px of the stores chips or a row edge. No padding is added anywhere, so no
+row, marked or not, moves. A stores change colours the chips (edge dotted while waiting) instead of underlining the
+remark cell. A board box draws its line inside the box, 4px up from its foot.
+
+Measured on the real app by `src/measure.js` (shoot.mjs, `capture/clearance.json`): Edit Schedule, View-only Sched and
+the board, 402 and 1536, AL4 waiting and all out, plus missing-time scenes 3 and 4. Smallest gap under a line, px:
+
+| Where the line is | Today | Recommendation | Tightest spot |
+|---|---|---|---|
+| duty block label | 0.0 | 2.0 | Edit Schedule, desktop |
+| a name on View-only Sched | 0.0 | 2.0 | desktop |
+| flight remark over its stores chips | 0.3 | 2.3 | Edit Schedule, phone |
+| in-time line | no line | 3.0 | Edit Schedule, desktop |
+| flying line: callsign, mission, times | 1.3 | 3.3 | Edit Schedule, phone |
+| any box on the board (to the box foot) | outline | 4.0 | both sizes |
+| Common Programme time / name | 4.0 / 4.5 | 6.0 / 7.0 | View-only Sched |
+| sim OFT row: time / name / remark | 6.0 / 4.0 cut / 4.5 cut | 6.0 / 6.0 / 6.6 | View-only Sched |
+| sim AMT block: time / remark | 4.0 / cut | 7.0 / 47.4 | |
+| area, area time | no line | 6.1 | Edit Schedule, phone |
+| duty desk: time / name | 4.0 / 6.0 | 6.0 / 14.4 | |
+| Ground Programme: time / remark | 4.0 / 4.5 cut | 7.5 / 13.4 | |
+| wave label | 8.0 | 10.0 | |
+
+Nothing is cut off in the recommendation (today's small ALn words are cut off in five places). `test.mjs`
+repeats the measure on the built page at both widths, both states, all three screens (264 lines each; tightest 2.3 at
+402, 3.0 at 1536) and fails under 2px or on a cut.
+
+### Staging added (`stage.mjs`)
+
+Flight remarks over chips, a store pressed, areas and an area time, a wave label, an in-time line, R / B / TO / LD on
+one formation, both duty blocks (times, a role, a block label, two holders), AMT BRIEF / BOX / DEBRIEF, three OFT rows
+and the outside squadron's slot, a programme name that wraps, Ground Programme rows; saved states for the missing-time
+scenes (`alc-draft`, `alc-m3`, `alc-m4`). The try-out's captured day was re-captured from this staging.
+
+### The missing-time rule beside the marks
+
+Five scenes pictured at both sizes (draft grey; refused red; published day with AL4 waiting and two ENDs emptied, one
+on the desk whose holder changed in AL2; one typed again; AL4 published), Edit Schedule and the board, View-only Sched
+for scenes 1 and 5 (no outline). The outline stays red on the box edge; the waiting line sits inside it. AL4 clay
+against the outline red `#F0555F`: 24 ordinary, 10 red-green (round 1's orange 26 / 13): two colours for ordinary
+sight, not safe by colour alone for a red-green reader, so shape carries it. Put to him as one decision (keep red and
+outermost; alternatives: move AL4, or hide the line while empty). On the board this differs from the end-time
+try-out: the waiting mark is no longer a dotted edge round the box.
+
+### Found in the app, not fixed (for the host to file)
+
+- The free-text sim crew (the outside squadron's slot) shows no amendment mark when changed, in any look, today's
+  included; the change is still counted and listed.
+- A changed traffic line shows no mark either.
+
+### Could not check
+
+AL5 to AL7 on the real screen (the staged day stops at AL4); a real iPhone; print. The clearance figures are
+Chromium at 1536 and WebKit at 402 on the PC. `docs/file-map.md` still has no row for the folder. Nothing committed.

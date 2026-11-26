@@ -1,0 +1,8758 @@
+[
+ {
+  "surface": "Edit Schedule",
+  "size": "desktop",
+  "st": "AL4 waiting",
+  "look": "a",
+  "rows": [
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 29.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 29.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 28.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 44.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 44.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 44.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "waiting",
+    "gap": 44.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "waiting",
+    "gap": 28.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 39,
+    "to": "blknote-h",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 11.8,
+    "to": ".txed",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 34.5,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 11.8,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 1.5,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 45.1,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 45.8,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "waiting",
+    "gap": 1.5,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "wave label",
+    "state": "out",
+    "gap": 8,
+    "to": "the line at the foot of go-tab",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "waiting",
+    "gap": 3.8,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 1.5,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "waiting",
+    "gap": 45.8,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 21,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 21,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "waiting",
+    "gap": 21,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, name",
+    "state": "out",
+    "gap": 28,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 39,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty block label",
+    "state": "out",
+    "gap": 0,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "waiting",
+    "gap": 21,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 12,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 78,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, remark",
+    "state": "out",
+    "gap": 79,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "waiting",
+    "gap": 13,
+    "to": "pl-sub",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 21,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 21,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "waiting",
+    "gap": 8.4,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, name",
+    "state": "out",
+    "gap": 20,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "out",
+    "gap": 22,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "waiting",
+    "gap": 48,
+    "to": "notepub",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "waiting",
+    "gap": 48,
+    "to": "notepub",
+    "cut": null
+   },
+   {
+    "place": "Ground Programme, remark",
+    "state": "out",
+    "gap": 22,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "Ground Programme, time",
+    "state": "out",
+    "gap": 21,
+    "to": "pl-row",
+    "cut": null
+   }
+  ]
+ },
+ {
+  "surface": "Edit Schedule",
+  "size": "desktop",
+  "st": "AL4 waiting",
+  "look": "c",
+  "rows": [
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 31.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 31.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 30.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 46.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 46.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 46.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "waiting",
+    "gap": 46.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "waiting",
+    "gap": 30.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 41,
+    "to": "blknote-h",
+    "cut": null
+   },
+   {
+    "place": "in-time line",
+    "state": "out",
+    "gap": 3,
+    "to": "cols.formcols",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 5.8,
+    "to": ".txed",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 44.5,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 5.8,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 3.5,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "area",
+    "state": "out",
+    "gap": 7.2,
+    "to": "the line at the foot of form",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 47.1,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 47.8,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "waiting",
+    "gap": 3.5,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "area time",
+    "state": "out",
+    "gap": 7.2,
+    "to": "the line at the foot of go.",
+    "cut": 7.2
+   },
+   {
+    "place": "wave label",
+    "state": "out",
+    "gap": 10,
+    "to": "the line at the foot of go-tab",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "waiting",
+    "gap": 5.8,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 3.5,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "waiting",
+    "gap": 47.8,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "area",
+    "state": "waiting",
+    "gap": 7.2,
+    "to": "the line at the foot of go.night",
+    "cut": 7.2
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 23,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 23,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "waiting",
+    "gap": 23,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, name",
+    "state": "out",
+    "gap": 30,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 41,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty block label",
+    "state": "out",
+    "gap": 2,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "waiting",
+    "gap": 23,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 7,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 80,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, remark",
+    "state": "out",
+    "gap": 81,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "waiting",
+    "gap": 15,
+    "to": "pl-sub",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 23,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 23,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "waiting",
+    "gap": 10.4,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, name",
+    "state": "out",
+    "gap": 22,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "out",
+    "gap": 24,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "waiting",
+    "gap": 50,
+    "to": "notepub",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "waiting",
+    "gap": 50,
+    "to": "notepub",
+    "cut": null
+   },
+   {
+    "place": "Ground Programme, remark",
+    "state": "out",
+    "gap": 24,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "Ground Programme, time",
+    "state": "out",
+    "gap": 23,
+    "to": "pl-row",
+    "cut": null
+   }
+  ]
+ },
+ {
+  "surface": "Scheduler Board",
+  "size": "desktop",
+  "st": "AL4 waiting",
+  "look": "a",
+  "rows": [
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 4,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 4,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 4.5,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 4,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 4,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 4,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "waiting",
+    "gap": 4,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "waiting",
+    "gap": 4.5,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 13.5,
+    "to": "sb-note",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 12.5,
+    "to": "sb-line",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 12.5,
+    "to": "sb-line",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 12.5,
+    "to": "sb-line",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 2,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 11.5,
+    "to": "sb-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 11.5,
+    "to": "sb-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 11.5,
+    "to": "sb-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 13,
+    "to": "sb-line",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 12.5,
+    "to": "sb-line",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 13,
+    "to": "sb-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 12.5,
+    "to": "sb-area",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "waiting",
+    "gap": 2,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "waiting",
+    "gap": 12.5,
+    "to": "sb-line",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "waiting",
+    "gap": 12.5,
+    "to": "sb-area",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 2,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "waiting",
+    "gap": 12.5,
+    "to": "sb-line",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "waiting",
+    "gap": 12.5,
+    "to": "sb-area",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 4,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 4,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "waiting",
+    "gap": 4,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "duty desk, name",
+    "state": "out",
+    "gap": 12.5,
+    "to": "sb-psub",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 12,
+    "to": "sb-psub",
+    "cut": null
+   },
+   {
+    "place": "duty block label",
+    "state": "out",
+    "gap": 3,
+    "to": "sb-acols.c6r",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "waiting",
+    "gap": 4,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 4,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 36.5,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, remark",
+    "state": "out",
+    "gap": 37,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "waiting",
+    "gap": 12,
+    "to": "sb-psub",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 9.5,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 9.5,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "waiting",
+    "gap": 10,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, name",
+    "state": "out",
+    "gap": 4.5,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "out",
+    "gap": 4.5,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "waiting",
+    "gap": 13,
+    "to": "sb-note",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "waiting",
+    "gap": 13,
+    "to": "sb-note",
+    "cut": null
+   },
+   {
+    "place": "Ground Programme, remark",
+    "state": "out",
+    "gap": 4.5,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "Ground Programme, time",
+    "state": "out",
+    "gap": 4,
+    "to": "sb-arow.c6r",
+    "cut": null
+   }
+  ]
+ },
+ {
+  "surface": "Scheduler Board",
+  "size": "desktop",
+  "st": "AL4 waiting",
+  "look": "c",
+  "rows": [
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, name (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, name (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, name (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "in-time line",
+    "state": "out",
+    "gap": 3,
+    "to": "sb-lcols",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flight remark (over its stores chips) (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "area",
+    "state": "out",
+    "gap": 7.2,
+    "to": "sb-line",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flight remark (over its stores chips) (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "area time",
+    "state": "out",
+    "gap": 7.2,
+    "to": "the line at the foot of sb-go",
+    "cut": 7.2
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flight remark (over its stores chips) (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "area",
+    "state": "waiting",
+    "gap": 7.2,
+    "to": "the line at the foot of sb-go.night",
+    "cut": 7.2
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, name (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty block label (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: AMT block, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: AMT block, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: AMT block, remark (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: AMT block, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, name (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Ground Programme, remark (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Ground Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   }
+  ]
+ },
+ {
+  "surface": "View-only Sched",
+  "size": "desktop",
+  "st": "all out",
+  "look": "a",
+  "rows": [
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 13,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 13,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 5,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 21,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 21,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 21,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 21,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 5,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 6,
+    "to": "the line at the foot of allhands.sec",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 11.8,
+    "to": "b",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 34,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 11.8,
+    "to": "ntx",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 1.5,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 45.1,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 45.8,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 1.5,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "ntx",
+    "state": "out",
+    "gap": 8,
+    "to": "the line at the foot of go-tab",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 11.8,
+    "to": "ntx",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 1.5,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 45.8,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "1st wave, time",
+    "state": "out",
+    "gap": 12,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "1st wave, time",
+    "state": "out",
+    "gap": 12,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "1st wave, name",
+    "state": "out",
+    "gap": 19,
+    "to": "ntx",
+    "cut": null
+   },
+   {
+    "place": "1st wave, time",
+    "state": "out",
+    "gap": 30,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "ntx",
+    "state": "out",
+    "gap": 0,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "2nd wave (night), time",
+    "state": "out",
+    "gap": 12,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "2nd wave (night), time",
+    "state": "out",
+    "gap": 22,
+    "to": "sub.plist",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 12,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 59,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, remark",
+    "state": "out",
+    "gap": 60,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 20,
+    "to": "pl-sub",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 17.3,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 17.3,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "out",
+    "gap": 4.6,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, name",
+    "state": "out",
+    "gap": 4,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "out",
+    "gap": 6,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 31,
+    "to": "sub.plist",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 31,
+    "to": "sub.plist",
+    "cut": null
+   },
+   {
+    "place": "duty desk / Ground Programme, remark",
+    "state": "out",
+    "gap": 6,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk / Ground Programme, time",
+    "state": "out",
+    "gap": 12,
+    "to": "pl-row",
+    "cut": null
+   }
+  ]
+ },
+ {
+  "surface": "View-only Sched",
+  "size": "desktop",
+  "st": "all out",
+  "look": "c",
+  "rows": [
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 8,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 8,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 7,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 23,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 23,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 23,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 23,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 7,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 8,
+    "to": "the line at the foot of allhands.sec",
+    "cut": null
+   },
+   {
+    "place": "in-time line",
+    "state": "out",
+    "gap": 5,
+    "to": "cols.formcols",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 5.8,
+    "to": "b",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 44,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 5.8,
+    "to": "ntx",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 3.5,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "area",
+    "state": "out",
+    "gap": 7.2,
+    "to": "the line at the foot of form",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 47.1,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 47.8,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 3.5,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "area time",
+    "state": "out",
+    "gap": 7.2,
+    "to": "the line at the foot of go.",
+    "cut": 7.2
+   },
+   {
+    "place": "ntx",
+    "state": "out",
+    "gap": 10,
+    "to": "the line at the foot of go-tab",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 5.8,
+    "to": "ntx",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 3.5,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 47.8,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "area",
+    "state": "out",
+    "gap": 7.2,
+    "to": "the line at the foot of go.night",
+    "cut": 7.2
+   },
+   {
+    "place": "1st wave, time",
+    "state": "out",
+    "gap": 7,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "1st wave, time",
+    "state": "out",
+    "gap": 7,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "1st wave, name",
+    "state": "out",
+    "gap": 14,
+    "to": "ntx",
+    "cut": null
+   },
+   {
+    "place": "1st wave, time",
+    "state": "out",
+    "gap": 25,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "ntx",
+    "state": "out",
+    "gap": 2,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "2nd wave (night), time",
+    "state": "out",
+    "gap": 7,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "2nd wave (night), time",
+    "state": "out",
+    "gap": 17,
+    "to": "sub.plist",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 7,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 61,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, remark",
+    "state": "out",
+    "gap": 62,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 15,
+    "to": "pl-sub",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 19.3,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 19.3,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "out",
+    "gap": 6.6,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, name",
+    "state": "out",
+    "gap": 6,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "out",
+    "gap": 8,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 33,
+    "to": "sub.plist",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 33,
+    "to": "sub.plist",
+    "cut": null
+   },
+   {
+    "place": "duty desk / Ground Programme, remark",
+    "state": "out",
+    "gap": 8,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk / Ground Programme, time",
+    "state": "out",
+    "gap": 7,
+    "to": "pl-row",
+    "cut": null
+   }
+  ]
+ },
+ {
+  "surface": "Edit Schedule",
+  "size": "desktop",
+  "st": "all out",
+  "look": "a",
+  "rows": [
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 29.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 29.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 28.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 44.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 44.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 44.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 44.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 28.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 39,
+    "to": "blknote-h",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 11.8,
+    "to": ".txed",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 34.5,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 11.8,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 1.5,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 45.1,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 45.8,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 1.5,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "wave label",
+    "state": "out",
+    "gap": 8,
+    "to": "the line at the foot of go-tab",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 11.8,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 1.5,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 45.8,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 21,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 21,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, name",
+    "state": "out",
+    "gap": 28,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 39,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty block label",
+    "state": "out",
+    "gap": 0,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 21,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 29,
+    "to": "notepub",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 12,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 78,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, remark",
+    "state": "out",
+    "gap": 79,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 20,
+    "to": "pl-sub",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 21,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 21,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "out",
+    "gap": 8.4,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, name",
+    "state": "out",
+    "gap": 20,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "out",
+    "gap": 22,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 48,
+    "to": "notepub",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 48,
+    "to": "notepub",
+    "cut": null
+   },
+   {
+    "place": "Ground Programme, remark",
+    "state": "out",
+    "gap": 22,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "Ground Programme, time",
+    "state": "out",
+    "gap": 21,
+    "to": "pl-row",
+    "cut": null
+   }
+  ]
+ },
+ {
+  "surface": "Edit Schedule",
+  "size": "desktop",
+  "st": "all out",
+  "look": "c",
+  "rows": [
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 31.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 31.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 30.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 46.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 46.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 46.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 46.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 30.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 41,
+    "to": "blknote-h",
+    "cut": null
+   },
+   {
+    "place": "in-time line",
+    "state": "out",
+    "gap": 3,
+    "to": "cols.formcols",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 5.8,
+    "to": ".txed",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 44.5,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 5.8,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 3.5,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "area",
+    "state": "out",
+    "gap": 7.2,
+    "to": "the line at the foot of form",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 47.1,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 47.8,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 3.5,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "area time",
+    "state": "out",
+    "gap": 7.2,
+    "to": "the line at the foot of go.",
+    "cut": 7.2
+   },
+   {
+    "place": "wave label",
+    "state": "out",
+    "gap": 10,
+    "to": "the line at the foot of go-tab",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 5.8,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 3.5,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 47.8,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "area",
+    "state": "out",
+    "gap": 7.2,
+    "to": "the line at the foot of go.night",
+    "cut": 7.2
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 23,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 23,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, name",
+    "state": "out",
+    "gap": 30,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 41,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty block label",
+    "state": "out",
+    "gap": 2,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 23,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 31,
+    "to": "notepub",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 7,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 80,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, remark",
+    "state": "out",
+    "gap": 81,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 15,
+    "to": "pl-sub",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 23,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 23,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "out",
+    "gap": 10.4,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, name",
+    "state": "out",
+    "gap": 22,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "out",
+    "gap": 24,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 50,
+    "to": "notepub",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 50,
+    "to": "notepub",
+    "cut": null
+   },
+   {
+    "place": "Ground Programme, remark",
+    "state": "out",
+    "gap": 24,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "Ground Programme, time",
+    "state": "out",
+    "gap": 23,
+    "to": "pl-row",
+    "cut": null
+   }
+  ]
+ },
+ {
+  "surface": "Scheduler Board",
+  "size": "desktop",
+  "st": "all out",
+  "look": "a",
+  "rows": [
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 4,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 4,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 4.5,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 4,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 4,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 4,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 4,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 4.5,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 13.5,
+    "to": "sb-note",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 12.5,
+    "to": "sb-line",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 12.5,
+    "to": "sb-line",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 12.5,
+    "to": "sb-line",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 2,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 11.5,
+    "to": "sb-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 11.5,
+    "to": "sb-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 11.5,
+    "to": "sb-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 13,
+    "to": "sb-line",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 12.5,
+    "to": "sb-line",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 13,
+    "to": "sb-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 12.5,
+    "to": "sb-area",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 2,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 12.5,
+    "to": "sb-line",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 12.5,
+    "to": "sb-area",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 2,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 12.5,
+    "to": "sb-line",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 12.5,
+    "to": "sb-area",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 4,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 4,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "duty desk, name",
+    "state": "out",
+    "gap": 12.5,
+    "to": "sb-psub",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 12,
+    "to": "sb-psub",
+    "cut": null
+   },
+   {
+    "place": "duty block label",
+    "state": "out",
+    "gap": 3,
+    "to": "sb-acols.c6r",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 4,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 13,
+    "to": "sb-note",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 4,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 36.5,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, remark",
+    "state": "out",
+    "gap": 37,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 12,
+    "to": "sb-psub",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 9.5,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 9.5,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "out",
+    "gap": 10,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, name",
+    "state": "out",
+    "gap": 4.5,
+    "to": "sb-arow.c6r",
+    "cut": -21.6
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "out",
+    "gap": 4.5,
+    "to": "sb-arow.c6r",
+    "cut": -21.6
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 13,
+    "to": "sb-note",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 13,
+    "to": "sb-note",
+    "cut": null
+   },
+   {
+    "place": "Ground Programme, remark",
+    "state": "out",
+    "gap": 4.5,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "Ground Programme, time",
+    "state": "out",
+    "gap": 4,
+    "to": "sb-arow.c6r",
+    "cut": null
+   }
+  ]
+ },
+ {
+  "surface": "Scheduler Board",
+  "size": "desktop",
+  "st": "all out",
+  "look": "c",
+  "rows": [
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, name (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, name (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, name (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "in-time line",
+    "state": "out",
+    "gap": 3,
+    "to": "sb-lcols",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flight remark (over its stores chips) (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "area",
+    "state": "out",
+    "gap": 7.2,
+    "to": "sb-line",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flight remark (over its stores chips) (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "area time",
+    "state": "out",
+    "gap": 7.2,
+    "to": "the line at the foot of sb-go",
+    "cut": 7.2
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flight remark (over its stores chips) (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "area",
+    "state": "out",
+    "gap": 7.2,
+    "to": "the line at the foot of sb-go.night",
+    "cut": 7.2
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, name (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty block label (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: AMT block, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: AMT block, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: AMT block, remark (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: AMT block, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, name (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Ground Programme, remark (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Ground Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   }
+  ]
+ },
+ {
+  "surface": "Edit Schedule",
+  "size": "desktop",
+  "st": "missing-time scene 3",
+  "look": "c",
+  "rows": [
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 31.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 31.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 30.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 46.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 46.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 46.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "waiting",
+    "gap": 46.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "waiting",
+    "gap": 30.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 41,
+    "to": "blknote-h",
+    "cut": null
+   },
+   {
+    "place": "in-time line",
+    "state": "out",
+    "gap": 3,
+    "to": "cols.formcols",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 5.8,
+    "to": ".txed",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 44.5,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 5.8,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 3.5,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "area",
+    "state": "out",
+    "gap": 7.2,
+    "to": "the line at the foot of form",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 47.1,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 47.8,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "waiting",
+    "gap": 3.5,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "area time",
+    "state": "out",
+    "gap": 7.2,
+    "to": "the line at the foot of go.",
+    "cut": 7.2
+   },
+   {
+    "place": "wave label",
+    "state": "out",
+    "gap": 10,
+    "to": "the line at the foot of go-tab",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "waiting",
+    "gap": 5.8,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 3.5,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "waiting",
+    "gap": 47.8,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "area",
+    "state": "waiting",
+    "gap": 7.2,
+    "to": "the line at the foot of go.night",
+    "cut": 7.2
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 23,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 23,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "waiting",
+    "gap": 22.5,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, name",
+    "state": "out",
+    "gap": 30,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 41,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty block label",
+    "state": "out",
+    "gap": 2,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "waiting",
+    "gap": 23,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "waiting",
+    "gap": 30.5,
+    "to": "notepub",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 7,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 80,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, remark",
+    "state": "out",
+    "gap": 81,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "waiting",
+    "gap": 15,
+    "to": "pl-sub",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 23,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 23,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "waiting",
+    "gap": 10.4,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, name",
+    "state": "out",
+    "gap": 22,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "out",
+    "gap": 24,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "waiting",
+    "gap": 50,
+    "to": "notepub",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "waiting",
+    "gap": 50,
+    "to": "notepub",
+    "cut": null
+   },
+   {
+    "place": "Ground Programme, remark",
+    "state": "out",
+    "gap": 24,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "Ground Programme, time",
+    "state": "out",
+    "gap": 23,
+    "to": "pl-row",
+    "cut": null
+   }
+  ]
+ },
+ {
+  "surface": "Scheduler Board",
+  "size": "desktop",
+  "st": "missing-time scene 3",
+  "look": "c",
+  "rows": [
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, name (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, name (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, name (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "in-time line",
+    "state": "out",
+    "gap": 5,
+    "to": "sb-lcols",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flight remark (over its stores chips) (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "area",
+    "state": "out",
+    "gap": 7.2,
+    "to": "sb-line",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flight remark (over its stores chips) (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "area time",
+    "state": "out",
+    "gap": 7.2,
+    "to": "the line at the foot of sb-go",
+    "cut": 7.2
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flight remark (over its stores chips) (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "area",
+    "state": "waiting",
+    "gap": 7.2,
+    "to": "the line at the foot of sb-go.night",
+    "cut": 7.2
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, name (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty block label (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: AMT block, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: AMT block, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: AMT block, remark (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: AMT block, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, name (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Ground Programme, remark (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Ground Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   }
+  ]
+ },
+ {
+  "surface": "Edit Schedule",
+  "size": "desktop",
+  "st": "missing-time scene 4",
+  "look": "c",
+  "rows": [
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 31.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 31.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 30.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 46.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 46.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 46.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "waiting",
+    "gap": 46.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "waiting",
+    "gap": 30.3,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 41,
+    "to": "blknote-h",
+    "cut": null
+   },
+   {
+    "place": "in-time line",
+    "state": "out",
+    "gap": 3,
+    "to": "cols.formcols",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 5.8,
+    "to": ".txed",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 44.5,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 5.8,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 3.5,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "area",
+    "state": "out",
+    "gap": 7.2,
+    "to": "the line at the foot of form",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 47.1,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 47.8,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "waiting",
+    "gap": 3.5,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "area time",
+    "state": "out",
+    "gap": 7.2,
+    "to": "the line at the foot of go.",
+    "cut": 7.2
+   },
+   {
+    "place": "wave label",
+    "state": "out",
+    "gap": 10,
+    "to": "the line at the foot of go-tab",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "waiting",
+    "gap": 5.8,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 3.5,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "waiting",
+    "gap": 47.8,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "area",
+    "state": "waiting",
+    "gap": 7.2,
+    "to": "the line at the foot of go.night",
+    "cut": 7.2
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 23,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 23,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "waiting",
+    "gap": 22.5,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, name",
+    "state": "out",
+    "gap": 30,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 41,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty block label",
+    "state": "out",
+    "gap": 2,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "waiting",
+    "gap": 23,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "waiting",
+    "gap": 31,
+    "to": "notepub",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 7,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 80,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, remark",
+    "state": "out",
+    "gap": 81,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "waiting",
+    "gap": 15,
+    "to": "pl-sub",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 23,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 23,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "waiting",
+    "gap": 10.4,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, name",
+    "state": "out",
+    "gap": 22,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "out",
+    "gap": 24,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "waiting",
+    "gap": 50,
+    "to": "notepub",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "waiting",
+    "gap": 50,
+    "to": "notepub",
+    "cut": null
+   },
+   {
+    "place": "Ground Programme, remark",
+    "state": "out",
+    "gap": 24,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "Ground Programme, time",
+    "state": "out",
+    "gap": 23,
+    "to": "pl-row",
+    "cut": null
+   }
+  ]
+ },
+ {
+  "surface": "Scheduler Board",
+  "size": "desktop",
+  "st": "missing-time scene 4",
+  "look": "c",
+  "rows": [
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, name (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, name (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, name (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "in-time line",
+    "state": "out",
+    "gap": 5,
+    "to": "sb-lcols",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flight remark (over its stores chips) (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "area",
+    "state": "out",
+    "gap": 7.2,
+    "to": "sb-line",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flight remark (over its stores chips) (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "area time",
+    "state": "out",
+    "gap": 7.2,
+    "to": "the line at the foot of sb-go",
+    "cut": 7.2
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flight remark (over its stores chips) (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "area",
+    "state": "waiting",
+    "gap": 7.2,
+    "to": "the line at the foot of sb-go.night",
+    "cut": 7.2
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, name (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty block label (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: AMT block, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: AMT block, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: AMT block, remark (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: AMT block, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, name (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Ground Programme, remark (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Ground Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   }
+  ]
+ },
+ {
+  "surface": "Edit Schedule",
+  "size": "phone",
+  "st": "AL4 waiting",
+  "look": "a",
+  "rows": [
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 12,
+    "to": "t.txed",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 12,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 27.1,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 13.5,
+    "to": "t.txed",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 12,
+    "to": "t.txed",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 12,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "waiting",
+    "gap": 16.4,
+    "to": "t.txed",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "waiting",
+    "gap": 27.1,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 35.1,
+    "to": "notepub",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 9.3,
+    "to": ".txed",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 62.9,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 9.3,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 0.3,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 80,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 80.9,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "waiting",
+    "gap": 0.3,
+    "to": "stchip.on",
+    "cut": 29.7
+   },
+   {
+    "place": "wave label",
+    "state": "out",
+    "gap": 8.5,
+    "to": "the line at the foot of go-tab",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "waiting",
+    "gap": 1.3,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 10.9,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "waiting",
+    "gap": 80.9,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 12,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 12,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "waiting",
+    "gap": 5.5,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, name",
+    "state": "out",
+    "gap": 17.4,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 19,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "duty block label",
+    "state": "out",
+    "gap": 0,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "waiting",
+    "gap": 5.5,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 26,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 35,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, remark",
+    "state": "out",
+    "gap": 62.4,
+    "to": "pl-row",
+    "cut": -0.5
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "waiting",
+    "gap": 25,
+    "to": "pl-sub",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 12,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 12,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "waiting",
+    "gap": 11.4,
+    "to": "pl-row",
+    "cut": -0.5
+   },
+   {
+    "place": "sim: OFT / SIMS row, name",
+    "state": "out",
+    "gap": 19.1,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "out",
+    "gap": 22.5,
+    "to": "pl-row",
+    "cut": -0.5
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "waiting",
+    "gap": 14,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "waiting",
+    "gap": 24.7,
+    "to": "blknote-h",
+    "cut": null
+   },
+   {
+    "place": "Ground Programme, remark",
+    "state": "out",
+    "gap": 11.4,
+    "to": "pl-row",
+    "cut": -0.5
+   },
+   {
+    "place": "Ground Programme, time",
+    "state": "out",
+    "gap": 12,
+    "to": "t.t-e",
+    "cut": null
+   }
+  ]
+ },
+ {
+  "surface": "Edit Schedule",
+  "size": "phone",
+  "st": "AL4 waiting",
+  "look": "c",
+  "rows": [
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 11.5,
+    "to": "t.txed",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 11.5,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 29.1,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 11.5,
+    "to": "t.txed",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 11.5,
+    "to": "t.txed",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 11.5,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "waiting",
+    "gap": 18.4,
+    "to": "t.txed",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "waiting",
+    "gap": 29.1,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 37.1,
+    "to": "notepub",
+    "cut": null
+   },
+   {
+    "place": "in-time line",
+    "state": "out",
+    "gap": 3,
+    "to": "cols.formcols",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 3.3,
+    "to": ".txed",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 72.9,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 3.3,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 2.3,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "area",
+    "state": "out",
+    "gap": 6.1,
+    "to": "the line at the foot of form",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 82,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 82.9,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "waiting",
+    "gap": 2.3,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "area time",
+    "state": "out",
+    "gap": 6.1,
+    "to": "the line at the foot of go.",
+    "cut": 6.1
+   },
+   {
+    "place": "wave label",
+    "state": "out",
+    "gap": 10.5,
+    "to": "the line at the foot of go-tab",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "waiting",
+    "gap": 3.3,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 2.3,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "waiting",
+    "gap": 82.9,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "area",
+    "state": "waiting",
+    "gap": 6.1,
+    "to": "the line at the foot of go.night",
+    "cut": 6.1
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 7.5,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 7.5,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "waiting",
+    "gap": 7.5,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, name",
+    "state": "out",
+    "gap": 14.4,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 14.5,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "duty block label",
+    "state": "out",
+    "gap": 2,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "waiting",
+    "gap": 7.5,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 20,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 33,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, remark",
+    "state": "out",
+    "gap": 64.4,
+    "to": "pl-row",
+    "cut": 1.5
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "waiting",
+    "gap": 27,
+    "to": "pl-sub",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 7.5,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 7.5,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "waiting",
+    "gap": 13.4,
+    "to": "pl-row",
+    "cut": 1.5
+   },
+   {
+    "place": "sim: OFT / SIMS row, name",
+    "state": "out",
+    "gap": 21.1,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "out",
+    "gap": 24.5,
+    "to": "pl-row",
+    "cut": 1.5
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "waiting",
+    "gap": 16,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "waiting",
+    "gap": 26.7,
+    "to": "blknote-h",
+    "cut": null
+   },
+   {
+    "place": "Ground Programme, remark",
+    "state": "out",
+    "gap": 13.4,
+    "to": "pl-row",
+    "cut": 1.5
+   },
+   {
+    "place": "Ground Programme, time",
+    "state": "out",
+    "gap": 7.5,
+    "to": "t.t-e",
+    "cut": null
+   }
+  ]
+ },
+ {
+  "surface": "Scheduler Board",
+  "size": "phone",
+  "st": "AL4 waiting",
+  "look": "a",
+  "rows": [
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "waiting",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "waiting",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 4,
+    "to": "tm",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 8,
+    "to": "nts",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 4,
+    "to": "tm",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 2,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 4,
+    "to": "tm",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 8,
+    "to": "nts",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 4,
+    "to": "tm",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 8,
+    "to": "nts",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 8,
+    "to": "nts",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 8,
+    "to": "nts",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 8,
+    "to": "nts",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "waiting",
+    "gap": 2,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "waiting",
+    "gap": 4,
+    "to": "tm",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "waiting",
+    "gap": 4,
+    "to": "tm",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 2,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "waiting",
+    "gap": 8,
+    "to": "nts",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "waiting",
+    "gap": 8,
+    "to": "nts",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "waiting",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "duty desk, name",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "duty block label",
+    "state": "out",
+    "gap": 27.5,
+    "to": "sb-acols.c6r",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "waiting",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, remark",
+    "state": "out",
+    "gap": 93.5,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "waiting",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "waiting",
+    "gap": 27.5,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, name",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "out",
+    "gap": 27.5,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "waiting",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "waiting",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "Ground Programme, remark",
+    "state": "out",
+    "gap": 28.3,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "Ground Programme, time",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   }
+  ]
+ },
+ {
+  "surface": "Scheduler Board",
+  "size": "phone",
+  "st": "AL4 waiting",
+  "look": "c",
+  "rows": [
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, name (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, name (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, name (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "in-time line",
+    "state": "out",
+    "gap": 3,
+    "to": "sb-lcols",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flight remark (over its stores chips) (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "area",
+    "state": "out",
+    "gap": 7.1,
+    "to": "sb-line",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flight remark (over its stores chips) (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "area time",
+    "state": "out",
+    "gap": 7.1,
+    "to": "the line at the foot of sb-go",
+    "cut": 7.1
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flight remark (over its stores chips) (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "area",
+    "state": "waiting",
+    "gap": 7.1,
+    "to": "the line at the foot of sb-go.night",
+    "cut": 7.1
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, name (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty block label (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: AMT block, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: AMT block, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: AMT block, remark (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: AMT block, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, name (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Ground Programme, remark (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Ground Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   }
+  ]
+ },
+ {
+  "surface": "View-only Sched",
+  "size": "phone",
+  "st": "all out",
+  "look": "a",
+  "rows": [
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 12,
+    "to": "t",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 12,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 24.1,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 12,
+    "to": "t",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 12,
+    "to": "t",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 12,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 12,
+    "to": "t",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 17.6,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 5.9,
+    "to": "the line at the foot of allhands.sec",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 9.3,
+    "to": "b",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 49.9,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 9.3,
+    "to": "ntx",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 0.3,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 64.6,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 65.5,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 10.9,
+    "to": "stchip.on",
+    "cut": 27.3
+   },
+   {
+    "place": "ntx",
+    "state": "out",
+    "gap": 8.5,
+    "to": "the line at the foot of go-tab",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 9.3,
+    "to": "ntx",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 10.9,
+    "to": "stchip.on",
+    "cut": 27.3
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 57.9,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "1st wave, time",
+    "state": "out",
+    "gap": 12,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "1st wave, time",
+    "state": "out",
+    "gap": 12,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "1st wave, name",
+    "state": "out",
+    "gap": 17.4,
+    "to": "ntx",
+    "cut": null
+   },
+   {
+    "place": "1st wave, time",
+    "state": "out",
+    "gap": 19,
+    "to": "ntx",
+    "cut": null
+   },
+   {
+    "place": "ntx",
+    "state": "out",
+    "gap": 0,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "2nd wave (night), time",
+    "state": "out",
+    "gap": 12,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "2nd wave (night), time",
+    "state": "out",
+    "gap": 22,
+    "to": "sub.plist",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 15,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 26.5,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, remark",
+    "state": "out",
+    "gap": 45.4,
+    "to": "pl-row",
+    "cut": -0.5
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 22,
+    "to": "pl-sub",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 12,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 12,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "out",
+    "gap": 8.4,
+    "to": "pl-row",
+    "cut": -0.5
+   },
+   {
+    "place": "sim: OFT / SIMS row, name",
+    "state": "out",
+    "gap": 16.1,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "out",
+    "gap": 19.5,
+    "to": "pl-row",
+    "cut": -0.5
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 12,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 22,
+    "to": "sub.plist",
+    "cut": null
+   },
+   {
+    "place": "duty desk / Ground Programme, remark",
+    "state": "out",
+    "gap": 8.4,
+    "to": "pl-row",
+    "cut": -0.5
+   },
+   {
+    "place": "duty desk / Ground Programme, time",
+    "state": "out",
+    "gap": 12,
+    "to": "t.t-e",
+    "cut": null
+   }
+  ]
+ },
+ {
+  "surface": "View-only Sched",
+  "size": "phone",
+  "st": "all out",
+  "look": "c",
+  "rows": [
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 6,
+    "to": "t",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 6,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 18.1,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 6,
+    "to": "t",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 6,
+    "to": "t",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 6,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 6.8,
+    "to": "t",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 18.1,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 7.9,
+    "to": "the line at the foot of allhands.sec",
+    "cut": null
+   },
+   {
+    "place": "in-time line",
+    "state": "out",
+    "gap": 3,
+    "to": "cols.formcols",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 3.3,
+    "to": "b",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 59.9,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 3.3,
+    "to": "ntx",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 2.3,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "area",
+    "state": "out",
+    "gap": 6.1,
+    "to": "the line at the foot of form",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 59,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 59.9,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 2.3,
+    "to": "stchip.on",
+    "cut": 21.7
+   },
+   {
+    "place": "area time",
+    "state": "out",
+    "gap": 6.1,
+    "to": "the line at the foot of go.",
+    "cut": 6.1
+   },
+   {
+    "place": "ntx",
+    "state": "out",
+    "gap": 10.5,
+    "to": "the line at the foot of go-tab",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 3.3,
+    "to": "ntx",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 2.3,
+    "to": "stchip.on",
+    "cut": 21.7
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 59.9,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "area",
+    "state": "out",
+    "gap": 6.1,
+    "to": "the line at the foot of go.night",
+    "cut": 6.1
+   },
+   {
+    "place": "1st wave, time",
+    "state": "out",
+    "gap": 6,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "1st wave, time",
+    "state": "out",
+    "gap": 6,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "1st wave, name",
+    "state": "out",
+    "gap": 12.9,
+    "to": "ntx",
+    "cut": null
+   },
+   {
+    "place": "1st wave, time",
+    "state": "out",
+    "gap": 13.8,
+    "to": "ntx",
+    "cut": null
+   },
+   {
+    "place": "ntx",
+    "state": "out",
+    "gap": 2,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "2nd wave (night), time",
+    "state": "out",
+    "gap": 6,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "2nd wave (night), time",
+    "state": "out",
+    "gap": 16,
+    "to": "sub.plist",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 15.1,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 24.5,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, remark",
+    "state": "out",
+    "gap": 47.4,
+    "to": "pl-row",
+    "cut": 1.5
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 16,
+    "to": "pl-sub",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 6,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 6,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "out",
+    "gap": 10.4,
+    "to": "pl-row",
+    "cut": 1.5
+   },
+   {
+    "place": "sim: OFT / SIMS row, name",
+    "state": "out",
+    "gap": 18.1,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "out",
+    "gap": 21.5,
+    "to": "pl-row",
+    "cut": 1.5
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 7.5,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 17.5,
+    "to": "sub.plist",
+    "cut": null
+   },
+   {
+    "place": "duty desk / Ground Programme, remark",
+    "state": "out",
+    "gap": 10.4,
+    "to": "pl-row",
+    "cut": 1.5
+   },
+   {
+    "place": "duty desk / Ground Programme, time",
+    "state": "out",
+    "gap": 6,
+    "to": "t.t-e",
+    "cut": null
+   }
+  ]
+ },
+ {
+  "surface": "Edit Schedule",
+  "size": "phone",
+  "st": "all out",
+  "look": "a",
+  "rows": [
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 12,
+    "to": "t.txed",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 12,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 27.1,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 13.5,
+    "to": "t.txed",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 12,
+    "to": "t.txed",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 12,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 20.4,
+    "to": "t.txed",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 40.9,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 35.1,
+    "to": "notepub",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 9.3,
+    "to": ".txed",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 62.9,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 9.3,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 0.3,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 90.6,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 91.5,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 10.9,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "wave label",
+    "state": "out",
+    "gap": 8.5,
+    "to": "the line at the foot of go-tab",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 9.3,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 10.9,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 80.9,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 12,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 12,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, name",
+    "state": "out",
+    "gap": 17.4,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 19,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "duty block label",
+    "state": "out",
+    "gap": 0,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 12,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 22.7,
+    "to": "blknote-h",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 26,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 35,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, remark",
+    "state": "out",
+    "gap": 62.4,
+    "to": "pl-row",
+    "cut": -0.5
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 33,
+    "to": "pl-sub",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 12,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 12,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "out",
+    "gap": 11.4,
+    "to": "pl-row",
+    "cut": -0.5
+   },
+   {
+    "place": "sim: OFT / SIMS row, name",
+    "state": "out",
+    "gap": 19.1,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "out",
+    "gap": 22.5,
+    "to": "pl-row",
+    "cut": -0.5
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 14,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 24.7,
+    "to": "blknote-h",
+    "cut": null
+   },
+   {
+    "place": "Ground Programme, remark",
+    "state": "out",
+    "gap": 11.4,
+    "to": "pl-row",
+    "cut": -0.5
+   },
+   {
+    "place": "Ground Programme, time",
+    "state": "out",
+    "gap": 12,
+    "to": "t.t-e",
+    "cut": null
+   }
+  ]
+ },
+ {
+  "surface": "Edit Schedule",
+  "size": "phone",
+  "st": "all out",
+  "look": "c",
+  "rows": [
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 11.5,
+    "to": "t.txed",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 11.5,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 29.1,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 11.5,
+    "to": "t.txed",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 11.5,
+    "to": "t.txed",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 11.5,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 18.4,
+    "to": "t.txed",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 29.1,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 37.1,
+    "to": "notepub",
+    "cut": null
+   },
+   {
+    "place": "in-time line",
+    "state": "out",
+    "gap": 3,
+    "to": "cols.formcols",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 3.3,
+    "to": ".txed",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 72.9,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 3.3,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 2.3,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "area",
+    "state": "out",
+    "gap": 6.1,
+    "to": "the line at the foot of form",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 82,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 82.9,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 2.3,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "area time",
+    "state": "out",
+    "gap": 6.1,
+    "to": "the line at the foot of go.",
+    "cut": 6.1
+   },
+   {
+    "place": "wave label",
+    "state": "out",
+    "gap": 10.5,
+    "to": "the line at the foot of go-tab",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 3.3,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 2.3,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 82.9,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "area",
+    "state": "out",
+    "gap": 6.1,
+    "to": "the line at the foot of go.night",
+    "cut": 6.1
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 7.5,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 7.5,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, name",
+    "state": "out",
+    "gap": 14.4,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 14.5,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "duty block label",
+    "state": "out",
+    "gap": 2,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 7.5,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 18.2,
+    "to": "blknote-h",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 20,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 33,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, remark",
+    "state": "out",
+    "gap": 64.4,
+    "to": "pl-row",
+    "cut": 1.5
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 27,
+    "to": "pl-sub",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 7.5,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 7.5,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "out",
+    "gap": 13.4,
+    "to": "pl-row",
+    "cut": 1.5
+   },
+   {
+    "place": "sim: OFT / SIMS row, name",
+    "state": "out",
+    "gap": 21.1,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "out",
+    "gap": 24.5,
+    "to": "pl-row",
+    "cut": 1.5
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 16,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 26.7,
+    "to": "blknote-h",
+    "cut": null
+   },
+   {
+    "place": "Ground Programme, remark",
+    "state": "out",
+    "gap": 13.4,
+    "to": "pl-row",
+    "cut": 1.5
+   },
+   {
+    "place": "Ground Programme, time",
+    "state": "out",
+    "gap": 7.5,
+    "to": "t.t-e",
+    "cut": null
+   }
+  ]
+ },
+ {
+  "surface": "Scheduler Board",
+  "size": "phone",
+  "st": "all out",
+  "look": "a",
+  "rows": [
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 4,
+    "to": "tm",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 8,
+    "to": "nts",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 4,
+    "to": "tm",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 2,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 4,
+    "to": "tm",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 8,
+    "to": "nts",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 4,
+    "to": "tm",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 8,
+    "to": "nts",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 8,
+    "to": "nts",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 8,
+    "to": "nts",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 8,
+    "to": "nts",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 2,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 4,
+    "to": "tm",
+    "cut": 22.6
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 4,
+    "to": "tm",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 2,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 8,
+    "to": "nts",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 8,
+    "to": "nts",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "duty desk, name",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "duty block label",
+    "state": "out",
+    "gap": 27.5,
+    "to": "sb-acols.c6r",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, remark",
+    "state": "out",
+    "gap": 93.5,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "out",
+    "gap": 27.5,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, name",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "out",
+    "gap": 27.5,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   },
+   {
+    "place": "Ground Programme, remark",
+    "state": "out",
+    "gap": 28.3,
+    "to": "sb-arow.c6r",
+    "cut": null
+   },
+   {
+    "place": "Ground Programme, time",
+    "state": "out",
+    "gap": 6,
+    "to": "ain.rmkin",
+    "cut": null
+   }
+  ]
+ },
+ {
+  "surface": "Scheduler Board",
+  "size": "phone",
+  "st": "all out",
+  "look": "c",
+  "rows": [
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, name (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, name (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, name (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "in-time line",
+    "state": "out",
+    "gap": 3,
+    "to": "sb-lcols",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flight remark (over its stores chips) (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "area",
+    "state": "out",
+    "gap": 7.1,
+    "to": "sb-line",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flight remark (over its stores chips) (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "area time",
+    "state": "out",
+    "gap": 7.1,
+    "to": "the line at the foot of sb-go",
+    "cut": 7.1
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flight remark (over its stores chips) (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "area",
+    "state": "out",
+    "gap": 7.1,
+    "to": "the line at the foot of sb-go.night",
+    "cut": 7.1
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, name (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty block label (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: AMT block, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: AMT block, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: AMT block, remark (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: AMT block, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, name (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Ground Programme, remark (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Ground Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   }
+  ]
+ },
+ {
+  "surface": "Edit Schedule",
+  "size": "phone",
+  "st": "missing-time scene 3",
+  "look": "c",
+  "rows": [
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 11.5,
+    "to": "t.txed",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 11.5,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 29.1,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 11.5,
+    "to": "t.txed",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 11.5,
+    "to": "t.txed",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 11.5,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "waiting",
+    "gap": 18.4,
+    "to": "t.txed",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "waiting",
+    "gap": 29.1,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 37.1,
+    "to": "notepub",
+    "cut": null
+   },
+   {
+    "place": "in-time line",
+    "state": "out",
+    "gap": 5,
+    "to": "cols.formcols",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 3.3,
+    "to": ".txed",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 72.9,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 3.3,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 2.3,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "area",
+    "state": "out",
+    "gap": 6.1,
+    "to": "the line at the foot of form",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 82,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 82.9,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "waiting",
+    "gap": 2.3,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "area time",
+    "state": "out",
+    "gap": 6.1,
+    "to": "the line at the foot of go.",
+    "cut": 6.1
+   },
+   {
+    "place": "wave label",
+    "state": "out",
+    "gap": 10.5,
+    "to": "the line at the foot of go-tab",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "waiting",
+    "gap": 3.3,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 2.3,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "waiting",
+    "gap": 82.9,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "area",
+    "state": "waiting",
+    "gap": 6.1,
+    "to": "the line at the foot of go.night",
+    "cut": 6.1
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 7.5,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 7.5,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "waiting",
+    "gap": 7,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, name",
+    "state": "out",
+    "gap": 14.4,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 14.5,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "duty block label",
+    "state": "out",
+    "gap": 2,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "waiting",
+    "gap": 7.5,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "waiting",
+    "gap": 17.7,
+    "to": "blknote-h",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 20,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 33,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, remark",
+    "state": "out",
+    "gap": 64.4,
+    "to": "pl-row",
+    "cut": 1.5
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "waiting",
+    "gap": 27,
+    "to": "pl-sub",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 7.5,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 7.5,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "waiting",
+    "gap": 13.4,
+    "to": "pl-row",
+    "cut": 1.5
+   },
+   {
+    "place": "sim: OFT / SIMS row, name",
+    "state": "out",
+    "gap": 21.1,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "out",
+    "gap": 24.5,
+    "to": "pl-row",
+    "cut": 1.5
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "waiting",
+    "gap": 16,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "waiting",
+    "gap": 26.7,
+    "to": "blknote-h",
+    "cut": null
+   },
+   {
+    "place": "Ground Programme, remark",
+    "state": "out",
+    "gap": 13.4,
+    "to": "pl-row",
+    "cut": 1.5
+   },
+   {
+    "place": "Ground Programme, time",
+    "state": "out",
+    "gap": 7.5,
+    "to": "t.t-e",
+    "cut": null
+   }
+  ]
+ },
+ {
+  "surface": "Scheduler Board",
+  "size": "phone",
+  "st": "missing-time scene 3",
+  "look": "c",
+  "rows": [
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, name (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, name (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, name (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "in-time line",
+    "state": "out",
+    "gap": 5,
+    "to": "sb-lcols",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flight remark (over its stores chips) (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "area",
+    "state": "out",
+    "gap": 7.1,
+    "to": "sb-line",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flight remark (over its stores chips) (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "area time",
+    "state": "out",
+    "gap": 7.1,
+    "to": "the line at the foot of sb-go",
+    "cut": 7.1
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flight remark (over its stores chips) (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "area",
+    "state": "waiting",
+    "gap": 7.1,
+    "to": "the line at the foot of sb-go.night",
+    "cut": 7.1
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, name (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty block label (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: AMT block, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: AMT block, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: AMT block, remark (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: AMT block, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, name (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Ground Programme, remark (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Ground Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   }
+  ]
+ },
+ {
+  "surface": "Edit Schedule",
+  "size": "phone",
+  "st": "missing-time scene 4",
+  "look": "c",
+  "rows": [
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 11.5,
+    "to": "t.txed",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 11.5,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 29.1,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 11.5,
+    "to": "t.txed",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 11.5,
+    "to": "t.txed",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "out",
+    "gap": 11.5,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, time",
+    "state": "waiting",
+    "gap": 18.4,
+    "to": "t.txed",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "waiting",
+    "gap": 29.1,
+    "to": "ah-row",
+    "cut": null
+   },
+   {
+    "place": "Common Programme, name",
+    "state": "out",
+    "gap": 37.1,
+    "to": "notepub",
+    "cut": null
+   },
+   {
+    "place": "in-time line",
+    "state": "out",
+    "gap": 5,
+    "to": "cols.formcols",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 3.3,
+    "to": ".txed",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 72.9,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 3.3,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 2.3,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "area",
+    "state": "out",
+    "gap": 6.1,
+    "to": "the line at the foot of form",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 82,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "out",
+    "gap": 82.9,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "waiting",
+    "gap": 2.3,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "area time",
+    "state": "out",
+    "gap": 6.1,
+    "to": "the line at the foot of go.",
+    "cut": 6.1
+   },
+   {
+    "place": "wave label",
+    "state": "out",
+    "gap": 10.5,
+    "to": "the line at the foot of go-tab",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "waiting",
+    "gap": 3.3,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "flight remark (over its stores chips)",
+    "state": "out",
+    "gap": 2.3,
+    "to": "stchip.on",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times",
+    "state": "waiting",
+    "gap": 82.9,
+    "to": "form-area",
+    "cut": null
+   },
+   {
+    "place": "area",
+    "state": "waiting",
+    "gap": 6.1,
+    "to": "the line at the foot of go.night",
+    "cut": 6.1
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 7.5,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 7.5,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "waiting",
+    "gap": 7,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, name",
+    "state": "out",
+    "gap": 14.4,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "out",
+    "gap": 14.5,
+    "to": "ntx.txed",
+    "cut": null
+   },
+   {
+    "place": "duty block label",
+    "state": "out",
+    "gap": 2,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "waiting",
+    "gap": 7.5,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "duty desk, time",
+    "state": "waiting",
+    "gap": 18.2,
+    "to": "blknote-h",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 20,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "out",
+    "gap": 33,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "sim: AMT block, remark",
+    "state": "out",
+    "gap": 64.4,
+    "to": "pl-row",
+    "cut": 1.5
+   },
+   {
+    "place": "sim: AMT block, time",
+    "state": "waiting",
+    "gap": 27,
+    "to": "pl-sub",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 7.5,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "out",
+    "gap": 7.5,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "waiting",
+    "gap": 13.4,
+    "to": "pl-row",
+    "cut": 1.5
+   },
+   {
+    "place": "sim: OFT / SIMS row, name",
+    "state": "out",
+    "gap": 21.1,
+    "to": "pl-row",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark",
+    "state": "out",
+    "gap": 24.5,
+    "to": "pl-row",
+    "cut": 1.5
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "waiting",
+    "gap": 16,
+    "to": "t.t-e",
+    "cut": null
+   },
+   {
+    "place": "sim: OFT / SIMS row, time",
+    "state": "waiting",
+    "gap": 26.7,
+    "to": "blknote-h",
+    "cut": null
+   },
+   {
+    "place": "Ground Programme, remark",
+    "state": "out",
+    "gap": 13.4,
+    "to": "pl-row",
+    "cut": 1.5
+   },
+   {
+    "place": "Ground Programme, time",
+    "state": "out",
+    "gap": 7.5,
+    "to": "t.t-e",
+    "cut": null
+   }
+  ]
+ },
+ {
+  "surface": "Scheduler Board",
+  "size": "phone",
+  "st": "missing-time scene 4",
+  "look": "c",
+  "rows": [
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, name (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, name (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Common Programme, name (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "in-time line",
+    "state": "out",
+    "gap": 5,
+    "to": "sb-lcols",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flight remark (over its stores chips) (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "area",
+    "state": "out",
+    "gap": 7.1,
+    "to": "sb-line",
+    "cut": null
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flight remark (over its stores chips) (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "area time",
+    "state": "out",
+    "gap": 7.1,
+    "to": "the line at the foot of sb-go",
+    "cut": 7.1
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flight remark (over its stores chips) (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "area",
+    "state": "waiting",
+    "gap": 7.1,
+    "to": "the line at the foot of sb-go.night",
+    "cut": 7.1
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, name (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty block label (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "duty desk, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: AMT block, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: AMT block, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: AMT block, remark (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: AMT block, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, name (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, remark (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "sim: OFT / SIMS row, time (board box)",
+    "state": "waiting",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Ground Programme, remark (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   },
+   {
+    "place": "Ground Programme, time (board box)",
+    "state": "out",
+    "gap": 4,
+    "to": "its own box’s foot"
+   }
+  ]
+ }
+]

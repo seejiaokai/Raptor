@@ -52,8 +52,26 @@ for (const [name, eng, opts] of SIZES) {
   const c1 = await p.evaluate(() => getComputedStyle(document.querySelector('.tt-surf.on [data-alc="1"]')).getPropertyValue('--alc').trim())
   if (c1 !== '#FF9548') problems.push(name + ': the swatch did not change AL1 (' + c1 + ')')
   await p.click('#ttReset')
+  /* the missing-time outline: red by default on the emptied END, grey on its setting, none when off or on View Schedule */
+  await press('look', 'c'); await press('st', 'waiting'); await press('surf', 'edit')
+  const missOf = () => p.evaluate(() => { const s = document.querySelector('.tt-surf.on'), e = s.querySelector('.et-miss'); return e ? getComputedStyle(e).boxShadow : 'none' })
+  const mRed = await missOf(); await press('miss', 'grey'); const mGrey = await missOf(); await press('miss', 'off'); const mOff = await missOf(); await press('miss', 'red')
+  if (mRed === 'none' || mGrey === 'none' || mRed === mGrey || mOff !== 'none') problems.push(`${name}: the missing-time outline setting is wrong (red ${mRed} | grey ${mGrey} | off ${mOff})`)
+  await p.evaluate(() => document.querySelector('.tt-surf.on .et-miss').scrollIntoView({ block: 'center' })); await p.waitForTimeout(300); await p.screenshot({ path: join(OUT, `miss-edit-${name}.png`) })
+  await press('surf', 'view'); if (await missOf() !== 'none') problems.push(name + ': View Schedule shows a missing-time outline')
+  /* THE CLEARANCE: under every line the recommendation draws, on each screen and in each state, at least 2px to the nearest
+     thing below it, and never cut off (src/measure.js, loaded here for the test only; it is not part of the page) */
+  await p.addScriptTag({ content: readFileSync(join(HERE, 'src/measure.js'), 'utf8') })
+  let tight = { gap: 1e9 }, lines = 0
+  for (const st of ['waiting', 'out']) for (const surf of ['edit', 'view', 'board']) { await press('st', st); await press('surf', surf)
+    const rows = await p.evaluate(() => window.ALXmeasure('.tt-surf.on')); lines += rows.length
+    if (!rows.length) problems.push(`${name}: no line found to measure on ${surf}, ${st}`)
+    for (const r of rows) { if (r.gap != null && r.gap < tight.gap) tight = { ...r, surf, st }
+      if ((r.gap != null && r.gap < 2) || (r.cut != null && r.cut < 0)) problems.push(`${name}: a line too close on ${surf}, ${st}: ${r.place} (${r.state}) gap ${r.gap} cut ${r.cut} → ${r.to}`) } }
+  console.log(name, 'clearance:', lines, 'lines measured, tightest', tight.gap, 'px at', tight.place, '(' + tight.surf + ', ' + tight.st + ')')
+  await p.click('#ttReset')
   /* the written part */
-  for (const id of ['colours', 'pictures', 'q2']) { await p.evaluate(id => document.getElementById(id).scrollIntoView(), id); await p.waitForTimeout(500); await p.screenshot({ path: join(OUT, `page-${id}-${name}.png`) }) }
+  for (const id of ['colours', 'pictures', 'clear', 'sims', 'missing', 'alike', 'q2']) { await p.evaluate(id => document.getElementById(id).scrollIntoView(), id); await p.waitForTimeout(500); await p.screenshot({ path: join(OUT, `page-${id}-${name}.png`) }) }
   const wide = await p.evaluate(() => document.documentElement.scrollWidth - innerWidth)
   if (wide > 1) problems.push(`${name}: the page scrolls sideways by ${wide}px`)
   const broken = await p.evaluate(async () => { const imgs = [...document.images]; imgs.forEach(i => { i.loading = 'eager' }); await Promise.all(imgs.map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r }))); return imgs.filter(i => !i.naturalWidth).map(i => i.src) })

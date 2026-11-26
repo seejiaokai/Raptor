@@ -121,3 +121,13 @@ table.pg-t{border-collapse:collapse;font-size:12.5px;min-width:560px}
 @media (max-width:620px){.pg-shots{grid-template-columns:repeat(3,78%);overflow-x:auto;margin:10px -16px 4px;padding:0 16px;scroll-snap-type:x mandatory}.pg-shots figure{scroll-snap-align:center}}
 .pg-foot{margin-top:40px;color:var(--pg-ink3);font-size:12.5px}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* round 2: what is new since the first page is the only thing highlighted; close-ups shown two by two */
+.pg-new{color:var(--pg-rec);font-weight:700}
+.pg-now .n.new{width:auto;padding:0 8px;border-radius:11px;background:var(--pg-rec);font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.pg-shots.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.pg-shots.two.ph{max-width:600px}
+@media (max-width:620px){.pg-shots.two{grid-template-columns:repeat(2,78%)}}
+.pg-alike th{white-space:normal;text-align:right;vertical-align:bottom}
+.pg-alike th:first-child{text-align:left}
+.pg-alike td.wrap{min-width:210px}
