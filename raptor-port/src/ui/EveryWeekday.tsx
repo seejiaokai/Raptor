@@ -50,7 +50,8 @@ export function EveryWeekday({ wd, from: from0, unit, onClose }: {
   /* SOMETHING IN IT PRESSED — a choice, a date — not as it opens with one choice lit: the guard counts the form then, and
      the Calendar stays open for it (ui/guard.ts — his D2654 E1) */
   const [pressed, setPressed] = useState(false)
-  useGuardWork('everywd', pressed)
+  /* …and the window's own title, which the guard's note quotes ("save or cancel “Every Tuesday”" — D2729; K3) */
+  useGuardWork('everywd', pressed, `Every ${name}`)
   /* any change to the form takes the last complaint down — it was about what the form held then */
   const edit = <T,>(set: (v: T) => void) => (v: T) => { setErr(''); setPressed(true); set(v) }
 

@@ -36,6 +36,9 @@ export function bringForward(id: string): void {
  *  order in its own layout effect and leaves it as it unmounts, so for this frame "up" is "drawn"; a bystander window
  *  (the speed readout) never joins, so it is never counted. */
 export const winUp = (id: string): boolean => UP.includes(id)
+/** IS `a` IN FRONT OF `b`? — read only: both up, `a` brought forward after `b` (the guard's note, ui/guard.ts calendarOver:
+ *  a settings window lies under the Calendar on a phone only when the Calendar came forward after it) */
+export const winAbove = (a: string, b: string): boolean => UP.includes(a) && UP.includes(b) && UP.indexOf(a) > UP.indexOf(b)
 export function gone(id: string): boolean {
   const i = UP.indexOf(id)
   if (i >= 0) UP.splice(i, 1)
