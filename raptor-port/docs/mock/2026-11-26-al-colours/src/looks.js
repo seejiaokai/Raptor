@@ -10,6 +10,12 @@ window.ALX = (() => {
   /* round 2: every one clear of the schedule's own section, puck and warning colours (search2.mjs); round 1's periwinkle,
      mint and orange sat on the Common Programme's, Available crew's and Personal Inputs' colours */
   const NEW = ['', '#F8F337', '#FF95D9', '#9DF7F0', '#D9A88C', '#A9C8FF', '#9FB07A', '#D9B3FF']
+  /* HIS OWN SEVEN (26 Nov 26, tapped in the try-out's swatches; the hexes are the host's reading of his picture): lemon,
+     orange, mint, lilac, green, azure, pink. His pick; the page measures it and never changes it. */
+  const HIS = ['', '#F8F337', '#FF9548', '#4FEBC8', '#D9B3FF', '#3DE86B', '#19AFFE', '#FF7FC4']
+  /* the time boxes the complex day was staged with empty on a row that holds people (stage2.mjs): Monday's two are waiting
+     changes on the published day, Tuesday's five are the draft */
+  const MISS = ['dr:0.0.1.end', 'ff:0.1.1.to', 'ff:1.0.0.to', 'dr:1.0.0.str', 'dr:1.0.1.end', 'sr:1.oft.0.str', 'gr:1.0.end']
   const NAMES = { '#F8F337': 'Lemon', '#FF95D9': 'Pink', '#9DF7F0': 'Ice', '#D9A88C': 'Clay', '#A9C8FF': 'Sky', '#9FB07A': 'Sage', '#D9B3FF': 'Lilac', '#8FA6FF': 'Periwinkle (round 1)', '#4FEBC8': 'Mint (round 1)', '#FF9548': 'Orange (round 1)', '#19AFFE': 'Azure', '#E6A3A7': 'Rose',
     '#3BC6E8': 'Cyan', '#E5C24A': 'Yellow', '#3DE86B': 'Green', '#FFFFFF': 'White', '#B388FF': 'Purple', '#FF7FC4': 'Pink', '#E5872B': 'Dark orange' }
   function palette(list) {
@@ -52,5 +58,17 @@ window.ALX = (() => {
       if (n < top || (mode === '2' && waiting)) e.classList.add('alx-nl')
     })
   }
-  return { TODAY, NEW, NAMES, palette, look, key, underline }
+  /* the missing-time outline's classes on those boxes inside root, where they are still empty: 'red', 'grey' or 'off' */
+  function missing(root, mode = 'red') {
+    if (!root) return 0
+    root.querySelectorAll('.et-miss').forEach(e => e.classList.remove('et-miss', 'et-red'))
+    if (mode === 'off') return 0
+    let n = 0
+    for (const k of MISS) for (const e of root.querySelectorAll(`[data-txt="${k}"], [data-bfld="${k}"]`)) {
+      if ((/INPUT|TEXTAREA/.test(e.tagName) ? e.value : e.textContent).trim() !== '') continue
+      e.classList.add('et-miss'); if (mode === 'red') e.classList.add('et-red'); n++
+    }
+    return n
+  }
+  return { TODAY, NEW, HIS, MISS, NAMES, palette, look, key, underline, missing }
 })()

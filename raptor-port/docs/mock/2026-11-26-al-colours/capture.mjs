@@ -50,7 +50,8 @@ const measure = (p, root) => p.evaluate(root => {
 }, root)
 
 for (const st of ['waiting', 'out']) for (const key of ['d', 'p']) {
-  const w = await K.world(key, join(K.STATE, `alc-${st}.json`)), p = w.p, sz = w.sz
+  /* ALC_STATE=cx captures the complex day (stage2.mjs) in place of the first, simpler Monday */
+  const w = await K.world(key, join(K.STATE, `${process.env.ALC_STATE || 'alc'}-${st}.json`)), p = w.p, sz = w.sz
   await K.signIn(p)
   const tag = `${st}-${sz.name}`
   if (st === 'waiting' && key === 'd') {

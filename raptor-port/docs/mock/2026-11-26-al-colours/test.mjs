@@ -32,9 +32,14 @@ for (const [name, eng, opts] of SIZES) {
     const cs = getComputedStyle(e), a = getComputedStyle(seat, '::after')
     return [s.dataset.surf, s.dataset.st, cs.color, cs.textDecorationLine, cs.outlineStyle, a.content, a.width, a.backgroundColor, getComputedStyle(seat.querySelector('.nm')).color, !!s.querySelector('.alx-key'), getComputedStyle(document.getElementById('ttStage')).filter].join(' | ') })
   await p.screenshot({ path: join(OUT, `top-${name}.png`) })
+  /* it opens on HIS picks: his look, his seven colours, latest out + waiting, the mixed puck mark */
+  const open = await p.evaluate(() => [...document.querySelectorAll('[data-set].on')].map(b => b.dataset.set + '=' + b.dataset.val).join(' '))
+  for (const w of ['look=c', 'pal=his', 'ul=3', 'puck=mix', 'st=waiting']) if (!open.includes(w)) problems.push(`${name}: the try-out does not open on his pick (${w} missing from: ${open})`)
+  const c2 = await p.evaluate(() => getComputedStyle(document.querySelector('.tt-surf.on [data-alc="2"]')).getPropertyValue('--alc').trim())
+  if (c2 !== '#FF9548') problems.push(name + ': AL2 is not his orange (' + c2 + ')')
   const seen = new Set()
   const step = async (label, set, val, file) => { await press(set, val); const s = await sig(); if (seen.has(s)) problems.push(`${name}: "${label}" changed nothing`); seen.add(s); console.log(name, label, '→', s); if (file) await stageShot(file) }
-  seen.add(await sig()); await stageShot('edit-today')
+  await stageShot('edit-his'); await press('look', 'a'); seen.add(await sig()); await stageShot('edit-today')
   await step('Colour only', 'look', 'b', 'edit-b')
   await step('My recommendation', 'look', 'c', 'edit-c')
   await step('All four out', 'st', 'out', null)
@@ -67,8 +72,8 @@ for (const [name, eng, opts] of SIZES) {
       if (has) (e.hasAttribute('data-aln') ? wait : out).add(+(e.getAttribute('data-aln') || e.getAttribute('data-alc'))) }
     return [...out].sort().join(',') + ' | ' + [...wait].sort().join(',') })
   await press('look', 'c')
-  for (const [surf, st, ul, want] of [['edit', 'waiting', 'all', '1,2,3 | 4'], ['edit', 'waiting', '2', ' | 4'], ['edit', 'waiting', '3', '3 | 4'], ['board', 'waiting', '2', ' | 4'], ['board', 'waiting', '3', '3 | 4'], ['view', 'waiting', '2', '3 | '], ['view', 'waiting', '3', '3 | '],
-    ['edit', 'out', '2', '4 | '], ['edit', 'out', '3', '4 | '], ['view', 'out', '2', '4 | '], ['board', 'out', '3', '4 | '], ['view', 'out', 'all', '1,2,3,4 | ']]) {
+  for (const [surf, st, ul, want] of [['edit', 'waiting', 'all', '1,2,3,4,5,6 | 7'], ['edit', 'waiting', '2', ' | 7'], ['edit', 'waiting', '3', '6 | 7'], ['board', 'waiting', '2', ' | 7'], ['board', 'waiting', '3', '6 | 7'], ['view', 'waiting', '2', '6 | '], ['view', 'waiting', '3', '6 | '],
+    ['edit', 'out', '2', '7 | '], ['edit', 'out', '3', '7 | '], ['view', 'out', '2', '7 | '], ['board', 'out', '3', '7 | '], ['view', 'out', 'all', '1,2,3,4,5,6,7 | ']]) {
     await press('st', st); await press('surf', surf); await press('ul', ul); const got = await lined()
     if (got !== want) problems.push(`${name}: Underline "${ul}" on ${surf}, ${st}: lines on [${got}], expected [${want}]`)
     if (surf === 'edit' && st === 'waiting' && ul !== 'all') { await p.evaluate(() => document.querySelector('.tt-surf.on .sec-duty').scrollIntoView({ block: 'center' })); await p.waitForTimeout(250); await p.screenshot({ path: join(OUT, `ul-${ul}-${name}.png`) }) } }
@@ -76,8 +81,8 @@ for (const [name, eng, opts] of SIZES) {
      waiting one (AL4) wear, for each choice. "tab" is the wordless tab, a digit the number, "none" nothing. */
   await press('st', 'waiting'); await press('surf', 'edit'); await press('ul', '3')
   const wears = () => p.evaluate(() => { const s = document.querySelector('.tt-surf.on'), of = sel => { const e = s.querySelector(sel); if (!e) return 'missing'; const c = getComputedStyle(e, '::after').content; return c === 'none' ? 'none' : c === '""' ? 'tab' : c.replace(/"/g, '') }
-    return [of('.seat[data-alc="1"], .seat[data-alc="2"]'), of('.seat[data-alc="3"]'), of('.seat[data-aln="4"]')].join(' ') })
-  for (const [puck, want] of [['mix', 'tab 3 4'], ['num', /^[12] 3 4$/], ['new', 'none 3 4'], ['tab', 'tab tab tab']]) { await press('puck', puck); const got = await wears()
+    return [of('.seat[data-alc="1"], .seat[data-alc="2"]'), of('.seat[data-alc="6"]'), of('.seat[data-aln="7"]')].join(' ') })
+  for (const [puck, want] of [['mix', 'tab 6 7'], ['num', /^[12] 6 7$/], ['new', 'none 6 7'], ['tab', 'tab tab tab']]) { await press('puck', puck); const got = await wears()
     if (typeof want === 'string' ? got !== want : !want.test(got)) problems.push(`${name}: puck mark "${puck}" wears [${got}], expected ${want}`)
     if (puck !== 'tab') { await p.evaluate(() => document.querySelector('.tt-surf.on .sec-sim').scrollIntoView({ block: 'center' })); await p.waitForTimeout(250); await p.screenshot({ path: join(OUT, `puck-${puck}-${name}.png`) }) } }
   await press('puck', 'mix')
@@ -94,7 +99,7 @@ for (const [name, eng, opts] of SIZES) {
   console.log(name, 'clearance:', lines, 'lines measured, tightest', tight.gap, 'px at', tight.place, '(' + tight.surf + ', ' + tight.st + ')')
   await p.click('#ttReset')
   /* the written part */
-  for (const id of ['colours', 'pictures', 'clear', 'sims', 'missing', 'alike', 'q2']) { await p.evaluate(id => document.getElementById(id).scrollIntoView(), id); await p.waitForTimeout(500); await p.screenshot({ path: join(OUT, `page-${id}-${name}.png`) }) }
+  for (const id of ['busy', 'colours', 'pictures', 'clear', 'sims', 'missing', 'alike', 'q2']) { await p.evaluate(id => document.getElementById(id).scrollIntoView(), id); await p.waitForTimeout(500); await p.screenshot({ path: join(OUT, `page-${id}-${name}.png`) }) }
   const wide = await p.evaluate(() => document.documentElement.scrollWidth - innerWidth)
   if (wide > 1) problems.push(`${name}: the page scrolls sideways by ${wide}px`)
   const broken = await p.evaluate(async () => { const imgs = [...document.images]; imgs.forEach(i => { i.loading = 'eager' }); await Promise.all(imgs.map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r }))); return imgs.filter(i => !i.naturalWidth).map(i => i.src) })

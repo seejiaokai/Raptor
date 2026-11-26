@@ -67,6 +67,9 @@ html :is([data-alc="7"],[data-aln="7"]){--alc:var(--alx7,#E5872B)}
   color:transparent !important;-webkit-text-fill-color:transparent;white-space:pre;pointer-events:none}
 :is(#eWeek,.week) .et-miss[data-aln]:empty{padding-left:3px;margin-left:-3px;padding-bottom:4px;margin-bottom:-4px}
 .alx-c :is(#eWeek,.week) .et-miss[data-aln]:empty{text-decoration-thickness:1.5px !important}
+/* a flying line stacks take-off over landing with no room between: there the outline steps out 1px, not 4, so it never
+   lies on the landing time under it (the complex day, 26 Nov 26) */
+:is(#eWeek,.week) .form .et-miss[data-aln]:empty{padding-bottom:1px;margin-bottom:-1px}
 html .et-off :is(#eWeek,.week,#schedBoard) .et-miss{box-shadow:none !important}
 
 /* ---- a changed puck ---- */

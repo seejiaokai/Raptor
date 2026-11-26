@@ -15,7 +15,9 @@ const TODAY = ['#3BC6E8', '#E5C24A', '#3DE86B', '#FFFFFF', '#B388FF', '#FF7FC4',
 /* round 1's seven: three of the first four sat on a section's own colour (his look-alikes question, 26 Nov 26) */
 const R1 = ['#FFE815', '#8FA6FF', '#4FEBC8', '#FF9548', '#EDC4FF', '#9FB07A', '#6FB0B2']
 const NEW = ['#F8F337', '#FF95D9', '#9DF7F0', '#D9A88C', '#A9C8FF', '#9FB07A', '#D9B3FF']
-const NAME = { '#F8F337': 'Lemon', '#FF95D9': 'Pink', '#9DF7F0': 'Ice', '#D9A88C': 'Clay', '#A9C8FF': 'Sky', '#9FB07A': 'Sage', '#D9B3FF': 'Lilac',
+/* HIS seven (26 Nov 26): lemon, orange, mint, lilac, green, azure, pink. His pick: measured, never changed here. */
+const HIS = ['#F8F337', '#FF9548', '#4FEBC8', '#D9B3FF', '#3DE86B', '#19AFFE', '#FF7FC4']
+const NAME = { '#19AFFE': 'Azure', '#F8F337': 'Lemon', '#FF95D9': 'Pink', '#9DF7F0': 'Ice', '#D9A88C': 'Clay', '#A9C8FF': 'Sky', '#9FB07A': 'Sage', '#D9B3FF': 'Lilac',
   '#FFE815': 'Lemon', '#8FA6FF': 'Periwinkle', '#4FEBC8': 'Mint', '#FF9548': 'Orange', '#EDC4FF': 'Lilac', '#6FB0B2': 'Teal',
   '#3BC6E8': 'Cyan', '#E5C24A': 'Yellow', '#3DE86B': 'Green', '#FFFFFF': 'White', '#B388FF': 'Purple', '#FF7FC4': 'Pink', '#E5872B': 'Dark orange' }
 /* read off the running app (capture/measured.json): the panel behind a changed word on the week, and a box on the board */
@@ -64,6 +66,19 @@ function alikeFix() {
 <div class="pg-scroll"><table class="pg-t"><thead><tr><th>Amendment</th><th>Nearest schedule colour</th><th>Difference</th><th>What keeps them apart</th></tr></thead><tbody>${near.map(x =>
     `<tr><td>${dot(x.c, ' s')} <b>${al(x.i)}</b> ${NAME[x.c]}</td><td class="wrap">${dot(x.n[2], ' s')} ${x.n[1]}</td><td class="num">${f0(x.n[0])}</td><td class="wrap">${APART[kind(x.n[2])]}</td></tr>`).join('')}</tbody></table></div>`
 }
+/* ---- HIS seven, measured: against the schedule's colours, each other, and the outline's red ---- */
+function hisTable() {
+  const rows = HIS.map((c, i) => { const all = SCHED.map(([s, what]) => [de00(c, s), what, s]).sort((a, b) => a[0] - b[0]), near = all[0], bad = near[0] < CLOSE
+    const others = HIS.map((o, j) => j === i ? null : [de00(c, o), j]).filter(Boolean).sort((a, b) => a[0] - b[0])[0]
+    return `<tr><td>${dot(c)}</td><td><b>${al(i)}</b> ${NAME[c]}</td><td class="num">${f1(contrast(c, WEEK))}</td><td class="num ${bad ? 'bad' : 'ok'}">${f0(near[0])}</td><td class="wrap ${bad ? 'bad' : ''}">${dot(near[2], ' s')} ${near[1]}</td><td class="num ${others[0] < 15 ? 'bad' : 'ok'}">${f0(others[0])} from ${al(others[1])}</td><td class="num">${f0(de00(c, RED))} / ${f0(cbOnly(c, RED))}</td></tr>` })
+  return `<table class="pg-t"><thead><tr><th></th><th>Your colour</th><th>Stands out on the week</th><th>Difference</th><th>From the nearest schedule colour</th><th>Nearest other amendment</th><th>From the outline’s red (ordinary / red-green)</th></tr></thead><tbody>${rows.join('')}</tbody></table>`
+}
+/* ---- the complex day's pictures: each screen whole, in slices (shoot2.mjs) ---- */
+const CX = JSON.parse(read('capture/complex.json'))
+const strip = (name, sz, cap) => { const n = CX.slices[`${name}-${sz}`]; if (!n) throw new Error('no slices for ' + name + '-' + sz)
+  return `<p class="pg-swl">${cap}, ${dev(sz)} (${n} pictures, top to bottom; tap one to open it)</p><div class="pg-strip${sz === 'phone' ? ' ph' : ''}">${Array.from({ length: n }, (_, i) => fig(`img/${name}-${sz}-${i + 1}.png`, `${cap} on a ${sz}, part ${i + 1} of ${n}`, `${i + 1} of ${n}`)).join('')}</div>` }
+const complex = () => ['phone', 'desktop'].map(sz => strip('cx-edit', sz, 'Edit Schedule, Monday, AL7 waiting') + strip('cx-view', sz, 'View Schedule, Monday (AL6 is the newest it shows)') + strip('cx-board', sz, 'Scheduler Board, Monday, AL7 waiting')).join('')
+const complexDraft = () => ['phone', 'desktop'].map(sz => strip('cxd-edit', sz, 'Edit Schedule, Tuesday, a draft') + strip('cxd-board', sz, 'Scheduler Board, Tuesday, a draft')).join('')
 /* ---- AL4 and the missing-time outline's red ---- */
 const clash = () => { const row = (nm, c) => `${nm} ${f0(de00(c, RED))} for ordinary sight and ${f0(cbOnly(c, RED))} for a red-green reader`
   return `Measured against the outline’s red: ${row('AL4’s clay is', NEW[3])} (my first page’s orange was ${f0(de00(R1[3], RED))} and ${f0(cbOnly(R1[3], RED))}, so no better). For ordinary sight that is clearly two colours. For a red-green reader it is close, so colour alone would not do. Shape does the work: the outline is a closed box on the box’s own edge, the amendment’s mark a dotted line inside it, under where the time goes. For comparison, ${row('AL1’s lemon is', NEW[0])}, ${row('AL2’s pink', NEW[1])}.` }
@@ -145,8 +160,8 @@ const js = p => read(p).replace(/<\/script/gi, '<\\/script')
 const PUT = { '<!--SURFACES-->': () => surfaces, '<!--SW:today-->': () => swatch(TODAY), '<!--SW:new-->': () => swatch(NEW), '<!--SW:cvd-->': () => cvd,
   '<!--T:spent:today-->': () => spentTable(TODAY), '<!--T:spent:new-->': () => spentTable(NEW), '<!--T:pairs-->': pairsTable, '<!--T:puckname-->': () => puckName, '<!--PUCKS-->': () => pucks,
   '<!--SHOTS-->': () => shots, '<!--T:clear-->': clearTable, '<!--T:clash-->': clash, '<!--P:fly-->': () => pairs('fly'), '<!--P:sims-->': () => pairs('sims'), '<!--P:miss-->': () => miss, '<!--P:alike-->': () => alike,
-  '<!--T:alike:today-->': () => alikeTable(TODAY, 'Today’s seven'), '<!--T:alike:r1-->': () => alikeTable(R1, 'My first page’s seven'), '<!--T:alike:new-->': () => alikeTable(NEW, 'The new seven'), '<!--T:alikefix-->': alikeFix, '<!--T:plain-->': plainTable, '<!--P:latest-->': () => latest, '<!--P:puckmark-->': () => puckmark }
-let out = read('src/frame.html').replace('<!--ROUND3-->', () => read('src/round3.html')).replace('<!--ROUND2-->', () => read('src/round2.html'))
+  '<!--T:alike:today-->': () => alikeTable(TODAY, 'Today’s seven'), '<!--T:alike:r1-->': () => alikeTable(R1, 'My first page’s seven'), '<!--T:alike:new-->': () => alikeTable(NEW, 'The new seven'), '<!--T:alikefix-->': alikeFix, '<!--T:plain-->': plainTable, '<!--P:latest-->': () => latest, '<!--P:puckmark-->': () => puckmark, '<!--T:his-->': hisTable, '<!--P:complex-->': () => complex(), '<!--P:complexdraft-->': () => complexDraft() }
+let out = read('src/frame.html').replace('<!--ROUND4-->', () => read('src/round4.html')).replace('<!--ROUND3-->', () => read('src/round3.html')).replace('<!--ROUND2-->', () => read('src/round2.html'))
   .replace('/*APPCSS*/', () => css).replace('/*LOOKSCSS*/', () => read('src/looks.css')).replace('/*PAGECSS*/', () => read('src/page.css'))
 for (const [k, fn] of Object.entries(PUT)) { if (!out.includes(k)) throw new Error('the frame has no place for ' + k); out = out.split(k).join(fn()) }
 out = out.replace('/*LOOKSJS*/', () => js('src/looks.js')).replace('/*TRYJS*/', () => js('src/tryout.js'))
@@ -156,11 +171,12 @@ console.log('index.html', (out.length / 1024).toFixed(0) + ' KB')
 
 /* ---- the figures, for the report ---- */
 if (process.argv.includes('--tables')) {
-  for (const [nm, list] of [['TODAY', TODAY], ['ROUND 1', R1], ['PROPOSED', NEW]]) {
+  for (const [nm, list] of [['TODAY', TODAY], ['ROUND 1', R1], ['PROPOSED', NEW], ['HIS', HIS]]) {
     console.log('\n' + nm + ' | contrast on week / board | nearest schedule colour')
     list.forEach((c, i) => { const near = nearest(c); console.log(`| ${al(i)} | ${c} ${NAME[c]} | ${f1(contrast(c, WEEK))} | ${f1(contrast(c, BOARD))} | ${f1(near[0])} ${near[1]} |`) })
     for (const n of [2, 3, 4, 7]) { const h = hardest(list, n, de00), q = hardest(list, n, cbOnly); console.log(`first ${n}: hardest ordinary ${f1(h.d)} (${al(h.i)}/${al(h.j)}), red-green ${f1(q.d)} (${al(q.i)}/${al(q.j)})`) }
     console.log('under ' + CLOSE + ': ' + (flagged(list).map(x => `${al(x.i)} ${NAME[x.c]} ${f1(x.d)} ${x.what}`).join(' ; ') || 'none'))
+    console.log('pairs: ' + list.map((a, i) => al(i) + ': ' + list.map((b, j) => i === j ? '-' : f0(de00(a, b)) + '/' + f0(cbOnly(a, b))).join(' ')).join(' | '))
     console.log('vs outline red: ' + list.map((c, i) => `${al(i)} ${f0(de00(c, RED))}/${f0(cbOnly(c, RED))}`).join('  '))
   }
   console.log('\ncolour alone: from white / grey / faint words: ordinary, red-green, lightness'); for (const r of plainRows()) console.log(al(r.i), NAME[r.c], r.w.map(x => x.map(f0).join('/')).join('  '))

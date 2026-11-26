@@ -284,3 +284,58 @@ round-1 suggestion of a plain tab on every changed puck. Open for him.
 
 `test.mjs` now also checks, at both widths: which amendments draw a line for each Underline choice on each screen and
 state, and what an older, the newest and a waiting puck wear for each puck choice.
+
+## Round 4 (26 Nov 26): his picks, and the busy day
+
+**His picks (recorded by the host as his ruling):** the recommended look (colour and a line, no ALn words, the
+"Changed in" line); underline the newest amendment out plus anything waiting; a number on the newest pucks and a tab on
+older ones; and his own seven colours: AL1 lemon `#F8F337`, AL2 orange `#FF9548`, AL3 mint `#4FEBC8`, AL4 lilac
+`#D9B3FF`, AL5 green `#3DE86B`, AL6 azure `#19AFFE`, AL7+ pink `#FF7FC4`. All seven are in the try-out's candidate
+list. Two could be a neighbour of what the host read from his picture: the pink (today's `#FF7FC4` or the proposed
+`#FF95D9`) and the orange (`#FF9548` or today's `#E5872B`); the page says so. The try-out opens on his picks ("Your
+pick" preset, `ALX.HIS` in `src/looks.js`); Today's and Proposed remain as choices. "What to look at now" marks the
+look, underline, puck mark and colours as done, keeps the missing-time outline and the colour-blind switch open, and
+adds "The busy day: does it still read clearly?".
+
+**The busy day (`stage2.mjs`, states `cx-waiting` / `cx-out`).** Monday published and amended seven times through the
+app's own writes and publish button: AL1 to AL6 out (10 to 16 items each), AL7 waiting (20 items). Changes in the
+Common Programme, both flying waves (remarks, stores, areas, an area time, an in-time line, wave labels), both duty
+blocks, AMT and OFT rows, the Ground Programme, a request filed under Unavailable (AL2) and two under Personal Inputs
+(AL5, AL7), and 14 pucks. One programme row changed twice (times AL2, name AL5). Two times emptied as waiting changes:
+the SXO's END (holder changed in AL2) and the night RU's take-off. Tuesday is a draft with five empty times on rows
+holding people (a flight's take-off, a desk START, a desk END, a sim start, a ground row with ALL AVAIL and no end).
+Checked in the captured markup afterwards: the filed requests show marks on the Ground Programme only; the Personal Inputs and Unavailable sections carry no amendment mark on this day, so those two sections are NOT covered (the page says so). Not staged: a changed traffic line (the app draws no mark for one). The try-out's captured day is now this Monday
+(`ALC_STATE=cx node capture.mjs`); the earlier sections' pictures remain the simpler four-amendment Monday in my
+proposed colours, and the page says so.
+
+**Pictures (`shoot2.mjs`):** each screen whole, cut into slices at section tops: Edit Schedule, View-only Sched and the
+board for Monday; Edit Schedule and the board for Tuesday; 402 and 1536 (38 pictures, `img/cx-*`, `img/cxd-*`).
+
+**His colours, measured (CIEDE2000; under 12 from a schedule colour is flagged):**
+
+| | on the week | nearest schedule colour | nearest other AL | from the outline red (ordinary / red-green) |
+|---|---|---|---|---|
+| AL1 lemon | 14.0 | 17 in-time lines | 26 from AL5 | 62 / 26 |
+| AL2 orange | 7.6 | **4 Personal Inputs** | 37 from AL1 | 26 / 13 |
+| AL3 mint | 11.0 | **7 Available crew** (14 from Duties) | 17 from AL5 | 71 / 24 |
+| AL4 lilac | 9.3 | 15 grey words | 18 from AL7 | 34 / 39 |
+| AL5 green | 10.2 | **9 Duties** | 17 from AL3 | 80 / 14 |
+| AL6 azure | 6.8 | 13 flying waves' cyan | 34 from AL4 | 53 / 39 |
+| AL7+ pink | 7.1 | 21 warning red | 18 from AL4 | 21 / 29 |
+
+Put to him as points with fixes, his picks drawn unchanged: AL2 orange is Personal Inputs' own colour (fix: clay, 12.5
+away, and 30+ from each of his others); AL5 green sits by Duties' green (fix: sage, 14.7, or move green to AL7); AL3
+mint is near Available crew but that section holds pucks, not words (no fix needed); AL6 azure is blue on the waves'
+cyan once it is no longer the newest (leave; a day rarely reaches AL6 - my assumption). AL7 pink inside the red outline
+is two colours for ordinary sight and two shapes for everyone. For red-green readers the whole set collapses (hardest
+pair 6), as every set of seven does; the open colour-blind switch covers it.
+
+**Does it read as too busy?** My reading from the pictures: no, because only AL6 (solid) and AL7 (dotted) carry lines
+among about ninety marks; the Common Programme and the flying waves are the busiest. Which older amendment a colour
+means is carried by the "Changed in" line. Clearance on this day: 132 lines measured on the real app, tightest 2.3px.
+
+**One fix made to the look:** on a flying line take-off sits directly over landing, so the missing-time outline of an
+emptied take-off steps out 1px there instead of 4, and no longer lies on the landing time.
+
+`test.mjs` (both widths) now also checks that the try-out opens on his picks and that AL2 is his orange; its underline
+and puck expectations are for seven amendments (454 lines in the clearance check, tightest 2.3 / 3.0).

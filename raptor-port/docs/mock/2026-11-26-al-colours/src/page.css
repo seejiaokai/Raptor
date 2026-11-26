@@ -132,3 +132,11 @@ table.pg-t{border-collapse:collapse;font-size:12.5px;min-width:560px}
 .pg-alike th:first-child{text-align:left}
 .pg-alike td.wrap{min-width:210px}
 .pg-now .n.done{width:auto;padding:0 8px;border-radius:11px;background:transparent;color:var(--pg-ink2);border:1px solid var(--pg-line);font-size:11px;letter-spacing:.06em;text-transform:uppercase;line-height:20px}
+/* the complex day: each screen whole, as a row of slices that scrolls sideways */
+.pg-strip{display:flex;gap:10px;overflow-x:auto;-webkit-overflow-scrolling:touch;margin:8px 0 14px;padding-bottom:6px;align-items:flex-start}
+.pg-strip figure{margin:0;flex:0 0 340px;min-width:0}
+.pg-strip.ph figure{flex-basis:210px}
+.pg-strip img{display:block;width:100%;height:auto;border-radius:8px;border:1px solid var(--edge)}
+.pg-strip figcaption{font-size:12px;color:var(--pg-ink2);margin-top:5px}
+@media (max-width:620px){.pg-strip{margin:8px -16px 14px;padding:0 16px 6px}.pg-strip figure{flex-basis:78%}.pg-strip.ph figure{flex-basis:62%}}
+.pg-now .n.open{width:auto;padding:0 8px;border-radius:11px;background:var(--pg-ink);font-size:11px;letter-spacing:.06em;text-transform:uppercase}

@@ -4,12 +4,13 @@
   const A = window.ALX, $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)]
   const stage = $('#ttStage'), strip = $('.tt-strip'), note = $('#ttNote'), cands = $('#ttCands')
   /* the short list a tapped swatch may be given: the proposed seven, today's seven, and three more near-misses */
-  const CANDS = [...A.NEW.slice(1), ...A.TODAY.slice(1), '#8FA6FF', '#4FEBC8', '#FF9548', '#19AFFE', '#E6A3A7']
-  const START = { surf: 'edit', look: 'a', puck: 'chip', pal: 'today', cb: 'off', st: 'waiting', miss: 'red', ul: '3' }
-  const PRESET = { a: { puck: 'chip', pal: 'today' }, b: { puck: 'name', pal: 'today' }, c: { puck: 'mix', pal: 'new' } }
+  const CANDS = [...A.NEW.slice(1), ...A.TODAY.slice(1), '#8FA6FF', '#4FEBC8', '#FF9548', '#19AFFE', '#E6A3A7', '#35C9B0', '#5B8DEF']
+  /* it opens on HIS picks (26 Nov 26): his look, his seven colours, latest out + waiting, number on the newest puck */
+  const START = { surf: 'edit', look: 'c', puck: 'mix', pal: 'his', cb: 'off', st: 'waiting', miss: 'red', ul: '3' }
+  const PRESET = { a: { puck: 'chip', pal: 'today' }, b: { puck: 'name', pal: 'today' }, c: { puck: 'mix', pal: 'his' } }
   let S = { ...START }, custom = null, picking = 0
 
-  const list = () => custom || (S.pal === 'new' ? A.NEW : A.TODAY)
+  const list = () => custom || (S.pal === 'his' ? A.HIS : S.pal === 'new' ? A.NEW : A.TODAY)
   function paint() {
     $$('.tt-surf').forEach(e => e.classList.toggle('on', e.dataset.surf === S.surf && e.dataset.st === S.st))
     const on = $('.tt-surf.on')
@@ -23,13 +24,12 @@
     /* the missing-time outline: every empty time box of a duty desk on the captured day (the 1st wave's SXO END, emptied on
        the published day and still waiting) is given the end-time rule's class; classes only, never a style from script */
     stage.classList.toggle('et-off', S.miss === 'off')
-    $$('.tt-surf:not([data-surf="view"]) :is([data-txt^="dr:"],[data-bfld^="dr:"])').forEach(e => { const k = e.getAttribute('data-txt') || e.getAttribute('data-bfld'), empty = (e.tagName === 'INPUT' ? e.value : e.textContent).trim() === ''
-      const is = /\.(str|end)$/.test(k) && empty; e.classList.toggle('et-miss', is); e.classList.toggle('et-red', is && S.miss === 'red') })
+    $$('.tt-surf').forEach(e => A.missing(e, e.dataset.surf === 'view' ? 'off' : S.miss))
     $$('[data-set]').forEach(b => { const v = b.dataset.set === 'pal' ? (custom ? '' : S.pal) : S[b.dataset.set]; const is = v === b.dataset.val; b.classList.toggle('on', is); b.setAttribute('aria-checked', is ? 'true' : 'false') })
     $$('.tt-sw').forEach(b => { const n = +b.dataset.n; b.style.background = list()[n]; b.setAttribute('aria-pressed', picking === n ? 'true' : 'false'); b.title = 'AL' + n + (n === 7 ? ' and later' : '') + ': ' + (A.NAMES[list()[n]] || list()[n]) + '. Tap to try another colour.' })
     cands.classList.toggle('on', !!picking)
     if (picking) $('#ttCandLbl').textContent = 'AL' + picking + (picking === 7 ? '+' : '') + ' becomes'
-    note.textContent = S.surf === 'view' && S.st === 'waiting' ? 'View-only Sched never shows a change that is still waiting, so AL4 is not on it yet. Choose "All four out" to see it there.' : ''
+    note.textContent = S.surf === 'view' && S.st === 'waiting' ? 'View Schedule never shows a change that is still waiting, so AL7 is not on it yet. Choose "All seven out" to see it there.' : ''
     /* the board's own height figures were measured on the screen it was captured from: give it this window's */
     const b = on && on.querySelector('.schedboard')
     if (b) on.style.height = Math.max(420, Math.min(900, innerHeight - strip.offsetHeight - 10)) + 'px'
