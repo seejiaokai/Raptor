@@ -14,6 +14,7 @@ import { Fragment, useEffect, useLayoutEffect, useRef, useState, type KeyboardEv
 import { bringRowOnScreen, rowOnScreen } from './onscreen'
 import { INPUTS, inputLines, inputsListed, inpLabel, inpKindTag, isLateInput, lateNote, isSansAvail, sansLetters, baseYear, dateOrd, nowStamp, idsOf, facesOf, remarksShown, typeMatches, typeFilterLabel, typeGroup } from '../engine/inputs'
 import { OilConfirm } from './OilConfirm'
+import { useGuardWork } from './guard'
 import { PEOPLE } from '../engine/people'
 import { hhmm } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
@@ -279,6 +280,8 @@ export function InputsPage() {
      (The upchit's summary, the medical clash and the document question were the add form's and the pencil's; both are
      gone — D718, D729 — and an input opened or added from here asks them through its window's own sheets.) */
   const [oilConf, setOilConf] = useState<any>(null)
+  /* …a question of its own, with no Input window under it: the guard counts it while it is up (ui/guard.ts, §3.2 (e)) */
+  useGuardWork('oilrevise', !!oilConf)
   const [pinned, setPinned] = useState<string[]>([])
   const [flash, setFlash] = useState<string[]>([])
   const isLit = (r: any) => flash.indexOf(String(r.iid)) >= 0

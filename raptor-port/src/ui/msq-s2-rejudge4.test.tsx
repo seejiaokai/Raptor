@@ -459,16 +459,18 @@ const usedOf = (fn: string): string[] => {
 /* WHAT AN EDITOR MAY USE BESIDE THE COPY. Types; React's state; the judging (useJudgedOnDraw, askAgain); the doors it
    writes through and the checks it asks at a press; the parts it draws with; fixed words and limits; and, in the whole
    row, what of the row is the SIGNED-IN admin's to change (rowLocks, actorIsMaster — his rights, read afresh on every
-   draw and judged again by the doors; never a fact of the man). */
+   draw and judged again by the doors; never a fact of the man); and the row's report to the leave-guard that typed
+   work is open (useGuardWork — the core's, brought in with the batch branch: it is handed one yes or no worked out from
+   what is typed and the copy, and reads nothing; typedDiffers works that yes or no out, from those two alone). */
 const WHOLE_MAY_USE = [
   'OpenedOn', 'Shown', 'Typed', 'useState', 'useJudgedOnDraw', 'askAgain', 'rowLocks', 'actorIsMaster', 'accessWant',
   'saveAccess', 'updateAccount', 'addAccount', 'archivePerson', 'deletePerson', 'markBack', 'done', 'notify',
-  'RoleBox', 'SquadronLines', 'RolesFold', 'MAX_SIGNIN', 'DELETE_GOES',
+  'RoleBox', 'SquadronLines', 'RolesFold', 'MAX_SIGNIN', 'DELETE_GOES', 'useGuardWork', 'typedDiffers',
 ].sort()
 const ARCH_MAY_USE = [
   'OpenedOn', 'Shown', 'useState', 'useJudgedOnDraw', 'askAgain',
   'restoreArchivedAs', 'restoreArchivedPerson', 'restoreProblem', 'callsignProblem', 'updatePersonField', 'deletePerson',
-  'done', 'notify', 'HOOKS', 'PostInField', 'CALLSIGN_LABEL', 'DELETE_GOES',
+  'done', 'notify', 'HOOKS', 'PostInField', 'CALLSIGN_LABEL', 'DELETE_GOES', 'useGuardWork',
 ].sort()
 
 describe('§20 — a field left out of the copy is caught', () => {

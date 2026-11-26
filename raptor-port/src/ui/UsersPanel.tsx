@@ -58,6 +58,7 @@ import {
 } from '../leavewar/sync'
 import './postout.css'
 import { DateBox } from './DateBox'
+import { useGuardWork } from './guard'
 
 const P = (pid: string): any => (PEOPLE as any)[pid]
 const cs = (pid: string) => (P(pid) ? String(P(pid).cs) : '')
@@ -191,6 +192,9 @@ function startApprove(r: AccessRequest): Approving {
 
 function Waiting() {
   const [open, setOpen] = useState<Approving | null>(null)
+  /* how "Give access" opened — the guard counts it once anything differs (ui/guard.ts, D2598) */
+  const [opened, setOpened] = useState<Approving | null>(null)
+  useGuardWork('giveaccess', !!open && JSON.stringify(open) !== JSON.stringify(opened))
   /* the page's squadron's requests only, those he is an admin of (§5 — accounts.ts waitingHere) */
   const reqs = waitingHere()
   if (!reqs.length) return <p className="adm-note" id="admNoWaiting">Nobody is waiting for access.</p>
@@ -209,7 +213,7 @@ function Waiting() {
             {!a
               ? <div className="acc-acts">
                   {/* D309 / D310: "Give access · Refuse" (were Approve · Decline) */}
-                  <button className="abtn primary" data-approve={r.id} onClick={() => setOpen(startApprove(r))}>Give access</button>
+                  <button className="abtn primary" data-approve={r.id} onClick={() => { const s = startApprove(r); setOpen(s); setOpened(s) }}>Give access</button>
                   <button className="abtn" data-decline={r.id} onClick={() => done(declineRequest(r.id), `Refused ${r.name}`)}>Refuse</button>
                 </div>
               : <div className="acc-edit" data-approving={r.id}>
@@ -603,6 +607,12 @@ function PersonRow(p: {
    added to the copy (msq-s2-rejudge4.test.tsx §20 lists what it may use, and fails on anything else).
    WHAT IS TYPED OR PICKED — the sign-in box, the Role box, the lines — is the admin's, held by the page with the open row
    (`typed`, started from the copy at each fresh opening), so the list regrouping under it never drops it. */
+/* HAS THE ADMIN TYPED OR PICKED ANYTHING IN THE WHOLE ROW — the sign-in, the Role, a squadron's line: what is typed (the
+   page's) against the copy the row opened on, never a second read of the man. The row's report to the leave-guard
+   (useGuardWork('userrow'), below); a plain function of its own so the editor's own branching stays small (React
+   Doctor no-high-complexity-react-function, pull request 826). */
+const typedDiffers = (t: Typed, s: Shown): boolean =>
+  t.name !== s.name || t.role !== s.role || JSON.stringify(t.lines) !== JSON.stringify(s.lines)
 function PersonEditor(p: {
   pid: string; on: OpenedOn; s: Shown; typed: Typed; onTyped: (t: Typed) => void; onClose: () => void; onStale: () => void
 }) {
@@ -617,6 +627,8 @@ function PersonEditor(p: {
   /* the delete's first tap arms it; Cancel, closing the editor or another row disarms it (the editor unmounts — a
      regrouping disarms it too: a delete is never left armed across a redraw of the list) */
   const [armDel, setArmDel] = useState(false)
+  /* his row counts for the guard once anything differs from how it opened (D2595, D2598; ui/guard.ts — typedDiffers) */
+  useGuardWork('userrow', typedDiffers(typed, s))
   const save = () => {
     if (!s.acct || !stillHis()) return
     /* the role, the mark, every squadron's line AND his sign-in in ONE command (accounts.ts saveAccess — one Undo step;
@@ -746,6 +758,9 @@ function ArchivedEditor(p: {
   const [postIn, setPostIn] = useState(s.postIn)
   const [err, setErr] = useState('')
   const [armDel, setArmDel] = useState(false)
+  /* counted for the guard once the callsign or the post-in date differs from how the row opened (D2598; ui/guard.ts) —
+     against the copy (after its own Save name, the fresh one) */
+  useGuardWork('archrow', box !== s.box || postIn !== s.postIn)
   const want = box.trim()
   const renamed = want !== callsign
   const restore = () => {
@@ -994,7 +1009,10 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
   const [name, setName] = useState('')
   const [np, setNp] = useState<NewPerson>(BLANK)
   const [role, setRole] = useState<AccountRole>('main')
-  const [postIn, setPostIn] = useState(effectiveToday)
+  /* the date the form last opened fresh on (its first draw, then each resetAddForm) — what its report compares with, so
+     an untouched form left open past midnight never reads as changed (K2b) */
+  const [postIn0, setPostIn0] = useState(effectiveToday)
+  const [postIn, setPostIn] = useState(postIn0)
   /* (Add a person's Home squadron box is gone — his D2729 Q1, 26 Nov 26: a new man always joins the squadron in view, for
      every admin on every page; ui/usersfilter-model.ts addHomeChoices stays there, the Admin → Users section's to keep
      or remove) */
@@ -1035,7 +1053,12 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
   const ringPid = useRingLanding(p.ring, setFind, setArchOpen, editing, closeRow)
 
   const hasName = !!name.trim()
-  const resetAddForm = () => { setName(''); setNp(BLANK); setRole('main'); setPostIn(effectiveToday()) }
+  const resetAddForm = () => { const t = effectiveToday(); setName(''); setNp(BLANK); setRole('main'); setPostIn0(t); setPostIn(t) }
+  /* THE FORM'S REPORT TO THE GUARD (D2598, §18.3; ui/guard.ts's `addperson` row): counted while the form is open and
+     anything in it differs from how a fresh form opens — each value the one resetAddForm and the first draw set, the
+     post-in date the one it last opened fresh on (never today's, which moves at midnight under an untouched form).
+     Folded counts nothing: only Cancel and Escape fold it, and both empty it first. */
+  useGuardWork('addperson', adding && (name !== '' || JSON.stringify(np) !== JSON.stringify(BLANK) || role !== 'main' || postIn !== postIn0))
   const add = () => {
     const nm = name.trim().toLowerCase()
     const who = np.cs.trim()

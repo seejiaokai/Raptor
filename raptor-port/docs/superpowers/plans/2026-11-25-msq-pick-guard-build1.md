@@ -3432,6 +3432,38 @@ on the one questions page). Where this block and the two above differ, this bloc
   (`OUTSTANDING.md`), its tests the three of the Q9 row above. **K4a is struck from the table's order; nothing of
   `storage/postman.ts` changes in this build**, and B20 proves the door's wait ends with the stores the app ships.
 
+**Part A built (K1a, K1b, K1c, K2b — chats 198 and 204, 26 Nov 26), and what it found. Where this block and an older
+line of §3 differ, this block wins; the builders' reports are `../briefs/2026-11-26-msq-s1-k1{a,b,c}-report.md` and
+`…-k2b-report.md`.**
+- **§3.2 (g) named the wrong state for "an event's details".** `infoId` is "✎ Edit details" — an editor with five
+  boxes, Save and Cancel — so it **refuses** (D2403: a window with a box to type in stays refused). What his D2597
+  names, "the ⓘ bubble", is `#detailBubble`: the table's `bubble`, the row `trkinfo`, which closes by itself. The
+  marking window is `trkpop`, Down days `trkdown`, Failures `trkfail` — one closing row a state, each citing its
+  ruling in R8. The two lull pop-ups hold a choice not yet saved and refuse; Show All refuses.
+- **§3.5's A7 as written cannot be reached for the Leave War.** A Plan lowered while he is on that squadron takes
+  him home (K0), where the Leave War is offered, so a window left behind another tab still refuses there; and a
+  Leave War window open at a pick of a squadron he only views keeps the page on the Leave War (the held-window road
+  of D2323) — pinned, re-pointed in K4. The Tracker's half does reach "the squadron picked no longer offers it":
+  Show All left up, another tab, then a squadron he only views picked — still set, not counted.
+- **The Calendar's Holidays part unmounts under its Month tab below 1510 wide**, so a sheet's preview is dropped
+  there today — unchanged; §3.2 (a)'s "a preview left behind the other tab — still the row" cannot hold. For the
+  walk's scenarios.
+- **R3 holds a census of every frame per file** (`FRAMES`, `msq-guard-rollcall.test.ts`); the Tracker's frames are
+  R4's. A merge that adds a frame turns it red until this section adds the line (the coordinator's J3).
+- **Row ids as built** (the plan's older names in brackets): `lgedit` (`logicedit`), `qedit` (`qualsedit`),
+  `userrow`, `archrow`, `giveaccess`, `addperson`, `newsqn`, `sqnmove`, `placeedit`, `oilrevise`, `holimport`,
+  `qualsnew`, `lwsheet`, `lwshow`, `trk`, `trkask`, `trkinfo`, `trkpop`, `trkdown`, `trkfail`.
+- **Settled with Admin → Users (chat 205):** no pick counter in `store.ts enterSquadron` — K4's tests pin that a
+  changed row refuses a pick of a View-only squadron too; the road where another admin lowers his Plan while he has
+  a changed row open is not changed by Build 1 (a change he did not make never asks the guard — A14, A15; group B's
+  refresh card, D2636), Admin → Users raising its own passing note from `ui/UsersPanel.tsx` alone. Owed to it: the
+  short row's `unsaved` in the guard's count once U1 with its fix is in the batch branch (the roll-call's `TO_COME`).
+- **K3's words:** every lead and ending of §4.6 that he has ruled or seen on a drawing is built as final (the table
+  in `../briefs/2026-11-26-msq-s1-k3-brief.md` replaces §4.6's "Status" column). Four wordings he has not seen are
+  built with his plain words and put to him as questions 19–22, each drawn on the real app: a Tracker window behind
+  the Flow chart tab ("…on the Tracker’s Info tab"), a Squadrons row while Users shows ("…on Squadrons"), the
+  Tracker's question named a "window", and any row left on a page out of sight that has no ruled words.
+
 - **The files it changes.** New: `state/guard.ts`, `ui/guard.ts`, `ui/windrawn.ts`, `ui/guardnote.ts`,
   `state/inputsqn.ts`, the test files `src/ui/msq-guard-*.test.tsx`, `src/ui/msq-guard-rollcall.test.ts`,
   `e2e/msq-guard.spec.ts`. Changed: `test-support/msq-world.ts`; `state/store.ts`, `state/pick.ts`,
@@ -3577,6 +3609,28 @@ by a master admin's Squadron tick) is U3's — written into U3's row above. **Fi
 home gets the whole row) cannot arise in today's store: pinned as built and filed, `[MSQ-S2-NO-HOME-ROW]`, closed
 before the database step. **The three questions of "Still held" above are numbered 13, 14 and 15 on the one
 questions page** (chat 200 took 10–12): read "Question 10 / 11 / 12" above as 13 / 14 / 15.
+
+**His answers to questions 13, 14 and 15 (26 Nov 26 — "as recommended"; D2806, D2807, D2808): the three "Still held"
+items above are lifted.** (1) **D2806** — for an admin with Plan of 149 who is neither 149's own admin nor a master
+admin, "Admin" is greyed in the Role box, as "Master admin" is, with one grey line under it, "Only 149's own admins or
+a master admin can make an admin of 149." — on a man's row and in "+ Add a person", "Give access" and "Give sign-in";
+not greyed on a man already an admin of 149; the last-admin note reads for him "Kestrel is 149's last admin. Only
+149's own admins or a master admin can make another." (2) **D2807** — his Undo of his own "made a member" is refused
+with "Only 149's own admins or a master admin can make an admin of 149, so this can't be undone." (3) **D2808** — a
+Plan ended by an archive, an overseas posting, a delete or a master admin's making writes one bell line to that
+squadron's admins, in the four approved wordings; built with the bell section's lines. **So U2 is built WHOLE — Q8's
+clause, the doors, the gate, the row and the refused Undo together; there is no separate U2b** (read "U2b" above as
+U2). Every comment and test of these cites its number.
+
+**After U1's fourth round (chat 205, 26 Nov 26 — e1d116deb).** Three reads by four blind readers each found the rule
+sound and one more stale-row case; they were one fault, so the fourth round is ONE guard (D2404): a whole row and an
+archived man's row keep, from the press that opened them, a copy of everything they show and could write over, and
+whether the signed-in person is still an admin of the squadron the row opened on; the page, the editor and every
+action judge the store against the copy, and any difference closes the row with nothing written and the Q13 note,
+once. What the admin types is held by the page with the open row. The short row keeps its read-afresh design. This
+replaces "the page holds … the squadron it opened on and whether it opened whole or short" above as the whole of the
+rule; a later step that adds a field to either editor adds it to the copy (the test of
+`src/ui/msq-s2-rejudge4.test.tsx` §20 fails otherwise).
 
 ### 21.3 The bell, its colours and the Display page (§19.5–§19.8, §19.13)
 

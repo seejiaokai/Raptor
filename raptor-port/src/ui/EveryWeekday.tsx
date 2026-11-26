@@ -18,6 +18,7 @@ import { getFlyPlan, removeFlyRule, setFlyRule, type FlySave } from '../state/fl
 import { validIso, type FlyCls, type FlyRule } from '../state/flyplan-model'
 import { WD_LONG, sayDateY, sayDateYY } from './daysfmt'
 import { DateBox } from './DateBox'
+import { useGuardWork } from './guard'
 
 type Cls = 'day' | 'night' | 'nf'
 /* a rule is never "no flying set" from this form: a Saturday has none until he says otherwise, and a rule that said
@@ -46,8 +47,12 @@ export function EveryWeekday({ wd, from: from0, unit, onClose }: {
   const [ends, setEnds] = useState(false)
   const [until, setUntil] = useState('')
   const [err, setErr] = useState('')
+  /* SOMETHING IN IT PRESSED — a choice, a date — not as it opens with one choice lit: the guard counts the form then, and
+     the Calendar stays open for it (ui/guard.ts — his D2654 E1) */
+  const [pressed, setPressed] = useState(false)
+  useGuardWork('everywd', pressed)
   /* any change to the form takes the last complaint down — it was about what the form held then */
-  const edit = <T,>(set: (v: T) => void) => (v: T) => { setErr(''); set(v) }
+  const edit = <T,>(set: (v: T) => void) => (v: T) => { setErr(''); setPressed(true); set(v) }
 
   /* this weekday's rules, in date order (the plan keeps its rules sorted by start). Read at every paint: this window is
      drawn by Days, which repaints on the scheduler's signal — so the list follows a Remove, an Undo, a Save */

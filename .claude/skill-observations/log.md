@@ -1976,3 +1976,29 @@ sides.
 **Issue:** The orchestrator reviewed a builder's work by opening three new source files and two pictures with the Read tool. Each first read of a file in a new area loaded that area's whole rule page into the chat by itself (four pages, tens of thousands of tokens each), so the chat went from 43% to 74% full across one small step and one review, and had to hand off after landing a single pass. The same review done through `git diff` in the shell loads nothing.
 **Suggested improvement:** In an orchestrator's brief and in the skill: the orchestrator reviews by `git diff` and by running tests, and reads a builder's report file — it opens a source file or a picture with the file tool only when the diff cannot answer, knowing each new area costs its rule page. Builders, whose context is spent once and thrown away, do the reading of source. Measure the chat's fullness after the first review, not at 80%.
 **Principle:** Where reading a file has a side cost (rules, context or hooks that load with it), the long-lived coordinating context should take the cheapest view that answers its question, and leave the expensive reading to short-lived workers.
+
+### Observation 1089: Parallel chats each took the next free number of a shared counter and clashed
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** chat 202, the multi-squadron coordinator, taking over from chat 193
+**Skill:** New skill candidate: coordinating parallel section chats
+**Type:** open-source
+**Phase/Area:** shared counters across parallel chats (question numbers on one shared page, chat numbers)
+
+**Issue:** Two counters shared by many chats clashed on the same day. On the one questions page, one chat published its three questions as 10-12 while another was drawing its own three as 10-12 (each read "last used: 9"). And two chats both called themselves 202, each having read the next chat number from a different branch's notes.
+**Suggested improvement:** The coordinator hands out blocks of each shared counter in advance (e.g. question numbers 13-15 to one chat, 16-18 to the next), the same way ruling-number ranges are already handed out; a chat that needs a number outside its block asks the coordinator. For chat numbers, the next free number is kept in one place every chat reads (not per branch).
+**Principle:** Any counter that several parallel workers draw from by "read the highest, add one" will collide; give each worker a pre-assigned range, or one owner who issues numbers.
+
+### Observation 1091: A test that waits before it checks cannot tell a write made at once from one made a beat late
+
+**Status:** OPEN
+**Date:** 2026-11-26
+**Session context:** Chat 204, the multi-squadron guard rail (S1), step K1b — the orchestrator's review of a builder's tests. Numbered past 1090, which another open branch holds.
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** Seeing a test fail first; tests of ordering ("written before the next step runs")
+
+**Issue:** The rule under test was "a value still waiting is written BEFORE the mode ends", because the very next step changes which record a late write would land in. The builder's test called the closing function, awaited the page settling, then read the value. It passed with the new code taken out: the old code writes the same value on a zero-delay timer, and the wait let that timer run. The builder reported honestly that the test "could not fail first", but had no fix. The fix was one line: assert the value on the line right after the call, inside the same synchronous block, before any await or timer.
+**Suggested improvement:** In the skill's section on watching a test fail, add: when the requirement is about ORDER or about "at once", the assertion must sit before any await, timer flush or settle helper; a test that settles first proves only the end state. And: "this test cannot fail first" is a finding about the test, to be resolved by asking what observable differs between old and new code at the earliest moment, never accepted as a pin.
+**Principle:** To test that something happens before something else, observe it at the moment in between; an end-state check cannot fail for ordering.
