@@ -3432,6 +3432,38 @@ on the one questions page). Where this block and the two above differ, this bloc
   (`OUTSTANDING.md`), its tests the three of the Q9 row above. **K4a is struck from the table's order; nothing of
   `storage/postman.ts` changes in this build**, and B20 proves the door's wait ends with the stores the app ships.
 
+**Part A built (K1a, K1b, K1c, K2b — chats 198 and 204, 26 Nov 26), and what it found. Where this block and an older
+line of §3 differ, this block wins; the builders' reports are `../briefs/2026-11-26-msq-s1-k1{a,b,c}-report.md` and
+`…-k2b-report.md`.**
+- **§3.2 (g) named the wrong state for "an event's details".** `infoId` is "✎ Edit details" — an editor with five
+  boxes, Save and Cancel — so it **refuses** (D2403: a window with a box to type in stays refused). What his D2597
+  names, "the ⓘ bubble", is `#detailBubble`: the table's `bubble`, the row `trkinfo`, which closes by itself. The
+  marking window is `trkpop`, Down days `trkdown`, Failures `trkfail` — one closing row a state, each citing its
+  ruling in R8. The two lull pop-ups hold a choice not yet saved and refuse; Show All refuses.
+- **§3.5's A7 as written cannot be reached for the Leave War.** A Plan lowered while he is on that squadron takes
+  him home (K0), where the Leave War is offered, so a window left behind another tab still refuses there; and a
+  Leave War window open at a pick of a squadron he only views keeps the page on the Leave War (the held-window road
+  of D2323) — pinned, re-pointed in K4. The Tracker's half does reach "the squadron picked no longer offers it":
+  Show All left up, another tab, then a squadron he only views picked — still set, not counted.
+- **The Calendar's Holidays part unmounts under its Month tab below 1510 wide**, so a sheet's preview is dropped
+  there today — unchanged; §3.2 (a)'s "a preview left behind the other tab — still the row" cannot hold. For the
+  walk's scenarios.
+- **R3 holds a census of every frame per file** (`FRAMES`, `msq-guard-rollcall.test.ts`); the Tracker's frames are
+  R4's. A merge that adds a frame turns it red until this section adds the line (the coordinator's J3).
+- **Row ids as built** (the plan's older names in brackets): `lgedit` (`logicedit`), `qedit` (`qualsedit`),
+  `userrow`, `archrow`, `giveaccess`, `addperson`, `newsqn`, `sqnmove`, `placeedit`, `oilrevise`, `holimport`,
+  `qualsnew`, `lwsheet`, `lwshow`, `trk`, `trkask`, `trkinfo`, `trkpop`, `trkdown`, `trkfail`.
+- **Settled with Admin → Users (chat 205):** no pick counter in `store.ts enterSquadron` — K4's tests pin that a
+  changed row refuses a pick of a View-only squadron too; the road where another admin lowers his Plan while he has
+  a changed row open is not changed by Build 1 (a change he did not make never asks the guard — A14, A15; group B's
+  refresh card, D2636), Admin → Users raising its own passing note from `ui/UsersPanel.tsx` alone. Owed to it: the
+  short row's `unsaved` in the guard's count once U1 with its fix is in the batch branch (the roll-call's `TO_COME`).
+- **K3's words:** every lead and ending of §4.6 that he has ruled or seen on a drawing is built as final (the table
+  in `../briefs/2026-11-26-msq-s1-k3-brief.md` replaces §4.6's "Status" column). Four wordings he has not seen are
+  built with his plain words and put to him as questions 19–22, each drawn on the real app: a Tracker window behind
+  the Flow chart tab ("…on the Tracker’s Info tab"), a Squadrons row while Users shows ("…on Squadrons"), the
+  Tracker's question named a "window", and any row left on a page out of sight that has no ruled words.
+
 - **The files it changes.** New: `state/guard.ts`, `ui/guard.ts`, `ui/windrawn.ts`, `ui/guardnote.ts`,
   `state/inputsqn.ts`, the test files `src/ui/msq-guard-*.test.tsx`, `src/ui/msq-guard-rollcall.test.ts`,
   `e2e/msq-guard.spec.ts`. Changed: `test-support/msq-world.ts`; `state/store.ts`, `state/pick.ts`,
