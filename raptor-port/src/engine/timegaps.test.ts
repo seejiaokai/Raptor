@@ -135,10 +135,21 @@ describe('a ground programme row', () => {
     INPUTS.push({ iid: 'tg-2', person: 'dj', date: 'Jul 13', allday: false, s: 540, e: 600, type: 'Training', remarks: '' })
     expect(G(ground({ who: 'dj', str: '09:00', end: '', src: 'tg-2' })).items).toBe(1)
   })
-  it('a row an input left behind (kept) is a typed row', () => {
+  /* a row the input left behind (`kept` — a version load or a plan switch brought it back after the input moved off the
+     day): no ruling says it stops being the All-day input's row, so it keeps today's behaviour, never refused (his D2611;
+     the two Opus code reads' F1) — the plan's question R9 */
+  it('a kept row whose input still has All day ticked: left out, as today (R9 open)', () => {
     INPUTS.push({ iid: 'tg-3', person: 'dj', date: 'Jul 13', allday: true, type: 'Training', remarks: '' })
-    expect(G(ground({ who: 'dj', str: '', end: '', src: 'tg-3', kept: true })).items).toBe(1)
+    expect(G(ground({ who: 'dj', str: '', end: '', src: 'tg-3', kept: true })).items).toBe(0)
   })
+  it('a kept row whose input is gone: left out, as today (R9 open — whether it was All day cannot be read)', () => {
+    expect(G(ground({ who: 'dj', str: '', end: '', src: 'tg-gone', kept: true })).items).toBe(0)
+  })
+  it('a kept row of a timed input, its END empty: counted, as any timed input row', () => {
+    INPUTS.push({ iid: 'tg-4', person: 'dj', date: 'Jul 13', allday: false, s: 540, e: 600, type: 'Training', remarks: '' })
+    expect(G(ground({ who: 'dj', str: '09:00', end: '', src: 'tg-4', kept: true })).items).toBe(1)
+  })
+  it.todo('a kept All-day row — counted as the scheduler\'s typed row, or left out? waits on his answer R9 (today: never refused)')
   it('an information-only row: left out; the mark taken off: counted', () => {
     const d: any = ground({ who: 'dj', str: '09:00', end: '', info: true })
     expect(G(d).items).toBe(0)

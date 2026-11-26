@@ -114,6 +114,15 @@ behaviour for the case and a skipped test names the question.
 - **R8 — words in a sim's people cell** (the demo's "EXT SQN" OFT row: a label, not a person; it shows only when the
   row has no crew, and a scheduler cannot type it). Today: nothing stops publishing. Recommended: counted — anything in
   the people cell is someone. (A row with a start typed is counted anyway, by the start rule.)
+- **R9 — a kept All-day row** (added by the overnight fixer, 27 Nov 26, from the two Opus code reads' F1). A member files
+  an All day Training for Tuesday; it lands on Tuesday's Ground Programme with his name and no times, and Tuesday is
+  published. He then moves the Training to Thursday (or deletes it). The scheduler loads Tuesday's published version back
+  onto the working copy, or switches to a saved plan that still holds the row: the row comes back "kept" — left behind
+  by an input that no longer stands on Tuesday. Is it still the All-day input's row (left out), or now the scheduler's own
+  typed row, so both its boxes count as missing and every sign-off and Publish is refused until made-up hours are typed?
+  Today: never refused — the build keeps that (left out while its input is All day, or gone and so unreadable). Recommended:
+  left out — the row still stands for an all-day activity; a scheduler who wants hours on it types them, and one who does
+  not want it deletes it.
 - **Q-W1 — the count line with one item:** "1 item missing a time · 4 to sign" (Fable's build note, the coordinator's
   brief). Recommended: as written. Built tonight only if the screens are reached.
 - **Q-W2 — one item on Publish:** "Blocked: 1 item is missing a time, outlined in red. Thursday was not published." and

@@ -43,9 +43,12 @@ const anyIn = (xs: any) => Array.isArray(xs) && xs.some(has)
 /* the AMT block's own header rows, by the engine's label test (events.ts — Q16) */
 const isBrief = (r: any) => /^\s*BRIEF/i.test(String((r && r.label) || ''))
 const isDebrief = (r: any) => /DEBRIEF/i.test(String((r && r.label) || ''))
-/* a ground or programme row standing for an input with All day ticked (D2852); a row the input left behind (`kept`) is
-   the scheduler's own typed row. inputOnAny reads the copy a frozen version holds while one is drawn. */
-const fromAllDayInput = (r: any) => { if (!r || !r.src || r.kept) return false; const inp = inputOnAny(r.src); return !!(inp && inp.allday) }
+/* a ground or programme row standing for an input with All day ticked (D2852). A row the input left behind (`kept`, a
+   version load or a plan switch bringing it back after the input moved off the day) is read by its input as any row is;
+   where the input is gone, whether it was All day cannot be read, so a kept row keeps today's behaviour, never refused —
+   the plan's question R9 (his D2611; the two Opus code reads' F1). inputOnAny reads the copy a frozen version holds while
+   one is drawn. */
+const fromAllDayInput = (r: any) => { if (!r || !r.src) return false; const inp = inputOnAny(r.src); return inp ? !!inp.allday : !!r.kept }
 
 export function dayTimeGaps(d: any, di: number): TimeGaps {
   const out: TimeGaps = { items: 0, boxes: [] }
