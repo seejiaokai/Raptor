@@ -51,20 +51,24 @@ function block(doc, title, lines, cs, extra, foldTitle, fold, open) {
 async function windowShot(pid, name, open) {
   await openBalances()
   await press(w, T(`bal-name-${pid}`)); await P.waitForSelector(T('person-window'), { state: 'visible', timeout: 8000 }); await P.waitForTimeout(500)
-  await P.evaluate(({ title, lines, block, foldTitle, fold, open }) => {
+  await P.evaluate(({ title, lines, block, foldTitle, fold, open, dateLine, rename }) => {
     const mk = new Function('return ' + block)()
     const pw = document.querySelector('[data-testid="person-window"]')
     const tile = pw.querySelector('[data-testid="pw-tile-LVE"]')
     const cs = getComputedStyle(pw.querySelector('[data-testid="pw-LVE-cf"]').parentElement)
+    /* W.dateLine: the line naming where the typed figure came from, in the carried-forward line's grey, before the words */
+    if (dateLine) { const dl = document.createElement('div'); dl.textContent = dateLine; dl.style.cssText = `font-size:${cs.fontSize};color:${cs.color};font-family:${cs.fontFamily};margin-top:4px;grid-column:1/-1`; tile.appendChild(dl) }
     tile.appendChild(mk(document, title, lines, cs, 'margin-top:6px;grid-column:1/-1;white-space:normal', foldTitle, fold, open))
-  }, { title: W.pwTitle || '', lines: W.pw, block: block.toString(), foldTitle: W.pwFoldTitle || '', fold: W.pwFold || [], open: !!open })
+    /* W.rename: the label "App bal" drawn as "Official bal" (D2810) */
+    if (rename) for (const n of pw.querySelectorAll('*')) if (n.childElementCount === 0 && n.textContent.trim() === 'App bal') n.textContent = 'Official bal'
+  }, { title: W.pwTitle || '', lines: W.pw, block: block.toString(), foldTitle: W.pwFoldTitle || '', fold: W.pwFold || [], open: !!open, dateLine: W.dateLine || '', rename: !!W.rename })
   await P.waitForTimeout(200)
   await P.locator(T('person-window')).screenshot({ path: `${L.OUT}/${name}.png` })
   await P.keyboard.press('Escape'); await P.waitForTimeout(400)
 }
 async function pageShot(name) {
   await openBalances()
-  await P.evaluate(({ title, lines, block }) => {
+  await P.evaluate(({ title, lines, block, rename }) => {
     const mk = new Function('return ' + block)()
     const page = document.querySelector('[data-testid="balances-page"]')
     const scroll = page.querySelector('[data-testid="bal-scroll"]')
@@ -72,7 +76,9 @@ async function pageShot(name) {
     const cs = getComputedStyle(ref)
     const d = mk(document, title, lines, { fontSize: '13px', color: '#9aa4b2', fontFamily: cs.fontFamily }, 'margin:8px 16px 8px')
     if (scroll) scroll.insertAdjacentElement('beforebegin', d); else page.prepend(d)
-  }, { title: W.balTitle || '', lines: W.bal, block: block.toString() })
+    /* on a phone the column is too narrow for one line: two, as PENDING / APPROVAL beside it */
+    if (rename) for (const n of page.querySelectorAll('*')) if (n.childElementCount === 0 && n.textContent.trim() === 'APP BAL') { if (innerWidth < 700) n.innerHTML = 'OFFICIAL<br>BAL'; else n.textContent = 'OFFICIAL BAL' }
+  }, { title: W.balTitle || '', lines: W.bal, block: block.toString(), rename: !!W.rename })
   await P.waitForTimeout(300)
   await shot(w, name)
 }
