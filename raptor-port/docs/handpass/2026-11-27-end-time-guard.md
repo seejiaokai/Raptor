@@ -366,6 +366,36 @@ that strip lands on nothing after the redraw. The phone is not touched by it (it
 **Lock:** taken 07:03:41, released 07:11:06 (27 Nov 26, this PC's clock); one build of `c746c456f`, served on 4253,
 stopped.
 
+## The third fix (27 Nov 26, morning) — N4
+
+A fresh Opus fixer. D = Chromium 1536 (mouse), P = WebKit 402 with touch, as before; served on `127.0.0.1:4254`.
+Script: the scratchpad's `walk/RW/FIX3/fix3.mjs` (the second re-walk's `ct4.mjs`, extended: ten gaps emptied through
+the boxes themselves, and a press dragged off the line); the second re-walk's `ct3.mjs` re-run for N2 and N3, its
+pictures prefixed `FIX3-`.
+
+- **Reproduced first.** A unit test (the line's place stubbed, as the setup has no layout) failed: the time saved, the
+  caret nowhere. Then in Chromium on a build of the hand-on as it stood: "2 items" → "1 item", a click 2px in from the
+  words' left end → the time saved, nothing focused (the words' left end 804.7 → 808.9); and "10 items" → "9 items" the
+  same (799.3 → 804.7, a 5.4px strip). Pictures `FIX3-before-D-{2,10}-left-*`.
+- **Fix,** `src/ui/textedit.ts`, the press hand-on to a redrawn button: when the lift lands on no button at all, a press
+  that began on the count line goes to the same day's redrawn line — found by its day, not by the point — so long as
+  the lift is still inside the line's box as the press began and the new line stands on that place. A press dragged
+  off the line still goes nowhere; a lift over another button is left alone, as before. Nothing in the look changed.
+- **Checked after,** one build: D 2→1 left and far right, D 10→9 left and far right, P 2→1 left and far right, P 10→9
+  left — each one press: the time saved, the line one fewer, the caret in the next empty box. D, a press at the left end
+  dragged 120px off before the lift: the time saved, nothing pressed. Pictures `FIX3-after-{D,P}-*` (the line with a
+  yellow dot where the press lands, drawn only for the picture; then the screen after). N2 and N3 again, D and P: tap →
+  Common Programme END, → desk END, desk typed, → OFT END, → ground END, → round to Common Programme END; typing and one
+  tap in the middle / far right → saved and on; the last box → "4 to sign", nothing focused
+  (`FIX3-RW2-N2-*`, `FIX3-RW2-N3-*`). Errors: none in any run.
+- **Tests:** `ui/timeguard-screens.test.tsx`, "the line pressed at its left end while typing, the words shorter after
+  the save (N4)" — the lift where the press began (failed before the fix) and the press dragged off (nothing pressed).
+  With the two source-scanning tests and the twelve screen-test files that press near text boxes: 15 files, 326
+  passed, 3 todo. `npm run build` passed twice.
+
+**Lock:** taken 07:40:41, released 07:45:46 (27 Nov 26, this PC's clock); two builds (the hand-on as it stood, then
+fixed), served on 4254, stopped.
+
 ## Observations — not faults of this change, or his to judge
 
 - **O1** The refusal note (like every note in the app — the control showed an ordinary plan note doing the same) stays
@@ -434,4 +464,6 @@ Walk (first walk): docs/handpass/2026-11-27-end-time-guard.md · 1269 pictures �
 
 Walk (after the re-walk): docs/handpass/2026-11-27-end-time-guard.md · 1664 pictures (388 the re-walk's) · 40 surfaces · 82 orders + 44 re-walked · MISSING: 1 fixed (the count-line tap, built and walked) / 0 ruled / 0 to file · open: N1, N2, N3 (the re-walk)
 
-Walk: docs/handpass/2026-11-27-end-time-guard.md · 1749 pictures (388 the re-walk's, 85 the second re-walk's) · 40 surfaces · 82 orders + 44 re-walked + 13 re-walked again · MISSING: 1 fixed (the count-line tap, built and walked) / 0 ruled / 0 to file · N1, N2, N3 pass · open: N4 (a desktop click on the count's number while typing, the second re-walk)
+Walk (after the second re-walk): docs/handpass/2026-11-27-end-time-guard.md · 1749 pictures (388 the re-walk's, 85 the second re-walk's) · 40 surfaces · 82 orders + 44 re-walked + 13 re-walked again · MISSING: 1 fixed (the count-line tap, built and walked) / 0 ruled / 0 to file · N1, N2, N3 pass · open: N4 (a desktop click on the count's number while typing, the second re-walk)
+
+Walk: docs/handpass/2026-11-27-end-time-guard.md · 1785 pictures (388 the re-walk's, 85 the second re-walk's, 36 the third fix's) · 40 surfaces · 82 orders + 44 re-walked + 13 re-walked again · MISSING: 1 fixed (the count-line tap, built and walked) / 0 ruled / 0 to file · N1, N2, N3 pass · N4 fixed and checked by its fixer (not yet re-walked by a fresh walker)

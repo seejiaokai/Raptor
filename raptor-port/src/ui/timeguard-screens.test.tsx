@@ -225,6 +225,51 @@ describe('Edit Schedule\'s sign-off line (D2854)', () => {
       expect(document.activeElement && document.activeElement.getAttribute('data-txt'), 'the caret on in the next empty box').toBe(other)
     } finally { document.elementFromPoint = efp }
   })
+  /* THE WORDS GET SHORTER UNDER THE POINTER (the second re-walk's N4): on the desktop the line's words sit right-aligned, so
+     "2 items…" → "1 item…" moves the line's left end about 4px right; a press at its left end lifts over nothing once it is
+     drawn again. The press goes to the same day's line all the same, so long as the lift is on the place pressed (the
+     line's box when the press began) and the new line stands there; a press dragged off goes nowhere. */
+  describe('the line pressed at its left end while typing, the words shorter after the save (N4)', () => {
+    const OLD = { left: 805, right: 951, top: 400, bottom: 414 }, NEW = { left: 809, right: 951, top: 400, bottom: 414 }
+    const rect = (r: typeof OLD) => ({ ...r, x: r.left, y: r.top, width: r.right - r.left, height: r.bottom - r.top, toJSON() {} }) as DOMRect
+    const run = async (liftX: number, liftY: number) => {
+      await edit('ap:3.1.end', ''); await edit('dr:3.0.1.end', '')
+      await click(weekLine(THU))
+      const box = document.activeElement as HTMLElement, first = box.getAttribute('data-txt')
+      const other = first === 'ap:3.1.end' ? 'dr:3.0.1.end' : 'ap:3.1.end'
+      const old = weekLine(THU), efp = document.elementFromPoint, gbcr = Element.prototype.getBoundingClientRect
+      Element.prototype.getBoundingClientRect = function (this: Element) {
+        return this.hasAttribute('data-tgnext') ? rect(this === old ? OLD : NEW) : gbcr.call(this)
+      }
+      const ptr = (type: string, el: Element, x: number, y: number) => { const ev = new MouseEvent(type, { bubbles: true, cancelable: true, clientX: x, clientY: y }); Object.defineProperty(ev, 'pointerType', { value: 'mouse' }); el.dispatchEvent(ev) }
+      try {
+        await act(async () => {
+          box.textContent = '1700'
+          ptr('pointerdown', old, 806, 407)
+          box.blur()
+          await new Promise(r => setTimeout(r, 0))
+        })
+        expect(weekLine(THU).textContent, 'the time saved').toBe('1 item missing a time · 4 to sign')
+        expect(old.isConnected, 'the save drew a new line').toBe(false)
+        const under = weekLine(THU).parentElement as HTMLElement
+        document.elementFromPoint = (() => under) as any          // the lift lands beside the shorter line, on its row
+        await act(async () => {
+          ptr('pointerup', under, liftX, liftY)
+          under.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+          await new Promise(r => setTimeout(r, 20))
+        })
+        return { at: document.activeElement && document.activeElement.getAttribute('data-txt'), other }
+      } finally { document.elementFromPoint = efp; Element.prototype.getBoundingClientRect = gbcr }
+    }
+    it('the lift where the press began: the time saves and the caret goes on to the next empty box', async () => {
+      const r = await run(806, 407)
+      expect(r.at, 'the caret on in the next empty box').toBe(r.other)
+    })
+    it('the press dragged off the line before the lift: nothing is pressed', async () => {
+      const r = await run(700, 407)
+      expect(r.at, 'no box takes the caret').toBe(null)
+    })
+  })
   it('the board\'s line stays words — its tap waits on his answer Q19', async () => {
     await edit('dr:3.0.0.end', '')
     await act(async () => { openScheduler(THU) })

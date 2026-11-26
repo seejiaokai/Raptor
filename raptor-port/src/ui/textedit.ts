@@ -120,16 +120,30 @@ if (typeof document !== 'undefined') {
    chance to click — at once after a mouse, a little later after a finger, whose focus moves only after the lift — a
    press whose button was replaced and whose click reached no copy of it gives the click to the replacement under the
    lift: the same button, drawn again. A press the browser clicked, or a button never replaced, is left alone. */
-let PRESSED: { el: HTMLElement, html: string, done: boolean } | null = null
+type Press = { el: HTMLElement, html: string, done: boolean, at: DOMRect | null }
+let PRESSED: Press | null = null
 const buttonOf = (t: any): HTMLElement | null => (t && t.closest ? t.closest('button') as HTMLElement | null : null)
 /* Edit Schedule's count line ([END-TIME-GUARD], the re-walk's N3) is the one such button whose words the save itself
    changes ("2 items missing a time" → "1 item…"): drawn again for the same day, it is the same button. */
 const sameButton = (b: HTMLElement, p: { el: HTMLElement, html: string }) => b === p.el || b.outerHTML === p.html
   || (p.el.hasAttribute('data-tgnext') && b.getAttribute('data-tgnext') === p.el.getAttribute('data-tgnext'))
+/* ...and, its words right-aligned on the desktop, the shorter line's left end moves right (about 4px for "2 items" →
+   "1 item"; the second re-walk's N4), so a press at that end lifts over no button. The line is then found by its day
+   instead of by the point — only when the lift is still inside the place pressed (the line's box as the press began; a
+   press dragged off goes nowhere) and the new line stands on that place (not a copy drawn elsewhere on the page). */
+const inBox = (r: DOMRect, x: number, y: number) => x >= r.left && x <= r.right && y >= r.top && y <= r.bottom
+const overlap = (a: DOMRect, b: DOMRect) => a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom
+const lineAgain = (p: Press, x: number, y: number): HTMLElement | null => {
+  const at = p.at; if (!at || !inBox(at, x, y)) return null
+  const day = p.el.getAttribute('data-tgnext')
+  return [...document.querySelectorAll<HTMLElement>('button[data-tgnext]')]
+    .find(b => b.getAttribute('data-tgnext') === day && overlap(b.getBoundingClientRect(), at)) || null
+}
 if (typeof document !== 'undefined') {
   document.addEventListener('pointerdown', e => {
     const b = buttonOf(e.target)
-    PRESSED = b && textBoxOf(document.activeElement) ? { el: b, html: b.outerHTML, done: false } : null
+    PRESSED = b && textBoxOf(document.activeElement)
+      ? { el: b, html: b.outerHTML, done: false, at: b.hasAttribute('data-tgnext') ? b.getBoundingClientRect() : null } : null
   }, true)
   document.addEventListener('pointercancel', () => { PRESSED = null }, true)
   document.addEventListener('click', e => { const b = buttonOf(e.target); if (PRESSED && b && sameButton(b, PRESSED)) PRESSED.done = true }, true)
@@ -141,7 +155,8 @@ if (typeof document !== 'undefined') {
       PRESSED = null
       if (p.done || p.el.isConnected) return
       const now = buttonOf(document.elementFromPoint(x, y))
-      if (now && sameButton(now, p)) now.click()
+      const to = now ? (sameButton(now, p) ? now : null) : lineAgain(p, x, y)
+      if (to) to.click()
     }, e.pointerType === 'mouse' ? 0 : 400)
   }, true)
 }
