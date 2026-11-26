@@ -396,6 +396,48 @@ pictures prefixed `FIX3-`.
 **Lock:** taken 07:40:41, released 07:45:46 (27 Nov 26, this PC's clock); two builds (the hand-on as it stood, then
 fixed), served on 4254, stopped.
 
+## The independent check of the third fix (27 Nov 26, morning) — N4
+
+A fresh Opus walker that wrote and fixed nothing here, on ONE production build of `b0b334e4c` served at
+`127.0.0.1:4256`, under the checks lock. Its scripts were written from the second re-walk's (`ct4.mjs`, `pu.mjs`) before
+it read the fixer's section above, and it opened none of the fixer's scripts. D = desktop 1536 Chromium (mouse); P =
+iPhone 402 WebKit, touch. Every run a new browser and context (empty storage, the fresh demo address); every empty END
+made through the box itself (click, select all, delete, Tab); the caret put in the first box by a press on the line (or
+by a click on the box, where marked). Each press: a picture of the line with a yellow dot where it lands (drawn only for
+the picture, removed before the press), the whole screen before, the whole screen after with the caret's box ringed in
+dashed magenta (drawn only for the picture), and the line after. Pictures `RW3-…` (60). Scripts and outputs: the
+scratchpad's `walk/RW/RW3/` (`tap.mjs`, `drag.mjs`, `pu3.mjs`, `out-*.txt`).
+
+**Counts: 14 PASS · 0 FAIL** (14 lines below).
+
+| # | Case | Result | What the screen showed | Pictures |
+|---|---|---|---|---|
+| 1 | D, 2 → 1, typing 10:30 in the OFT END, one click 2px in from the words' left end (on the red "2"), a quick click | PASS | Saved 10:30, "1 item missing a time · 4 to sign" (the words' left end 804.7 → 808.9, so the click point was outside the shorter words), the caret in the ground END, its box at 423–440 of 864 — centred | `RW3-c1a-D-left-n2-1-before-line-dot.png`, `RW3-c1a-D-left-n2-2-after-viewport-caret-ringed.png`, `RW3-c1a-D-left-n2-3-after-line.png` |
+| 2 | The same from a second fresh world, the button held 120ms as a hand does | PASS | The same | `RW3-c1b-D-left-n2-{1-before-line-dot,2-after-viewport-caret-ringed,3-after-line}.png` |
+| 3 | The same from a third fresh world, the caret put in by clicking the box itself | PASS | The same | `RW3-c1c-D-left-n2-*` |
+| 4 | D, 2 → 1, the click 2px in from the far right | PASS | Saved, "1 item…", the caret in the ground END, centred | `RW3-c2r-D-right-n2-*` |
+| 5 | D, 2 → 1, the click at the words' middle, held 120ms | PASS | The same | `RW3-c2m-D-mid-n2-*` |
+| 6 | D, ten ENDs emptied (Common Programme ×2, desk ×6, AMT, OFT) → "10 items missing a time"; typing in the first, one click 2px in from the left end | PASS | Saved, "9 items missing a time" (left end 799.3 → 804.7, a 5.4px strip, the click at 801.3), the caret in the next Common Programme END, centred | `RW3-c3-D-left-n10-1-before-line-dot.png`, `RW3-c3-D-left-n10-2-after-viewport-caret-ringed.png`, `RW3-c3-D-left-n10-3-after-line.png` |
+| 7 | The same, a fresh world, the box clicked into, the button held 150ms | PASS | The same | `RW3-c3b-D-left-n10-*` |
+| 8 | P, 2 → 1, one tap 2px in from the left end | PASS | Saved, "1 item…", the caret in the ground END at 429–444 of 874 — centred | `RW3-c4l-P-left-n2-*` |
+| 9 | P, 2 → 1, one tap 2px in from the far right ("4 to sign"'s end) | PASS | Saved, "1 item…" (the line's right end 168.9 → 163.6, so the tap point was outside the shorter words), the caret in the ground END, centred | `RW3-c4r-P-right-n2-1-before-line-dot.png`, `RW3-c4r-P-right-n2-2-after-viewport-caret-ringed.png` |
+| 10 | D, 2 → 1, pressed at the left end, the mouse dragged 160px down off the line, released | PASS | Saved 10:30, "1 item missing a time", nothing focused, the page did not move, nothing selected | `RW3-c5-D-drag-down-1-before-viewport-press-yellow-release-cyan.png`, `RW3-c5-D-drag-down-2-after-viewport.png` |
+| 11 | The same, dragged 160px left | PASS | The same | `RW3-c5-D-drag-left-*` |
+| 12 | 1 → 0, D (left end) and P (middle): typing the last empty box, one press on the line | PASS | Saved, the line back to "4 to sign", nothing focused, the page did not move, no error | `RW3-c6-D-left-n1-3-after-line.png`, `RW3-c6-D-left-n1-*`, `RW3-c6p-P-mid-n1-*` |
+| 13 | Plain-user round, D (the Common Programme END) | PASS | Emptied → grey, "1 item missing a time · 4 to sign"; CUR CK pressed → "Blocked: 1 item is missing a time, outlined in red. Type the missing time, then sign.", nothing signed, the box red; typed back → "4 to sign"; the four signed → "Signed — this day can be published"; Publish day → "Thursday published and approved"; on the published day emptied → grey, Publish AL1 greyed; pressed → "Blocked: 1 item is missing a time, outlined in red. AL1 was not published.", the box red; typed, signed → "Published AL1 · 1 item on Thu only · approved by Bolt" | `RW3-OWNER-D-{a,b,c}.png`, `RW3-c7-D-{3-all-signed,3b-published,5-AL1-published}.png` |
+| 14 | Plain-user round, P | PASS | The same words and results at each step, by touch | `RW3-OWNER-P-{a,b,c}.png`, `RW3-c7-P-*` |
+
+**For his morning page** (whole screens, no marker): `RW3-OWNER-{D,P}-a.png` — drafting, the Common Programme END empty
+and outlined grey, the line "1 item missing a time · 4 to sign"; `…-b.png` — a sign-off pick refused, the box red, the
+grey "Blocked: … then sign." note whole at the foot; `…-c.png` — the published day, Publish AL1 refused, "Blocked: …
+AL1 was not published." at the foot, the box red.
+
+**Errors:** none — every run's error list (console errors, page errors, failed requests) empty, desktop Chromium and
+phone WebKit.
+
+**Lock:** taken 07:51:03, released 07:58:19 (27 Nov 26, this PC's clock); one build of `b0b334e4c`, served on 4256,
+stopped.
+
 ## Observations — not faults of this change, or his to judge
 
 - **O1** The refusal note (like every note in the app — the control showed an ordinary plan note doing the same) stays
@@ -466,4 +508,6 @@ Walk (after the re-walk): docs/handpass/2026-11-27-end-time-guard.md · 1664 pic
 
 Walk (after the second re-walk): docs/handpass/2026-11-27-end-time-guard.md · 1749 pictures (388 the re-walk's, 85 the second re-walk's) · 40 surfaces · 82 orders + 44 re-walked + 13 re-walked again · MISSING: 1 fixed (the count-line tap, built and walked) / 0 ruled / 0 to file · N1, N2, N3 pass · open: N4 (a desktop click on the count's number while typing, the second re-walk)
 
-Walk: docs/handpass/2026-11-27-end-time-guard.md · 1785 pictures (388 the re-walk's, 85 the second re-walk's, 36 the third fix's) · 40 surfaces · 82 orders + 44 re-walked + 13 re-walked again · MISSING: 1 fixed (the count-line tap, built and walked) / 0 ruled / 0 to file · N1, N2, N3 pass · N4 fixed and checked by its fixer (not yet re-walked by a fresh walker)
+Walk (after the third fix): docs/handpass/2026-11-27-end-time-guard.md · 1785 pictures (388 the re-walk's, 85 the second re-walk's, 36 the third fix's) · 40 surfaces · 82 orders + 44 re-walked + 13 re-walked again · MISSING: 1 fixed (the count-line tap, built and walked) / 0 ruled / 0 to file · N1, N2, N3 pass · N4 fixed and checked by its fixer (not yet re-walked by a fresh walker)
+
+Walk: docs/handpass/2026-11-27-end-time-guard.md · 1845 pictures (388 the re-walk's, 85 the second re-walk's, 36 the third fix's, 60 the independent check's) · 40 surfaces · 82 orders + 44 re-walked + 13 re-walked again + 14 checked independently · MISSING: 1 fixed (the count-line tap, built and walked) / 0 ruled / 0 to file · N1, N2, N3, N4 pass (N4 by a fresh walker, 14 PASS · 0 FAIL)
