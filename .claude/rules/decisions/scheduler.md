@@ -116,7 +116,7 @@ His words, the agent's readings (never stated here as his rule) and the history 
 
 ## Inputs on the schedule
 - The ten pictures of the schedule's one row for a shared input are its design of record — one row of every puck with one title, time, remark and set of buttons, a man on leave flagged on it, a published day counting it once, a big group shown whole and the row growing downward [D743].
-- The combined-row job, not built: a shared input is one row on the Unavailable list too, a group leave one input with one card, medical alone a row per man, a drop on it refused saying why [D2777, D2775, D2776]; on the Leave War a group leave changes as one, its box marked shared [D2778].
+- The combined-row job, not built: a shared input is one row on the Unavailable list too, a group leave one input with one card, medical alone a row per man, a drop on it refused saying why [D2777, D2775, D2776]; on the Leave War a group leave changes as one, its box marked shared [D2778]. A group input may hold several papers, each one man's, opened only by him and the admins [D2781].
 - Its drops, not built: every input row works as a sim row, leave included, a drop on a puck replacing, an extra place adding, nothing asked or noted [D2772, D2779, D755, D776]; a man added or taken off is so every day, other days or times a separate input [D2771, D2780, D2770]; a Personal Inputs line refuses a drop, pointing to its Ground row [D2773]; the seat dragged from stays [D2774].
 
 ## Warnings and the rules engine

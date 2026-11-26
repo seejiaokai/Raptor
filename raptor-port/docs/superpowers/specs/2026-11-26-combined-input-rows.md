@@ -120,6 +120,8 @@ list (`who: ["", "Saint"]`), the screen fine; the last-man refusal names doors t
     Undo the way back; the man still told on his bell (D755, D757). Against the fresh Opus read's advice (point A
     below).
   - **D2780** — a man taken off a several-day input is off every day of it (D2771's reading confirmed).
+  - **D2781** (round 1, question 6, his "B") — a group input may hold several papers, each marked as one man's and
+    opened only by him and the admins; a security read before build (D1411), perms and the table list together.
 - **Leave — as it was put to him in chat 189 (kept for the record; point 2 replaced by D2778):** (1) a
   group leave stays ONE input — one card, one row of its pucks (he weighed the split, one leave a man, and found it
   clutters the Inputs page; the agent came round to group); (2) on the Leave War, a group leave opened from one man's
