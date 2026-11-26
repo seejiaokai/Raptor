@@ -389,6 +389,28 @@ async function f4(p) {
   await shot(p, 'g4-after-press-proposed'); await unmark(p)
 }
 
+/* Chat 191, for D2782's page (a picture of today only, nothing drawn in): the group leave's window as Edit Schedule
+   opens it from Cutter's Unavailable row on Wed 15 Jul — no dates, "the dates are changed on the Inputs page" */
+async function f5(p) {
+  await toPage(p, 'Edit Schedule'); await sleep(800)
+  const opened = await p.evaluate(iid => {
+    const day = [...document.querySelectorAll('section.day')].find(s => s.getBoundingClientRect().width > 0 && /Jul 15/.test(s.querySelector('.dt')?.textContent || ''))
+    if (!day) return 'no Jul 15 day'
+    day.scrollIntoView({ block: 'nearest', inline: 'center' })
+    const b = [...day.querySelectorAll('.sec-unav [data-inpedit]')].find(e => e.dataset.inpedit.startsWith(iid))
+    if (!b) return 'no row of the group leave'
+    b.scrollIntoView({ block: 'center', inline: 'nearest' }); b.setAttribute('data-dcr-btn', ''); return 'ok'
+  }, IIDS.ll)
+  fact(5, 'the row', opened)
+  if (opened !== 'ok') throw new Error('premise: ' + opened)
+  await sleep(500); await press(p, '[data-dcr-btn]'); await sleep(1000)
+  const w = await p.evaluate(() => { const w = document.getElementById('inpEditPop'); if (!w || !w.getBoundingClientRect().width) return null; w.setAttribute('data-dcr-pic', ''); const h = w.querySelector('.inped-hint'); if (h) { h.classList.add('dcr-mk'); h.scrollIntoView({ block: 'center' }) } return { hint: h ? h.textContent : null, cal: !!w.querySelector('#inpEdCal') } })
+  fact(5, 'the window', w)
+  if (!w || !/Inputs page/i.test(w.hint || '')) throw new Error('premise: no window, or no go-elsewhere line')
+  await tags(p, [['#inpEditPop .inped-hint', '5']])
+  await shot(p, 'g5-schedule-window-today'); await unmark(p)
+}
+
 /* ---------------- run ---------------- */
 const engine = PHONE ? PW.webkit : PW.chromium
 const browser = await engine.launch()
@@ -407,7 +429,7 @@ try {
     fact('stage', k, { ...r.rec, asked: r.asked }); IIDS[k] = r.iid
     if (JSON.stringify([...r.rec.people].sort()) !== JSON.stringify([...spec.people].sort()) || r.rec.type !== spec.type) throw new Error('staged wrong: ' + k)
   }
-  const FR = { 1: f1, 2: f2, 3: f3, 4: f4 }
+  const FR = { 1: f1, 2: f2, 3: f3, 4: f4, 5: f5 }
   for (const n of ONLY) {
     try { await reset(p); console.log('--- frame', n); await FR[n](p) } catch (e) { failed.push(n + ': ' + e.message.split('\n')[0]); console.log('FRAME FAILED', n, e.message.split('\n')[0]); await p.screenshot({ path: path.join(IMG, `gfail-${n}-${PHONE ? 'phone' : 'desktop'}.png`) }).catch(() => {}) }
   }
