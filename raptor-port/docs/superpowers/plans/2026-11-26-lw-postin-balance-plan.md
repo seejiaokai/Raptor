@@ -2,7 +2,7 @@
 
 **Status: a draft written while his answers to questions 10, 11, 12 and 16 (the one questions page, version 11) are
 awaited.** It assumes the recommended answers; each alternative is noted where it would change the work. Steps 2 and 3 are rewritten
-against his recorded answers (D2747, D2749, D2810); 10 and 11 (D2745, D2746) are still awaited. The build is its own job, on his word. Model: Opus, high
+against his recorded answers (D2747, D2749, D2810, D2812); 10 and 11 (D2745, D2746) are still awaited. The build is its own job, on his word. Model: Opus, high
 (medium risk — the balance is a figure he relies on, not money or OIL; the engine change in step 2 is the riskiest part).
 
 ## What is true today (checked on the running app, 26 Nov 26 — `raptor-port/docs/img/handpass/2026-11-26-lw-postin-balance/`)
@@ -32,12 +32,12 @@ against his recorded answers (D2747, D2749, D2810); 10 and 11 (D2745, D2746) are
 - Tests first: his example both orders (posted in Mon 7 Dec, leave Wed 2 Dec, 24 typed → 24 either way); a gap
   between stints; a half day; a leave across the post-in date (only its days from the post-in date count).
 
-## Step 3 — question 16, RULED (D2749, D2810): one line at the box, and "Official bal" (screens only)
+## Step 3 — question 16, RULED (D2749, D2810, D2812): one line at the box, and "Official bal" (screens only)
 - Where a balance can be typed (an admin always; a member on his own window and row while unlocked), one grey line is
   always shown: "Only leave after post-in is deducted." — in the person window under the LVE box, and once above the
   rows on the Balances page, phone and desktop. No other instruction line, no fold (D2749, settling D2748).
-- The line "from official leave app on <date>" under the figure stays (D2749's row): the typed date from
-  `setTypedBalance`, in the tile's grey; no "−1" on leave rows, no sum line (the sum design was not chosen).
+- No line under the figure names where or when it was typed — "from official leave app on <date>" is not built
+  (D2812, narrowing D2749); no "−1" on leave rows, no sum line (the sum design was not chosen).
 - The label "App bal" becomes "Official bal" everywhere it shows — the person window's tile, the Balances page's
   heading ("OFFICIAL BAL"), any other place found by a search of the screens; "War bal" unchanged (D2810). The
   reference docs (`ui-contracts.md`, `word-list.md`) are corrected in the same change.
