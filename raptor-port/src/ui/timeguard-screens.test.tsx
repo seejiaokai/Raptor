@@ -20,6 +20,7 @@ import * as view from '../state/view'
 import { HOOKS } from '../engine/hooks'
 import { openScheduler, closeScheduler } from './board'
 import { resetTimeRed } from './timegap-paint'
+import { histInit, undo } from '../state/history'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -93,6 +94,58 @@ describe('the outline on Edit Schedule (D2853)', () => {
     await edit('dr:3.0.0.end', '13:00')
     expect(weekBox('dr:3.0.0.end').className).not.toMatch(/tg-(miss|red)/)
     expect(weekBox('gr:3.0.str').classList.contains('tg-red'), 'the other stays red until its time is typed').toBe(true)
+  })
+
+  /* RED FOLLOWS THE ROW, NOT ITS PLACE (D2853 "staying red until the time is typed"; the two Opus reads' F2, Astra's 1) */
+  const red = (k: string) => weekBox(k).classList.contains('tg-red')
+  const refuseThu = async () => { await click($(`#eWeek .day[data-day="${THU}"] .sgn.tg-block`)) }
+  it('deleting a row above keeps the right boxes red; Undo puts them back red where they were (F2)', async () => {
+    expect(DAYS[THU].dutywaves[0].rows.length).toBeGreaterThanOrEqual(3)
+    await act(async () => { histInit(); notify() })   // the reset above swaps the week under the history: start it afresh
+    await edit('dr:3.0.1.end', ''); await edit('dr:3.0.2.end', '')
+    await refuseThu()
+    expect([red('dr:3.0.1.end'), red('dr:3.0.2.end')]).toEqual([true, true])
+    await act(async () => { openScheduler(THU) })
+    await click($('#schedBoard [data-drdel="3.0.0"]'))
+    await act(async () => { closeScheduler() })
+    expect(missIn('#eWeek')).toEqual(['dr:3.0.0.end', 'dr:3.0.1.end'])
+    expect([red('dr:3.0.0.end'), red('dr:3.0.1.end')], 'both gapped rows, now one place up, still red').toEqual([true, true])
+    /* the history's own step back (the top bar's Undo is greyed in this harness: the week is swapped under it) */
+    await act(async () => { undo(); notify() })
+    expect(missIn('#eWeek')).toEqual(['dr:3.0.1.end', 'dr:3.0.2.end'])
+    expect([red('dr:3.0.0.end'), red('dr:3.0.1.end'), red('dr:3.0.2.end')], 'the row put back is plain; the two gapped rows red').toEqual([false, true, true])
+  })
+
+  /* RED STAYS WITH ITS PLAN when the plan list changes round it, the plan's content unchanged (D2853; the walk's C62,
+     Astra's 2). Plans → + Alt Plan turns the live copy into Plan A (the copy, Plan B, is a new plan: grey until its own
+     refused press — the plan's R3 recommendation, two plans never sharing a colour); deleting down to one plan turns the
+     survivor back into the plain working copy. */
+  const planMenu = async () => { await click($(`#eWeek .day[data-day="${THU}"] .dhtpl [data-planmenu]`)) }
+  it('refused on the working copy, + Alt Plan, the time typed in Plan B, back to Plan A: A is still red (C62)', async () => {
+    await edit('dr:3.0.0.end', '')
+    await refuseThu()
+    expect(red('dr:3.0.0.end')).toBe(true)
+    await planMenu(); await click($('.wavemenu [data-plandup]'))
+    const [a, b] = (SCHED.drafts as any)[THU]
+    expect((SCHED.curDraft as any)[THU]).toBe(b.id)
+    expect(red('dr:3.0.0.end'), 'Plan B, a copy: grey until its own refused press').toBe(false)
+    await edit('dr:3.0.0.end', '13:00')
+    await planMenu(); await click($(`.wavemenu [data-plansel="${a.id}"]`))
+    expect((SCHED.curDraft as any)[THU]).toBe(a.id)
+    expect(red('dr:3.0.0.end'), 'Plan A\'s box was never typed').toBe(true)
+  })
+  it('refused on Plan B, Plan A deleted: the surviving working copy is still red (Astra\'s 2)', async () => {
+    await planMenu(); await click($('.wavemenu [data-plandup]'))
+    const [a] = (SCHED.drafts as any)[THU]
+    await edit('dr:3.0.0.end', '')
+    await refuseThu()
+    expect(red('dr:3.0.0.end')).toBe(true)
+    await planMenu(); await click($('.wavemenu [data-planmanage]'))
+    await click($$('#draftsModal .tpl-tab').find(x => x.textContent!.startsWith(a.name))!)
+    await click($('#draftsModal .modal-foot .abtn.danger'))
+    expect((SCHED.drafts as any)[THU], 'down to one plan: the plans are gone').toBeUndefined()
+    await click($('#draftsClose'))
+    expect(red('dr:3.0.0.end'), 'the box was never typed').toBe(true)
   })
 
   it('View-only Sched never shows it (D2853)', async () => {
