@@ -2187,6 +2187,8 @@ Escape; what each does at a change he did not make.
 
 ### 18.3 "Add a person": one button beside Filter, the form in place, its Cancel (D2598, D2599, D2628 C11)
 
+**His D2726 (26 Nov 26): the screen never shows two add buttons at once — the opener and the form's own "Add person". The form is redrawn through the design skill; K2a builds the redraw he has seen, not the lit opener above an open form.**
+
 - **Today.** `ui/UsersPanel.tsx UsersPanel`: the form's state is the panel's own (`name`, `np`, `role`, `postIn`,
   `home`); it is drawn always open at the very foot, under every person and the Archived fold (`#accAddBlock`: the
   heading "Add a person", the Home squadron box where he is an admin of more than one, `PersonFields`, the sign-in,
