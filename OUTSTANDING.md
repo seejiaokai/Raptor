@@ -88,6 +88,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - **His step:** the repo is public today for a short period (D106); making it private again, and restarting his PC's check runner, is his ([REPO-PRIVATE]).
 
 **Schedule and amendments**
+- [MIDNIGHT-UNDO-REFUSED] — an Undo of a change made just before midnight is refused after midnight, because the app's own midnight run wrote to the same inputs; right by D148, or too strict? A question for him when he asks for such questions (D994).
 - [SIM-OVERLAP-WARN] — two sessions overlapping on one sim raise no warning; D2181: warned. Drawn for him first, then built with the schedule's next batch.
 - [ENGINE-RULES-REVIEW] — the whole rules engine reviewed rules-first, ruling by ruling with a test each, a report for him (his D1983) — the night of 11 Nov 26, on Fable 5.2.
 - [DAMAGED-WEEK-LEFTOVERS] — a week whose saved copy cannot be read still prints and exports the demo days, shows them in the next-week preview, and refuses a person's delete in the amber note, not the grey "Blocked:" one (older; found 8 Nov 26, chat 13's walk).
@@ -180,6 +181,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LW-UNDO-BLOCK-REOPEN] — with the database step: a member's Undo or Redo refused onto a day closed for him stays passed over until sign-out, even if an admin reopens the day from another device.
 
 **Tracker**
+- [TRACKER-PINCH-LISTENER-LEAK] — every fresh chart drawn on the Tracker adds three window listeners never taken off; each keeps the old chart and page alive — on a phone a long session could grow memory; a small Tracker fix (found 27 Nov 26 by chat 204).
 - [TRK-MARKS-LEFT] — typed marks still in four Tracker messages and hints, and the Tracker's Export / Import drawings unlike Admin's; for the consistency look (found by chat 20).
 - [TRK-MENU-KEYS] — the Tracker's course, syllabus and File menus wear the browser's white keyboard ring, not the app's cyan, and the arrow keys do not move through them, unlike the board's menus (found by chat 20's walk).
 - [TRK-COPIES-TIDY] — the code reads' tidiness notes on [TRK-KEPT-COPIES] (D489), filed not fixed.
@@ -189,6 +191,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - *(The Tracker's database-step items are in that group below.)*
 
 **People, accounts and Quals**
+- [ADD-FORM-MIDNIGHT-HOLD] — "Add a person" open with a name typed, his own move to another squadron lands at midnight, Add puts the man into the new squadron with no word; the guard rail's step K5b, drawn first (27 Nov 26).
 - [MSQ-PLAN-AUDIT] — a dedicated check of everything built and planned for an admin with Plan of a squadron left out or let in wrongly, faults fixed before the reshape build; his D2242 (20 Nov 26).
 - [MSQ-FABLE-REVIEW] — Fable reviews what it has not read: the kinds of sign-in together first (who edits, who only views, is each guarded), then the areas ranked by risk; his D2259 (21 Nov 26).
 - [MSQ-FIXREAD17-OPEN] — fix read 17's, the core read's and the full review's 35 faults, all reproduced red, in seven cause families; his shape question first, then the fixes and one combined fix read (20 Nov 26).
@@ -324,6 +327,21 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [ADD-FORM-MIDNIGHT-HOLD] Add a person across his own midnight move (27 Nov 26, found by chat 205's blind reader, taken by chat 204) — OPEN
+**What:** Saber, a master admin, has "Add a person" open on 142 with a name typed; his own move to 150 lands at midnight; he presses Add and the man is added to 150 with no word — against the typing-hold rule (never saved into the new squadron, nor dropped without a word). Proof: `fixread6/opus1/zz-opus1-proof-2.test.tsx` in chat 205's shared notes.
+**To do:** the guard rail's step K5b (chat 204), after K5: the form keeps the squadron it opened on; at the midnight move it is held as the Input window is — the same band, Close, Add doing nothing. The band is new on this form, so it is drawn on the questions page for his look first (D1625); red first.
+**Where:** People & accounts, the guard rail; `raptor-port/src/ui/UsersPanel.tsx` (the add form), `state/typing-hold.ts`.
+
+### [TRACKER-PINCH-LISTENER-LEAK] The Tracker's chart leaves window listeners behind (27 Nov 26, chat 204) — OPEN
+**What:** found by the guard rail's chat 204 while finding why a long test file ran out of memory: each time a fresh chart is drawn on the Tracker, `enablePinchZoom` (`raptor-port/src/tracker/app/core.js`, about lines 4238, 4329, 4330) puts three listeners on the window and never takes them off; each keeps the old chart and the whole page alive (about 65 MB per Tracker test in the test runner). The tests now clear them in their shared teardown (`src/test-support/msq-guard-testkit.ts`), so the tests are fine; the app itself still leaks. How often a fresh chart is drawn in real use is not measured; on his iPhone a long session could grow memory.
+**To do:** red first — a test that draws two charts and counts the window's listeners; then remove the old listeners when a new chart is drawn (or attach them once). The Tracker's area; its own small job; the bug check by its tier.
+**Where:** Tracker; `raptor-port/src/tracker/app/core.js` (`enablePinchZoom`).
+
+### [MIDNIGHT-UNDO-REFUSED] Undo of a change made just before midnight is refused after it (27 Nov 26, chat 204) — OPEN, a question for him later
+**What:** found by chat 204 while testing the guard rail's pick door: a change made minutes before midnight cannot be undone after midnight — "Something else changed this after your action — it can't be undone now." — because the app's own midnight run writes to the same inputs (in the case seen, it accepted another man's past appointment onto the Ground Programme). Possibly right by D148 (Undo refuses where something has since changed the very same thing) and D2593, possibly too strict for a change the app made by itself.
+**To do:** put to him only when he asks for the backlog's questions (D994): should the midnight run's own writes block an Undo? With a picture of the refusal and a worked example.
+**Where:** Undo and the midnight run; `raptor-port/src/undo/timeline.ts`, the midnight run's writes.
 
 ### [LW-BALANCES-COMPACT] The Balances page made compact in height (26 Nov 26, chat 206) — OPEN, a drawing for his look first
 **What:** his D2815, *"too much space vertically used. can u compact it"*, on a desktop picture of the Balances page as drawn for question 16 (the one line "Only leave after post-in is deducted.", the LVE group heading over Official bal / Incl. carried fwd / Pending approval / War bal, rows of about 44px with a grade button and two boxes each). The heading block and the rows take less height so more people are in view; the boxes' and grade buttons' heights change only as drawn and approved (his word for this page, beside D487). Every heading still stands over its own column (D2153).
