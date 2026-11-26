@@ -5,6 +5,11 @@ pictures in `raptor-port/docs/mock/2026-11-26-msq-questions/q19-20/`, then `.cla
 design guide's §1, §1a and §1b, the drawer's report, and the rows D2590, D2595, D2598, D2627 (the note's ruled words).
 No file changed but this one. Nothing built, run, committed or pushed.
 
+**ANSWERED, 26 Nov 26 — his words, through the coordinator: "19 20 16 11 10 as recommended". 19 → A (D2813), 20 → A
+(D2814). The two cards were put on the questions page with the words of part 3 (one change by the coordinator: "It
+cannot happen on a phone" → "No way was found on a phone") and taken off it once answered; this file is their record.
+Built by step K3b (`2026-11-26-msq-s1-k3b-brief.md`).**
+
 **Verdict: the cards are ready to go on the page with the words in part 3.** Two points for the orchestrator to confirm
 are at the end of part 4. Neither holds the page.
 
