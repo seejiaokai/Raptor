@@ -8,10 +8,11 @@ window.ALX = (() => {
   const NAMES = { '#FFE815': 'Lemon', '#8FA6FF': 'Periwinkle', '#4FEBC8': 'Mint', '#FF9548': 'Orange', '#EDC4FF': 'Lilac', '#9FB07A': 'Sage', '#6FB0B2': 'Teal',
     '#3BC6E8': 'Cyan', '#E5C24A': 'Yellow', '#3DE86B': 'Green', '#FFFFFF': 'White', '#B388FF': 'Purple', '#FF7FC4': 'Pink', '#E5872B': 'Dark orange' }
   function palette(list) {
-    let s = document.getElementById('alx-pal')
-    if (!s) { s = document.createElement('style'); s.id = 'alx-pal'; document.head.appendChild(s) }
-    /* the same order as the app's own rule: the catch-all first, then each number */
-    s.textContent = `[data-alc],[data-aln]{--alc:${list[7]}}` + [1, 2, 3, 4, 5, 6, 7].map(n => `[data-alc="${n}"],[data-aln="${n}"]{--alc:${list[n]}}`).join('')
+    /* Each AL's colour is a variable on <html> (--alx1..--alx7) that looks.css's fixed rules read. The first version wrote
+       a new <style> element here instead: on the published page the host's security rules block a style added by a
+       script, so "Proposed" kept showing today's colours on his screen (26 Nov 26). Setting a variable is never blocked. */
+    const root = document.documentElement.style
+    for (let n = 1; n <= 7; n++) root.setProperty('--alx' + n, list[n])
   }
   function look(root, { look = 'a', puck = 'chip' } = {}) {
     root.classList.remove('alx-b', 'alx-c', 'alx-pk-chip', 'alx-pk-tab', 'alx-pk-num', 'alx-pk-name', 'alx-pk-none')

@@ -4,7 +4,16 @@
      .alx-c      the recommendation: colour AND a thin line under the words (solid once out, dotted while waiting),
                  no "ALn" words; a time box on the board is underlined, never boxed
      .alx-pk-*   what a changed puck wears: chip (today's, the app's own rule) · tab · num · name · none
-   The colours themselves come from the [data-alc]/[data-aln] rules looks.js writes. */
+   The colours themselves come from the variables --alx1..--alx7 that looks.js sets on <html>; the rules below read them
+   ("html" in front makes them outrank the app's own [data-alc="n"] rules; each falls back to today's colour). */
+html :is([data-alc],[data-aln]){--alc:var(--alx7,#E5872B)}
+html :is([data-alc="1"],[data-aln="1"]){--alc:var(--alx1,#3BC6E8)}
+html :is([data-alc="2"],[data-aln="2"]){--alc:var(--alx2,#E5C24A)}
+html :is([data-alc="3"],[data-aln="3"]){--alc:var(--alx3,#3DE86B)}
+html :is([data-alc="4"],[data-aln="4"]){--alc:var(--alx4,#FFFFFF)}
+html :is([data-alc="5"],[data-aln="5"]){--alc:var(--alx5,#B388FF)}
+html :is([data-alc="6"],[data-aln="6"]){--alc:var(--alx6,#FF7FC4)}
+html :is([data-alc="7"],[data-aln="7"]){--alc:var(--alx7,#E5872B)}
 
 /* every amendment mark that is not a puck's seat, the day's own version tag or the amendments panel */
 .alx-b :is([data-alc],[data-aln]):not(.seat):not(.verchip):not(.alx-k):not(.alpanel *),
