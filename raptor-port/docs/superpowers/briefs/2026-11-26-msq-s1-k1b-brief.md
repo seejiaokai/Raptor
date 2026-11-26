@@ -43,8 +43,8 @@ No door asks the guard yet: after K1b the app still behaves as today, **but for 
 4. **Quals' "Add qualification" box** — the `qualsnew` report (`ui/QualsPage.tsx`, `counts: 'row'`), counted only
    while the box is drawn (edit mode on) and holds words (D2729 Q2).
 5. **The two edit modes' ends (§18.1)** — the rows stay `'no'` and gain `end()`, handed over by
-   `useGuardCloses('logicedit', …)` in `ui/LogicPage.tsx` (**`flushRuleApply()` first, then `setLgEdit(false)`**) and
-   `useGuardCloses('qualsedit', …)` in `ui/QualsPage.tsx` (clearing `qEditing`, `qualsEdit` and its armed delete —
+   `useGuardCloses('lgedit', …)` in `ui/LogicPage.tsx` (**`flushRuleApply()` first, then `setLgEdit(false)`**) and
+   `useGuardCloses('qedit', …)` in `ui/QualsPage.tsx` (K1a's row ids — the plan's text says `logicedit` / `qualsedit`) (clearing `qEditing`, `qualsEdit` and its armed delete —
    never `newQual`). `closeShown()` runs each open mode's `end()` with the closers. Done's own toast is not said when
    `end()` ends a mode. No door calls `closeShown()` yet.
 6. **The one behaviour change of this pass — a fault the presser confirmed** (§21.1 "K0 — done"; the report

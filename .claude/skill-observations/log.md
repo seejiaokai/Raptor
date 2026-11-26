@@ -1937,3 +1937,16 @@ sides.
 **Issue:** The brief said "you are the latest Fable, high thinking, as orchestrator", but the chat it started ran on a different, weaker model. Nothing in the start step set the model, and nothing in the brief told the new chat to check which model it was. The new chat noticed only because its own system text names its model; it stopped before reading anything and asked, and the owner switched it by hand.
 **Suggested improvement:** In the handoff / start-a-chat steps: (1) the starter passes the model in the call that starts the chat, where the call takes one; (2) every brief that names a model ends its first paragraph with "first check which model you are; if it differs from the one named here, say so and wait before reading or building anything".
 **Principle:** A role assigned in words is not a setting. When a brief depends on which model or tool runs it, the started worker verifies that fact first, before spending anything, and the starter sets it mechanically where it can.
+
+### Observation 1088: An orchestrating chat that opens source files loads every area's rule pages and fills itself
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** chat 198, the Fable orchestrator of the multi-squadron guard rail (section S1): briefing Opus builders, reviewing their diffs, landing steps. Numbered past 1085–1087, which other open branches hold.
+**Skill:** New skill candidate: orchestrating builders from one chat (subagent-driven-development is the nearest)
+**Type:** open-source
+**Phase/Area:** the orchestrator's review step; what the orchestrator reads itself
+
+**Issue:** The orchestrator reviewed a builder's work by opening three new source files and two pictures with the Read tool. Each first read of a file in a new area loaded that area's whole rule page into the chat by itself (four pages, tens of thousands of tokens each), so the chat went from 43% to 74% full across one small step and one review, and had to hand off after landing a single pass. The same review done through `git diff` in the shell loads nothing.
+**Suggested improvement:** In an orchestrator's brief and in the skill: the orchestrator reviews by `git diff` and by running tests, and reads a builder's report file — it opens a source file or a picture with the file tool only when the diff cannot answer, knowing each new area costs its rule page. Builders, whose context is spent once and thrown away, do the reading of source. Measure the chat's fullness after the first review, not at 80%.
+**Principle:** Where reading a file has a side cost (rules, context or hooks that load with it), the long-lived coordinating context should take the cheapest view that answers its question, and leave the expensive reading to short-lived workers.
