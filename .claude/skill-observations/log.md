@@ -1963,3 +1963,16 @@ sides.
 **Issue:** Two counters shared by many chats clashed on the same day. On the one questions page, one chat published its three questions as 10-12 while another was drawing its own three as 10-12 (each read "last used: 9"). And two chats both called themselves 202, each having read the next chat number from a different branch's notes.
 **Suggested improvement:** The coordinator hands out blocks of each shared counter in advance (e.g. question numbers 13-15 to one chat, 16-18 to the next), the same way ruling-number ranges are already handed out; a chat that needs a number outside its block asks the coordinator. For chat numbers, the next free number is kept in one place every chat reads (not per branch).
 **Principle:** Any counter that several parallel workers draw from by "read the highest, add one" will collide; give each worker a pre-assigned range, or one owner who issues numbers.
+
+### Observation 1091: A test that waits before it checks cannot tell a write made at once from one made a beat late
+
+**Status:** OPEN
+**Date:** 2026-11-26
+**Session context:** Chat 204, the multi-squadron guard rail (S1), step K1b — the orchestrator's review of a builder's tests. Numbered past 1090, which another open branch holds.
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** Seeing a test fail first; tests of ordering ("written before the next step runs")
+
+**Issue:** The rule under test was "a value still waiting is written BEFORE the mode ends", because the very next step changes which record a late write would land in. The builder's test called the closing function, awaited the page settling, then read the value. It passed with the new code taken out: the old code writes the same value on a zero-delay timer, and the wait let that timer run. The builder reported honestly that the test "could not fail first", but had no fix. The fix was one line: assert the value on the line right after the call, inside the same synchronous block, before any await or timer.
+**Suggested improvement:** In the skill's section on watching a test fail, add: when the requirement is about ORDER or about "at once", the assertion must sit before any await, timer flush or settle helper; a test that settles first proves only the end state. And: "this test cannot fail first" is a finding about the test, to be resolved by asking what observable differs between old and new code at the earliest moment, never accepted as a pin.
+**Principle:** To test that something happens before something else, observe it at the moment in between; an end-state check cannot fail for ordering.

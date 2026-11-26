@@ -42,20 +42,43 @@ import { VCONF, RULE_SPEC, ruleFmt } from '../engine/rules'
 import { holidayAdd } from '../leavewar/sync'
 import { me } from '../state/perms'
 import { HOOKS } from '../engine/hooks'
+/* K1c — the Tracker: its engine (the same module the page's lazy chunk loads), its bridge, the guard's view of it */
+import * as TRK from '../tracker/app/core.js'
+import { endTrackerSession, trackerWindowsOpen, trackerAsking } from '../tracker/role.js'
+import { getPeople } from '../tracker/people.js'
+import { pageOffered, setTrkUnitProbe } from '../state/perms'
+import { trackerCover } from '../state/typing-hold'
+import { rowReachable } from './guard'
+import { setStorageMaker, storageUnit } from '../tracker/storage.js'
+import { Whiteboard } from '../storage/whiteboard'
+import { trackerTarget } from '../storage/adapters'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 withThird()
 
-/* what a later pass owes this file (the brief's TO_COME): each test and row, with the pass that owes it */
-export const TO_COME: { what: string; pass: 'K1c' | 'K2b' }[] = [
+/* what a later pass owes this file (the brief's TO_COME): each test and row, with the step that owes it — K1c, the last
+   pass of part A, took off the Tracker's halves (A7, A8, A11, A13, A14, A15); its last test proves nothing of K1 is left */
+export const TO_COME: { what: string; pass: 'K2b' }[] = [
   { what: 'A6\'s "Add a person" half (the form\'s report, addperson)', pass: 'K2b' },
-  { what: 'A7\'s Tracker half (a Tracker window behind another tab, then the Tracker no longer offered)', pass: 'K1c' },
-  { what: 'A8, A11, A13 — the Tracker (trk, trkask, trkinfo; the bridge\'s behind mark)', pass: 'K1c' },
-  { what: 'A14\'s and A15\'s chart-editor and Tracker-details halves', pass: 'K1c' },
 ]
+const C: any = TRK
+const MM = (window as any).matchMedia
+/* THE TRACKER WIRED AS THE APP'S BOOT WIRES IT (src/boot.ts): one door per squadron over one whiteboard, bound to his own
+   pages' squadron when it first loads, and the commit gate and the pick told which squadron it stands on — so a pick moves
+   it, and its unsaved-edits question is asked, exactly as in the app (state/pick.ts movesTrackerAway) */
+const TRK_WB = new Whiteboard()
+setStorageMaker((u: string) => trackerTarget(TRK_WB, u), () => pageUnit('own', todayIso()))
+const bootTrkProbe = () => setTrkUnitProbe(() => storageUnit())
+bootTrkProbe()
 
 let page: ReturnType<typeof render> | null = null
-afterEach(() => {
+afterEach(async () => {
+  /* the Tracker's module state outlives the page: its question answered Stay, its windows and modes ended as a sign-out
+     ends them (the session's end), an unsaved chart edit saved so no later pick asks; the phone width put back */
+  if (C.dlg) await act(async () => { C.dlgClose(C.dlg.input ? null : false); await Promise.resolve() })
+  ;(window as any).matchMedia = MM
+  if (C.ready && C.sylDirty) { signInAs('hunter'); await act(async () => { await C.saveChangesClick() }) }
+  act(() => { endTrackerSession() })
   if (page) { page.unmount(); page = null }
   cleanup()
   setInpEdit(null); setDrawer(false); setDayPop(null); setWeekCal(false); setAirKey(null); setDocView(null)
@@ -204,6 +227,75 @@ async function openQualsNew(words = 'LOW LEVEL') {
   await typeIn('#qNewQual', words)
 }
 
+/* ---- K1c's openers: the Tracker (its page downloaded and drawn, then each window by the function its own control calls) ---- */
+async function goTracker() {
+  await doing(() => setPage('tracker'))
+  await vi.waitFor(() => expect(C.ready && !!document.querySelector('#page-tracker #board'), 'the Tracker has downloaded and drawn its chart').toBe(true), { timeout: 20000, interval: 20 })
+  await settle()
+}
+const trkDo = async (f: () => unknown) => { await act(async () => { f() }); await settle() }
+const ev0 = (): string => C.SYL[0].id
+/* an unsaved chart edit: a new event in Edit chart layout, the editor left (tracker/msq-trk-follows-pick.test.tsx's) */
+let edits = 0
+async function chartEdit() {
+  await act(async () => {
+    if (!C.arrangeMode) C.toggleArrange()
+    const p = C.addModule('acad')
+    await vi.waitFor(() => expect(C.dlg, 'the new event\'s name is asked').toBeTruthy(), { timeout: 5000, interval: 5 })
+    C.dlgClose('K1CEV' + (++edits)); await p
+    C.toggleArrange()
+  })
+  await settle()
+  expect(C.sylDirty, 'the premise: an unsaved chart edit').toBe(true)
+}
+/* THE UNSAVED-EDITS QUESTION RAISED BY A PICK WHILE ANOTHER PAGE SHOWS (core.js onBeforeTrackerSwitch): drawn over that page */
+async function openTrkAsk() {
+  await goTracker()
+  await chartEdit()
+  await doing(() => setPage('inputs'))
+  await topPick(UNIT === 'u149' ? 'u142' : 'u149')
+  await vi.waitFor(() => expect(C.dlg?.msg, 'the premise: the question is asked').toContain('Save them before switching'), { timeout: 5000, interval: 10 })
+  await settle()
+}
+/* a student on the course who is a man on the roster (Down days count only for one — core.js downDaysOf), added once by
+   "+ Add" with a roster pick, as trk-down-days.test.tsx adds one; his course start is today, so the window opens */
+async function linkedStudent(): Promise<string> {
+  const have = C.roster.find((r: any) => r.pid)
+  if (have) return have.id
+  const pid = getPeople().find((p: any) => !C.roster.some((r: any) => r.pid === p.id))!.id
+  await act(async () => {
+    const p = C.addStudent()
+    await vi.waitFor(() => expect(C.dlg, '"+ Add" is up').toBeTruthy(), { timeout: 5000, interval: 5 })
+    C.dlgClose({ pick: pid }); await p
+  })
+  await settle()
+  const s = C.roster.find((r: any) => r.pid === pid)
+  expect(s, 'the premise: a roster man added to the course').toBeTruthy()
+  return s.id
+}
+/* each window state of the Tracker's own table (core.js TRK_WINDOWS), opened by what its control calls */
+const TRK_OPENERS: Record<string, () => Promise<void>> = {
+  dlg: () => trkDo(() => { void C.addCourse() }),
+  pop: () => trkDo(() => C.openPop(ev0(), { clientX: 5, clientY: 5 })),
+  bubble: () => trkDo(() => C.showEventBubble(ev0(), $('#board'))),
+  infoId: async () => { await trkDo(() => C.openPop(ev0(), { clientX: 5, clientY: 5 })); await press($('#popEditInfo'), 'the marking window\'s ✎ Edit details') },
+  editId: () => trkDo(() => C.openEdit(ev0())),
+  sylModalOpen: () => trkDo(() => C.openModal()),
+  ordMode: () => trkDo(() => C.openOrdCrew()),
+  copyOpen: () => trkDo(() => { void C.openCopy() }),
+  flexWinOpen: () => press($('#flexBtn'), 'the flex settings gear'),
+  showAllOpen: () => press($('#showAllTab'), 'Show All'),
+  downLog: async () => { const s = await linkedStudent(); await trkDo(() => C.openDownLog(s)) },
+  failLog: () => trkDo(() => C.openFailLog(C.active)),
+  lullPick: () => trkDo(() => C.openLullPicker(C.active)),
+  lullCopy: () => trkDo(() => C.openLullCopy(C.active)),
+}
+/* the phone layout: the stylesheet's own width (tracker.css `@media(max-width:1050px)`), as the browser answers it */
+function phoneWidth() {
+  ;(window as any).matchMedia = (q: string) => ({ matches: /max-width:\s*1050px/.test(q), media: q, onchange: null, addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {}, dispatchEvent: () => false })
+}
+const trkOpen = (id: string) => trackerWindowsOpen().find((w: any) => w.id === id) ?? null
+
 /* `under`: the window a row is opened FROM, which stays up when it closes — Every Monday and a holiday open from the
    Calendar, so after either closes the Calendar is what counts, never nothing */
 type Opener = { open: () => Promise<void>; outs: Record<string, () => Promise<void>>; under?: string }
@@ -330,6 +422,16 @@ const OPEN: Record<string, Opener> = {
     open: async () => { saver.status = 'failed'; await doing(() => watchSaves(saver as any)) },
     outs: { 'Retry landed': async () => { saver.status = 'idle'; await doing(() => {}) } },
   },
+  /* K1c, the Tracker: a window of it that refuses (Show All — the reading: never put to him singly), and the unsaved-edits
+     question raised by a pick over another page */
+  trk: {
+    open: async () => { await goTracker(); await press($('#showAllTab'), 'Show All') },
+    outs: { Close: sel('#saClose'), Escape: escape, 'a press on its shade': sel('#saOverlay') },
+  },
+  trkask: {
+    open: openTrkAsk,
+    outs: { Stay: sel('#dlgCancel'), Escape: escape },
+  },
 }
 
 describe('A1 — nothing open', () => {
@@ -400,6 +502,11 @@ describe('A3 — what does not count, and what closes', () => {
     inputsset: { open: async () => { await goInputsCal('member'); await doing(() => setInpSet(true)) }, box: '[data-testid="win-inputsset"]', shut: () => !INPSET },
     sansset: { open: async () => { await goInputsCal('sans'); await doing(() => setSansSet(true)) }, box: '[data-testid="win-sansset"]', shut: () => !SANSSET },
     lwshow: { open: openLeaveFiled, box: '[data-testid="raptor-sheet"]', shut: () => !tid('raptor-sheet') },
+    /* K1c, the Tracker's four (D2597; D2654 E2, E4) */
+    trkinfo: { open: async () => { await goTracker(); await TRK_OPENERS.bubble!() }, box: '#detailBubble[style*="display: block"]', shut: () => !$('#detailBubble[style*="display: block"]') },
+    trkpop: { open: async () => { await goTracker(); await TRK_OPENERS.pop!() }, box: '#pop', shut: () => !C.pop },
+    trkdown: { open: async () => { await goTracker(); await TRK_OPENERS.downLog!() }, box: '#downLog', shut: () => !C.downLog },
+    trkfail: { open: async () => { await goTracker(); await TRK_OPENERS.failLog!() }, box: '#failLog', shut: () => !C.failLog },
   }
   it('every "closes" row has its opener here', () => {
     expect(GUARD_ROWS.filter(r => r.counts === 'closes' && !SHOWN[r.id]).map(r => r.id)).toEqual([])
@@ -980,5 +1087,202 @@ describe('A15 (pin — nothing closes yet) — nothing closes at a change he did
     signInAs('saber'); expect(saveAccess(ACCT.hunter, { grants: { u149: 'none' } })).toBeNull(); signInAs('hunter')
     await doing(() => {})
     expect(shut).not.toHaveBeenCalled()
+  })
+})
+
+/* ================= K1c — THE TRACKER (§3.5 A7's Tracker half, A8, A11, A13, A14's and A15's Tracker halves) ================= */
+
+describe('A8 — the Tracker: each window of its own table reported on the bridge', () => {
+  const table = (): { id: string; counts: string; panel?: string }[] => C.TRK_WINDOWS
+  it('every window state of TRK_WINDOWS has its opener here (a state with none fails)', () => {
+    expect(table().filter(w => w.counts !== 'no' && !TRK_OPENERS[w.id]).map(w => w.id)).toEqual([])
+  })
+  for (const id of Object.keys(TRK_OPENERS)) {
+    it(`${id} — opened by its own opener: reported on the bridge with its count; a window that refuses names the trk row, one that only shows things names nothing`, async () => {
+      await app('hunter')
+      await goTracker()
+      expect(trackerWindowsOpen(), 'the premise: nothing open').toEqual([])
+      await TRK_OPENERS[id]!()
+      const w = table().find(x => x.id === id)!
+      expect(trkOpen(id), `${id} is reported`).toMatchObject({ id, counts: w.counts })
+      expect(named(), id).toBe(w.counts === 'window' ? 'trk' : null)
+    })
+  }
+  it('the modes — Edit chart layout and Details mode — are never reported, and nothing is named', async () => {
+    await app('hunter')
+    await goTracker()
+    await trkDo(() => C.toggleArrange())
+    expect(C.arrangeMode, 'the premise').toBe(true)
+    expect(trackerWindowsOpen()).toEqual([])
+    await trkDo(() => C.toggleArrange())
+    await trkDo(() => C.toggleDetails())
+    expect(C.showDetails, 'the premise').toBe(true)
+    expect(trackerWindowsOpen()).toEqual([])
+    expect(whatIsOpen()).toBeNull()
+    await trkDo(() => C.toggleDetails())
+  })
+  it('the session\'s end (endTrackerSession) with four open: none reported, nothing named', async () => {
+    await app('hunter')
+    await goTracker()
+    for (const id of ['showAllOpen', 'lullCopy', 'failLog', 'pop']) await TRK_OPENERS[id]!()
+    expect(trackerWindowsOpen().length, 'the premise').toBe(4)
+    await trkDo(() => endTrackerSession())
+    expect(trackerWindowsOpen()).toEqual([])
+    expect(whatIsOpen()).toBeNull()
+  })
+  it('the Tracker never loaded: its bridge, on its own, reports nothing, closes nothing and asks nothing', async () => {
+    vi.resetModules()
+    const fresh: any = await import('../tracker/role.js')
+    expect(fresh.trackerWindowsOpen()).toEqual([])
+    expect(fresh.trackerAsking()).toBe(false)
+    expect(() => fresh.trackerCloseShown()).not.toThrow()
+  })
+  it('the unsaved-edits question raised by a pick while the Inputs page shows: the trkask row, the trk row leaving it out; answered → nothing', async () => {
+    await app('hunter')
+    await openTrkAsk()
+    expect(CURPAGE).toBe('inputs')
+    expect(whatIsOpen()).toMatchObject({ reason: 'window', row: { id: 'trkask', where: 'any' } })
+    expect(row('trk').open(), 'the question box is the trkask row\'s, not the trk row\'s').toBe(false)
+    expect(trkOpen('dlg'), 'it is the Tracker\'s question box').toBeTruthy()
+    await press($('#dlgCancel'), 'Stay')
+    expect(whatIsOpen()).toBeNull()
+  })
+  it('…with the page\'s cover up (the member view, the Tracker held on 149 for the edits): a Tracker window under the cover is not counted; the question asked over it is', async () => {
+    /* (his road to the cover, his D2395: on 149's Tracker by his Plan, an unsaved chart edit, then the member view — his
+       pages go home to 142 and the Tracker is held on 149 for the edits, covered) */
+    await app('hunter')
+    await topPick('u149')
+    await goTracker()
+    await vi.waitFor(() => expect(storageUnit(), 'the premise: the Tracker followed the pick').toBe('u149'), { timeout: 10000, interval: 20 })
+    await chartEdit()
+    await press($('#showAllTab'), 'Show All')
+    await doing(() => setPage('inputs'))
+    await doing(() => { switchRoleView() })
+    await settle()
+    expect({ cover: !!trackerCover(), bound: storageUnit() }, 'the premise: the cover is up, the Tracker held on 149').toEqual({ cover: true, bound: 'u149' })
+    expect(C.showAllOpen, 'the premise: Show All still set under it').toBe(true)
+    expect(row('trk').open(), 'nothing under the cover can be reached').toBe(false)
+    expect(whatIsOpen()).toBeNull()
+    /* (the member view keeps 149 in view, a squadron he now only views: the pick that asks is his own squadron's, which
+       moves the held Tracker off 149 — state/pick.ts movesTrackerAway) */
+    expect(UNIT, 'the premise: 149 still in view').toBe('u149')
+    await topPick('u142')
+    await vi.waitFor(() => expect(trackerAsking(), 'the question').toBe(true), { timeout: 5000, interval: 10 })
+    expect(named()).toBe('trkask')
+    await press($('#dlgCancel'), 'Stay')
+    expect(whatIsOpen()).toBeNull()
+  })
+})
+
+describe('A13 — a Tracker window behind the Flow chart tab (his D2654 E4)', () => {
+  it('Down days opened on the Info tab, the phone layout then showing the Flow chart: the bridge marks it behind the Info tab; nothing open, and closeShown() closes it', async () => {
+    phoneWidth()
+    await app('hunter')
+    await goTracker()
+    await press($('#viewtabs [data-view="info"]'), 'the Info tab')
+    await TRK_OPENERS.downLog!()
+    expect(trkOpen('downLog'), 'on the Info tab: in sight').toMatchObject({ behind: null })
+    await press($('#viewtabs [data-view="flow"]'), 'the Flow chart tab')
+    expect(trkOpen('downLog')).toMatchObject({ id: 'downLog', counts: 'closes', behind: 'info' })
+    expect(whatIsOpen(), 'it only shows things').toBeNull()
+    await act(async () => { closeShown() })
+    await settle()
+    expect(C.downLog, 'closed').toBeNull()
+    expect($('#downLog')).toBeNull()
+  })
+  it('a lull pop-up holding a choice (its first day picked), behind the Flow chart tab: the trk row, the bridge marking it behind the Info tab; closeShown() leaves it', async () => {
+    phoneWidth()
+    await app('hunter')
+    await goTracker()
+    await press($('#viewtabs [data-view="info"]'), 'the Info tab')
+    await TRK_OPENERS.lullPick!()
+    await press($('#lullCal .day:not(.out)'), 'a first day of the period')
+    expect(C.lullPick?.start, 'the premise: a day picked, not yet saved').toBeTruthy()
+    await press($('#viewtabs [data-view="flow"]'), 'the Flow chart tab')
+    expect(trkOpen('lullPick')).toMatchObject({ id: 'lullPick', counts: 'window', behind: 'info' })
+    expect(whatIsOpen()).toMatchObject({ reason: 'window', row: { id: 'trk', where: 'tracker' } })
+    await act(async () => { closeShown() })
+    await settle()
+    expect(C.lullPick?.start, 'its choice kept').toBeTruthy()
+  })
+  it('on a desktop\'s width the Flow chart tab hides nothing: behind is never set', async () => {
+    await app('hunter')
+    await goTracker()
+    await TRK_OPENERS.failLog!()
+    expect(trkOpen('failLog')).toMatchObject({ behind: null })
+  })
+})
+
+describe('A7 (the Tracker\'s half) — a Tracker window on a page out of sight, and on a page no longer offered', () => {
+  it('Show All left up behind the Inputs tab: the trk row still answers, its tab offered (D2627 A7)', async () => {
+    await app('hunter')
+    await OPEN.trk!.open()
+    await doing(() => setPage('inputs'))
+    expect(whatIsOpen()).toMatchObject({ reason: 'window', row: { id: 'trk', where: 'tracker' } })
+    expect(rowReachable(row('trk')), 'its tab leads back to it').toBe(true)
+  })
+  it('then a squadron he only views picked (150): the Tracker is not offered for it, the window is still set — and not counted (D2627 A7: "unless the squadron picked no longer offers it")', async () => {
+    /* (Hunter holds View of 150 in withThird(). No door asks the guard yet, so today's pick goes through; the Tracker stays
+       on his own squadron's records for a pick he only views — it follows his own pages, core.js followUnit — so its window
+       is left set while nothing on 150 can show it) */
+    await app('hunter')
+    await OPEN.trk!.open()
+    await doing(() => setPage('inputs'))
+    await topPick(third.u150)
+    expect({ unit: UNIT, offered: pageOffered('tracker'), set: C.showAllOpen, rowOpen: row('trk').open(), reachable: rowReachable(row('trk')), open: whatIsOpen()?.row.id ?? null })
+      .toEqual({ unit: third.u150, offered: false, set: true, rowOpen: true, reachable: false, open: null })
+  })
+})
+
+describe('A14 and A15 (pins — no door asks or closes yet) — the Tracker\'s halves', () => {
+  it('pin: the chart editor open, then his own move at midnight, then a right ended: the guard never asked', async () => {
+    const ask = vi.fn(guardAsk)
+    setGuardAsk(ask)
+    signInAs('saber'); expect(moveMan(PID.hunter, third.u150).ok).toBe(true)
+    await app('hunter')
+    await goTracker()
+    await trkDo(() => C.toggleArrange())
+    expect(C.arrangeMode, 'the premise: Edit chart layout').toBe(true)
+    await act(async () => { pastMidnight() }); await settle()
+    signInAs('saber'); expect(saveAccess(ACCT.hunter, { grants: { u149: 'none' } })).toBeNull(); signInAs('hunter')
+    await doing(() => {})
+    expect(ask).not.toHaveBeenCalled()
+  })
+  it('pin: an event\'s details (the ⓘ bubble) up, then his own move at midnight, then a right ended: closeShown never called', async () => {
+    const shut = vi.fn(guardCloseShown)
+    setGuardClose(shut)
+    signInAs('saber'); expect(moveMan(PID.hunter, third.u150).ok).toBe(true)
+    await app('hunter')
+    await goTracker()
+    await TRK_OPENERS.bubble!()
+    expect(row('trkinfo').open(), 'the premise').toBe(true)
+    await act(async () => { pastMidnight() }); await settle()
+    signInAs('saber'); expect(saveAccess(ACCT.hunter, { grants: { u149: 'none' } })).toBeNull(); signInAs('hunter')
+    await doing(() => {})
+    expect(shut).not.toHaveBeenCalled()
+  })
+})
+
+describe('TO_COME — what is left is owed by a later step, by name, never by a pass of K1', () => {
+  it('only A6\'s "Add a person" half is left, owed by K2b', () => {
+    expect(TO_COME).toEqual([{ what: 'A6\'s "Add a person" half (the form\'s report, addperson)', pass: 'K2b' }])
+  })
+})
+
+/* (last in the file: it takes the Tracker's engine down to "Loading…" and boots it again) */
+describe('A11 — the Tracker not drawn: nothing reported', () => {
+  it('a window of it set (Show All), then "Loading…" (not ready): none reported, nothing named; booted again, it is reported again', async () => {
+    await app('hunter')
+    await goTracker()
+    await TRK_OPENERS.showAllOpen!()
+    expect(trkOpen('showAllOpen'), 'the premise').toBeTruthy()
+    C.resetInitForTests()
+    expect(C.showAllOpen, 'still set').toBe(true)
+    expect(trackerWindowsOpen(), '"Loading…": nothing of it drawn').toEqual([])
+    expect(whatIsOpen()).toBeNull()
+    await act(async () => { await C.init(); await C.whenLoaded() })
+    await settle()
+    expect(C.ready).toBe(true)
+    expect(trkOpen('showAllOpen'), 'drawn again, reported again').toBeTruthy()
   })
 })
