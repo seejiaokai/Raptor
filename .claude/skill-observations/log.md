@@ -1600,3 +1600,16 @@ sides.
 
 
 (Merge of main into claude/sans-warnlines-185, chat 186, 25 Nov 26: this entry was numbered 1068 on that branch, a number main also used; renumbered 1077.)
+
+### Observation 1079: The handoff's "next chat number" lags when parallel chats are unmerged
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** chat 189 — the opening line said "chat 184 (183 the highest)", read from main's HANDOFF.md, while chats 185–188 already existed on unmerged branches and as session titles. Numbered past 1078, the highest on any branch (open branches write this log too).
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** the opening line / "Next chat number"
+
+**Issue:** The next free chat number was taken from the merged handoff file only. Parallel chats' blocks live on their own unmerged branches, so the merged file named a number four behind; one of the "free" numbers was already a live session's title.
+**Suggested improvement:** In the session-handoff skill, before writing "Next chat number", take the highest of: the merged handoff, every remote branch's commit subjects (`git log --all --since=7.days --format=%s | grep -o '^Chat [0-9]*'`) and the open session titles (list_sessions); a new chat re-checks the same three before naming itself.
+**Principle:** A counter shared by parallel workers must be read from every place they write, not from the one that is merged.
