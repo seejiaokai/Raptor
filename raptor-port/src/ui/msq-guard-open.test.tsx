@@ -42,6 +42,9 @@ import { VCONF, RULE_SPEC, ruleFmt } from '../engine/rules'
 import { holidayAdd } from '../leavewar/sync'
 import { me } from '../state/perms'
 import { HOOKS } from '../engine/hooks'
+/* K2b — "Add a person": its date box, and the day the post-in date opens on */
+import { boxValue, pickDate } from './datecal-testkit'
+import { effectiveToday } from '../state/person-delete'
 /* K1c — the Tracker: its engine (the same module the page's lazy chunk loads), its bridge, the guard's view of it */
 import * as TRK from '../tracker/app/core.js'
 import { endTrackerSession, trackerWindowsOpen, trackerAsking } from '../tracker/role.js'
@@ -57,10 +60,9 @@ import { trackerTarget } from '../storage/adapters'
 withThird()
 
 /* what a later pass owes this file (the brief's TO_COME): each test and row, with the step that owes it — K1c, the last
-   pass of part A, took off the Tracker's halves (A7, A8, A11, A13, A14, A15); its last test proves nothing of K1 is left */
-export const TO_COME: { what: string; pass: 'K2b' }[] = [
-  { what: 'A6\'s "Add a person" half (the form\'s report, addperson)', pass: 'K2b' },
-]
+   pass of part A, took off the Tracker's halves (A7, A8, A11, A13, A14, A15); K2b took off A6's "Add a person" half (the
+   form's report, addperson); its last test proves the list empty */
+export const TO_COME: { what: string; pass: string }[] = []
 const C: any = TRK
 const MM = (window as any).matchMedia
 /* THE TRACKER WIRED AS THE APP'S BOOT WIRES IT (src/boot.ts): one door per squadron over one whiteboard, bound to his own
@@ -204,6 +206,13 @@ async function openGiveAccess() {
   await goAdmin()
   await press($('[data-approve]'), 'Give access')
 }
+/* K2b — "Add a person" opened by its own button in the page's top row, then a callsign typed */
+async function openAddForm() {
+  await goAdmin()
+  await press($('#accAddOpen'), '+ Add a person')
+  expect($('#accAddBlock'), 'the premise: the form is open').not.toBeNull()
+}
+async function openAddPerson() { await openAddForm(); await typeIn('#accAddCs', 'Nova') }
 async function asSaber() { signInAs('saber'); await doing(() => {}) }
 /* the desktop List's "OIL" chip on an answered weekend Duty — the page's own question, no Input window under it */
 async function openOilRevise() {
@@ -370,6 +379,16 @@ const OPEN: Record<string, Opener> = {
   placeedit: {
     open: async () => { await asSaber(); await goAdmin('Squadrons'); await press($('#sqPlaces [data-place] .acc-tap'), 'the place\'s row'); await typeIn('#plName', 'Home base two') },
     outs: { Cancel: sel('#plCancel'), Escape: escape },
+  },
+  /* K2b — "Add a person" (§18.3): opened by its button, a callsign typed; every way out empties it or puts it back */
+  addperson: {
+    open: openAddPerson,
+    outs: {
+      Cancel: sel('#accAddCancel'),
+      Escape: escape,
+      'put back as it opened': () => typeIn('#accAddCs', ''),
+      'an add that lands': async () => { await typeIn('#accAddSeat', 'FCP'); await typeIn('#accAddCat', 'B'); await press($('#accAdd'), 'Add person') },
+    },
   },
   oilday: {
     open: async () => { await doing(() => setOilList({ from: '2026-07-18', to: '2026-07-18', name: 'Holiday' })) },
@@ -702,6 +721,124 @@ describe('A6 — a Users row, and Admin\'s other forms (D2595, D2598)', () => {
   })
 })
 
+describe('A6 (K2b) — "Add a person" (§18.3; D2598: counted once something is in it; D2729 Q10)', () => {
+  /* the form as it stands — the role box only while a sign-in is typed (msq-guard-g.test.tsx's reading) */
+  const addFields = () => {
+    const v = (s: string) => ($(s) as HTMLInputElement | HTMLSelectElement | null)?.value ?? null
+    return { cs: v('#accAddCs'), ini: v('#accAddIni'), seat: v('#accAddSeat'), cat: v('#accAddCat'), name: v('#accAddName'), role: v('#accAddRole'), postIn: $('#accAddPostIn') ? boxValue($('#accAddPostIn')!) : null }
+  }
+  const FRESH = () => ({ cs: '', ini: '', seat: '', cat: '', name: '', role: null, postIn: effectiveToday() })
+  const postIn = async (iso: string) => { pickDate($('#accAddPostIn')!, iso); await settle() }
+  it('opened by its button, nothing in it → nothing; a callsign typed → the row; put back as it opened → nothing', async () => {
+    await app('hunter')
+    await openAddForm()
+    expect(whatIsOpen(), 'open and untouched').toBeNull()
+    await typeIn('#accAddCs', 'Nova')
+    expect(whatIsOpen()).toMatchObject({ reason: 'row', row: { id: 'addperson' } })
+    await typeIn('#accAddCs', '')
+    expect(whatIsOpen(), 'put back as it opened').toBeNull()
+  })
+  it('each other field changed alone → the row; put back → nothing: the initials, the seat, the sign-in, the post-in date', async () => {
+    await app('hunter')
+    await openAddForm()
+    for (const [box, v] of [['#accAddIni', 'NV'], ['#accAddSeat', 'FCP'], ['#accAddName', 'nova@mail']] as const) {
+      await typeIn(box, v)
+      expect(named(), `${box} changed alone`).toBe('addperson')
+      await typeIn(box, '')
+      expect(whatIsOpen(), `${box} put back`).toBeNull()
+    }
+    await postIn('2026-07-20')
+    expect(addFields().postIn, 'the premise: the date moved off today').toBe('2026-07-20')
+    expect(named(), 'the post-in date moved off today').toBe('addperson')
+    await postIn(effectiveToday())
+    expect(whatIsOpen(), 'the post-in date back on today').toBeNull()
+  })
+  it('the CAT (it needs a seat to be picked): the seat and CAT → the row; the CAT put back with the seat still picked → still the row; the seat put back → nothing', async () => {
+    await app('hunter')
+    await openAddForm()
+    await typeIn('#accAddSeat', 'FCP')
+    await typeIn('#accAddCat', 'B')
+    expect(named()).toBe('addperson')
+    await typeIn('#accAddCat', '')
+    expect(named(), 'the seat still differs').toBe('addperson')
+    await typeIn('#accAddSeat', '')
+    expect(addFields(), 'the premise: as it opened').toEqual(FRESH())
+    expect(whatIsOpen()).toBeNull()
+  })
+  it('the Role off Member → the row, even once the sign-in is cleared and its box hidden; back on Member and cleared → nothing', async () => {
+    await app('hunter')
+    await openAddForm()
+    await typeIn('#accAddName', 'nova@mail')
+    await typeIn('#accAddRole', 'admin')
+    await typeIn('#accAddName', '')
+    expect($('#accAddRole'), 'the premise: the Role box hidden with no sign-in').toBeNull()
+    expect(named(), 'the Role still differs from how it opened').toBe('addperson')
+    await typeIn('#accAddName', 'nova@mail')
+    await typeIn('#accAddRole', 'main')
+    await typeIn('#accAddName', '')
+    expect(whatIsOpen()).toBeNull()
+  })
+  for (const [how, out] of [['Cancel', () => press($('#accAddCancel'), 'Cancel')], ['Escape', escape]] as const) {
+    it(`every field changed, then ${how} → nothing: the form folded shut, and opened again empty`, async () => {
+      await app('hunter')
+      await openAddForm()
+      for (const [box, v] of [['#accAddCs', 'Nova'], ['#accAddIni', 'NV'], ['#accAddSeat', 'FCP'], ['#accAddCat', 'B'], ['#accAddName', 'nova@mail'], ['#accAddRole', 'admin']] as const) await typeIn(box, v)
+      await postIn('2026-07-20')
+      expect(named(), 'the premise').toBe('addperson')
+      if (how === 'Escape') ($('#accAddCs') as HTMLInputElement).focus()
+      await out()
+      expect(whatIsOpen()).toBeNull()
+      expect($('#accAddBlock'), 'folded shut').toBeNull()
+      await press($('#accAddOpen'), '+ Add a person')
+      expect(addFields(), 'empty').toEqual(FRESH())
+      expect(whatIsOpen()).toBeNull()
+    })
+  }
+  it('opened and untouched, then the day turns (the app\'s own midnight wake, the page drawn again) → nothing; the post-in date then moved by hand → the row', async () => {
+    await app('hunter')
+    await openAddForm()
+    const opened = addFields().postIn
+    expect(whatIsOpen(), 'the premise: open and untouched').toBeNull()
+    await act(async () => { pastMidnight() }); await settle()
+    await doing(() => {})
+    expect(effectiveToday(), 'the premise: the day has turned').not.toBe(opened)
+    expect(addFields().postIn, 'the form still shows the date it opened on, as today').toBe(opened)
+    expect(whatIsOpen(), 'still untouched: nothing').toBeNull()
+    await postIn('2026-07-20')
+    expect(named(), 'the post-in date moved by hand').toBe('addperson')
+  })
+  it('an add that succeeds → the form still open, empty, nothing', async () => {
+    await app('hunter')
+    await openAddPerson()
+    await typeIn('#accAddSeat', 'FCP')
+    await typeIn('#accAddCat', 'B')
+    expect(named(), 'the premise').toBe('addperson')
+    await press($('#accAdd'), 'Add person')
+    expect(Object.values(PEOPLE).some((p: any) => p.cs === 'Nova'), 'Nova was added').toBe(true)
+    expect($('#accAddBlock'), 'still open').not.toBeNull()
+    expect(addFields(), 'empty').toEqual(FRESH())
+    expect(whatIsOpen()).toBeNull()
+  })
+  it('opened by Quals\' "+ Add person", nothing typed → nothing; typed → the row', async () => {
+    await app('hunter')
+    await doing(() => setPage('quals'))
+    await press($('#qAddToggle'), 'Quals\' "+ Add person"')
+    expect(CURPAGE, 'the premise: on Admin').toBe('admin')
+    expect($('#accAddBlock'), 'the premise: the form open').not.toBeNull()
+    expect(whatIsOpen()).toBeNull()
+    await typeIn('#accAddCs', 'Nova')
+    expect(named()).toBe('addperson')
+  })
+  it('typed, then another Admin section shown: still the row (D2627 A6 — hidden, not removed); then the Inputs tab: nothing (the page unmounts)', async () => {
+    await app('hunter')
+    await openAddPerson()
+    await press([...document.querySelectorAll('.adm-cat')].find(b => b.textContent?.startsWith('Squadrons')) || null, 'Squadrons')
+    expect(named(), 'the section hidden, not removed').toBe('addperson')
+    await doing(() => setPage('inputs'))
+    expect(whatIsOpen()).toBeNull()
+  })
+})
+
 describe('A7 (the Leave War\'s half) — a window on a page out of sight', () => {
   it('pin — a person\'s window behind the Inputs tab: the war\'s row still answers, its tab offered; his Plan of 149 lowered to View: taken home to 142, the window still refuses', async () => {
     await app('hunter')
@@ -951,7 +1088,7 @@ describe('B18 (pin, once step 1 exists) — no road to "switch back" with a row 
     expect(named(), 'the premise').toBe('userrow')
     await doing(() => { switchRoleView() })
     expect($('#admUsers'), 'the Admin page not drawn').toBeNull()
-    for (const id of ['userrow', 'archrow', 'giveaccess', 'newsqn', 'sqnmove', 'placeedit'] as const) expect(workOn(id), id).toBe(false)
+    for (const id of ['userrow', 'archrow', 'giveaccess', 'addperson', 'newsqn', 'sqnmove', 'placeedit'] as const) expect(workOn(id), id).toBe(false)
   })
 })
 
@@ -1264,8 +1401,8 @@ describe('A14 and A15 (pins — no door asks or closes yet) — the Tracker\'s h
 })
 
 describe('TO_COME — what is left is owed by a later step, by name, never by a pass of K1', () => {
-  it('only A6\'s "Add a person" half is left, owed by K2b', () => {
-    expect(TO_COME).toEqual([{ what: 'A6\'s "Add a person" half (the form\'s report, addperson)', pass: 'K2b' }])
+  it('nothing is left: K2b took off A6\'s "Add a person" half, the last entry', () => {
+    expect(TO_COME).toEqual([])
   })
 })
 

@@ -29,6 +29,7 @@ import { addPersonAndAccount, accountByName } from '../state/accounts'
 import { effectiveToday } from '../state/person-delete'
 import { readForeign } from '../leavewar/state/foreign'
 import { boxValue, pickDate } from './datecal-testkit'
+import { whatIsOpen } from './guard'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 withThird()
@@ -155,6 +156,19 @@ describe('G4 — Cancel and Escape shut it empty; an add leaves it open and empt
     expect(fields(), 'every field as a fresh form\'s').toEqual(FRESH())
     await type('#accAddName', 'x@mail')
     expect(($('#accAddRole') as HTMLSelectElement).value, 'the role starts again on Member').toBe('main')
+  })
+  /* (K2b — §18.3's G4 once the guard's table exists; the second-press clause stays struck, D2729 Q10) */
+  it('a callsign typed: the guard names the addperson row; after Cancel, and opened again fresh, nothing', async () => {
+    await users()
+    await press(opener())
+    expect(whatIsOpen(), 'opened, nothing in it').toBeNull()
+    await type('#accAddCs', 'Nova')
+    expect(whatIsOpen()).toMatchObject({ reason: 'row', row: { id: 'addperson' } })
+    await press($('#accAddCancel'), 'Cancel')
+    expect(whatIsOpen(), 'after Cancel').toBeNull()
+    await press(opener())
+    expect(fields(), 'the premise: a fresh form').toEqual(FRESH())
+    expect(whatIsOpen(), 'opened again, fresh').toBeNull()
   })
   it('every field changed, then Escape: the same as Cancel', async () => {
     await users()

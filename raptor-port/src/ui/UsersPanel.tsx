@@ -569,7 +569,10 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
   const [name, setName] = useState('')
   const [np, setNp] = useState<NewPerson>(BLANK)
   const [role, setRole] = useState<AccountRole>('main')
-  const [postIn, setPostIn] = useState(effectiveToday)
+  /* the date the form last opened fresh on (its first draw, then each resetAddForm) — what its report compares with, so
+     an untouched form left open past midnight never reads as changed (K2b) */
+  const [postIn0, setPostIn0] = useState(effectiveToday)
+  const [postIn, setPostIn] = useState(postIn0)
   /* (Add a person's Home squadron box is gone — his D2729 Q1, 26 Nov 26: a new man always joins the squadron in view, for
      every admin on every page; ui/usersfilter-model.ts addHomeChoices stays there, the Admin → Users section's to keep
      or remove) */
@@ -609,7 +612,12 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
   const ringPid = useRingLanding(p.ring, setFind, setArchOpen)
 
   const hasName = !!name.trim()
-  const resetAddForm = () => { setName(''); setNp(BLANK); setRole('main'); setPostIn(effectiveToday()) }
+  const resetAddForm = () => { const t = effectiveToday(); setName(''); setNp(BLANK); setRole('main'); setPostIn0(t); setPostIn(t) }
+  /* THE FORM'S REPORT TO THE GUARD (D2598, §18.3; ui/guard.ts's `addperson` row): counted while the form is open and
+     anything in it differs from how a fresh form opens — each value the one resetAddForm and the first draw set, the
+     post-in date the one it last opened fresh on (never today's, which moves at midnight under an untouched form).
+     Folded counts nothing: only Cancel and Escape fold it, and both empty it first. */
+  useGuardWork('addperson', adding && (name !== '' || JSON.stringify(np) !== JSON.stringify(BLANK) || role !== 'main' || postIn !== postIn0))
   const add = () => {
     const nm = name.trim().toLowerCase()
     const who = np.cs.trim()
