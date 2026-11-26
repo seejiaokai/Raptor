@@ -50,6 +50,21 @@ D2648, D2653, D2659, D2660, D2727 — rows on the batch branch `claude/msq-b1-sc
 5. After the walk:
 
 ## The drawing check
+**Run 26 Nov 26 by an Opus helper; the host opened `s4-p3-existing.png` (matches, the drawing's teal "new" ring aside).**
+Departure from `walk-scripts.md` §10, named: the drawing's saved world (`.tmp/n176-draw/r6-users-state.json`) was no
+longer on his PC, so instead of record-and-replay the drawing script's own `lay()` (draw-s4.mjs, batch branch) was
+replayed, copied whole, on an `origin/main` build in the demo world (the four posting files were identical there),
+checked by eye against every approved picture, then measured beside this build with the drawing check's own measuring
+and comparing code. **40 checks — 10 states (greyed-out, delete-grey, existing = design A, existing-in, drag, ground,
+sans, none, error, postin) × 4 sizes (1536×864 the drawing's, 1440×900, 402×874 at scale 2 the drawing's, his iPhone
+402×874 touch scale 3): no difference over 2px, nor in fill, edge, words colour, size, weight, spacing or alignment; the
+sheet's place on screen the same at the drawing's sizes; no page errors.** One difference cleared as measuring: the
+"none" state's first chip keeps a phone's left-over hover after the tap that un-chose it (same rule on `main`, an older
+question for all chips). World differences only: "archived." for "archived, account suspended." (Cinch has no sign-in
+in the demo). A control fed known differences was caught (11, 15, 4). NOT CHECKED: lastadmin (no single-admin squadron
+in the demo; its amber line's look is checked through "error"); "error" reached by another route (D2727 removed the
+drawing's). Pictures: `docs/img/handpass/2026-11-26-drawcheck-s4/` (40 side-by-sides, `replay/` 20 replay-vs-approved);
+the helper's report and scripts: the group's notes folder, `s4-drawcheck/`.
 
 ## The scenarios (Astra and a fresh Fable, blind, combined)
 
