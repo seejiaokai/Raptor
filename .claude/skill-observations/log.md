@@ -1613,3 +1613,29 @@ sides.
 **Issue:** The next free chat number was taken from the merged handoff file only. Parallel chats' blocks live on their own unmerged branches, so the merged file named a number four behind; one of the "free" numbers was already a live session's title.
 **Suggested improvement:** In the session-handoff skill, before writing "Next chat number", take the highest of: the merged handoff, every remote branch's commit subjects (`git log --all --since=7.days --format=%s | grep -o '^Chat [0-9]*'`) and the open session titles (list_sessions); a new chat re-checks the same three before naming itself.
 **Principle:** A counter shared by parallel workers must be read from every place they write, not from the one that is merged.
+
+### Observation 1089: "Could not read main's side" was a whole-tree file limit, not main's side
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** chat 203, pull request 850's code check (React Doctor 0.9.18) red on GitHub and on the PC
+**Skill:** New skill candidate: gate-failure triage
+**Type:** open-source
+**Phase/Area:** reading a failed check before fixing it
+
+**Issue:** The code check said the tool "could not read origin/main's side". The known cause (a raw NUL byte in a changed file) was checked and ruled out, then the changed-file count, then the base; an hour went before a helper instrumented the tool's own code and found the real gate: a fixed 5,000-file limit on the WHOLE tree's JS/TS files (5,017 here, 4,763 of them walk scripts), which skips one check, marks the head scan incomplete and so never starts the comparison. The wrapper script tested the "degraded" flag first and printed only that, hiding the skipped-check reason that named the limit.
+**Suggested improvement:** When a check wraps a tool, print every reason the tool's report gives (degraded AND skipped-check reasons), not the first matched; and when a failure's message names one cause, read the tool's own report fields before testing hypotheses about that cause. Numbered over the other branches' 1086–1088.
+**Principle:** A wrapper's summary of a failure is a hypothesis; the tool's raw report is the evidence — read every field of it before chasing the summary's named cause.
+
+### Observation 1090: A fix made after staging a merge never entered the merge commit
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** chat 203, bringing main into claude/sans-warnlines-185
+**Skill:** New skill candidate: merge-conflict resolution
+**Type:** open-source
+**Phase/Area:** committing a resolved merge
+
+**Issue:** The clashes were resolved and staged (git add -A), the document check then failed, a fix was made in the working files, the check passed — and the merge was committed from the index, without the fix. The pushed merge carried the doubled ruling row; it was caught only by a later git status.
+**Suggested improvement:** After any fix made between staging and committing, stage again (or commit with the changed paths named) and read git status --short before the commit; a check that passes on the working files proves nothing about the index.
+**Principle:** A check run on the working tree vouches for the working tree, not for what the commit will hold.

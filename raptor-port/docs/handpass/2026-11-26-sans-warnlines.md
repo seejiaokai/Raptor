@@ -76,7 +76,11 @@ older tests decided one by one in chat 186 (`33c916756`, `1d50184c9`; `docs/supe
 3. **The ledger:** the type-A walks of the SANS gate (24–25 Nov 26: w11–w14, D2573's, the standby / untimed-sim batch's)
    found their faults where the answer is READ and in the words — lesson 32's disagreement (the warning list silent while
    the crew list struck him) was the last one, found by both blind reads and seen by walker A.
-4. **The walk chosen:** (to be written once the build is frozen)
+4. **The walk chosen:** three Opus walkers (A, B, C — the walk brief) on one build of the branch head, desktop 1536 and
+   phone 402 WebKit, every scenario of both designers combined, the plain-user round by each. NOT STARTED in chat 203:
+   the checks lock was held all day by chats 190 and 201; the head now also carries the crew list's words and column
+   (`dbd8e9a4e`), walked in the same build with its drawing check — the next chat writes the build and its main script
+   here.
 5. **After the walk:** its row in `docs/walk-ledger.md`.
 
 ## 5. The scenarios (Astra and a fresh Fable, blind to each other, combined by the host)

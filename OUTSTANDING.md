@@ -1726,6 +1726,9 @@ section folds are next touched. (Its first half — the wave show/hide toggle le
   his call: the guide on the app's own address, so the group's pinned link serves it; answers gathered on the page for
   him instead of copied into the chat. He sends it himself. **Next:** their answers, when they come, are put to him as rulings to
   make — they feed `[SINGLE-SEAT]` and the multi-squadron build; nothing is built from them without his word.
+  **Stale once pull request 850 is live (found 26 Nov 26, chat 203):** the guide's check C-row for SANS availability
+  still reads "Filing nothing raises nothing." (`logic.json`, `talon-guide.html`, the published page) — his D2579 /
+  D2584 3b made it "…or with nothing filed." Rebuild by its README after 850 merges, and republish to the same address.
 
 ### [DB-SYNC-MODEL] How the app shares and locks once it is in the database — his idea, to be designed now, built with the adapter (29 Sep 26)
 **Asked again at this step (his D2316, 22 Nov 26):** whether a sign-off name held while the day's OIL list is open should drop when another scheduler changes the day behind the list — kept as built until then (the OIL page).
