@@ -1924,3 +1924,16 @@ sides.
 **Issue:** A drawer redrew a phone picture so a note no longer covered the buttons it named, under the same file name. The page reviewer, working at the same time, recut the picture and wrote a caption saying the note "lies over the form's own Cancel and Save" — true of the old picture, false of the new one. The host caught it only by opening the final picture before publishing.
 **Suggested improvement:** In the pipeline, a picture redrawn after a page was built is listed by name to the page reviewer and the host; the host opens every such picture beside its caption as the last step before publishing. Prefer a new file name for a redraw that changes what the picture shows.
 **Principle:** When an asset is replaced in place while other workers describe it, every description written in that window must be re-checked against the final asset; a changed meaning deserves a new name.
+
+### Observation 1084: A chat started by another chat ran on the wrong model until it checked itself
+
+**Status:** OPEN
+**Date:** 2026-11-26
+**Session context:** Chat 194, section 1 (the guard rail) of the multi-squadron build, started by the coordinator chat. Numbered past 1083, the highest on every branch when written (other open branches write the log too).
+**Skill:** session-handoff (and any brief that starts a side chat)
+**Type:** open-source
+**Phase/Area:** starting a side chat from a brief that names its model
+
+**Issue:** The brief said "you are the latest Fable, high thinking, as orchestrator", but the chat it started ran on a different, weaker model. Nothing in the start step set the model, and nothing in the brief told the new chat to check which model it was. The new chat noticed only because its own system text names its model; it stopped before reading anything and asked, and the owner switched it by hand.
+**Suggested improvement:** In the handoff / start-a-chat steps: (1) the starter passes the model in the call that starts the chat, where the call takes one; (2) every brief that names a model ends its first paragraph with "first check which model you are; if it differs from the one named here, say so and wait before reading or building anything".
+**Principle:** A role assigned in words is not a setting. When a brief depends on which model or tool runs it, the started worker verifies that fact first, before spending anything, and the starter sets it mechanically where it can.
