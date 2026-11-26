@@ -1415,3 +1415,18 @@ sides.
 **Issue:** the chat started in the main checkout, switched it to its job's branch tip on a detached HEAD, and briefed two helpers to write there. Minutes later another chat switched the same checkout to its own branch. The helpers' new files survived only because they were untracked; the sources they read vanished mid-job (one helper read them out of git by commit), and the host had to move to the job's own worktree and copy the helpers' output across.
 **Suggested improvement:** a chat whose job has its own branch works in that branch's own worktree from its first write, never in a checkout other chats start in; every helper's brief names that worktree as its only place to read and write.
 **Principle:** a working copy shared by several live sessions is not a place to do work, only a place to start from; give each job its own copy before the first write.
+
+### Observation 1081: A published artifact page blocks styles a script adds — test the switch where it is served
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** chat 180 — an interactive mock-up (the amendment-colours try-out) published as a claude.ai Artifact; numbered past 1080, the highest on other branches
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** interactive mock-ups / testing before showing
+
+**Issue:** The try-out's colour switch wrote a new `<style>` element from script. Every local Playwright check passed, but on the published page the host's security rules blocked the added style, so the switch did nothing on the owner's screen and he saw the old colours under the new label. A second fault on the same page: plain `<a href>` links to full-size pictures replaced the whole page inside the viewer, with no way back on an iPhone.
+
+**Suggested improvement:** Add to the mock-up guide's interactive section: (1) never add style elements or stylesheets from script on a page that will be published — keep all CSS fixed in the page and change only classes and CSS variables (`element.style.setProperty`); (2) picture links open with `target="_blank"`; (3) the page's test asserts both (no `createElement('style')`, every picture link has a target).
+
+**Principle:** A local test does not reproduce the host's security policy: anything that depends on the page being served (styles injected by script, navigation inside a framed viewer) must be ruled out by construction and checked by a test, because the local run will pass.
