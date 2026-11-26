@@ -52,6 +52,23 @@ test('Post out from a day: the posting alone, in way C\'s order and layout (D265
   await info.attach('s4-postout', { body: await sheet.screenshot(), contentType: 'image/png' })
 })
 
+/* THE WALK'S W-D FAIL 2 (chat 201, 26 Nov 26): in WebKit — his iPhone's engine — the chosen chip's "✓ " gave its line a
+   taller box than the plain words, so on a phone, chips two to a line, the chosen one and its neighbour stood 30 tall and
+   SANS alone on the second line 28; Chromium draws all three 30, so the test above (two chips of ONE line, which the row
+   stretches alike) could not see it. WebKit's metric is injected here (§7.9 of the order): the chosen chip's line made
+   2px taller, as the ✓ makes it there. The rule in its engine-free form: every chip as tall as the tallest, whatever line
+   the fonts give — choose each chip in turn, measure all three. */
+test('every chip as tall as the tallest, whichever is chosen and whatever line the fonts give (the walk, W-D FAIL 2)', async ({ page }) => {
+  await openPostOut(page)
+  await page.addStyleTag({ content: '.bidsheet .po-chips .pchip.on { line-height: 18px; }' })
+  const chips = page.locator('[data-testid="bid-picker"] .po-chips .pchip')
+  for (const pick of ['po-delete', 'po-sans', 'po-overseas']) {
+    await page.getByTestId(pick).click()
+    const h = await chips.evaluateAll(els => els.map(e => Math.round(e.getBoundingClientRect().height * 10) / 10))
+    expect(Math.max(...h) - Math.min(...h), `chips' heights with ${pick} chosen: ${h.join(', ')}`).toBeLessThanOrEqual(0.5)
+  }
+})
+
 test('Q3: a press on the day under an open posting closes it; the next press opens the day afresh (D2732 Q3)', async ({ page }) => {
   await openPostOut(page)
   const cell = page.locator(`[data-testid="cell-snap-${DAY}"]`)

@@ -371,6 +371,10 @@
 .bidsheet .po-chips {
   display: grid;
   grid-template-columns: repeat(var(--po-n, 3), minmax(0, 1fr));
+  /* every line of chips as tall as the tallest: on a phone (two to a line) WebKit gave the chosen chip's "✓ " a 2px
+     taller line, so SANS alone on the second line stood shorter than the two above it (the walk, W-D FAIL 2 —
+     chat 201, 26 Nov 26; pinned by e2e/msq-s4-posting-leavewar.spec.ts "every chip as tall as the tallest") */
+  grid-auto-rows: 1fr;
   gap: 6px;
   min-width: 0;
 }
