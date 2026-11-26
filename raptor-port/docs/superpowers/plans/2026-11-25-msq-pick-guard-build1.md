@@ -3288,19 +3288,19 @@ order follows from the work itself, it is written as a **finding** at the end, n
 
 | Step | Old | What | Waits on |
 |---|---|---|---|
-| **K0** | 0 | `main` brought in, the third squadron in the test world, the pins, the census; the reads and presses owed (the lull pop-ups, E9b's list, the saver's end, §5.5's last column) | — |
+| **K0** | 0 | `main` brought in, the third squadron in the test world, the pins, the census; the reads and presses owed (the lull pop-ups, E9b's list, the saver's end, §5.5's last column) — **done but for the presses (K0-P, under the checks lock): the block "K0 — done" below** | — |
 | **K1** | 1 | Part A — the guard's table and function, the drawn predicates, the closers | E9b's list of windows put to him and answered — a window he has not answered keeps refusing, its closer left out (D2654 E4, E9b; D2611); the lull pop-ups pressed at K0 (the section page told him each covers the whole screen, so nothing is refused there — K0 confirms it by the keys too); ~~the Calendar's notes drawn (E1)~~ **seen — the section page's group 4, the quote marks in “Every Monday” kept (D2729)**; ~~readings 17 (`qualsnew`) and 20 (the Calendar's note named first) each hold their own row~~ **answered (D2729 Q2, Q3, Q4) — built as the step-0 block below says**; the `showOnly` marks in `BidPicker.tsx`: §21.5 |
 | **K2a** | 1b (the look) | "+ Add a person" **in the page's top row** — the search, Filter and the button one row at the very top, the form under it, the foot block gone (D2652 N13 i) — with its Cancel and the pair measured from the app (D2644); **while the form is open the opener is not on the page, the search widened into its place, and the form wears the heading "ADD A PERSON" (D2726, D2729 Q10); no Home squadron box — a new man joins the squadron in view (D2729 Q1)**. **Taken straight after K0, ahead of K1: it needs nothing of the guard, and it is the step Admin → Users waits for (the red team's Opus 6)** | ~~the form redrawn at the top and seen (owed — D2652)~~ **seen (D2729 Q10)**; ~~**NQ2** holds only the Home squadron box~~ **answered (D2729 Q1)** |
 | **K2b** | 1b (its report) | The form's report to the guard (`useGuardWork('addperson', …)`), with A6's Add a person half — after K1, whose table it reports to | K1 |
 | **K3** | 2 | The note's place | — |
-| **K4a** | — (new: D2729 Q9, N14) | **The saver's end** — a send that has had no answer for a set time gives up and shows "Not saved" with Retry, exactly as a refused save does; everywhere in the app, not only at a door. Its own tests, written first; its own code read, the security reader beside it (saved data — D1411) | its files (`storage/postman.ts`, `storage/savewait.ts`) are on no section's list — **the coordinator told before either is edited**; K0's read of how the saver stands today |
+| **K4a** | — (new: D2729 Q9, N14) | **The saver's end** — a send that has had no answer for a set time gives up and shows "Not saved" with Retry, exactly as a refused save does; everywhere in the app, not only at a door. Its own tests, written first; its own code read, the security reader beside it (saved data — D1411) | its files (`storage/postman.ts`, `storage/savewait.ts`) are this section's alone (the coordinator, 26 Nov 26 — §21.5); **his answer to the question K0 raised: no store the app ships with can hang, so build it now or file it with the database step (the block "K0 — done" below)** |
 | **K4** | 3 | The pick's door | ~~**N14** holds the wait for a save alone~~ **answered (D2729 Q9): the wait is built, after K4a** |
 | **K5** | 4 | The view switch and the Tracker's question | ~~**N14** holds the wait for a save at this door~~ **answered (D2729 Q9): built, after K4a** |
 | **K6** | 5 | The bell and the page door — nothing behind a refusal; `lineOpens`' table | ~~**N14** holds the wait for a save at this door~~ **answered (D2729 Q9): built, after K4a**; ~~**reading 18** holds the reminder's branch~~ **answered (D2729 Q7): his own SANS reminder brings his own squadron into view first** |
 | **K7** | 6 | The checker, switched on | — |
 | **K8** | 6b | The one Undo that changes the squadron in view (D2654 E7) | ~~the Undo note drawn and seen~~ **seen — the section page's group 5 (D2729): under Undo on a desktop, at the foot on a phone; a lead that would add a step to Undo offers only its Cancel half**; a lead of the Undo ending that stands neither on the section page nor in the sections' words review (`../briefs/` — `…-sections-words-review.md`) is read by a fresh Fable and shown to him before it is built (D2441, D2611) |
 | **K9** | 7 | Part F's list and doors; "+ Input" and "+ Commitment" on another squadron; **a drag across days on a SANS calendar with no SANS aircrew gives the passing note "150 has no SANS aircrew." and opens nothing (D2729 Q6)** | ~~D11 redrawn with the reason as words under the button~~ **seen — the section page's group 3 (D2729)**; ~~**reading 19** holds F15's member-view half~~ **answered (D2729 Q8): a moved master admin's old inputs follow the view he is in** |
-| **K10** | 8 | Part F's root | §5.5's home-page row settled |
+| **K10** | 8 | Part F's root | ~~§5.5's home-page row settled~~ **settled at K0: his own input on his own home page is that page's, live as today (the block "K0 — done" below)** |
 | **K11** | 8b | The squadron number's two fades — on a phone after the ☰ menu has closed, **and after the Input window a bell line opened has closed: it is that window's title strip that covers the number, never the bell's list, which opens below the top bar (D2729 Q5; D2642, N8)** | ~~the bell-list case filmed and seen~~ **the film seen (D2729 Q5)** |
 | **K12** | 9 | The browser tests and the records | the checks lock |
 | **the closing step** | — | The report that reminds him of group B — **put to him when the core's last step (K12) has landed: "after the first build", his words (D2636) — never held for the other sections; the core's orchestrator tells the coordinator, who puts the twelve to him and builds none** (~~when the batch is built~~ — the red team's Opus 10) | — |
@@ -3342,6 +3342,57 @@ bell and the Tracker's question at the view switch, the ☰ menu closing first.
 - **The SANS settings window under the Calendar on a phone** (Q3's twin) — as the row above says.
 - **Which "lot" the one FULL check covers** (§21.6) — the coordinator's.
 - **Group B** — after K12, through the coordinator (D2636).
+
+**K0 — done (chat 194, 26 Nov 26), and what it found.** `main` is in; `withThird()` is in the test world; the pins are
+green (`src/ui/msq-guard-asis.test.tsx`, `msq-guard-input-sqn.test.tsx`), R9 is in `msq-guard-rollcall.test.ts`. The
+builder's report, `../briefs/2026-11-26-msq-s1-k0-b-report.md`; **the census and the reads owed — the plan's annex for
+step 0 (d) — are the reader's report, `../briefs/2026-11-26-msq-s1-k0-c-report.md`.** What a later step must take from
+them:
+- **`withThird()`, for every test that uses it:** 150's id is made by the door — `third.u150`, never a fixed id; Mako
+  reads as 142's on 13 Jul and before; the set-up leaves two unread account lines on Hunter's bell and two on Ranger's.
+- **Today differs from §7 in three places (pinned as found, never bent):** a pick drops an armed "Discard N edits &
+  load" (P12 expected it kept); at his own move at midnight ALL AVAIL and Changes close but **Insights stays open**
+  (P18); a Plan ended while he is on that squadron closes all three and takes him home. K1's closers and A15 are
+  written against these.
+- **Pins not written at K0** (`it.todo`, each with its reason): P4's other menus, P10's Traffic window and document
+  viewer, P12's OIL Earn, P18's SANS day, Leave War day panel and Tracker details, F14's OIL answer. Each is written in
+  the step of the door or window it concerns, before that step's change.
+- **The census:** 39 files press a pick or the view switch, 14 a bell line. Kind (a): four tests, all in
+  `ui/msq-pick-windows` (l.360, 376, 393, 409) — re-pointed to the midnight road, where they assert the midnight
+  band's words, and l.360's last step ("142 picked again gives it back") belongs with kind (b). **Kind (c) cases the
+  plan did not name:** in `msq-trk-follows-pick`, a Tracker question (l.191), the import box (l.210) and Show All
+  (l.443) open at a pick; the switch with unsaved chart edits in `msq-trk-pick-ask` l.233, `msq-trk-follows-pick`
+  l.348 and `msq-night-press-held`; the pin at `msq-pick-windows` l.235. **Once the switch asks (K5), three files lose
+  their premise** — `msq-night-memberview`, `msq-bell-input-ask`, `msq-bell-recheck-after-ask` — so §5.6 F3's "the
+  recheck file stays green unchanged" cannot hold: each is re-pointed in K5, named in its report; and
+  `state/msq-trk-cover` fakes a held draft through a probe — K5 checks it does not stay green on a state the app can no
+  longer reach.
+- **§5.5's home-page row — SETTLED (the orchestrator's call; nothing he sees changes):** his own input dated after a
+  move saved ahead is, by `inputUnitOf`, the squadron he moves to, and today it opens live on his home page (F18). The
+  root keeps that: **an input that names him, on a page that is his own home that day, is that page's** — never greyed
+  there. K10's hold is lifted; F18 stays green through K10. It meets a member as much as a Plan holder.
+- **Quals' Done leaves the words typed in "Add qualification" hidden in the box** (`QualsPage` l.1157), and today they
+  come back in the next squadron's box. **The orchestrator's call (nothing new on screen):** words left hidden after
+  Done are dropped when the squadron in view changes, as leaving the page drops them today; on the same squadron they
+  come back as today. The `qualsnew` row counts only while the box is drawn (edit mode on).
+- **150's "+ Input" Person list** offers the presser himself today (`PeoplePick` l.222) — the fault C2 closes at K9 —
+  and a "Posted out / archived" group of 150's own men, which is by design (the Inputs pages' D729) and stays.
+- **The saver (K4a):** no store the app ships with can hang — the browser store writes in the same turn — so a send
+  that "never answers" cannot happen before the database step. A hung send would also freeze Retry and Logout
+  (`flush()` awaits the running send) and let the page close unasked; and a late answer would corrupt the saver's own
+  bookkeeping unless each send carries a number. "Never applied over a later change" is the store's to promise, not
+  the saver's. **Put to him through the coordinator (26 Nov 26): build the doors' wait now and file the give-up with
+  the database step (recommended), or build the give-up now (20 s, the app's own figure for a network wait). K4a waits
+  on his answer; K4–K6 build the wait either way.**
+- **E9b's list:** only two Leave War windows only show things for everyone — "Leave filed on the Inputs page" / "OIL
+  the app credited" and "Your OIL award"; three more only for a member ("Open for bidding", a person's window, "OIL
+  TRACKER"). **Put to him through the coordinator, with pictures owed from the presser: the two close by themselves,
+  the three refuse for everyone (recommended). Until he answers, all five refuse and no `showOnly` mark is added.**
+  The Tracker's Failures and Down days only show things (his E4: they close).
+- **The lull pop-ups** lie on a shade over the whole screen but hold no keys inside them: whether Tab reaches the
+  squadron picker behind the shade is pressed by K0-P before K1's rows for them.
+- **§9's "message pull request 843's chat first" no longer applies:** 843 is merged and `main` is in; `toast.ts`
+  gained only `overflow-wrap`, `placeToast` untouched; the board's two boxes moved to `SchedBoard.tsx` l.907 and l.1001.
 
 - **The files it changes.** New: `state/guard.ts`, `ui/guard.ts`, `ui/windrawn.ts`, `ui/guardnote.ts`,
   `state/inputsqn.ts`, the test files `src/ui/msq-guard-*.test.tsx`, `src/ui/msq-guard-rollcall.test.ts`,
