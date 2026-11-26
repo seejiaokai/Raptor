@@ -2993,7 +2993,9 @@ day's OIL list keeps no record of who answered each question, though the OIL pag
 stamped with who gave it — a job of its own, and sentence F1 names nobody until it exists; (b) two more untrue lines,
 "You can only edit your own inputs" / "…delete your own inputs" (a member may also change one he filed), to draft and
 draw with the six; (c) five of the adjusted sentences (the sign-off refusal, the Leave War card, both hidden-warning
-lines, the Logic line) owe a cold read before they are built (`words-reviewed.md`).
+lines, the Logic line) owe a cold read before they are built (`words-reviewed.md`); (d) his D2617 (a changed late
+cut-off moves LATE marks at once, published days too, as built): look at View-only Sched's face of a published day
+after the change, which was never checked.
 
 ### [SANS-INFO-LINE] A SANS man told when a scheduler puts him on anything but a flight or sim (his D2566, 24 Nov 26)
 
