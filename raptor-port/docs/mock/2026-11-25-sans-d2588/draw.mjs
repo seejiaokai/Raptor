@@ -93,7 +93,9 @@ async function mark(p, keys, newKeys = [], inKeys = [], all = false) {
           const where = nk.split(':')[1] || 'above'
           const t = document.createElement('div'); t.className = 'sw-tag'; t.textContent = 'New'; document.body.appendChild(t)
           const tb = t.getBoundingClientRect()
-          if (where === 'right') { t.style.left = (b1.right + 6) + 'px'; t.style.top = (b1.top + (b1.height - tb.height) / 2) + 'px' }
+          /* 'edge' (chat 186): above, its right end just past the element's, clear of a short neighbour at the element's left */
+          if (where === 'edge') { t.style.left = Math.min(innerWidth - tb.width - 2, b1.right + 4 - tb.width) + 'px'; t.style.top = Math.max(2, b1.top - tb.height - 3) + 'px' }
+          else if (where === 'right') { t.style.left = (b1.right + 6) + 'px'; t.style.top = (b1.top + (b1.height - tb.height) / 2) + 'px' }
           else { t.style.left = Math.max(2, b1.right - tb.width - 6) + 'px'; t.style.top = (where === 'below' ? b1.bottom + 3 : Math.max(2, b1.top - tb.height - 3)) + 'px' }
         }
       }
@@ -498,6 +500,37 @@ const SCENES = {
     const s = await T.W5.addSim(p, Wk, 6, 'amt', 'AMT', '13:00', '14:00'); fact(sc, 'AMT box', s)
     must(sc, 'an AMT box 13:00–14:00 on Sun 19 (read back)', await p.evaluate(r => { const x = window.DAYS[6].sims.amt[r]; return !!x && JSON.stringify(x).includes('13:00') }, s.ri), s)
     await settle(p, Wk, 'S'); await T.gotoWeek(p, Wk, '2026-07-13'); await L.openBoard(p, Wk, 6)
+    /* the SANS section read on screen: each man's reason and letters (and, chat 186 for D2750, each badge's cut and each
+       row's height) */
+    const read = () => p.evaluate(() => {
+      const t = e => e ? (e.textContent || '').replace(/\s+/g, ' ').trim() : ''
+      const sec = [...document.querySelectorAll('#schedBoard .rsans')].find(x => x.getBoundingClientRect().width > 0)
+      if (!sec) return null
+      sec.dataset.sw = 'sec'
+      return { head: t(sec.querySelector('.rh2')), rows: [...sec.querySelectorAll('.rsans-row')].map(r => {
+        const pk = r.querySelector('.rpuck'), b = r.querySelector('.rsans-b'), w = r.querySelector('.rwhy')
+        const bb = b ? b.getBoundingClientRect() : null
+        return { id: pk.dataset.person, cs: window.PEOPLE[pk.dataset.person].cs, struck: pk.classList.contains('no'), why: w && w.getBoundingClientRect().width > 0 ? t(w) : '', letters: t(b), lettersLeft: bb ? Math.round(bb.left * 10) / 10 : null, puckW: Math.round(pk.querySelector('.puck').getBoundingClientRect().width * 10) / 10, rpuckW: Math.round(pk.getBoundingClientRect().width * 10) / 10,
+          cut: b ? [b, ...b.querySelectorAll('*')].some(x => x.scrollWidth > x.clientWidth + 0.5) : false, rowH: Math.round(r.getBoundingClientRect().height * 100) / 100 }
+      }) }
+    })
+    /* chat 186 (D2750), picture 1: NO place picked — the SANS section as it reads today, nothing changed */
+    {
+      await T.W5.boardDrawer(p, Wk, true)
+      const np = await read()
+      fact(sc, 'SANS section, no place picked', np)
+      const jn = np && np.rows.find(r => r.id === 'ipman')
+      const armed = await p.evaluate(() => !!(window.ARM && window.ARM.key))
+      must(sc, 'no place picked: the SANS section shows, no reason line shows on any row, and Jester\'s "A · 08:00–10:00" is whole (not cut)',
+        !!np && np.rows.length >= 5 && np.rows.every(r => r.why === '') && !!jn && jn.letters === 'A · 08:00–10:00' && !jn.cut && !armed,
+        np ? { armed, rows: np.rows.map(r => `${r.cs} "${r.why}" [${r.letters}]${r.cut ? ' CUT' : ''}`) } : null)
+      await p.evaluate(() => { document.querySelectorAll('#schedBoard .rsans .rsans-b').forEach(e => { if (e.getBoundingClientRect().width > 0) e.dataset.sw = 'let' }) })
+      await reveal(p, 'sec')
+      await mark(p, ['let'], [], [], true)
+      await shot(p, sc + '-nopick', ['sec'], { pad: 8 })
+      await prep(p)
+      await T.W5.boardDrawer(p, Wk, false)
+    }
     /* its seat pressed (the "+ add" place) */
     const zone = p.locator(L.B(`[data-fill="s:6.amt.${s.ri}.+"]`)).first()
     await zone.evaluate(e => e.scrollIntoView({ block: 'center' })); await sleep(200)
@@ -508,18 +541,6 @@ const SCENES = {
     await sleep(500)
     must(sc, 'the AMT seat is pressed (armed)', !!(await p.evaluate(() => window.ARM && window.ARM.key)), await p.evaluate(() => window.ARM && window.ARM.key))
     await T.W5.boardDrawer(p, Wk, true)
-    /* the SANS section read on screen: each man's reason and letters */
-    const read = () => p.evaluate(() => {
-      const t = e => e ? (e.textContent || '').replace(/\s+/g, ' ').trim() : ''
-      const sec = [...document.querySelectorAll('#schedBoard .rsans')].find(x => x.getBoundingClientRect().width > 0)
-      if (!sec) return null
-      sec.dataset.sw = 'sec'
-      return { head: t(sec.querySelector('.rh2')), rows: [...sec.querySelectorAll('.rsans-row')].map(r => {
-        const pk = r.querySelector('.rpuck'), b = r.querySelector('.rsans-b'), w = r.querySelector('.rwhy')
-        const bb = b ? b.getBoundingClientRect() : null
-        return { id: pk.dataset.person, cs: window.PEOPLE[pk.dataset.person].cs, struck: pk.classList.contains('no'), why: w && w.getBoundingClientRect().width > 0 ? t(w) : '', letters: t(b), lettersLeft: bb ? Math.round(bb.left * 10) / 10 : null, puckW: Math.round(pk.querySelector('.puck').getBoundingClientRect().width * 10) / 10, rpuckW: Math.round(pk.getBoundingClientRect().width * 10) / 10 }
-      }) }
-    })
     const today = await read()
     fact(sc, 'SANS section today', today)
     const by = id => today.rows.find(r => r.id === id)
@@ -564,6 +585,67 @@ const SCENES = {
     const fin = await read(); fact(sc, 'SANS section, proposed', fin)
     await mark(p, ['let'], [], [], true)
     await shot(p, sc + '-new', ['sec'], { pad: 8 })
+    /* chat 186 (D2750), picture 2: the place picked, the letters in one column as above, and Jester's hours moved onto a
+       second line directly under his "A" — the badge's own words split at its " · ", the hours a block line inside the
+       badge itself, so they take its font, size and colour by inheritance; nothing else changes. Measured: the hours'
+       first letter against the "A" (text ranges), the hours whole, no badge cut, every other row's height unchanged. */
+    const wrap = await p.evaluate(() => {
+      const sec = document.querySelector('[data-sw="sec"]')
+      const rows = [...sec.querySelectorAll('.rsans-row')]
+      const h0 = rows.map(r => r.getBoundingClientRect().height)
+      const jr = rows.find(r => r.querySelector('.rpuck[data-person="ipman"]'))
+      const b = jr && jr.querySelector('.rsans-b')
+      if (!b) return { ok: false, why: 'no badge on Jester\'s row' }
+      const was = b.textContent
+      const parts = was.split(' · ')
+      if (parts.length !== 2) return { ok: false, why: 'badge words not "letter · hours"', was }
+      b.textContent = parts[0]
+      const hrs = document.createElement('span'); hrs.className = 'sw-hrs'; hrs.style.display = 'block'; hrs.textContent = parts[1]
+      b.appendChild(hrs)
+      b.dataset.sw = 'wrap'
+      const h1 = rows.map(r => r.getBoundingClientRect().height)
+      const ji = rows.indexOf(jr)
+      const rng = n => { const r = document.createRange(); r.selectNodeContents(n); return [...r.getClientRects()][0] }
+      const aBox = rng(b.firstChild), hBox = rng(hrs.firstChild)
+      const cs = e => { const s = getComputedStyle(e); return { font: s.fontFamily, size: s.fontSize, weight: s.fontWeight, colour: s.color, opacity: s.opacity } }
+      const lineH = hrs.getBoundingClientRect().height
+      const badges = [...sec.querySelectorAll('.rsans-b')].filter(e => e.getBoundingClientRect().width > 0)
+      return {
+        ok: true, was, line1: b.firstChild.textContent, line2: hrs.textContent,
+        hoursShownWhole: hrs.textContent === parts[1] && hrs.scrollWidth <= hrs.clientWidth + 0.5 && b.scrollWidth <= b.clientWidth + 0.5,
+        hoursLeftMinusALeft: Math.round((hBox.left - aBox.left) * 100) / 100, hoursTopMinusABottom: Math.round((hBox.top - aBox.bottom) * 100) / 100,
+        badgeStyle: cs(b), hoursStyle: cs(hrs),
+        badgesCut: badges.map(e => ({ text: e.textContent, sw: e.scrollWidth, cw: e.clientWidth, cut: e.scrollWidth > e.clientWidth + 0.5 })),
+        jesterRowH: [Math.round(h0[ji] * 100) / 100, Math.round(h1[ji] * 100) / 100], hoursLineH: Math.round(lineH * 100) / 100,
+        otherRowsMoved: rows.map((r, i) => i === ji ? null : Math.round((h1[i] - h0[i]) * 100) / 100).filter(x => x !== null && Math.abs(x) >= 0.5),
+        badgeW: Math.round(b.getBoundingClientRect().width * 10) / 10, hoursW: Math.round(hBox.width * 10) / 10, sectionRight: Math.round(sec.getBoundingClientRect().right * 10) / 10, badgeRight: Math.round(b.getBoundingClientRect().right * 10) / 10,
+      }
+    })
+    fact(sc, 'the hours on a second line', wrap)
+    must(sc, 'the hours split off Jester\'s badge ("A" over "08:00–10:00")', wrap.ok && wrap.line1 === 'A' && wrap.line2 === '08:00–10:00', wrap)
+    must(sc, 'the hours\' full text shows (not cut)', wrap.hoursShownWhole, wrap)
+    must(sc, 'nothing in the section is cut (scrollWidth <= clientWidth on every badge)', wrap.badgesCut.every(x => !x.cut), wrap.badgesCut)
+    must(sc, 'the hours stand directly under the "A", left-aligned with it (within 0.5px), on the next line', Math.abs(wrap.hoursLeftMinusALeft) <= 0.5 && wrap.hoursTopMinusABottom >= -0.5 && wrap.hoursTopMinusABottom <= 3, { left: wrap.hoursLeftMinusALeft, top: wrap.hoursTopMinusABottom })
+    must(sc, 'the hours in the badge\'s own font, size and colour', JSON.stringify(wrap.badgeStyle) === JSON.stringify(wrap.hoursStyle), [wrap.badgeStyle, wrap.hoursStyle])
+    must(sc, 'every other row\'s height unchanged; Jester\'s row grows no more than the second line', wrap.otherRowsMoved.length === 0 && wrap.jesterRowH[1] - wrap.jesterRowH[0] <= wrap.hoursLineH + 0.5, { other: wrap.otherRowsMoved, jester: wrap.jesterRowH, line: wrap.hoursLineH })
+    const fw = await read(); fact(sc, 'SANS section, the hours on a second line', fw)
+    const mk = await mark(p, ['let', 'wrap'], ['wrap:edge'], [], true)
+    must(sc, 'the marks leave every box unchanged', !/MOVED|MISSING/.test(JSON.stringify(mk)), mk)
+    /* the "New" tag covers no letters, reason or puck in the section (text ranges for the words) */
+    const cover = await p.evaluate(() => {
+      const sec = document.querySelector('[data-sw="sec"]'), tag = document.querySelector('.sw-tag')
+      if (!tag) return ['no tag']
+      const tb = tag.getBoundingClientRect(), hit = []
+      const ov = (r, what) => { if (r.width > 0 && r.left < tb.right && r.right > tb.left && r.top < tb.bottom && r.bottom > tb.top) hit.push(what) }
+      for (const e of sec.querySelectorAll('.rsans-b, .rwhy, .puck')) {
+        if (e.getBoundingClientRect().width <= 0) continue
+        if (e.classList.contains('puck')) { ov(e.getBoundingClientRect(), 'puck'); continue }
+        const r = document.createRange(); r.selectNodeContents(e); [...r.getClientRects()].forEach(x => ov(x, (e.textContent || '').trim()))
+      }
+      return hit
+    })
+    must(sc, 'the "New" tag covers no letters, reason or puck', cover.length === 0, cover)
+    await shot(p, sc + '-wrap', ['sec'], { pad: 8 })
     await p.keyboard.press('Escape'); await sleep(300)
   },
 }

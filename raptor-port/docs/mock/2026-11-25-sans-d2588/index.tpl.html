@@ -1,0 +1,375 @@
+<title>SANS Bell for Schedulers</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Copied from the SANS leftovers page of 25 Nov (its look, tokens and viewer), so the two pages read alike. */
+:root {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --ink: #141a22;
+  --muted: #566271;
+  --line: #d9dee4;
+  --accent: #0a6c87;
+  --accent-soft: #e3f2f6;
+  --mark: #d81b7a;
+  --frame: #0f1419;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-data: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1217; --surface: #151c23; --ink: #e5ebf1; --muted: #9ba8b5; --line: #26313c;
+    --accent: #52c6e4; --accent-soft: #12303a; --mark: #ff5cb3; --frame: #080b0e; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1217; --surface: #151c23; --ink: #e5ebf1; --muted: #9ba8b5; --line: #26313c;
+  --accent: #52c6e4; --accent-soft: #12303a; --mark: #ff5cb3; --frame: #080b0e; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 17px; line-height: 1.55; -webkit-text-size-adjust: 100%; margin: 0; }
+.wrap { max-width: 760px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 28px 56px; display: flex; flex-direction: column; gap: 28px; }
+h1, h2, h3 { text-wrap: balance; margin: 0; line-height: 1.2; }
+p { margin: 0; }
+a { color: var(--accent); }
+a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+.eyebrow { font-family: var(--font-data); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+header { display: flex; flex-direction: column; gap: 10px; }
+header h1 { font-size: 30px; font-weight: 700; letter-spacing: -.01em; }
+header .lead { color: var(--muted); max-width: 62ch; }
+.todo { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 6px 0; }
+.todo h2 { font-size: 13px; font-family: var(--font-data); font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); padding: 12px 18px 6px; }
+.todo ol { list-style: none; margin: 0; padding: 0; }
+.todo li + li { border-top: 1px solid var(--line); }
+.todo a { display: grid; grid-template-columns: 28px 1fr; gap: 2px 10px; padding: 12px 18px; text-decoration: none; color: var(--ink); }
+.todo .n { grid-row: span 2; font-family: var(--font-data); font-size: 15px; color: var(--accent); padding-top: 1px; }
+.todo .q { font-weight: 600; }
+.todo .r { color: var(--muted); font-size: 15px; }
+.todo .r b { color: var(--accent); font-weight: 600; }
+.cast { font-size: 15px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 18px; }
+.cast b { color: var(--ink); font-weight: 600; }
+.key { display: inline-flex; align-items: center; gap: 8px; }
+.key i { width: 22px; height: 14px; border: 2.5px solid var(--mark); border-radius: 4px; display: inline-block; }
+.qs { display: flex; flex-direction: column; gap: 44px; }
+section.q { display: flex; flex-direction: column; gap: 16px; scroll-margin-top: 16px; }
+section.q > h2 { font-size: 24px; font-weight: 700; display: flex; gap: 12px; align-items: baseline; }
+section.q > h2 .n { font-family: var(--font-data); font-weight: 500; font-size: 15px; color: var(--accent); border: 1.5px solid var(--accent); border-radius: 8px; padding: 1px 8px; flex: none; transform: translateY(-3px); }
+h3 { font-size: 13px; font-family: var(--font-data); font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.block { display: flex; flex-direction: column; gap: 8px; max-width: 65ch; }
+ul.today { margin: 0; padding-left: 1.1em; display: flex; flex-direction: column; gap: 6px; }
+.quote { font-style: normal; background: var(--accent-soft); border-radius: 5px; padding: 0 5px; }
+.day { font-family: var(--font-data); font-size: .88em; letter-spacing: .02em; white-space: nowrap; }
+.figs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 16px; }
+figure { margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+figure .tag { font-family: var(--font-data); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+figure .tag .num { font-family: var(--font-data); color: var(--accent); font-size: 13px; margin-right: 4px; }
+figure a.pic { display: block; background: var(--frame); border-radius: 12px; overflow: hidden; border: 1px solid var(--line); line-height: 0; }
+figure img { width: 100%; height: auto; display: block; }
+figcaption { font-size: 15px; line-height: 1.5; }
+figcaption b { font-weight: 600; }
+figcaption .real { display: block; color: var(--muted); font-size: 13.5px; margin-top: 4px; }
+.note { font-size: 15px; color: var(--muted); border-left: 3px solid var(--line); padding-left: 12px; max-width: 65ch; }
+.rec { background: var(--accent-soft); border-radius: 14px; padding: 16px 18px; display: flex; flex-direction: column; gap: 8px; }
+.rec h3 { color: var(--accent); }
+.rec p { max-width: 65ch; }
+.alt { display: flex; flex-direction: column; gap: 6px; padding: 0 2px; max-width: 65ch; }
+.answer { border-top: 1px solid var(--line); padding-top: 14px; font-size: 16px; }
+.answer .lbl { color: var(--muted); }
+.answer b { font-weight: 600; }
+.answer .sep { color: var(--muted); padding: 0 6px; }
+details.other { border: 1px solid var(--line); border-radius: 12px; padding: 4px 14px; background: var(--surface); }
+details.other > summary { cursor: pointer; font-size: 15px; color: var(--accent); padding: 8px 0; min-height: 28px; }
+details.other[open] > summary { margin-bottom: 8px; }
+details.other .figs { padding-bottom: 12px; }
+.sub { font-size: 18px; font-weight: 700; margin-top: 8px; }
+.words { display: flex; flex-direction: column; gap: 10px; }
+.words div { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; }
+.words .k { font-family: var(--font-data); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 2px; }
+.words b { font-weight: 600; display: block; }
+.words span.q2 { color: var(--muted); display: block; }
+.viewer { position: fixed; inset: 0; z-index: 20; background: #05080b; display: flex; flex-direction: column; }
+.viewer[hidden] { display: none; }
+.viewer .bar { display: flex; justify-content: flex-end; padding: calc(env(safe-area-inset-top, 0px) + 10px) max(12px, env(safe-area-inset-right, 0px)) 10px max(12px, env(safe-area-inset-left, 0px)); }
+.viewer button { font: 600 16px var(--font-body); color: #fff; background: #2a333d; border: 0; border-radius: 10px; padding: 10px 16px; min-height: 44px; }
+.viewer .scroll { flex: 1; overflow: auto; -webkit-overflow-scrolling: touch; padding: 0 max(12px, env(safe-area-inset-right, 0px)) calc(env(safe-area-inset-bottom, 0px) + 16px) max(12px, env(safe-area-inset-left, 0px)); }
+.viewer img { display: block; max-width: none; margin: 0 auto; }
+.viewer p { color: #c9d2db; font-size: 14px; text-align: center; padding: 10px 16px 0; margin: 0; }
+@media (max-width: 480px) { header h1 { font-size: 26px; } section.q > h2 { font-size: 21px; } }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+
+<div class="wrap">
+
+<header>
+  <span class="eyebrow">SANS availability · telling the schedulers · 25 Nov</span>
+  <h1>When Ranger changes or deletes a day he's planned on</h1>
+  <p class="lead">You asked for a line on the schedulers' bell when a SANS man deletes or changes his availability for a day he's already planned on. This page shows that line drawn on the real app, six small questions about when it goes out, and the crew list's letters lined up in one column as you asked.</p>
+  <p class="note"><b>New since you last looked:</b> the line now says “changed” wherever it said “cut back”, as you asked (pictures 3, 4, 7, 16 and 17). Question 3 is now only a line or no line. In picture 12 the quieter line names Ranger, so “He” can't be read as Saber. A new question, at the end under the crew list's letters: where Jester's hours go when the column leaves no room (pictures 20 and 21).</p>
+</header>
+
+<nav class="todo" aria-label="The questions">
+  <h2>Your answers</h2>
+  <ol>
+    <li><a href="#q-line"><span class="n">1</span><span class="q">The bell line's words, for the four cases</span><span class="r">Recommended: <b>yes, as drawn</b> (pictures 2 to 5).</span></a></li>
+    <li><a href="#q-covered"><span class="n">2</span><span class="q">He shortens his hours, but the flight is still covered</span><span class="r">Recommended: <b>no line</b>. The schedulers hear only when something he's planned on is no longer covered.</span></a></li>
+    <li><a href="#q-moved"><span class="n">3</span><span class="q">He moves his hours instead of shortening them</span><span class="r">Recommended: <b>a line</b>, since the flight is no longer covered.</span></a></li>
+    <li><a href="#q-saber"><span class="n">4</span><span class="q">A scheduler deletes it for him</span><span class="r">Recommended: <b>a line to the other schedulers</b>, naming who did it. None to the one who did it.</span></a></li>
+    <li><a href="#q-twodays"><span class="n">5</span><span class="q">One filing over two planned days, deleted in one press</span><span class="r">Recommended: <b>one line a day</b>.</span></a></li>
+    <li><a href="#q-oneofmany"><span class="n">6</span><span class="q">Planned on two things, only one no longer covered</span><span class="r">Recommended: <b>name only the one no longer covered</b>.</span></a></li>
+    <li><a href="#q-planned"><span class="n">7</span><span class="q">What counts as “planned”</span><span class="r">Recommended: <b>a flying seat or a sim</b>, as for his own reminder.</span></a></li>
+    <li><a href="#q-column"><span class="n">✓</span><span class="q">The crew list's F / O / A letters in one column</span><span class="r">Already decided: <b>one column</b>. This is the drawing, for your look before it's built. What the drawing found is in its section.</span></a></li>
+    <li><a href="#q-hours"><span class="n">8</span><span class="q">Jester's hours, when the column leaves no room</span><span class="r">Recommended: <b>a second line under his letter</b>, so his hours are never cut.</span></a></li>
+  </ol>
+</nav>
+
+<div class="cast">
+  <span><b>Ranger</b>: SANS from Fri 17 Jul, changes his availability on his phone</span>
+  <span><b>Saber</b>: the scheduler, mostly at his desk</span>
+  <span><b>Hunter</b>: another admin of the squadron</span>
+  <span class="key"><i aria-hidden="true"></i> pink outline: where to look. A pink “New” tag: drawn in, not built yet</span>
+  <span>Tap any picture to see it full size. Each section shows the desktop first, where Saber mostly reads his bell; the phone is in the fold under it.</span>
+</div>
+
+<div class="qs">
+
+<!-- 1 -->
+<section class="q" id="q-line">
+  <h2><span class="n">1</span>The bell line's words, for the four cases</h2>
+  <div class="block">
+    <h3>When this happens</h3>
+    <p>Ranger has offered to fly on <span class="day">Sat 18 Jul</span>, 08:00–17:00. A few days before, Saber puts him on VL BFM, take-off 13:00. Later Ranger opens the SANS calendar on his phone and deletes that day, or changes it. It's rare: a few times a month at most, and only for SANS men.</p>
+  </div>
+  <div class="block">
+    <h3>What the app does today</h3>
+    <ul class="today">
+      <li>Nobody is told. Saber's bell stays “Nothing new” (picture 1).</li>
+      <li>After a delete, the day's warning list says nothing about Ranger either. After a change that leaves the flight uncovered, the warning list does flag it, but only if Saber opens that day.</li>
+    </ul>
+  </div>
+  <div class="figs">
+{{fig 1|Saber's desk · today, after Ranger deletes|a-bell-today-desktop|Saber's bell reading Nothing new.|Ranger has deleted his availability for <span class="day">Sat 18</span>. Saber's bell says <b>“Nothing new”</b>. The same is true after each change on this page.|Real app, nothing changed.}}
+{{fig 2|(a) He deletes it|a-bell-new-desktop|Bell line: Ranger deleted his SANS availability for Sat 18 Jul.|<b>“Ranger deleted his SANS availability for Sat 18 Jul.”</b> then <span class="quote">“He's planned on VL BFM (T/O 13:00).”</span>|Ranger's delete and the plan are real. The line is drawn in: a copy of a real line from Saber's bell, with only its words changed. Its “3 min” comes from that real line.}}
+{{fig 3|(b) He shortens his hours|b-bell-new-desktop|Bell line: Ranger changed his SANS availability for Sat 18 Jul.|He shortened Fly 08:00–17:00 to 08:00–10:00: <b>“Ranger changed his SANS availability for Sat 18 Jul.”</b> then <span class="quote">“He now offers Fly 08:00–10:00. He's planned on VL BFM (T/O 13:00).”</span>|His change and the plan are real; the line drawn in.}}
+{{fig 4|(c) He switches to another event|c-bell-new-desktop|Bell line: He now offers OFT only.|He switched from Fly to OFT only: <b>“Ranger changed his SANS availability for Sat 18 Jul.”</b> then <span class="quote">“He now offers OFT only. He's planned on VL BFM (T/O 13:00).”</span>|His change and the plan are real; the line drawn in.}}
+{{fig 5|(d) Planned on two things that day|d-bell-new-desktop|Bell line naming the OFT and VL BFM.|He was on an OFT at 10:00 and VL BFM, and deleted his Fly and OFT availability. The quieter line names both, in time order: <span class="quote">“He's planned on OFT (10:00) and VL BFM (T/O 13:00).”</span>|His delete and both plans are real; the line drawn in.}}
+  </div>
+  <details class="other"><summary>The same on a phone, and today's pictures for (b) to (d)</summary><div class="figs">
+{{fig 1|Phone · today|a-bell-today-phone|Bell reading Nothing new.|“Nothing new”.|Real app, nothing changed. The phone's top bar doesn't show whose bell it is: it's Saber's.}}
+{{fig 2|Phone · (a)|a-bell-new-phone|Bell line (a).|As picture 2.|Line drawn in.}}
+{{fig 3|Phone · (b)|b-bell-new-phone|Bell line (b).|As picture 3.|Line drawn in.}}
+{{fig 4|Phone · (c)|c-bell-new-phone|Bell line (c).|As picture 4.|Line drawn in.}}
+{{fig 5|Phone · (d)|d-bell-new-phone|Bell line (d).|As picture 5.|Line drawn in.}}
+{{fig 3|Desktop · today for (b)|b-bell-today-desktop|Bell reading Nothing new.|“Nothing new”.|Real app, nothing changed.}}
+{{fig 4|Desktop · today for (c)|c-bell-today-desktop|Bell reading Nothing new.|“Nothing new”.|Real app, nothing changed.}}
+{{fig 5|Desktop · today for (d)|d-bell-today-desktop|Bell reading Nothing new.|“Nothing new”.|Real app, nothing changed.}}
+{{fig ·|Desktop · the real line copied|cap-saber-real-desktop|A real line on Saber's bell about a Meeting.|The real line on Saber's bell that every drawn line is copied from: Ranger had added Saber to a Meeting.|Real app, nothing changed. Staged only to have a real line to copy.}}
+  </div></details>
+  <ul class="today">
+    <li>“Deleted”, not “withdrew”: Delete is the button he presses, and the app already uses “withdraw” for Unpublish and for a leave bid taken back.</li>
+    <li>No “· Ranger” after the line, as other bell lines have: the line already starts with his name.</li>
+    <li>Every change that isn't a delete has the same heading, “Ranger changed…”. What he now offers goes on the quieter line.</li>
+    <li>What he now offers is written the way his SANS card writes it: “All day”, his own hours, or “OFT only” where an event he offered before is gone.</li>
+  </ul>
+  <p class="note">Found while drawing: the heading breaks inside the date (on the phone “Sat 18” on one line and “Jul.” on the next; on the desktop “Sat”, then “18 Jul.”), and on the phone the quieter line breaks inside “VL BFM” (picture 3) or inside “(T/O 13:00)” (picture 5). The build can keep each of these together on one line.</p>
+  <div class="rec"><h3>Recommended: yes, as drawn</h3><p>The heading says who did what to which day. The quieter line says what he now offers and what he's planned on, so Saber can see from the line alone whether he needs to replace Ranger.</p></div>
+  <p class="answer"><span class="lbl">Your answer:</span> <b>yes, as drawn</b> (recommended)<span class="sep">/</span>change the words</p>
+</section>
+
+<!-- 2 -->
+<section class="q" id="q-covered">
+  <h2><span class="n">2</span>He shortens his hours, but the flight is still covered</h2>
+  <div class="block">
+    <h3>When this happens</h3>
+    <p>Ranger is on VL BFM, take-off 13:00, on <span class="day">Sat 18</span>, and has offered Fly 08:00–17:00. He shortens it to 10:00–17:00. The flight still falls inside his hours: the app checks from his step at 12:00 to the end of de-kit at 15:30. The warning list stays clear.</p>
+  </div>
+  <div class="figs">
+{{fig 6|Saber's desk · today, and recommended|q1-bell-today-desktop|Bell reading Nothing new.|Nothing on Saber's bell. Under the recommendation this stays as it is.|Real app, nothing changed. Ranger's change is real, and the warning list was checked: nothing about him.}}
+{{fig 7|The other answer: a line anyway|q1-bell-new-desktop|Bell line: He now offers Fly 10:00–17:00.|<b>“Ranger changed his SANS availability for Sat 18 Jul.”</b> then <span class="quote">“He now offers Fly 10:00–17:00. He's planned on VL BFM (T/O 13:00).”</span> Saber would read it and find there's nothing to do.|Line drawn in.}}
+  </div>
+  <details class="other"><summary>The same on a phone</summary><div class="figs">
+{{fig 6|Phone · today|q1-bell-today-phone|Bell reading Nothing new.|“Nothing new”.|Real app, nothing changed.}}
+{{fig 7|Phone · the other answer|q1-bell-new-phone|Bell line.|As picture 7.|Line drawn in.}}
+  </div></details>
+  <div class="rec"><h3>Recommended: no line</h3><p>The line is there so Saber can fix the plan. If everything Ranger is planned on is still covered, there's nothing to fix. You asked for a line when he changes a day he's planned on, and read on its own that includes this case, so this is your call.</p></div>
+  <p class="answer"><span class="lbl">Your answer:</span> <b>no line</b> (recommended)<span class="sep">/</span>a line for any change on a planned day</p>
+</section>
+
+<!-- 3 -->
+<section class="q" id="q-moved">
+  <h2><span class="n">3</span>He moves his hours instead of shortening them</h2>
+  <div class="block">
+    <h3>When this happens</h3>
+    <p>Same flight. Ranger had offered Fly 10:00–16:00, which covers it. He changes it to 14:00–20:00: still six hours, but the flight now falls outside them, and the warning list flags it.</p>
+  </div>
+  <div class="figs">
+{{fig 8|Saber's desk · today|q2-bell-today-desktop|Bell reading Nothing new.|“Nothing new”.|Real app, nothing changed. Ranger's change is real; the warning list flags his hours.}}
+{{fig 9|Saber's desk · proposed|q2-bell-new-desktop|Bell line: Ranger changed his SANS availability.|<b>“Ranger changed his SANS availability for Sat 18 Jul.”</b> then <span class="quote">“He now offers Fly 14:00–20:00. He's planned on VL BFM (T/O 13:00).”</span>|Line drawn in.}}
+  </div>
+  <details class="other"><summary>The same on a phone</summary><div class="figs">
+{{fig 8|Phone · today|q2-bell-today-phone|Bell reading Nothing new.|“Nothing new”.|Real app, nothing changed.}}
+{{fig 9|Phone · proposed|q2-bell-new-phone|Bell line.|As picture 9.|Line drawn in.}}
+  </div></details>
+  <div class="rec"><h3>Recommended: a line</h3><p>The flight is no longer covered, just as when he shortens his hours, so Saber needs to know. The line says “changed”, as in picture 3.</p></div>
+  <p class="answer"><span class="lbl">Your answer:</span> <b>a line</b> (recommended)<span class="sep">/</span>no line</p>
+</section>
+
+<!-- 4 -->
+<section class="q" id="q-saber">
+  <h2><span class="n">4</span>A scheduler deletes it for him</h2>
+  <div class="block">
+    <h3>When this happens</h3>
+    <p>Admins can file and delete SANS availability for a man. Ranger rings Saber to say he can't make <span class="day">Sat 18</span>, and Saber deletes the day for him, while Ranger is still on VL BFM. You asked for a line when a SANS man deletes it himself, so this case wasn't decided. If a line went out saying “Ranger deleted…”, it wouldn't be true.</p>
+  </div>
+  <div class="figs">
+{{fig 10|Saber's own bell · today, and recommended|q3s-bell-today-desktop|Saber's bell reading Nothing new.|Saber did it himself, so he gets nothing. Under the recommendation this stays as it is.|Real app, nothing changed. Saber's delete is real.}}
+{{fig 11|Hunter's bell · today|q3-bell-today-desktop|Hunter's bell reading Nothing new.|Hunter, another admin, hears nothing today.|Real app, nothing changed.}}
+{{fig 12|Hunter's bell · proposed|q3-bell-new-desktop|Bell line: Saber deleted Ranger's SANS availability.|<b>“Saber deleted Ranger's SANS availability for Sat 18 Jul.”</b> then <span class="quote">“Ranger is planned on VL BFM (T/O 13:00).”</span>|Line drawn in, on Hunter's real bell.}}
+  </div>
+  <details class="other"><summary>The same on a phone</summary><div class="figs">
+{{fig 10|Phone · Saber's own bell|q3s-bell-today-phone|Bell reading Nothing new.|“Nothing new”.|Real app, nothing changed.}}
+{{fig 11|Phone · Hunter's bell today|q3-bell-today-phone|Bell reading Nothing new.|“Nothing new”.|Real app, nothing changed. The phone's top bar doesn't show whose bell it is: it's Hunter's.}}
+{{fig 12|Phone · Hunter's bell proposed|q3-bell-new-phone|Bell line.|As picture 12.|Line drawn in.}}
+  </div></details>
+  <p class="note">Ranger's own bell isn't part of this question. Today he is told that his input was deleted, the same as for any input someone else deletes.</p>
+  <div class="rec"><h3>Recommended: a line to the other schedulers, naming who did it</h3><p>The other schedulers still need to know Ranger is no longer available for a flight he's on. The one who pressed Delete already knows.</p></div>
+  <p class="answer"><span class="lbl">Your answer:</span> <b>a line to the others</b> (recommended)<span class="sep">/</span>no line when a scheduler does it</p>
+</section>
+
+<!-- 5 -->
+<section class="q" id="q-twodays">
+  <h2><span class="n">5</span>One filing over two planned days, deleted in one press</h2>
+  <div class="block">
+    <h3>When this happens</h3>
+    <p>Ranger offers <span class="day">Sat 18</span> and <span class="day">Sun 19</span> in one go. Saber puts him on VL BFM on Saturday and an OFT at 10:00 on Sunday. Ranger then deletes it with one press, which takes both days away.</p>
+  </div>
+  <div class="figs">
+{{fig 13|Saber's desk · today|q4-bell-today-desktop|Bell reading Nothing new.|“Nothing new”.|Real app, nothing changed. Ranger's two days of availability, the two plans and the delete are real.}}
+{{fig 14|Saber's desk · proposed, one line a day|q4-bell-new-desktop|Two bell lines, one for each day.|Saturday's line names VL BFM. Sunday's names <span class="quote">“OFT (10:00)”</span>.|Both lines drawn in.}}
+  </div>
+  <details class="other"><summary>The same on a phone</summary><div class="figs">
+{{fig 13|Phone · today|q4-bell-today-phone|Bell reading Nothing new.|“Nothing new”.|Real app, nothing changed.}}
+{{fig 14|Phone · proposed|q4-bell-new-phone|Two bell lines.|As picture 14.|Lines drawn in.}}
+  </div></details>
+  <p class="note">The warning list calls Sunday's box “Sim OFT 10:00–11:00”. The line says “OFT (10:00)” so that a sim reads the same way as a flight, “VL BFM (T/O 13:00)”. Which name the line gives a sim is settled when it's built.</p>
+  <div class="rec"><h3>Recommended: one line a day</h3><p>Ranger's own reminder is one line a day. A tap on a line opens its day, so each line takes Saber straight to the day he has to fix.</p></div>
+  <p class="answer"><span class="lbl">Your answer:</span> <b>one line a day</b> (recommended)<span class="sep">/</span>one line naming both days</p>
+</section>
+
+<!-- 6 -->
+<section class="q" id="q-oneofmany">
+  <h2><span class="n">6</span>Planned on two things, only one no longer covered</h2>
+  <div class="block">
+    <h3>When this happens</h3>
+    <p>Ranger had offered Fly and OFT, 08:00–17:00, on <span class="day">Sat 18</span>. Saber put him on an OFT at 10:00 and VL BFM. Ranger changes it to OFT only, so the OFT is still covered but the flight isn't. The warning list flags only the flight.</p>
+  </div>
+  <div class="figs">
+{{fig 15|Saber's desk · today|q5-bell-today-desktop|Bell reading Nothing new.|“Nothing new”.|Real app, nothing changed. His change and both plans are real.}}
+{{fig 16|Recommended: only the one no longer covered|q5-bell-new-desktop|Bell line naming VL BFM only.|<span class="quote">“He now offers OFT only. He's planned on VL BFM (T/O 13:00).”</span>|Line drawn in.}}
+{{fig 17|The other answer: both|q5-bell-both-desktop|Bell line naming both.|<span class="quote">“He now offers OFT only. He's planned on OFT (10:00) and VL BFM (T/O 13:00).”</span> The OFT is still fine, so naming it could send Saber looking at it for nothing.|Line drawn in.}}
+  </div>
+  <details class="other"><summary>The same on a phone</summary><div class="figs">
+{{fig 15|Phone · today|q5-bell-today-phone|Bell reading Nothing new.|“Nothing new”.|Real app, nothing changed.}}
+{{fig 16|Phone · recommended|q5-bell-new-phone|Bell line.|As picture 16.|Line drawn in.}}
+{{fig 17|Phone · both|q5-bell-both-phone|Bell line.|As picture 17.|Line drawn in.}}
+  </div></details>
+  <p class="note">Picture 5 names both because there he deleted everything, so neither is covered.</p>
+  <div class="rec"><h3>Recommended: name only the one no longer covered</h3><p>That's the one Saber has to act on.</p></div>
+  <p class="answer"><span class="lbl">Your answer:</span> <b>only the one no longer covered</b> (recommended)<span class="sep">/</span>everything he's planned on that day</p>
+</section>
+
+<!-- 7 -->
+<section class="q" id="q-planned">
+  <h2><span class="n">7</span>What counts as “planned”</h2>
+  <div class="block">
+    <h3>When this happens</h3>
+    <p>Ranger is on a ground brief or a duty desk on <span class="day">Sat 18</span>, not a flight or a sim, and deletes his SANS availability for that day.</p>
+  </div>
+  <div class="rec"><h3>Recommended: a flying seat or a sim only</h3><p>His own reminder already counts only a flying seat or a sim (OFT, AMT). SANS availability is about flying and the sims, so a ground brief or a duty desk doesn't depend on it, and no line goes out. Nothing to picture.</p></div>
+  <p class="answer"><span class="lbl">Your answer:</span> <b>a flying seat or a sim</b> (recommended)<span class="sep">/</span>anything he's on that day</p>
+</section>
+
+<!-- column -->
+<section class="q" id="q-column">
+  <h2><span class="n">✓</span>The crew list's F / O / A letters in one column</h2>
+  <div class="block">
+    <h3>When this happens</h3>
+    <p>Saber, at his desk, presses an empty AMT seat on <span class="day">Sun 19</span> (13:00–14:00). The crew list shows every SANS man with his reason and the small letters of what he offered. This happens whenever he fills a sim or flight seat. You decided the letters line up in one column, straight after the longest reason.</p>
+  </div>
+  <div class="figs">
+{{fig 18|Saber's desk · today|col-today-desktop|SANS section with the letters at different places.|Each man's letters sit wherever his reason ends.|Real app, nothing changed. The five filings and the AMT box are real.}}
+{{fig 19|Saber's desk · proposed|col-new-desktop|SANS section with the letters in one column.|The letters in one column, straight after the longest reason (Kraken's). The reasons use the words you chose: <span class="quote">“SANS — offered Fly only, not AMT”</span>, <span class="quote">“SANS — offered OFT only, not AMT”</span>, and for two offered, <span class="quote">“SANS — offered Fly and OFT only, not AMT”</span>.|Drawn: Bolt's, Rebel's and Kraken's reason words, and each row's letters moved to the column. Nothing else changed.}}
+  </div>
+  <details class="other"><summary>The same on a phone, and the new words without the column</summary><div class="figs">
+{{fig 18|Phone · today|col-today-phone|SANS section on a phone.|On a phone each reason sits under its man, and the letters sit beside him.|Real app, nothing changed.}}
+{{fig 19|Phone · proposed|col-new-phone|SANS section on a phone, letters in one column.|The same column.|Drawn as picture 19.}}
+{{fig 18|Desktop · the new words only|col-words-desktop|SANS section with new words, letters not moved.|The new words with the letters left where they are, to show how far apart they drift.|Words drawn in; letters as the app places them.}}
+  </div></details>
+  <div class="block" id="q-hours">
+    <h3>Question: Jester's hours, when the column leaves no room</h3>
+    <p>Saber picks the AMT seat on <span class="day">Sun 19</span>. Jester offered AMT 08:00–10:00, and in the column his hours are cut to <span class="quote">“A · 08:00–1…”</span> (picture 19).</p>
+  </div>
+  <div class="figs">
+{{fig 20|Saber's desk · no place picked|col-nopick-desktop|SANS section with no place picked, Jester's hours whole.|No place picked: no reasons show, and Jester's <span class="quote">“A · 08:00–10:00”</span> is whole.|Real app, nothing changed.}}
+{{fig 21|Saber's desk · place picked, proposed|col-wrap-desktop|SANS section with Jester's hours on a second line under his letter.|Place picked: his hours on a second line under his <span class="quote">“A”</span>, whole.|Drawn: his hours moved under the letter. Nothing else changed.}}
+  </div>
+  <details class="other"><summary>The same on a phone</summary><div class="figs">
+{{fig 20|Phone · no place picked|col-nopick-phone|SANS section on a phone, no place picked.|As picture 20.|Real app, nothing changed.}}
+{{fig 21|Phone · proposed|col-wrap-phone|SANS section on a phone, Jester's hours under his letter.|As picture 21.|Drawn as picture 21.}}
+  </div></details>
+  <div class="rec"><h3>Recommended: hours on a second line under the letter</h3></div>
+  <p class="answer"><span class="lbl">Your answer:</span> <b>second line</b> (recommended)<span class="sep">/</span>something else</p>
+  <div class="block">
+    <h3>Found while drawing</h3>
+    <ul class="today">
+      <li><b>Zenith's letter moves away from him.</b> A man who isn't struck has no reason, so his “A” now stands out in the column, well away from his name. That's how one column works.</li>
+      <li>Men with nothing filed have no letters, so nothing moves on their rows.</li>
+    </ul>
+  </div>
+</section>
+
+</div>
+</div>
+
+<div class="viewer" id="viewer" hidden role="dialog" aria-modal="true" aria-label="Picture at full size">
+  <div class="bar"><button type="button" id="viewerClose">Close</button></div>
+  <div class="scroll" id="viewerScroll"><img id="viewerImg" alt=""><p id="viewerCap"></p></div>
+</div>
+
+<script>
+(function () {
+  var viewer = document.getElementById('viewer')
+  var img = document.getElementById('viewerImg')
+  var cap = document.getElementById('viewerCap')
+  var closeBtn = document.getElementById('viewerClose')
+  var opener = null
+  function close() {
+    viewer.hidden = true
+    img.removeAttribute('src')
+    document.body.style.overflow = ''
+    if (opener) opener.focus()
+  }
+  document.querySelectorAll('a.pic').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault()
+      var small = a.querySelector('img')
+      opener = a
+      img.src = a.getAttribute('href')
+      img.alt = small.alt
+      img.style.width = Math.min(+small.getAttribute('width'), 900) + 'px'
+      var fc = a.parentNode.querySelector('figcaption')
+      cap.textContent = fc ? fc.textContent : ''
+      viewer.hidden = false
+      document.body.style.overflow = 'hidden'
+      closeBtn.focus()
+      var sc = document.getElementById('viewerScroll')
+      var centre = function () { sc.scrollTop = 0; sc.scrollLeft = (sc.scrollWidth - sc.clientWidth) / 2 }
+      if (img.complete) centre(); else img.onload = centre
+    })
+  })
+  closeBtn.addEventListener('click', close)
+  viewer.addEventListener('click', function (e) { if (e.target === viewer || e.target.id === 'viewerScroll') close() })
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !viewer.hidden) close() })
+})()
+</script>
