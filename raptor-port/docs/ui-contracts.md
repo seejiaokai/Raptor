@@ -6943,13 +6943,13 @@ squadron"), the one line on a strip (`.po-line`), an amber line (the last admin,
 button — "Post out" / "Post in" in the app's main-button blue (`.dchip.po-main`; his 18 Aug 26 grey hatched chip set
 aside, D2653 b), a refusal's reason under it. An existing posting's foot holds "Undo post out" / "Undo post in" alone,
 design A (D2732 Q1): Move's grey chip with the top bar's Undo arrow in teal, "(PO)"/"(PI)" dropped. The "Delete Cinch?"
-card's Delete is the Leave War's dashed grey Delete (`.abtn.po-del`, D2732 Q4, D332), on the three sheets' cards only;
-"Delete Cinch now?" (the date's question) keeps `danger` until his answer. A press on the day under an open posting
+card's Delete is the Leave War's dashed grey Delete (`.abtn.po-del`, D2732 Q4, D332), on the three sheets' cards, and
+"Delete Cinch now?" (the date's question) wears it too, Cancel staying blue (his D2744). A press on the day under an open posting
 closes it, the next opens the day afresh (Q3). "Place leave or OIL here instead…" is gone from both posting sheets (his
 D2727): an admin's tap on a BARE day outside a man's time opens the posting sheet only; a gone day that already holds an
 entry opens what that day opens on any other day (D1722, D1725 — the door the three restored browser tests of
-`e2e/leavewar.spec.ts` R3b, D1541's and R3c-2 take); a day before his post-in date opens the Post in sheet whatever it
-holds (the code reads' question, put to him through the coordinator, held); a member's own tap on his own such day
+`e2e/leavewar.spec.ts` R3b, D1541's and R3c-2 take); a day before his post-in date that holds an entry opens that entry's
+own window the same way, an empty one the Post in sheet (his D2743 — the code reads' F1 / A); a member's own tap on his own such day
 still opens the bid sheet. While a posting is open its window is named for it to a screen reader ("Post out" / "Post
 in"), the keys go to its first control when the menu item pressed left the screen, and on a phone the day it was opened
 from — or a drag's first day, over one man — is scrolled just above it (D1290; `cellinsight.ts`, every posting window

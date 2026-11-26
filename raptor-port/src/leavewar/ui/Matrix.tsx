@@ -287,7 +287,9 @@ export function Matrix() {
   // (owner, 20 Sep 26). For an ADMIN this opens the post-in sheet, exactly as
   // a posted-out day opens the post-out one; for a member it falls through to
   // the bid picker, which is answer C's "filed or bid" on a pre-joining day.
-  const openNotYetArrived = open?.posting
+  /* …and a day before his post-in that HOLDS an entry opens that entry's own window too, as after a post-out — an empty
+     such day still opens the Post in sheet (his D2743, 26 Nov 26, through the coordinator; the code reads' F1 / A) */
+  const openNotYetArrived = openGoneHolds ? false : open?.posting
     ? open.posting === 'pi' && !!openPerson && openPerson.from !== null
     : !!open && !!openPerson && postingSheetFor(openPerson, open.date) === 'pi'   // D320: by stint
   /* "Place leave or OIL here instead" (his 20 Sep 26 wish) is GONE (his D2727, 26 Nov 26 — "ok remove it"): an admin's

@@ -1529,9 +1529,9 @@ export function PostOutSheet({
           question={askDate !== null ? `Delete ${callsign} now?` : `Delete ${callsign}?`}
           sub={outcomeLine('delete', shownFrom, !!hasAccount)}
           onEscape={() => { setDelArm(false); setAskDate(null) }}>
-          {/* "Delete Cinch?" wears the Leave War's dashed grey Delete (his D2732 Q4, D332); "Delete Cinch now?" — the date's
-              question — keeps today's look until his answer on it comes (held by the coordinator, 26 Nov 26) */}
-          <button type="button" className={askDate !== null ? 'abtn danger' : 'abtn po-del'} data-testid="postout-delete-go"
+          {/* both questions — "Delete Cinch?" and the date's "Delete Cinch now?" — wear the Leave War's dashed grey Delete
+              (his D2732 Q4, D332; "now?" too by his D2744, 26 Nov 26); Cancel stays the blue main button */}
+          <button type="button" className="abtn po-del" data-testid="postout-delete-go"
             onClick={() => { const at = shownFrom; setDelArm(false); setAskDate(null); setErr(onChange(at, 'delete') || '') }}>Delete</button>
           <button type="button" className="abtn primary" data-testid="postout-delete-cancel" autoFocus
             onClick={() => { setDelArm(false); setAskDate(null) }}>Cancel</button>

@@ -2,12 +2,11 @@
    Fable), each seen failing on the build they read before chat 197's fixes (or, for the doors, passing as they should),
    gathered here unchanged in what they assert. Their own world: test-support/msq-s4-world.ts (three squadrons, D2630).
 
-   Left out, held for his answer through the coordinator: the day BEFORE a man's post-in holding an entry (the Opus read's
-   F1, Fable's A) — whether the admin's tap opens the day's usual window there, as on a gone day (D1722 read across). */
+   The day BEFORE a man's post-in holding an entry (the Opus read's F1, Fable's A) waited for his answer: D2743, build it. */
 import type { ReactNode } from 'react'
 import { cleanup, fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { getState, grantOilDays, setCell, setPostOut } from '../state/store'
+import { getState, grantOilDays, setCell, setPostIn, setPostOut } from '../state/store'
 import { Matrix } from './Matrix'
 import { PostInSheet, PostOutSheet } from './BidPicker'
 import { SelectSheet } from './SelectSheet'
@@ -99,6 +98,30 @@ describe('the cut tests\' state is still reachable (Opus proof 1, Fable B)', () 
     if (screen.queryByText(/Tap the same leave again/)) fireEvent.click(within(s).getByTestId('bid-LL'))
     expect(screen.queryByText(/kept pending/)).toBeNull()
     expect(reqsOn(PID.cinch, AFTER2).filter((r: any) => r.state === 'pending'), 'no bid left pending').toHaveLength(0)
+  })
+})
+
+/* ── the day BEFORE a man's post-in that holds an entry (Opus F1, Fable A — his D2743, 26 Nov 26, through the
+   coordinator): the admin's tap opens that entry's own window, as after a post-out (D1722); an empty such day still
+   opens the Post in sheet ── */
+describe('a day before his post-in that holds an entry (D2743)', () => {
+  it('leave placed first, then the post-in: the admin\'s tap opens the day\'s usual window, not the Post in sheet alone', () => {
+    signInAs('hunter')
+    expect(setCell(PID.cinch, BEFORE, 'LL'), 'leave placed first, while he is in').toBe(true)
+    expect(setPostIn(PID.cinch, PO)).toBe(true)
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${PID.cinch}-${BEFORE}`))
+    expect(screen.queryByTestId('postin-sheet'), 'not the Post in sheet').toBeNull()
+    expect(screen.getByTestId('bid-picker'), 'the bid window, its bid\'s own actions').toBeTruthy()
+    expect(screen.getByTestId('bid-actions')).toBeTruthy()
+  })
+  it('an EMPTY day before his post-in still opens the Post in sheet', () => {
+    signInAs('hunter')
+    expect(setPostIn(PID.cinch, PO)).toBe(true)
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${PID.cinch}-${BEFORE}`))
+    expect(screen.getByTestId('postin-sheet')).toBeTruthy()
+    expect(screen.queryByTestId('bid-picker')).toBeNull()
   })
 })
 
