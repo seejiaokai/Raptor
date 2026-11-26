@@ -1545,3 +1545,16 @@ sides.
 **Issue:** One script printed all its results and then hung closing its WebKit browser; the loop behind it stood still for 26 minutes until the process was found and stopped by hand. Its results were whole — only the exit never came.
 **Suggested improvement:** A runner loop wraps each run in a time limit (`timeout 600 node …`) and prints the exit code beside the result counts, so a hang costs one limit and shows as such; the script's `finish` closes each browser with its own short limit.
 **Principle:** In a queue of independent runs, bound each one, so a stall in teardown cannot hold the rest.
+
+### Observation 1079: The handoff's "next chat number" lags when parallel chats are unmerged
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** chat 189 — the opening line said "chat 184 (183 the highest)", read from main's HANDOFF.md, while chats 185–188 already existed on unmerged branches and as session titles. Numbered past 1078, the highest on any branch (open branches write this log too).
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** the opening line / "Next chat number"
+
+**Issue:** The next free chat number was taken from the merged handoff file only. Parallel chats' blocks live on their own unmerged branches, so the merged file named a number four behind; one of the "free" numbers was already a live session's title.
+**Suggested improvement:** In the session-handoff skill, before writing "Next chat number", take the highest of: the merged handoff, every remote branch's commit subjects (`git log --all --since=7.days --format=%s | grep -o '^Chat [0-9]*'`) and the open session titles (list_sessions); a new chat re-checks the same three before naming itself.
+**Principle:** A counter shared by parallel workers must be read from every place they write, not from the one that is merged.
