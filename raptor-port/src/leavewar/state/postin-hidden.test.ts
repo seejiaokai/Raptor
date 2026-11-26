@@ -10,7 +10,7 @@ import {
 } from './store'
 import { memoryBackend } from './storage'
 
-const man: Person = { id: 'kite', callsign: 'KITE', seat: 'wso', band: 'line', sxo: false, from: null, to: null } as Person
+const man: Person = { id: 'kite', callsign: 'KITE', seat: 'wso', band: 'ops', sxo: false, from: null, to: null } as Person
 
 beforeEach(() => {
   initStore(memoryBackend()); setRole('admin'); setMemberTodayForTests('2026-12-10')
