@@ -1673,7 +1673,7 @@ one row, a whole copy of the input". **The drift seams it leaves — walk each o
    must be owned by it (`personUnitSrc`) or a person is counted twice. Read `dayPendingItems`, never the raw delta.
 9. **Old data:** a record with `person` reads as a one-person input for ever (`peopleOf`) and is written with `people`
    the first time who is in it changes; nothing is converted (D56). A new reader must work on both shapes.
-Still one row a man, on purpose: the Unavailable list (D737). The scheduler's own rows are untouched (D43, D278).
+Still one row a man, on purpose: the Unavailable list (D737). The scheduler's own rows are untouched (D43, D278). *(To change, not built: D737 is replaced by D2777 (26 Nov 26) — a shared input one row under Unavailable too, medical excepted; the combined-row job, [COMBINED-INPUT-ROWS].)*
 
 A shared input is one record a man tied by `grp` (`state/inputgroup.ts`). A new surface that LISTS inputs on the Inputs
 page must read entries (`entriesOf` / `entryRowsOf`), or it shows a group as separate lines; a new surface that CHANGES one

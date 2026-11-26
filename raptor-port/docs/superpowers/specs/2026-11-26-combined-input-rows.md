@@ -1,6 +1,6 @@
 # Combined input rows on the schedule — the plan put to Fable (chat 189, 26 Nov 26)
 
-**Status:** a proposal he is leaning towards, NOT yet a ruling. Nothing is recorded or built. Fable reviews it (his
+**Status:** his rulings D2770–D2780 recorded (§His answers); nothing is built. Fable reviewed it (his
 call, 26 Nov 26) before he decides.
 
 ## The problem he found (26 Nov 26)
@@ -107,7 +107,20 @@ list (`who: ["", "Saint"]`), the screen fine; the last-man refusal names doors t
 - **D2774** — a man dragged from a seat onto an input changes only the input; his seat is left as it was.
 - **D2775** — medical stays one man's, a row per man.
 - **D2776** — a drop on a medical row is refused with a short note saying why (always one man's).
-- **Leave — talked through, NOT yet confirmed (put to him as six points; chat 190 asks for his yes first):** (1) a
+- **Leave — his yes, 26 Nov 26 (chat 190), point 2 changed to his way first:**
+  - **D2777** — a shared input is one row on the Unavailable list too: a group leave stays one input (one card, one
+    row of its pucks); OD, course, Attach and a commitment moved there one row; medical alone a row per man (points 1,
+    4, 5; it replaces D737, and point 4 restates D2775, D2776).
+  - **D2778** (the Leave War page) — on the Leave War a group leave changes as one: a man's box opens the input's own
+    window, a change there is for everyone, the box marked as shared (drawn first); to change one man alone he is
+    taken off and given his own leave — no "his only" choice, and the war never splits a man off by himself. His
+    question that changed it: a grouped input changes for the whole group; one man different = his own input (D2770
+    kept whole). Today the war DOES split him off — this changes what is built.
+  - **D2779** — a drop on any input row, leave included, adds or replaces as on a sim row, nothing asked, no note;
+    Undo the way back; the man still told on his bell (D755, D757). Against the fresh Opus read's advice (point A
+    below).
+  - **D2780** — a man taken off a several-day input is off every day of it (D2771's reading confirmed).
+- **Leave — as it was put to him in chat 189 (kept for the record; point 2 replaced by D2778):** (1) a
   group leave stays ONE input — one card, one row of its pucks (he weighed the split, one leave a man, and found it
   clutters the Inputs page; the agent came round to group); (2) on the Leave War, a group leave opened from one man's
   box and changed asks at Save "Change it for all 6" / "Change Ranger's only" — his only = his own copy, everything

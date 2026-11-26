@@ -1556,7 +1556,7 @@ flagged correctly and still swept the man out of the crew palette.
   and the belt `sharedSeatBar`. What is true now is the bullet after this one. Still true of what follows, under its
   new names: a real person put on the row is added to the input and one taken off leaves it; the last one is not
   taken off that way; a typed box on the row is the input's (D739, D740); on the Unavailable list a typed box changes
-  one man's part (D737); the window opened from the row is the input's (D748); a save from the schedule never makes
+  one man's part (D737 — replaced by D2777, not built: one row there too, medical excepted, [COMBINED-INPUT-ROWS]); the window opened from the row is the input's (D748); a save from the schedule never makes
   an input read late (D741). No longer true: a one-person request's row being "untouched by door and belt" (D18,
   D470); a placeholder being "the row's own" and leaving with a man (D46, D745); a man added being given an OIL answer
   of his own or asked for one (D738, D744); a mark set "alike on every member row".)*
