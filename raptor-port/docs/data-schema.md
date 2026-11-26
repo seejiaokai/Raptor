@@ -185,6 +185,14 @@ its own question (`src/state/perms.ts`, the block above `mayEditOwnPage`); the p
 | **named** — a squadron of its own | `adminOfUnit(u)`: the role in force AND his level in `u` that day is admin (its own admins, a Plan holder, a master admin — D2336) | the Inputs, SANS and Calendar settings windows (stamped with the squadron they open on — `state/cutoff.ts openWinFor`), the late cut-off, the OIL list, the planning calendar's verbs (the calendar lent to them — `ui/owncal.ts`), an input of another squadron opened read only, the Home squadron Add a person names (`state/roster-add.ts newHomeProblem` — §4 item 7) and the squadrons its "Home squadron" box offers (`ui/usersfilter-model.ts addHomeChoices`, the same test), Admin → Users' opened row — the rest of a man's row is an admin of his own squadron's, each squadron line an admin of that squadron's (`ui/UsersPanel.tsx rowLocks`, `ui/useraccess-model.ts lineState` — D2191, D2336) |
 | **role** — a question about the person | `isAdmin()` / `mayEditSched()` | the member-view switch and role chip, the Admin and Logic tabs, the drawer's Admin entry and the help page's admin parts, the bell's own reads, the bug reports' mark, who answers access requests at all, and Admin → Users as the app takes the Admin page away under an open row — whether the role in force is still an admin's, deciding only whether the "row changed" note is said (`ui/UsersPanel.tsx takenAwayUnder`; no control, no write) |
 
+**Beside the four kinds — who is looking at an open row (Admin → Users, U1's fourth round):** for a row left open, the
+page also holds whether the signed-in person's ACCOUNT, as the store has it today, still makes him an admin of the
+squadron the row opened on — its own admin, a Plan holder of it, a master admin (`ui/UsersPanel.tsx adminThere`, through
+`state/accounts.ts levelIn`; the store, not the role in force, because the session still says "admin" until the app
+makes it again after the next draw). It decides only whether the open row closes with its "row changed" note — his own
+move's day come, or another admin made him a member — and it offers no control and lets no write through, so it is no
+edit question and no entry of the inventory. Tests: `src/ui/msq-s2-rejudge4.test.tsx` §24.
+
 **The landing (D8):** wherever the page is Edit Schedule, the role in force an admin's and `maySchedEditPage()` false — a
 pick of a squadron he holds View of, R6's re-entry, a Plan lowered while he is there — he lands on View-only Sched
 (`state/store.ts landOffEditSched`, run on every notify and after every `enterSquadron`). Tests:

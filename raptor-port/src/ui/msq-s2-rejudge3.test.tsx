@@ -18,6 +18,11 @@
      no press. So the rule's "the open short row follows the line he holds and stays open" holds WHILE HE STAYS ON THE
      PAGE'S LIST: a Plan holder listed only for his Plan leaves it when the Plan goes.
    - §15 what the Fable read pressed on and found sound (its proof 0), kept so it stays so.
+   SINCE THE FOURTH ROUND (the brief …-u1fix4-brief.md; its own tests are msq-s2-rejudge4.test.tsx): ONE test of this file
+   was re-pointed, by name — §12's "as built today: Hunter is made a member by a master admin while Ranger's row is open …
+   nothing is said" now reads "… and the note is said, once, as his standing goes", run as the app runs too (every draw
+   twice), with a pin beside it for the same from a squadron he works by his Plan (typed work is never dropped without a
+   word; the page holds who is looking). No other test here was changed.
    The world: three squadrons (withThird — his D2630), Wed 15 Jul 26, 09:00. Hunter — 142's admin, Plan of 149, View of
    150; Saber — master admin, home 142; Ranger — 142's member, View of 149 and of 150; Kestrel — 149's admin; Osprey —
    149's member; Mako — 150's own admin. */
@@ -341,8 +346,12 @@ describe('§12 — the whole app: the Admin page taken away under an open row sa
      claimed"): the signed-in admin is made a member by another admin while his row is open. The app makes his session a
      member's and takes the Admin page away; his open row and his typing go with it and nothing is said — none of the four
      things the page judges by has changed, and the rule's list of what owes the note does not name it. */
-  it('as built today: Hunter is made a member by a master admin while Ranger\'s row is open, a rename typed — the Admin page goes, nothing is saved, nothing is said', async () => {
-    await appOnUsers('hunter', PID.ranger)
+  /* RE-POINTED BY THE FOURTH ROUND (the brief …-u1fix4-brief.md, S1's second half; it read "as built today: … nothing is
+     said" — the one case the third round left as built). Typed work is never dropped without a word: the page holds who
+     is looking — whether his account still makes him an admin of the squadron the row opened on — so the draw before the
+     app makes his session a member's closes the row with the note. Everything else the test held is kept. */
+  it.each([false, true])('Hunter is made a member by a master admin while Ranger\'s row is open, a rename typed — the Admin page goes, nothing is saved, and the note is said, once, as his standing goes (every draw twice, as the app runs: %s)', async strict => {
+    await appOnUsers('hunter', PID.ranger, { strict })
     expect(asOther('saber', () => saveAccess(ACCT.hunter, { role: 'main' })), 'setup: Saber makes Hunter a member').toBeNull()
     reload()
     await act(async () => { notify() })
@@ -351,7 +360,22 @@ describe('§12 — the whole app: the Admin page taken away under an open row sa
     expect(CURPAGE).not.toBe('admin')
     expect($('.acc-edit')).toBeNull()
     nothingSaved(ACCT.ranger)
-    expect(anyRowNote(), 'today: no note').toBe(0)
+    expect(notesFor(csOf(PID.ranger)), 'the note, once').toBe(1)
+    await act(async () => { notify() })
+    await settle()
+    expect(anyRowNote(), 'and not again').toBe(1)
+  })
+  it('pin (held before the fourth round too — his Plan ends with his role, so the page\'s squadron changes): the same from a squadron he works by his Plan, every draw run twice: the note is said once', async () => {
+    await hunterOn149(true)
+    expect(asOther('saber', () => saveAccess(ACCT.hunter, { role: 'main' })), 'setup: Saber makes Hunter a member').toBeNull()
+    reload()
+    await act(async () => { notify() })
+    await settle()
+    expect(isAdmin(), 'he is a member now').toBe(false)
+    expect($('.acc-edit')).toBeNull()
+    nothingSaved(ACCT.osprey)
+    expect(anyRowNote(), 'the note, once').toBe(1)
+    expect(notesFor(csOf(PID.osprey))).toBe(1)
   })
 })
 
