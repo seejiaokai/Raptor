@@ -375,7 +375,10 @@ input.tm.badtm{border-color:var(--adv)}
 .rall.rsans{display:grid;grid-template-columns:minmax(var(--puck-w),max-content) auto minmax(0,1fr);column-gap:6px;row-gap:4px;align-items:center}
 .rall.rsans>.rh2{grid-column:1/-1}
 .rall.rsans>.rsans-row{display:grid;grid-column:1/-1;grid-template-columns:subgrid;align-items:center;min-width:0}
-.rall.rsans .rsans-row>.rpuck{grid-column:1;min-width:var(--puck-w)}
+/* justify-self:start — each man's puck is as wide as his own name and reason, never stretched to the widest reason in the
+   section: a stretched puck made the blank beside a short reason his, and a phone's tap there planted the man above him
+   (walker C's Finding 1, chat 207; e2e/sans-unfiled-wrap.spec.ts "each man's puck…"). It still shrinks in a narrow list. */
+.rall.rsans .rsans-row>.rpuck{grid-column:1;min-width:var(--puck-w);justify-self:start}
 .rall.rsans .rsans-row>.rsans-b{grid-column:2}
 .rall.rsans .rsans-row>.rsans-r{grid-column:3}
 /* HIS HOURS NEVER CUT (owner D2750 / D2751, 26 Nov 26 — approved as drawn): with a place picked the letters keep the

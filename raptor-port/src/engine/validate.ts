@@ -799,7 +799,9 @@ function validateCore(){
       /* D2001: a clash is its two items, so two clashes worded the same are two warnings — each hidden by its own pair;
          the same pair met again (two legs of one sortie pair) still collapses */
       const its=extra&&Array.isArray(extra.items)?'|@'+extra.items.map(String).sort().join('&'):'';
-      const k=code+'|'+who.join(',')+'|'+msg+its; if(seen.has(k))return; seen.add(k);
+      /* a SANS line is its event too (sans-hide-event.test.ts): an OFT and an AMT worded the same are two lines */
+      const sd=extra&&extra.sansDomain?'|#'+extra.sansDomain:'';
+      const k=code+'|'+who.join(',')+'|'+msg+its+sd; if(seen.has(k))return; seen.add(k);
       const w={sev:s,code,who,day:day.dow,di,msg,key,...(extra||{})};ws.push(w);all.push(w);};
     const kOf=(e:any)=>e&&(e.slot||e.key)||null;   // byE events carry slot (fly/shift) or key (the rest)
     /* one side of a conflict line ([WARN-WORDS-STANDALONE]): a sortie by the end of it the other item `o` falls in
@@ -1565,7 +1567,10 @@ function validateCore(){
         :g.status==='not-offered'?(sansOfferedWords(g.offered)?`offered ${sansOfferedWords(g.offered)} today`:`not offering ${SANS_LABEL[c.domain]} today`)
         :`available ${hm24(g.off.s)}–${hm24(g.off.e)} only`;
       /* [WARN-WORDS-STANDALONE]: "SANS: available 08:00–12:00 only. Planned on VL BFM (T/O 13:00)" */
-      add('adv','SANS_AVAIL',[c.id],`SANS: ${reason}. Planned on ${c.domain==='fly'?flightTag(c.label,c.to):whatAt(rowName({label:c.label,kind:'sim'}),c.s,c.en)}`,c.key);
+      /* `sansDomain` (fly / oft / amt) is part of the line's identity — its dedupe, its hide (warnhide.ts hideKey) and the
+         drop's note (dropflag.ts warnKey) — since D2584 2a's words no longer name the event: a hidden OFT line must not
+         hide an AMT line worded the same (D469; Astra's read, chat 207 — sans-hide-event.test.ts) */
+      add('adv','SANS_AVAIL',[c.id],`SANS: ${reason}. Planned on ${c.domain==='fly'?flightTag(c.label,c.to):whatAt(rowName({label:c.label,kind:'sim'}),c.s,c.en)}`,c.key,{sansDomain:c.domain});
     });
     /* Q (sims) — the sim box guards its FRONT seat like the jet (ground crew,
        a WSO, an IW-in-FCP record — none may occupy it). The REAR seat has no

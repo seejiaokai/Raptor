@@ -3385,6 +3385,14 @@ beside every badge.
   `!isSansAvail(...)` guards so a SANS row never draws in their blocks;
   `sbInputsHTML`'s bands view keeps its `ty-sn` chip colour (a probe-bridge
   builder only since 22 Aug 26 — the board no longer renders the band).
+- **The crew list's SANS section is one grid (owner D2581 / D2582, D2750 / D2751 — `ui/palette-html.ts sansAvailHTML`,
+  `12-schedule-editing.css` `.rall.rsans`; pins `src/ui/sans-column.test.ts`, `e2e/sans-unfiled-wrap.spec.ts`):** every
+  row takes the section's three columns (subgrid) — the puck with its reason, the F / O / A letters, the remarks — so the
+  letters start at one place, straight after the widest puck-and-reason, never at the row's right edge. Each puck stays
+  as wide as its own name and reason (`justify-self:start`): stretched to the column, the blank beside a short reason
+  became his, and a phone's tap there planted the man above him (walker C, chat 207). With a place picked the badge's
+  hours (or AM / PM) stand on a line under the letters, never cut; with none picked the badge reads whole ("O ·
+  08:00–10:00"). The first column still shrinks to the puck in a narrow list, the reason wrapping inside it (D2338).
 
 ## The Available-crew panel folds (owner, Aug 26 — OPEN by default)
 

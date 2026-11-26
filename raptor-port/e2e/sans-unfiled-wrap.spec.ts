@@ -217,9 +217,17 @@ const read = (page: Page) => page.evaluate(() => {
     const l = b && b.querySelector('.rsans-l'), h = b && b.querySelector('.rsans-h')
     const txt = (e: Element | null) => e ? (e.textContent || '').replace(/\s+/g, ' ').trim() : ''
     const rng = (e: Element | null) => { if (!e || !e.firstChild) return null; const x = document.createRange(); x.selectNodeContents(e); return [...x.getClientRects()][0] || null }
+    /* what he is drawn as — his name's puck (at least the puck width) and his reason's words, not the box the grid gives
+       him: a puck stretched to the widest reason in the list made the blank beside a short reason his, and a phone's tap
+       there planted the man above him (walker C, chat 207 — Finding 1; Fable's read, N2 / N3) */
+    const pr = pk.getBoundingClientRect(), wr = w && w.getBoundingClientRect().width > 0 ? rng(w) : null
+    /* his own width: the puck laid out at its content's width for a moment (padding, chip and reason included), at most the
+       column (a narrow list wraps the reason inside it), then given back */
+    const was = pk.style.width; pk.style.width = 'max-content'; const own = pk.getBoundingClientRect().width; pk.style.width = was
+    const drawnRight = Math.max(pr.left + Math.min(own, pr.width), wr ? wr.right : 0)
     return { id: pk.dataset.person, why: w && w.getBoundingClientRect().width > 0 ? txt(w) : '', letters: txt(b),
       l: txt(l), h: txt(h), lLeft: rng(l)?.left ?? null, hLeft: rng(h)?.left ?? null, hTop: rng(h)?.top ?? null, lBottom: rng(l)?.bottom ?? null,
-      bLeft: b ? b.getBoundingClientRect().left : null, pkRight: pk.getBoundingClientRect().right, cut: b ? cut(b) : false }
+      bLeft: b ? b.getBoundingClientRect().left : null, pkRight: pr.right, drawnRight, cut: b ? cut(b) : false }
   })
   return { rows, spill: sec.scrollWidth - sec.clientWidth }
 })
@@ -253,8 +261,11 @@ for (const [name, vp] of [['desktop', { width: 1536, height: 1000 }], ['phone', 
       expect(withB.length, 'five men wear letters').toBeGreaterThanOrEqual(5)
       const lefts = withB.map(r => r.bLeft!)
       expect(Math.max(...lefts) - Math.min(...lefts), `the letters' left edges ${JSON.stringify(lefts)}`).toBeLessThanOrEqual(0.5)
-      const widest = Math.max(...s!.rows.map(r => r.pkRight))
+      /* measured on what is drawn — the name's puck and the reason's words (Fable's read, N2: the puck's box is the grid's) */
+      const widest = Math.max(...s!.rows.map(r => r.drawnRight))
       expect(Math.min(...lefts), 'the column stands after every puck and its reason').toBeGreaterThanOrEqual(widest - 0.5)
+      /* each man's puck no wider than what he is drawn as — never stretched to the widest reason (walker C's Finding 1) */
+      for (const r of s!.rows) expect(r.pkRight, `${r.id}'s puck ends where his name or reason ends ${JSON.stringify(r)}`).toBeLessThanOrEqual(r.drawnRight + 1)
       /* D2750 / D2751: Jester's hours on a second line under his letter, whole */
       const j = by('ipman')
       expect([j.l, j.h]).toEqual(['O', '08:00–10:00'])

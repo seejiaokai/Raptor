@@ -51,6 +51,8 @@ const rankOf = (w: any) => (w.sev === 'hard' ? 100 : 0) + (RANK[CHIP_OF[w.code]]
    is a different clash, and new (the bug check of 12 Nov 26) */
 export const warnKey = (w: any) => `${w.code}|${w.di}|${(w.who || []).join(',')}|${w.msg}`
   + (Array.isArray(w.items) ? '|@' + w.items.map(String).sort().join('&') : '')
+  /* a SANS line keys its event too (engine/validate.ts `sansDomain`, sans-hide-event.test.ts) */
+  + (w.sansDomain ? '|#' + w.sansDomain : '')
 
 /* warnings in `after` that `before` did not carry — hard and advisory only.
    A `before` that was never validated (byDay empty) cannot say what is new,

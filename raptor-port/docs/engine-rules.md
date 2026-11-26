@@ -1966,8 +1966,9 @@ timed or not — never asks a SANS man for availability: the crew list (`avail.t
 advisory (a `day.fly` entry with `shift` is skipped) and his reminder (`daySansSeats` skips a standalone wave) all leave
 it alone (Q4, answering D2576, D2578). An OFT or AMT seat with no times strikes a man with nothing filed in the timed
 words, as a flight with no times does (Q5, with D2573) — its extra places too (D2586). Before the times are typed, a man
-whose filing does not offer the event ("OFT only" on a flight, "Fly only" on an OFT) is struck at once, "SANS — not
-offering Fly" (or OFT, AMT), as on a timed seat; one who offered the event with hours stays plain until the times are
+whose filing does not offer the event ("OFT only" on a flight, "Fly only" on an OFT) is struck at once, "SANS — offered
+OFT only, not Fly" (D2584 Q2; a filing ticking nothing keeps "SANS — not offering Fly"), as on a timed seat; one who
+offered the event with hours stays plain until the times are
 typed (owner D2585, narrowing D2573). Tests: `src/engine/sans-standby-sim.test.ts`, `src/engine/sans-notimes-offer.test.ts`.
 
 **The `SANS_AVAIL` advisory (`validate.ts`) — amber, wears the `A` chip**

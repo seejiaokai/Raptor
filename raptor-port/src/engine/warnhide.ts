@@ -31,7 +31,10 @@ export function hideKey(w:any):string{
   const its=w&&Array.isArray(w.items)?(w.items as any[]).filter(Boolean):[];
   if(its.length===2)return `${w.di}|${w.code}|${who.join(',')}|@${its.map(String).sort().join('&')}`;
   who.forEach((id:any)=>{ const p=(PEOPLE as any)[id]; if(p&&p.cs)cs[id]=p.cs; });
-  return `${w.di}|${w.code}|${who.join(',')}|${warnMsgKey(w.msg,cs)}`;}
+  /* a SANS line keys its event too (validate.ts `sansDomain`): an OFT line hidden never hides an AMT line worded the
+     same (D469; sans-hide-event.test.ts) — a line stored before this keeps the words alone */
+  const sd=w&&w.sansDomain?`|#${w.sansDomain}`:'';
+  return `${w.di}|${w.code}|${who.join(',')}|${warnMsgKey(w.msg,cs)}${sd}`;}
 
 /* what one ✕ / ↺ did, as its command carries it — engine/hidedetail.ts (no imports, so the undo layer can read it) */
 export { hideDetail, parseHideDetail } from './hidedetail'
