@@ -11,6 +11,9 @@
    draw the open row is judged again; if the judgement differs, the row closes and nothing typed is carried over. Closed by
    the signed-in admin's own pick: no note. Closed by a change under it with no pick (a move landing, an Undo, another's
    change): the passing note "<Callsign>’s row changed while it was open, so nothing was saved. Open it again.", once.
+   WIDENED BY THE FIX'S SECOND ROUND (chat 205's four reads — msq-s2-rejudge2.test.tsx, §6 on): the judgement held also
+   knows his home squadron and whether he is archived; the archived man's row asks again as the whole row does; an editor
+   judges itself on its own draws; the note is owed whenever he did not pick. No case here needed re-pointing for it.
    The world: three squadrons (withThird — his D2630), Wed 15 Jul 26, 09:00. Hunter — 142's admin, Plan of 149, View of
    150; Saber — master admin, home 142; Ranger — 142's member, View of 149 and of 150; Kestrel — 149's admin; Osprey —
    149's member; Mako — 150's own admin. */

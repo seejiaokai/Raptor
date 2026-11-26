@@ -5,7 +5,11 @@
    His D2625, D2652 N3 e, D2655 D5: on a page that is not his own squadron's, a man shows only what identifies him and that
    page's squadron's one access line. THE ROW'S SAVE IS WHAT KEEPS THE REST SAFE, NOT THE HIDING (Astra 2 of the third
    read): it sends that one squadron's line and nothing else, and it judges the row again at Save.
-   Written red first, each test seen failing on the code as it stood (chat 199's U1), except where named "pin:".
+   Written red first on the code as it stood before chat 199's U1, each test seen failing there, except where named "pin:".
+   Since then: U1's fix (chat 205) re-pointed two cases of V4b — the row now closes as the change lands, or at the pick,
+   never waiting for its Save — and added the no-redraw case beside them (msq-s2-rejudge.test.tsx holds that fix's own
+   proofs); the fix's second round made the open row read his line on every draw and hold only the admin's pick
+   (msq-s2-rejudge2.test.tsx §9), which V4's "changed and not saved" case still holds as written.
    The world: three squadrons (withThird — his D2630; R9), Wed 15 Jul 26, 09:00. Hunter — 142's admin, Plan of 149, View
    of 150; Saber — master admin, home 142; Ranger — 142's member, View of 149 and of 150; Kestrel — 149's admin; Osprey —
    149's member; Mako — 150's own admin; a 142 man with no sign-in, found on the roster. */
