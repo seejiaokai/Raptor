@@ -1558,3 +1558,16 @@ sides.
 **Issue:** The next free chat number was taken from the merged handoff file only. Parallel chats' blocks live on their own unmerged branches, so the merged file named a number four behind; one of the "free" numbers was already a live session's title.
 **Suggested improvement:** In the session-handoff skill, before writing "Next chat number", take the highest of: the merged handoff, every remote branch's commit subjects (`git log --all --since=7.days --format=%s | grep -o '^Chat [0-9]*'`) and the open session titles (list_sessions); a new chat re-checks the same three before naming itself.
 **Principle:** A counter shared by parallel workers must be read from every place they write, not from the one that is merged.
+
+### Observation 1097: A blank "never set" state must also blank every value saved alongside the first real entry
+
+**Status:** OPEN
+**Date:** 2026-11-27
+**Session context:** chat 208, the Leave War's "Not typed" balance build (numbered past 1096, the highest on the open branches)
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** choosing the red tests for a new "empty until first entered" state
+
+**Issue:** A figure was made to read "Not typed" (empty boxes) instead of a count from 0, but the count kept running underneath. The first save of the main figure copied a companion part (the carried-forward days) from that hidden count, so a first entry silently saved a value nobody saw or typed. Both blind code readers caught it; the build's own red tests, all about what the screen shows, did not.
+**Suggested improvement:** when a test list is written for a new "not yet set" state over a value still computed underneath, add one red test per save door: the FIRST real entry into the blank state writes only what the person typed, and every companion part saved with it comes from what was shown (blank → its zero), never from the hidden computed value.
+**Principle:** hiding a computed default on screen does not remove it from the save path; test that the first write after a blank state takes nothing the person could not see.
