@@ -24,6 +24,7 @@ import * as view from '../state/view'
 import { notify, loadWeek, commitSetDayApproved, commitPublishALDay, writeInputsAs } from '../state/store'
 import { schedWrite, schedWriteValue, SCHED_TYPES, commitUnpublish } from '../state/sched-commit'
 import { refuseForTime } from '../state/timeguard'
+import { gapBoxesIn } from './timegap-paint'
 import { oilCreditBidAgainst, createOilPeriodFor, showPeriodOf } from '../leavewar/sync'
 import { scrollToWarnFocus, queueHold, warnWeekId, bringIntoView } from './highlights'
 import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave, storesText } from '../engine'
@@ -50,6 +51,8 @@ import { parseReportingLines,resolveReporting,REPORTING_LABEL } from '../engine/
 import { VCONF } from '../engine/rules'
 import { shiftWeek } from './weeknav'
 import { penSvg } from './pen'
+/* the box the count line's last tap went to ([END-TIME-GUARD], D2854 — routeClick) */
+let TG_NEXT: { di: number; key: string } | null = null
 
 /* Focus a warning clicked from somewhere that is NOT an already-open day box —
    the board's issue list, or a chip on a puck. Both have to open the box
@@ -1517,6 +1520,24 @@ export function routeClick(e: MouseEvent) {
 
   /* [END-TIME-GUARD] A SIGN-OFF BOX PRESSED WHILE AN ITEM ON THE DAY IS MISSING A TIME (his D2612, D2854): the box took the
      press (its list is shut — html.ts signoffHTML), and the note says why; nothing is written. Week and board alike. */
+  /* [END-TIME-GUARD] EDIT SCHEDULE'S COUNT LINE TAPPED (his D2854 — "a tap on it going to each empty box in turn"; the
+     try-out's count tap): the next empty box of the day after the one the last tap went to, from the first again after
+     the last; a box whose time was typed since drops out of the turn. Brought into sight as a warning's jump brings its
+     puck (bringIntoView), then given the caret. */
+  const tgn = t.closest('button[data-tgnext]') as HTMLElement | null
+  if (tgn) {
+    e.preventDefault(); e.stopPropagation()
+    if (!canEditSched() || view.CURPAGE !== 'editsched') return
+    const di = +tgn.dataset.tgnext!, els = gapBoxesIn(di)
+    if (!els.length) return
+    const keys = els.map(x => x.getAttribute('data-txt') || '')
+    const at = TG_NEXT && TG_NEXT.di === di ? keys.indexOf(TG_NEXT.key) : -1
+    const el = els[(at + 1) % els.length]!
+    TG_NEXT = { di, key: keys[(at + 1) % els.length]! }
+    bringIntoView(el.closest('.day') || el, el, 'eWeek')
+    el.focus({ preventScroll: true })
+    return
+  }
   const tgs = t.closest('.sgn.tg-block') as HTMLElement | null
   if (tgs && !protectedWeek()) {   // the quarantine keeps its own first word (the Fable-seat read, F3)
     e.preventDefault(); e.stopPropagation()

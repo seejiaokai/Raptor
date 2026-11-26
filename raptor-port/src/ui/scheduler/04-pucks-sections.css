@@ -576,6 +576,12 @@ body.dnd .schedboard .ppl[data-fill].dragover .addz{border-color:var(--accent);c
 /* the count before "N to sign" */
 .signoff .so-state .tg-n{color:var(--hard)}
 #sbSignBar .so-state.tg-has{white-space:normal}
+/* Edit Schedule's line is a button while it names the count (D2854 — a tap goes to each empty box in turn; the try-out's
+   et-count): drawn as the words it was, the count underlined under the pointer */
+.signoff button.so-state.tg-tap{font-family:inherit;line-height:inherit;background:none;border:0;padding-inline:0;padding-bottom:0;
+  text-align:left;cursor:pointer}
+.signoff button.so-state.tg-tap:hover .tg-n{text-decoration:underline;text-underline-offset:2px}
+.signoff button.so-state.tg-tap:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
 /* a sign-off box that is refusing: the press lands on the box, never on its shut list */
 .sgn.tg-block>select{pointer-events:none}
 .sgn.tg-block{cursor:pointer}

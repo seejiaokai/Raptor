@@ -113,6 +113,31 @@ export function paintTimeGaps(): void {
   })
 }
 
+/** Edit Schedule's empty time boxes of day `di` that can be typed in, in the week's page order — what a tap on the
+ *  count line goes to in turn (his D2854; interactions.ts routeClick) */
+export function gapBoxesIn(di: number): HTMLElement[] {
+  if (typeof document === 'undefined') return []
+  return timeGapsOf(di).boxes
+    .map(k => document.querySelector(`#eWeek [data-txt="${k}"]`) as HTMLElement | null)
+    .filter((e): e is HTMLElement => !!e && typeable(e))
+}
+
+/* A BOX TAPPED UNDER THE NOTE IS BROUGHT ABOVE IT (the walk's C57, his §7.11 lesson 5 — a box brought into sight is clear
+   of everything that can stand over it): on a phone the refusal note stands at the screen's foot for a few seconds, and a
+   red box near the foot, tapped then, took the caret under it. While the note shows, an outlined box that gets the caret
+   with the note over it is scrolled to the middle of the screen. Nothing else moves; the note keeps its place. */
+function clearOfNote(el: HTMLElement): void {
+  const t = document.getElementById('toastEl')
+  if (!t || t.style.opacity !== '1' || !el.isConnected) return
+  const n = t.getBoundingClientRect(), b = el.getBoundingClientRect()
+  if (!n.height || b.bottom <= n.top - 6 || b.top >= n.bottom + 6) return
+  try { el.scrollIntoView({ block: 'center', inline: 'nearest' }) } catch { /* jsdom */ }
+}
+if (typeof document !== 'undefined') document.addEventListener('focusin', e => {
+  const el = e.target
+  if (el instanceof HTMLElement && el.classList.contains('tg-miss')) requestAnimationFrame(() => clearOfNote(el))
+})
+
 /** the tests' reset (the session's own is ui/pops.ts POPS_RESET) */
 export function resetTimeRed(): void { TIME_RED.clear() }
 

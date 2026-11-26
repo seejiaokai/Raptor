@@ -2544,8 +2544,12 @@ export function signoffHTML(di:any,full:any){
   /* …and the status line says how many items are missing a time, before "N to sign" (D2854); on the board, with no names
      of the boxes still to sign until the last time is typed, so it stays one line on a phone (D2734). The week keeps the
      stale-appointment words after it, as built (the plan's Q21). Once all four show (an older saved week, Q-W3) the line
-     is as before. The tap that goes to each empty box is a later step. */
+     is as before. */
   const gapLead=gaps?`<span class="tg-n">${gaps} item${gaps===1?'':'s'} missing a time</span> · `:'';
+  /* ON EDIT SCHEDULE THE LINE IS A BUTTON while it names the count: a tap on it goes to each empty box in turn (his D2854;
+     the try-out's count tap — interactions.ts routeClick, ui/timegap-paint.ts nextGapBox). The board's line stays words
+     (the plan's Q19); no hover words until his answer (Q-W4). */
+  const tapTag=!full&&gaps&&miss.length?'button':'span';
   return `<span class="so-h">Sign-off</span>`
     +SIGN_ROLES.map(([k,lbl,sch]:any)=>{
       const v=g[k], ids=signPeople(sch,v,di);
@@ -2568,7 +2572,7 @@ export function signoffHTML(di:any,full:any){
        issued version and says whether there is anything to publish — the old flat
        "can be published" wrongly implied a publish button that (correctly) is not
        there when nothing has changed. dayDelta is the ONE eligibility authority. */
-    +`<span class="so-state ${miss.length?'no':'yes'}${gaps&&miss.length?' tg-has':''}">${
+    +`<${tapTag} class="so-state ${miss.length?'no':'yes'}${gaps&&miss.length?' tg-has':''}${tapTag==='button'?' tg-tap':''}"${tapTag==='button'?` type="button" data-tgnext="${di}"`:''}>${
         miss.length&&gaps ? `${gapLead}${miss.length} to sign${!full&&stale.length?' · '+stale.map(why).join(', '):''}`
         : miss.length ? `${miss.length} to sign${full?' · '+miss.map(why).join(', '):stale.length?' · '+stale.map(why).join(', '):''}`
         : !dayApproved(di) ? 'Signed — this day can be published'
@@ -2577,7 +2581,7 @@ export function signoffHTML(di:any,full:any){
             return chg
               ? `Published at ${esc(verLabel(cv))} · ${chg} change${chg>1?'s':''} to publish — Publish AL${nextSeq(di)}`
               : `Published at ${esc(verLabel(cv))} — no changes to publish`;})()
-      }</span>`;
+      }</${tapTag}>`;
 }
 /* =====================================================================
    DAY DETAILS — the ⓘ chip on every day head. Approval state, which AL

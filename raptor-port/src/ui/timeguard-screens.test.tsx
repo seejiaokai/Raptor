@@ -62,7 +62,7 @@ afterAll(async () => {
   host.remove(); HOOKS.toast = realToast
 })
 beforeEach(async () => {
-  await act(async () => { closeScheduler() })
+  await act(async () => { (document.activeElement as HTMLElement | null)?.blur?.(); closeScheduler() })   // a box the count tap gave the caret
   DAYS.length = 0; JSON.parse(DSNAP).forEach((d: any) => DAYS.push(d))
   SCHED.drafts = {}; SCHED.curDraft = {}
   SCHED.pending = {}; SCHED.changes = {}; SCHED.added = {}; SCHED.als = []
@@ -161,6 +161,23 @@ describe('Edit Schedule\'s sign-off line (D2854)', () => {
     await edit('dr:3.0.0.end', '')
     expect(weekLine(THU).textContent).toBe('1 item missing a time · 4 to sign')
   })
+  it('a tap on the line goes to each empty box in turn, from the first again after the last (D2854)', async () => {
+    expect(weekLine(THU).tagName, 'words while nothing is missing').toBe('SPAN')
+    await edit('dr:3.0.0.end', ''); await edit('gr:3.0.end', '')
+    expect(weekLine(THU).tagName).toBe('BUTTON')
+    expect(weekLine(THU).getAttribute('title'), 'no hover words until his answer (Q-W4)').toBe(null)
+    const at = () => document.activeElement && document.activeElement.getAttribute('data-txt')
+    await click(weekLine(THU)); expect(at()).toBe('dr:3.0.0.end')
+    await click(weekLine(THU)); expect(at()).toBe('gr:3.0.end')
+    await click(weekLine(THU)); expect(at(), 'round again').toBe('dr:3.0.0.end')
+    await edit('dr:3.0.0.end', '13:00')
+    await click(weekLine(THU)); expect(at(), 'a typed box drops out of the turn').toBe('gr:3.0.end')
+  })
+  it('the board\'s line stays words — its tap waits on his answer Q19', async () => {
+    await edit('dr:3.0.0.end', '')
+    await act(async () => { openScheduler(THU) })
+    expect($('#sbSignBar .so-state').tagName).toBe('SPAN')
+  })
   it('three items: "3 items missing a time · 4 to sign"; back to "4 to sign" once typed', async () => {
     await edit('dr:3.0.0.end', ''); await edit('dr:3.0.1.str', ''); await edit('gr:3.0.end', '')
     expect(weekLine(THU).textContent).toBe('3 items missing a time · 4 to sign')
@@ -245,6 +262,6 @@ describe('the Scheduler Board (D2853, D2734)', () => {
 
 describe('kept for his answers (the plan §R5)', () => {
   it.todo('a box emptied after a refused press: red or grey — waits on his answer R3 (built: grey until the next refused press)')
-  it.todo('the count line tapped goes to each empty box in turn — Edit Schedule a later step (D2854); the board waits on his answer Q19')
+  it.todo('the board\'s count line tapped goes to each empty box in turn — waits on his answer Q19 (today: plain words)')
   it.todo('the desktop Amendments panel\'s Publish AL greyed but pressable — waits on his answer R6 (today: disabled until signed)')
 })
