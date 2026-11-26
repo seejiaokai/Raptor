@@ -30,7 +30,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { formatCell, LEAVE_TYPES, type BidState, type Portion, type PostOutcome } from '../engine'
-import { OutcomeChips } from './OutcomeChips'
+import { OutcomeChips, PostAct, PostField, PostLine, PostWarn } from './OutcomeChips'
 import { outcomeLine } from './outcomewords'
 import '../../ui/postout.css'
 import { grantOilDays, MAX_GIVEN_BY, MAX_REASON, awardsIn, clearCells, decidableIn, deletableIn, fileStraight, movableCells, placeApproved, postingBlocked, setBidStates, setCells, setRemarksOn, inOneWarCommand } from '../state/store'
@@ -412,15 +412,20 @@ export function SelectSheet({
 
   /* everyone fills: a member's fill writes his open days from today and counts the rest skipped (D1177, D1211) */
   const canFill = true
+  /* WAY C over a drag (his D2653 a, d; D2732 Q2): a posting open, the sheet is the posting's alone — the leave's parts step
+     aside and the head names the act, "Cinch  Post out"; the range's first day stands in the "PO from" box */
+  const posting: 'Post out' | 'Post in' | null = nPeople === 1 && onPostOut && poOpen ? 'Post out' : nPeople === 1 && onPostIn && piOpen ? 'Post in' : null
 
   return (
     <Sheet testid="select-sheet" label="Selected days" onClose={closeKeeping} modal={false}>
       <div className="bidsheet-hd">
         <span className="who" data-testid="sel-who">{who}</span>
-        <span className="dt when" data-testid="sel-span">{span} · {nDays} day{nDays === 1 ? '' : 's'}</span>
-        {role === 'admin' && <ApproveSwitch testid="sel-approve-tick" on={approve} onChange={v => { setApprove(v); confirming.current = null }} />}
+        {posting ? <PostAct act={posting} testid="sel-po-title" />
+          : <span className="dt when" data-testid="sel-span">{span} · {nDays} day{nDays === 1 ? '' : 's'}</span>}
+        {role === 'admin' && !posting && <ApproveSwitch testid="sel-approve-tick" on={approve} onChange={v => { setApprove(v); confirming.current = null }} />}
         <button className="x" data-testid="sel-cancel" onClick={closeKeeping} aria-label="Cancel">✕</button>
       </div>
+      {!posting && (<>
       <DayLine days={line.days} label={line.label} />
 
       {/* ONE FORMAT AND LOOK FOR THE TWO SHEETS (owner, D264; his order, D331 "1 A"): the same rows in the same order as
@@ -512,15 +517,19 @@ export function SelectSheet({
             onGive={giveOil} />
         </>
       )}
+      </>)}
       {onPostIn && nPeople === 1 && piOpen && (
-        <>
-          <div className="bidsheet-row postout">
-            <span className="lab">PI from</span>
+        <div className="po-form">
+          <PostField label="PI from">
             {/* the app's own date box, as the one-day window's "PI from" (owner D796, D797) */}
             <DateBox className="dateinput" testid="sel-pi-date" label={`Post ${people(sel.people[0])} in from`} value={piDate} onChange={v => { setNote(''); setPiDate(v) }} />
-          </div>
-          <div className="bidsheet-row postout">
-            <button className="dchip po" data-testid="sel-pi-confirm" disabled={!piDate}
+          </PostField>
+          <PostLine>
+            Their first day in the squadron. Days before it are blank and count nobody —
+            leave can still be dated there.
+          </PostLine>
+          <div className="po-foot">
+            <button className="dchip po-main" data-testid="sel-pi-confirm" disabled={!piDate}
               onClick={() => {
                 /* a refused posting keeps the window and says why, as Post out's does (AB5) */
                 /* the words typed in the box go with the press, as the one-day window's flushWords (D1339; the code read's F2) */
@@ -531,31 +540,26 @@ export function SelectSheet({
               }}>
               Post in
             </button>
-            <span className="note">
-              Their first day in the squadron. Days before it are blank and count nobody —
-              leave can still be dated there.
-            </span>
           </div>
-        </>
+        </div>
       )}
       {onPostOut && nPeople === 1 && poOpen && (
-        <>
-          <div className="bidsheet-row postout">
-            <span className="lab">PO from</span>
+        <div className="po-form">
+          {/* the choices first, then the date, the one line, the button — as on the one-day sheet (way C, D2653; D229,
+              D294, D298, D300) */}
+          <OutcomeChips value={poOutcome} testid="sel-po" noSans={!!getState().people.find(x => x.id === sel.people[0])?.pers} onChange={o => { setPoOutcome(o); setDelArmed(false) }} />
+          <PostField label="PO from">
             {/* the app's own date box, as the one-day sheet's "PO from" (owner D796, D797) */}
             <DateBox className="dateinput" testid="sel-po-date" label={`Post ${people(sel.people[0])} out from`} value={poDate} onChange={v => { setDelArmed(false); setPoDate(v) }} />
-          </div>
-          {/* the four chips and the one line, as on the bid sheet (D229, D294, D298, D300) */}
-          <OutcomeChips value={poOutcome} testid="sel-po" noSans={!!getState().people.find(x => x.id === sel.people[0])?.pers} onChange={o => { setPoOutcome(o); setDelArmed(false) }} />
+          </PostField>
           {outcomeLine(poOutcome, poDate, !!(hasAccount && hasAccount(sel.people[0]))) && (
-            <div className="bidsheet-row postout"><span className="note" data-testid="sel-po-line">{outcomeLine(poOutcome, poDate, !!(hasAccount && hasAccount(sel.people[0])))}</span></div>
+            <PostLine testid="sel-po-line">{outcomeLine(poOutcome, poDate, !!(hasAccount && hasAccount(sel.people[0])))}</PostLine>
           )}
-          {postingBlocked(sel.people[0], poOutcome) && (
-            <div className="bidsheet-row postout"><span className="note warn" data-testid="sel-po-blocked">{postingBlocked(sel.people[0], poOutcome)}</span></div>
-          )}
-          <div className="bidsheet-row postout">
-            {/* a Delete asks twice (D287 (3)), its second ask a card hanging from this button (owner D1628) */}
-            <button ref={poBtn} className="dchip po" data-testid="sel-po-confirm" aria-expanded={delArmed || undefined}
+          {postingBlocked(sel.people[0], poOutcome) && <PostWarn testid="sel-po-blocked">{postingBlocked(sel.people[0], poOutcome)}</PostWarn>}
+          <div className="po-foot">
+            {/* a Delete asks twice (D287 (3)), its second ask a card hanging from this button (owner D1628); the app's blue
+                main button (D2653 b) */}
+            <button ref={poBtn} className="dchip po-main" data-testid="sel-po-confirm" aria-expanded={delArmed || undefined}
               onClick={() => {
                 if (poOutcome === 'delete') { setDelArmed(true); return }
                 postNow(poOutcome)
@@ -567,11 +571,12 @@ export function SelectSheet({
             <AskCard at={poBtn.current} testid="sel-po-delete-ask" label={`Delete ${who}?`} question={`Delete ${who}?`}
               sub={outcomeLine('delete', poDate, !!(hasAccount && hasAccount(sel.people[0])))}
               onEscape={() => setDelArmed(false)}>
-              <button type="button" className="abtn danger" data-testid="sel-po-delete-go" onClick={() => postNow('delete')}>Delete</button>
+              {/* the Leave War's dashed grey Delete (his D2732 Q4, D332) */}
+              <button type="button" className="abtn po-del" data-testid="sel-po-delete-go" onClick={() => postNow('delete')}>Delete</button>
               <button type="button" className="abtn primary" data-testid="sel-po-delete-cancel" autoFocus onClick={() => setDelArmed(false)}>Cancel</button>
             </AskCard>
           )}
-        </>
+        </div>
       )}
 
       {note && noteAt === 'end' && <div className="bidsheet-row"><span className="note warn" data-testid="sel-note">{note}</span></div>}
