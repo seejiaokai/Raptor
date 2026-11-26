@@ -22,8 +22,9 @@ import * as core from './app/core.js'
 import { useMsqWorld, signInAs, ACCT, PID } from '../test-support/msq-world'
 import { saveAccess } from '../state/accounts'
 import { setTrkUnitProbe } from '../state/perms'
-import { notify, switchRoleView } from '../state/store'
+import { notify, switchRoleView, switchRoleViewRaw } from '../state/store'
 import { pickSquadron } from '../state/pick'
+import { isAdmin } from '../state/perms'
 import { trackerCover } from '../state/typing-hold'
 import { trackerMayLogOut } from './role.js'
 import { setStorageHeld } from './storage.js'
@@ -142,16 +143,19 @@ describe('the bell\'s tap that enters another squadron asks the same', () => {
   })
 })
 
-describe('the member view and back keeps a draft (D2′ (b): hidden, never reset)', () => {
+/* A DRAFT HELD IN THE MEMBER VIEW IS REACHED BY NO PRESS SINCE D2627 A20 (step K5): the switch now asks about unsaved chart
+   edits first, both ways, so Save or Discard leaves nothing unsaved and Stay does not switch. The state is made by the raw
+   switch (state/store.ts switchRoleViewRaw — the switch as it was, asking nothing), named so; every assertion as before. */
+describe('the member view and back keeps a draft (D2′ (b): hidden, never reset) — reached by no press since D2627 A20, by the raw switch', () => {
   it('Hunter\'s unsaved edit on 149\'s Tracker survives the member view and back', async () => {
     await onHis149Tracker()
     await dirty('MEMBER-DRAFT')
     setStorageHeld(true)      /* the door held for the draft, as the real follow does (msq-trk-follows-pick.test.tsx) */
-    switchRoleView(); notify()
+    switchRoleViewRaw(); notify()
     expect(trackerCover()?.kind).toBe('member')
     expect(C.sylDirty).toBe(true)
     expect(C.byid['MEMBER-DRAFT']).toBeTruthy()
-    switchRoleView(); notify()
+    switchRoleViewRaw(); notify()
     setStorageHeld(false)
     expect(trackerCover()).toBeNull()
     expect(C.sylDirty, 'the draft is still there').toBe(true)
@@ -230,13 +234,17 @@ describe('a pick of a squadron he only views (D2637)', () => {
     expect(UNIT).toBe('u149')
     expect(DRAWER).toBe(true)
   })
-  it('the member-view switch is not a pick: it asks nothing and keeps the edits', async () => {
+  /* re-pointed at step K5 (kind (c) of the census): before it the switch asked nothing and kept the edits; since D2627 A20
+     it asks, both ways, wherever there are unsaved chart edits — Stay keeps the edits and the admin view */
+  it('the member-view switch asks too (D2627 A20 — it asked nothing before): its own last line; Stay keeps the edits and the admin view', async () => {
     await onHis149Tracker()
     await dirty('VIEW-MEMBER')
-    act(() => { switchRoleView(); notify() })
-    expect(C.dlg ?? null, 'nothing asked').toBeNull()
+    const p = switchRoleView()
+    await until(() => C.dlg)
+    expect(C.dlg.msg, 'asked').toBe(QUESTION.replace('to 142?', 'to the member view?'))
+    C.dlgClose(false); await p
+    expect(isAdmin(), 'Stay: still the admin view').toBe(true)
     expect(C.sylDirty).toBe(true)
-    act(() => { switchRoleView(); notify() })
     await C.saveChangesClick()
   })
 })

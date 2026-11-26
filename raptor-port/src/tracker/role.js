@@ -67,11 +67,15 @@ export function onBeforeTrackerSwitch(f) { beforeSwitch = f && typeof f.needs ==
 export function trackerSwitchNeeds() {
   try { return !!beforeSwitch && !!beforeSwitch.needs() } catch (_) { return false }
 }
-export function trackerSwitchAsk(toNum) {
+/* …AND BEFORE THE SWITCH TO THE MEMBER VIEW AND BACK (his D2627 A20; the guard rail's plan §4.4, step K5): asked always,
+   both ways, wherever there are unsaved chart edits — on his own squadron too. `to` is what the question names: a pick
+   hands the squadron's number ("…before switching to 142?" — byte for byte as before), the view switch "the member view",
+   or "the admin view" with `back` ("…before switching back to the admin view?") */
+export function trackerSwitchAsk(to, back = false) {
   if (!beforeSwitch) return null
   try {
     if (!beforeSwitch.needs()) return null
-    return Promise.resolve(beforeSwitch.ask(String(toNum))).then(v => v !== false, () => true)
+    return Promise.resolve(beforeSwitch.ask(String(to), !!back)).then(v => v !== false, () => true)
   } catch (_) { return null }
 }
 

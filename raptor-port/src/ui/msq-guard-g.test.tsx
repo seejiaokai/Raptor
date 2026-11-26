@@ -21,7 +21,8 @@ import { App } from './App'
 import { HOOKS } from '../engine/hooks'
 import { UNIT } from '../engine/unitview'
 import { PEOPLE, nameToId } from '../engine/people'
-import { notify } from '../state/store'
+import { notify, switchRoleViewRaw } from '../state/store'
+import { isAdmin, mayViewAsMember } from '../state/perms'
 import { setPage, CURPAGE } from '../state/view'
 import { pickSquadron } from '../state/pick'
 import { homeOn, todayIso } from '../state/units'
@@ -440,4 +441,54 @@ describe('G1 — a pick ends Logic\'s and Quals\' edit mode (D2627 A4)', () => {
   })
 
   it.todo('G1\'s bell-line sentence — "13h" typed in a Logic box and, without leaving it, a bell line to 149 pressed: 142 reads 13h, 149 12h (§18.1, Opus F-d) — the bell\'s door is step K6\'s')
+})
+
+/* G2 — THE VIEW SWITCH ENDS QUALS' EDIT MODE TOO (the plan §18.1; his D2627 A4) — step K5, written first and seen failing on
+   the code as it stood (P1 5, pressed: "Done" stayed in the member view). Every switch is the name badge's own press. Saber
+   on his own 142. Logic's mode was already ended by the switch (state/store.ts, setLgEdit(false)): its half is a pin. */
+describe('G2 — the switch to the member view ends Quals\' edit mode (D2627 A4); Logic\'s at the same switch is a pin', () => {
+  async function onPage(p: 'logic' | 'quals') {
+    signInAs('saber')
+    page = render(<App />)
+    await settle()
+    await act(async () => { setPage(p); notify() })
+    await settle()
+  }
+  const badge = () => press($('#roleBadge'), 'the name badge')
+  const shown = (sel: string) => { const b = $(sel) as HTMLButtonElement | null; return !!b && !b.hidden }
+  afterEach(async () => {
+    setLgEdit(false)
+    await act(async () => { closeShown() })
+    if (!isAdmin() && mayViewAsMember()) await act(async () => { switchRoleViewRaw() })
+  })
+
+  it('Quals in edit mode, a tick made, the badge pressed: no "Done" in the member view; back in the admin view Quals shows Edit, the tick kept', async () => {
+    await onPage('quals')
+    await press($('#qEdit'), 'Quals\' ✎ Edit')
+    const cell = [...document.querySelectorAll<HTMLElement>('td.qcell[data-q]')].find(c => !c.classList.contains('qro') && !c.classList.contains('na'))
+    expect(cell, 'a cell he may tick').toBeTruthy()
+    const q = cell!.dataset.q!, before = cell!.innerHTML
+    await press(cell!, 'a qualification cell')
+    const after = $(`td.qcell[data-q="${q}"]`)!.innerHTML
+    expect(after, 'the premise: the tick made').not.toBe(before)
+    expect(shown('#qSave'), 'the premise: "Done" drawn').toBe(true)
+    await badge()
+    expect(isAdmin(), 'the member view').toBe(false)
+    expect(CURPAGE, 'still on Quals').toBe('quals')
+    expect(shown('#qSave'), 'no "Done" in the member view').toBe(false)
+    await badge()
+    expect(isAdmin(), 'back in the admin view').toBe(true)
+    expect({ edit: shown('#qEdit'), done: shown('#qSave') }, 'Quals shows Edit').toEqual({ edit: true, done: false })
+    expect($(`td.qcell[data-q="${q}"]`)!.innerHTML, 'the tick saved').toBe(after)
+  })
+
+  it('(pin, today\'s too) Logic in edit mode, the badge pressed and pressed again: back in the admin view Logic shows Edit, not Done', async () => {
+    await onPage('logic')
+    await press($('#lgEdit'), 'Logic\'s ✎ Edit')
+    expect(!!LGEDIT, 'the premise: in edit mode').toBe(true)
+    await badge()
+    expect({ admin: isAdmin(), mode: !!LGEDIT }, 'the member view, the mode ended').toEqual({ admin: false, mode: false })
+    await badge()
+    expect({ admin: isAdmin(), edit: shown('#lgEdit'), done: shown('#lgDone'), mode: !!LGEDIT }).toEqual({ admin: true, edit: true, done: false, mode: false })
+  })
 })

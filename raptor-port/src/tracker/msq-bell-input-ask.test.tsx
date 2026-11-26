@@ -22,7 +22,7 @@ import { trackerTarget } from '../storage/adapters'
 import { saveAccess } from '../state/accounts'
 import { todayIso } from '../state/units'
 import { pageUnit, setTrkUnitProbe } from '../state/perms'
-import { notify, switchRoleView } from '../state/store'
+import { notify, switchRoleView, switchRoleViewRaw } from '../state/store'
 import { CURPAGE, setPage } from '../state/view'
 import { pickSquadron } from '../state/pick'
 import { UNIT } from '../engine/unitview'
@@ -88,7 +88,9 @@ async function heldDraft(name: string) {
     await settle()
   })
   expect(C.sylDirty, 'the premise: an unsaved chart edit').toBe(true)
-  await act(async () => { switchRoleView(); await settle() })
+  /* REACHED BY NO PRESS SINCE D2627 A20 (step K5): the switch now asks about unsaved chart edits first, so the held draft
+     is made by the raw switch (state/store.ts switchRoleViewRaw — the switch as it was, asking nothing), named so */
+  await act(async () => { switchRoleViewRaw(); await settle() })
   expect(S.storageUnit(), 'the premise: the Tracker held on 149').toBe('u149')
   expect(UNIT).toBe('u149')
   expect(CURPAGE).toBe('viewsched')
@@ -103,7 +105,7 @@ const row142 = () => INPUTS.find((x: any) => x.person && PEOPLE[x.person] && x.i
 const lineFor = (row: any): Notice => ({ id: 'b1-' + row.iid, to: PID.hunter, by: null, at: Date.now(), iid: row.iid, name: '', day: '2026-07-15',
   what: [{ k: 'in' }], u: 'u142' } as unknown as Notice)
 
-describe('a bell line that opens an input, pressed in the member view over a held draft (B1)', () => {
+describe('a bell line that opens an input, pressed in the member view over a held draft (B1) — reached by no press since D2627 A20, by the raw switch', () => {
   it('asks first and opens nothing under the question; Stay leaves him where he was, no window', async () => {
     await heldDraft('B1-STAY')
     const row = row142()

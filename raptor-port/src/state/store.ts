@@ -51,7 +51,9 @@ import { me, roleOf, isAdmin, mayViewAsMember, switchRoleInForce, pageUnit, lwUn
 import { holdNow, setBands, warBand, setHoldRelease, setEnteredByPick, enteredByPick, pickBand, memberViewBand, schedMoveBand, type MoveBand, type HoldKind, type TrkCover } from './typing-hold'
 import { endUndoSession } from '../undo/timeline'
 import { setRole as lwSetRole } from '../leavewar/state/store'
-import { endTrackerSession, trackerSwitchAsk } from '../tracker/role.js'
+import { endTrackerSession, trackerSwitchAsk, trackerSwitchNeeds } from '../tracker/role.js'
+import { refuse, closeShown, type GuardOpts } from './guard'
+import { saveGoing, waitForSave, dropDoorWait } from './doorwait'
 import { rebindStorageUnit, storageHeld } from '../tracker/storage.js'
 import { isHydrated, hydratePlan, hydrateRolesFor, persistWb } from './persist'
 import { deferEffect, CmdRefused, setPermissionResolver, commitProjection, onPipelineBegin, deriveActor, definePermission, anyone, activeEnvelope, isCommitting } from '../command'
@@ -613,10 +615,11 @@ export function refreshAccess(s: any) {
   }
   lwSetRole(isAdmin() ? 'admin' : 'member')
 }
-export function switchRoleView() {
-  if (!mayViewAsMember()) return
+/* THE SWITCH ITSELF — the body the switch had before it asked anything (above): true once the role in force has moved */
+function switchRoleBody(): boolean {
+  if (!mayViewAsMember()) return false
   const toMember = isAdmin()
-  if (!switchRoleInForce(toMember ? 'main' : 'admin')) return
+  if (!switchRoleInForce(toMember ? 'main' : 'admin')) return false
   view.bumpNav()                  // a role change invalidates a pending day-template-apply confirm (P2-REV2-07)
   if (toMember) {
     if (view.CURPAGE === 'editsched' || view.CURPAGE === 'admin') view.setPage('viewsched')
@@ -625,7 +628,71 @@ export function switchRoleView() {
     view.clearAdminOpen()
   }
   lwSetRole(isAdmin() ? 'admin' : 'member')
+  return true
+}
+/** THE RAW SWITCH — the body alone, then notify(), asking nothing and closing nothing: the switch exactly as it was before
+ *  the guard rail. No control calls it. Tests that need a state no press reaches since D2403 and D2627 A20 (a draft held in
+ *  the member view, a window the member view holds) make it with this, as the raw pick is enterSquadron — the checker's
+ *  allow-list names it (step K7) */
+export function switchRoleViewRaw(): void {
+  if (switchRoleBody()) notify()
+}
+/** the view switch would ask the Tracker's question: unsaved chart edits, whichever squadron — both ways, on his own
+ *  squadron too (his D2627 A20) */
+export const viewSwitchAsks = (): boolean => trackerSwitchNeeds()
+/* THE SWITCH'S LAST STEP (§4.2 step 6, §4.4 steps 4–6): the windows that only show things close (D2596, D2597) and Logic's
+   and Quals' edit modes end (D2627 A4, §18.1 — the guard's closeShown runs each mode's end()), then the switch, the two in
+   one synchronous run and never earlier: a Stay, or a refusal after the question, has closed nothing. WHERE THE SWITCH MOVES
+   HIS OWN PAGES — a Plan holder or a master admin with another squadron in view, whose pages are that squadron's in the
+   admin view and his home's in the member view — they are entered at once, as his own press (byPick): the Tracker follows
+   them and a chart editor open with nothing unsaved closes, as at a pick (his D2654 E3). Left to the check notify() runs,
+   that entry was not his press, and the Tracker waited under the member view's cover for the open editor — the state his
+   D2403 says his own switch must not leave. */
+function enterRoleView(): void {
+  closeShown()
+  const iso = todayIso()
+  const ownWas = pageUnit('own', iso)
+  if (!switchRoleBody()) return
+  if (pageUnit('own', iso) !== ownWas) { enterSquadron(UNIT, false, true); markEntryTried() }
   notify()
+}
+/* THE VIEW SWITCH'S DOOR — the name badge, the ☰ menu's "Switch to the member view" / "Back to the admin view", and the
+   Input window's own "Back to the admin view" chip (the guard rail's plan §4.1 rows 3–5, §4.2, §4.4; his D2403, D2590,
+   D2627 A9, A10, A20). In this order, each check made again after anything that waited — the pick's door's order
+   (state/pick.ts):
+   1. a person who may not switch → nothing, as today;
+   2. the guard: a window that counts open, a row or form holding a change, a failed save → refused, its "Blocked:" note
+      said by the seam ("…then switch to the member view." / "…then switch back to the admin view."), the press ending
+      having changed nothing. The chip passes `skip` — the Input window it is drawn on — and still asks every other row;
+   3. a save still going → the doors' one wait (state/doorwait.ts — the saver's own answer, never a timer, D87), then start
+      again from 1; dropped by his next press;
+   4. the Tracker's question, ALWAYS where there are unsaved chart edits, both ways, on his own squadron too (D2627 A20):
+      "…Save them before switching to the member view?" / "…before switching back to the admin view?" — Stay: nothing;
+      Discard them: the chart back to its last save, then the switch; Save them: saved, then the switch; a Save that does
+      not take: he stays;
+   5. after Save or Discard, 1 and 2 again — a window or a failed save may have arrived while the question stood — and 3
+      again if a save is then going;
+   6. the switch (enterRoleView).
+   With nothing to refuse, wait for or ask, the switch stays synchronous, as before: the role has moved when this returns. */
+export function switchRoleView(opts: GuardOpts = {}): void | Promise<void> {
+  /* a press of a door drops a press still waiting for a save (the plan's reading, named for him) */
+  dropDoorWait()
+  return switchFrom(opts)
+}
+function switchFrom(opts: GuardOpts): void | Promise<void> {
+  if (!mayViewAsMember()) return
+  const toMember = isAdmin()
+  if (refuse(toMember ? 'toMember' : 'toAdmin', '', opts)) return
+  if (saveGoing()) return waitForSave().then(r => { if (r === 'go') return switchFrom(opts) })
+  const ask = viewSwitchAsks() ? trackerSwitchAsk(toMember ? 'the member view' : 'the admin view', !toMember) : null
+  if (!ask) { enterRoleView(); return }
+  return ask.then(go => { if (go) return afterSwitchAsk(toMember, opts) })
+}
+function afterSwitchAsk(toMember: boolean, opts: GuardOpts): void | Promise<void> {
+  if (!mayViewAsMember() || isAdmin() !== toMember) return
+  if (refuse(toMember ? 'toMember' : 'toAdmin', '', opts)) return
+  if (saveGoing()) return waitForSave().then(r => { if (r === 'go') return afterSwitchAsk(toMember, opts) })
+  enterRoleView()
 }
 
 /* ---- PER-WEEK SESSION STASH (the other half of the .wk selector) ----
@@ -1070,6 +1137,17 @@ function entryDue(): string | null {
   if (trk && trk !== own) return UNIT
   return null
 }
+/* the try the check records — the day, the squadron due, his pages' squadron, the war's and the Tracker's, who, the hold */
+function entryKey(to: string, held: boolean): string {
+  const iso = todayIso()
+  return `${iso}|${to}|${pageUnit('own', iso)}|${lwUnitNow() ?? ''}|${trkUnitNow() ?? ''}|${me() ?? ''}|${held ? 'held' : ''}|${trkMayHold() ? 'mayhold' : ''}`
+}
+/* THE VIEW SWITCH'S OWN ENTRY COUNTS AS THIS CHECK'S TRY (step K5, B14 — found by the test, against the plan §4.4 step 5's
+   "unproved" note): the switch enters his pages' squadron by his own press, the Tracker sent after them; its move waits a
+   beat before it leaves (core.js runFollow), so the check the same notify runs still saw the Tracker off his pages, entered
+   once more — not his press — and, the member view's cover allowing it, held the Tracker for the chart editor still open,
+   undoing the move. Recorded as tried, that same entry is not made again; anything else due is, as before. */
+function markEntryTried(): void { ENTRY_TRIED = entryKey(UNIT, ENTRY_HOLD() === 'war') }
 /* run from realNotify — never inside a command (a swap loads a week and a war, which are no one's command), never while
    entering; an open war window holds the war's step (above). The midnight wake (leavewar/sync.ts installPostingClock)
    calls notify() at 00:00:01 and whenever the page is shown or focused on a new day, so the swap needs no click (Fable
@@ -1083,8 +1161,7 @@ function maybeReenter(): void {
      without it the key matched the last try, and the Leave War stayed on his home under the squadron picked, its Approve
      writing there (the night's security read, F1). Whether the Tracker may hold is too: a right lowered during the hold
      must release it (trkMayHold). */
-  const iso = todayIso()
-  const key = `${iso}|${to}|${pageUnit('own', iso)}|${lwUnitNow() ?? ''}|${trkUnitNow() ?? ''}|${me() ?? ''}|${held ? 'held' : ''}|${trkMayHold() ? 'mayhold' : ''}`
+  const key = entryKey(to, held)
   if (key === ENTRY_TRIED) return
   ENTRY_TRIED = key
   const m = me()

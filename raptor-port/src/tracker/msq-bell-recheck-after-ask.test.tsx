@@ -26,7 +26,7 @@ import { saveAccess, signIn, sessionFor } from '../state/accounts'
 import { SESSION, ME, setSession, setMe } from '../state/auth'
 import { todayIso, removeGrant } from '../state/units'
 import { pageUnit, setTrkUnitProbe } from '../state/perms'
-import { notify, switchRoleView } from '../state/store'
+import { notify, switchRoleView, switchRoleViewRaw } from '../state/store'
 import { CURPAGE, setPage } from '../state/view'
 import { pickSquadron } from '../state/pick'
 import { UNIT } from '../engine/unitview'
@@ -96,7 +96,9 @@ async function chartEdit(name: string) {
 async function heldDraft(name: string) {
   await pick('u149')
   await chartEdit(name)
-  await act(async () => { switchRoleView(); await settle() })
+  /* REACHED BY NO PRESS SINCE D2627 A20 (step K5): the switch now asks about unsaved chart edits first, so the held draft
+     is made by the raw switch (state/store.ts switchRoleViewRaw — the switch as it was, asking nothing), named so */
+  await act(async () => { switchRoleViewRaw(); await settle() })
   expect([S.storageUnit(), UNIT, CURPAGE], 'the premise: the Tracker held on 149, he on its View-only Sched').toEqual(['u149', 'u149', 'viewsched'])
 }
 const answer = async (v: unknown) => { await act(async () => { C.dlgClose(v); await tick(); await tick() }) }
@@ -152,7 +154,7 @@ describe('a bell line pressed over unsaved chart edits, the right behind it ende
   })
 })
 
-describe('the bell\'s own OIL question, pressed in the member view over a held draft (F3, the OIL door)', () => {
+describe('the bell\'s own OIL question, pressed in the member view over a held draft (F3, the OIL door) — reached by no press since D2627 A20, by the raw switch', () => {
   const SAT = '2026-07-18'
   async function asked() {
     await heldDraft('F3-OIL')

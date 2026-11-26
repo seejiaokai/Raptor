@@ -13,7 +13,7 @@ import { createRoot, type Root } from 'react-dom/client'
 import { useMsqWorld, signInAs, ACCT } from '../test-support/msq-world'
 import { saveAccess } from '../state/accounts'
 import { pickSquadron } from '../state/pick'
-import { notify, switchRoleView, enterSquadron } from '../state/store'
+import { notify, switchRoleViewRaw, enterSquadron } from '../state/store'
 import { holdNow } from '../state/typing-hold'
 import { isAdmin } from '../state/perms'
 import { InputEditor } from './InputWindow'
@@ -27,7 +27,11 @@ useMsqWorld()
 const $ = (sel: string) => document.querySelector(sel) as HTMLElement | null
 const dead = (el: Element | null) => !!el && !!el.closest('[inert]')
 
-describe('an Input window held by the switch to the member view', () => {
+/* STEP K5 (his D2403, D2590): the switch to the member view now asks the guard first, so an Input window open at it refuses
+   it and the window the member view holds is reached by no press. It is made by the raw switch (state/store.ts
+   switchRoleViewRaw — the switch as it was, asking nothing), named so; the chip is still pressed for real: it is the held
+   window's own way back, and its press leaves the Input window out of the guard's count (the plan §4.1 row 5) */
+describe('an Input window held by the switch to the member view — reached by no press since D2403 (step K5: the switch is refused while a window is open), so by the raw switch; removed with the band in Build 2', () => {
   let host: HTMLDivElement, root: Root, chip: HTMLButtonElement
   beforeEach(() => {
     host = document.createElement('div'); document.body.append(host); root = createRoot(host)
@@ -48,7 +52,7 @@ describe('an Input window held by the switch to the member view', () => {
     const other = INPUTS.find((x: any) => x.person && PEOPLE[x.person] && x.person !== 'prowler')!
     await act(async () => { setInpEdit(other); notify() })
     await act(async () => { fireEvent.change($('#inpEditRmk')!, { target: { value: 'H5 typed words' } }) })
-    await act(async () => { switchRoleView() })
+    await act(async () => { switchRoleViewRaw() })
     expect(CURPAGE, 'the premise: the switch lands on View-only Sched').toBe('viewsched')
     expect($('[data-testid="inped-moveband"]'), 'the premise: held, with its band').not.toBeNull()
     return other
@@ -83,7 +87,7 @@ describe('an Input window held by the switch to the member view', () => {
 })
 
 describe('a window held by a pick, through the member view and back (the security read\'s lead)', () => {
-  it.each(['hunter', 'saber'] as const)('%s: its boxes and its Document button stay locked under the band — the pick\'s hold reached by no press since D2403 (step K4: a pick is refused while a window is open), so by the raw entry; removed with the band in Build 2', async who => {
+  it.each(['hunter', 'saber'] as const)('%s: its boxes and its Document button stay locked under the band — the pick\'s hold reached by no press since D2403 (step K4: a pick is refused while a window is open), so by the raw entry, and the member view and back by the raw switch (step K5: the switch is refused while a window is open); removed with the band in Build 2', async who => {
     const host = document.createElement('div'); document.body.append(host)
     const root = createRoot(host)
     signInAs('saber')
@@ -97,8 +101,8 @@ describe('a window held by a pick, through the member view and back (the securit
     /* (the raw entry the pick runs — state/store.ts enterSquadron, by pick: since K4 the pick's own door refuses this press) */
     await act(async () => { enterSquadron('u149', holdNow() === 'war', true); notify() })
     expect($('[data-testid="inped-moveband"]'), 'the premise: held by the pick').not.toBeNull()
-    await act(async () => { switchRoleView() })
-    await act(async () => { switchRoleView() })
+    await act(async () => { switchRoleViewRaw() })
+    await act(async () => { switchRoleViewRaw() })
     await act(async () => { await new Promise(r => setTimeout(r, 0)) })
     expect($('[data-testid="inped-moveband"]'), 'still held').not.toBeNull()
     const body = $('.inped-body')!

@@ -504,7 +504,7 @@ export function Shell() {
           {canSwitch
             ? <button type="button" className={'abtn rolechip tgl' + (admin ? ' admin' : '')} id="roleBadge"
                 title={admin ? 'Switch to the member view' : 'Back to the admin view'}
-                onClick={() => switchRoleView()}>{mineCs ? `${mineCs} · ` : ''}{admin ? 'Admin' : 'Member'}</button>
+                onClick={() => { void switchRoleView({ from: 'bar' }) }}>{mineCs ? `${mineCs} · ` : ''}{admin ? 'Admin' : 'Member'}</button>
             : <span className={'abtn rolechip' + (admin ? ' admin' : '')} id="roleBadge"
                 title={mineCs ? `Signed in as ${mineCs}` : undefined}>{mineCs ? `${mineCs} · ` : ''}{admin ? 'Admin' : 'Member'}</span>}
         </div>

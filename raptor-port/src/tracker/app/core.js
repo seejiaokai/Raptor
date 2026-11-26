@@ -124,15 +124,18 @@ async function discardChartEdits(keepEditor = false) {
    (tracker/TrackerPage.tsx) shows this question alone over whatever page he is on. Save writes them into this Tracker
    (✓ Save changes) before the pick goes on — and where the save did not take (refused, failed), he stays; Discard reloads
    the chart from the store, as the logout's does; Stay keeps everything and the pick does not happen. A question already
-   up (another of the Tracker's) is answered first: the pick waits. */
+   up (another of the Tracker's) is answered first: the pick waits.
+   THE VIEW SWITCH ASKS THE SAME QUESTION (his D2627 A20 — step K5): `to` is "the member view", or "the admin view" with
+   `back`, so its last line reads "…before switching to the member view?" or "…before switching back to the admin view?";
+   a pick's stays "…before switching to 142?", byte for byte. */
 export let switchAsking = false;
 onBeforeTrackerSwitch({
   needs: () => !!sylDirty,
-  ask: async to => {
+  ask: async (to, back) => {
     if (dlg) return false;
     switchAsking = true; notify();
     try {
-      const c = await uiChoice('You have unsaved chart edits on “' + curSylName() + '”.\n\nSave them before switching to ' + to + '?', 'Save them', 'Discard them', 'Stay');
+      const c = await uiChoice('You have unsaved chart edits on “' + curSylName() + '”.\n\nSave them before switching ' + (back ? 'back to ' : 'to ') + to + '?', 'Save them', 'Discard them', 'Stay');
       if (c === 'cancel') return false;
       cancelGestures();
       if (c === 'ok') return await saveForQuestion();
