@@ -188,13 +188,17 @@ async function reload(unit: string) {
 }
 
 describe('nothing in flight lands in the other squadron', () => {
-  it('a question open on 142 at the pick is gone, and its job writes nothing into 149', async () => {
+  /* RE-POINTED AT STEP K4 (his D2403 — a pick of another squadron is refused while a window is open): until K4 the pick
+     went through and took the question with it; now the question, a window of the Tracker, refuses the pick, and the
+     expectation is the refusal — the question still 142's, over 142's Tracker, and nothing of its job in 149 */
+  it('a question open on 142 at the pick refuses it (D2403): 142 still in view, the question still up, and its job writes nothing into 149', async () => {
     await pick('u149'); await pick('u142')
     const was149 = recordsOf('u149')
     const job = C.addCourse(); await until(() => C.dlg)
     await pick('u149')
-    expect(C.dlg, 'no question of 142\'s over 149\'s Tracker').toBeNull()
-    await job
+    expect({ unit: UNIT, trk: S.storageUnit() }, 'refused').toEqual({ unit: 'u142', trk: 'u142' })
+    expect(C.dlg, 'the question still up, 142\'s').toBeTruthy()
+    await act(async () => { C.dlgClose(null); await job })
     expect(recordsOf('u149'), '149\'s records untouched').toEqual(was149)
   })
 
@@ -207,7 +211,8 @@ describe('nothing in flight lands in the other squadron', () => {
     expect(recordsOf('u149')).toEqual(was149)
   })
 
-  it('an import running at the pick stops: nothing of its file lands in 149', async () => {
+  /* RE-POINTED AT STEP K4 (D2403), as the one above: the import's box up at the pick now refuses it */
+  it('an import\'s box up at the pick refuses it (D2403): 142 still in view, the box still up; nothing of its file lands in 149', async () => {
     await pick('u149'); await pick('u142')
     const was149 = recordsOf('u149')
     const file = await C.collectCharts([C.curSylId()])
@@ -216,7 +221,9 @@ describe('nothing in flight lands in the other squadron', () => {
     const job = C.importClick()
     await until(() => C.dlg)
     await pick('u149')
-    await job
+    expect({ unit: UNIT, trk: S.storageUnit() }, 'refused').toEqual({ unit: 'u142', trk: 'u142' })
+    expect(C.dlg, 'the box still up').toBeTruthy()
+    await act(async () => { C.dlgClose(null); await job })
     delete (window as any).__pickOpenForTests
     expect(recordsOf('u149')).toEqual(was149)
     expect(C.dlg).toBeNull()
@@ -440,7 +447,10 @@ describe('a master admin going through his squadrons', () => {
 })
 
 describe('nothing of the old squadron stays live over the new one', () => {
-  it('the chart editor, its dialogs, the marking pop-up and every open window close at the pick', async () => {
+  /* ITS SHOW ALL HALF RE-POINTED AT STEP K4 (D2403): Show All is a window that refuses (his E9b reading — never put to him
+     singly), so a pick with it up is refused; closed, the pick goes through. The editor and the marking pop-up halves are
+     as before (a mode, and a window that closes by itself — D2597) */
+  it('the chart editor and the marking pop-up close at the pick; Show All up refuses it (D2403), and once closed the pick goes through with every window shut', async () => {
     C.toggleArrange()
     await pick('u149')
     expect(C.arrangeMode, 'Edit chart layout').toBe(false)
@@ -452,6 +462,10 @@ describe('nothing of the old squadron stays live over the new one', () => {
     await pick('u142')
     C.openShowAll()
     await pick('u149')
+    expect({ unit: UNIT, open: C.showAllOpen }, 'refused, Show All still up').toEqual({ unit: 'u142', open: true })
+    await act(async () => { C.closeShowAll(); notify() })
+    await pick('u149')
+    expect(UNIT).toBe('u149')
     expect(C.showAllOpen).toBe(false)
     expect(C.editId).toBeNull()
     expect(C.sylModalOpen).toBe(false)

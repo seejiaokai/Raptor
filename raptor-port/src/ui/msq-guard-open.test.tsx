@@ -50,7 +50,8 @@ import * as TRK from '../tracker/app/core.js'
 import { endTrackerSession, trackerWindowsOpen, trackerAsking } from '../tracker/role.js'
 import { getPeople } from '../tracker/people.js'
 import { pageOffered, setTrkUnitProbe } from '../state/perms'
-import { trackerCover } from '../state/typing-hold'
+import { trackerCover, holdNow } from '../state/typing-hold'
+import { enterSquadron } from '../state/store'
 import { rowReachable } from './guard'
 import { setStorageMaker, storageUnit } from '../tracker/storage.js'
 import { Whiteboard } from '../storage/whiteboard'
@@ -471,13 +472,11 @@ describe('A7 (the Leave War\'s half) — a window on a page out of sight', () =>
        Pinned as today's behaviour; the difference is named in K1b's report) */
     expect({ unit: UNIT, open: whatIsOpen()?.row.id ?? null, sheet: !!tid('person-window') }).toEqual({ unit: 'u142', open: 'lwsheet', sheet: true })
   })
-  it('pin — a person\'s window on his own Leave War, then a squadron he only views picked by today\'s door: TODAY the window stays up and still refuses (not the plan\'s "no longer offered, nothing open")', async () => {
-    /* (Hunter holds View of 150 in withThird(). No door asks the guard yet, so today's pick goes through with the window
-       up. The plan expected 150 to offer View-only Sched and Help alone (D2381), the war's window then out of reach and
-       uncounted (D2627 "unless the squadron picked no longer offers it"). Today the window stays up and the lwsheet row
-       still answers — pinned as it is, a difference named in K1b's report, not bent.
-       K4 RE-POINTS THIS: the pick will then be refused with the window open, and the state stays reachable only by a
-       change he did not make — his right lowered, his move — which this pin will then be rewritten to use) */
+  it('re-pointed at K4 (D2403) — a person\'s window on his own Leave War, then a squadron he only views picked by the bar: the pick is REFUSED first, the window still up on his own war', async () => {
+    /* (Hunter holds View of 150 in withThird(). Until step K4 no door asked the guard, so this pin held today's road: the
+       pick went through with the window up, the page staying on the Leave War with the window drawn (the held-window road
+       of D2323). Since K4 the pick's door asks first and the window refuses it (D2403) — the expectation is the refusal.
+       The state "150 picked with that window up" is now reached only by a change he did not make) */
     await app('hunter')
     await goLeaveWar()
     await press(document.querySelector(`[data-testid^="person-"]:not([data-testid="person-window"])`), 'a name on the grid')
@@ -485,7 +484,7 @@ describe('A7 (the Leave War\'s half) — a window on a page out of sight', () =>
     expect(named()).toBe('lwsheet')
     await topPick(third.u150)
     expect({ unit: UNIT, sheetOpen: row('lwsheet').open(), drawn: !!tid('person-window'), page: CURPAGE, open: whatIsOpen()?.row.id ?? null })
-      .toEqual({ unit: third.u150, sheetOpen: true, drawn: true, page: 'leavewar', open: 'lwsheet' })
+      .toEqual({ unit: 'u142', sheetOpen: true, drawn: true, page: 'leavewar', open: 'lwsheet' })
   })
   it('pin — the day panel left open behind the Inputs tab: never counted (D2597)', async () => {
     await app('hunter')
@@ -797,15 +796,17 @@ describe('A10 — counted means drawn', () => {
 })
 
 describe('A14 (pin — no door asks the guard yet) — the guard is not asked on a change he did not make', () => {
+  /* (re-pointed at K4: the set-up's pick of 149 is his own press, which since K4 asks the guard as it should — so the spy
+     is put on after the set-up, and holds what this pin is for: the changes he did not make never ask) */
   it('pin: his own move at midnight, then a right ended, under an Input window and a Leave War window: never asked', async () => {
     const ask = vi.fn(guardAsk)
-    setGuardAsk(ask)
     signInAs('saber'); expect(moveMan(PID.hunter, third.u150).ok).toBe(true)
     await app('hunter')
     await topPick('u149')
     await OPEN.lwsheet!.open()
     await OPEN.inputedit!.open()
     expect(named(), 'the premise: something counts').not.toBeNull()
+    setGuardAsk(ask)
     await act(async () => { pastMidnight() }); await settle()
     signInAs('saber'); expect(saveAccess(ACCT.hunter, { grants: { u149: 'none' } })).toBeNull(); signInAs('hunter')
     await doing(() => {})
@@ -963,14 +964,17 @@ describe('A7 (the Tracker\'s half) — a Tracker window on a page out of sight, 
     expect(whatIsOpen()).toMatchObject({ reason: 'window', row: { id: 'trk', where: 'tracker' } })
     expect(rowReachable(row('trk')), 'its tab leads back to it').toBe(true)
   })
-  it('then a squadron he only views picked (150): the Tracker is not offered for it, the window is still set — and not counted (D2627 A7: "unless the squadron picked no longer offers it")', async () => {
-    /* (Hunter holds View of 150 in withThird(). No door asks the guard yet, so today's pick goes through; the Tracker stays
-       on his own squadron's records for a pick he only views — it follows his own pages, core.js followUnit — so its window
-       is left set while nothing on 150 can show it) */
+  it('then a squadron he only views in view (150) — reached by no press since D2403, so by the raw entry: the Tracker is not offered for it, the window is still set — and not counted (D2627 A7: "unless the squadron picked no longer offers it")', async () => {
+    /* (Hunter holds View of 150 in withThird(). Until step K4 this was today's pick, which went through; since K4 a pick of
+       150 is refused while Show All counts (D2403 — ui/msq-guard-doors.test.tsx B4 holds the refusal and the pick from 150
+       that then goes through), so 150 in view with the window set is the state only a change he did not make leaves, and
+       is made here by the raw entry the pick itself runs (state/store.ts enterSquadron, by pick). The Tracker stays on his
+       own squadron's records for a squadron he only views — it follows his own pages, core.js followUnit — so its window is
+       left set while nothing on 150 can show it) */
     await app('hunter')
     await OPEN.trk!.open()
     await doing(() => setPage('inputs'))
-    await topPick(third.u150)
+    await doing(() => { enterSquadron(third.u150, holdNow() === 'war', true) })
     expect({ unit: UNIT, offered: pageOffered('tracker'), set: C.showAllOpen, rowOpen: row('trk').open(), reachable: rowReachable(row('trk')), open: whatIsOpen()?.row.id ?? null })
       .toEqual({ unit: third.u150, offered: false, set: true, rowOpen: true, reachable: false, open: null })
   })

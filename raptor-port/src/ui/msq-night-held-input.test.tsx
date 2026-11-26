@@ -13,7 +13,8 @@ import { createRoot, type Root } from 'react-dom/client'
 import { useMsqWorld, signInAs, ACCT } from '../test-support/msq-world'
 import { saveAccess } from '../state/accounts'
 import { pickSquadron } from '../state/pick'
-import { notify, switchRoleView } from '../state/store'
+import { notify, switchRoleView, enterSquadron } from '../state/store'
+import { holdNow } from '../state/typing-hold'
 import { isAdmin } from '../state/perms'
 import { InputEditor } from './InputWindow'
 import { INPEDIT, setInpEdit } from './pops'
@@ -82,7 +83,7 @@ describe('an Input window held by the switch to the member view', () => {
 })
 
 describe('a window held by a pick, through the member view and back (the security read\'s lead)', () => {
-  it.each(['hunter', 'saber'] as const)('%s: its boxes and its Document button stay locked under the band', async who => {
+  it.each(['hunter', 'saber'] as const)('%s: its boxes and its Document button stay locked under the band — the pick\'s hold reached by no press since D2403 (step K4: a pick is refused while a window is open), so by the raw entry; removed with the band in Build 2', async who => {
     const host = document.createElement('div'); document.body.append(host)
     const root = createRoot(host)
     signInAs('saber')
@@ -93,7 +94,8 @@ describe('a window held by a pick, through the member view and back (the securit
     const other = INPUTS.find((x: any) => x.person && PEOPLE[x.person] && x.person !== 'prowler' && x.person !== 'stiff' && (x.unit == null || x.unit === 'u142'))!
     await act(async () => { setInpEdit(other); notify() })
     expect($('.inped-body')?.hasAttribute('inert'), 'the premise: he may change it, before the pick').toBe(false)
-    await act(async () => { await pickSquadron('u149') })
+    /* (the raw entry the pick runs — state/store.ts enterSquadron, by pick: since K4 the pick's own door refuses this press) */
+    await act(async () => { enterSquadron('u149', holdNow() === 'war', true); notify() })
     expect($('[data-testid="inped-moveband"]'), 'the premise: held by the pick').not.toBeNull()
     await act(async () => { switchRoleView() })
     await act(async () => { switchRoleView() })

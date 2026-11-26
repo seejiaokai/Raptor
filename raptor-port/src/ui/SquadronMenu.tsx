@@ -66,7 +66,8 @@ export function SquadronMenu({ num }: { num: string }) {
   }, [shown])
   if (!many) return <TalonMark num={num} />
   const toggle = (keyboard: boolean) => setOpen(o => (o ? null : { keyboard }))
-  const pick = (u: string) => { setOpen(null); btn.current?.focus(); pickSquadron(u) }
+  /* the note of a refused pick hangs under this button (ui/guardnote.ts — `from: 'bar'`), the keys already back on it */
+  const pick = (u: string) => { setOpen(null); btn.current?.focus(); void pickSquadron(u, { from: 'bar' }) }
   const move = (e: React.KeyboardEvent) => {
     const items = [...(panel.current?.querySelectorAll<HTMLButtonElement>('.sqm-row') ?? [])]
     if (!items.length) return

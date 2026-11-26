@@ -64,6 +64,34 @@ setStorageMaker((u: string) => trackerTarget(TRK_WB, u), () => pageUnit('own', t
 export const bootTrkProbe = () => setTrkUnitProbe(() => storageUnit())
 bootTrkProbe()
 
+/* WHAT A TEST'S PAGE LEFT ON THE WINDOW, TAKEN OFF AT ITS END (step K4's round 2). The Tracker's chart puts three listeners
+   on the window each time a chart is drawn (tracker/app/core.js enablePinchZoom: a capture keydown, pointerdown and
+   touchstart) and never takes them off; each holds the chart it was put on, and the chart holds the page — so in a file
+   that draws the whole app test after test, every Tracker test kept its whole page alive, about 65 MB each, and
+   msq-guard-open.test.tsx's worker ran out of its 4 GB before its last test. In the app a fresh chart is drawn far less
+   often; that leak is the app's own and reported, not fixed here. Here, every window and document listener put on while a
+   test ran and still on at its end is taken off after the page is unmounted. Armed at the end of each teardown, so a
+   listener a module puts on once as it loads (before the first test) is never touched. */
+type Kept = { tg: EventTarget; type: string; fn: EventListenerOrEventListenerObject; capture: boolean }
+const LEFT = new Set<Kept>()
+let armed = false
+for (const tg of [window, document] as EventTarget[]) {
+  const add = tg.addEventListener.bind(tg), rem = tg.removeEventListener.bind(tg)
+  const cap = (o: unknown) => typeof o === 'boolean' ? o : !!(o as AddEventListenerOptions | undefined)?.capture
+  ;(tg as any).addEventListener = (type: string, fn: any, o?: any) => {
+    if (armed && fn) LEFT.add({ tg, type, fn, capture: cap(o) })
+    return add(type, fn, o)
+  }
+  ;(tg as any).removeEventListener = (type: string, fn: any, o?: any) => {
+    for (const k of LEFT) if (k.tg === tg && k.type === type && k.fn === fn && k.capture === cap(o)) LEFT.delete(k)
+    return rem(type, fn, o)
+  }
+}
+const sweepLeft = () => {
+  for (const k of [...LEFT]) k.tg.removeEventListener(k.type, k.fn, k.capture)
+  LEFT.clear()
+}
+
 let page: ReturnType<typeof render> | null = null
 export async function guardTeardown() {
   /* the Tracker's module state outlives the page: its question answered Stay, its windows and modes ended as a sign-out
@@ -80,6 +108,7 @@ export async function guardTeardown() {
   closeDayPanel(); closeScheduler(); setLgEdit(false)
   setStorageKept(true); watchSaves(null); _resetFloatWins()
   setGuardAsk(guardAsk); setGuardClose(guardCloseShown)
+  sweepLeft(); armed = true
 }
 
 export const $ = (sel: string) => document.querySelector(sel) as HTMLElement | null

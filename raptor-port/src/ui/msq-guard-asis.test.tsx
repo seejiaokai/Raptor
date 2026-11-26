@@ -255,7 +255,10 @@ describe('P12 (pin) — modes are not windows, as each behaves today', () => {
     expect(UNIT).toBe('u149')
     expect(ARM, 'the arming dropped').toBeNull()
   })
-  it('pin (replaced by G1 when built — D2627 A4): Logic\'s edit mode — the pick goes through and the mode is still on, on 149\'s page', async () => {
+  /* REPLACED BY G1 at step K4 (the plan §7's named exception; his D2627 A4 — a pick ends Logic's edit mode): until K4 this
+     pinned "the pick goes through and the mode is still on, on 149's page"; it now holds the mode's end, G1
+     (ui/msq-guard-g.test.tsx) holding the rest */
+  it('replaced by G1 (D2627 A4, built at K4): Logic\'s edit mode — the pick goes through and the mode ENDS: 149\'s Logic opens with Edit, not Done', async () => {
     await app()
     await act(async () => { setPage('logic'); notify() })
     await settle()
@@ -264,9 +267,11 @@ describe('P12 (pin) — modes are not windows, as each behaves today', () => {
     await topPick('u149')
     expect(UNIT).toBe('u149')
     expect(CURPAGE, 'still on Logic').toBe('logic')
-    expect(($('#lgDone') as HTMLButtonElement).hidden, 'the mode is still on').toBe(false)
+    expect(($('#lgDone') as HTMLButtonElement).hidden, 'the mode ended: no Done').toBe(true)
+    expect(($('#lgEdit') as HTMLButtonElement).hidden, '149\'s Logic offers Edit').toBe(false)
   })
-  it('pin (replaced by G1 when built — D2627 A4): Edit quals — the pick goes through and the mode is still on, on 149\'s page', async () => {
+  /* REPLACED BY G1 at step K4, as the one above (D2627 A4): until K4 "the mode is still on, on 149's page" */
+  it('replaced by G1 (D2627 A4, built at K4): Edit quals — the pick goes through and the mode ENDS: 149\'s Quals opens with Edit, not Done', async () => {
     await app()
     await act(async () => { setPage('quals'); notify() })
     await settle()
@@ -276,7 +281,8 @@ describe('P12 (pin) — modes are not windows, as each behaves today', () => {
     expect(UNIT).toBe('u149')
     expect(pageUnit('own'), 'Quals follows a Plan holder\'s pick').toBe('u149')
     expect(CURPAGE).toBe('quals')
-    expect(($('#qSave') as HTMLButtonElement).hidden, 'the mode is still on').toBe(false)
+    expect(($('#qSave') as HTMLButtonElement).hidden, 'the mode ended: no Done').toBe(true)
+    expect(($('#qEdit') as HTMLButtonElement).hidden, '149\'s Quals offers Edit').toBe(false)
   })
   it('pin: an armed "Discard N edits & load" (set by its own setter — the demo has no issued day to press it on): a pick changes no page, and today the pick drops it', async () => {
     await app()
