@@ -16,7 +16,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { WarInput } from '../absences'
 import { addDays, codeInWords, displayCell, formatCell, LEAVE_TYPES, parseCell, type BidState, type CounterName, type Half, type Portion, type PostOutcome } from '../engine'
-import { OutcomeChips, PostAct, PostField, PostLine, PostWarn, UndoPosting } from './OutcomeChips'
+import { OutcomeChips, PostAct, PostField, PostLine, PostWarn, UndoPosting, usePostingFocus } from './OutcomeChips'
 import { outcomeLine } from './outcomewords'
 import '../../ui/postout.css'
 import { awardsIn, cellProblem, clearCells, clearRecords, decideRequests, deletableRecords, fileStraight, FILED_STRAIGHT, leaveRunAt, placeApproved, decidableIn, defaultAwardHalf, deletableIn, getState, grantOilDays, heldRunAt, MAX_GIVEN_BY, MAX_REASON, movableRecords, setBidStates, setCell, setCellRange, setRequestWords, type DecideTo, type LeaveRun, type MoveRec } from '../state/store'
@@ -764,6 +764,7 @@ export function BidPicker({
     if (posting && isPhoneWidth()) keepCellAboveSheet(personId, date)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [posting])
+  const poForm = usePostingFocus(posting)
   /* the day's own leave, lit (round 3's change 7, his Q6): its button wears the ring — never on a free half beside leave
      filed on the Inputs page, where the leave named is the other half's */
   /* …and a REFUSED bid's leave wears it too (his D1355): the window says which leave was refused, as an approved leave's
@@ -774,7 +775,9 @@ export function BidPicker({
   const lit = dayLeave?.type ?? (refusedType && LEAVE_TYPES.some(t => t.type === refusedType) ? refusedType : null)
 
   return (
-    <Sheet testid="bid-picker" label="Place a bid" onClose={closeKeeping}>
+    /* its spoken name follows what it is — "Post out" / "Post in" while a posting, as its head says (chat 197, the fresh
+       Opus read's 4) */
+    <Sheet testid="bid-picker" label={posting ?? 'Place a bid'} onClose={closeKeeping}>
       {/* THE TITLE BAR (round 3): the name, the day, the admin's switch and ✕ — "now LL" went (change 7: the lit button
           says which leave the day holds, D1331 its half) */}
       <div className="bidsheet-hd">
@@ -1066,7 +1069,7 @@ export function BidPicker({
           decides manning and the grey hatch, and it deliberately does not stop
           leave being dated before it. */}
       {onPostIn && piOpen && (
-        <div className="po-form">
+        <div className="po-form" ref={poForm}>
           {/* WAY C's Post in (D2653: "the same shape"): "PI from" and its date, the app's own note on the strip, a blue
               "Post in" */}
           <PostField label="PI from">
@@ -1096,7 +1099,7 @@ export function BidPicker({
         </div>
       )}
       {onPostOut && poOpen && (
-        <div className="po-form">
+        <div className="po-form" ref={poForm}>
           {/* [POST-OUT-OUTCOMES] (D229, D294, D298, D300): which posting it is — the short chips FIRST (way C, D2653 e: the
               kind of posting before the date; D300's "each thing once" kept); one line saying what the chosen one does on
               the date; the button just "Post out". A Delete asks twice (D287 (3)). */}

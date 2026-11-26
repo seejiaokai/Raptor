@@ -28,9 +28,10 @@
 // still cancels the MOVE (D262) — that is the move, not this panel. The war's other windows keep blocking
 // (`OUTSTANDING.md` `[LW-WINDOWS-NONBLOCKING]`).
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { formatCell, LEAVE_TYPES, type BidState, type Portion, type PostOutcome } from '../engine'
-import { OutcomeChips, PostAct, PostField, PostLine, PostWarn } from './OutcomeChips'
+import { OutcomeChips, PostAct, PostField, PostLine, PostWarn, usePostingFocus } from './OutcomeChips'
+import { isPhoneWidth, keepCellAboveSheet } from './cellinsight'
 import { outcomeLine } from './outcomewords'
 import '../../ui/postout.css'
 import { grantOilDays, MAX_GIVEN_BY, MAX_REASON, awardsIn, clearCells, decidableIn, deletableIn, fileStraight, movableCells, placeApproved, postingBlocked, setBidStates, setCells, setRemarksOn, inOneWarCommand } from '../state/store'
@@ -415,9 +416,19 @@ export function SelectSheet({
   /* WAY C over a drag (his D2653 a, d; D2732 Q2): a posting open, the sheet is the posting's alone — the leave's parts step
      aside and the head names the act, "Cinch  Post out"; the range's first day stands in the "PO from" box */
   const posting: 'Post out' | 'Post in' | null = nPeople === 1 && onPostOut && poOpen ? 'Post out' : nPeople === 1 && onPostIn && piOpen ? 'Post in' : null
+  /* ON A PHONE ONE MAN'S PICKED DAYS STAY IN SIGHT (his D1290 — "the day just tapped or the days just picked"; chat 197,
+     Astra's blind read): as the window opens over one man's days, and again as it becomes a posting, whose sheet is
+     taller. The first day picked is the one kept above it; never on a store update or an Undo (D672). Over several men
+     the window stays as it was. */
+  useLayoutEffect(() => {
+    if (nPeople === 1 && isPhoneWidth()) keepCellAboveSheet(sel.people[0]!, sel.from)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [posting])
+  const poForm = usePostingFocus(posting)
 
   return (
-    <Sheet testid="select-sheet" label="Selected days" onClose={closeKeeping} modal={false}>
+    /* its spoken name follows what it is — "Post out" / "Post in" while a posting (chat 197, the fresh Opus read's 4) */
+    <Sheet testid="select-sheet" label={posting ?? 'Selected days'} onClose={closeKeeping} modal={false}>
       <div className="bidsheet-hd">
         <span className="who" data-testid="sel-who">{who}</span>
         {posting ? <PostAct act={posting} testid="sel-po-title" />
@@ -496,10 +507,12 @@ export function SelectSheet({
             { key: 'atch', testid: 'sel-file-ATCH', label: 'Attach', title: 'Attach: attached to another squadron, a job or an exercise — filed under Unavailable on the schedule, for the Duration picked; where to is added on the Inputs page', onPick: () => fileDuty('ATCH') },
             ...(role === 'admin' ? [{ key: 'oth', testid: 'sel-file-OTH', label: 'Other', title: 'Other: out of the manning — filed under Unavailable on the schedule, for the Duration picked', onPick: () => fileDuty('OTH') }] : []),
             ...(role === 'admin' && onPostOut && nPeople === 1 ? [{ key: 'po', testid: 'sel-postout', label: 'Post out', title: 'Post out — their last day in the squadron',
-              onPick: () => { setPoOpen(true); confirming.current = null } }] : []),
+              /* the leave's note steps aside with the leave's parts — a decision's words never stand under the posting's
+                 button (chat 197: the fresh Opus and Fable reads, F2 / C) */
+              onPick: () => { setNote(''); setNoteAt('end'); setPoOpen(true); confirming.current = null } }] : []),
             /* …and its twin, Post in, as the one-day window's ⋯ holds them (his D1326; [LW-DRAG-MORE-MENU]) */
             ...(role === 'admin' && onPostIn && nPeople === 1 ? [{ key: 'pi', testid: 'sel-postin', label: 'Post in', title: 'Post in — their first day in the squadron',
-              onPick: () => { setPiOpen(true); confirming.current = null } }] : []),
+              onPick: () => { setNote(''); setNoteAt('end'); setPiOpen(true); confirming.current = null } }] : []),
           ]} />
         </div>
       )}
@@ -519,7 +532,7 @@ export function SelectSheet({
       )}
       </>)}
       {onPostIn && nPeople === 1 && piOpen && (
-        <div className="po-form">
+        <div className="po-form" ref={poForm}>
           <PostField label="PI from">
             {/* the app's own date box, as the one-day window's "PI from" (owner D796, D797) */}
             <DateBox className="dateinput" testid="sel-pi-date" label={`Post ${people(sel.people[0])} in from`} value={piDate} onChange={v => { setNote(''); setPiDate(v) }} />
@@ -544,13 +557,13 @@ export function SelectSheet({
         </div>
       )}
       {onPostOut && nPeople === 1 && poOpen && (
-        <div className="po-form">
+        <div className="po-form" ref={poForm}>
           {/* the choices first, then the date, the one line, the button — as on the one-day sheet (way C, D2653; D229,
               D294, D298, D300) */}
-          <OutcomeChips value={poOutcome} testid="sel-po" noSans={!!getState().people.find(x => x.id === sel.people[0])?.pers} onChange={o => { setPoOutcome(o); setDelArmed(false) }} />
+          <OutcomeChips value={poOutcome} testid="sel-po" noSans={!!getState().people.find(x => x.id === sel.people[0])?.pers} onChange={o => { setNote(''); setPoOutcome(o); setDelArmed(false) }} />
           <PostField label="PO from">
             {/* the app's own date box, as the one-day sheet's "PO from" (owner D796, D797) */}
-            <DateBox className="dateinput" testid="sel-po-date" label={`Post ${people(sel.people[0])} out from`} value={poDate} onChange={v => { setDelArmed(false); setPoDate(v) }} />
+            <DateBox className="dateinput" testid="sel-po-date" label={`Post ${people(sel.people[0])} out from`} value={poDate} onChange={v => { setNote(''); setDelArmed(false); setPoDate(v) }} />
           </PostField>
           {outcomeLine(poOutcome, poDate, !!(hasAccount && hasAccount(sel.people[0]))) && (
             <PostLine testid="sel-po-line">{outcomeLine(poOutcome, poDate, !!(hasAccount && hasAccount(sel.people[0])))}</PostLine>

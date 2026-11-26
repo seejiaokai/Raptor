@@ -20,8 +20,24 @@
    step off the sheet, then the one button. The parts below are that layout, shared by the five posting sheets so they
    cannot drift apart; their look is `bidpicker.css`'s `.po-form` (drawn by the batch branch's
    `scripts/handpass/n191/draw-s4.mjs`, pictures `docs/mock/2026-11-25-msq-pick-guard-q3/drawn/s4-*`). */
-import type { CSSProperties, ReactNode } from 'react'
+import { useLayoutEffect, useRef, type CSSProperties, type ReactNode } from 'react'
 import type { PostOutcome } from '../engine'
+
+/* THE KEYS STAY IN THE WINDOW AS IT BECOMES A POSTING (chat 197 — Fable's blind read, K): ⋯ → Post out takes the menu item
+   pressed off the screen with the leave's parts, and the keys were left on the page itself, outside the window. As the
+   posting opens they go to its first control — the first chip, or Post in's date box (a button, so a phone raises no
+   keys) — only when they are not already inside the window. The ref goes on the posting's `.po-form`. */
+export function usePostingFocus(posting: string | null) {
+  const form = useRef<HTMLDivElement>(null)
+  useLayoutEffect(() => {
+    const f = form.current
+    if (!posting || !f) return
+    const win = f.closest('[role="dialog"]')
+    if (win && win.contains(document.activeElement)) return
+    f.querySelector<HTMLElement>('button:not([disabled]), input:not([disabled])')?.focus({ preventScroll: true })
+  }, [posting])
+  return form
+}
 
 const OUTCOME_CHIPS: { v: PostOutcome; l: string }[] = [
   { v: 'overseas', l: 'Overseas Sqn' },

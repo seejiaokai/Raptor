@@ -3696,8 +3696,9 @@ export function Matrix() {
   /* A DAY FILLED FROM THE INPUTS PAGE (his D1548, D1552, D1553 — [LW-HELD-DAY-ADD]; D1395's course day widened): held whole
      by entries filed there — leave, a medical, an overseas duty, a course, a commitment under Unavailable, or a morning and an
      afternoon — a tap opens the bid window so more can still be added (Grant OIL first), one line on top for each entry. Only
-     where the bid window itself opens: an admin's tap on a posted-out or not-yet-arrived day shows what it always did, unless
-     he chose to place leave or OIL there (the narrow read's N3 — the bid window's own condition, below). It comes before the
+     where the bid window itself opens: an admin's tap on a posted-out or not-yet-arrived day shows what it always did — a
+     gone day holding anything opens as any other day (D1722), and "Place leave or OIL here instead" is gone (D2727; the
+     narrow read's N3 — the bid window's own condition, below). It comes before the
      day's list, the member's remarks window and the read-only note, each of which it replaces on such a day — but never on a
      day outside his time in the squadron, where the day's list shows every record on its own line (owner answer C, below). */
   /* A BID OF THIS WAR'S OWN ON A DAY NOW ANOTHER SQUADRON'S (the reshape walk's W2-F3 — MatrixRows.tsx awayBid): the day's

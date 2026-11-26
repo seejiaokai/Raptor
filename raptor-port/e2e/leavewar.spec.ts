@@ -8153,15 +8153,98 @@ test('with "Pick dates…" open, a tap on the empty card beside or under the cal
   }
 })
 
-/* THE FIXES' ROUNDS 3b AND 3c — three tests CUT by his D2727 (26 Nov 26, "ok remove it"): they reached a posted-out day's
-   one-day window only through "Place leave or OIL here instead…", which D2727 removed from both posting sheets (an
-   admin's tap on a day outside a man's time opens the posting sheet only; an input for such a day is filed from the
-   Inputs page). Named, so nothing is dropped quietly: "one-day window, 'Approve what I enter' on a day after his
-   posting-out date: the reason it stays pending is on screen (R3b)"; "one-day window, 'Approve what I enter' after an
-   Overseas posting-out date: the leave lands approved, nothing kept pending (D1541)"; "the 'kept pending' note is said
-   once… (R3c-2)". What they held besides the route stays pinned where it lives: the kept-pending decision and its words
-   (leavewar/m4decide.test.ts), an Overseas posting refusing nothing (leavewar/deleteposting-restore.test.ts, D1541).
-   Section 4's own browser test is e2e/msq-s4-posting-leavewar.spec.ts. */
+/* THE FIXES' ROUNDS 3b AND 3c, AND HIS D1541 — BACK THROUGH THE DOOR THAT STAYS (chat 197). The three tests reached a
+   posted-out day's one-day window through "Place leave or OIL here instead…", which his D2727 (26 Nov 26, "ok remove it")
+   took off both posting sheets. The state is still reached another way — the three code reads of chat 196 found it alike
+   (the coordinator said go): his D1722, D1725 — an admin's tap on a gone day that already HOLDS an entry opens what that
+   day opens on any other day, the one-day window, Auto-approve and all. So the entry comes first: a bid placed on the day
+   after the posting date while he is still in his time (Auto-approve off, so it waits), then the posting out, then the
+   tap on that day, Auto-approve on, its lit leave pressed again.
+   In the one-day window, "Approve what I enter" on, leave on a day from a man's posting-out date is rightly kept pending
+   under a Delete posting — and the reason ("He posts out on …: refuse or delete it") must be seen (round 3b, lesson 3 of
+   the order's §7.11: what tells the person it happened). His D1541 (31 Oct 26): an Overseas posting refuses no leave —
+   only a Delete one keeps its refusal from its date. Dated 20 days on so the posting is still to run (the man is not
+   deleted under the test) — on the browser's pinned today, `PIN_T0` (4 Nov 26), so 24 Nov 26, his leave on 25 Nov
+   ([E2E-POSTING-DATES-PIN]). */
+const PO_DATE = '2026-11-24', PO_NEXT = '2026-11-25'
+/* the pin holds: the page's today is PIN_T0's day, whatever the real date */
+async function pinnedToday(page: Page) {
+  expect(await page.evaluate(() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}` }), 'the browser runs on the pinned today').toBe('2026-11-04')
+}
+const dmOf = (iso: string) => `${+iso.slice(8, 10)} ${['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+iso.slice(5, 7) - 1]}`
+/* the tick set as asked, then LL pressed — the same leave again where his balance would go below zero (the window's ask) */
+async function tickAndLL(page: Page, on: boolean) {
+  const tick = page.getByTestId('bid-approve-tick')
+  await expect(tick).toBeVisible()
+  if ((await tick.getAttribute('aria-checked')) !== String(on)) await tick.click()
+  await expect(tick).toHaveAttribute('aria-checked', String(on))
+  await page.getByTestId('bid-LL').click()
+  if (await page.getByText(/Tap the same leave again/).isVisible().catch(() => false)) await page.getByTestId('bid-LL').click()
+}
+async function bidThenPostOutThenOpen(page: Page, outcome: 'delete' | 'overseas') {
+  await page.locator('[data-testid="month-NOV"]').click()
+  /* the entry first, while the day is still in his time: a bid that waits */
+  await page.locator(`[data-testid="cell-slipway-${PO_NEXT}"]`).click()
+  await tickAndLL(page, false)
+  await expect(page.locator(`[data-testid="cell-slipway-${PO_NEXT}"] .c`), 'his LL waits on the day').toBeVisible()
+  if (await page.getByTestId('bid-picker').isVisible().catch(() => false)) await page.getByTestId('bid-cancel').click()
+  /* the posting out, dated the day before */
+  await page.locator(`[data-testid="cell-slipway-${PO_DATE}"]`).click()
+  await pressMore(page, 'bid-postout')
+  /* Overseas Sqn is chosen to start with, and a tap on a chosen chip un-chooses it (the fixes' narrow read, its 2): tapped only
+     when not chosen, and checked chosen before the confirm */
+  const chip = page.locator(`[data-testid="po-${outcome}"]`)
+  if ((await chip.getAttribute('aria-pressed')) !== 'true') await chip.click()
+  await expect(chip).toHaveAttribute('aria-pressed', 'true')
+  await page.locator('[data-testid="po-confirm"]').click()
+  if (outcome === 'delete') await page.locator('[data-testid="po-delete-go"]').click()   // a Delete asks twice (D287) — its card's Delete (D1628)
+  await expect(page.locator(`[data-testid="cell-slipway-${PO_DATE}"]`)).toHaveClass(/gone/)
+  /* the gone day that holds his bid: the one-day window, as on any other day (D1722) — never the posting sheet */
+  await page.locator(`[data-testid="cell-slipway-${PO_NEXT}"]`).click()
+  await expect(page.getByTestId('bid-picker'), 'the day opens its usual window (D1722)').toBeVisible()
+  await expect(page.getByTestId('postout-sheet')).toHaveCount(0)
+}
+test('one-day window, "Approve what I enter" on a day after his posting-out date: the reason it stays pending is on screen (R3b)', { tag: PINNED }, async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await pinnedToday(page)
+  await bidThenPostOutThenOpen(page, 'delete')
+  await tickAndLL(page, true)
+  const said = new RegExp(`kept pending — He posts out on ${dmOf(PO_DATE)}: refuse or delete it`)
+  await expect(page.getByText(said), 'the reason stands where he looks after the press').toBeVisible()
+  await page.waitForTimeout(500)
+  await expect(page.getByText(said), '…and stays, settled').toBeVisible()
+})
+
+/* …AND D1541'S OWN CASE: an Overseas posting refuses nothing — the bid on a day after it, Auto-approve on, lands approved,
+   and no "kept pending" note is raised */
+test('one-day window, "Approve what I enter" after an Overseas posting-out date: the leave lands approved, nothing kept pending (D1541)', { tag: PINNED }, async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await pinnedToday(page)
+  await bidThenPostOutThenOpen(page, 'overseas')                  // dated ahead, as the Delete one: still to run
+  await tickAndLL(page, true)
+  await expect(page.locator(`[data-testid="cell-slipway-${PO_NEXT}"] .c.s-a`), 'his LL approved on the day after the posting').toBeVisible()
+  await expect(page.getByText(/kept pending/), 'nothing kept pending').toHaveCount(0)
+})
+
+/* THE FIXES' ROUND 3c, R3c-2 (the third blind read's 3): round 3b's "kept pending" note was kept by CELL until another cell
+   opened, so a later look at the same day showed it again, though nothing was kept pending that time. The note is said
+   once: closed and opened again, the same day carries no stale note (D1722: the window stays, as on any other day). */
+test('the "kept pending" note is said once: the same day closed and opened again shows no stale note (R3c-2)', { tag: PINNED }, async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await pinnedToday(page)
+  await bidThenPostOutThenOpen(page, 'delete')                    // D1541: a Delete posting is the one that still refuses
+  await tickAndLL(page, true)
+  await expect(page.getByText(new RegExp(`kept pending — He posts out on ${dmOf(PO_DATE)}`)), 'said once, after the press (R3b)').toBeVisible()
+  await expect(page.getByTestId('bid-picker'), 'the window stays, as on any other day').toBeVisible()
+  await page.getByTestId('bid-cancel').click()
+  await page.locator(`[data-testid="cell-slipway-${PO_NEXT}"]`).click()
+  await expect(page.getByTestId('bid-picker'), 'the day opens its usual window again').toBeVisible()
+  await page.waitForTimeout(300)
+  await expect(page.getByText(/kept pending/), 'no stale note — nothing was kept pending this time').toHaveCount(0)
+})
 
 /* THE BREAK TESTS (28 Oct 26, list lw-m4-browser #8 — his D1435): a decide button holds the room of its longer word, so
    "Approve" lit as "Approved" (and "Refuse" as "Refused") never moves an edge under the finger, whatever the phone's

@@ -6930,7 +6930,7 @@ Pinned in `ui/accounts-ui.test.tsx` (AC10) and `ui/memberview.test.tsx`.
 - **The board's desktop layout on a phone pinches, and its drag follows the edge (D1107):** pinch to zoom in and out; a puck carried to the edge of what is on screen scrolls the board that way (the design guide §5A, D895). Its design questions go to him with pictures first; [BOARD-PHONE-PINCH-ZOOM].
 - **Quals on a phone pinches too (D1108):** its wide table zooms in and out, its pinned heading row and name column kept in line (D993); the same round of questions and the same job, [BOARD-PHONE-PINCH-ZOOM].
 
-## A posting out — four chips, one line, "Post out" (`[POST-OUT-OUTCOMES]`, 27 Sep 26 — D229, D294, D298, D300)
+## A posting out — its chips, one line, "Post out" (`[POST-OUT-OUTCOMES]`, 27 Sep 26 — D229, D294, D298, D300; once "four chips", three since "Transfer to Sqn" waits for the Transfer step, D2659)
 
 **WAY C (his D2648, D2653; his go for the multi-squadron build's section 4, D2732, 26 Nov 26 — these rows reach `main`
 with that build's batch).** Every posting sheet — Post out and Post in from a day's sheet and from a drag, and an
@@ -6946,8 +6946,14 @@ design A (D2732 Q1): Move's grey chip with the top bar's Undo arrow in teal, "(P
 card's Delete is the Leave War's dashed grey Delete (`.abtn.po-del`, D2732 Q4, D332), on the three sheets' cards only;
 "Delete Cinch now?" (the date's question) keeps `danger` until his answer. A press on the day under an open posting
 closes it, the next opens the day afresh (Q3). "Place leave or OIL here instead…" is gone from both posting sheets (his
-D2727): an admin's tap on a day outside a man's time opens the posting sheet only; a member's own tap on his own such day
-still opens the bid sheet. Built in `OutcomeChips.tsx`'s shared parts and `bidpicker.css` `.bidsheet .po-form`; pinned
+D2727): an admin's tap on a BARE day outside a man's time opens the posting sheet only; a gone day that already holds an
+entry opens what that day opens on any other day (D1722, D1725 — the door the three restored browser tests of
+`e2e/leavewar.spec.ts` R3b, D1541's and R3c-2 take); a day before his post-in date opens the Post in sheet whatever it
+holds (the code reads' question, put to him through the coordinator, held); a member's own tap on his own such day
+still opens the bid sheet. While a posting is open its window is named for it to a screen reader ("Post out" / "Post
+in"), the keys go to its first control when the menu item pressed left the screen, and on a phone the day it was opened
+from — or a drag's first day, over one man — is scrolled just above it (D1290; `cellinsight.ts`, every posting window
+and the drag window; chat 197, the three code reads' finds, pinned by `leavewar/ui/msq-s4-reads.test.tsx`). Built in `OutcomeChips.tsx`'s shared parts and `bidpicker.css` `.bidsheet .po-form`; pinned
 by `leavewar/ui/msq-s4-posting.test.tsx` and `e2e/msq-s4-posting-leavewar.spec.ts`. Where the older text below says
 otherwise about the look or order, this paragraph wins; what each posting DOES is unchanged.
 
