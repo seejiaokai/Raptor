@@ -1,0 +1,39 @@
+{
+ "pictures": [],
+ "cases": {
+  "phone-webkit": {
+   "log": [
+    "bundle index-C-8yJleY.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"08:00\",\"to\":\"10:00\",\"title\":\"Sat brief\"} on 2026-07-18: new input [\"imwv60jqmhechu1\"]; asked [\"oil\"]; note \"\"",
+    "controls found: [\"OIL Earn (W4): 1 sbMore More — Sort all and the layout\",\"Undo (W5 a): 1 sbUndo Undo\",\"next day (W7): 1 sbNextDay Next day\"]"
+   ]
+  }
+ },
+ "errors": [],
+ "results": [
+  [
+   "KEEP phone-webkit OIL Earn (W4) pressed with the caret in the input's start box",
+   "COULD NOT BE MADE",
+   "{\"control\":\"sbMore More — Sort all and the layout\",\"before\":\"imwv60jqmhechu1.str@board\",\"rightAfter\":\"none\",\"settled\":\"none\",\"sbday\":5}",
+   "a-phone-webkit-KEEP-OIL.png"
+  ],
+  [
+   "KEEP phone-webkit Undo (W5 a) pressed with the caret in the input's start box",
+   "COULD NOT BE MADE",
+   "{\"control\":\"sbUndo Undo\",\"before\":\"imwv60jqmhechu1.str@board\",\"rightAfter\":\"none\",\"settled\":\"none\",\"sbday\":5}",
+   "a-phone-webkit-KEEP-Undo.png"
+  ],
+  [
+   "KEEP phone-webkit next day (W7) pressed with the caret in the input's start box",
+   "COULD NOT BE MADE",
+   "{\"control\":\"sbNextDay Next day\",\"before\":\"imwv60jqmhechu1.str@board\",\"rightAfter\":\"none\",\"settled\":\"none\",\"sbday\":6}",
+   "a-phone-webkit-KEEP-next.png"
+  ],
+  [
+   "KEEP phone-webkit the keyboard: 40 Tabs from the box — does the route reach a button?",
+   "RECORD (a button reached)",
+   "[\"INPUT\",\"TEXTAREA\",\"BUTTON:Reject\",\"SPAN\"]",
+   ""
+  ]
+ ]
+}

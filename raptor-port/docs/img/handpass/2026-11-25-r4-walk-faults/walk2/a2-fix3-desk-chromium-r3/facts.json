@@ -1,0 +1,20 @@
+{
+ "pictures": [],
+ "cases": {
+  "desk-chromium": {
+   "log": [
+    "bundle index-C-8yJleY.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"08:00\",\"to\":\"10:00\",\"title\":\"Range brief\"} on 2026-07-15: new input [\"imwv6307kdv7lrq\"]; asked []; note \"\""
+   ]
+  }
+ },
+ "errors": [],
+ "results": [
+  [
+   "OTHER desk-chromium the input changed on the Board (09:00–11:30 \"bring kit\") — the Board's row, the week, the Inputs page, the bell (RECORD each)",
+   "PASS (stored and on the Board); the rest RECORD",
+   "{\"onBoard\":{\"ground\":[\"09:00\",\"11:30\",\"bring kit\"]},\"week\":{\"ground\":[\"09:00\",\"11:30\",\"bring kit\"],\"inputRow\":[\"09:00\",\"11:30\"]},\"inputsDayCard\":\"LATE 09:00–11:30 RangerTRAINING Range brief · bring kit By Saber\",\"bellScheduler\":[],\"bellRanger\":[\"Range brief Wed 15 Jul / Remark changed · Saber\",\"Range brief Wed 15 Jul / Now 09:00–11:30 · Saber\",\"Range brief Wed 15 Jul / Now 09:00–10:00 · Saber\",\"Range brief Wed 15 Jul / You were added · Saber\"],\"stored\":[540,690,\"bring kit\"]}",
+   "a2-desk-chromium-OTHER-week.png, a2-desk-chromium-OTHER-inputs-day.png, a2-desk-chromium-OTHER-bell-scheduler.png, a2-desk-chromium-OTHER-bell-ranger.png"
+  ]
+ ]
+}

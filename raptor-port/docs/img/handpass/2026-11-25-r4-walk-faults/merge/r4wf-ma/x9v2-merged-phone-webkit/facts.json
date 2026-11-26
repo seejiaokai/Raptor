@@ -1,0 +1,11 @@
+{
+ "pictures": [],
+ "cases": {
+  "phone-webkit": {
+   "log": [
+    "filed {\"type\":\"OD\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"12:00\"} on 2026-07-18: new input [\"imwvxduooo1in90\"]; asked [\"oil\"]; note \"\""
+   ]
+  }
+ },
+ "errors": []
+}
