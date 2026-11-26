@@ -10,7 +10,8 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { VCONF, SHIFT_HARD, RULE_SPEC, RULE_STD, KIND_LABEL, ruleFmt, ruleParse, ruleOff, kindOff, rulesOffCount, rulesCheckedOffCount, rulesSave, rulesReset } from '../engine/rules'
 import { WARN, validate, lgFired } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
-import { setLgEdit, lgCanEdit, canEditSched } from '../state/auth'
+import { setLgEdit, lgCanEdit, canEditSched, LGEDIT } from '../state/auth'
+import { useGuardCloses } from './guard'
 import { openWinFor } from '../state/cutoff'
 import { esc } from '../state/view'
 import { notify } from '../state/store'
@@ -202,6 +203,10 @@ export function LogicPage() {
 
   const admin = canEditSched()
   const editing = lgCanEdit()
+  /* THE EDIT MODE'S END AT A DOOR (the guard rail, ui/guard.ts — D2627 A4, §18.1): a value still waiting its beat is written
+     first, to the squadron it was typed for, before the door loads the next one's; then the mode is off. No toast: that
+     is Done's own. Handed over while the mode is on. */
+  useGuardCloses('lgedit', !!LGEDIT, () => { flushRuleApply(); setLgEdit(false); notify() })
   const b = logicBody(LGQ, LGF)
   /* THE RULE LIST IS DRAWN AGAIN ONLY WHEN ITS WORDS CHANGE ([LOGIC-REDRAW-DROPS-TYPING], 21 Oct 26). React sets a
      `dangerouslySetInnerHTML` again whenever its OBJECT is a new one, not only when the markup differs (as Quals found,

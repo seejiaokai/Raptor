@@ -46,3 +46,19 @@ export function setGuardClose(fn: (() => void) | null): void { closer = fn }
 export function closeShown(): void { closer?.() }
 /* tests only (§3.4): the checker that runs under every test — installed by the test set-ups at step K7 */
 export function setEntryChecker(fn: ((door: string, opts: GuardOpts) => void) | null): void { installed.checker = fn }
+
+/* THE LEAVE WAR'S OPEN SHEETS, EACH WITH ITS SHOW-ONLY MARK AND ITS OWN CLOSER (§3.2 (f); his D2740 — K1b). The war's
+   sheets are drawn in leavewar/ui/Sheet.tsx, which keeps the one list of them in the order they opened; it hands that
+   list over here, in the pattern of state/typing-hold.ts setWarWindowsProbe (whose count of every sheet, show-only or
+   not, still holds the war's swap exactly as before). Two rows of ui/guard.ts read it: `lwsheet` — a sheet open without
+   the mark, which refuses — and `lwshow` — the marked ones, each closed by its own closer. Never loaded: none open. */
+export type WarSheet = { showOnly: boolean; close: () => void }
+let warSheets: () => readonly WarSheet[] = () => []
+export function setWarSheetsProbe(fn: (() => readonly WarSheet[]) | null): void { warSheets = fn || (() => []) }
+const sheetsNow = (): readonly WarSheet[] => { try { return warSheets() } catch { return [] } }
+/** a Leave War sheet is open that is not marked show-only — the `lwsheet` row */
+export const warSheetOpen = (): boolean => sheetsNow().some(s => !s.showOnly)
+/** a show-only Leave War sheet is open — the `lwshow` row */
+export const warShowOpen = (): boolean => sheetsNow().some(s => s.showOnly)
+/** closes every show-only Leave War sheet by its own closer, the unmarked ones left as they are */
+export function closeWarShown(): void { for (const s of [...sheetsNow()]) if (s.showOnly) s.close() }

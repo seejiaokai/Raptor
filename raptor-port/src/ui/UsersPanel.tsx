@@ -54,6 +54,7 @@ import {
 } from '../leavewar/sync'
 import './postout.css'
 import { DateBox } from './DateBox'
+import { useGuardWork } from './guard'
 
 const P = (pid: string): any => (PEOPLE as any)[pid]
 const cs = (pid: string) => (P(pid) ? String(P(pid).cs) : '')
@@ -187,6 +188,9 @@ function startApprove(r: AccessRequest): Approving {
 
 function Waiting() {
   const [open, setOpen] = useState<Approving | null>(null)
+  /* how "Give access" opened — the guard counts it once anything differs (ui/guard.ts, D2598) */
+  const [opened, setOpened] = useState<Approving | null>(null)
+  useGuardWork('giveaccess', !!open && JSON.stringify(open) !== JSON.stringify(opened))
   /* the page's squadron's requests only, those he is an admin of (§5 — accounts.ts waitingHere) */
   const reqs = waitingHere()
   if (!reqs.length) return <p className="adm-note" id="admNoWaiting">Nobody is waiting for access.</p>
@@ -205,7 +209,7 @@ function Waiting() {
             {!a
               ? <div className="acc-acts">
                   {/* D309 / D310: "Give access · Refuse" (were Approve · Decline) */}
-                  <button className="abtn primary" data-approve={r.id} onClick={() => setOpen(startApprove(r))}>Give access</button>
+                  <button className="abtn primary" data-approve={r.id} onClick={() => { const s = startApprove(r); setOpen(s); setOpened(s) }}>Give access</button>
                   <button className="abtn" data-decline={r.id} onClick={() => done(declineRequest(r.id), `Refused ${r.name}`)}>Refuse</button>
                 </div>
               : <div className="acc-edit" data-approving={r.id}>
@@ -361,6 +365,9 @@ function PersonEditor(p: { pid: string; a: Account | undefined; callsign: string
   const { rest, roleLocked } = rowLocks(p.pid, a)
   /* the delete's first tap arms it; Cancel, closing the editor or another row disarms it (the editor unmounts) */
   const [armDel, setArmDel] = useState(false)
+  /* his row counts for the guard once anything differs from how it opened — the sign-in, the Role, a squadron's line
+     (D2595, D2598; ui/guard.ts) */
+  useGuardWork('userrow', name !== (a ? a.name : '') || role !== pickNow || JSON.stringify(lines) !== JSON.stringify(linesNow))
   const save = () => {
     if (!a) return
     /* the role, the mark, every squadron's line AND his sign-in in ONE command (accounts.ts saveAccess — one Undo step;
@@ -455,10 +462,14 @@ function ArchivedEditor(p: { pid: string; a: Account | undefined; onClose: () =>
   const { a } = p
   const callsign = cs(p.pid)
   const taken = !!callsignProblem(callsign, p.pid)
-  const [box, setBox] = useState(() => (taken ? nextFreeCallsign(callsign, p.pid) : callsign))
-  const [postIn, setPostIn] = useState(effectiveToday)
+  const [box0] = useState(() => (taken ? nextFreeCallsign(callsign, p.pid) : callsign))
+  const [box, setBox] = useState(box0)
+  const [postIn0] = useState(effectiveToday)
+  const [postIn, setPostIn] = useState(postIn0)
   const [err, setErr] = useState('')
   const [armDel, setArmDel] = useState(false)
+  /* counted for the guard once the callsign or the post-in date differs from how the row opened (D2598; ui/guard.ts) */
+  useGuardWork('archrow', box !== box0 || postIn !== postIn0)
   const want = box.trim()
   const renamed = want !== callsign
   const restore = () => {

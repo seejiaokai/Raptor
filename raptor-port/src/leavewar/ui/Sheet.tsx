@@ -16,6 +16,7 @@ import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, typ
 import { createPortal } from 'react-dom'
 import './bidpicker.css'
 import { setWarWindowsProbe, warWindowGone, subscribeBands, warBand } from '../../state/typing-hold'
+import { setWarSheetsProbe } from '../../state/guard'
 import { MoveBandView } from '../../ui/MoveBand'
 import { holdReadOnly } from '../../ui/heldro'
 import { followVisible } from '../../ui/vvfollow'
@@ -49,6 +50,12 @@ const OPEN: HTMLElement[] = []
    an open war window holds the war's swap when his squadron changes under it — his own move at midnight — whatever is
    typed in it, so no form has to report its typing */
 setWarWindowsProbe(() => OPEN.length)
+/* …AND BESIDE EACH, ITS SHOW-ONLY MARK AND ITS OWN CLOSER (the guard rail, his D2740 — the plan §3.2 (f)): the two sheets
+   that only show things (a leave filed on the Inputs page, an OIL award) are opened `showOnly`, and close by themselves at
+   a pick; every other sheet refuses it. Kept by panel, read in OPEN's order, handed to the guard's seam (state/guard.ts);
+   the count above, which holds the war's swap, is every sheet's, marked or not, as before. */
+const MARK = new Map<HTMLElement, { showOnly: boolean; close: () => void }>()
+setWarSheetsProbe(() => OPEN.map(n => MARK.get(n) ?? { showOnly: false, close: () => {} }))
 
 /* THE BAND ACROSS AN OPEN WINDOW WHEN HIS SQUADRON CHANGES UNDER IT (his D2243 Q7, "as drawn" — docs/mock/
    2026-11-20-multi-sqn-reshape/page.html §7, pictures q7b-d and q7b-p, D1478). While the war loaded is no longer the page's
@@ -434,6 +441,7 @@ export function Sheet({
   modal = true,
   raised = false,
   page = false,
+  showOnly = false,
   children,
 }: {
   testid: string
@@ -466,6 +474,11 @@ export function Sheet({
    *  so buttons near its top move each time what is under them grows or shrinks; this one fills the screen from the top and
    *  grows down, its buttons where they were. Not movable there (it fills the screen). A desktop keeps the floating sheet. */
   page?: boolean
+  /** A WINDOW THAT ONLY SHOWS THINGS (his D2740): nothing in it to type, pick or save, so a pick of another squadron, the
+   *  member-view switch or another squadron's bell line closes it by its own closer and goes through, where every other
+   *  window refuses the press (ui/guard.ts, the `lwshow` row). Two sheets carry it — a leave filed on the Inputs page and
+   *  an OIL award (BidPicker.tsx); a sheet added later carries it only on his ruling (the roll-call's R3 and R8). */
+  showOnly?: boolean
   children: ReactNode
 }) {
   // A drag that scrolled the grid ends in a trailing click on the scrim
@@ -489,6 +502,15 @@ export function Sheet({
        (state/typing-hold.ts warWindowGone; the page decides whether anything waited) */
     return () => { const i = OPEN.lastIndexOf(n); if (i >= 0) OPEN.splice(i, 1); warWindowGone() }
   }, [panelRef])
+  /* ITS SHOW-ONLY MARK, KEPT APART (his D2740): an effect of its own, so a change of the mark never runs the cleanup
+     above — which tells the war a window went (warWindowGone) though none did. Set at mount, before the effect above;
+     a sheet with no mark in MARK reads as unmarked, with a closer that does nothing (the probe's fallback). */
+  useLayoutEffect(() => {
+    const n = panelRef.current
+    if (!n) return
+    MARK.set(n, { showOnly, close: () => closeRef.current() })
+    return () => { MARK.delete(n) }
+  }, [panelRef, showOnly])
   const moveBand = useMoveBand(panelRef, () => closeRef.current())
   /* A FINGER ON THE WINDOW NEVER SCROLLS THE PAGE BEHIND IT (owner D686, 9 Oct 26; found on this window on his iPhone,
      22 Oct 26 — "I could scroll the page behind this page somehow vertically"). The inner list's `overscroll-behavior:
