@@ -3249,7 +3249,7 @@ order follows from the work itself, it is written as a **finding** at the end, n
   | The core | D2661–D2680 | 107–116 | 4741–4744 | `msq-guard-*` (as §3–§5 name them), `e2e/msq-guard.spec.ts` |
   | Admin → Users | D2681–D2700 | 117–126 | 4745–4748 | `msq-s2-*`, `e2e/msq-s2-users.spec.ts` |
   | The bell | D2701–D2715 | 127–136 | 4749–4752 | `msq-s3-*`, `e2e/msq-s3-bell.spec.ts` |
-  | The posting sheet | D2716–D2725 | 137–146 | 4753–4756 | `msq-s4-*`, `e2e/msq-s4-posting.spec.ts` |
+  | The posting sheet | D2716–D2725 | 137–146 | 4753–4756 | `msq-s4-*`, `e2e/msq-s4-posting-leavewar.spec.ts` |
 
   A number is still checked free before it is taken; a section that runs out asks the coordinator. A row a section
   adds to the notifications register carries no number of its own until the coordinator numbers it at the merge.
@@ -3408,6 +3408,26 @@ hours; said plainly, not hidden (the red team's Opus 6).** **Bug reports
   looking at another squadron, then Logout, then each admin's Help and bell.
 
 ### 21.4 The posting sheet on the Leave War (§22; D2648, D2653 — way C)
+
+**Step 0 done (D2728), 26 Nov 26 — a fresh Fable's read, taken whole by the coordinator (chat 193):**
+`raptor-port/docs/superpowers/briefs/2026-11-26-msq-s4-step0-fable-read.md`, findings F1–F14, each with its
+replacement text. **Where this section's or §22's text differs from that report, the report wins.** In short:
+- a ground-crew man has two choices (F1); on a phone the three choices stand two and one (F2); "the four outcomes"
+  are three choices and none chosen (F3);
+- a new step **PS1b** and test **PT9** for D2727, with `leavewar/ui/Matrix.tsx` (`placeAt`, `placing`, its four
+  reads, the two `onPlace` props) and one comment in `MatrixRows.tsx` added to the files below; the tests that change
+  are named and retired or re-pointed citing D2727 (F4);
+- "Undo post out" / "Undo post in" are design A, settled by D2732 Q1 (F6); the five sheet titles (F7); what steps
+  aside with a posting open (F8); Q4's dashed grey on the "Delete Cinch?" card of all three sheets, in `bidpicker.css`
+  (F9); the looks and readings D2732 answered no longer hold (F10); "To squadron" is not built here (F11); the tests
+  and records D2659 changes are named (F12); two drawn placements tested (F13); the existing post-in sheet's order (F14).
+- **Kept as today, said in the closing report:** a member's tap on his own day outside his time (F5).
+- **Held for his answer:** whether the "Delete Cinch now?" card (D1102) takes the same dashed grey (F9's hold;
+  recommended yes).
+- The browser test is `e2e/msq-s4-posting-leavewar.spec.ts` (the docs check needs *leavewar* in a Leave War browser
+  test's name). PS0's finding: a batch-branch ruling number cited on a rulings page on `main` is refused, so the
+  section cites those numbers only in code, `ui-contracts.md` and `HANDOFF.md`. The size of about 11 hours is likely
+  too low (the reader's view; not measured).
 
 **Who:** Opus, high. **When:** **at once — it waits on no step of another section — and it ships on its own**
 (D2657). **The Leave War side only:** the Admin → Users side — the form inside the man's row — rides the Transfer
