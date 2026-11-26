@@ -1865,6 +1865,8 @@ test('the drag window: the leave tapped stays put when the below-zero line appea
 
 test('the one-day window: the leave tapped stays put when the below-zero line appears, and the same spot tapped again goes ahead (D2030)', async ({ page }) => {
   await lwView(page, 'slipway')
+  /* his FCL typed as 0 first: the demo types no FCL, and a balance never typed asks nothing until it has a figure (D2746) */
+  await page.evaluate(() => (window as any).lwTypeBalance('slipway', 'FCL', 0))
   await page.locator('[data-testid="cell-slipway-2026-02-11"]').click()
   await expect(page.locator('[data-testid="bid-picker"]')).toBeVisible()
   const at = await staysPut(page, 'bid-FCL', 'span-note')
