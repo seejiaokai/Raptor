@@ -284,6 +284,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [AIRCRAFT-TYPE-SETTING] — each deployment set to its aircraft type by a setting, one code base (D1536); at the database step or hand-over.
 - [M365-HOSTING-TRIAL] — the app on his own M365 with no database (D1532) — **waits for his word: no test account yet (D1682, 5 Nov 26)**; not proposed again until he raises it.
 - [DB-STEP] — the move into the shared database: the table format written on his side, then the one adapter.
+- [MSQ-SAVE-GIVEUP-DB] — a save that never answers gives up after a set time and shows "Not saved" with Retry (his D2742): built with the database, where a save can hang.
 - [DB-SECURITY-ROLES] — the agent designs the database's security roles from data-model §11 (D1653); IT enters them; a member-only account tests them.
 - [DB-WAITING-CREATEDBY] — the database's own "created by" on a waiting person's change-log row would name him; write such rows through a service account.
 - [DB-ONE-MASTER-FIXES] — the check's places that do not read the one table, for the database step (D1587, D1589): Quals ticks, holidays, a posted-out man, a Tracker student, medical documents, four smaller, history names.
@@ -322,6 +323,12 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [MSQ-SAVE-GIVEUP-DB] A save that never answers gives up after a set time — with the database step (his D2742, 26 Nov 26, chat 193) — OPEN
+**What it is:** his D2729 Q9 ruled that a save that never answers stops waiting and shows "Not saved" with Retry, and a squadron pick is then refused with the Retry note. The guard rail's chat 194 found that in today's app a save cannot hang (it is written in the browser at once); only the shared database can leave one waiting. His D2742: the guard rail builds the wait for a save at the pick, the member-view switch and a bell line now (its step K4a); the give-up after a set time (about 20 seconds, the app's own figure for a network wait — the guard rail chat's number, not his) waits for this step.
+**Found with it, the same cluster:** a hung save would also freeze Retry and Logout, and let the page be closed without the "Leave site?" question — all decided by how the real store answers late.
+**To do, at the database step:** the give-up, its tests (written down by the guard rail chat in Build 1's plan §4.2 and K4a's notes), and the three cluster points above, each put to him if it changes what he sees.
+**Where:** People & accounts (the guard rail); the database step.
 
 ### [CODE-CHECK-FILE-LIMIT] The code check goes red once the project holds more than 5,000 code files (found 25 Nov 26, chat 175) — OPEN, his go
 **What:** pull request 826's "code check" job is red since `main` was brought in on 25 Nov 26 (GitHub's run on `38b1d6be9`: every other gate green), saying "React Doctor could not read origin/main's side, so it compared nothing". The cause is not the branch's code and not the earlier one (the raw byte, [MSQ-FIXREAD10-LEFT] (6)): React Doctor 0.9.18 leaves part of its check undone above 5,000 code files — its JSON report, `projects[0].skippedCheckReasons`: "Maintainability analysis was incomplete: source-file-limit (5067 observed, limit 5000)" — and `scripts/code-check.mjs` rightly refuses a report with a part skipped. `main` holds 4,755 walk scripts under `raptor-port/scripts/handpass` and sits about 250 files under the limit; this branch's own walk scripts and tests tip it over, and so will any branch after two or three more walks, `main` itself soon after. Reproduced on his PC (`npm run lint:changed`, exit 2). A re-run does not clear it.
