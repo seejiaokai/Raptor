@@ -569,8 +569,10 @@ body.dnd .schedboard .ppl[data-fill].dragover .addz{border-color:var(--accent);c
 #eWeek .tg-miss:empty{display:inline-block;min-width:34px}
 /* …but a flying line's TO / LD box is as wide as its narrow column: the outline keeps to it */
 #eWeek .form .tg-miss:empty{display:block;min-width:0}
-/* a time emptied on a published day keeps the app's dotted waiting mark inside the outline (the try-out's frame c) */
-#eWeek .tg-miss[data-aln]:empty{padding-left:3px;margin-left:-3px;padding-bottom:3px;margin-bottom:-3px}
+/* a time emptied on a published day keeps the app's dotted waiting mark inside the outline (the try-out's frame c) — the
+   mark moved in, never the box grown out: padding round it drew the box 3px taller and 3px wider than its START (the
+   re-walk's N1; his lessons 42, 43). Only the empty box: a typed time's mark is untouched. */
+#eWeek .tg-miss[data-aln]:empty{text-indent:2px;text-underline-offset:-1px !important}
 #schedBoard input.tg-miss{box-shadow:inset 0 0 0 1px var(--ink-3) !important}
 #schedBoard input.tg-miss.tg-red{box-shadow:inset 0 0 0 1px var(--hard) !important}
 /* the count before "N to sign" */

@@ -184,6 +184,47 @@ describe('Edit Schedule\'s sign-off line (D2854)', () => {
     await edit('dr:3.0.0.end', '13:00')
     await click(weekLine(THU)); expect(at(), 'a typed box drops out of the turn').toBe('gr:3.0.end')
   })
+  /* "in turn" is on from the last box the tap went to, in page order (the re-walk's N2): that box typed since, the next
+     tap goes to the one after it, never back to the first */
+  it('the box the last tap went to typed since: the next tap goes on to the box after it, wrapping after the last (N2)', async () => {
+    await edit('ap:3.1.end', ''); await edit('dr:3.0.1.end', ''); await edit('sr:3.oft.0.end', '')
+    const at = () => document.activeElement && document.activeElement.getAttribute('data-txt')
+    await click(weekLine(THU)); expect(at()).toBe('ap:3.1.end')
+    await click(weekLine(THU)); expect(at()).toBe('dr:3.0.1.end')
+    await edit('dr:3.0.1.end', '16:00')
+    await click(weekLine(THU)); expect(at(), 'on to the box after the typed one').toBe('sr:3.oft.0.end')
+    await edit('sr:3.oft.0.end', '10:30')
+    await click(weekLine(THU)); expect(at(), 'the last typed: round to the first').toBe('ap:3.1.end')
+  })
+  /* ONE TAP SAVES AND GOES (the re-walk's N3): the caret still in a time box, the press takes it out, the box saves, and the
+     redraw puts a new count line under the finger ("2 items…" → "1 item…") — the browser's click reaches no copy of the
+     button. The press is given to the new line (textedit.ts, the same as a button pressed straight after a changed box). */
+  it('the line pressed while the caret is in a typed box: the time saves and the caret goes on to the next empty box (N3)', async () => {
+    await edit('ap:3.1.end', ''); await edit('dr:3.0.1.end', '')
+    await click(weekLine(THU))
+    const box = document.activeElement as HTMLElement, first = box.getAttribute('data-txt')
+    expect(['ap:3.1.end', 'dr:3.0.1.end']).toContain(first)
+    const other = first === 'ap:3.1.end' ? 'dr:3.0.1.end' : 'ap:3.1.end'
+    const old = weekLine(THU), efp = document.elementFromPoint
+    const ptr = (type: string, el: Element) => { const ev = new MouseEvent(type, { bubbles: true, cancelable: true, clientX: 5, clientY: 5 }); Object.defineProperty(ev, 'pointerType', { value: 'mouse' }); el.dispatchEvent(ev) }
+    try {
+      await act(async () => {
+        box.textContent = '1700'
+        ptr('pointerdown', old)
+        box.blur()                                              // the press takes the caret out: the box saves
+        await new Promise(r => setTimeout(r, 0))
+      })
+      expect(weekLine(THU).textContent, 'the time saved').toBe('1 item missing a time · 4 to sign')
+      expect(old.isConnected, 'the save drew a new line').toBe(false)
+      document.elementFromPoint = (() => weekLine(THU)) as any
+      await act(async () => {
+        ptr('pointerup', document.body)
+        document.body.dispatchEvent(new MouseEvent('click', { bubbles: true }))   // the browser's click, to no copy of the line
+        await new Promise(r => setTimeout(r, 20))
+      })
+      expect(document.activeElement && document.activeElement.getAttribute('data-txt'), 'the caret on in the next empty box').toBe(other)
+    } finally { document.elementFromPoint = efp }
+  })
   it('the board\'s line stays words — its tap waits on his answer Q19', async () => {
     await edit('dr:3.0.0.end', '')
     await act(async () => { openScheduler(THU) })

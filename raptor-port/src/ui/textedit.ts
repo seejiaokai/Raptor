@@ -122,13 +122,17 @@ if (typeof document !== 'undefined') {
    lift: the same button, drawn again. A press the browser clicked, or a button never replaced, is left alone. */
 let PRESSED: { el: HTMLElement, html: string, done: boolean } | null = null
 const buttonOf = (t: any): HTMLElement | null => (t && t.closest ? t.closest('button') as HTMLElement | null : null)
+/* Edit Schedule's count line ([END-TIME-GUARD], the re-walk's N3) is the one such button whose words the save itself
+   changes ("2 items missing a time" → "1 item…"): drawn again for the same day, it is the same button. */
+const sameButton = (b: HTMLElement, p: { el: HTMLElement, html: string }) => b === p.el || b.outerHTML === p.html
+  || (p.el.hasAttribute('data-tgnext') && b.getAttribute('data-tgnext') === p.el.getAttribute('data-tgnext'))
 if (typeof document !== 'undefined') {
   document.addEventListener('pointerdown', e => {
     const b = buttonOf(e.target)
     PRESSED = b && textBoxOf(document.activeElement) ? { el: b, html: b.outerHTML, done: false } : null
   }, true)
   document.addEventListener('pointercancel', () => { PRESSED = null }, true)
-  document.addEventListener('click', e => { const b = buttonOf(e.target); if (PRESSED && b && (b === PRESSED.el || b.outerHTML === PRESSED.html)) PRESSED.done = true }, true)
+  document.addEventListener('click', e => { const b = buttonOf(e.target); if (PRESSED && b && sameButton(b, PRESSED)) PRESSED.done = true }, true)
   document.addEventListener('pointerup', (e: PointerEvent) => {
     const p = PRESSED; if (!p) return
     const x = e.clientX, y = e.clientY
@@ -137,7 +141,7 @@ if (typeof document !== 'undefined') {
       PRESSED = null
       if (p.done || p.el.isConnected) return
       const now = buttonOf(document.elementFromPoint(x, y))
-      if (now && now.outerHTML === p.html) now.click()
+      if (now && sameButton(now, p)) now.click()
     }, e.pointerType === 'mouse' ? 0 : 400)
   }, true)
 }

@@ -1531,7 +1531,11 @@ export function routeClick(e: MouseEvent) {
     const di = +tgn.dataset.tgnext!, els = gapBoxesIn(di)
     if (!els.length) return
     const keys = els.map(x => x.getAttribute('data-txt') || '')
-    const at = TG_NEXT && TG_NEXT.di === di ? keys.indexOf(TG_NEXT.key) : -1
+    let at = TG_NEXT && TG_NEXT.di === di ? keys.indexOf(TG_NEXT.key) : -1
+    /* the box the last tap went to was typed since (the re-walk's N2): on from where it stands in the page, never back to
+       the first — the first empty box after it, or the first of all after the last */
+    const last = at < 0 && TG_NEXT && TG_NEXT.di === di ? document.querySelector(`#eWeek [data-txt="${TG_NEXT.key}"]`) : null
+    if (last) { const i = els.findIndex(x => !!(last.compareDocumentPosition(x) & Node.DOCUMENT_POSITION_FOLLOWING)); at = (i < 0 ? els.length : i) - 1 }
     const el = els[(at + 1) % els.length]!
     TG_NEXT = { di, key: keys[(at + 1) % els.length]! }
     bringIntoView(el.closest('.day') || el, el, 'eWeek')

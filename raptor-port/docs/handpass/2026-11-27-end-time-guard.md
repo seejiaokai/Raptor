@@ -299,6 +299,29 @@ Errors: none — every run's error list empty (desktop Chromium, phone WebKit, p
 **Lock:** taken 06:16:50, released 06:30:19 (27 Nov 26, this PC's clock); the build made once (06:17), served on 4251,
 stopped. Two phone picture retakes (wider crops, same results) ran 06:31–06:33 on the same build, no build.
 
+## The second fixes (27 Nov 26, morning) — N1, N2, N3
+
+A fresh Opus fixer; each finding reproduced before its fix. Builds served on `127.0.0.1:4252`; D = Chromium 1536,
+P = WebKit 402 with touch, as the re-walk. Scripts: the scratchpad's `walk/RW/fix2-n1.mjs` (the re-walk's `c58.mjs`,
+renamed) and `fix2-ct.mjs` (its `ct2.mjs`, renamed); outputs `walk/RW/out-fix2-*`.
+
+| # | Reproduced | Fix | After |
+|---|---|---|---|
+| N1 | On a build without the fix, published Thursday, ENDs emptied: P desk / OFT / ground / Common Programme END 18 × 37 at x80 against START 15 × 34 at x83, the landing 13.3 against 10.3; D every END 20 × 47 against 17 × 44 (pictures `FIX2-N1-before-{P,D}-pub-*`) | `04-pucks-sections.css`: the published-day empty box no longer grows by padding; its dotted waiting mark moves up inside the box instead (the underline 1px under the text rather than 2px below; the dash 2px in from the left). Only an empty outlined box with the waiting mark; a typed time's mark untouched | P every END 15 × 34 at x83, the landing 10.3 × 27 at x104 — START's size and place, grey and red; D every END 17 × 44, the landing 13.8 = 13.8. The dotted mark whole inside the outline, in the AL colour. A typed changed END on the same day as before (P 11px, D 17px). Draft day unchanged (P 15 = 15, D 17 = 17). Pictures `FIX2-N1-after-{P,D}-{pub,draft}-*` (the desk: `FIX2-N1-after-P-pub-desk-red.png`, `FIX2-N1-after-D-pub-desk-red.png`) |
+| N2 | Unit test first (failed: the third tap went back to the Common Programme END) | `interactions.ts`: when the box the last tap went to has been typed, the next tap goes to the first empty box after it in the page, round to the first after the last | Test passes; D and P: tap → Common Programme END, tap → desk END, desk typed, tap → OFT END (`FIX2-CT-{D,P}-N2-tap3.png`) |
+| N3 | Unit test first (failed: the caret went nowhere). Cause: the save redraws the count line ("3 items…" → "2 items…") under the press, so the browser's click reaches no copy of it; the app's way of handing such a press to the redrawn button matched only an identical button | `textedit.ts`: the redrawn count line of the same day counts as the same button, so the press is handed to it | Test passes; D (click) and P (tap): typing in the OFT END, one tap on the line → the time saved ("2 items missing a time") and the caret in the ground END; a second tap → round to the Common Programme END (`FIX2-CT-{D,P}-N3-tap-while-typing.png`) |
+
+Tests: `ui/timeguard-screens.test.tsx` — "the box the last tap went to typed since: the next tap goes on to the box after
+it, wrapping after the last (N2)" and "the line pressed while the caret is in a typed box: the time saves and the caret
+goes on to the next empty box (N3)", each failing before its fix. With the touched files' tests, the two source-scanning
+tests and twelve other screen-test files that press near text boxes: 19 files, 458 passed, 3 todo. `npm run build`
+passed twice. Errors: none in any browser run.
+
+Left as built: "the last box visited" is the last box the line's tap went to; a box the scheduler clicks into by hand
+does not move the turn on. On the phone the count line is still a small target (the re-walk's observation, his iPhone).
+
+**Lock:** taken 06:56:44, released 06:59:22 (27 Nov 26, this PC's clock); two builds, served on 4252, stopped.
+
 ## Observations — not faults of this change, or his to judge
 
 - **O1** The refusal note (like every note in the app — the control showed an ordinary plan note doing the same) stays
