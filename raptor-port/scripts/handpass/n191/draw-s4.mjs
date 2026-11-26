@@ -129,6 +129,11 @@ const lay = (s, o) => s.page.evaluate(o => {
     /* the foot pair: today "Place leave or OIL here instead…" is a bare chip - the browser's own grey button with a white
        edge (bidpicker.css says so of a bare .dchip) - so it takes the app's own quiet chip (.dchip.plain); "Undo post out
        (PO)" takes the same (o.undo 'plain') or keeps today's hatch (o.undo 'hatch') */
+    /* AFTER HIS D2727 (26 Nov 26, "ok remove it"): "Place leave or OIL here instead…" is gone from both posting sheets.
+       The foot then holds one button, "Undo post out" / "Undo post in", and through the design skill it is settled as
+       the foot of a NEW posting's sheet is: the same 12px above it, its left edge on the fields' left edge, the same
+       height as "Post out" - one place for the sheet's one action, nothing left floating. (KEEPPLACE=1 draws it as before.) */
+    if (!o.keepPlace) for (const x of [...footRow.querySelectorAll('button')]) if (/^Place leave/.test(clean(x))) x.remove()
     const bs = [...footRow.querySelectorAll('button')]
     footToday = footWas
     for (const x of bs) { if (!x.classList.contains('po')) x.classList.add('plain'); else if (o.undo === 'plain') { x.classList.remove('po'); x.classList.add('plain') } }
@@ -150,7 +155,7 @@ const lay = (s, o) => s.page.evaluate(o => {
         if (o.undo === 'c') { footRow.appendChild(u); u.style.marginLeft = 'auto' }
       }
     }
-    d.appendChild(footRow)
+    if (footRow.querySelector('button')) d.appendChild(footRow)
   }
   for (const w of below) put('p6warn', w)
   if (ask) d.appendChild(ask.parentElement === d ? ask : ask)
@@ -161,7 +166,7 @@ const lay = (s, o) => s.page.evaluate(o => {
     why: why ? { t: why.textContent, ...r(why.firstChild), look: c(why.firstChild) } : null, date: r(dateBtn), to: r(toBox), line: r(lineEl),
     amber: [...top, ...above, ...below].map(x => ({ t: x.textContent, ...r(x), look: c(x) })), button: btn ? { t: clean(btn), ...r(btn) } : null,
     foot: footRow ? [...footRow.querySelectorAll('button')].map(x => ({ t: clean(x), cls: x.className, ...r(x) })) : null, footToday, mainLook, labels: [...d.querySelectorAll('.lab')].map(l => l.textContent) }
-}, { ...o, css: CSS, to: TO, W: { ...Object.fromEntries(Object.entries(WP).filter(([, v]) => typeof v === 'string')), transferLine: WP.transferLine(DAY, TO), ...WS4 } })
+}, { ...o, keepPlace: !!process.env.KEEPPLACE, css: CSS, to: TO, W: { ...Object.fromEntries(Object.entries(WP).filter(([, v]) => typeof v === 'string')), transferLine: WP.transferLine(DAY, TO), ...WS4 } })
 
 /* the picture: the sheet ringed (the whole look is new), or only `ringSel` where the picture is about one part */
 async function picture(s, k, { ringSel = null, extra = [] } = {}) {

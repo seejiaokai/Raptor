@@ -177,3 +177,49 @@ For the page: `s4-{d,p}-greyed-out`, `-delete`, `-lastadmin`, `-drag`, `-ground`
 `-postin`, `-existing-in`, `-plain-today`, `-plain-today-row`, `-undo-a`, `-undo-b`, `-undo-c`.
 After the Transfer step only: `s4-{d,p}-transfer`. Record only, not for the page: `s4-{d,p}-greyed-words`,
 `-greyed-today`, `-existing`, `-existing-hatch`.
+
+**Added for the coordinator (D332, D673, D676):** `s4-d-delete-grey` / `s4-p-delete-grey` — the same "Delete Cinch?"
+card with its Delete button in the Leave War's dashed grey Delete look, read off a real dashed Delete chip (fill
+rgb(26,31,38), words rgb(182,192,203), edge 1px dashed rgb(138,150,163); today it is reddish words rgb(251,180,185)
+with a red-tinted solid edge); its box kept — 62×36 beside Cancel 65×36 at a desk, 62×44 beside 65×44 on the phone,
+the same height and line (D2644); Cancel unchanged; only the button ringed; both crops opened (`run5.log`).
+`s4-{d,p}-delete` stay as today's look. For the build: the question card is a shared part, so the grey Delete would be
+the Leave War's cards only unless he rules wider. *(This line was reported as appended when the pictures were handed
+back, but the write had failed; it is written now.)*
+
+## After D2727 (26 Nov 26 — "Place leave or OIL here instead…" removed from both posting sheets)
+
+Full row read. The design skill was already loaded this session (Operate mode; its setup not run twice). Nothing
+committed. Run log `raptor-port/.tmp/n191-s4/run6.log`. Every re-made crop opened (three contact sheets).
+
+**Checked against the page** (`scripts/handpass/n191/page/body-s4.html` uses 31 s4 crops): only eight of them showed
+the button. **Redrawn without it, same file names, the earlier way overwritten** (each whole and `-crop`, 16 files):
+
+- `s4-d-undo-a`, `s4-p-undo-a`
+- `s4-d-undo-b`, `s4-p-undo-b`
+- `s4-d-undo-c`, `s4-p-undo-c`
+- `s4-d-existing-in`, `s4-p-existing-in`
+
+The page's other s4 pictures never showed it (a new posting's sheet has only "Post out" / "Post in" at its foot; the
+`plain-today` pictures are the leave sheet) and are untouched.
+
+**The foot, settled through the design skill.** With one button left, an existing posting's sheet now ends exactly as
+a new posting's does: the button stands where "Post out" stands on a new sheet — the same 12px under the line's strip,
+its left edge on the left edge of the date box and the chips, the same height (32 at a desk, 30 on the phone) — so the
+sheet's one action is always in one place and nothing floats. Measured: the button at the same spot as the new sheet's
+"Post out" (x 501, y 805 at a desk; x 25, y 817 on the phone), and the sheet the same size as a new posting's
+(560×282; 378×308). The post-in sheet: 560×236; 378×232.
+
+- **A (recommended)** — "↶ Undo post out", the plain grey button with the teal arrow, at the left: 143×32 / 141×30.
+- **B** — the dashed "Delete" look, at the left: 125×32 / 125×30.
+- **C** — A's button at the foot's far right. Its first reason (apart from "Place leave…") is gone with that button;
+  what is left of it is only "the taking-back sits away from where the thumb pressed Post out". A is the stronger
+  for the reason above — one place for the sheet's action.
+
+**Two things for the build and the page:**
+- `s4-{d,p}-error` is unchanged and still right as a look, but **the route I used to make it no longer exists**: I
+  reached a post-out dated before the post-in by pressing "Place leave or OIL here instead…" on a day before the
+  post-in. After D2727 that day opens the Post in sheet only; the same refusal still comes when "PO from" is moved to
+  a date before the post-in, so the amber line still needs its place.
+- Record only, not on the page, **not re-made**: `s4-{d,p}-existing` and `-existing-hatch` (the two answers D2660
+  turned down) still show the removed button. `KEEPPLACE=1` draws the foot the old way.
