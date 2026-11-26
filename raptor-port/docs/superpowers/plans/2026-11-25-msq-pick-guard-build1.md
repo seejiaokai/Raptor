@@ -3164,7 +3164,9 @@ Undo of an access change after the maker lost his rights is refused; no bell lin
 in (security); the planned document lock, the ownership noted once and the card's order are sound (Astra).
 ---
 
-## 21. The four section chats (D2656, D2657)
+## 21. The four section chats (D2656, D2657, D2658)
+
+**His D2658 (26 Nov 26, to chat 191) — who runs the core and Admin → Users:** each is a Fable chat as orchestrator — it keeps its section's plan and reviews every step — while Opus helpers it starts do all the building; the bell and the posting sheet stay Opus chats; Astra keeps every one of his standing roles. Fable's review of a step counts as a reader beside Astra and the fresh, blind Opus read, never in their place (reading); a fault that comes back after an Opus fix is Fable's to fix (D2233, reading). Where a "Who" line below names "the latest Fable, high" as builder, read it through D2658.
 
 **His ruling.** The multi-squadron build is split into focused chats that build at once, each on files no other
 touches, under a coordinator chat that holds the plan, the order, the overlaps and the merges into the batch branch;
@@ -3203,7 +3205,7 @@ order follows from the work itself, it is written as a **finding** at the end, n
 
 ### 21.1 The core — the guard rail (Build 1: parts A, B, F, G)
 
-**Who:** the latest Fable, high. **When:** first, as one chain — its steps share `state/store.ts`, `state/pick.ts`,
+**Who:** a Fable chat (the latest, high) as orchestrator — the plan and every step's review — with Opus helpers building every step (D2658). **When:** first, as one chain — its steps share `state/store.ts`, `state/pick.ts`,
 `ui/topstate.ts`, `state/belltap.ts` and the guard's own files, and no step leaves a door half-guarded (§10).
 
 | Step | Old | What | Waits on |
@@ -3253,7 +3255,7 @@ order follows from the work itself, it is written as a **finding** at the end, n
 
 ### 21.2 Admin → Users across squadrons (§19.1–§19.4, §19.12)
 
-**Who:** the latest Fable, high, with the security reader (D1411) — it changes who may give a right (D2626) and what
+**Who:** a Fable chat (the latest, high) as orchestrator, Opus helpers building every step (D2658), with the security reader (D1411) — it changes who may give a right (D2626) and what
 one squadron's admin sees and may change of another's man. **When:** **once the core's K2 (old 1b) has landed in the
 batch branch** — K2 moves "+ Add a person" to the top row in the very file this section rebuilds. **This section does
 not move that button or its form again:** it adds the row of jumps on a phone and makes the search filter every
@@ -3458,8 +3460,8 @@ lesson for it is lesson 105 (`raptor-port/docs/design-practices.md` §9).
   "Posting" and the four choices (`OutcomeChips.tsx`), the one line (`po-line`), the button (`dchip po`, a grey
   hatched chip — his direction of 18 Aug 26, in the stylesheet's note). The head names the day (D1462). An existing
   posting has a sheet of its own in the same file; the drag sheet's posting is `SelectSheet.tsx`. Styles:
-  `leavewar/ui/bidpicker.css`, and two rules in `ui/postout.css` (§21 finding 1). "Transfer to Sqn" is drawn greyed
-  ("Comes with the shared database").
+  `leavewar/ui/bidpicker.css`, and two rules in `ui/postout.css` (§21 finding 1). ~~"Transfer to Sqn" is drawn greyed
+  ("Comes with the shared database").~~ **His D2659: "Transfer to Sqn" is left out of the sheet altogether until the Transfer step — no greyed button, no line saying why. His D2660: "Undo post out (PO)" on an existing posting's sheet is redesigned through the design skill and shown to him before it is built.**
 - **After — way C (D2653).**
   - **a, d — the sheet is the posting's alone:** while a posting is open the leave buttons and the day's other leave
     controls step aside; ✕ closes it as today, and pressing the day again gives the leave buttons back.
@@ -3483,8 +3485,8 @@ lesson for it is lesson 105 (`raptor-port/docs/design-practices.md` §9).
     strip, a blue "Post in".
   - **g, i, c — on Admin → Users** the man's opened row becomes this form, in that page's own button sizes, "PO
     from" there too: **the Transfer step's, not built here** (§19.9).
-- **(readings — this fold's, on the section's mock-up page):** "Transfer to Sqn" stays greyed until the Transfer
-  step makes such a posting, so "To squadron" is laid out here and first shown live by that step; the tick is drawn
+- **(readings — this fold's, on the section's mock-up page):** ~~"Transfer to Sqn" stays greyed until the Transfer
+  step makes such a posting,~~ (set aside by D2659: it is left out until then) so "To squadron" is laid out here and first shown live by that step; the tick is drawn
   so the chosen choice is the same height as its neighbours (the designer's note for the build); where the strip
   lies on the sheet it reads raised, one rule for both doors — "one step off what it lies on".
 - **Owed before the build (D2653's own list, D1625):** the "Delete Cinch?" card; the last-admin line; an existing
