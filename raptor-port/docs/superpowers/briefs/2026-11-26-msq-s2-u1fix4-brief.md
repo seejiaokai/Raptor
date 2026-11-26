@@ -139,3 +139,17 @@ its own fix trial `fixtry/` in `…/fixread3/security/`; both re-run by the orch
   (`pageUnit('schedule') !== o.on.view && enteredByPick()`); `closedByHisPick` stays as it is for the draw rule.
   Proof 2B a lasting test; proof 2A's four passing tests (his own move landed with nothing redrawn: Save, Suspend,
   Archive, Delete write nothing) kept as pins.
+
+**From the fresh Fable's third read** (proofs `zz-fable-proof-0`, `-1`, `-2` with outputs in `…/fixread3/fable/`; no
+route lets a write through or shows what must not be seen): its two findings are the security reader's S1 and S2 again,
+found blind — **F1 = S1** (proof 1, test A fails at its line 71; A2 shows the silence is whole; control B passes) and
+**F2 = S2** (proof 2, test A fails at line 76; controls B and C pass). Its fix for F1 differs in place, not in aim: judge
+at the DRAW (the draw runs before the app makes his session a member's) — `mine` held at the press but kept out of
+`rowChanged`; in `useOpenRowJudged` a term "his own squadron changed and he is no longer an admin of the squadron the
+row opened on" closes with the note; `mine` held again with `view` on a draw the row survives (a master admin's own
+move leaves his row open); if `adminOfUnit` is read a second time in `UsersPanel.tsx`, the edit-rights inventory
+(`state/edit-rights-readers.test.ts`, `docs/data-schema.md`) says so with its why. Choose the place that holds both
+readers' proofs AND the re-pointed "made a member by another admin" case (S1's second half — where his home does not
+change, so a term keyed only on his home will not catch it: the guard must ask about his standing, not only his
+home). Proof 0's ten soundness tests are kept where the step's tests do not already hold the same thing; each named
+case is merged where two readers proved one thing.
