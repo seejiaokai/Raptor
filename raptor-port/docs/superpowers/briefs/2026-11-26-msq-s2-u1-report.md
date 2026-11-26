@@ -141,4 +141,6 @@ tests, all green).
 - `npx tsc -p tsconfig.app.json --noEmit` — exit 0, no errors (supporting only; the build is the real type check).
 - `npm run lint:changed` — NOT RUN in effect: it could not read `origin/main`'s side, so it compared nothing and its
   pass/fail switched itself off.
-- `npm run build` — BUILD_LINE
+- `npm run build` — **NOT RUN — lock held by `claude/msq-s4-posting-3ba6fa` (chat 201: S4 builds, fanned-out walk with
+  4 walkers, three browser tests)** for the whole 20 minutes it was polled, about every two minutes (17:52 to about
+  18:12). Never built alongside it; the lock was never taken. Owed before this step is called done.
