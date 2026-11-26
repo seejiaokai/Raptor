@@ -238,3 +238,44 @@ a reading was built.
 8. D2807's sentence needs a small change in the shared `undo/timeline.ts`.
 9. Five wordings have no ruling and need the owner or must be left out; four readings are built and must be named.
 10. Expect many pins re-pointed; settle points 1, 3, 4 and 5 before the builder starts.
+
+## (D) The open points settled (27 Nov 26 — the coordinator, chat 206, and the helper's follow-up)
+
+- **B1 — D2808's four bell lines:** S2 builds them as a step of its own right after U2 ("U2L" — the same file and gate
+  rule as U2's other Plan lines); the bell section only draws them. In the plan's "His answers to questions 13, 14 and 15".
+- **B2 — the plan's and the rulings pages' old rule:** corrected by chat 205 (the plan's §19.2 "Unchanged" line and
+  U2's row; the scheduler page; People & accounts line 75 — D201, citing D2806).
+- **B3 — `undo/timeline.ts`:** S2 makes the change, the core chat 204 told its shape first (sent 27 Nov). The `stuck`
+  hook (declared about l.153, called at about l.1173 for Undo and l.1207 for Redo, installed once at
+  `state/undo-wire.ts` about l.725 as `stepStuck`) returns `boolean | string`: a sentence handed back means stuck, said
+  in that sentence; `true`, today's `OUT_OF_BAND` words; `false` or empty, not stuck. Three places change; `stuckLate`,
+  `sayBlocked`, the step-pickers, `undoState`, `endUndoSession` untouched. The installed function becomes `stepStuck` →
+  the make-admin check (D2807's sentence) → `planRestoreStuck` (today's words). Must pass unchanged:
+  `undo/timeline.test.ts`, `undo/timeline-cr.test.ts`, `undo/integration.test.ts`, `undo/oilundo.test.ts`,
+  `ui/oilundo.test.tsx`, `ui/oilundo-button.test.tsx`, `ui/oilconfirm.test.tsx`, `ui/undo-caret.test.tsx`,
+  `state/msq-undo-rights.test.ts`, `state/msq-undo-worlds.test.ts`, `state/msq-fix2-r2-input-undo.test.ts`,
+  `state/midnight-swap-undo.test.ts`, `leavewar/opendates-store.test.ts`. **There is no Redo twin of the out-of-band
+  words today:** a Redo blocked this way says "…it can’t be undone now." (as built; not U2's to change).
+- **Is the refused make-admin Undo blocked for good?** The rulings do not say (D2730 Q11 covers Plan changes; D2807
+  and card 14 say only "refused"). **The orchestrator's technical call: blocked for good, as every stuck step is** —
+  otherwise each press repeats the refusal and his older steps are out of reach until he signs out; where an older step
+  waits, his sentence is followed by the app's existing "Press Undo again for: <step>." (the q14 picture does not show
+  that tail — named at his look).
+- **B4 — the apostrophe:** the curly one, as the app's other Undo words.
+- **B5 — the five wordings:** three cannot be reached from any screen today, so they are not questions for him now —
+  each built with a stand-in and filed: (1) a Redo that would make an admin by one who may not (he would have to lose
+  the right while his own Undo list lives; no screen changes his own account or saves a move, and every sign-in empties
+  the list) — stand-in: today's out-of-band words, the gate refusing by name, its test named "changes when the Redo's
+  words are ruled"; with the database step; suggested then: "…so this can’t be redone." (2) D2806's tail on the DATED
+  last-admin note (needs a saved future move; no screen saves one) — stand-in: D2806's tail on the dated form; with the
+  Transfer step. (3) whether a re-link that ends a Plan tells that squadron's admins (no screen re-links) — stand-in: no
+  line, pinned; with whichever build adds a control that links a sign-in. **Two go to him as one card (question 22,
+  fresh-Fable-reviewed, drawn on the real app):** the last-admin note for a NEW squadron with no admin of its own
+  (recommended: "Kestrel is 151's last admin. Only a master admin can make another."; the other choice: question 13's
+  words there too — the builder builds that meanwhile; today's words `state/accounts.ts` about l.538, pinned at
+  `ui/msq-s2-asis.test.tsx` about l.206); and the note under "What each role allows" (recommended: "Only a master admin
+  makes squadrons or master admins. Plan of a squadron is given, and its admins are made, by its own admins or a master
+  admin."; the other choice: the approved note as it is — the builder builds that meanwhile; `ui/rolestable.ts` about
+  l.52). Neither holds U2's builder.
+- **B6's readings and B7–B9:** stand as written; U2 is built in ordered passes by one Opus builder at a time (the rule,
+  doors, gate and replay; the lines; the screen), one commit at the end, the four readers and the security reader on it.
