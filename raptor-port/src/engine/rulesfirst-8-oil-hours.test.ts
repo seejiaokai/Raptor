@@ -241,9 +241,20 @@ describe('W86 — a worked weekend that earns nobody any OIL says so, on the day
     day(SUN).dutywaves.push({ label: 'Duty 2', rows: [{ role: 'RUNNER', id: 'allavail', str: '1830', end: '', rid: 'r-open' }] })
     const w = warnOf(validate(), SUN, 'OIL_NO_TIMES')
     expect(w?.msg, 'on the day, with the reason').toBe('SDO and RUNNER have no usable times, so nobody on them earns OIL for this day')
-    sign(SUN); commitSetDayApproved(SUN, true); runOilPass()
-    expect(said.join(' | '), 'at publish, with the reason').toMatch(/earned nobody any OIL — the SDO and RUNNER desks have no usable times/)
     expect(Object.keys(dayOilSpans(day(SUN))), 'D360: nobody is credited from a guessed hour').toEqual([])
     expect((oilEvidence(SUN).sent as any)['r:r-open'], 'D360: but the crowd behind the puck is counted over the assumed hour').toBeDefined()
+    /* [END-TIME-GUARD] (his D2612, D2852 — 27 Nov 26): such a day can no longer be PUBLISHED — the desk with Stiff on it and
+       the RUNNER row with a start and no end are both missing a time, so the publish is refused, and nothing is credited */
+    sign(SUN); commitSetDayApproved(SUN, true); runOilPass()
+    expect(said.join(' | '), 'refused at publish').toBe('Blocked: 2 items are missing a time, each outlined in red. Sunday was not published.')
+    expect(SCHED.dayOK[SUN], 'not published').toBeFalsy()
+  })
+  it('…and the publish still says the day earned nobody and why, where the desks are typed with times that measure nothing (the case that can still be published)', () => {
+    desk(SUN, 'stiff', '0800', '0800')
+    day(SUN).dutywaves.push({ label: 'Duty 2', rows: [{ role: 'RUNNER', id: 'allavail', str: '1830', end: '1830', rid: 'r-zero' }] })
+    sign(SUN); commitSetDayApproved(SUN, true); runOilPass()
+    expect(SCHED.dayOK[SUN], 'published').toBeTruthy()
+    expect(said.join(' | '), 'at publish, with the reason').toMatch(/earned nobody any OIL — the SDO and RUNNER desks have no usable times/)
+    expect(Object.keys(dayOilSpans(day(SUN))), 'nobody is credited').toEqual([])
   })
 })
