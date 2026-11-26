@@ -125,7 +125,7 @@
        date's), as drawn — scripts/handpass/lw-postin-bal-q16b-draw.mjs windowShot: the carried line's size and grey, plain
        weight, 6px above it, free to wrap */
     .r17-lve.pi { grid-template-rows: 22px 12px 30px 14px auto; }
-    .r17-pi { grid-row: 5; grid-column: 1 / -1; margin-top: 6px; font: 400 11px/1.45 system-ui; color: #8a96a3; white-space: normal; }
+    .r17-pi { grid-row: 5; grid-column: 1 / -1; margin-top: 8px; font: 400 11px/1.45 system-ui; color: #8a96a3; white-space: normal; }
     @media (max-width: 700px) {
       .r17-lve.pi { grid-template-rows: 22px 12px 30px 14px 12px auto; }
       .r17-lve .r17-pi { grid-row: 6; }
