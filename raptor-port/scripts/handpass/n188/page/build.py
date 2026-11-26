@@ -28,7 +28,7 @@ def cut(m):
     st = 'width:%.2f%%;margin-left:-%.2f%%;margin-top:-%.2f%%' % (W / w * 100, x0 / w * 100, y0 / w * 100)
     return '<span class="cut" style="aspect-ratio:%g/%g"><img src="%s" alt="%s" style="%s"></span>' % (w, h, src, alt.replace('"', '&quot;'), st)
 
-body = rd(S + '/top.html').replace('@@BLIST@@', blist) + rd(S + '/body-n.html') + rd(S + '/body-e.html') + rd(S + '/body-d.html')
+body = rd(S + '/top.html').replace('@@BLIST@@', blist) + rd(S + '/body-n.html') + rd(S + '/body-n2.html') + rd(S + '/body-e.html') + rd(S + '/body-d.html')
 body += '\n  <details class="fold" id="gb">\n  <summary>Group B: 12 that wait until after the first build (Logout, Undo, the refresh card). Tap to open.</summary>\n\n' + bsecs + '\n\n  </details>\n</main>\n'
 body = re.sub(r'\[\[cut ([^\]]+)\]\]', cut, body)
 assert '[[' not in body and '@@' not in body

@@ -12,7 +12,10 @@ export const WP = {
   from: 'PO from',                                                     // APP (drawn in capitals by the label's look)
   fromIn: 'PI from',                                                   // APP
   posting: 'Posting',                                                  // APP
-  to: 'To',                                                            // R6 (W6.sheetTo)
+  // (the words' second fresh Fable, 26 Nov: "To" alone, now BESIDE "PO from" and its date, read as the end of a date
+  //  range - "from 14 Dec to …"; the label names what the box holds. W6.sheetTo and misc's toLabel follow when their
+  //  sheets are redrawn to this design.)
+  to: 'To squadron',                                                   // was R6's "To" (W6.sheetTo), which stood on a line of its own
   // ---- the four outcomes
   overseas: 'Overseas Sqn', del: 'Delete', sans: 'SANS', transfer: 'Transfer to Sqn',   // APP (D294, D298)
   // ---- the one line of what happens (D300)

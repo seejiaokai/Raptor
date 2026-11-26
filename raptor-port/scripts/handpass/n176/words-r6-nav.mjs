@@ -3,6 +3,7 @@
 // Fable); a SECOND fresh Fable reviews them before he sees them (his D2441) - the host then edits THIS file and
 // draw-r6-nav.mjs is re-run, so no drawing carries a word of its own. Everything else on the pictures comes from
 // ./words-r6-users.mjs (W6) and ./words.mjs (W), unchanged.
+import { W6 } from './words-r6-users.mjs'
 export const WN = {
   // ---- the jumps: one per group on the page, each the group's own heading word, its count after it
   jumpPeople: 'People',                        // the heading "People · 60"
@@ -16,7 +17,7 @@ export const WN = {
   // ---- a fold opened by the search: the fold's own words with the open mark
   opened: t => t.replace('▸', '▾'),
   // ---- drawn people the round-6 world does not hold (142's page): the row words are W6's, only who they are is new
-  kestrelHolds: n => `also views ${n}`,        // W6.alsoViews's words, for Kestrel on 142's page
+  kestrelHolds: n => W6.alsoViews(n),          // round 6's own words, read from its file so the two can never differ (the words' second fresh Fable, 26 Nov)
   // ---- for a screen reader only (never drawn): the name of the list of jumps
   navName: 'On this page',
 }
