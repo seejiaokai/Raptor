@@ -3202,6 +3202,8 @@ in (security); the planned document lock, the ownership noted once and the card'
 
 **His D2658 (26 Nov 26, to chat 191) — who runs the core and Admin → Users:** each is a Fable chat as orchestrator — it keeps its section's plan and reviews every step — while Opus helpers it starts do all the building; the bell and the posting sheet stay Opus chats; Astra keeps every one of his standing roles. Fable's review of a step counts as a reader beside Astra and the fresh, blind Opus read, never in their place (reading); a fault that comes back after an Opus fix is Fable's to fix (D2233, reading). Where a "Who" line below names "the latest Fable, high" as builder, read it through D2658.
 
+**His go for all four sections (26 Nov 26, "All four as recommended"): D2729 the core, D2730 Admin → Users, D2731 the bell, D2732 the posting sheet — every screen on its page and every open question as recommended (the full rows list each answer). Each section's step-0 Fable read (D2728) folds its own row into its part of this plan before building; until then a hold in §21 that one of these rows answers counts as answered.**
+
 **His D2728 (26 Nov 26): every section's step 0 is a fresh Fable read of its own part of this plan against his answers on its section page, before any building — the Fable orchestrator itself for the core and Admin → Users, a fresh Fable helper for the bell and the posting sheet; its findings are fixed in the plan first.**
 
 **His ruling.** The multi-squadron build is split into focused chats that build at once, each on files no other
