@@ -4,7 +4,8 @@
    - the outline: a thin line inside each empty time box the rule names — grey while drafting, red once a press is
      refused, until the time is typed; only on a box that can be typed in, so never on View-only Sched (D2853);
    - Edit Schedule's sign-off line: "N items missing a time · N to sign" (D2854); the board's the same, with the names of
-     the boxes still to sign back only once the last time is typed (D2734). The tap on the line is a later step;
+     the boxes still to sign back only once the last time is typed (D2734). A tap on Edit Schedule's line goes to each
+     empty box in turn (D2854); the board's line stays words (Q19);
    - a sign-off box that is refused without its list opening (the try-out), and the greyed Publish day that takes a press
      and says the note (D2855 E1).
    Thursday (day 3) and Monday (day 0) have every time typed in the remade demo week; each case empties one. */
@@ -21,6 +22,7 @@ import { HOOKS } from '../engine/hooks'
 import { openScheduler, closeScheduler } from './board'
 import { resetTimeRed } from './timegap-paint'
 import { histInit, undo } from '../state/history'
+import { applyMove } from '../engine/reorder'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -114,6 +116,15 @@ describe('the outline on Edit Schedule (D2853)', () => {
     await act(async () => { undo(); notify() })
     expect(missIn('#eWeek')).toEqual(['dr:3.0.1.end', 'dr:3.0.2.end'])
     expect([red('dr:3.0.0.end'), red('dr:3.0.1.end'), red('dr:3.0.2.end')], 'the row put back is plain; the two gapped rows red').toEqual([false, true, true])
+  })
+
+  it('a row dragged to the top keeps its red; the row it passed stays plain (F2, Astra\'s 1)', async () => {
+    await edit('dr:3.0.2.end', '')
+    await refuseThu()
+    expect(red('dr:3.0.2.end')).toBe(true)
+    await act(async () => { expect(applyMove('mv:d.3.0.2', 'mv:d.3.0.0')).toBeTruthy(); view.afterSchedMutate(); notify() })
+    expect(missIn('#eWeek')).toEqual(['dr:3.0.0.end'])
+    expect(red('dr:3.0.0.end'), 'the dragged row, now first, still red').toBe(true)
   })
 
   /* RED STAYS WITH ITS PLAN when the plan list changes round it, the plan's content unchanged (D2853; the walk's C62,

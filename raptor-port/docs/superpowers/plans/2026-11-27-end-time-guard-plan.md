@@ -160,7 +160,8 @@ behaviour for the case and a skipped test names the question.
 
 - The outline, the count-line words, the greyed buttons that take a press and the sign box that refuses without opening
   its list — the screen step (5); built only if time remains after the full run, each checked against the try-out.
-- The count line's tap (Edit Schedule: ruled but a later step; the board: Q19), the Legend line (D2803 — drawn first),
+- The count line's tap on the board (Q19 — Edit Schedule's, ruled by D2854, was built by the overnight fixer, 27 Nov 26,
+  as the try-out's: each tap to the next empty box, no hover words until Q-W4), the Legend line (D2803 — drawn first),
   the document and Logic-page words (Q-W5, after his answers), every QUESTIONS FOR HIM case.
 
 ---

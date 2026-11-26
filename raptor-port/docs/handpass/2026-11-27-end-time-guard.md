@@ -195,6 +195,21 @@ fault is listed so he can rule it. Pictures: `C62-D-1-planA-refused-red.png`, `C
 board were walked broadly (C36, C53, C57, C58, C75, C76, C81); F3 is one route of the plan key — the other plan routes
 (switch, rename, delete, preview) were walked in C62. The scope holds; nothing wider was owed.
 
+## The overnight fixer's re-checks (27 Nov 26) — on the rebuilt bundle, the same scripts; the re-walk is still owed
+
+- **F1 / C57 — fixed:** the red ground END tapped near the foot while the note is up now rests at 431–442px, the note at
+  798–848px of 874 (before: 814–825, under it). Picture: `FIX-C57-P-foot-box-tapped.png`.
+- **F2 / C58 — fixed:** on the phone week the outlined empty END is 15px like its START on a desk, sim, ground and Common
+  Programme row; every row's height unchanged; desktop unchanged (17px). A typed END on the phone is 11px too — START's
+  extra 4px is the gap above the stacked pair, which the outlined END now takes back. Pictures:
+  `FIX-C58-P-desk-pair.png` (before), `FIX-C58-P-desk-pair-after.png`, `FIX-C58-D-desk-pair-after.png`.
+- **F3 / C62 — fixed:** refused on the working copy, + Alt Plan, END typed in Plan B, back to Plan A: A's box red.
+  Plan B, the copy, starts grey (the plan's R3). Picture: `FIX-C62-D-back-on-A.png`.
+- **The code reads' F2 (red kept by place) — fixed:** two desk ENDs refused red, the SDO row above them deleted on the
+  board: both still red, one place up. Picture: `FIX-F2-D-after-delete.png`.
+- **Edit Schedule's count line tap (D2854) — built:** on the phone each tap brought the next empty box to the middle of
+  the screen with the caret, in page order, round again after the last. Picture: `FIX-count-tap-P-second.png`.
+
 ## Observations — not faults of this change, or his to judge
 
 - **O1** The refusal note (like every note in the app — the control showed an ordinary plan note doing the same) stays
