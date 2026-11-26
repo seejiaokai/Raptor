@@ -1,21 +1,29 @@
-// draw-s2q-a - section 2's question A (chat 199, 26 Nov 26): what a Plan holder sees where he can no longer make an
-// admin (his D2730 Q8). Hunter (142's admin, Plan of 149) picks 149, opens Merlin's row (a 149 member with a sign-in) on
-// 149's Admin → Users - real presses. Then drawn on the real row:
-//   s2q-a-{d,p}-rec        recommended: the Role box's list open, "Admin" greyed in it, one grey line of reason under the
-//                          Role box in the look of the greyed Plan's reason (s2-18)
-//   s2q-a-p-rec-alt        the same at the phone with the alternative wording
-//   s2q-a-{d,p}-other      the other choice: "Admin" picked as today, Save refused in the grey "Blocked:" note
+// draw-s2q-a - section 2's question 13 on the one questions page (first written as question 10/A; chat 199, 26 Nov 26):
+// what a Plan holder sees where he can no longer make an admin (his D2730 Q8). Hunter (142's admin, Plan of 149) picks
+// 149, opens Merlin's row (a 149 member with a sign-in) on 149's Admin → Users - real presses. Then drawn on the real row:
+//   q13-{d,p}-rec        recommended: the Role box's list open, "Admin" greyed in it, one grey line of reason under the
+//                        Role box in the look of the greyed Plan's reason (s2-18)
+//   q13-{d,p}-other      the other choice: "Admin" picked as today, the Save refused in the page's own refusal - the
+//                        amber passing note, the bare sentence (ui/UsersPanel.tsx done → HOOKS.toast(bad, 'warn'))
+//   q13-{d,p}-lastadmin  the reworded last-admin line (the review §1's last row): Hunter opens Kestrel's row, picks Member,
+//                        and the amber note at the foot says who can make another. DRAWN: in this world Osprey is 149's
+//                        second admin, so the real app would not refuse here - the note is laid on as the app raises it.
+// (The review dropped the alternative wording "…can make him an admin." - not drawn.)
 // The open list of a Role box is the browser's or the phone's own (his lesson 104): on the desktop the browser's own
 // listbox of the same choices is shown open under the box; on the phone the box is shown closed. Nothing here writes the
-// app's code. NOT YET RUN (chat 199's helper could not take the checks lock).
-//   node raptor-port/scripts/handpass/n199/draw-s2q-a.mjs   (ONLY=rec,other  SZ=d,p)
-import { run, FACT, wait, signIn, pick, usersTab, openRow, box, words, shot, tring, linesOf, note, want, closeAll, barSq, ERRS } from './s2q-lib.mjs'
+// app's code. NOT YET RUN (needs a build served at 4745 and the checks lock).
+//   node raptor-port/scripts/handpass/n199/draw-s2q-a.mjs   (ONLY=rec,other,lastadmin  SZ=d,p)
+import { run, FACT, wait, signIn, pick, usersTab, openRow, box, words, shot, tring, linesOf, note, want, closeAll, ERRS } from './s2q-lib.mjs'
 import { WQ } from './words-s2q.mjs'
 
 const ROW = '.acc-row.od-row-on'
-async function reach(s) {
+/* `who` a person key, or a callsign read off the page (Kestrel's key is not fixed in the lib) */
+async function reach(s, who = 'mer9', byName = false) {
   await signIn(s, 'hunter'); FACT('bar', await pick(s, 149)); await usersTab(s); await wait(s, 400)
-  await openRow(s, 'mer9')
+  const pid = byName ? await pidOf(s, who) : who
+  if (!pid) throw new Error(`${who} not found on 149's Admin → Users`)
+  FACT('row', pid)
+  await openRow(s, pid)
   await s.page.evaluate(sel => document.querySelector(sel).scrollIntoView({ block: 'start' }), ROW)
   await s.page.evaluate(() => scrollBy(0, -90)); await wait(s, 300)
   return s.page.evaluate(sel => {
@@ -24,6 +32,11 @@ async function reach(s) {
       roleBox: { value: sel2.value, options: [...sel2.options].map(o => o.textContent + (o.disabled ? ' [greyed]' : '')), disabled: sel2.disabled } }
   }, ROW)
 }
+/* Kestrel's person key, read off 149's page by his callsign (the world names him; his key is not fixed in the lib) */
+const pidOf = (s, callsign) => s.page.evaluate(c => {
+  const r = [...document.querySelectorAll('#page-admin .acc-row[data-person]')].find(e => e.querySelector('.acc-name')?.firstChild?.textContent.trim() === c)
+  return r ? r.dataset.person : null
+}, callsign)
 /* the reason line under the Role box, in the app's own grey note (the class the Plan line's reason wears) */
 const putReason = (s, text) => s.page.evaluate(text => {
   const sel = document.querySelector('#accEdRole'); let p = document.querySelector('#s2qnote')
@@ -51,33 +64,35 @@ const openList = (s, desk) => s.page.evaluate(desk => {
 
 try {
   for (const sz of ['d', 'p']) {
-    if (want('rec', sz)) await run(`a-${sz}-rec`, sz, async s => {
-      const k = `s2q-a-${sz}-rec`
+    if (want('rec', sz)) await run(`q13-${sz}-rec`, sz, async s => {
+      const k = `q13-${sz}-rec`
       FACT(`${k}.today`, await reach(s))
       FACT(`${k}.reason`, await putReason(s, WQ.roleReason('149')))
-      FACT(`${k}.reasonLines`, { best: await linesOf(s, '#s2qnote') })
-      await putReason(s, WQ.roleReasonAlt('149')); FACT(`${k}.reasonLinesAlt`, await linesOf(s, '#s2qnote'))
-      await putReason(s, WQ.roleReason('149'))
+      FACT(`${k}.reasonLines`, await linesOf(s, '#s2qnote'))
       FACT(`${k}.list`, await openList(s, s.desk))
       const row = await box(s, ROW), list = s.desk ? await box(s, '#s2qlist') : null
       await tring(s, s.desk ? list : await box(s, '#accEdRole')); await tring(s, await box(s, '#s2qnote'))
       FACT(`${k}.words`, await words(s, '#s2qnote'))
       await shot(s, k, [row, list], 12)
-      if (sz === 'p') {
-        await s.page.evaluate(() => document.querySelectorAll('.__s2qring').forEach(e => e.remove()))
-        await putReason(s, WQ.roleReasonAlt('149')); await tring(s, await box(s, '#accEdRole')); await tring(s, await box(s, '#s2qnote'))
-        FACT(`${k}-alt.words`, await words(s, '#s2qnote'))
-        await shot(s, `${k}-alt`, [await box(s, ROW)], 12)
-      }
     })
-    if (want('other', sz)) await run(`a-${sz}-other`, sz, async s => {
-      const k = `s2q-a-${sz}-other`
+    if (want('other', sz)) await run(`q13-${sz}-other`, sz, async s => {
+      const k = `q13-${sz}-other`
       FACT(`${k}.today`, await reach(s))
       await s.page.selectOption('#accEdRole', 'admin'); await wait(s, 300)   /* picked, as today allows (not saved) */
       FACT(`${k}.picked`, await s.page.evaluate(() => document.querySelector('#accEdRole').value))
       await s.page.evaluate(() => document.activeElement?.blur())
-      const n = await note(s, WQ.roleRefused('149'), 'blocked'); FACT(`${k}.note`, n)
+      const n = await note(s, WQ.roleRefused('149'), 'warn'); FACT(`${k}.note`, n)
       await tring(s, await box(s, '#accEdRole')); await tring(s, n.box)
+      await shot(s, k, [await box(s, ROW), n.box], 12)
+    })
+    if (want('lastadmin', sz)) await run(`q13-${sz}-lastadmin`, sz, async s => {
+      const k = `q13-${sz}-lastadmin`
+      FACT(`${k}.today`, await reach(s, 'Kestrel', true))
+      await s.page.selectOption('#accEdRole', 'main'); await wait(s, 300)    /* picked, not saved: the refusal is drawn */
+      await s.page.evaluate(() => document.activeElement?.blur())
+      const n = await note(s, WQ.lastAdmin('Kestrel', '149'), 'warn')
+      FACT(`${k}.note`, { ...n, drawn: 'Osprey is a second admin of 149 in this world, so the real app would let this through' })
+      await tring(s, n.box)
       await shot(s, k, [await box(s, ROW), n.box], 12)
     })
   }
