@@ -19,6 +19,7 @@ import { rowElsewhere, isoDayWords } from '../engine/weekstash'
 import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, restTraceEntries, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal, withOfficialWarn, officialWarn, fltNoLen, fltNoLenMsg, versionFaceWarn, withVersionWarn } from '../engine/validate'
 import { availByWave, personBusy, dayOff, dayEngaged, personWarns, dayTasked } from '../engine/avail'
 import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayShownPendCount, dayDelta, dayDiscardCount, alColor, signOf, signMissing, signShown, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, verLabel, protectedWeek, notYetSigned, verSigners, publishReadPass, unpublishBackTo, pendingInputIds } from '../engine/publish'
+import { timeGapsOf } from '../engine/timegaps'
 import { verSeq, dayIso } from '../engine/verid'
 import { rosterOf } from '../engine/roster'
 import { UNIT } from '../engine/unitview'
@@ -1701,6 +1702,11 @@ export function dayStatHTML(di:any,ed:any){
           ? `<button class="dpend dpendbtn dchg" data-chgday="${di}" data-chgtab="all" aria-haspopup="dialog" title="Every change on ${d.dow} and who made it">${cc.all}&nbsp;change${cc.all>1?'s':''}</button>`
           : '';
     const sgOK=daySigned(di);
+    /* [END-TIME-GUARD] (his D2855 E1, D2853): the greyed Publish day / Publish AL still takes a press while an item on the
+       day is missing a time — locked as before (aria-disabled, the same look), the press refused with the note
+       (state/sched-commit.ts); with nothing missing it is disabled exactly as before. The Amendments panel's own Publish AL
+       is left as it is until his answer (the plan's R6). */
+    const lockAt=timeGapsOf(+di).items?' aria-disabled="true"':' disabled';
     /* THE BEAK (§9, closes BUG-2): on a NEVER-published day it first-approves
        (Publish day). On a PUBLISHED day it renders NOTHING here — a published
        version is frozen, and its status is the green title tag; amending is edit
@@ -1710,7 +1716,7 @@ export function dayStatHTML(di:any,ed:any){
       : workView
       ? `<span class="dbeak ro work" title="${d.dow} is published, but this is the working draft — not what was issued">Working draft</span>`
       : (ed&&!ok)
-      ? `<button class="dbeak ${!sgOK?'locked':''}" data-beak="${di}"${!sgOK?' disabled':''} title="${sgOK?'Publish '+d.dow+' — approve this day only':'Sign off '+signMissing(di).join(', ')+' before publishing '+d.dow}">Publish day</button>`
+      ? `<button class="dbeak ${!sgOK?'locked':''}" data-beak="${di}"${!sgOK?lockAt:''} title="${sgOK?'Publish '+d.dow+' — approve this day only':'Sign off '+signMissing(di).join(', ')+' before publishing '+d.dow}">Publish day</button>`
       : ok
       ? ''   /* published: stamp retired — the green title tag names the issued version (verTagHTML) */
       : '';   /* unpublished view: no stamp — its title tag already reads DRAFT (owner D950 R1, 17 Oct 26 — the words pass, round 2:
@@ -1726,7 +1732,7 @@ export function dayStatHTML(di:any,ed:any){
        actions under a preview, so drop the button there. */
     const alN=nextSeq(di);
     const alpub=(ed&&ok&&nd&&!DPREV.has(+di))
-      ? `<button class="dbeak dalpub${sgOK?'':' locked'}" data-alpub="${di}"${sgOK?'':' disabled'} title="${sgOK
+      ? `<button class="dbeak dalpub${sgOK?'':' locked'}" data-alpub="${di}"${sgOK?'':lockAt} title="${sgOK
           ?`Publish AL${alN} — ${nd} change${nd>1?'s':''} on ${d.dow} only`
           :`Sign off ${signMissing(di).join(', ')} before publishing AL${alN}`}">Publish AL${alN}</button>`
       :'';
@@ -2527,6 +2533,17 @@ export function signoffHTML(di:any,full:any){
   const missing=new Set(miss);
   const stale=SIGN_ROLES.filter((r:any)=>r[2]&&g[r[0]]&&missing.has(r[1])).map((r:any)=>r[1]);
   const why=(l:any)=>stale.includes(l)?`${l} needs an appointed scheduler`:l;
+  /* [END-TIME-GUARD] WHILE AN ITEM ON THE DAY IS MISSING A TIME (his D2612, D2854; the approved try-out): a press on a box
+     is refused, so the box takes the press itself and its list can neither open nor take the keys — the select is
+     disabled and out of the tab order (Windows F4, the iPhone's form arrows and a screen reader's double tap open a select
+     a mouse catch cannot stop — the fresh Opus red-team read, 2b), the pill a button for the keys (interactions.ts
+     routeClick / routeOpenKey say the note: state/timeguard.ts). */
+  const gaps=timeGapsOf(+di).items, blockAt=gaps?' role="button" tabindex="0" aria-disabled="true"':'';
+  /* …and the status line says how many items are missing a time, before "N to sign" (D2854); on the board, with no names
+     of the boxes still to sign until the last time is typed, so it stays one line on a phone (D2734). The week keeps the
+     stale-appointment words after it, as built (the plan's Q21). Once all four show (an older saved week, Q-W3) the line
+     is as before. The tap that goes to each empty box is a later step. */
+  const gapLead=gaps?`<span class="tg-n">${gaps} item${gaps===1?'':'s'} missing a time</span> · `:'';
   return `<span class="so-h">Sign-off</span>`
     +SIGN_ROLES.map(([k,lbl,sch]:any)=>{
       const v=g[k], ids=signPeople(sch,v,di);
@@ -2536,9 +2553,9 @@ export function signoffHTML(di:any,full:any){
          value; it re-renders on every reflow, the same path that used to move
          the `selected` attribute. */
       const shown=v&&PEOPLE[v]?PEOPLE[v].cs:(ids.length?'— name —':'— none appointed —');
-      return `<label class="sgn ${v?'on':''}${sch?' sch':''}" title="${esc(lbl)}${sch?' — appointed schedulers only':''}${v&&PEOPLE[v]?' — '+esc(PEOPLE[v].name||PEOPLE[v].cs):''}">`
+      return `<label class="sgn ${v?'on':''}${sch?' sch':''}${gaps?' tg-block':''}" title="${esc(lbl)}${sch?' — appointed schedulers only':''}${v&&PEOPLE[v]?' — '+esc(PEOPLE[v].name||PEOPLE[v].cs):''}"${blockAt}>`
         +`<span class="k">${esc(lbl)}</span><span class="v">${esc(shown)}</span>`
-        +`<select data-sign="${k}" data-signday="${di}" aria-label="${esc(lbl)} — ${esc((DAYS[di]||{}).dow||'')}">`
+        +`<select data-sign="${k}" data-signday="${di}" aria-label="${esc(lbl)} — ${esc((DAYS[di]||{}).dow||'')}"${gaps?' disabled tabindex="-1"':''}>`
         +`<option value="">${ids.length?'— name —':'— none appointed —'}</option>`
         +ids.map((id:any)=>`<option value="${id}"${id===v?' selected':''}>${esc(PEOPLE[id].cs)}</option>`).join('')
         +`</select></label>`;}).join('')
@@ -2549,8 +2566,9 @@ export function signoffHTML(di:any,full:any){
        issued version and says whether there is anything to publish — the old flat
        "can be published" wrongly implied a publish button that (correctly) is not
        there when nothing has changed. dayDelta is the ONE eligibility authority. */
-    +`<span class="so-state ${miss.length?'no':'yes'}">${
-        miss.length ? `${miss.length} to sign${full?' · '+miss.map(why).join(', '):stale.length?' · '+stale.map(why).join(', '):''}`
+    +`<span class="so-state ${miss.length?'no':'yes'}${gaps&&miss.length?' tg-has':''}">${
+        miss.length&&gaps ? `${gapLead}${miss.length} to sign${!full&&stale.length?' · '+stale.map(why).join(', '):''}`
+        : miss.length ? `${miss.length} to sign${full?' · '+miss.map(why).join(', '):stale.length?' · '+stale.map(why).join(', '):''}`
         : !dayApproved(di) ? 'Signed — this day can be published'
         : (()=>{const cv=dayCurVer(di); if(cv==null) return 'Signed';   // approved but no resolvable snapshot (probe/import) → no ALNaN label (Fable #3)
             const chg=dayShownPendCount(di);   // the ONE count the day head shows (D109 — a man moved is one change)

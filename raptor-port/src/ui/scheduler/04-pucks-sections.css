@@ -556,10 +556,30 @@ body.dnd .schedboard .ppl[data-fill].dragover .addz{border-color:var(--accent);c
 /* not yet signed off — the same button, darkened. Deliberately not `opacity`:
    a half-transparent cyan over a dark panel reads as a rendering fault, a solid
    dim blue reads as "this button is not live yet". */
-.dbeak[disabled]{cursor:not-allowed;opacity:1;
+.dbeak[disabled],.dbeak[aria-disabled="true"]{cursor:not-allowed;opacity:1;
   background:rgba(59,198,232,.16);color:rgba(59,198,232,.62);border-color:rgba(59,198,232,.3)}
 .dbeak.locked{border-style:dashed}
 .dbeak.locked::before{content:'🔒 ';font-size:9px}
+/* [END-TIME-GUARD] (his D2853, D2854, D2734 — the approved try-out's marks, docs/mock/2026-11-25-endtime-tryout/src/
+   tryout.css and board.mjs): the line inside an empty time box the rule names — grey while drafting, red once a press is
+   refused; no glow. ui/timegap-paint.ts puts the classes on. */
+#eWeek .tg-miss{box-shadow:inset 0 0 0 1px var(--ink-3) !important;border-radius:4px}
+#eWeek .tg-miss.tg-red{box-shadow:inset 0 0 0 1px var(--hard) !important}
+/* an empty time box keeps a size to carry its outline… */
+#eWeek .tg-miss:empty{display:inline-block;min-width:34px}
+/* …but a flying line's TO / LD box is as wide as its narrow column: the outline keeps to it */
+#eWeek .form .tg-miss:empty{display:block;min-width:0}
+/* a time emptied on a published day keeps the app's dotted waiting mark inside the outline (the try-out's frame c) */
+#eWeek .tg-miss[data-aln]:empty{padding-left:3px;margin-left:-3px;padding-bottom:3px;margin-bottom:-3px}
+#schedBoard input.tg-miss{box-shadow:inset 0 0 0 1px var(--ink-3) !important}
+#schedBoard input.tg-miss.tg-red{box-shadow:inset 0 0 0 1px var(--hard) !important}
+/* the count before "N to sign" */
+.signoff .so-state .tg-n{color:var(--hard)}
+#sbSignBar .so-state.tg-has{white-space:normal}
+/* a sign-off box that is refusing: the press lands on the box, never on its shut list */
+.sgn.tg-block>select{pointer-events:none}
+.sgn.tg-block{cursor:pointer}
+.sgn.tg-block:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 /* THE WEEK BANNER IS GONE (owner, 15 Sep 26 — item 2), and with it, since D1098 (21 Oct 26),
    the RULES MODIFIED stamp it was left holding. */
 /* ---- AL amendment marks: ONLY the changed item is coloured ----
