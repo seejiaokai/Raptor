@@ -192,6 +192,14 @@ squadron the row opened on — its own admin, a Plan holder of it, a master admi
 makes it again after the next draw). It decides only whether the open row closes with its "row changed" note — his own
 move's day come, or another admin made him a member — and it offers no control and lets no write through, so it is no
 edit question and no entry of the inventory. Tests: `src/ui/msq-s2-rejudge4.test.tsx` §24.
+**Since U1's fifth round it is required, not compared, and asks first whether his session still stands**
+(`state/accounts.ts sessionLapsed` — his sign-in suspended, his person archived or deleted, his account gone, its role
+changed, put on another person; a hand-made session with no account never lapses): the answer is no longer held from
+the press and compared later — an open row closes at any judging where it is "no", and a press opens no row without it
+(`ui/UsersPanel.tsx adminThere`, `rowChanged`, `toggle` — where the session has lapsed the press asks the app to
+repaint, so it ends or remakes his session at once). Still no edit question: it only closes a row or leaves one shut,
+and the scan of `src/state/edit-rights-readers.test.ts` counts neither `sessionLapsed` nor `levelIn`. Tests:
+`src/ui/msq-s2-rejudge5.test.tsx` §27.
 
 **The landing (D8):** wherever the page is Edit Schedule, the role in force an admin's and `maySchedEditPage()` false — a
 pick of a squadron he holds View of, R6's re-entry, a Plan lowered while he is there — he lands on View-only Sched

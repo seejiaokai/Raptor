@@ -31,7 +31,7 @@ import { elogWhen } from '../engine/editlog'
 import {
   accountOfPid, linkablePeople, addAccount, updateAccount, waitingHere, unseenRequests,
   approveRequest, approveRequestNew, addPersonAndAccount, declineRequest, saveAccess,
-  requestSummary, accessAlert, markRequestsSeen, MAX_SIGNIN, isAdminAccount, signedInAccount, levelIn,
+  requestSummary, accessAlert, markRequestsSeen, MAX_SIGNIN, isAdminAccount, signedInAccount, levelIn, sessionLapsed,
   type Account, type AccountRole, type AccessRequest, type AccessSave, type AccessLine,
 } from '../state/accounts'
 import { RoleBox, SquadronLines, RolesFold } from './UserAccess'
@@ -194,9 +194,13 @@ function Waiting() {
   const [open, setOpen] = useState<Approving | null>(null)
   /* how "Give access" opened — the guard counts it once anything differs (ui/guard.ts, D2598) */
   const [opened, setOpened] = useState<Approving | null>(null)
-  useGuardWork('giveaccess', !!open && JSON.stringify(open) !== JSON.stringify(opened))
   /* the page's squadron's requests only, those he is an admin of (§5 — accounts.ts waitingHere) */
   const reqs = waitingHere()
+  /* …and only while its request is still waiting (U1's fifth round — the fresh Fable's finding 3): the open form's state is
+     never cleared when its request leaves the list — answered on the man's own row, as the form's own note says to, or by
+     another admin — so the report stayed on with nothing of Give access on the page */
+  const live = !!open && reqs.some(r => r.id === open.id)
+  useGuardWork('giveaccess', live && JSON.stringify(open) !== JSON.stringify(opened))
   if (!reqs.length) return <p className="adm-note" id="admNoWaiting">Nobody is waiting for access.</p>
   return (
     <div className="acc-list" id="admWaiting">
@@ -309,11 +313,12 @@ const foreignHere = (pid: string): boolean => otherSqnOf(pid) !== null
    A7, chat 199; widened by its second round, the four reads of chat 205): the squadron whose page it opened on (`unit`),
    whether it opened short — another squadron's man there — or whole (`short`), HIS HOME SQUADRON THAT DAY (`home`),
    WHETHER HE WAS ARCHIVED (`arch`), and the squadron in view (`view` — what tells the signed-in person's own pick from any
-   other change of the page's squadron: closedByHisPick, below). Since the fourth round it holds two more: WHO IS LOOKING
-   (`admin` — adminThere, below) and THE COPY of everything the row shows and could write over (`shown` — below). Held by
-   the page for every open row — the archived man's too — and handed WHOLE to whichever of the three editors the row
-   draws: none of them rebuilds a part of it. */
-type OpenedOn = { unit: string; short: boolean; home: string | null; arch: boolean; view: string; admin: boolean; shown: Shown | null }
+   other change of the page's squadron: closedByHisPick, below). Since the fourth round it holds THE COPY of everything
+   the row shows and could write over (`shown` — below). Held by the page for every open row — the archived man's too —
+   and handed WHOLE to whichever of the three editors the row draws: none of them rebuilds a part of it.
+   (WHO IS LOOKING is no part of it since the fifth round: the fourth held whether he was that admin at the press and
+   compared it later; it is now REQUIRED at every judging, never compared with what it was — adminThere, below.) */
+type OpenedOn = { unit: string; short: boolean; home: string | null; arch: boolean; view: string; shown: Shown | null }
 /* THE COPY — THE ONE GUARD (U1's fourth round, chat 205; his D2404 — a guard rail before another patch). Three fix rounds
    each closed another stale-row case; they were one fault: an opened row worked from what it read when it opened, and
    only some of that was judged against the store as it is now. So an opened row keeps a copy of EVERYTHING it shows and
@@ -376,29 +381,66 @@ const sameShown = (x: Shown | null, y: Shown | null): boolean => JSON.stringify(
    squadron and keeps his row. Read from the store, not from the session: the session still says "admin" until the app
    makes it again after the next draw (ui/App.tsx), and with nothing redrawn a press must ask the same. It decides only
    whether an open row closes — it offers no control and lets no write through (the doors judge every write themselves).
-   A session with no account behind it (a hand-made test session) has no standing to lose. */
+   A session with no account behind it (a hand-made test session) has no standing to lose.
+   REQUIRED, NOT ONLY COMPARED — AND HIS SESSION MUST STILL STAND (the fifth round — the security reader's findings 1a and
+   1b, Astra's finding 1). The fourth round asked only his LEVEL, answered "that admin" when his account was gone, and
+   only compared the answer with what it was at the press. So (1a) the signed-in admin suspended, archived or deleted by
+   another admin under his open row, nothing redrawn — a level does not ask whether his sign-in is on or his person
+   still there — and Save, Suspend, Archive and Delete still wrote; (1b) made a member, nothing redrawn, and THEN he
+   pressed a row open on the page still standing: it opened with "not that admin" as its baseline, the comparison never
+   fired, and Save and Suspend wrote. Now it first asks the app's own question — does his session still stand
+   (state/accounts.ts sessionLapsed: suspended, archived, deleted, his account gone, its role changed, put on another
+   person; a hand-made session never lapses) — and an opened row REQUIRES the answer at every judging (rowChanged), and
+   a press opens no row without it (UsersPanel's toggle). His own Logout and his own switch to the member view change
+   neither answer: nobody signed in has no account to ask of, and the member view leaves his account as it was. */
 const adminThere = (unit: string): boolean => {
+  if (sessionLapsed()) return false
   const a = signedInAccount()
   return !a || levelIn(a.id, unit, todayIso()) === 'admin'
 }
 const judgedNow = (pid: string): OpenedOn => {
   const unit = pageUnit('own'), short = foreignHere(pid), arch = !!P(pid)?.archived
-  return {
-    unit, short, home: homeOn(pid, todayIso()), arch, view: pageUnit('schedule'),
-    admin: adminThere(unit), shown: shownOf(pid, kindOf({ short, arch })),
-  }
+  return { unit, short, home: homeOn(pid, todayIso()), arch, view: pageUnit('schedule'), shown: shownOf(pid, kindOf({ short, arch })) }
+}
+/* THE SHORT ROW'S PICK AND THE LINE HE HOLDS — ONE READER FOR ITS EDITOR AND FOR THE PAGE (the fifth round): what he
+   holds, read from the store as it stands, and the admin's pick, where it was made on the sign-in he holds now (Typed,
+   below). The short row's editor draws from it and its Save reads it once more; the page works the row's report to the
+   leave-guard out from the same answer (shortUnsaved) — so the row's "not saved" mark and the guard's count cannot
+   disagree. */
+function shortHeld(pid: string, unit: string, t: Typed) {
+  const a = accountOfPid(pid)
+  const rolePick = rolePickOf(a, a && isAdminAccount(a) ? 'admin' : 'main')
+  const picked = a && t.pick && t.pick.acct === a.id ? t.pick.line : null
+  return { a, rolePick, picked, line: (accessLinesOf(a, pid)[unit] ?? 'none') as AccessLine }
+}
+/* its change not saved: a pick made, on the sign-in he holds, that is not the line he holds now (a master admin's row has
+   no line to pick) */
+const shortUnsaved = (h: ReturnType<typeof shortHeld>): boolean => !!h.a && h.rolePick !== 'master' && h.picked !== null && h.picked !== h.line
+/* A PICK MADE, AND HE IS BY NOW A MASTER ADMIN (the fifth round — the security reader and the fresh Fable, by reading): a
+   master admin has full access and no line, so the pick can never be sent; the short row's Save closed the row and
+   dropped it without a word. His row did change while it was open — the row closes with the note (rowChanged, below). */
+const pickOnMaster = (pid: string, t: Typed | null | undefined): boolean => {
+  if (!t || !t.pick) return false
+  const a = accountOfPid(pid)
+  return !!a && a.id === t.pick.acct && a.master === true
 }
 /* THE ROW CHANGED UNDER IT (his D2730 Q13): ANY of the four facts no longer holds — the page's squadron is another;
    "another squadron's man here" flipped; his home is no longer the one the row opened on (a move from one other squadron
    to another leaves him another squadron's man here, yet ends what he held of this one and whose admin to ask — the
    Fable read 3, Astra 4); he was archived or restored under it (an open row is never carried from his roster row to his
-   archived row or back — the Fable read 2, the security read) — OR the signed-in person's standing went (adminThere),
-   OR anything in the copy differs from the store (shownOf, as the row opened: whole or archived). The squadron in view
-   is no part of it: a pick that leaves the page's own squadron as it was (a View holder's) leaves the row open. Asked by
-   the page on every draw, by each editor on every draw of its own, and at the head of every action an editor takes. */
-const rowChanged = (pid: string, on: OpenedOn): boolean =>
+   archived row or back — the Fable read 2, the security read) — OR the signed-in person is no longer an admin of the
+   squadron it opened on, his session standing (adminThere — required, never compared), OR anything in the copy differs
+   from the store (shownOf, as the row opened: whole or archived), OR HE WAS DELETED (the fifth round — the security
+   reader's finding 2: an archived man with NO sign-in, deleted under his open archived row, changes nothing the copy
+   holds — no account to lose, his callsign as it was — so "Save name" renamed the deleted man and said so; the page's
+   draw rule tests "deleted" first and closes his row with no note, a press gives the usual note and writes nothing),
+   OR — the short row — the pick the admin made can no longer be sent (`t`, where the caller holds what is typed:
+   pickOnMaster). The squadron in view is no part of it: a pick that leaves the page's own squadron as it was (a View
+   holder's) leaves the row open. Asked by the page on every draw, by each editor on every draw of its own, and at the
+   head of every action an editor takes. */
+const rowChanged = (pid: string, on: OpenedOn, t?: Typed | null): boolean =>
   pageUnit('own') !== on.unit || foreignHere(pid) !== on.short || homeOn(pid, todayIso()) !== on.home || !!P(pid)?.archived !== on.arch
-  || adminThere(on.unit) !== on.admin || !sameShown(shownOf(pid, kindOf(on)), on.shown)
+  || !adminThere(on.unit) || !sameShown(shownOf(pid, kindOf(on)), on.shown) || !!P(pid)?.deleted || (on.short && pickOnMaster(pid, t))
 /* WHAT THE ADMIN HAS TYPED OR PICKED IN THE OPEN ROW — HIS, NEVER THE COPY — HELD BY THE PAGE WITH THE OPEN ROW (the fourth
    round — Astra's finding 1 of the third read). Each group of the list draws under its own parent, so a man who moves
    from one group to another has his editor made anew; what the admin had picked or typed lived inside the editor and went
@@ -408,19 +450,35 @@ const rowChanged = (pid: string, on: OpenedOn): boolean =>
    choice while the row stays open.
    `pick` — the short row's: the line he picked, WITH THE SIGN-IN IT WAS PICKED ON (the one thing the short row does not
    follow live): a pick counts only while that sign-in is still the man's, so it is never carried onto a sign-in given to
-   him later. The archived row's two boxes stay its editor's own: the Archived fold is one list, never regrouped. */
-type Typed = { name: string; role: RolePick; lines: Record<string, AccessLine>; pick: { acct: string; line: AccessLine } | null }
-const typedFrom = (s: Shown | null): Typed => ({ name: s ? s.name : '', role: s ? s.role : 'main', lines: s ? s.lines : {}, pick: null })
+   him later.
+   `box`, `postIn` — THE ARCHIVED ROW'S TWO BOXES, THE PAGE'S TOO (the fifth round — the fresh Opus 1, Astra 2, the fresh
+   Fable 1; the backlog's [USERS-ARCH-FOLD-DRAFT], older than this step). The fourth round left them in the archived row's
+   editor ("the Archived fold is one list, never regrouped") — which missed the fold itself: shutting it, a search or a
+   Filter tick that hides the row makes the editor anew, and the row came back OPEN on his old callsign and today's date,
+   what the admin had typed gone without a word. Started from the copy at each fresh opening, thrown away at close, as
+   the rest is. */
+type Typed = {
+  name: string; role: RolePick; lines: Record<string, AccessLine>; pick: { acct: string; line: AccessLine } | null
+  box: string; postIn: string
+}
+const typedFrom = (s: Shown | null): Typed => ({
+  name: s ? s.name : '', role: s ? s.role : 'main', lines: s ? s.lines : {}, pick: null, box: s ? s.box : '', postIn: s ? s.postIn : '',
+})
 /* THE BELT, AT THE HEAD OF EVERY WRITE AN OPENED ROW MAKES — one for all three editors: the whole row's Save, Suspend /
    Enable, Give sign-in, Archive and Delete; the short row's Save; the archived row's Restore, "Restore as", Save name and
    Delete (both of Delete's taps, the arming one too). The page closes a row whose judgement changed when it next draws,
    but his move landing as the date rolls past its day redraws nothing, so each press asks again first: where the row
    changed under it, nothing is sent, the row closes, and the passing note says so (his D2730 Q13 — the one note, the
-   existing words). True when the press may go on. */
-function askAgain(pid: string, on: OpenedOn, onClose: () => void): boolean {
-  if (!rowChanged(pid, on)) return true
-  HOOKS.toast(changedWhileOpenWords(cs(pid)), 'warn'); onClose()
+   existing words). True when the press may go on. (`t` — what is typed, where the row's change can hang on it: the
+   short row's pick.) */
+function askAgain(pid: string, on: OpenedOn, onClose: () => void, t?: Typed): boolean {
+  if (!rowChanged(pid, on, t)) return true
+  saidChanged(pid, onClose)
   return false
+}
+/* the row closes and the one note is said (his D2730 Q13) — for a press that found the row changed */
+function saidChanged(pid: string, onClose: () => void): void {
+  HOOKS.toast(changedWhileOpenWords(cs(pid)), 'warn'); onClose()
 }
 /* AN EDITOR JUDGES ITSELF ON ITS OWN DRAWS TOO (Astra 2): typing in an opened row redraws its editor alone — a draw the
    page does not judge — so after his move landed with nothing redrawn, the first key drew the whole editor again for a man
@@ -429,8 +487,8 @@ function askAgain(pid: string, on: OpenedOn, onClose: () => void): boolean {
    judging then closes the row and raises the note by its one rule (useOpenRowJudged). So the note has one home: never
    twice with the page's own, and once where a draw runs twice (React's strict mode — asking the page twice draws it
    twice, and the second finds the row already closed). */
-function useJudgedOnDraw(pid: string, on: OpenedOn, onStale: () => void): boolean {
-  const stale = rowChanged(pid, on)
+function useJudgedOnDraw(pid: string, on: OpenedOn, onStale: () => void, t?: Typed): boolean {
+  const stale = rowChanged(pid, on, t)
   useLayoutEffect(() => { if (stale) onStale() }, [stale, onStale])
   return stale
 }
@@ -469,8 +527,9 @@ function ShortSub(p: { pid: string; a: Account | undefined; person: any; unit: s
    a line he no longer held beside its own second line saying the opposite, and its Save, comparing with the old line,
    sent nothing and said nothing): his account, his line and his home squadron's number are read afresh on every draw, so
    an untouched row always shows today's; `picked` is the admin's own choice, null until he makes one. Its change not
-   saved is marked on the row (`data-unsaved`): picked, and not the line he holds now — the whole row has no such report
-   yet (the guard's opened-row count is the core's K1, not landed on this branch). Save reads the line he holds once more
+   saved is marked on the row (`data-unsaved`): picked, and not the line he holds now — and that very test is the row's
+   report to the leave-guard, worked out by the page as the whole row's and the archived row's are (shortUnsaved, above;
+   UsersPanel's useRowReports — the fifth round: the short row reported nothing). Save reads the line he holds once more
    (a press with nothing redrawn) and sends only a pick that differs from it. The row stays open across such a change —
    he is still another squadron's man on the same page — never closed for it, WHILE HE STAYS ON THE PAGE'S LIST: a Plan
    holder listed only for his Plan leaves the list when it goes, and the page then closes the row with the note
@@ -483,26 +542,29 @@ function ShortSub(p: { pid: string; a: Account | undefined; person: any; unit: s
    THE PICK IS HELD BY THE PAGE, WITH THE SIGN-IN IT WAS MADE ON (the fourth round — Astra's finding 1; Typed, above): it
    was this editor's own, so a regrouping of the list, which makes the editor anew, dropped it without a word. And it
    counts only while that sign-in is still his: where his sign-in was put on another man and he was later given a new
-   one, the row shows the new sign-in's line untouched. */
+   one, the row shows the new sign-in's line untouched.
+   A PICK THAT CAN NO LONGER BE SENT IS NEVER DROPPED WITHOUT A WORD (the fifth round — the security reader and the fresh
+   Fable, by reading): a pick made, then the man made a master admin by another admin — or his sign-in put on another
+   man — and Save closed the row with nothing sent and nothing said. Made a master admin, the row counts as changed:
+   it closes with the note on the draw where a draw comes, and at Save where none does (rowChanged's pickOnMaster). His
+   sign-in gone is still FOLLOWED on a draw, as the third round built and pinned it — the row itself then reads "No
+   sign-in…", or shows the new sign-in's line untouched; but a Save pressed on the row still standing, nothing redrawn,
+   with a pick that is no longer on his sign-in, says the note. */
 function ForeignEditor(p: {
   pid: string; on: OpenedOn; typed: Typed; onTyped: (t: Typed) => void; onClose: () => void; onStale: () => void
 }) {
-  const stale = useJudgedOnDraw(p.pid, p.on, p.onStale)
+  const stale = useJudgedOnDraw(p.pid, p.on, p.onStale, p.typed)
   const unit = p.on.unit
   /* what he holds, read from the store as it stands — on every draw, and once more at Save — and the admin's pick, where
-     it was made on the sign-in he holds now */
-  const heldNow = () => {
-    const a = accountOfPid(p.pid)
-    const rolePick = rolePickOf(a, a && isAdminAccount(a) ? 'admin' : 'main')
-    const picked = a && p.typed.pick && p.typed.pick.acct === a.id ? p.typed.pick.line : null
-    return { a, rolePick, picked, line: (accessLinesOf(a, p.pid)[unit] ?? 'none') as AccessLine }
-  }
-  const { a, rolePick, picked, line: lineNow } = heldNow()
+     it was made on the sign-in he holds now (shortHeld, above) */
+  const { a, rolePick, picked, line: lineNow } = shortHeld(p.pid, unit, p.typed)
   const line = picked ?? lineNow
-  const unsaved = !!a && rolePick !== 'master' && picked !== null && picked !== lineNow
+  const unsaved = shortUnsaved({ a, rolePick, picked, line: lineNow })
   const save = () => {
-    if (!askAgain(p.pid, p.on, p.onClose)) return
-    const held = heldNow()
+    if (!askAgain(p.pid, p.on, p.onClose, p.typed)) return
+    const held = shortHeld(p.pid, unit, p.typed)
+    /* (a pick made that is no longer on the sign-in he holds: his row changed while it was open) */
+    if (p.typed.pick && held.picked === null) return saidChanged(p.pid, p.onClose)
     if (!held.a || held.rolePick === 'master' || held.picked === null || held.picked === held.line) return p.onClose()
     if (done(saveAccess(held.a.id, { grants: { [unit]: held.picked } }), 'Saved')) p.onClose()
   }
@@ -604,15 +666,45 @@ function PersonRow(p: {
    nowhere else, and every write names his account by it. The row is judged against the store before every draw and at
    the head of every action (rowChanged), so while it stands the copy IS the store — and the moment they differ the row
    closes, with nothing written. No reader of his account or his person belongs in this function: a value it needs is
-   added to the copy (msq-s2-rejudge4.test.tsx §20 lists what it may use, and fails on anything else).
+   added to the copy. msq-s2-rejudge4.test.tsx §20 holds what a test of the file can: the names this function may use
+   (a reader called by name in it fails), the props it is handed and reads (a value of the man handed in as a new prop
+   fails), and the names its parts rowLocks, SquadronLines and lineState may use — its own comment says what that still
+   does not prove.
    WHAT IS TYPED OR PICKED — the sign-in box, the Role box, the lines — is the admin's, held by the page with the open row
    (`typed`, started from the copy at each fresh opening), so the list regrouping under it never drops it. */
 /* HAS THE ADMIN TYPED OR PICKED ANYTHING IN THE WHOLE ROW — the sign-in, the Role, a squadron's line: what is typed (the
-   page's) against the copy the row opened on, never a second read of the man. The row's report to the leave-guard
-   (useGuardWork('userrow'), below); a plain function of its own so the editor's own branching stays small (React
-   Doctor no-high-complexity-react-function, pull request 826). */
+   page's) against the copy the row opened on, never a second read of the man. The whole row's part of the open row's
+   report to the leave-guard, which the page works out (rowWork, below — the fifth round moved the report out of the
+   editor: a row he hid by his own search kept its typing, the page's, yet stopped counting when its editor went). */
 const typedDiffers = (t: Typed, s: Shown): boolean =>
   t.name !== s.name || t.role !== s.role || JSON.stringify(t.lines) !== JSON.stringify(s.lines)
+/* …AND IN THE ARCHIVED ROW'S TWO BOXES — the callsign read TRIMMED, as every other reading of it is (the fresh Fable's
+   finding 5: a callsign typed with a space after it still counted after Save name had saved it) */
+const boxesDiffer = (t: Typed, s: Shown): boolean => t.box.trim() !== s.box || t.postIn !== s.postIn
+/* THE OPEN ROW'S REPORT TO THE LEAVE-GUARD, FROM WHAT THE PAGE HOLDS (the fifth round — the fresh Opus 2 and 3, the fresh
+   Fable 4, the security reader's note; agreed with the core's chat 204, whose guard it is): the open row, its copy and
+   what is typed in it — never from an editor, which is drawn only while the row is on the list. So a row hidden by his
+   own search, a Filter tick or the shut Archived fold still counts (the guard's doors do not need the row on screen),
+   and the short row counts too. Which report: a man's roster row, whole or short ('user'), or an archived man's
+   ('arch'); null — nothing open, or nothing typed that differs:
+   - a WHOLE row: what is typed differs from its copy (typedDiffers);
+   - a SHORT row: the pick differs from the line he holds now — the very test that marks it "not saved" (shortUnsaved);
+   - an ARCHIVED row: its two boxes differ from its copy (boxesDiffer). */
+function rowWork(pid: string | null, on: OpenedOn | null, t: Typed | null): 'user' | 'arch' | null {
+  if (!pid || !on || !t) return null
+  const kind = kindOf(on)
+  if (kind === 'short') return shortUnsaved(shortHeld(pid, on.unit, t)) ? 'user' : null
+  if (!on.shown) return null
+  if (kind === 'arch') return boxesDiffer(t, on.shown) ? 'arch' : null
+  return typedDiffers(t, on.shown) ? 'user' : null
+}
+/* (the two reports as the guard's rows name them — `userrow` a man's roster row, `archrow` an archived man's; each
+   counts while it is so and leaves with the page, ui/guard.ts useGuardWork) */
+function useRowReports(pid: string | null, on: OpenedOn | null, t: Typed | null): void {
+  const work = rowWork(pid, on, t)
+  useGuardWork('userrow', work === 'user')
+  useGuardWork('archrow', work === 'arch')
+}
 function PersonEditor(p: {
   pid: string; on: OpenedOn; s: Shown; typed: Typed; onTyped: (t: Typed) => void; onClose: () => void; onStale: () => void
 }) {
@@ -627,8 +719,6 @@ function PersonEditor(p: {
   /* the delete's first tap arms it; Cancel, closing the editor or another row disarms it (the editor unmounts — a
      regrouping disarms it too: a delete is never left armed across a redraw of the list) */
   const [armDel, setArmDel] = useState(false)
-  /* his row counts for the guard once anything differs from how it opened (D2595, D2598; ui/guard.ts — typedDiffers) */
-  useGuardWork('userrow', typedDiffers(typed, s))
   const save = () => {
     if (!s.acct || !stillHis()) return
     /* the role, the mark, every squadron's line AND his sign-in in ONE command (accounts.ts saveAccess — one Undo step;
@@ -708,8 +798,8 @@ function PersonEditor(p: {
    so an open roster row is never carried here when he is archived under it — and the editor's every write asks again
    first. An archived man can have a move waiting, and his row was the one place a write still landed unasked. */
 function ArchivedRow(p: {
-  pid: string; open: boolean; openOn?: OpenedOn | null; ringed?: boolean; onToggle: () => void; onClose: () => void; onStale: () => void
-  onWrote: () => void
+  pid: string; open: boolean; openOn?: OpenedOn | null; typed?: Typed | null; onTyped: (t: Typed) => void
+  ringed?: boolean; onToggle: () => void; onClose: () => void; onStale: () => void; onWrote: () => void
 }) {
   const person = P(p.pid)
   const a = accountOfPid(p.pid)
@@ -724,15 +814,19 @@ function ArchivedRow(p: {
       </button>
       <Dots pid={p.pid} a={a} archived />
       <span className="od-rc">{a && <span className={'ub ' + a.role}>{isAdminAccount(a) ? 'Admin' : 'Member'}</span>}</span>
-      {p.open && p.openOn && p.openOn.shown && <ArchivedEditor pid={p.pid} on={p.openOn} s={p.openOn.shown} onClose={p.onClose} onStale={p.onStale} onWrote={p.onWrote} />}
+      {p.open && p.openOn && p.openOn.shown && p.typed && <ArchivedEditor pid={p.pid} on={p.openOn} s={p.openOn.shown}
+        typed={p.typed} onTyped={p.onTyped} onClose={p.onClose} onStale={p.onStale} onWrote={p.onWrote} />}
     </div>
   )
 }
 
 /* HIS OPEN ARCHIVED ROW'S EDITOR — the callsign box, the post-in date and the buttons. A piece of its own (React Doctor
-   no-high-complexity-react-function, 8 Nov 26) holding what is typed: the row is drawn afresh each time it opens or
-   closes (its key changes with the editor), so the boxes open on his callsign (or the next free one) and today, as
-   before.
+   no-high-complexity-react-function, 8 Nov 26).
+   WHAT IS TYPED IN ITS TWO BOXES IS THE PAGE'S (`typed` — the fifth round; Typed, above), as the whole row's typing is:
+   started by the page from the copy at each fresh opening — his callsign (or the next free one) and today, as before —
+   and thrown away when the row closes; so the fold shut, a search or a tick that hides the row never drops it. Only the
+   refusal under the boxes (`err`) and the armed Delete stay this editor's own: a Delete is never left armed across a
+   redraw of the list, as on the whole row.
    IT READS THE MAN ONLY THROUGH THE COPY, as the whole row's editor does (`s` — shownOf): whether he has a sign-in, his
    callsign, whether a man on the roster holds it, and what the two boxes open on. Where any of it changes under the
    open row — another admin renames him, a man on the roster takes his callsign, the date rolls so that "today" in the
@@ -744,23 +838,21 @@ function ArchivedRow(p: {
    `onWrote` — Save name is the one action of any opened row that leaves it open, and it changes the very callsign the
    copy holds: the page is told the write was this row's own and takes a FRESH COPY after it (a row's own actions never
    trip the guard), and never reads his leaving the list — the search no longer matching — as a change made under the
-   admin (useOpenRowJudged — a row's own writes raise no note). */
+   admin (useOpenRowJudged — a row's own writes raise no note). What he typed stays as he typed it: the callsign box,
+   now the saved name, and THE POST-IN DATE HE PICKED, which the next Restore still uses. */
 function ArchivedEditor(p: {
-  pid: string; on: OpenedOn; s: Shown; onClose: () => void; onStale: () => void; onWrote: () => void
+  pid: string; on: OpenedOn; s: Shown; typed: Typed; onTyped: (t: Typed) => void; onClose: () => void; onStale: () => void
+  onWrote: () => void
 }) {
-  const { s } = p
+  const { s, typed } = p
+  const { box, postIn } = typed
   const has = s.acct !== null
   const stale = useJudgedOnDraw(p.pid, p.on, p.onStale)
   const stillHis = (): boolean => askAgain(p.pid, p.on, p.onClose)
   const callsign = s.cs
   const taken = s.taken
-  const [box, setBox] = useState(s.box)
-  const [postIn, setPostIn] = useState(s.postIn)
   const [err, setErr] = useState('')
   const [armDel, setArmDel] = useState(false)
-  /* counted for the guard once the callsign or the post-in date differs from how the row opened (D2598; ui/guard.ts) —
-     against the copy (after its own Save name, the fresh one) */
-  useGuardWork('archrow', box !== s.box || postIn !== s.postIn)
   const want = box.trim()
   const renamed = want !== callsign
   const restore = () => {
@@ -789,8 +881,8 @@ function ArchivedEditor(p: {
     <div className="acc-edit" data-restoring={p.pid}>
       <div className="adm-2col">
         <div className="mfield"><label htmlFor="accArCs">{CALLSIGN_LABEL}</label>
-          <input id="accArCs" value={box} autoComplete="off" onChange={e => { setBox(e.target.value); setErr('') }} /></div>
-        <PostInField id="accArPostIn" value={postIn} onChange={v => { setPostIn(v); setErr('') }} />
+          <input id="accArCs" value={box} autoComplete="off" onChange={e => { p.onTyped({ ...typed, box: e.target.value }); setErr('') }} /></div>
+        <PostInField id="accArPostIn" value={postIn} onChange={v => { p.onTyped({ ...typed, postIn: v }); setErr('') }} />
       </div>
       {taken && <p className="od-err" id="accArTaken">{callsign} is taken on the roster — give him another callsign.</p>}
       {err && <p className="od-err" id="accArErr">{err}</p>}
@@ -824,15 +916,21 @@ const Cols = () => (
    then read that as his own putting-away — so an open row found by the search was held out of sight, the pick in it lost
    without a word, and it came back OPEN with no press when he searched again. A bell tap is his own act, as his pick of
    a squadron is: the open row closes in that draw, before the search and the fold change. A landing for the very man
-   whose row is open leaves it open — he is brought into view. (`open` — whose row is open; `close` — the page's.) */
+   whose row is open leaves it open — he is brought into view. (`open` — whose row is open; `close` — the page's.)
+   …AND THAT CLOSE IS SILENT EVEN WHERE THE ROW HAD CHANGED UNSEEN (the fifth round — Astra's finding 3, the fresh Fable's
+   6): the close only ASKS the page to let the row go — this draw still has the old row in hand — and the judging later in
+   the same draw then found a row whose man's move had landed with nothing redrawn, and said the note about his own act.
+   So the landing also answers `closedNow` for the draw it closed a row in, and the page hands the judging no open row
+   for that draw (UsersPanel). A landing for the man whose row is open closes nothing and is judged as before. */
 type Ring = { seq: number; pid: string; on: boolean } | null | undefined
 function useRingLanding(
   ring: Ring, setFind: (v: string) => void, setArchOpen: (v: boolean | null) => void, open: string | null, close: () => void,
-): string | null {
+): { ringPid: string | null; closedNow: boolean } {
   const [ringSeen, setRingSeen] = useState(0)
+  let closedNow = false
   if (ring && ring.seq !== ringSeen) {
     setRingSeen(ring.seq)
-    if (open && open !== ring.pid) close()
+    if (open && open !== ring.pid) { close(); closedNow = true }
     setFind('')
     setArchOpen(P(ring.pid) && P(ring.pid).archived ? true : null)
   }
@@ -843,7 +941,7 @@ function useRingLanding(
     const row = Array.from(document.querySelectorAll<HTMLElement>(`#page-admin .acc-row[data-person="${CSS.escape(ringPid)}"]`)).find(x => x.getBoundingClientRect().height > 0)
     row?.scrollIntoView?.({ block: 'center' })
   }, [ringPid, ringAt])
-  return ringPid
+  return { ringPid, closedNow }
 }
 
 /* `shown` — this list is on the admin's screen (the Admin page decides: Users chosen, and on a phone drilled in);
@@ -901,13 +999,34 @@ const closedByHisPick = (on: OpenedOn): boolean =>
    Admin page keeps this list mounted while another of its cards is shown, and on a phone while its list of cards is, and
    says which through `shown`. That was not part of "was it drawn", so a row put away by pressing Admin → Data still said
    the note when the man's move landed at midnight. `shown` joins the picture: a row is drawn only while Users is on his
-   screen, and a change of `shown` is his own act — the row is held, judged all the same, and closed without a word. */
-type PageAt = { drawn: boolean; shown: boolean; q: string; filt: UsersFilter; arch: boolean | null; wrote: number }
-type SeenAt = PageAt & { pid: string }
+   screen, and a change of `shown` is his own act — the row is held, judged all the same, and closed without a word.
+   A ROW HE PUT AWAY IS STILL ASKED WHETHER ITS MAN IS ON THE LIST (the fifth round — the fresh Fable's finding 2). "Left
+   the list by no act of his" was asked only of a row drawn at the last draw; a row he had put away himself was never
+   asked again, and a short row holds no copy, so nothing else closed it. Saber gave Mako Plan of 149, opened Mako's short
+   row, picked View (to LOWER the Plan), typed something else in the search — or went to another Admin card — and pressed
+   Undo: Mako was off 149's list. Found again by the search, the row was drawn OPEN with no press, View picked, "not
+   saved" — and its Save GAVE View to a man who held nothing. So the page also remembers his search, his ticks and his
+   fold AS THEY STOOD WHEN THE ROW WAS LAST ON THE PAGE (`at`, held with the picture and carried while the row is out of
+   sight), and of a row that was out of sight at the last draw it asks, on every draw — the one that brings it back
+   too: would he still be on the list as it stood then (`still` — stillListed, below)? Where not, the row closes, with
+   no note: it was not on the page. A row its OWN write took off the list (the archived row's Save name, the search no
+   longer matching his new callsign) is not asked: the list as it stood no longer says anything of him, so nothing is
+   held of it until the row is on the page again (`at` null — UsersPanel's ownWrite), and the row stays held, as it was. */
+type PageAt = { drawn: boolean; shown: boolean; q: string; filt: UsersFilter; arch: boolean | null; wrote: number; still: boolean }
+type ListAt = { q: string; filt: UsersFilter; arch: boolean | null }
+type SeenAt = PageAt & { pid: string; at: ListAt | null }
 const hisOwnAsBefore = (was: PageAt, now: PageAt): boolean =>
   was.shown === now.shown && was.q === now.q && was.filt === now.filt && was.arch === now.arch && was.wrote === now.wrote
+/* would the open row's man still be on the list, with his search, ticks and fold as they stood when his row was last on
+   the page — asked only of a row that was out of sight at the last draw (true otherwise: a row that was on the page was
+   on the list, and one that left it then is "left the list by no act of his", above) */
+function stillListed(pid: string | null, seen: SeenAt | null, unit: string, today: string, master: boolean): boolean {
+  if (!pid || !seen || seen.pid !== pid || seen.drawn || !seen.at) return true
+  const v = usersView(unit, today, seen.at.q, seen.at.filt, master)
+  return rowInView(v, pid, seen.at.arch ?? (!!seen.at.q && v.archived.length > 0))
+}
 function useOpenRowJudged(
-  editing: string | null, editOn: OpenedOn | null, seen: SeenAt | null, now: PageAt,
+  editing: string | null, editOn: OpenedOn | null, typed: Typed | null, seen: SeenAt | null, now: PageAt,
   close: () => void, hold: (on: OpenedOn) => void, see: (s: SeenAt) => void,
 ): void {
   const [note, setNote] = useState<{ seq: number; callsign: string } | null>(null)
@@ -920,14 +1039,19 @@ function useOpenRowJudged(
        delete marks him `deleted` and archived with it (state/person-delete.ts deletePerson), so without this the
        widened judgement took it for "archived under the row" and said the note. Archived or restored keeps the note. */
     const gone = !!P(editing)?.deleted
-    const changed = !gone && rowChanged(editing, editOn)
+    const changed = !gone && rowChanged(editing, editOn, typed)
     const left = !gone && !changed && !!was && was.drawn && !now.drawn && hisOwnAsBefore(was, now)
-    if (gone || changed || left) {
+    /* (a row he had put away, whose man is off the list as it stood when the row was last on the page: above — `still`
+       is true for any row that was on the page at the last draw, so this is never said) */
+    const lost = !gone && !changed && !now.still
+    if (gone || changed || left || lost) {
       close()
-      if (!gone && wasDrawn && (left || !closedByHisPick(editOn))) setNote({ seq: (note?.seq ?? 0) + 1, callsign: cs(editing) })
+      if (!gone && !lost && wasDrawn && (left || !closedByHisPick(editOn))) setNote({ seq: (note?.seq ?? 0) + 1, callsign: cs(editing) })
     } else {
       if (pageUnit('schedule') !== editOn.view) hold({ ...editOn, view: pageUnit('schedule') })
-      if (!was || was.drawn !== now.drawn || !hisOwnAsBefore(was, now)) see({ pid: editing, ...now })
+      /* (the list as it stood is taken afresh only on a draw the row is on the page; out of sight it is carried) */
+      if (!was || was.drawn !== now.drawn || !hisOwnAsBefore(was, now))
+        see({ pid: editing, ...now, at: now.drawn || !was ? { q: now.q, filt: now.filt, arch: now.arch } : was.at })
     }
   }
   useEffect(() => {
@@ -995,6 +1119,9 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
     const fresh = judgedNow(pid)
     setWrote(n => n + 1)
     setEditOn(on => (on ? { ...fresh, view: on.view } : on))
+    /* (…and the list as it stood when the row was last on the page says nothing of him after his own rename: let go, and
+       taken afresh at the next draw his row is on the page — SeenAt's `at`) */
+    setSeen(s => (s ? { ...s, at: null } : s))
   }, [])
   const closeRow = () => { setEditing(null); setEditOn(null); setSeen(null); setTyped(null) }
   /* an opened row's editor found, on a draw of its own, that the row changed under it (useJudgedOnDraw): the page draws
@@ -1049,8 +1176,9 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
   })
 
   /* a bell's posting line landing here ([POSTOUT-RUN-NOTICE]) — useRingLanding, above: a landing for another man closes
-     the open row */
-  const ringPid = useRingLanding(p.ring, setFind, setArchOpen, editing, closeRow)
+     the open row, and says so for this draw (`closedNow`), in which the row is no longer the page's to judge */
+  const { ringPid, closedNow } = useRingLanding(p.ring, setFind, setArchOpen, editing, closeRow)
+  const openPid = closedNow ? null : editing, openOn = closedNow ? null : editOn
 
   const hasName = !!name.trim()
   const resetAddForm = () => { const t = effectiveToday(); setName(''); setNp(BLANK); setRole('main'); setPostIn0(t); setPostIn(t) }
@@ -1109,18 +1237,29 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
      the list of cards: PageAt, above) */
   const shown = !!p.shown
   const drawn = shown && rowInView(view, editing, archOpenNow)
-  useOpenRowJudged(editing, editOn, seen, { drawn, shown, q, filt, arch: archOpen, wrote }, closeRow, setEditOn, setSeen)
+  /* (…and, while it is out of sight, whether its man would still be on the list as it stood when his row was last on the
+     page — stillListed, above) */
+  const still = stillListed(editing, seen, unit, today, master)
+  useOpenRowJudged(openPid, openOn, typed, seen, { drawn, shown, q, filt, arch: archOpen, wrote, still }, closeRow, setEditOn, setSeen)
   useNoteAsPageGoes(editing, editOn, drawn)
+  /* THE OPEN ROW'S REPORT TO THE LEAVE-GUARD (D2595, D2598; ui/guard.ts's `userrow` and `archrow` rows) — from what the
+     page holds, so a row out of sight still counts (useRowReports and rowWork, above) */
+  useRowReports(openPid, openOn, typed)
   /* (opening a row also holds how it is judged at this press — the page's squadron, short or whole, his home, archived or
-     not, the squadron in view, who is looking and the copy of all it shows: OpenedOn — the page around it: a row pressed
-     is on the page, wherever Users is on his screen — and what will be typed in it, started from the copy) */
+     not, the squadron in view and the copy of all it shows: OpenedOn — the page around it: a row pressed is on the page,
+     wherever Users is on his screen — and what will be typed in it, started from the copy) */
   const toggle = (pid: string) => {
     if (editing === pid) { closeRow(); return }
+    /* NO ROW OPENS FOR A MAN WHO IS NOT, BY HIS ACCOUNT TODAY, AN ADMIN OF THE PAGE'S SQUADRON (the fifth round — the
+       security reader's finding 1b; adminThere): the page may still be standing after another admin made him a member,
+       or suspended him, with nothing redrawn. Where his session no longer stands the app is asked to repaint, so it
+       ends his session or makes it again at once (ui/App.tsx) — the press itself opens nothing and says nothing. */
+    if (!adminThere(pageUnit('own'))) { if (sessionLapsed()) notify(); return }
     const on = judgedNow(pid)
     setEditing(pid)
     setEditOn(on)
     setTyped(typedFrom(on.shown))
-    setSeen({ pid, drawn: shown, shown, q, filt, arch: archOpen, wrote })
+    setSeen({ pid, drawn: shown, shown, q, filt, arch: archOpen, wrote, still: true, at: { q, filt, arch: archOpen } })
   }
   /* ESCAPE CLOSES THE OPENED ROW AS ITS CANCEL DOES ((p), his D2396): nothing saved, no question, the keys back on the row;
      an open Filter panel answers first. Only while the row is on his screen: Users chosen, the row not hidden by a tick
@@ -1206,7 +1345,7 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
             <div className="acc-list od-list" id="accArchList">
               <Cols />
               {archShown.map(pid => <ArchivedRow key={pid + (editing === pid ? ':e' : '')} pid={pid} open={editing === pid}
-                openOn={editing === pid ? editOn : null} ringed={ringPid === pid}
+                openOn={editing === pid ? editOn : null} typed={editing === pid ? typed : null} onTyped={setTyped} ringed={ringPid === pid}
                 onToggle={() => toggle(pid)} onClose={closeRow} onStale={judgeAgain} onWrote={() => ownWrite(pid)} />)}
             </div>
           )}

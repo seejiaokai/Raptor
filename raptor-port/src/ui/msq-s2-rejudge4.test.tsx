@@ -420,16 +420,37 @@ describe('§19 — the archived man\'s row: its copy, field by field', () => {
 })
 
 /* ---- §20 A FIELD LEFT OUT OF THE COPY IS CAUGHT ----
-   Two tests, one of how the editors are written and one of what they do.
-   (a) BY CONSTRUCTION: the whole row's editor and the archived row's editor read the man ONLY through the copy handed to
-       them. Every name the file imports or declares that either editor uses must be on the short list below — the doors
-       it writes through, the checks it asks at a press, the parts it draws with. A reader of the store added to an editor
-       (his account, his person, a posting, anything) turns this red until the value comes through the copy instead.
+   Tests of how the editors are written, and one of what they do.
+   (a) BY THE NAMES AN EDITOR USES: the whole row's editor and the archived row's editor read the man ONLY through the
+       copy handed to them. Every name the file imports or declares that either editor uses must be on the short list
+       below — the doors it writes through, the checks it asks at a press, the parts it draws with. A reader of the store
+       CALLED BY NAME inside an editor (his account, his person, a posting, anything) turns this red until the value comes
+       through the copy instead.
+   (a2) BY WHAT AN EDITOR IS HANDED (the fifth round — the security reader's, Astra's and the fresh Fable's judgement of
+       (a): it would not fail if a value of the man were handed to an editor as a NEW PROP by his row, which reads his
+       account itself): each editor's props are pinned — the names its signature declares, the names its row hands it,
+       and the names its code reads from them. A new prop fails until listed here with its reason.
+   (a3) BY THE PARTS AN EDITOR TRUSTS WITH HIS ID (the fifth round — the same judgement: nor would (a) fail if a part on
+       the list began reading the man): the same name check on rowLocks, SquadronLines and lineState, each with its own
+       short list.
    (b) BY WHAT IS DRAWN: every stored field of the man's account and of his person record is changed in turn, in memory,
        under his open row. Either the row closes — the copy held it — or nothing the row draws changed: the still-open row
        and a row opened afresh both read character for character as before. A field the editor shows that the copy does
-       not hold fails here by name. */
+       not hold fails here by name.
+   WHAT THIS STILL DOES NOT PROVE — said so no one leans on it for more:
+   - the parts it does not walk into: the other parts on the editors' lists (RoleBox, RolesFold, PostInField, the doors
+     and the checks) are trusted to read nothing of the man beyond what they are handed; a part called by one of the
+     three walked parts is not walked either (SqLine draws what it is handed);
+   - a name check sees a reader called by name, never a value reached another way (a module's own state, a closure);
+   - (b) varies the fields his account and his person record CARRY in the test's world — not a field Ranger's or
+     Osprey's records do not hold (the master admin mark, how his sign-in was switched off, where his admin role was
+     given), and not a value used only in a write or a comparison at a press, which draws nothing;
+   - nothing held in another record: his squadron rows and his postings. What an editor shows of those — his home
+     squadron's line, which squadron's admin may change the rest of his row — hangs on his home that day, which is one
+     of the four judged facts the row holds from the press (rowChanged), tested in the earlier rounds' files. */
 const SRC = readFileSync(join(__dirname, 'UsersPanel.tsx'), 'utf8')
+const SRC_PARTS = readFileSync(join(__dirname, 'UserAccess.tsx'), 'utf8')
+const SRC_MODEL = readFileSync(join(__dirname, 'useraccess-model.ts'), 'utf8')
 /* code with its comments and quoted words taken out (words inside `${…}` kept — they are code) */
 const bare = (code: string): string => code
   .replace(/\/\*[\s\S]*?\*\//g, ' ')
@@ -437,41 +458,87 @@ const bare = (code: string): string => code
   .replace(/'(?:[^'\\\n]|\\.)*'/g, ' ').replace(/"(?:[^"\\\n]|\\.)*"/g, ' ')
 /* the names code uses — never a field read after a dot (`s.cs` is the copy's field, not the file's `cs()`) */
 const namesIn = (code: string): string[] => bare(code).match(/(?<![.\w$])[A-Za-z_$][\w$]*/g) ?? []
-/* the code of a top-level function of the file */
-function bodyOf(fn: string): string {
-  const at = SRC.indexOf(`\nfunction ${fn}(`)
-  if (at < 0) throw new Error(`UsersPanel.tsx has no function ${fn}`)
-  return SRC.slice(at, SRC.indexOf('\n}\n', at))
+/* where a top-level function of a file starts (its own or one it hands out) */
+function startOf(fn: string, src: string): number {
+  const own = src.indexOf(`\nfunction ${fn}(`), out = src.indexOf(`\nexport function ${fn}(`)
+  if (own < 0 && out < 0) throw new Error(`the file has no function ${fn}`)
+  return own >= 0 ? own : out
 }
-/* every name the file brings in or declares at its top level */
-function fileNames(): Set<string> {
+/* the code of a top-level function of a file */
+function bodyOf(fn: string, src: string = SRC): string {
+  const at = startOf(fn, src)
+  return src.slice(at, src.indexOf('\n}\n', at))
+}
+/* every name a file brings in or declares at its top level */
+function fileNames(src: string = SRC): Set<string> {
   const out = new Set<string>()
-  for (const m of SRC.matchAll(/^import\s+(?:type\s+)?\{([^}]*)\}\s+from/gm)) {
+  for (const m of src.matchAll(/^import\s+(?:type\s+)?\{([^}]*)\}\s+from/gm)) {
     for (const part of m[1]!.split(',')) { const n = part.trim().replace(/^type\s+/, '').split(/\s+as\s+/).pop()!.trim(); if (n) out.add(n) }
   }
-  for (const m of SRC.matchAll(/^(?:export\s+)?(?:const|function|type|interface)\s+([A-Za-z_$][\w$]*)/gm)) out.add(m[1]!)
+  for (const m of src.matchAll(/^(?:export\s+)?(?:const|function|type|interface)\s+([A-Za-z_$][\w$]*)/gm)) out.add(m[1]!)
   return out
 }
-const usedOf = (fn: string): string[] => {
-  const names = fileNames()
-  return [...new Set(namesIn(bodyOf(fn)))].filter(n => names.has(n) && n !== fn).sort()
+const usedOf = (fn: string, src: string = SRC): string[] => {
+  const names = fileNames(src)
+  return [...new Set(namesIn(bodyOf(fn, src)))].filter(n => names.has(n) && n !== fn).sort()
+}
+/* THE PROPS OF A PART, THREE WAYS. `declared` — the names its signature lists (`function X(p: { … }) {`); `read` — the
+   names its code reads from them (`p.name`, and `const { a, b } = p`); `handed` — the names every place that draws it
+   hands it (`<X name={…} />`, each brace's inside left out, so a `=` inside a value is never taken for a prop). */
+function propsOf(fn: string, src: string = SRC): { declared: string[]; read: string[]; handed: string[] } {
+  const at = startOf(fn, src)
+  const sigEnd = src.indexOf(') {', at)
+  const sig = bare(src.slice(src.indexOf('(p: {', at) + 5, sigEnd))
+  const declared = [...sig.matchAll(/(?:^|[;\n])\s*([A-Za-z_$][\w$]*)\??\s*:/g)].map(m => m[1]!)
+  const body = bare(src.slice(sigEnd, src.indexOf('\n}\n', at)))
+  const read = new Set([...body.matchAll(/(?<![.\w$])p\.([A-Za-z_$][\w$]*)/g)].map(m => m[1]!))
+  for (const m of body.matchAll(/\{([^{}]*)\}\s*=\s*p\b(?!\.)/g)) for (const part of m[1]!.split(',')) { const n = part.split(':')[0]!.trim(); if (n) read.add(n) }
+  const handed = new Set<string>()
+  const code = bare(src)
+  for (let i = code.indexOf(`<${fn} `); i >= 0; i = code.indexOf(`<${fn} `, i + 1)) {
+    let depth = 0, flat = ''
+    for (let j = i + fn.length + 1; j < code.length; j++) {
+      const ch = code[j]!
+      if (ch === '{') depth++
+      else if (ch === '}') depth--
+      else if (depth === 0) { if (ch === '>') break; flat += ch }
+    }
+    for (const m of flat.matchAll(/([A-Za-z_$][\w$-]*)\s*=/g)) handed.add(m[1]!)
+  }
+  return { declared: declared.sort(), read: [...read].sort(), handed: [...handed].sort() }
 }
 /* WHAT AN EDITOR MAY USE BESIDE THE COPY. Types; React's state; the judging (useJudgedOnDraw, askAgain); the doors it
    writes through and the checks it asks at a press; the parts it draws with; fixed words and limits; and, in the whole
    row, what of the row is the SIGNED-IN admin's to change (rowLocks, actorIsMaster — his rights, read afresh on every
-   draw and judged again by the doors; never a fact of the man); and the row's report to the leave-guard that typed
-   work is open (useGuardWork — the core's, brought in with the batch branch: it is handed one yes or no worked out from
-   what is typed and the copy, and reads nothing; typedDiffers works that yes or no out, from those two alone). */
+   draw and judged again by the doors; never a fact of the man). In the archived row, `Typed` — what the admin has typed
+   in its two boxes, the page's since the fifth round, as the whole row's typing is: his, never a reading of the man.
+   (The rows' reports to the leave-guard — useGuardWork, with typedDiffers — left both lists in the fifth round: the page
+   works them out now, from what it holds, and an editor reports nothing.) */
 const WHOLE_MAY_USE = [
   'OpenedOn', 'Shown', 'Typed', 'useState', 'useJudgedOnDraw', 'askAgain', 'rowLocks', 'actorIsMaster', 'accessWant',
   'saveAccess', 'updateAccount', 'addAccount', 'archivePerson', 'deletePerson', 'markBack', 'done', 'notify',
-  'RoleBox', 'SquadronLines', 'RolesFold', 'MAX_SIGNIN', 'DELETE_GOES', 'useGuardWork', 'typedDiffers',
+  'RoleBox', 'SquadronLines', 'RolesFold', 'MAX_SIGNIN', 'DELETE_GOES',
 ].sort()
 const ARCH_MAY_USE = [
-  'OpenedOn', 'Shown', 'useState', 'useJudgedOnDraw', 'askAgain',
+  'OpenedOn', 'Shown', 'Typed', 'useState', 'useJudgedOnDraw', 'askAgain',
   'restoreArchivedAs', 'restoreArchivedPerson', 'restoreProblem', 'callsignProblem', 'updatePersonField', 'deletePerson',
-  'done', 'notify', 'HOOKS', 'PostInField', 'CALLSIGN_LABEL', 'DELETE_GOES', 'useGuardWork',
+  'done', 'notify', 'HOOKS', 'PostInField', 'CALLSIGN_LABEL', 'DELETE_GOES',
 ].sort()
+/* WHAT EACH EDITOR IS HANDED — exactly: whose row (`pid`, an id — never a reading of him), the judgement held from the
+   press (`on`), the copy (`s`), what the admin has typed (`typed`, with `onTyped`), and what it tells the page: close
+   (`onClose`), judge again (`onStale`), and — the archived row's Save name — "this write was the row's own" (`onWrote`).
+   A new prop is listed here with its reason, or its value goes through the copy. */
+const WHOLE_PROPS = ['pid', 'on', 's', 'typed', 'onTyped', 'onClose', 'onStale'].sort()
+const ARCH_PROPS = ['pid', 'on', 's', 'typed', 'onTyped', 'onClose', 'onStale', 'onWrote'].sort()
+/* WHAT THE THREE PARTS HANDED HIS ID OR HIS LINES MAY USE.
+   rowLocks — whose admin may change the rest of his row: his home that day (one of the four judged facts) and the
+   SIGNED-IN admin's own rights, read afresh.
+   SquadronLines — the lines as drawn: the squadrons and their order, his home that day (it marks his "Home squadron"
+   line), each line's state (lineState), its own row part and words.
+   lineState — a line's state from what it is handed and the SIGNED-IN admin's own rights. */
+const LOCKS_MAY_USE = ['homeOn', 'todayIso', 'adminOfUnit', 'actorIsMaster'].sort()
+const LINES_MAY_USE = ['AccessLine', 'RolePick', 'units', 'homeOn', 'todayIso', 'inSquadronOrder', 'numOf', 'lineState', 'SqLine', 'WORD'].sort()
+const LINESTATE_MAY_USE = ['AccessLine', 'RolePick', 'numOf', 'adminOfUnit', 'actorIsMaster'].sort()
 
 describe('§20 — a field left out of the copy is caught', () => {
   it('(a) the whole row\'s editor reads the man only through the copy: it uses no name of the file beyond its doors, its checks and its parts', () => {
@@ -479,6 +546,42 @@ describe('§20 — a field left out of the copy is caught', () => {
   })
   it('(a) the archived row\'s editor likewise', () => {
     expect(usedOf('ArchivedEditor'), 'a new reader in the archived row\'s editor: hand its value through the copy (shownOf), or list it here with its reason').toEqual(ARCH_MAY_USE)
+  })
+  it('(a2) the whole row\'s editor is handed exactly today\'s props — declared, handed by his row, and read: a value of the man cannot come in as a new prop', () => {
+    const why = 'a new prop of the whole row\'s editor: hand its value through the copy (shownOf), or list it here with its reason'
+    const props = propsOf('PersonEditor')
+    expect(props.declared, why).toEqual(WHOLE_PROPS)
+    expect(props.handed, why).toEqual(WHOLE_PROPS)
+    expect(props.read.filter(n => !WHOLE_PROPS.includes(n)), 'it reads a prop it does not declare').toEqual([])
+  })
+  it('(a2) the archived row\'s editor likewise', () => {
+    const why = 'a new prop of the archived row\'s editor: hand its value through the copy (shownOf), or list it here with its reason'
+    const props = propsOf('ArchivedEditor')
+    expect(props.declared, why).toEqual(ARCH_PROPS)
+    expect(props.handed, why).toEqual(ARCH_PROPS)
+    expect(props.read.filter(n => !ARCH_PROPS.includes(n)), 'it reads a prop it does not declare').toEqual([])
+  })
+  it('(a3) the parts handed his id or his lines read nothing else of the man: rowLocks, SquadronLines and lineState each use only the names on their own list', () => {
+    const why = 'a new reader in a part an editor trusts: hand its value in from the copy, or list it here with its reason'
+    expect(usedOf('rowLocks'), why).toEqual(LOCKS_MAY_USE)
+    expect(usedOf('SquadronLines', SRC_PARTS), why).toEqual(LINES_MAY_USE)
+    expect(usedOf('lineState', SRC_MODEL), why).toEqual(LINESTATE_MAY_USE)
+  })
+  it('(a2, a3) red-proven on the file with one line planted (the fresh Fable\'s two roads): his account handed to the editor as a prop and read as `p.a.name` is seen by the props; a reader of his account planted inside rowLocks is seen by its list', () => {
+    /* the very shape the editor had before the fourth round — `a={a}` */
+    const prop = SRC
+      .replace('<PersonEditor pid={p.pid} on={openOn}', () => '<PersonEditor pid={p.pid} a={a} on={openOn}')
+      .replace('    const renamed = name !== s.name\n', () => '    const renamed = name !== p.a.name\n')
+    expect(prop.includes('a={a} on={openOn}') && prop.includes('name !== p.a.name'), 'premise: both lines were planted').toBe(true)
+    expect(usedOf('PersonEditor', prop), 'premise: the name check alone does not see it').toEqual(WHOLE_MAY_USE)
+    expect(propsOf('PersonEditor', prop).handed, 'handed by his row').toContain('a')
+    expect(propsOf('PersonEditor', prop).read, 'and read in the editor').toContain('a')
+    const part = SRC.replace('  const rest = !home || adminOfUnit(home)\n', () => '  const rest = (!home || adminOfUnit(home)) && accountOfPid(pid)?.on !== false\n')
+    expect(part, 'premise: the line was planted').not.toBe(SRC)
+    expect(usedOf('PersonEditor', part), 'premise: the editor\'s own list does not see it').toEqual(WHOLE_MAY_USE)
+    expect(usedOf('rowLocks', part), 'the part\'s own list does').toContain('accountOfPid')
+    /* and a `=` inside a handed value is never taken for a prop */
+    expect(propsOf('X', '\nfunction X(p: {\n  a: string; b?: (v: string) => void\n}) {\n  const { a } = p\n  return p.b\n}\nconst y = <X a={q === 1 ? r : s} b={v => { t = v }} />\n')).toEqual({ declared: ['a', 'b'], read: ['a', 'b'], handed: ['a', 'b'] })
   })
   it('(a) red-proven: the counter sees a reader of the store called in code, and not one named in a comment or a quoted word', () => {
     const names = new Set(['accountOfPid', 'cs'])
