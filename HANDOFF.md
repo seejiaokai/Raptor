@@ -36,9 +36,16 @@ the later merge keeps both (D78).
   `C:\Users\User\AppData\Local\Temp\claude\9358bd3cd55ff553\de14d858-aaeb-48e3-aab0-5a5cd5db9c62\scratchpad\readers\astra\report.md`
   (log beside it) — copy it to `<notes>\s4-chat196\astra\` and read it before fixing; if the scratch folder is gone, the
   read is lost: put it on the reads-owed list.
-  **NEXT, in order:** (1) once Astra has ended: move the test world (below) — GitHub green; (2) re-run every reader's
+  **ALL THREE CODE READS ARE BACK (16:25).** Astra's (`<notes>\s4-chat196\astra\report.md`): ONE finding, P2 — on a
+  phone the keep-in-sight misses the existing posting / post-in sheets AND the drag window's posting (it never asks;
+  `SelectSheet.tsx` ≈417) — fix: let the helper take the window actually shown, call it as either existing sheet opens
+  and as a one-person drag window opens and becomes a posting (`sel.people[0]`, the selection's first day), phone-only,
+  never on store updates or Undo; its failing test text is in the report. Its cut-test answers match the other two
+  (reachable by the occupied-day door → three browser tests). Its tidiness: `PHONE_QUERY`; the unused `date` prop; the
+  comments that omit the occupied-day exception; `e2e/leavewar.spec.ts:8155`'s note overstates what stays protected.
+  **NEXT, in order:** (1) move the test world (below) — GitHub green; (2) re-run every reader's
   proof test (copy under `src/leavewar/ui/` as `zz-…`, run, delete) — reproduce before fixing; (3) fix red-first: the
-  drag window's note, the phone keep-in-sight for the existing posting / post-in sheets, the dialog's spoken name, the
+  drag window's note, the phone keep-in-sight for the existing posting / post-in sheets AND the drag window, the dialog's spoken name, the
   keys after ⋯ → Post out, any of Astra's that reproduce; HOLD the post-in-side door for his answer (via the coordinator);
   (4) write the three browser tests through the gone-day door (R3b, D1541's, R3c-2 — the coordinator said go);
   (5) the walk: combine the two scenario lists, Opus walks at 402, 1440, ~720 and ~1024 with the plain-user round, under
