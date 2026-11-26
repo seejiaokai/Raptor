@@ -155,7 +155,7 @@ This page translates between the app’s words, their everyday meaning and the n
 | Lowest Avail | The lowest relevant availability shown across a request’s dates. | `ApprovalsPage`, `leavewar/approvals.ts` |
 | Balances | Everyone’s leave balances and grades, with editing controlled by role and the members’ lock. | `BalancesPage`, `personFigures` |
 | LVE | The shared annual-leave balance used by local and overseas leave. | `BAL_KINDS`, `KIND_COUNTER` |
-| App bal | The balance entered from the official leave app, reduced by later approvals. | `TypedBal`, `personFigures` |
+| App bal (to read "Official bal" — D2810, filed as [LW-POSTIN-BALANCE]) | The balance entered from the official leave app, reduced by later approvals. | `TypedBal`, `personFigures` |
 | Pending | The number of days requested but not yet approved. | `personFigures`, `RequestRec` |
 | War bal | App bal after pending leave has also been deducted. | `personFigures` |
 | INCL. CARRIED FWD / CARRIED — two names on screen | The carried-forward part already included in the annual-leave balance. | `TypedBal`, `leaveyear.ts` |
