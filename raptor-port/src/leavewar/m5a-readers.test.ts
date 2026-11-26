@@ -155,11 +155,12 @@ describe('the change history: a typed figure, a grade, the grades list, the lock
   it('"LVE balance 18 → 20" from the running figure, under Leave War · Ranger, who beside it; its Undo in its own words', () => {
     ranger()
     expect(setTypedBalance('bane', 'LVE', 18, 2)).toBe(true)
-    /* a first typing reads from the running figure he saw (the spec §1.1 — the store works it out itself since the
-       security read's finding 2), and, its carried-forward part moved, its own carried-forward line */
-    expect(lines().map(r => r.lbl)).toEqual(['Leave War · Ranger · LVE balance', 'Leave War · Ranger · LVE carried fwd'])
+    /* a FIRST typing of a balance never typed has no figure to come from — it read "Not typed", never 0 (D2746): its line is
+       "LVE balance → 18", and, its carried-forward part moved, its own "carried fwd → 2" line. (Before D2746 it read from
+       the running figure, 0, he saw — the spec §1.1; a later typing still does, below.) */
+    expect(lines().map(r => r.lbl)).toEqual(['Leave War · Ranger · LVE balance →', 'Leave War · Ranger · LVE carried fwd →'])
     expect(lines()[0]).toMatchObject({ to: '18', sub: 'bane', sect: 'abs', fld: 'balance', itype: 'LVE', pid: 'bane' })
-    expect(lines()[0]!.from).toBeTruthy()
+    expect(lines()[0]!.from).toBeFalsy()
     expect(lines()[1]).toMatchObject({ to: '2', sub: 'bane', fld: 'carried' })
     ELOG.rows.length = 0
     expect(setTypedBalance('bane', 'LVE', 20, 2, { amount: 18, cf: 2 })).toBe(true)

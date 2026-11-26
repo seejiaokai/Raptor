@@ -17,7 +17,9 @@ import { noticeSeenLoad } from '../../state/noticeseen'
 import { lwSeenAt, openOwnWindow } from '../../state/lwseen'
 import {
   dayTurned, getState, initStore as lwInitStore, leaveFiguresOf, lwHistInit, openDates, setBalanceLock, setBidStates, setCell, setPeople, setRole,
+  setTypedBalance,
 } from '../state/store'
+import { BAL_KINDS } from '../engine/leaveyear'
 import { memoryBackend } from '../state/storage'
 import { setMemberTodayForTests } from '../engine'
 import { projectPeople } from '../state/raptorRoster'
@@ -76,7 +78,9 @@ const open = (pid: string) => fireEvent.click(screen.getByTestId(`person-${pid}`
 const close = () => fireEvent.click(screen.getByTestId('pw-close'))
 
 describe('the tiles, from the one engine (D1241, D1251–D1253)', () => {
-  it('LVE: App bal · Pending · War bal, carried fwd, taken; OIL "0 ›"; MED days; the five small tiles', () => {
+  it('LVE: Official bal · Pending · War bal, carried fwd, taken; OIL "0 ›"; MED days; the five small tiles', () => {
+    /* his figures typed first — a balance never typed reads "Not typed" (D2746; its own tests below) */
+    act(() => { for (const k of BAL_KINDS) setTypedBalance(RANGER, k, 10, k === 'LVE' ? 2 : undefined) })
     act(() => { setCell(RANGER, D1, 'LL') })                       // a pending day, so Pending reads
     render(<Matrix />)
     open(RANGER)
@@ -99,6 +103,7 @@ describe('the tiles, from the one engine (D1241, D1251–D1253)', () => {
   })
 
   it('a small tile shows "Pending −1 / War bal" only while its pending is not 0', () => {
+    act(() => { setTypedBalance(RANGER, 'CCL', 3) })
     act(() => { setCell(RANGER, D1, 'CCL') })
     render(<Matrix />)
     open(RANGER)
@@ -187,6 +192,7 @@ describe('a box (the Balances page’s own — FigBox)', () => {
   })
 
   it('★17: a figure typed in his box and left by a tap on another name is saved to HIM; the next window is the other man’s', () => {
+    act(() => { setTypedBalance('stiff', 'LVE', 7) })    // the other man's figure typed, so his box shows it
     render(<Matrix />)
     open(RANGER)
     const b = typeIn('pw-LVE', '16')
@@ -408,7 +414,10 @@ describe('the ways in (§5)', () => {
     render(<Matrix />)
     act(() => { askLw({ kind: 'person', id: hidden! }) })
     expect(win()).toBeTruthy()
-    expect(box('pw-LVE').value).toBe(figWords(leaveFiguresOf(hidden!).kinds.LVE.app))
+    /* his figure never typed: the box empty and War bal "Not typed" (D2746) */
+    expect(leaveFiguresOf(hidden!).kinds.LVE.notTyped).toBe(true)
+    expect(box('pw-LVE').value).toBe('')
+    expect(screen.getByTestId('pw-LVE-war').textContent).toBe('Not typed')
     expect(win().querySelectorAll('.ll-go')).toHaveLength(0)
   })
 
@@ -693,5 +702,83 @@ describe('the M5a drawing differences (D1493)', () => {
       expect(l.classList.contains('go'), `${l.dataset.testid}: not the schedule's ".go" wave block`).toBe(false)
       expect(l.classList.contains('ll-tap'), `${l.dataset.testid}: a line that takes the grid there`).toBe(true)
     }
+  })
+})
+
+/* THE POSTED-IN MAN'S BALANCE ([LW-POSTIN-BALANCE]): "Official bal", never "App bal" (D2810); the one line where a balance
+   can be typed (D2749, D2812); "Not typed" until a figure is (D2746). Drawn: docs/img/handpass/2026-11-26-lw-postin-balance/
+   marked/q16-final-*.png and q11-person-window.png. */
+describe('[LW-POSTIN-BALANCE] the person window', () => {
+  const POSTIN = 'Only leave after post-in is deducted.'
+  it('D2810: the LVE tile reads "Official bal", never "App bal"; the box is named so for a screen reader', () => {
+    render(<Matrix />)
+    open(RANGER)
+    expect(screen.getByTestId('pw-tile-LVE').textContent).toContain('Official bal')
+    expect(win().textContent).not.toMatch(/App bal/i)
+    expect(box('pw-LVE').getAttribute('aria-label')).toMatch(/LVE Official bal$/)
+  })
+  it('D2749: an admin sees the one line under the LVE box, on any man’s window, locked or not', () => {
+    render(<Matrix />)
+    open('stiff')
+    const line = screen.getByTestId('pw-postin')
+    expect(line.textContent).toBe(POSTIN)
+    expect(screen.getByTestId('pw-tile-LVE').contains(line)).toBe(true)
+    act(() => { setBalanceLock(true) })
+    expect(screen.getByTestId('pw-postin').textContent).toBe(POSTIN)
+  })
+  it('D2749: a member sees it on his own window while unlocked, never on another man’s, nor on his own once locked', () => {
+    ranger()
+    render(<Matrix />)
+    open(RANGER)
+    expect(screen.getByTestId('pw-postin').textContent).toBe(POSTIN)
+    close()
+    open('stiff')
+    expect(screen.queryByTestId('pw-postin')).toBeNull()
+    close()
+    act(() => { saber(); setBalanceLock(true); ranger() })
+    open(RANGER)
+    expect(screen.queryByTestId('pw-postin')).toBeNull()
+  })
+  it('D2812: no line names where or when the figure was typed', () => {
+    act(() => { setTypedBalance(RANGER, 'LVE', 24) })
+    render(<Matrix />)
+    open(RANGER)
+    expect(win().textContent).not.toMatch(/official leave app|typed on|from official/i)
+  })
+  it('D2746: never typed — the boxes stand empty with the amber dashed edge, War bal reads "Not typed" in amber, never 0', () => {
+    render(<Matrix />)
+    open(RANGER)
+    expect(leaveFiguresOf(RANGER).kinds.LVE.notTyped).toBe(true)
+    expect(box('pw-LVE').value).toBe('')
+    expect(box('pw-LVE').className).toContain('nt')
+    expect(box('pw-LVE-cf').value).toBe('')
+    const war = screen.getByTestId('pw-LVE-war')
+    expect(war.textContent).toBe('Not typed')
+    expect(war.className).toContain('nt')
+    for (const k of ['CCL', 'FCL', 'PL', 'EL', 'CL'] as const) expect(box(`pw-${k}`).value).toBe('')
+  })
+  it('D2746: a 0 typed in the empty box is a figure — it saves, and the box then reads 0', () => {
+    render(<Matrix />)
+    open(RANGER)
+    fireEvent.keyDown(typeIn('pw-LVE', '0'), { key: 'Enter' })
+    const L = leaveFiguresOf(RANGER).kinds.LVE
+    expect([L.notTyped, L.typed?.amount]).toEqual([false, 0])
+    expect(box('pw-LVE').value).toBe('0')
+    expect(screen.getByTestId('pw-LVE-war').textContent).toBe('0')
+  })
+  it('D2746: carried forward typed before any figure is refused at its box, saying what comes first', () => {
+    render(<Matrix />)
+    open(RANGER)
+    fireEvent.keyDown(typeIn('pw-LVE-cf', '3'), { key: 'Enter' })
+    expect(leaveFiguresOf(RANGER).kinds.LVE.notTyped).toBe(true)
+    expect(screen.getByTestId('pw-LVE-cf-err').textContent).toBe('Type the Official bal first')
+  })
+  it('D2746: another man’s figure never typed, read only for a member — the amber dash, War bal "Not typed"', () => {
+    ranger()
+    render(<Matrix />)
+    open('stiff')
+    expect(screen.getByTestId('pw-LVE').textContent).toBe('–')
+    expect(screen.getByTestId('pw-LVE').className).toContain('nt')
+    expect(screen.getByTestId('pw-LVE-war').textContent).toBe('Not typed')
   })
 })

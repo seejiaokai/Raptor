@@ -125,6 +125,16 @@
 
   .bp-war { font: 800 15px system-ui; }
   .bp .neg { color: #FF7A84; }
+
+  /* A BALANCE NEVER TYPED (D2746, question 11 A — drawn docs/img/handpass/2026-11-26-lw-postin-balance/marked/q11-*.png):
+     its box empty, its edge "No grade"'s dashed amber (.bp-gr.none); a read-only figure the amber dash; War bal's place
+     "Not typed" in the same amber. The person window's tile box takes the same edge (personwindow.css .r17-box). */
+  .bp-bx.nt:not(:focus) { border: 1px dashed rgba(242, 200, 121, .8); background: transparent; }
+  .bp-ro.nt { color: #F2C879; font-weight: 600; }
+  .bp-nt { color: #F2C879; font: 700 14px system-ui; white-space: nowrap; }
+  /* THE ONE LINE WHERE A BALANCE CAN BE TYPED (D2749, D2812): once above the rows, as drawn
+     (scripts/handpass/lw-postin-bal-q16b-draw.mjs pageShot — 13px, #9aa4b2, 8px 16px 8px, its line 2px below that) */
+  .bp-pi { flex: none; margin: 10px 16px 8px; color: #9aa4b2; font: 400 13px/1.45 system-ui; }
   .bp-pend { color: #c9d1d9; }
   .bp-pend.pd { color: #F2C879; }
   /* A PENDING FIGURE, option B (D2154, D2156): no minus; the grid's pending look, hollow and dashed, in amber. LVE's in its

@@ -141,8 +141,12 @@ export function ErrWords({ err }: { err: string }) {
   return err === BLOCKED ? <><span className="bk-sign" aria-hidden="true" /><b>{BLOCKED}</b></> : <>{err}</>
 }
 const errCls = (err: string) => `bp-err${err === BLOCKED ? ' bp-blocked' : ''}`
-export function FigBox({ value, sm, label, testid, save, plus, cls, fit }: {
+export function FigBox({ value, sm, label, testid, save, plus, cls, fit, blank }: {
   value: number
+  /** NO FIGURE TYPED YET (D2746, question 11 A): the box stands empty, its edge "No grade"'s dashed amber, never showing the 0
+   *  counted underneath; any figure typed in it saves — the figure underneath is no figure he typed, so a 0 typed is not
+   *  "the same" (the fill's `value` is never compared) */
+  blank?: boolean
   sm?: boolean
   label: string
   testid?: string
@@ -156,7 +160,9 @@ export function FigBox({ value, sm, label, testid, save, plus, cls, fit }: {
    *  29 Oct 26: hugging its figure, it widened 42 → 53 for "16.5" and pushed Pending and War bal 11px along) */
   fit?: number
 }) {
-  const shown = (plus ? '+' : '') + figWords(value)
+  const shown = blank ? '' : (plus ? '+' : '') + figWords(value)
+  /* the figure an unchanged box holds: none, for a box never typed (`blank` — every number typed differs from it) */
+  const held0 = blank ? Number.NaN : value
   const [text, setText] = useState<string | null>(null)
   const [err, setErr] = useState<string | null>(null)
   const skip = useRef(false)
@@ -177,7 +183,7 @@ export function FigBox({ value, sm, label, testid, save, plus, cls, fit }: {
   const typed = useRef<string | null>(null)
   const swapped = useRef(false)
   const commitText = (t: string | null) => {
-    const h = held.current ?? { save, value, shown, unit: worldUnit() }
+    const h = held.current ?? { save, value: held0, shown, unit: worldUnit() }
     if (t !== null && t !== h.shown && (h.unit !== worldUnit() || warBand())) { swapped.current = true; return NOT_SAVED }
     typed.current = null
     if (t === null || t === h.shown) return null
@@ -252,7 +258,7 @@ export function FigBox({ value, sm, label, testid, save, plus, cls, fit }: {
   return (
     <span className={`bp-fb${err ? ' bad' : ''}`}>
       <input
-        className={`mth-in bp-bx${sm ? ' sm' : ''}${value === 0 && text === null ? ' z' : ''}${cls ? ` ${cls}` : ''}`}
+        className={`mth-in bp-bx${sm ? ' sm' : ''}${!blank && value === 0 && text === null ? ' z' : ''}${blank ? ' nt' : ''}${cls ? ` ${cls}` : ''}`}
         style={fitW ? { width: fitW } : undefined}
         data-testid={testid}
         ref={boxRef}
@@ -265,16 +271,16 @@ export function FigBox({ value, sm, label, testid, save, plus, cls, fit }: {
         aria-label={label}
         aria-invalid={err ? true : undefined}
         value={text ?? shown}
-        onFocus={() => { skip.current = false; held.current = { save, value, shown, unit: worldUnit() } }}
+        onFocus={() => { skip.current = false; held.current = { save, value: held0, shown, unit: worldUnit() } }}
         /* typing again after an Escape is a new figure to save: the Escape's "leave without saving" mark goes with it (the
            re-walk's r1d, 29 Oct 26 — 22, Escape, 23, another box: the 23 was dropped with nothing said) */
-        onChange={e => { skip.current = false; if (swapped.current) { swapped.current = false; held.current = null } held.current = held.current ?? { save, value, shown, unit: worldUnit() }; setText(e.target.value); typed.current = e.target.value; if (err) setErr(null) }}
+        onChange={e => { skip.current = false; if (swapped.current) { swapped.current = false; held.current = null } held.current = held.current ?? { save, value: held0, shown, unit: worldUnit() }; setText(e.target.value); typed.current = e.target.value; if (err) setErr(null) }}
         /* ANY TYPING CLEARS THE WORDS, the same figure typed over itself too (his iPhone, 29 Oct 26 — "it says type a figure
            even tho I've typed 0"): one tap selects the 0, and a 0 typed over it leaves the box's text as it was, so React
            raises no onChange and the words stayed. The browser's own input event still comes, and it is enough to clear them */
         onInput={() => { if (err) setErr(null) }}
         onKeyDown={key}
-        onBlur={() => { held.current = held.current ?? { save, value, shown, unit: worldUnit() }; if (skip.current) { skip.current = false; typed.current = null; setText(null); return } commit(); held.current = null }}
+        onBlur={() => { held.current = held.current ?? { save, value: held0, shown, unit: worldUnit() }; if (skip.current) { skip.current = false; typed.current = null; setText(null); return } commit(); held.current = null }}
       />
       {err && <span className={errCls(err)} ref={errRef} role="alert" data-testid={testid ? `${testid}-err` : undefined}><ErrWords err={err} /></span>}
     </span>
@@ -283,9 +289,10 @@ export function FigBox({ value, sm, label, testid, save, plus, cls, fit }: {
 
 /* ------------------------------------------------------------------ the rows */
 
-interface Kind { app: number; pend: number }
+/* `nt`: no figure typed for the kind (D2746 — engine/leaveyear.ts KindFigures.notTyped) */
+interface Kind { app: number; pend: number; nt: boolean }
 interface RowData {
-  app: number; cf: number; pend: number; war: number; oil: number
+  app: number; cf: number; pend: number; war: number; oil: number; nt: boolean
   other: Record<string, Kind>
   taken: Record<DaysTakenCol, number> | null
   /** his grade's name and "+ days" today; null for "No grade" */
@@ -312,7 +319,10 @@ interface RowApi {
 }
 
 /** the figure read only — round 19b's (a member, or anyone's row but his own) */
-function Ro({ v, sm }: { v: number; sm?: boolean }) {
+function Ro({ v, sm, nt }: { v: number; sm?: boolean; nt?: boolean }) {
+  /* a figure never typed, read only (D2746): the amber dash — "Not typed" itself stands in War bal's place; the boxes' room
+     is too narrow for the words */
+  if (nt) return <span className={`bp-ro nt${sm ? ' sm' : ''}`}>–</span>
   return <span className={`bp-ro${sm ? ' sm' : ''}${v === 0 ? ' z' : ''}`}>{figWords(v)}</span>
 }
 /* A PENDING FIGURE (his D2154, D2156 — option B, 17 Nov 26): never a minus, which some read as days taken this year; the
@@ -359,9 +369,13 @@ const Row = memo(function Row({ p, puck, me, boxes, admin, phone, view, d, api }
       <span className="bp-puck" dangerouslySetInnerHTML={{ __html: puck }} />
     </button>
   )
-  const box = (k: BalKind, v: number, sm: boolean, part?: 'cf') => boxes
-    ? <FigBox value={v} sm={sm} testid={`bal-${part ?? k}-${pid}`} label={`${p.callsign} ${part === 'cf' ? 'LVE carried forward' : k === 'LVE' ? 'LVE App bal' : k}`} save={n => api.save(pid, k, n, part)} />
-    : <Ro v={v} sm={sm} />
+  /* "Official bal", never "App bal" — the screen reader's name for the box too (D2810) */
+  const box = (k: BalKind, v: number, sm: boolean, nt: boolean, part?: 'cf') => boxes
+    ? <FigBox value={v} blank={nt} sm={sm} testid={`bal-${part ?? k}-${pid}`} label={`${p.callsign} ${part === 'cf' ? 'LVE carried forward' : k === 'LVE' ? 'LVE Official bal' : k}`} save={n => api.save(pid, k, n, part)} />
+    : <Ro v={v} sm={sm} nt={nt} />
+  /* WAR BAL OF A BALANCE NEVER TYPED reads "Not typed" in amber where its figure stands (D2746, question 11 A — drawn
+     `docs/img/handpass/2026-11-26-lw-postin-balance/marked/q11-balances.png`) */
+  const war = d.nt ? <span className="bp-nt">Not typed</span> : figWords(d.war)
   const oil = (
     <button type="button" className="bp-oil" data-testid={`bal-oil-${pid}`} aria-label={`${p.callsign} OIL ${figWords(d.oil)}: open his OIL`} onClick={() => api.oil(pid)}>
       {d.oil ? figWords(d.oil) : <span className="z">0</span>}<span className="ch" aria-hidden="true">›</span>
@@ -375,13 +389,13 @@ const Row = memo(function Row({ p, puck, me, boxes, admin, phone, view, d, api }
         <span className="bp-who">{who}<GradeBox pid={pid} g={d.grade} phone admin={admin} api={api} /></span>
         {view === 'bal' ? (
           <>
-            {box('LVE', d.app, false)}
-            {box('LVE', d.cf, true, 'cf')}
+            {box('LVE', d.app, false, d.nt)}
+            {box('LVE', d.cf, true, d.nt, 'cf')}
             <span className={`bp-pend${d.pend ? ' pd' : ''}`} data-testid={`bal-pend-${pid}`}>{pend}</span>
-            <span className={`bp-war${d.war < 0 ? ' neg' : ''}`} data-testid={`bal-war-${pid}`}>{figWords(d.war)}</span>
+            <span className={`bp-war${!d.nt && d.war < 0 ? ' neg' : ''}`} data-testid={`bal-war-${pid}`}>{war}</span>
             <span className="bp-oilc sep">{oil}</span>
             {OTHER.map((k, i) => (
-              <span key={k} className={`bp-oc${i ? '' : ' sep'}`}><KindBox k={k} pid={pid} pend={d.other[k]!.pend}>{box(k, d.other[k]!.app, true)}</KindBox></span>
+              <span key={k} className={`bp-oc${i ? '' : ' sep'}`}><KindBox k={k} pid={pid} pend={d.other[k]!.pend}>{box(k, d.other[k]!.app, true, d.other[k]!.nt)}</KindBox></span>
             ))}
           </>
         ) : DAYS_TAKEN_COLS.map((k, i) => <span key={k} className={i ? '' : 'sep'} data-testid={`bal-taken-${k}-${pid}`}>{taken(k)}</span>)}
@@ -394,15 +408,15 @@ const Row = memo(function Row({ p, puck, me, boxes, admin, phone, view, d, api }
       <td className="l">{<GradeBox pid={pid} g={d.grade} phone={false} admin={admin} api={api} />}</td>
       {view === 'bal' ? (
         <>
-          <td className="sep">{box('LVE', d.app, false)}</td>
-          <td>{box('LVE', d.cf, true, 'cf')}</td>
+          <td className="sep">{box('LVE', d.app, false, d.nt)}</td>
+          <td>{box('LVE', d.cf, true, d.nt, 'cf')}</td>
           <td className={`bp-pend${d.pend ? ' pd' : ''}`} data-testid={`bal-pend-${pid}`}>{pend}</td>
-          <td className={`bp-war${d.war < 0 ? ' neg' : ''}`} data-testid={`bal-war-${pid}`}>{figWords(d.war)}</td>
+          <td className={`bp-war${!d.nt && d.war < 0 ? ' neg' : ''}`} data-testid={`bal-war-${pid}`}>{war}</td>
           {/* a plain table cell, its figure set right under OIL as every column's is (the M5a walk's A-F2: the phone's
               flex class on this cell took it out of the table, its figures left of the heading by 10–23px) */}
           <td className="sep">{oil}</td>
           {OTHER.map((k, i) => (
-            <td key={k} className={i ? undefined : 'sep'}><KindBox k={k} pid={pid} pend={d.other[k]!.pend}>{box(k, d.other[k]!.app, true)}</KindBox></td>
+            <td key={k} className={i ? undefined : 'sep'}><KindBox k={k} pid={pid} pend={d.other[k]!.pend}>{box(k, d.other[k]!.app, true, d.other[k]!.nt)}</KindBox></td>
           ))}
         </>
       ) : DAYS_TAKEN_COLS.map((k, i) => <td key={k} className={i ? undefined : 'sep'} data-testid={`bal-taken-${k}-${pid}`}>{taken(k)}</td>)}
@@ -531,11 +545,11 @@ export function BalancesPage() {
       const f = leaveFiguresOf(p.id)
       const L = f.kinds.LVE
       const other: Record<string, Kind> = {}
-      for (const k of OTHER) other[k] = { app: f.kinds[k].app, pend: f.kinds[k].pending }
+      for (const k of OTHER) other[k] = { app: f.kinds[k].app, pend: f.kinds[k].pending, nt: f.kinds[k].notTyped }
       let taken: RowData['taken'] = null
       if (view === 'taken') { const { world, days } = leaveWorldOf(p.id); taken = daysTaken(world, p.id, days, period.start, period.end) }
       const g = gradeOf(p.id)
-      const d: RowData = { app: L.app, cf: L.cf, pend: L.pending, war: L.war, oil: OIL.value(ctx, p.id), other, taken, grade: g ? { id: g.id, name: g.name, days: gradeDaysNow(g) } : null }
+      const d: RowData = { app: L.app, cf: L.cf, pend: L.pending, war: L.war, nt: L.notTyped, oil: OIL.value(ctx, p.id), other, taken, grade: g ? { id: g.id, name: g.name, days: gradeDaysNow(g) } : null }
       m.set(p.id, { d, sig: JSON.stringify(d), puck: puckHtml(p.id, p.callsign), boxes: balanceProblem(p.id, 'CCL', 0) === null })
     }
     return m
@@ -753,7 +767,7 @@ export function BalancesPage() {
         <div className="bp-cols" role="presentation">
           <span>NAME · GRADE</span>
           {view === 'bal'
-            ? <><span>APP BAL</span><span>CARRIED</span><span>PENDING<br />APPROVAL</span><span>WAR BAL</span><span className="sep">OIL</span>{OTHER.map((k, i) => <span key={k} className={i ? undefined : 'sep'}>{k}</span>)}</>
+            ? <><span>OFFICIAL<br />BAL</span><span>CARRIED</span><span>PENDING<br />APPROVAL</span><span>WAR BAL</span><span className="sep">OIL</span>{OTHER.map((k, i) => <span key={k} className={i ? undefined : 'sep'}>{k}</span>)}</>
             : DAYS_TAKEN_COLS.map((k, i) => <span key={k} className={i ? undefined : 'sep'}>{k}</span>)}
         </div>
         {groups.map(G => (
@@ -773,7 +787,7 @@ export function BalancesPage() {
               <tr className="h1"><th className="l" colSpan={2} /><th className="span sep" colSpan={4}>LVE</th><th className="sep" /><th className="span sep" colSpan={5}>OTHER LEAVE</th><th /></tr>
               <tr className="h2">
                 <th className="l">NAME</th><th className="l">GRADE · AUTO + LVE ON 1 JAN</th>
-                <th className="sep w-app">APP BAL</th><th className="w-cf">INCL. CARRIED FWD</th><th className="w-pd">PENDING APPROVAL</th><th className="w-war">WAR BAL</th><th className="sep w-oil">OIL</th>
+                <th className="sep w-app">OFFICIAL BAL</th><th className="w-cf">INCL. CARRIED FWD</th><th className="w-pd">PENDING APPROVAL</th><th className="w-war">WAR BAL</th><th className="sep w-oil">OIL</th>
                 {OTHER.map((k, i) => <th key={k} className={`w-k${i ? '' : ' sep'}`}>{k}</th>)}
                 <th className="fill" />
               </tr>
@@ -805,6 +819,10 @@ export function BalancesPage() {
         {bar}
         {phone && lockedWords}
         {phone && (searching || q) && <div className="bp-srchline">{searchBox}</div>}
+        {/* THE ONE LINE WHERE A BALANCE CAN BE TYPED (D2749, D2748, settled by D2812): once above the rows, phone and desktop,
+            in the Balances view, whenever a box is drawn on any row — an admin always, a member while unlocked (his own row);
+            no other instruction and no fold. Drawn: docs/img/handpass/2026-11-26-lw-postin-balance/marked/q16-final-*.png */}
+        {view === 'bal' && groups.length > 0 && [...rows.values()].some(r => r.boxes) && <div className="bp-pi" data-testid="bal-postin">Only leave after post-in is deducted.</div>}
         {groups.length === 0 ? <div className="bp-empty" role="status">{q.trim() ? 'No one by that name on the Leave War' : 'No one on the Leave War in this period'}</div> : body}
         <div className="bp-cutf" aria-hidden="true" />
       </div>

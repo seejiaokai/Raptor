@@ -121,6 +121,19 @@
     .r17-sum .v.pd { color: #F2C879; }
     .r17-sum .war { font: 800 20px/1 system-ui; color: #fff; }
     .r17-cf { grid-row: 4; display: flex; align-items: center; gap: 5px; font: 600 11px/1 system-ui; color: #8a96a3; white-space: nowrap; }
+    /* THE ONE LINE WHERE A BALANCE CAN BE TYPED (D2749, D2812): a row of its own under the carried line (on a phone under the
+       date's), as drawn — scripts/handpass/lw-postin-bal-q16b-draw.mjs windowShot: the carried line's size and grey, plain
+       weight, 6px above it, free to wrap */
+    .r17-lve.pi { grid-template-rows: 22px 12px 30px 14px auto; }
+    .r17-pi { grid-row: 5; grid-column: 1 / -1; margin-top: 6px; font: 400 11px/1.45 system-ui; color: #8a96a3; white-space: normal; }
+    @media (max-width: 700px) {
+      .r17-lve.pi { grid-template-rows: 22px 12px 30px 14px 12px auto; }
+      .r17-lve .r17-pi { grid-row: 6; }
+    }
+    /* A BALANCE NEVER TYPED (D2746 — drawn marked/q11-person-window.png): "Not typed" in amber where War bal stands, a read-only
+       figure the amber dash; the typed box's dashed amber edge is the Balances page's own (balances.css .bp-bx.nt) */
+    .r17-sum .war.nt { color: #F2C879; font: 800 16px/1 system-ui; white-space: nowrap; }
+    .r17-box.ro.nt, .r17-t .ln b.nt { color: #F2C879; }
     /* the box: "you can type this" (edge 3.4:1); read only it gives its room back, so the figure sits on its label's edge */
     .r17-box { display: inline-flex; align-items: center; justify-content: flex-start; box-sizing: border-box; height: 28px; min-width: 42px; padding: 0 7px; border: 1px solid #66717f; border-radius: 6px; background: #0d1217; color: #f1f4f7; font: 700 16px/1 system-ui; font-variant-numeric: tabular-nums; }
     .r17-box.sm { height: 18px; min-width: 22px; padding: 0 4px; font-size: 11.5px; border-radius: 4px; justify-content: center; }

@@ -2927,7 +2927,17 @@ that lengthens a pilot's run past 15 days changes only War bal and Pending, neve
 charged by the plain rule** — a weekday 1, a half .5, Saturday and Sunday 0, no holidays known (reading 17; before M5a
 such a date charged nothing). **Both the snapshot and today's leave are charged NOW**, by today's periods, holidays and
 runs: leave already approved when he typed never moves App bal; leave approved since is charged as the war now counts it,
-so a holiday later found on one of its days gives that day back.
+so a holiday later found on one of its days gives that day back. ("App bal" is the figure the screens call **Official bal**
+since D2810.)
+
+**Leave before his post-in date is never deducted (D2747, built 27 Nov 26 — [LW-POSTIN-BALANCE]).** Each of the three sets
+is charged WHOLE, then every date before his post-in date is dropped from the charges (`leaveyear.ts beforePostIn`): a date
+before his earliest stint (`people.ts beforeFirstStint`), or in the gap right before his current stint (`gapBeforeCurrent`
+— a man back from overseas). A leave across the date keeps its run, weekends and holidays as they fall and only its days
+before the date go; the snapshot's days are dropped by the same test, so the order of typing and approving never matters,
+nor a post-in date moved later. A day of an earlier stint still counts (a figure typed then stays right), and a day after a
+posting out is untouched (D1541). A man the count has no record of, or one with no post-in date, has nothing dropped. The
+grid still draws the leave (D2747); Days taken and the grid's second line still count it (not ruled — filed).
 
 **The formula (spec §1.3).** *delta* for a date = what the approved leave now charges on it, less what the snapshot
 charges there NOW for both (negative where a leave was shortened, moved off or deleted). *net(y)* = the sum of *delta*
@@ -2950,7 +2960,7 @@ leave moves the figure now). Grants dated on or after the day typed still count 
   App bal = *CF + AN − Σ net(y) for y after this year*; this year's "incl. N carried fwd" is untouched, since those days
   use next year's carried forward (D1218, D1473). A later-year day already approved when he typed is in the snapshot, so
   it is inside the typed figure and never comes off again.
-- **Never typed** reads as typed 0 (cf 0) on **1 Jan of the year of the war's earliest period** *(the screens to read "Not typed" and the below-zero question to wait for a figure — D2746, filed as [LW-POSTIN-BALANCE]; a leave before his post-in date never to be deducted — D2747)* (reading 4; this year when
+- **Never typed** reads as typed 0 (cf 0) on **1 Jan of the year of the war's earliest period** *(built 27 Nov 26 — D2746: `KindFigures.notTyped` says so — no typed row, no old opening — and the Balances page and the person window read "Not typed", the below-zero question waiting for a figure; the count underneath is unchanged; a leave before his post-in date is never deducted — D2747, above)* (reading 4; this year when
   no period exists) with an empty snapshot — it moves if an earlier period is created later; each 1 Jan since adds his
   grade's days and his approved leave since comes off. An old `opening:` row of these kinds (demo data, D56) is read the
   same way, its number as the figure — never skipped, and never a loop from the year 1970 (the years run from the start year
