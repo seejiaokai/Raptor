@@ -188,6 +188,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - *(The Tracker's database-step items are in that group below.)*
 
 **People, accounts and Quals**
+- [MSQ-S2-U1-READS-LEFT] — what the reads of Admin → Users' step U1 left: two doors' words (one names a sign-in, one tells of a move), the row's ids in the markup, the whole row's stale lines, and a question for him — may an archived man be moved, or a man with a move be archived.
 - [MSQ-PLAN-AUDIT] — a dedicated check of everything built and planned for an admin with Plan of a squadron left out or let in wrongly, faults fixed before the reshape build; his D2242 (20 Nov 26).
 - [MSQ-FABLE-REVIEW] — Fable reviews what it has not read: the kinds of sign-in together first (who edits, who only views, is each guarded), then the areas ranked by risk; his D2259 (21 Nov 26).
 - [MSQ-FIXREAD17-OPEN] — fix read 17's, the core read's and the full review's 35 faults, all reproduced red, in seven cause families; his shape question first, then the fixes and one combined fix read (20 Nov 26).
@@ -325,6 +326,15 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [MSQ-S2-U1-READS-LEFT] What the reads of Admin → Users' step U1 saw and left — two doors' words, the row's ids, the whole row's lines, an archived man with a move (26 Nov 26, chat 205) — OPEN
+**What it is:** the four blind reads of step U1 with its fix (Astra, a fresh Fable, a fresh Opus, the security reader; reports in the shared notes folder, `s2-chat205/`) saw five things outside the step and left them. None can be reached from a screen today.
+**(a) A door names a sign-in before asking whose man he is:** asked directly to give a sign-in to another squadron's man, the account door answers "Ranger already has an account (us)" — the already-has-one check runs before the other-squadron check (`state/accounts.ts addAccount`). Reorder before the database step, when doors can be called directly.
+**(b) A door's refusal tells 149's admin that a 142 man moves tomorrow:** giving View from his short row to a man with a move waiting is refused "He moves squadron tomorrow — give this after the move", though the short row hides his posting tag. Words he sees — his to rule if it should say less.
+**(c) The short row keeps the account's id in the page's markup;** the seeded demo accounts' ids spell their sign-in names (app-made ids are random). Demo data today; at the database step confirm an account's key is never his mail, or drop the two attributes from the short row.
+**(d) The WHOLE row keeps the squadron lines it opened with** when another admin changes them under it (older than this step; the short row was put right in U1's second fix round). With the database step's rule for two people changing one thing.
+**(e) A question for him, not yet put:** an archived man can be given a move, and a man with a move waiting can be archived — should either be allowed? Today both go through.
+**Where:** People & accounts (Admin → Users across squadrons); (a), (c), (d) with the database step.
 
 ### [MSQ-S2-NO-HOME-ROW] A man whose home squadron the app cannot read gets the whole, unlocked row on Admin → Users — close before the database step (found 26 Nov 26, the security read of the multi-squadron build's step U1; filed by chat 205) — OPEN
 **What it is:** on Admin → Users, "another squadron's man" is decided by asking for his home squadron; where the app cannot read one, the page treats him as its own man — the whole row, every control unlocked, and the account door lets the write through. It cannot happen in today's store (a man with no home on record reads as 142's), and no control leaves a man without one; it is how a shared store could read.
