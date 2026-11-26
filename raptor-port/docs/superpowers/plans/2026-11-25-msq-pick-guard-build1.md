@@ -1256,6 +1256,8 @@ unchanged. Each pin states what today's app does **as pressed**, where a presser
 
 ## 8. The questions — what he answered, and what is still open
 
+**26 Nov 26 — the round-6 page (groups N, E and D) answered "as recommended" (D2652 group N, D2653 the posting sheet way C, D2654 group E, D2655 group D); NOT YET FOLDED into this plan — the next chat folds them (E8's tick retired, D5's short rows, the Display page and the bell's colours, the Admin → Users order, folds and jumps, the posting sheet). His D2656: the build is split into focused parallel chats under a coordinator.**
+
 **He has answered every question of the brief's list and five of the N's (25 Nov 26); each answer is built where the
 table says, and nothing in the body is a recommendation any more unless it carries an open code, "(default)" or
 "(reading)".** What is still open is on the round-5 questions page (E1–E9, D1–D12 — the table below), §8.3's rows and
