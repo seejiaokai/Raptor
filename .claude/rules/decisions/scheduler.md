@@ -116,7 +116,7 @@ His words, the agent's readings (never stated here as his rule) and the history 
 
 ## Inputs on the schedule
 - The ten pictures of the schedule's one row for a shared input are its design of record — one row of every puck with one title, time, remark and set of buttons, a man on leave flagged on it, a published day counting it once, a big group shown whole and the row growing downward [D743].
-- The combined-row job, not built: an input row works as a sim row, a drop on a puck replacing, an extra place adding [D2772, D755, D776]; a man added is on every day, other days or times a separate input [D2771, D2770]; a Personal Inputs line refuses a drop, pointing to its Ground row [D2773]; the seat dragged from stays [D2774]; medical a row per man [D2775].
+- The combined-row job, not built: an input row works as a sim row, a drop on a puck replacing, an extra place adding [D2772, D755, D776]; a man added is on every day, other days or times a separate input [D2771, D2770]; a Personal Inputs line refuses a drop, pointing to its Ground row [D2773]; the seat dragged from stays [D2774]; medical a row per man, a drop on it refused saying why [D2775, D2776].
 
 ## Warnings and the rules engine
 - The whole rules engine gets a rules-first review — every ruling about what the warnings flag checked against the engine, a test each, the gaps and clashes between the rules built on the original reported to him; a report, nothing changed by it, run the night of 11 Nov 26 on Fable 5.2 — [ENGINE-RULES-REVIEW] [D1983, D1972, D1537].

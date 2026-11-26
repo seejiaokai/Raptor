@@ -106,7 +106,16 @@ list (`who: ["", "Saint"]`), the screen fine; the last-man refusal names doors t
   Programme row; the Board's "drop to unassign" stays (sets aside his "likewise for personal inputs" of the same hour).
 - **D2774** — a man dragged from a seat onto an input changes only the input; his seat is left as it was.
 - **D2775** — medical stays one man's, a row per man.
-- **Still his:** leave (the readers differ — below); the combined rule itself (D737 replaced) once leave is settled.
+- **D2776** — a drop on a medical row is refused with a short note saying why (always one man's).
+- **Leave — talked through, NOT yet confirmed (put to him as six points; chat 190 asks for his yes first):** (1) a
+  group leave stays ONE input — one card, one row of its pucks (he weighed the split, one leave a man, and found it
+  clutters the Inputs page; the agent came round to group); (2) on the Leave War, a group leave opened from one man's
+  box and changed asks at Save "Change it for all 6" / "Change Ranger's only" — his only = his own copy, everything
+  kept, one Undo (the deliberate split; it narrows D2770 for leave on the Leave War only); the Leave War's window opens
+  the input's own window (his idea — it builds [LW-FULL-EDITING], D1724); (3) on the schedule drops edit who is on any
+  input as a sim row — leave included, with NO question and NO note (his: a drop says nothing, the puck is the sign —
+  D851, D854; the top bar's Undo is the way back); (4) medical one man's (D2775, D2776); (5) OD, course, attach,
+  moved commitments one combined row; (6) the reading of D2771: a man taken off is off every day too.
 
 ## The three reads (26 Nov 26) — all "sound with changes"; the plan is NOT ready to rule on as written
 
