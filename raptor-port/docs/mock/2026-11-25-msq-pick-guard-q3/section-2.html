@@ -57,7 +57,7 @@ figure.tall img{max-height:520px;width:auto;max-width:100%;justify-self:center}
 /* a wide picture cut to the part that matters: the frame hides the rest, the picture inside is drawn larger and shifted (sizes written on each one) */
 .cut{display:block;overflow:hidden;border:1px solid var(--edge);border-radius:6px;background:#0c0f13}
 .cut img{display:block;max-width:none;border:0;border-radius:0}
-figure.tall .cut img{max-height:none;max-width:none}
+figure.tall .cut img{max-height:none;max-width:none;justify-self:start}
 figure.tall .cut{max-width:320px;width:100%;justify-self:center}
 figcaption{font-size:.94rem;color:var(--muted)}
 figcaption b{color:var(--ink)}
@@ -108,11 +108,11 @@ button.diff[aria-pressed="true"]{border-color:var(--new);color:var(--new);font-w
 <main>
   <header>
     <h1>Section 2: Admin → Users across squadrons</h1>
-    <p class="lede">Your last look before this section is built. Every picture is the real app; "drawn" adds only the new part on top. Green is what I recommend.</p>
+    <p class="lede">Your last look before this section is built. Nothing here is built yet. Every picture is the real app; "drawn" adds only the new part on top. Green is what I recommend.</p>
   </header>
 
   <div class="top" id="list">
-    <p class="how"><b>To answer:</b> reply "Section 2: go, as recommended". Or tap <b>Differently</b> on any item, then copy the reply from the bar at the foot and add your words.</p>
+    <p class="how"><b>To answer:</b> reply "Section 2: go, as recommended". Or tap <b>Differently</b> on any question or group of screens, then copy the reply from the bar at the foot and add your words.</p>
     <p class="cast"><b>Saber</b> master admin, home 142 · <b>Hunter</b> 142's admin, Plan of 149, View of 150 · <b>Kestrel</b> 149's admin · <b>Mako</b> 150's admin · <b>Ranger</b> a 142 member</p>
     <p class="count"><span class="r6key"></span>A teal dashed ring marks what is new in the app. A picture drawn new for this page says <i class="tag6">new drawing</i>; one you have seen says which round.</p>
     <details class="who"><summary>About the pictures</summary>
@@ -137,14 +137,14 @@ button.diff[aria-pressed="true"]{border-color:var(--new);color:var(--new);font-w
     </ol>
     <h2 class="g">What this section builds <span>8 groups</span></h2>
     <ol>
-      <li><a href="#g1"><b>A</b><span><span class="t">The page and its order</span><span class="r">Your order, the folds, waiting for access, a master admin's page.</span></span></a></li>
-      <li><a href="#g2"><b>B</b><span><span class="t">The jumps to each heading</span><span class="r">Left column on a desktop, a row of buttons on a phone, the film.</span></span></a></li>
-      <li><a href="#g3"><b>C</b><span><span class="t">The one search</span><span class="r">Bolt found once; "Nobody matches."</span></span></a></li>
-      <li><a href="#g4"><b>D</b><span><span class="t">From other squadrons</span><span class="r">Empty, View only opened, a row opened, Hunter on 149.</span></span></a></li>
-      <li><a href="#g5"><b>E</b><span><span class="t">Outgoing and Incoming</span><span class="r">The rows and their tags.</span></span></a></li>
-      <li><a href="#g6"><b>F</b><span><span class="t">Another squadron's man, opened</span><span class="r">The one access line, Plan greyed, "Edit on 142 →".</span></span></a></li>
-      <li><a href="#g7"><b>G</b><span><span class="t">Add a person meets an archived callsign</span><span class="r">The note, the line after, the bell line, Give access.</span></span></a></li>
-      <li><a href="#g8"><b>H</b><span><span class="t">The bell's Plan lines</span><span class="r">Given and ended, in colour.</span></span></a></li>
+      <li><a href="#s1"><b>1</b><span><span class="t">The page and its order</span><span class="r">Your order, the folds, waiting for access, a master admin's page.</span></span></a></li>
+      <li><a href="#s2"><b>2</b><span><span class="t">The jumps to each heading</span><span class="r">Left column on a desktop, a row of buttons on a phone, the film.</span></span></a></li>
+      <li><a href="#s3"><b>3</b><span><span class="t">The one search</span><span class="r">Bolt found once; "Nobody matches."</span></span></a></li>
+      <li><a href="#s4"><b>4</b><span><span class="t">From other squadrons</span><span class="r">Empty, View only opened, a row opened, Hunter on 149.</span></span></a></li>
+      <li><a href="#s5"><b>5</b><span><span class="t">Outgoing and Incoming</span><span class="r">The rows and their tags.</span></span></a></li>
+      <li><a href="#s6"><b>6</b><span><span class="t">Another squadron's man, opened</span><span class="r">The one access line, Plan greyed, "Edit on 142 →".</span></span></a></li>
+      <li><a href="#s7"><b>7</b><span><span class="t">Add a person meets an archived callsign</span><span class="r">The note, the line after, the bell line, Give access.</span></span></a></li>
+      <li><a href="#s8"><b>8</b><span><span class="t">The bell's Plan lines</span><span class="r">Given and ended, in colour.</span></span></a></li>
     </ol>
     <p class="count"><a href="#notdrawn">Not drawn, and why ↓</a></p>
   </div>
@@ -154,126 +154,127 @@ button.diff[aria-pressed="true"]{border-color:var(--new);color:var(--new);font-w
   <section id="q1">
     <h2>Q1. Home squadron first: in every list of squadrons, or on Admin → Users only?</h2>
     <p class="short">Everywhere: your home squadron first, then the rest by number, in every list.</p>
-    <p class="when"><b>When</b>: every time an admin of more than one squadron opens a list of squadrons. It changes nothing for anyone whose home is the lowest number (Saber, Hunter: 142). It matters for Mako, home 150, who plans 149: many times a week.</p>
+    <p class="when"><b>When this happens</b>: every time an admin of more than one squadron opens a list of squadrons. It changes nothing for anyone whose home is the lowest number (Saber, Hunter: 142). It matters for Mako, home 150, who plans 149: many times a week.</p>
     <p><b>Today</b> every list of squadrons goes by number: the squadron menu at the top, the menu under ☰, the bell's Show buttons. You ruled "home squadron first, then by number, wherever squadrons are listed"; the plan had built it on Admin → Users alone.</p>
     <div class="pair">
-      <figure><span class="cut" style="aspect-ratio:804/110"><img src="drawn/s2-34-p-bell-crop.png" alt="The bell's Show buttons: 142, 149, 150, by number" style="width:100.00%;margin-left:-0.00%;margin-top:-69.65%"></span><figcaption><b>Today, phone</b>: the bell's Show buttons, 142 · 149 · 150, by number. For Mako they would read 150 · 142 · 149 on the recommended answer.</figcaption></figure>
+      <figure><span class="cut" style="aspect-ratio:804/110"><img src="drawn/s2-34-p-bell-crop.png" alt="The bell's Show buttons: 142, 149, 150, by number" style="width:100.00%;margin-left:-0.00%;margin-top:-69.65%"></span><figcaption><b>Today, phone</b>: the bell's Show buttons, 142 · 149 · 150, by number. For Mako they would read 150 · 142 · 149 as recommended.</figcaption></figure>
     </div>
     <p><span class="rec">Recommended:</span> everywhere. Mako sees 150 first in the squadron menu, the ☰ menu, the bell's Show buttons, the Display page's list, and the folded squadrons at the foot of Admin → Users ("▸ 150" before "▸ 142" on 149's page). One order everywhere, as your words say. <b>Its cost:</b> those lists reorder for anyone whose home is not 142.</p>
-    <p><b>The other answer:</b> Admin → Users only; every other list stays by number.</p>
+    <p><b>The other choice:</b> Admin → Users only; every other list stays by number.</p>
     <p class="note">Not drawn: the lists look the same, only their order changes.</p>
-    <p class="nav"><a href="#list">↑ The list</a><span class="ch"><button type="button" class="diff" data-q="Q1" data-say="Admin → Users only" aria-pressed="false">Admin → Users only</button><button type="button" class="diff" data-q="Q1" aria-pressed="false">Differently</button></span></p>
+    <p class="nav"><a href="#list">↑ The list</a><span class="ch"><button type="button" class="diff" data-q="Q1" data-say="(Admin → Users only)" aria-pressed="false">Admin → Users only</button><button type="button" class="diff" data-q="Q1" aria-pressed="false">Differently</button></span></p>
   </section>
 
   <section id="q2" class="r6">
     <h2>Q2. A smaller iPhone: the four jump buttons <i class="tag6">new drawing</i></h2>
     <p class="short">Each button as wide as its own words; all four counts kept.</p>
-    <p class="when"><b>When</b>: an admin on a smaller iPhone (a mini or an SE, narrower than yours) opens Admin → Users while ten or more of his squadron are posting out at once, say a detachment rotating. A few times a year.</p>
+    <p class="when"><b>When this happens</b>: an admin on a smaller iPhone (a mini or an SE, narrower than yours) opens Admin → Users while ten or more of his squadron are posting out at once, say a detachment rotating. A few times a year.</p>
     <div class="pair">
       <figure class="tall"><img src="drawn/s2-11-p-375-equal-crop.png" alt="Narrow phone: four equal buttons, Outgoing 12 filling its button edge to edge"><figcaption><b>As ruled so far</b>: four equal buttons. "Outgoing 12" fills its button edge to edge.</figcaption></figure>
       <figure class="tall"><img src="drawn/s2-11-p-375-words-crop.png" alt="Narrow phone: each button as wide as its words, all four counts kept"><figcaption><b>Recommended</b>: each button as wide as its words. All four still show, with their counts.</figcaption></figure>
-      <figure class="tall"><img src="drawn/s2-11-p-375-nocount-crop.png" alt="Narrow phone: four buttons with no counts"><figcaption><b>The other answer</b>: on a narrow phone the counts leave the buttons. The headings below still carry them.</figcaption></figure>
+      <figure class="tall"><img src="drawn/s2-11-p-375-nocount-crop.png" alt="Narrow phone: four buttons with no counts"><figcaption><b>The other choice</b>: on a narrow phone the counts leave the buttons. The headings below still carry them.</figcaption></figure>
     </div>
     <p class="note">On your own phone nothing changes. If three of the four ever held two-figure counts at once, even the recommended way would run out of room, and the counts would then leave; not drawn.</p>
-    <p class="nav"><a href="#list">↑ The list</a><span class="ch"><button type="button" class="diff" data-q="Q2" data-say="no counts on a narrow phone" aria-pressed="false">No counts</button><button type="button" class="diff" data-q="Q2" aria-pressed="false">Differently</button></span></p>
+    <p class="nav"><a href="#list">↑ The list</a><span class="ch"><button type="button" class="diff" data-q="Q2" data-say="(no counts on a narrow phone)" aria-pressed="false">No counts</button><button type="button" class="diff" data-q="Q2" aria-pressed="false">Differently</button></span></p>
   </section>
 
   <section id="q3" class="r6">
     <h2>Q3. An admin of both squadrons meets another squadron's archived callsign <i class="tag6">new drawing</i></h2>
     <p class="short">A link: "If this is him, restore him on 142 →".</p>
-    <p class="when"><b>When</b>: Hunter, 142's admin who also plans 149, adds a "Jester" on 149 while 142 holds an archived Jester: a man coming back after a long break. Rare, once or twice a year. Anyone else is told "If this is him, ask 142's admin", but Hunter can restore him himself.</p>
+    <p class="when"><b>When this happens</b>: Hunter, 142's admin who also plans 149, adds a "Jester" on 149 while 142 holds an archived Jester: a man coming back after a long break. Rare, once or twice a year. Anyone else is told "If this is him, ask 142's admin", but Hunter can restore him himself.</p>
     <div class="pair">
       <figure class="tall"><img src="drawn/s2-30-p-both-crop.png" alt="Phone: the note about 142's archived Jester, with a link 'If this is him, restore him on 142 →'"><figcaption><b>Recommended, phone</b>: the note, then "Someone new" and the link. "Add person" stays grey until he answers.</figcaption></figure>
       <figure><img src="drawn/s2-30-d-both-crop.png" alt="Desktop: the same note with the link"><figcaption><b>Recommended, desktop</b>.</figcaption></figure>
     </div>
     <p><span class="rec">Recommended:</span> one press closes this form (what you typed is dropped) and opens 142 at his archived row, the way "Edit on 142 →" takes you across. He restores Jester there himself.</p>
+    <p class="note">The "Home squadron" box in these pictures is today’s; whether it stays is asked on section 1’s page.</p>
     <div class="pair">
-      <figure><img src="drawn/s2-30-d-both-plain-crop.png" alt="Desktop: the same note, plain words 'If this is him, restore him on 142', no link"><figcaption><b>The other answer, desktop</b>: words only, "If this is him, restore him on 142". He closes the form and picks 142 himself.</figcaption></figure>
+      <figure><img src="drawn/s2-30-d-both-plain-crop.png" alt="Desktop: the same note, plain words 'If this is him, restore him on 142', no link"><figcaption><b>The other choice, desktop</b>: words only, "If this is him, restore him on 142". He closes the form and picks 142 himself.</figcaption></figure>
       <figure><img src="drawn/s2-30-d-both-after-crop.png" alt="Desktop: after Someone new, the line reads 'A new Jester.'"><figcaption><b>Either way, after "Someone new"</b>: the line reads "A new Jester." alone. Nobody else needs telling, since he is 142's admin himself.</figcaption></figure>
     </div>
-    <p class="nav"><a href="#list">↑ The list</a><span class="ch"><button type="button" class="diff" data-q="Q3" data-say="words only, no link" aria-pressed="false">Words only</button><button type="button" class="diff" data-q="Q3" aria-pressed="false">Differently</button></span></p>
+    <p class="nav"><a href="#list">↑ The list</a><span class="ch"><button type="button" class="diff" data-q="Q3" data-say="(words only, no link)" aria-pressed="false">Words only</button><button type="button" class="diff" data-q="Q3" aria-pressed="false">Differently</button></span></p>
   </section>
 
   <section id="q4" class="r6">
     <h2>Q4. A tap on a "Given Plan of 149" bell line <i class="tag6">new drawing</i></h2>
     <p class="short">It opens 149's Admin → Users at the man's row.</p>
-    <p class="when"><b>When</b>: Kestrel gives Hunter Plan of 149. Saber, a master admin with 149 switched on, sees the line on his bell later that day and taps it to check who it is. A few times a year.</p>
+    <p class="when"><b>When this happens</b>: Kestrel gives Hunter Plan of 149. Saber, a master admin with 149 switched on, sees the line on his bell later that day and taps it to check who it is. A few times a year.</p>
     <div class="pair">
       <figure class="tall"><img src="drawn/s2-34-p-bell-crop.png" alt="Phone bell: '149 · Hunter 142 · Given Plan of 149 · Kestrel' ringed"><figcaption><b>The line, phone</b>: "149 · Hunter 142 · Given Plan of 149 · Kestrel".</figcaption></figure>
       <figure class="tall"><img src="drawn/s2-34-p-lands-crop.png" alt="Phone: 149's Admin → Users, Hunter's row in From other squadrons with the blue landing ring"><figcaption><b>Recommended, phone</b>: 149 is picked, Admin → Users opens at Hunter's row under "From other squadrons", in the app's blue landing ring.</figcaption></figure>
       <figure><img src="drawn/s2-34-d-lands-crop.png" alt="Desktop: the same landing at Hunter's row, the From other squadrons jump lit"><figcaption><b>Recommended, desktop</b>: the "From other squadrons" jump lit.</figcaption></figure>
     </div>
-    <p><b>The other answer:</b> the line is only read; a tap does nothing more.</p>
-    <p class="nav"><a href="#list">↑ The list</a><span class="ch"><button type="button" class="diff" data-q="Q4" data-say="the line is only read" aria-pressed="false">Only read</button><button type="button" class="diff" data-q="Q4" aria-pressed="false">Differently</button></span></p>
+    <p><b>The other choice:</b> the line is only read; a tap does nothing more.</p>
+    <p class="nav"><a href="#list">↑ The list</a><span class="ch"><button type="button" class="diff" data-q="Q4" data-say="(the line is only read)" aria-pressed="false">Only read</button><button type="button" class="diff" data-q="Q4" aria-pressed="false">Differently</button></span></p>
   </section>
 
   <section id="q5" class="r6">
     <h2>Q5. Outgoing and Incoming before the transfer work <i class="tag6">new drawing</i></h2>
     <p class="short">Build them now, from the postings the app makes today.</p>
-    <p class="when"><b>When</b>: Kestrel opens 149's Admin → Users on any working day. Until the transfer work, the app cannot post a man to another squadron, but it already posts men overseas, to SANS and to Delete, and a restored or new man can have a post-in date ahead. Several times a month.</p>
+    <p class="when"><b>When this happens</b>: Kestrel opens 149's Admin → Users on any working day. Until the transfer work, the app cannot post a man to another squadron, but it already posts men overseas, to SANS and to Delete, and a restored or new man can have a post-in date ahead. Several times a month.</p>
     <p><b>Today</b> each posting shows only as the amber tag on the man's own row.</p>
     <div class="pair">
-      <figure class="tall"><span class="cut" style="aspect-ratio:788/700"><img src="drawn/s2-23-p-outcomes-crop.png" alt="Phone today: amber posting tags on the men's own rows in People" style="width:100.00%;margin-left:-0.00%;margin-top:-130.71%"></span><figcaption><b>Today, phone</b>: Heron, Merlin, Raven and Shrike each wear their tag in People.</figcaption></figure>
+      <figure class="tall"><span class="cut" style="aspect-ratio:788/700"><img src="drawn/s2-23-p-outcomes-crop.png" alt="Phone today: amber posting tags on the men's own rows in People" style="width:100.00%;margin-left:-0.00%;margin-top:-130.71%"></span><figcaption><b>Today, phone</b>: Heron, Merlin, Raven and Shrike each wear their tag in People. Cut from the drawn page; these rows are as today.</figcaption></figure>
       <figure class="tall"><span class="cut" style="aspect-ratio:788/600"><img src="drawn/s2-23-p-outcomes-crop.png" alt="Phone: Outgoing holding overseas, SANS and Delete; Incoming holding Heron" style="width:100.00%;margin-left:-0.00%;margin-top:-223.35%"></span><figcaption><b>Recommended, phone</b>: Outgoing holds Raven (overseas), Shrike (SANS) and Merlin (auto delete); Incoming holds Heron, posting in 14 Dec. Each keeps his tag in People too.</figcaption></figure>
       <figure><span class="cut" style="aspect-ratio:1232/640"><img src="drawn/s2-23-d-outcomes-crop.png" alt="Desktop: the same Outgoing and Incoming groups" style="width:148.05%;margin-left:-45.45%;margin-top:-125.00%"></span><figcaption><b>Recommended, desktop</b>.</figcaption></figure>
     </div>
     <p><span class="rec">Recommended:</span> build the two groups now on these postings; a move to another squadron ("posting out 4 Jan · to 150") joins them the day the transfer work can make one, with no second build.</p>
-    <p><b>The other answer:</b> the two headings and their jumps wait for the transfer work.</p>
-    <p class="nav"><a href="#list">↑ The list</a><span class="ch"><button type="button" class="diff" data-q="Q5" data-say="wait for the transfer work" aria-pressed="false">Wait</button><button type="button" class="diff" data-q="Q5" aria-pressed="false">Differently</button></span></p>
+    <p><b>The other choice:</b> the two headings and their jumps wait for the transfer work.</p>
+    <p class="nav"><a href="#list">↑ The list</a><span class="ch"><button type="button" class="diff" data-q="Q5" data-say="(wait for the transfer work)" aria-pressed="false">Wait</button><button type="button" class="diff" data-q="Q5" aria-pressed="false">Differently</button></span></p>
   </section>
 
   <section id="q6">
     <h2>Q6. A press on an Outgoing row</h2>
     <p class="short">It opens his own row, as in People; one opened row at a time.</p>
-    <p class="when"><b>When</b>: Kestrel sees Shrike under Outgoing, posting to SANS on 11 Jan, and presses him to check his roster tick. Now and then.</p>
+    <p class="when"><b>When this happens</b>: Kestrel sees Shrike under Outgoing, posting to SANS on 11 Jan, and presses him to check his roster tick. Now and then.</p>
     <p><span class="rec">Recommended:</span> Shrike's own row opens there, exactly as pressing him in People opens it. Opening him in one place closes him in the other, so one change is never open twice. "Undo post out" inside it comes with the transfer work.</p>
-    <p><b>The other answer:</b> an Outgoing row does not open until the transfer work brings its own buttons; he is opened in People.</p>
+    <p><b>The other choice:</b> an Outgoing row does not open until the transfer work brings its own buttons; he is opened in People.</p>
     <p class="note">Not drawn: the opened row is today's.</p>
-    <p class="nav"><a href="#list">↑ The list</a><span class="ch"><button type="button" class="diff" data-q="Q6" data-say="does not open until the transfer work" aria-pressed="false">Does not open</button><button type="button" class="diff" data-q="Q6" aria-pressed="false">Differently</button></span></p>
+    <p class="nav"><a href="#list">↑ The list</a><span class="ch"><button type="button" class="diff" data-q="Q6" data-say="(does not open until the transfer work)" aria-pressed="false">Does not open</button><button type="button" class="diff" data-q="Q6" aria-pressed="false">Differently</button></span></p>
   </section>
 
   <section id="q7">
     <h2>Q7. Searching finds a man who is leaving</h2>
     <p class="short">He shows in People and in Outgoing.</p>
-    <p class="when"><b>When</b>: Kestrel types "Shr" to find Shrike, who posts to SANS on 11 Jan. A few times a week.</p>
+    <p class="when"><b>When this happens</b>: Kestrel types "Shr" to find Shrike, who posts to SANS on 11 Jan. A few times a week.</p>
     <p><span class="rec">Recommended:</span> Shrike shows under People and under Outgoing: one fact, two places, as when nothing is typed. (A man from another squadron who plans or views 149 shows once, under "From other squadrons", as you ruled.)</p>
-    <p><b>The other answer:</b> while searching he shows once, under Outgoing only.</p>
-    <p class="nav"><a href="#list">↑ The list</a><span class="ch"><button type="button" class="diff" data-q="Q7" data-say="once, under Outgoing only" aria-pressed="false">Once</button><button type="button" class="diff" data-q="Q7" aria-pressed="false">Differently</button></span></p>
+    <p><b>The other choice:</b> while searching he shows once, under Outgoing only.</p>
+    <p class="nav"><a href="#list">↑ The list</a><span class="ch"><button type="button" class="diff" data-q="Q7" data-say="(once, under Outgoing only)" aria-pressed="false">Once</button><button type="button" class="diff" data-q="Q7" aria-pressed="false">Differently</button></span></p>
   </section>
 
   <section id="q8">
     <h2>Q8. A Plan holder making a man an admin of the squadron he plans</h2>
     <p class="short">No longer: only 149's own admins or a master admin make a man an admin of 149.</p>
-    <p class="when"><b>When</b>: a few times a year, at a desk. Hunter (142's admin, Plan of 149) posts Viper, a 142 man, to 149. From that day Hunter, through his Plan, makes Viper an admin of 149. Viper, now 149's own admin, gives Plan of 149 to Basher, another 142 admin. Nobody who was 149's own admin was asked.</p>
+    <p class="when"><b>When this happens</b>: a few times a year, at a desk. Hunter (142's admin, Plan of 149) posts Viper, a 142 man, to 149. From that day Hunter, through his Plan, makes Viper an admin of 149. Viper, now 149's own admin, gives Plan of 149 to Basher, another 142 admin. Nobody who was 149's own admin was asked.</p>
     <p><b>Today</b> this cannot happen, because only a master admin gives Plan. Your ruling that a squadron's own admins give Plan opens this two-step road, while a Plan holder may still make 149's men admins of 149.</p>
     <p><span class="rec">Recommended:</span> whoever may give Plan of 149 is who may make a man an admin of 149: its own admins or a master admin. One rule for both, so the road is closed. <b>Its cost:</b> a squadron whose only admin is a Plan holder needs a master admin to make an admin of its own.</p>
-    <p><b>Other answers:</b> keep it, and tell 149's own admins and master admins on the bell when a Plan holder makes a man an admin of 149 (new words, drawn first); or leave it as it would be built.</p>
-    <p class="nav"><a href="#list">↑ The list</a><span class="ch"><button type="button" class="diff" data-q="Q8" data-say="keep it, and tell 149's admins on the bell" aria-pressed="false">Keep and tell</button><button type="button" class="diff" data-q="Q8" aria-pressed="false">Differently</button></span></p>
+    <p><b>Other choices:</b> keep it, and tell 149's own admins and master admins on the bell when a Plan holder makes a man an admin of 149 (new words, drawn first); or leave it as it would be built.</p>
+    <p class="nav"><a href="#list">↑ The list</a><span class="ch"><button type="button" class="diff" data-q="Q8" data-say="(keep it, and tell 149's admins on the bell)" aria-pressed="false">Keep and tell</button><button type="button" class="diff" data-q="Q8" aria-pressed="false">Differently</button></span></p>
   </section>
 
   <section id="q9">
     <h2>Q9. The search and another squadron's sign-ins</h2>
     <p class="short">Another squadron's man is found by his callsign only.</p>
-    <p class="when"><b>When</b>: rare. Kestrel, on 149's Admin → Users, types part of a defence mail, "ranger@", into "Find a callsign or sign-in". Today 142's heading opens with Ranger under it. His row there hides his sign-in, as you ruled, but the match has told Kestrel whose sign-in it is.</p>
+    <p class="when"><b>When this happens</b>: rare. Kestrel, on 149's Admin → Users, types part of a defence mail, "ranger@", into "Find a callsign or sign-in". Today 142's heading opens with Ranger under it. His row there hides his sign-in, as you ruled, but the match has told Kestrel whose sign-in it is.</p>
     <p><span class="rec">Recommended:</span> a man of another squadron is found by his callsign only, in every group he stands in; 149's own men by callsign or sign-in, as today. What a page hides it does not give back to a guess. <b>Its cost:</b> knowing only a 142 man's mail, Kestrel cannot find him from 149's page; he asks 142's admin. The search box's words stay.</p>
-    <p><b>The other answer:</b> as today, hidden on the row but still found by it.</p>
-    <p class="nav"><a href="#list">↑ The list</a><span class="ch"><button type="button" class="diff" data-q="Q9" data-say="as today" aria-pressed="false">As today</button><button type="button" class="diff" data-q="Q9" aria-pressed="false">Differently</button></span></p>
+    <p><b>The other choice:</b> as today, hidden on the row but still found by it.</p>
+    <p class="nav"><a href="#list">↑ The list</a><span class="ch"><button type="button" class="diff" data-q="Q9" data-say="(as today)" aria-pressed="false">As today</button><button type="button" class="diff" data-q="Q9" aria-pressed="false">Differently</button></span></p>
   </section>
 
   <section id="small">
     <h2>Four small ones</h2>
     <p class="note">Each is how I would build a rule you gave, or a wording; none adds a new look.</p>
-    <div class="rd" id="q10"><p><b>Q10. Which admins can give Plan.</b> <span class="eg">Osprey, 149's admin, has had his sign-in switched off, but the app is still open on his PC. He presses Plan on Hunter's row.</span> <span class="rec">I would build:</span> "149's own admins" means admins who can still sign in. One switched off, archived or posted out gives no Plan, even with the app still open; he sees Plan greyed. The other way: he still can until he next signs in.</p><button type="button" class="diff" data-q="Q10" aria-pressed="false">Differently</button></div>
-    <div class="rd" id="q11"><p><b>Q11. Undo of a Plan change by one who has lost the right.</b> <span class="eg">Kestrel ends Hunter's Plan of 149, then is posted out of 149. Back at his desk he presses Undo.</span> <span class="rec">I would build:</span> that step is blocked for good, in Undo's words today, naming nobody; nothing half done, no bell line saying Plan came back. The other way: a new message saying why.</p><button type="button" class="diff" data-q="Q11" aria-pressed="false">Differently</button></div>
-    <div class="rd" id="q12"><p><b>Q12. The words when linking a sign-in is refused.</b> <span class="eg">Hunter tries to link a sign-in that holds Plan of 149 to another person.</span> <span class="rec">I would build:</span> "This sign-in holds a right in 149. Only 149's own admins or a master admin can link it to another person." Today's sentence says only a master admin can; it changes to match who now gives Plan. Shown where today's refusal shows.</p><button type="button" class="diff" data-q="Q12" aria-pressed="false">Differently</button></div>
-    <div class="rd" id="q13"><p><b>Q13. The note when a row changed under you: longer words.</b> <span class="eg">Kestrel has Cinch's row open on 149's page; Cinch's posting to 149 lands meanwhile; Kestrel presses Save. Rare.</span> <span class="rec">I would build:</span> "Cinch’s row changed while it was open, so nothing was saved. Open it again." (pictured under group F). It says the Save did not happen. The shorter draft was "This changed while it was open — open it again."</p><button type="button" class="diff" data-q="Q13" aria-pressed="false">Differently</button></div>
+    <div class="rd" id="q10"><p><b>Q10. Which admins can give Plan.</b> <span class="eg">Osprey, 149's admin, has had his sign-in switched off, but the app is still open on his PC. He presses Plan on Hunter's row. Rare.</span> <span class="rec">I would build:</span> "149's own admins" means admins who can still sign in. One switched off, archived or posted out gives no Plan, even with the app still open; he sees Plan greyed. The other way: he still can until he next signs in.</p><button type="button" class="diff" data-q="Q10" aria-pressed="false">Differently</button></div>
+    <div class="rd" id="q11"><p><b>Q11. Undo of a Plan change by one who has lost the right.</b> <span class="eg">Kestrel ends Hunter's Plan of 149, then is posted out of 149. Back at his desk he presses Undo. Rare.</span> <span class="rec">I would build:</span> that step is blocked for good, in Undo's words today, naming nobody; nothing half done, no bell line saying Plan came back. The other way: a new message saying why.</p><button type="button" class="diff" data-q="Q11" aria-pressed="false">Differently</button></div>
+    <div class="rd" id="q12"><p><b>Q12. The words when linking a sign-in is refused.</b> <span class="eg">Hunter tries to link a sign-in that holds Plan of 149 to another person. Rare.</span> <span class="rec">I would build:</span> "This sign-in holds a right in 149. Only 149's own admins or a master admin can link it to another person." Today's sentence says only a master admin can; it changes to match who now gives Plan. Shown where today's refusal shows.</p><button type="button" class="diff" data-q="Q12" aria-pressed="false">Differently</button></div>
+    <div class="rd" id="q13"><p><b>Q13. The note when a row changed under you: longer words.</b> <span class="eg">Kestrel has Cinch's row open on 149's page; Cinch's posting to 149 lands meanwhile; Kestrel presses Save. Rare.</span> <span class="rec">I would build:</span> "Cinch’s row changed while it was open, so nothing was saved. Open it again." (pictured under group 6). It says the Save did not happen. The shorter draft was "This changed while it was open — open it again."</p><button type="button" class="diff" data-q="Q13" aria-pressed="false">Differently</button></div>
     <p class="nav"><a href="#list">↑ The list</a></p>
   </section>
 
   <h3>What this section builds</h3>
 
-  <section id="g1">
-    <h2>A. The page and its order</h2>
+  <section id="s1">
+    <h2>1. The page and its order</h2>
     <p class="note">Top to bottom: the search, Filter and "+ Add a person"; Waiting for access; People; Outgoing; Incoming; From other squadrons; the other squadrons folded at the foot.</p>
     <div class="pair">
       <figure><span class="cut" style="aspect-ratio:1824/1300"><img src="drawn/j6-d-A-149-crop.png" alt="Desktop: 149's Admin → Users in the new order" style="width:100.00%;margin-left:-0.00%;margin-top:-0.00%"></span><figcaption><b>149's page, desktop</b>. You approved this in round 6.</figcaption></figure>
@@ -301,14 +302,14 @@ button.diff[aria-pressed="true"]{border-color:var(--new);color:var(--new);font-w
       <figure class="tall"><img src="drawn/s2-21-p-master-top-crop.png" alt="Phone: Saber's 142 page, top"><figcaption><b>Top, phone</b>.</figcaption></figure>
       <figure class="tall"><img src="drawn/s2-21-p-master-foot-crop.png" alt="Phone: Saber's 142 page, foot"><figcaption><b>Foot, phone</b>.</figcaption></figure>
     </div>
-    <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="S1" aria-pressed="false">Differently</button></p>
+    <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="S1" data-say="(group 1, the page and its order)" aria-pressed="false">Differently</button></p>
   </section>
 
-  <section id="g2">
-    <h2>B. The jumps to each heading</h2>
+  <section id="s2">
+    <h2>2. The jumps to each heading</h2>
     <div class="r6"><p><b>The left column with its jumps and "Display"</b> <i class="tag6">new drawing</i>: the jumps under "Users", and the Display card (section 3's page) after "Data".</p></div>
     <div class="pair">
-      <figure><img src="drawn/s2-02-d-column-crop.png" alt="Desktop: Admin's left column, jumps under Users, the Display card"><figcaption><b>Desktop</b>. The phone's four buttons you approved in round 6 (group A's phone pictures).</figcaption></figure>
+      <figure><img src="drawn/s2-02-d-column-crop.png" alt="Desktop: Admin's left column, jumps under Users, the Display card"><figcaption><b>Desktop</b>. The phone's four buttons you approved in round 6 (group 1's phone pictures).</figcaption></figure>
     </div>
     <div class="r6"><p><b>A jump pressed: the film</b> <i class="tag6">new drawing</i>: the page runs to the heading, which stands white about a second, then grey again. Tap to play. The pale dot is the film's finger, not the app.</p></div>
     <div class="pair">
@@ -320,11 +321,11 @@ button.diff[aria-pressed="true"]{border-color:var(--new);color:var(--new);font-w
       <figure class="tall"><img src="drawn/j6-p-mid-crop.png" alt="Phone: scrolled halfway"><figcaption><b>Phone</b>. You approved this in round 6.</figcaption></figure>
     </div>
     <p class="note">A smaller iPhone is <a href="#q2">Q2</a>.</p>
-    <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="S2" aria-pressed="false">Differently</button></p>
+    <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="S2" data-say="(group 2, the jumps)" aria-pressed="false">Differently</button></p>
   </section>
 
-  <section id="g3">
-    <h2>C. The one search</h2>
+  <section id="s3">
+    <h2>3. The one search</h2>
     <div class="r6"><p><b>Searching "Bol"</b> <i class="tag6">new drawing</i>. Redrawn to your later answer: Bolt shows once, under "View only" in From other squadrons, opened for him (round 6 drew him twice). Groups with no match hide, their jumps grey; the counts stay whole.</p></div>
     <div class="pair">
       <figure><img src="drawn/s2-06-d-search-crop.png" alt="Desktop: Bol typed, Bolt once under View only"><figcaption><b>Desktop</b>.</figcaption></figure>
@@ -335,11 +336,11 @@ button.diff[aria-pressed="true"]{border-color:var(--new);color:var(--new);font-w
       <figure><img src="drawn/s2-07-d-nobody-crop.png" alt="Desktop: Nobody matches."><figcaption><b>Desktop</b>.</figcaption></figure>
       <figure class="tall"><img src="drawn/s2-07-p-nobody-crop.png" alt="Phone: Nobody matches."><figcaption><b>Phone</b>.</figcaption></figure>
     </div>
-    <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="S3" aria-pressed="false">Differently</button></p>
+    <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="S3" data-say="(group 3, the one search)" aria-pressed="false">Differently</button></p>
   </section>
 
-  <section id="g4">
-    <h2>D. From other squadrons</h2>
+  <section id="s4">
+    <h2>4. From other squadrons</h2>
     <div class="pair">
       <figure><span class="cut" style="aspect-ratio:1264/634"><img src="drawn/j6-d-A-149-crop.png" alt="Desktop: From other squadrons with Hunter, Saber and View only folded" style="width:144.30%;margin-left:-44.30%;margin-top:-155.06%"></span><figcaption><b>Plan holders named, a master admin, View only folded</b>. You approved this in round 6.</figcaption></figure>
       <figure class="tall"><img src="drawn/u6-p-users-crop.png" alt="Phone: the block's rows"><figcaption><b>Phone</b>: the rows as approved in round 6 (shown there at the top of the page; now at the foot).</figcaption></figure>
@@ -364,20 +365,20 @@ button.diff[aria-pressed="true"]{border-color:var(--new);color:var(--new);font-w
       <figure><span class="cut" style="aspect-ratio:1264/634"><img src="drawn/s2-37-d-plan-holder-crop.png" alt="Desktop: Hunter's own row in the block with 'you'" style="width:144.30%;margin-left:-44.30%;margin-top:-155.06%"></span><figcaption><b>Desktop</b>.</figcaption></figure>
       <figure class="tall"><span class="cut" style="aspect-ratio:788/614"><img src="drawn/s2-37-p-plan-holder-crop.png" alt="Phone: Hunter's own row in the block with 'you'" style="width:100.00%;margin-left:-0.00%;margin-top:-261.42%"></span><figcaption><b>Phone</b>.</figcaption></figure>
     </div>
-    <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="S4" aria-pressed="false">Differently</button></p>
+    <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="S4" data-say="(group 4, From other squadrons)" aria-pressed="false">Differently</button></p>
   </section>
 
-  <section id="g5">
-    <h2>E. Outgoing and Incoming</h2>
+  <section id="s5">
+    <h2>5. Outgoing and Incoming</h2>
     <div class="pair">
       <figure><span class="cut" style="aspect-ratio:1264/420"><img src="drawn/j6-d-A-149-crop.png" alt="Desktop: Outgoing with Raven to 150, Incoming with Cinch" style="width:144.30%;margin-left:-44.30%;margin-top:-121.84%"></span><figcaption><b>A move between squadrons</b>: "posting out 4 Jan · to 150" on the amber tag, also on his own row. You approved this in round 6.</figcaption></figure>
     </div>
     <p class="note">Overseas, SANS, Delete and a man posting in, from today's postings, are pictured at <a href="#q5">Q5</a>.</p>
-    <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="S5" aria-pressed="false">Differently</button></p>
+    <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="S5" data-say="(group 5, Outgoing and Incoming)" aria-pressed="false">Differently</button></p>
   </section>
 
-  <section id="g6">
-    <h2>F. Another squadron's man, opened</h2>
+  <section id="s6">
+    <h2>6. Another squadron's man, opened</h2>
     <div class="pair">
       <figure><img src="drawn/u6-d-folded-crop.png" alt="Desktop: 142 opened on 149's page, short rows, no grey numbers"><figcaption><b>A folded squadron opened</b>: short rows, no grey number, the role in words. You approved this in round 6.</figcaption></figure>
       <figure class="tall"><img src="drawn/u6-p-folded-crop.png" alt="Phone: 142 opened"><figcaption><b>Phone</b>. You approved this in round 6.</figcaption></figure>
@@ -408,11 +409,11 @@ button.diff[aria-pressed="true"]{border-color:var(--new);color:var(--new);font-w
       <figure><img src="drawn/s2-36-d-changed-crop.png" alt="Desktop: Cinch's row closed, the note at the foot"><figcaption><b>Desktop</b>.</figcaption></figure>
       <figure class="tall"><img src="drawn/s2-36-p-changed-crop.png" alt="Phone: Cinch's row closed, the note at the foot on two lines"><figcaption><b>Phone</b>: two lines.</figcaption></figure>
     </div>
-    <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="S6" aria-pressed="false">Differently</button></p>
+    <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="S6" data-say="(group 6, another squadron’s man, opened)" aria-pressed="false">Differently</button></p>
   </section>
 
-  <section id="g7">
-    <h2>G. Add a person meets an archived callsign</h2>
+  <section id="s7">
+    <h2>7. Add a person meets an archived callsign</h2>
     <div class="r6"><p><b>Another squadron's archived Jester</b> <i class="tag6">new drawing</i>. Redrawn to your later answer: the form opens under the top row, not under People. Words as you approved them in round 5.</p></div>
     <div class="pair">
       <figure><img src="drawn/s2-24-d-top-archived-crop.png" alt="Desktop: the note about 142's archived Jester under the top row"><figcaption><b>The note</b>: "If this is him, ask 142's admin", "Someone new"; "Add person" greyed until answered.</figcaption></figure>
@@ -441,11 +442,11 @@ button.diff[aria-pressed="true"]{border-color:var(--new);color:var(--new);font-w
       <figure class="tall"><img src="drawn/s2-29-p-give-told-crop.png" alt="Phone: after Someone new on Give access"><figcaption><b>Phone</b>.</figcaption></figure>
     </div>
     <p class="note">An admin of both squadrons is <a href="#q3">Q3</a>.</p>
-    <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="S7" aria-pressed="false">Differently</button></p>
+    <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="S7" data-say="(group 7, an archived callsign)" aria-pressed="false">Differently</button></p>
   </section>
 
-  <section id="g8">
-    <h2>H. The bell's Plan lines</h2>
+  <section id="s8">
+    <h2>8. The bell's Plan lines</h2>
     <div class="pair">
       <figure><img src="drawn/e3d-d-both-crop.png" alt="Desktop bell: 149 · Hunter 142 · Given Plan of 149 · Kestrel"><figcaption><b>Plan given</b>: "149 · Hunter 142 · Given Plan of 149 · Kestrel". You approved this in round 6.</figcaption></figure>
       <figure class="tall"><img src="drawn/e3d-p-both-crop.png" alt="Phone bell: the Plan-given line"><figcaption><b>Phone</b>. You approved this in round 6.</figcaption></figure>
@@ -456,7 +457,7 @@ button.diff[aria-pressed="true"]{border-color:var(--new);color:var(--new);font-w
       <figure class="tall"><img src="drawn/s2-33-p-ended-crop.png" alt="Phone bell: three Plan-ended lines"><figcaption><b>Phone</b>.</figcaption></figure>
     </div>
     <p class="note">What a tap on the line opens is <a href="#q4">Q4</a>.</p>
-    <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="S8" aria-pressed="false">Differently</button></p>
+    <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="S8" data-say="(group 8, the bell’s Plan lines)" aria-pressed="false">Differently</button></p>
   </section>
 
   <section id="notdrawn">
