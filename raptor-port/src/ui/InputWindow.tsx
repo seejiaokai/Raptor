@@ -30,6 +30,7 @@ import { UNIT } from '../engine/unitview'
 import { MoveBandView } from './MoveBand'
 import { holdReadOnly } from './heldro'
 import { INPEDIT, INPEDIT_REFOUND, setInpEdit, OILASK, OILOWN, setOilAsk, setDocView } from './pops'
+import { inputDlgDrawn } from './windrawn'
 import { CURPAGE, INPVIEW, revealInput, revealMedInput } from '../state/view'
 import { toastHeld } from './toast'
 import { noteUnlessSeen } from './seen'
@@ -1510,9 +1511,11 @@ export function InputEditor() {
     </FloatWin>
     {sheets}
   </>)
+  /* the dialog's second shape, off the Inputs page: drawn while inputDlgDrawn() — !!INPEDIT && CURPAGE !== 'inputs', the
+     one predicate the guard reads too (ui/windrawn.ts); here `win` is false, so it is `open` exactly as before */
   return (
     // eslint-disable-next-line react-doctor/no-static-element-interactions -- a press on the veil around the schedule's pop-up closes it (a click outside, D1 of the pop-up rule); the keyboard closes it with Escape; moved whole from inputedit.tsx on 3 Nov 26 with this finding already on it (D1534: the area's findings ride with its batch)
-    <div className="airpop" id="inpEditPop" hidden={!open} ref={pop}
+    <div className="airpop" id="inpEditPop" hidden={!inputDlgDrawn()} ref={pop}
       onClick={e => { if (clickedOutside(e, 'inpEditPop')) close() }}>
       <div className="airpop-box inpedbox" ref={box} tabIndex={-1} style={{ outline: 'none' }}>
         <div className="airpop-head">

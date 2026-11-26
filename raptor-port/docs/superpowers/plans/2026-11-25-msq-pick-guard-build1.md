@@ -3407,6 +3407,9 @@ on the one questions page). Where this block and the two above differ, this bloc
   cancel SANS calendar settings, then pick 149." One rule for both settings windows, read from the Calendar's own
   full-screen rule (the Q3 row above). **The phone note is drawn on the real app beside the approved Inputs one and
   shown on the questions page before the step that words it (K3) builds it (D1625) — the coordinator's word.**
+  **Drawn and seen (26 Nov 26): the questions page's card 9, his "9 looks right, build it" (on D2741's row) — K3
+  builds it as drawn, `../../mock/2026-11-25-msq-pick-guard-q3/drawn/s1-cal-sanssettings-alt-p-crop.png` (phone) and
+  `s1-cal-sanssettings-d-crop.png` (desktop).**
 - **D2742 — K4a's give-up is not built.** The wait for a save at the pick, the view switch and a bell line is built
   in K4, K5 and K6, each door's own step: the door waits on the saver's own answer, then goes ahead or is refused
   with the Retry note. The saver giving up after a set time is filed with the database step, `[MSQ-SAVE-GIVEUP-DB]`
