@@ -141,6 +141,13 @@ export function ErrWords({ err }: { err: string }) {
   return err === BLOCKED ? <><span className="bk-sign" aria-hidden="true" /><b>{BLOCKED}</b></> : <>{err}</>
 }
 const errCls = (err: string) => `bp-err${err === BLOCKED ? ' bp-blocked' : ''}`
+/** what a box shows, and the figure an unchanged box holds: for a box never typed (`blank`, D2746) nothing, and no figure —
+ *  so every number typed in it differs and saves, a 0 too */
+const boxFigure = (value: number, plus: boolean | undefined, blank: boolean | undefined) =>
+  blank ? { shown: '', held0: Number.NaN } : { shown: (plus ? '+' : '') + figWords(value), held0: value }
+/** a box's classes: grey for a 0, "No grade"'s dashed amber edge for a box never typed (D2746 — balances.css .bp-bx.nt) */
+const boxClass = (value: number, text: string | null, sm: boolean | undefined, blank: boolean | undefined, cls: string | undefined) =>
+  `mth-in bp-bx${sm ? ' sm' : ''}${!blank && value === 0 && text === null ? ' z' : ''}${blank ? ' nt' : ''}${cls ? ` ${cls}` : ''}`
 export function FigBox({ value, sm, label, testid, save, plus, cls, fit, blank }: {
   value: number
   /** NO FIGURE TYPED YET (D2746, question 11 A): the box stands empty, its edge "No grade"'s dashed amber, never showing the 0
@@ -160,9 +167,7 @@ export function FigBox({ value, sm, label, testid, save, plus, cls, fit, blank }
    *  29 Oct 26: hugging its figure, it widened 42 → 53 for "16.5" and pushed Pending and War bal 11px along) */
   fit?: number
 }) {
-  const shown = blank ? '' : (plus ? '+' : '') + figWords(value)
-  /* the figure an unchanged box holds: none, for a box never typed (`blank` — every number typed differs from it) */
-  const held0 = blank ? Number.NaN : value
+  const { shown, held0 } = boxFigure(value, plus, blank)
   const [text, setText] = useState<string | null>(null)
   const [err, setErr] = useState<string | null>(null)
   const skip = useRef(false)
@@ -258,7 +263,7 @@ export function FigBox({ value, sm, label, testid, save, plus, cls, fit, blank }
   return (
     <span className={`bp-fb${err ? ' bad' : ''}`}>
       <input
-        className={`mth-in bp-bx${sm ? ' sm' : ''}${!blank && value === 0 && text === null ? ' z' : ''}${blank ? ' nt' : ''}${cls ? ` ${cls}` : ''}`}
+        className={boxClass(value, text, sm, blank, cls)}
         style={fitW ? { width: fitW } : undefined}
         data-testid={testid}
         ref={boxRef}
