@@ -1,0 +1,140 @@
+[
+ {
+  "scn": "s21",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s21",
+  "size": "desktop",
+  "id": "s21.l1",
+  "what": "set-up: a flying line VL BFM T/O 13:00 LD 14:00 on Fri 17 (+ Wave, CS / MSN / T/O / LD typed)",
+  "ok": true,
+  "note": "{\"cs\":\"VL\",\"msn\":\"BFM\",\"to\":\"13:00\",\"ld\":\"14:00\"}"
+ },
+ {
+  "scn": "s21",
+  "size": "desktop",
+  "id": "s21.drag",
+  "what": "desktop: Marlin (SANS, nothing filed) dragged from the crew list onto VL BFM's RCP — placed; the note reads \"Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)\" (the new line's words, F21)",
+  "ok": true,
+  "note": "placed true · note \"Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)\" · every note seen [\"Wave added\",\"Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)\"] · box {\"left\":540,\"right\":996,\"vw\":1536,\"h\":38,\"lines\":1,\"cut\":false,\"opacity\":\"1\",\"n\":1}",
+  "pics": "s21-s21-drag-note-clip-desktop.png, s21-s21-drag-dropped-desktop.png"
+ },
+ {
+  "scn": "s21",
+  "size": "desktop",
+  "id": "s21.drag-reader",
+  "what": "the note read as its reader: one note, telling nobody to file (lesson 33)",
+  "ok": true,
+  "note": "\"Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)\" · {\"left\":540,\"right\":996,\"vw\":1536,\"h\":38,\"lines\":1,\"cut\":false,\"opacity\":\"1\",\"n\":1}"
+ },
+ {
+  "scn": "s21",
+  "size": "desktop",
+  "id": "s21.u1",
+  "what": "set-up: the board's Undo takes the drop back",
+  "ok": true,
+  "note": "Undo — a change to the schedule → \"Undid: a change to the schedule\"",
+  "pics": "s21-s21-u1-undo-desktop.png"
+ },
+ {
+  "scn": "s21",
+  "size": "desktop",
+  "id": "s21.tap",
+  "what": "board, tap-to-plan: Marlin into VL BFM's RCP — placed; the note reads \"Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)\"",
+  "ok": true,
+  "note": "placed true · note \"Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)\" · seen [\"Undid: a change to the schedule\",\"Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)\"]",
+  "pics": "s21-s21-tap-armed-clip-desktop.png, s21-s21-tap-sans-clip-desktop.png, s21-s21-tap-armed-desktop.png, s21-s21-tap-note-clip-desktop.png, s21-s21-tap-picked-desktop.png"
+ },
+ {
+  "scn": "s21",
+  "size": "desktop",
+  "id": "s21.tap-reader",
+  "what": "the note: one, telling nobody to file; on the phone inside the screen, wrapped not cut (lesson 33, F21 RECORD)",
+  "ok": true,
+  "note": "{\"left\":540,\"right\":996,\"vw\":1536,\"h\":38,\"lines\":1,\"cut\":false,\"opacity\":\"1\",\"n\":1}"
+ },
+ {
+  "scn": "s21",
+  "size": "desktop",
+  "id": "s21.week",
+  "what": "Edit Schedule's week, tap-to-plan (seat pressed on the week, Marlin tapped in the crew panel) after the board's Undo (\"Undid: a change to the schedule\"): the note reads \"Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)\"",
+  "ok": true,
+  "note": "armed 4.0.0.0.w · placed true · note \"Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)\" · {\"left\":540,\"right\":996,\"vw\":1536,\"h\":38,\"lines\":1,\"cut\":false,\"opacity\":\"1\",\"n\":1}",
+  "pics": "s21-s21-week-earmed-clip-desktop.png, s21-s21-week-esans-clip-desktop.png, s21-s21-week-earmed-desktop.png, s21-s21-week-enote-clip-desktop.png, s21-s21-week-epicked-desktop.png"
+ },
+ {
+  "scn": "s21",
+  "size": "desktop",
+  "id": "s21.fo",
+  "what": "set-up: Saber files SANS oft all day for wrangler on 2026-07-17",
+  "ok": true,
+  "note": "{\"iid\":\"imrldja2nl2yto0\",\"people\":\"[{\\\"p\\\":\\\"wrangler\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077257407}]\",\"date\":\"Jul 17\",\"endDate\":null,\"sans\":{\"o\":true},\"allday\":true,\"e\":1439,\"remarks\":\"\",\"by\":\"stiff\"}",
+  "pics": "s21-s21.fo-form-desktop.png, s21-s21.fo-saved-desktop.png"
+ },
+ {
+  "scn": "s21",
+  "size": "desktop",
+  "id": "s21.mis",
+  "what": "Otter (filed OFT only) tapped into VL ACM's RCP: the note reads \"Otter — SANS: offered OFT only today. Planned on VL ACM (T/O 15:00)\" (D2584 2a)",
+  "ok": true,
+  "note": "filed true · placed true · note \"Otter — SANS: offered OFT only today. Planned on VL ACM (T/O 15:00)\"",
+  "pics": "s21-s21-mis-armed-clip-desktop.png, s21-s21-mis-sans-clip-desktop.png, s21-s21-mis-armed-desktop.png, s21-s21-mis-note-clip-desktop.png, s21-s21-mis-picked-desktop.png"
+ },
+ {
+  "scn": "s21",
+  "size": "desktop",
+  "id": "s21.fp",
+  "what": "set-up: Saber files SANS fly 08:00–12:00 for badger on 2026-07-17",
+  "ok": true,
+  "note": "{\"iid\":\"imrldjpoxj5i8zp\",\"people\":\"[{\\\"p\\\":\\\"badger\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077277649}]\",\"date\":\"Jul 17\",\"endDate\":null,\"sans\":{\"f\":true},\"allday\":false,\"s\":480,\"e\":720,\"remarks\":\"\",\"by\":\"stiff\"}",
+  "pics": "s21-s21.fp-form-desktop.png, s21-s21.fp-saved-desktop.png"
+ },
+ {
+  "scn": "s21",
+  "size": "desktop",
+  "id": "s21.hrs",
+  "what": "Pixel (filed Fly 08:00–12:00) tapped into RU BFM's RCP: the note reads \"Pixel — SANS: available 08:00–12:00 only. Planned on RU BFM (T/O 17:00)\" (the hours line, unchanged)",
+  "ok": true,
+  "note": "filed true · placed true · note \"Pixel — SANS: available 08:00–12:00 only. Planned on RU BFM (T/O 17:00)\"",
+  "pics": "s21-s21-hrs-armed-clip-desktop.png, s21-s21-hrs-sans-clip-desktop.png, s21-s21-hrs-armed-desktop.png, s21-s21-hrs-note-clip-desktop.png, s21-s21-hrs-picked-desktop.png"
+ },
+ {
+  "scn": "s21",
+  "size": "desktop",
+  "id": "s21.sim",
+  "what": "Jester tapped into an untimed OFT \"EP-9\": the note reads \"Jester — SANS: no availability filed for today. Planned on Sim EP-9\" (the brief's sim tail)",
+  "ok": true,
+  "note": "row {\"label\":\"EP-9\",\"str\":\"\",\"end\":\"\"} · placed true · note \"Jester — SANS: no availability filed for today. Planned on Sim EP-9\"",
+  "pics": "s21-s21-sim-armed-clip-desktop.png, s21-s21-sim-sans-clip-desktop.png, s21-s21-sim-armed-desktop.png, s21-s21-sim-note-clip-desktop.png, s21-s21-sim-picked-desktop.png"
+ },
+ {
+  "scn": "s21",
+  "size": "desktop",
+  "id": "s21.list",
+  "what": "the day's list after the four plants, every place (the notes' lines stand in it)",
+  "ok": "REC",
+  "note": "EDIT bar \"⚠ 4 issues ▲\" [adv] · 4 line(s): [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || [adv ✕] SANS availability — not filed, or planned outside it Otter — SANS: offered OFT only today. Planned on VL ACM (T/O 15:00) ✕ || [adv ✕] SANS availability — not filed, or planned outside it Pixel — SANS: available 08:00–12:00 only. Planned on RU BFM (T/O 17:00) ✕ || [adv ✕] SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on Sim EP-9 ✕ ·· INFO \"Friday · Jul 17 · 1 X 1 X 1\" · Draft — not yet published 27 changes · 4 ADVISORY · 4 line(s): [] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [] Advisory · SANS availability — not filed, or planned outside it Otter — SANS: offered OFT only today. Planned on VL ACM (T/O 15:00) || [] Advisory · SANS availability — not filed, or planned outside it Pixel — SANS: available 08:00–12:00 only. Planned on RU BFM (T/O 17:00) || [] Advisory · SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on Sim EP-9 ·· BOARD head \"⚠ 4 issues\" · 4 line(s): [✕] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || [✕] Otter — SANS: offered OFT only today. Planned on VL ACM (T/O 15:00) ✕ || [✕] Pixel — SANS: available 08:00–12:00 only. Planned on RU BFM (T/O 17:00) ✕ || [✕] Jester — SANS: no availability filed for today. Planned on Sim EP-9 ✕ ·· PUCKS cards week[flying line@Fri(4.0.0.0.w):amber/A] board[flying line(4.0.0.0.w):amber/A ; crew list (week):amber/A] / wrangler week[flying line@Fri(4.1.0.0.w):amber/A ; SANS@Fri:amber/A] board[flying line(4.1.0.0.w):amber/A ; SANS:amber/A ; crew list (week):amber/A] / badger week[flying line@Fri(4.2.0.0.w):amber/A ; SANS@Fri:amber/A] board[flying line(4.2.0.0.w):amber/A ; SANS:amber/A ; crew list (week):amber/A] / ipman week[sim@Fri(s:4.oft.2.p):amber/A] board[sim(s:4.oft.2.p):amber/A ; crew list (week):amber/A]",
+  "pics": "s21-s21-all-e-list-clip-desktop.png, s21-s21-all-ipop-clip-desktop.png, s21-s21-all-b-clip-desktop.png, s21-s21-all-board-desktop.png"
+ },
+ {
+  "scn": "s21",
+  "size": "desktop",
+  "id": "s21.list-words",
+  "what": "the list carries each line the notes named, word for word",
+  "ok": true,
+  "note": "SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || SANS availability — not filed, or planned outside it Otter — SANS: offered OFT only today. Planned on VL ACM (T/O 15:00) ✕ || SANS availability — not filed, or planned outside it Pixel — SANS: available 08:00–12:00 only. Planned on RU BFM (T/O 17:00) ✕ || SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on Sim EP-9 ✕"
+ },
+ {
+  "scn": "s21",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

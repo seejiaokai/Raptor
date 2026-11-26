@@ -1,0 +1,80 @@
+[
+ {
+  "scn": "s29",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s29",
+  "size": "phone",
+  "id": "s29.plant",
+  "what": "Marlin planted: his line, ring and \"A\"",
+  "ok": true,
+  "note": "EDIT bar \"⚠ 1 issue ▲\" [adv] · 1 line(s): [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ ·· INFO \"Friday · Jul 17 · 1\" · Draft — not yet published 6 changes · 1 ADVISORY · 1 line(s): [] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ·· BOARD head \"▾ ⚠ 1 issue\" · 1 line(s): [✕] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ ·· PUCKS cards week[flying line@Fri(4.0.0.0.w):amber/A] board[flying line(4.0.0.0.w):amber/A ; crew list (week):amber/A]",
+  "pics": "s29-s29-1-e-list-clip-phone.png, s29-s29-1-ipop-clip-phone.png, s29-s29-1-b-clip-phone.png, s29-s29-1-board-phone.png"
+ },
+ {
+  "scn": "s29",
+  "size": "phone",
+  "id": "s29.undo",
+  "what": "the board's Undo: the line gone in every place, the count down by one, no ring left on any copy",
+  "ok": true,
+  "note": "\"Undo — a change to the schedule\" → \"Undid: a change to the schedule\" · EDIT bar \"(no bar)\" [] · 0 line(s) ·· INFO \"Friday · Jul 17 · 1\" · Draft — not yet published 7 changes ·  · 0 line(s) ·· BOARD head \"▸ No conflicts flagged for Friday ✓\" · 0 line(s) · other [\"No conflicts flagged for this day ✓\"] ·· PUCKS cards week[no puck drawn] board[crew list (week):no ring]",
+  "pics": "s29-s29-2-e-list-phone.png, s29-s29-2-ipop-clip-phone.png, s29-s29-2-b-clip-phone.png, s29-s29-2-board-phone.png"
+ },
+ {
+  "scn": "s29",
+  "size": "phone",
+  "id": "s29.redo",
+  "what": "Redo: the line, ring, \"A\" and count back, exactly one line for him",
+  "ok": true,
+  "note": "\"Redo — a change to the schedule\" → \"Redid: a change to the schedule\" · EDIT bar \"⚠ 1 issue ▲\" [adv] · 1 line(s): [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ ·· INFO \"Friday · Jul 17 · 1\" · Draft — not yet published 8 changes · 1 ADVISORY · 1 line(s): [] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ·· BOARD head \"▾ ⚠ 1 issue\" · 1 line(s): [✕] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ ·· PUCKS cards week[flying line@Fri(4.0.0.0.w):amber/A] board[flying line(4.0.0.0.w):amber/A ; crew list (week):amber/A]",
+  "pics": "s29-s29-3-e-list-clip-phone.png, s29-s29-3-ipop-clip-phone.png, s29-s29-3-b-clip-phone.png, s29-s29-3-board-phone.png"
+ },
+ {
+  "scn": "s29",
+  "size": "phone",
+  "id": "s29.file",
+  "what": "set-up: Saber files SANS fly all day for wrangler on 2026-07-17",
+  "ok": true,
+  "note": "{\"iid\":\"imrldjvfa3clm7q\",\"people\":\"[{\\\"p\\\":\\\"wrangler\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077285078}]\",\"date\":\"Jul 17\",\"endDate\":null,\"sans\":{\"f\":true},\"allday\":true,\"e\":1439,\"remarks\":\"\",\"by\":\"stiff\"}",
+  "pics": "s29-s29.file-form-phone.png, s29-s29.file-saved-phone.png"
+ },
+ {
+  "scn": "s29",
+  "size": "phone",
+  "id": "s29.o",
+  "what": "set-up: Otter (filed) on VL ACM 16:00: no SANS line",
+  "ok": true,
+  "note": "\"Otter planned\""
+ },
+ {
+  "scn": "s29",
+  "size": "phone",
+  "id": "s29.inp-undo",
+  "what": "the filing deleted on the Inputs page, then the top bar's Undo there: the filing back, no SANS line for Otter, no ring",
+  "ok": true,
+  "note": "delete \"Input deleted\" · Undo \"Undo — Otter’s SANS Availability\" → \"Undid: Otter’s SANS Availability\" · filing back true · EDIT bar \"⚠ 1 issue ▲\" [adv] · 1 line(s): [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ ·· INFO \"Friday · Jul 17 · 1 X 1\" · Draft — not yet published 17 changes · 1 ADVISORY · 1 line(s): [] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ·· BOARD head \"▾ ⚠ 1 issue\" · 1 line(s): [✕] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ ·· PUCKS wrangler week[flying line@Fri(4.1.0.0.w):no ring ; SANS@Fri:no ring] board[flying line(4.1.0.0.w):no ring ; SANS:no ring ; crew list (week):no ring]",
+  "pics": "s29-s29-del-open-phone.png, s29-s29-del-deleted-phone.png, s29-s29-inp-undo-phone.png, s29-s29-4-e-list-clip-phone.png, s29-s29-4-ipop-clip-phone.png, s29-s29-4-b-clip-phone.png, s29-s29-4-board-phone.png"
+ },
+ {
+  "scn": "s29",
+  "size": "phone",
+  "id": "s29.inp-redo",
+  "what": "Redo there: the filing gone again, Otter's line and ring back",
+  "ok": true,
+  "note": "Redo \"Redo — Otter’s SANS Availability\" → \"Redid: Otter’s SANS Availability\" · EDIT bar \"⚠ 2 issues ▲\" [adv] · 2 line(s): [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || [adv ✕] SANS availability — not filed, or planned outside it Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ✕ ·· INFO \"Friday · Jul 17 · 1 X 1\" · Draft — not yet published 18 changes · 2 ADVISORY · 2 line(s): [] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [] Advisory · SANS availability — not filed, or planned outside it Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ·· BOARD head \"▾ ⚠ 2 issues\" · 2 line(s): [✕] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || [✕] Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ✕ ·· PUCKS wrangler week[flying line@Fri(4.1.0.0.w):amber/A] board[flying line(4.1.0.0.w):amber/A ; crew list (week):amber/A]",
+  "pics": "s29-s29-inp-redo-phone.png, s29-s29-5-e-list-clip-phone.png, s29-s29-5-ipop-clip-phone.png, s29-s29-5-b-clip-phone.png, s29-s29-5-board-phone.png"
+ },
+ {
+  "scn": "s29",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

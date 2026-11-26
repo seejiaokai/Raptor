@@ -1,0 +1,949 @@
+{
+ "state": "wrap-desk",
+ "drawing": {
+  "script": "docs/mock/2026-11-25-sans-d2588/draw.mjs",
+  "shot": "col-wrap-desktop"
+ },
+ "recorded": "2026-11-26T17:07:46.277Z",
+ "drawnOn": "the frozen build D:/raptor-work/c185-build (index-SXKkjfaJ.js)",
+ "checkout": "ab72316f4",
+ "viewport": {
+  "w": 1536,
+  "h": 864
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "sec": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1229,
+    "y": 576.5,
+    "w": 295,
+    "h": 234
+   },
+   "ink": {
+    "x": 1229,
+    "y": 576.5,
+    "w": 292,
+    "h": 224
+   },
+   "text": "SANS Avail · 1 free Zenith C A Bolt C SANS — offered Fly only, not AMT F Jester B SANS — available 08:00–10:00 only A 08:00–10:00 Kraken D SANS — offered Fly and OFT only, not AMT F/O Marlin A SANS — no availability filed for today Otter D SANS — no availability filed for today Pixel D SANS — no availability filed for today Rebel B SANS — offered OFT only, not AMT O Scribe D SANS — no availability filed for today Tally O SANS — no availability filed for today Zulu O SANS — no availability filed for today",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "1px solid rgb(42, 49, 58)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.rall.rsans"
+  },
+  "head": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1229,
+    "y": 576.5,
+    "w": 295,
+    "h": 10
+   },
+   "ink": {
+    "x": 1229,
+    "y": 576.5,
+    "w": 104.2,
+    "h": 10
+   },
+   "text": "SANS Avail · 1 free",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(178, 77, 234)",
+     "0px none rgb(178, 77, 234)",
+     "0px none rgb(178, 77, 234)",
+     "0px none rgb(178, 77, 234)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(178, 77, 234)",
+    "align": "start",
+    "justify": "normal",
+    "font": "700 9px",
+    "spacing": "0.63px"
+   },
+   "tag": "div.rh2"
+  },
+  "row-yeti": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1229,
+    "y": 609.5,
+    "w": 295,
+    "h": 15
+   },
+   "ink": {
+    "x": 1234,
+    "y": 608.5,
+    "w": 247.2,
+    "h": 14
+   },
+   "text": "Bolt C SANS — offered Fly only, not AMT F",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.rsans-row"
+  },
+  "name-yeti": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1229,
+    "y": 609.5,
+    "w": 74,
+    "h": 15
+   },
+   "ink": {
+    "x": 1234,
+    "y": 610.3,
+    "w": 63.5,
+    "h": 12.3
+   },
+   "text": "Bolt C",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(110, 106, 46)",
+    "image": "linear-gradient(rgba(128, 128, 128, 0.3), rgba(128, 128, 128, 0.3))",
+    "edge": [
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)"
+    ],
+    "corners": [
+     "3px",
+     "3px",
+     "3px",
+     "3px"
+    ],
+    "shadow": "none",
+    "color": "rgb(251, 250, 240)",
+    "align": "start",
+    "justify": "normal",
+    "font": "600 9px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.puck.sm.san"
+  },
+  "why-yeti": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1309,
+    "y": 609.5,
+    "w": 162.1,
+    "h": 11.2
+   },
+   "ink": {
+    "x": 1310,
+    "y": 608.5,
+    "w": 126.8,
+    "h": 11
+   },
+   "text": "SANS — offered Fly only, not AMT",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 8.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.rwhy"
+  },
+  "let-yeti": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1477.1,
+    "y": 611.5,
+    "w": 4.1,
+    "h": 11
+   },
+   "ink": {
+    "x": 1477.1,
+    "y": 611.5,
+    "w": 4.1,
+    "h": 11
+   },
+   "text": "F",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 8.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.rsans-b.sw-mark"
+  },
+  "row-romeo": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1229,
+    "y": 730.5,
+    "w": 295,
+    "h": 15
+   },
+   "ink": {
+    "x": 1234,
+    "y": 729.5,
+    "w": 249.4,
+    "h": 14
+   },
+   "text": "Rebel B SANS — offered OFT only, not AMT O",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.rsans-row"
+  },
+  "name-romeo": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1229,
+    "y": 730.5,
+    "w": 74,
+    "h": 15
+   },
+   "ink": {
+    "x": 1234,
+    "y": 731.3,
+    "w": 63.8,
+    "h": 12.3
+   },
+   "text": "Rebel B",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(110, 106, 46)",
+    "image": "linear-gradient(rgba(128, 128, 128, 0.3), rgba(128, 128, 128, 0.3))",
+    "edge": [
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)"
+    ],
+    "corners": [
+     "3px",
+     "3px",
+     "3px",
+     "3px"
+    ],
+    "shadow": "none",
+    "color": "rgb(251, 250, 240)",
+    "align": "start",
+    "justify": "normal",
+    "font": "600 9px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.puck.sm.san"
+  },
+  "why-romeo": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1309,
+    "y": 730.5,
+    "w": 162.1,
+    "h": 11.2
+   },
+   "ink": {
+    "x": 1310,
+    "y": 729.5,
+    "w": 131.5,
+    "h": 11
+   },
+   "text": "SANS — offered OFT only, not AMT",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 8.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.rwhy"
+  },
+  "let-romeo": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1477.1,
+    "y": 732.5,
+    "w": 6.3,
+    "h": 11
+   },
+   "ink": {
+    "x": 1477.1,
+    "y": 732.5,
+    "w": 6.3,
+    "h": 11
+   },
+   "text": "O",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 8.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.rsans-b.sw-mark"
+  },
+  "row-ipman": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1229,
+    "y": 628.5,
+    "w": 295,
+    "h": 22
+   },
+   "ink": {
+    "x": 1234,
+    "y": 628.5,
+    "w": 287,
+    "h": 22
+   },
+   "text": "Jester B SANS — available 08:00–10:00 only A 08:00–10:00",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.rsans-row"
+  },
+  "name-ipman": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1229,
+    "y": 632,
+    "w": 74,
+    "h": 15
+   },
+   "ink": {
+    "x": 1234,
+    "y": 632.8,
+    "w": 63.8,
+    "h": 12.3
+   },
+   "text": "Jester B",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(110, 106, 46)",
+    "image": "linear-gradient(rgba(128, 128, 128, 0.3), rgba(128, 128, 128, 0.3))",
+    "edge": [
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)"
+    ],
+    "corners": [
+     "3px",
+     "3px",
+     "3px",
+     "3px"
+    ],
+    "shadow": "none",
+    "color": "rgb(251, 250, 240)",
+    "align": "start",
+    "justify": "normal",
+    "font": "600 9px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.puck.sm.san"
+  },
+  "why-ipman": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1309,
+    "y": 632,
+    "w": 162.1,
+    "h": 11.2
+   },
+   "ink": {
+    "x": 1310,
+    "y": 631,
+    "w": 129.8,
+    "h": 11
+   },
+   "text": "SANS — available 08:00–10:00 only",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 8.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.rwhy"
+  },
+  "let-ipman": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1477.1,
+    "y": 628.5,
+    "w": 43.9,
+    "h": 22
+   },
+   "ink": {
+    "x": 1477.1,
+    "y": 628.5,
+    "w": 43.9,
+    "h": 22
+   },
+   "text": "A 08:00–10:00",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 8.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.rsans-b.sw-mark"
+  },
+  "row-krait": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1229,
+    "y": 654.5,
+    "w": 295,
+    "h": 15
+   },
+   "ink": {
+    "x": 1234,
+    "y": 653.5,
+    "w": 256.8,
+    "h": 14
+   },
+   "text": "Kraken D SANS — offered Fly and OFT only, not AMT F/O",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.rsans-row"
+  },
+  "name-krait": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1229,
+    "y": 654.5,
+    "w": 74,
+    "h": 15
+   },
+   "ink": {
+    "x": 1234,
+    "y": 655.3,
+    "w": 64.1,
+    "h": 12.3
+   },
+   "text": "Kraken D",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(110, 106, 46)",
+    "image": "linear-gradient(rgba(128, 128, 128, 0.3), rgba(128, 128, 128, 0.3))",
+    "edge": [
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)"
+    ],
+    "corners": [
+     "3px",
+     "3px",
+     "3px",
+     "3px"
+    ],
+    "shadow": "none",
+    "color": "rgb(251, 250, 240)",
+    "align": "start",
+    "justify": "normal",
+    "font": "600 9px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.puck.sm.san"
+  },
+  "why-krait": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1309,
+    "y": 654.5,
+    "w": 162.1,
+    "h": 11.2
+   },
+   "ink": {
+    "x": 1310,
+    "y": 653.5,
+    "w": 160.1,
+    "h": 11
+   },
+   "text": "SANS — offered Fly and OFT only, not AMT",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 8.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.rwhy"
+  },
+  "let-krait": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1477.1,
+    "y": 656.5,
+    "w": 13.7,
+    "h": 11
+   },
+   "ink": {
+    "x": 1477.1,
+    "y": 656.5,
+    "w": 13.7,
+    "h": 11
+   },
+   "text": "F/O",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 8.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.rsans-b.sw-mark"
+  },
+  "row-vinci": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1229,
+    "y": 590.5,
+    "w": 295,
+    "h": 15
+   },
+   "ink": {
+    "x": 1234,
+    "y": 591.3,
+    "w": 248.5,
+    "h": 12.3
+   },
+   "text": "Zenith C A",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.rsans-row"
+  },
+  "name-vinci": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1229,
+    "y": 590.5,
+    "w": 74,
+    "h": 15
+   },
+   "ink": {
+    "x": 1234,
+    "y": 591.3,
+    "w": 63.5,
+    "h": 12.3
+   },
+   "text": "Zenith C",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(110, 106, 46)",
+    "image": "",
+    "edge": [
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)"
+    ],
+    "corners": [
+     "3px",
+     "3px",
+     "3px",
+     "3px"
+    ],
+    "shadow": "none",
+    "color": "rgb(251, 250, 240)",
+    "align": "start",
+    "justify": "normal",
+    "font": "600 9px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.puck.sm.san"
+  },
+  "let-vinci": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1477.1,
+    "y": 592.5,
+    "w": 5.4,
+    "h": 11
+   },
+   "ink": {
+    "x": 1477.1,
+    "y": 592.5,
+    "w": 5.4,
+    "h": 11
+   },
+   "text": "A",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 8.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.rsans-b.sw-mark"
+  },
+  "hours-ipman": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1477.1,
+    "y": 639.5,
+    "w": 43.9,
+    "h": 11
+   },
+   "ink": {
+    "x": 1477.1,
+    "y": 639.5,
+    "w": 43.9,
+    "h": 11
+   },
+   "text": "08:00–10:00",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 8.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.sw-hrs"
+  }
+ },
+ "approved": {
+  "picture": "col-wrap-desktop.png",
+  "identical": true
+ }
+}

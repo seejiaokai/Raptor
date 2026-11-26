@@ -1,0 +1,122 @@
+[
+ {
+  "scn": "s25",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s25",
+  "size": "phone",
+  "id": "s25.set",
+  "what": "set-up: Marlin on VL BFM 13:00 RCP and Otter on VL ACM 16:00 RCP, nothing filed for either",
+  "ok": true,
+  "note": "\"Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)\" / \"Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00)\""
+ },
+ {
+  "scn": "s25",
+  "size": "phone",
+  "id": "s25.start",
+  "what": "both lines shown; Marlin's puck amber with \"A\" on the week and the board (line \"SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)\")",
+  "ok": true,
+  "note": "EDIT bar \"⚠ 2 issues ▲\" [adv] · 2 line(s): [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || [adv ✕] SANS availability — not filed, or planned outside it Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ✕ ·· INFO \"Friday · Jul 17 · 1 X 1\" · Draft — not yet published 12 changes · 2 ADVISORY · 2 line(s): [] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [] Advisory · SANS availability — not filed, or planned outside it Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ·· BOARD head \"▾ ⚠ 2 issues\" · 2 line(s): [✕] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || [✕] Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ✕ ·· PUCKS cards week[flying line@Fri(4.0.0.0.w):amber/A] board[flying line(4.0.0.0.w):amber/A ; crew list (week):amber/A] / wrangler week[flying line@Fri(4.1.0.0.w):amber/A] board[flying line(4.1.0.0.w):amber/A ; crew list (week):amber/A]",
+  "pics": "s25-s25-0-e-list-clip-phone.png, s25-s25-0-ipop-clip-phone.png, s25-s25-0-b-clip-phone.png, s25-s25-0-board-phone.png"
+ },
+ {
+  "scn": "s25",
+  "size": "phone",
+  "id": "s25.a-list",
+  "what": "(a) Edit Schedule: his line struck in place with the drawn Reset arrow, the count down by one; Otter's line untouched (N12)",
+  "ok": true,
+  "note": "count 2 → 1 · bar \"⚠ 1 issue ▲\" [adv] · 2 line(s): [adv HIDDEN struck [drawn icon: Flag this again]] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [adv ✕] SANS availability — not filed, or planned outside it Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ✕",
+  "pics": "s25-s25-a-e-list-clip-phone.png, s25-s25-a-ipop-clip-phone.png, s25-s25-a-b-clip-phone.png, s25-s25-a-board-phone.png"
+ },
+ {
+  "scn": "s25",
+  "size": "phone",
+  "id": "s25.a-pucks",
+  "what": "(a) his ring and \"A\" gone from every copy (week and board), Otter's kept (D469, D475)",
+  "ok": true,
+  "note": "Marlin week[flying line@Fri(4.0.0.0.w):no ring] board[flying line(4.0.0.0.w):no ring ; crew list (week):no ring] · Otter board[flying line(4.1.0.0.w):amber/A ; crew list (week):amber/A]"
+ },
+ {
+  "scn": "s25",
+  "size": "phone",
+  "id": "s25.a-board",
+  "what": "(a) the board's panel and the ⓘ popup agree: his line struck, the same count",
+  "ok": true,
+  "note": "board head \"▾ ⚠ 1 issue\" · 2 line(s): [HIDDEN struck [drawn icon: Flag this again]] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [✕] Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ✕ · ⓘ \"Friday · Jul 17 · 1 X 1\" · Draft — not yet published 13 changes · 1 ADVISORY · 2 line(s): [HIDDEN struck ] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [] Advisory · SANS availability — not filed, or planned outside it Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00)"
+ },
+ {
+  "scn": "s25",
+  "size": "phone",
+  "id": "s25.n12",
+  "what": "N12: Marlin's line on Tue 14 (the demo's) still shows — a hide is tied to that day's warning",
+  "ok": true,
+  "note": "bar \"⚠ 5 issues · 2 warnings ▲\" [hard] · 5 line(s): [hard ✕] Conflict Saint — Conflict: VL SAT (step 13:40, T/O 14:40) & APPOINTMENT 14:00–16:00 ✕ || [hard ✕] Crew rest (<12h) Outlaw — Crew rest: Monday landed 20:45 + 2h debrief (assumed) → ended 22:45 → clear 10:45. Report 06:00: 7h15 rest, needs 12h. ✕ || [adv ✕] Misses flight brief Saint — Misses VL SAT brief 12:20–14:40: APPOINTMENT 14:00–16:00 ✕ || [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on RU ACM (T/O 14:40) ✕ || [note ✕] Long day Static — Long day: 13h05 (limit 12h), 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) ✕",
+  "pics": "s25-s25-n12-tue-list-clip-phone.png"
+ },
+ {
+  "scn": "s25",
+  "size": "phone",
+  "id": "s25.b",
+  "what": "(b) flagged again: the line back unstruck with its ✕, the count back, his ring and \"A\" back",
+  "ok": true,
+  "note": "EDIT bar \"⚠ 2 issues ▲\" [adv] · 2 line(s): [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || [adv ✕] SANS availability — not filed, or planned outside it Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ✕ ·· INFO \"Friday · Jul 17 · 1 X 1\" · Draft — not yet published 14 changes · 2 ADVISORY · 2 line(s): [] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [] Advisory · SANS availability — not filed, or planned outside it Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ·· BOARD head \"▾ ⚠ 2 issues\" · 2 line(s): [✕] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || [✕] Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ✕ ·· PUCKS cards week[flying line@Fri(4.0.0.0.w):amber/A] board[flying line(4.0.0.0.w):amber/A ; crew list (week):amber/A]",
+  "pics": "s25-s25-b-e-list-clip-phone.png, s25-s25-b-ipop-clip-phone.png, s25-s25-b-b-clip-phone.png, s25-s25-b-board-phone.png"
+ },
+ {
+  "scn": "s25",
+  "size": "phone",
+  "id": "s25.c",
+  "what": "(c) hidden, then VL BFM retimed T/O 14:00 LD 15:00: does the line come back unhidden? (RECORD)",
+  "ok": "REC",
+  "note": "Marlin's line: SHOWN \"SANS: no availability filed for today. Planned on VL BFM (T/O 14:00)\" · EDIT bar \"⚠ 2 issues ▲\" [adv] · 2 line(s): [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 14:00) ✕ || [adv ✕] SANS availability — not filed, or planned outside it Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ✕ ·· INFO \"Friday · Jul 17 · 1 X 1\" · Draft — not yet published 17 changes · 2 ADVISORY · 2 line(s): [] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 14:00) || [] Advisory · SANS availability — not filed, or planned outside it Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ·· BOARD head \"▾ ⚠ 2 issues\" · 2 line(s): [✕] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 14:00) ✕ || [✕] Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ✕ ·· PUCKS cards week[flying line@Fri(4.0.0.0.w):amber/A] board[flying line(4.0.0.0.w):amber/A ; crew list (week):amber/A]",
+  "pics": "s25-s25-c-e-list-clip-phone.png, s25-s25-c-ipop-clip-phone.png, s25-s25-c-b-clip-phone.png, s25-s25-c-board-phone.png"
+ },
+ {
+  "scn": "s25",
+  "size": "phone",
+  "id": "s25.d0",
+  "what": "set-up: Marlin's line hidden before the filing",
+  "ok": true,
+  "note": "bar \"⚠ 1 issue ▲\" [adv] · 2 line(s): [adv HIDDEN struck [drawn icon: Flag this again]] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 14:00) || [adv ✕] SANS availability — not filed, or planned outside it Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ✕"
+ },
+ {
+  "scn": "s25",
+  "size": "phone",
+  "id": "s25.d-file",
+  "what": "set-up: Saber files SANS oft all day for cards on 2026-07-17",
+  "ok": true,
+  "note": "{\"iid\":\"imrldky58a0w8ku\",\"people\":\"[{\\\"p\\\":\\\"cards\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077335261}]\",\"date\":\"Jul 17\",\"endDate\":null,\"sans\":{\"o\":true},\"allday\":true,\"e\":1439,\"remarks\":\"\",\"by\":\"stiff\"}",
+  "pics": "s25-s25.d-file-form-phone.png, s25-s25.d-file-saved-phone.png"
+ },
+ {
+  "scn": "s25",
+  "size": "phone",
+  "id": "s25.d",
+  "what": "(d) Marlin filed OFT only: \"SANS: offered OFT only today. Planned on VL BFM (T/O …)\" SHOWN, not hidden; his ring and \"A\" back (the situation changed, D469)",
+  "ok": true,
+  "note": "EDIT bar \"⚠ 2 issues ▲\" [adv] · 2 line(s): [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: offered OFT only today. Planned on VL BFM (T/O 14:00) ✕ || [adv ✕] SANS availability — not filed, or planned outside it Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ✕ ·· INFO \"Friday · Jul 17 · 1 X 1\" · Draft — not yet published 19 changes · 2 ADVISORY · 2 line(s): [] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: offered OFT only today. Planned on VL BFM (T/O 14:00) || [] Advisory · SANS availability — not filed, or planned outside it Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ·· BOARD head \"▾ ⚠ 2 issues\" · 2 line(s): [✕] Marlin — SANS: offered OFT only today. Planned on VL BFM (T/O 14:00) ✕ || [✕] Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ✕ ·· PUCKS cards week[flying line@Fri(4.0.0.0.w):amber/A ; SANS@Fri:amber/A] board[flying line(4.0.0.0.w):amber/A ; SANS:amber/A ; crew list (week):amber/A]",
+  "pics": "s25-s25-d-e-list-clip-phone.png, s25-s25-d-ipop-clip-phone.png, s25-s25-d-b-clip-phone.png, s25-s25-d-board-phone.png"
+ },
+ {
+  "scn": "s25",
+  "size": "phone",
+  "id": "s25.d2",
+  "what": "the OFT filing deleted again: the line (RECORD shown / hidden and its words)",
+  "ok": "REC",
+  "note": "deleted · HIDDEN \"SANS: no availability filed for today. Planned on VL BFM (T/O 14:00)\" · EDIT bar \"⚠ 1 issue ▲\" [adv] · 2 line(s): [adv HIDDEN struck [drawn icon: Flag this again]] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 14:00) || [adv ✕] SANS availability — not filed, or planned outside it Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ✕ ·· INFO \"Friday · Jul 17 · 1 X 1\" · Draft — not yet published 20 changes · 1 ADVISORY · 2 line(s): [HIDDEN struck ] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 14:00) || [] Advisory · SANS availability — not filed, or planned outside it Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ·· BOARD head \"▾ ⚠ 1 issue\" · 2 line(s): [HIDDEN struck [drawn icon: Flag this again]] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 14:00) || [✕] Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ✕ ·· PUCKS cards week[flying line@Fri(4.0.0.0.w):no ring] board[flying line(4.0.0.0.w):no ring ; crew list (week):no ring]",
+  "pics": "s25-s25-d2-e-list-clip-phone.png, s25-s25-d2-ipop-clip-phone.png, s25-s25-d2-b-clip-phone.png, s25-s25-d2-board-phone.png"
+ },
+ {
+  "scn": "s25",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

@@ -1,0 +1,99 @@
+[
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "plain-pl.post-postout-open-phone.png, plain-pl.post-postout-sheet-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.1",
+  "what": "the board of Fri 17: + Wave → VL BFM 13:00–14:00, an OFT row \"EP-9\" 15:00–16:00",
+  "ok": "REC",
+  "note": "{\"l1\":{\"cs\":\"VL\",\"msn\":\"BFM\",\"to\":\"13:00\",\"ld\":\"14:00\"},\"oft\":{\"label\":\"EP-9\",\"str\":\"15:00\",\"end\":\"16:00\"}}",
+  "pics": "plain-pl-1-built-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.2",
+  "what": "Marlin dropped onto the line, Jester onto the OFT (tap-to-plan): each note the new line",
+  "ok": true,
+  "note": "\"Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)\" / \"Jester — SANS: no availability filed for today. Planned on Sim EP-9 15:00–16:00\"",
+  "pics": "plain-pl-2-armed-clip-phone.png, plain-pl-2-sans-clip-phone.png, plain-pl-2-armed-phone.png, plain-pl-2-note-clip-phone.png, plain-pl-2-picked-phone.png, plain-pl-3-armed-clip-phone.png, plain-pl-3-sans-clip-phone.png, plain-pl-3-armed-phone.png, plain-pl-3-note-clip-phone.png, plain-pl-3-picked-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.5",
+  "what": "the board: Undo takes Jester's drop back (his line gone from the panel), Redo puts it back (his line back)",
+  "ok": true,
+  "note": "Undo \"Undo — a change to the schedule\" → \"Undid: a change to the schedule\" · panel head \"▾ ⚠ 1 issue\" · 1 line(s): [✕] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ · Redo → \"Redid: a change to the schedule\" · panel head \"▾ ⚠ 2 issues\" · 2 line(s): [✕] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || [✕] Jester — SANS: no availability filed for today. Planned on Sim EP-9 15:00–16:00 ✕",
+  "pics": "plain-pl-6-undo-phone.png, plain-pl-7-redo-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.3",
+  "what": "Edit Schedule: the day's list opened by its bar — both lines",
+  "ok": true,
+  "note": "bar \"⚠ 2 issues ▲\" [adv] · 2 line(s): [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || [adv ✕] SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on Sim EP-9 15:00–16:00 ✕",
+  "pics": "plain-pl-3-list-clip-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.4",
+  "what": "his line hidden (✕), then flagged again (↺)",
+  "ok": true,
+  "note": "bar \"⚠ 1 issue ▲\" [adv] · 2 line(s): [adv HIDDEN struck [drawn icon: Flag this again]] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [adv ✕] SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on Sim EP-9 15:00–16:00 ✕ → bar \"⚠ 2 issues ▲\" [adv] · 2 line(s): [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || [adv ✕] SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on Sim EP-9 15:00–16:00 ✕",
+  "pics": "plain-pl-4-hidden-list-clip-phone.png, plain-pl-5-back-list-clip-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.4u",
+  "what": "the top bar's Undo right after the flag-again: what it names (RECORD — a hide and a flag-again are Undo steps)",
+  "ok": "REC",
+  "note": "\"Undo — flagging a warning again\" → \"Undid: flagging a warning again\"",
+  "pics": "plain-pl-5u-undo-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.6",
+  "what": "Edit Schedule's crew panel opened on Fri 17 (nothing picked) and closed",
+  "ok": "REC",
+  "note": "friday · Marlin [SANS Avail, STRUCK] title \"Marlin — SANS — no availability filed for today\" (no reason printed)",
+  "pics": "plain-pl-8-elist-clip-phone.png, plain-pl-8-elist-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "ERR",
+  "what": "script stopped",
+  "ok": false,
+  "note": "locator.tap: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a:visible').filter({ hasText: /Legend/i }).first()\u001b[22m\n\u001b[2m    - locator resolved to <button class=\"fchip legkey\" aria-expanded=\"false\" data-testid=\"legend-open\" title=\"What the colours and marks on the grid mean\">Legend</button>\u001b[22m\n\u001b[2m  - attempting tap action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m     ",
+  "pics": "plain-ERR-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

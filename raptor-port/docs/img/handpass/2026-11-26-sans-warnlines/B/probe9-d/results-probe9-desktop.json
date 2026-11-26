@@ -1,0 +1,63 @@
+[
+ {
+  "scn": "probe9",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "probe9",
+  "size": "desktop",
+  "id": "r1",
+  "what": "Marlin tapped into VL BFM's RCP (nothing filed)",
+  "ok": "REC",
+  "note": "placed true · note \"Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)\"",
+  "pics": "probe9-r1-marlin-armed-clip-desktop.png, probe9-r1-marlin-sans-clip-desktop.png, probe9-r1-marlin-armed-desktop.png, probe9-r1-marlin-note-clip-desktop.png, probe9-r1-marlin-picked-desktop.png"
+ },
+ {
+  "scn": "probe9",
+  "size": "desktop",
+  "id": "r2",
+  "what": "his line hidden (✕)",
+  "ok": "REC",
+  "note": "bar \"✓ No issues ▲\" [calm] · 1 line(s): [adv HIDDEN struck [drawn icon: Flag this again]] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)",
+  "pics": "probe9-r2-list-clip-desktop.png"
+ },
+ {
+  "scn": "probe9",
+  "size": "desktop",
+  "id": "r3",
+  "what": "the line removed by its ✕, then made again the same (+ Wave)",
+  "ok": "REC",
+  "note": "removed true \"Line removed — VL · BFM, 13:00–14:00, Marlin\" · new line {\"cs\":\"VL\",\"msn\":\"BFM\",\"to\":\"13:00\",\"ld\":\"14:00\"} seat 4.1.0.0.w · Marlin holds []",
+  "pics": "probe9-r3-ldel-desktop.png"
+ },
+ {
+  "scn": "probe9",
+  "size": "desktop",
+  "id": "r4",
+  "what": "Marlin tapped into the new line's RCP: the note (FAIL if the crew list's old words \"SANS — no availability filed for today\")",
+  "ok": false,
+  "note": "placed true · note \"Marlin — SANS — no availability filed for today\"",
+  "pics": "probe9-r4-marlin-back-armed-clip-desktop.png, probe9-r4-marlin-back-sans-clip-desktop.png, probe9-r4-marlin-back-armed-desktop.png, probe9-r4-marlin-back-note-clip-desktop.png, probe9-r4-marlin-back-picked-desktop.png"
+ },
+ {
+  "scn": "probe9",
+  "size": "desktop",
+  "id": "r5",
+  "what": "the list after (his line hidden or shown)",
+  "ok": "REC",
+  "note": "bar \"✓ No issues ▲\" [calm] · 1 line(s): [adv HIDDEN struck [drawn icon: Flag this again]] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)",
+  "pics": "probe9-r5-list-clip-desktop.png"
+ },
+ {
+  "scn": "probe9",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

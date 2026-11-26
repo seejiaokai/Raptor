@@ -1,0 +1,112 @@
+[
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "s23.lines",
+  "what": "set-up: VL BFM 09:00–10:00 and VL ACM 12:30–13:30 on Fri 17",
+  "ok": true,
+  "note": "[{\"cs\":\"VL\",\"msn\":\"BFM\",\"to\":\"09:00\",\"ld\":\"10:00\"},{\"cs\":\"VL\",\"msn\":\"ACM\",\"to\":\"12:30\",\"ld\":\"13:30\"}]"
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "s23.plant",
+  "what": "set-up: Jester (SANS pilot, nothing filed) tapped into both FCPs",
+  "ok": true,
+  "note": "\"Jester — SANS: no availability filed for today. Planned on VL BFM (T/O 09:00)\" / \"Jester — SANS: no availability filed for today. Planned on VL ACM (T/O 12:30) (+1 more)\""
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "s23.dt",
+  "what": "two sorties 150 min apart: the list and his pucks (RECORD the double-turn line)",
+  "ok": "REC",
+  "note": "EDIT bar \"⚠ 3 issues ▲\" [adv] · 3 line(s): [adv ✕] Double turning Jester — 1 person is double turning: Jester ✕ || [adv ✕] SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on VL BFM (T/O 09:00) ✕ || [adv ✕] SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on VL ACM (T/O 12:30) ✕ ·· INFO \"Friday · Jul 17 · 1 X 1\" · Draft — not yet published 12 changes · 3 ADVISORY · 3 line(s): [] Advisory · Double turning Jester — 1 person is double turning: Jester || [] Advisory · SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on VL BFM (T/O 09:00) || [] Advisory · SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on VL ACM (T/O 12:30) ·· BOARD head \"▾ ⚠ 3 issues\" · 3 line(s): [✕] Jester — 1 person is double turning: Jester ✕ || [✕] Jester — SANS: no availability filed for today. Planned on VL BFM (T/O 09:00) ✕ || [✕] Jester — SANS: no availability filed for today. Planned on VL ACM (T/O 12:30) ✕ ·· PUCKS ipman week[flying line@Fri(4.0.0.0.p):amber/A ; flying line@Fri(4.1.0.0.p):amber/A] board[flying line(4.0.0.0.p):amber/A ; flying line(4.1.0.0.p):amber/A ; crew list (week):amber/A]",
+  "pics": "s23-s23-dt-e-list-clip-phone.png, s23-s23-dt-ipop-clip-phone.png, s23-s23-dt-b-clip-phone.png, s23-s23-dt-board-phone.png"
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "s23.dt-A",
+  "what": "his seat pucks show \"A\", not \"DT\", while the SANS lines show (the built chip order, D2583)",
+  "ok": true,
+  "note": "flying line(4.0.0.0.p):amber/A ; flying line(4.1.0.0.p):amber/A"
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "s23.tt",
+  "what": "VL ACM retimed 11:00–12:00 (60 min after landing): the list and his pucks",
+  "ok": "REC",
+  "note": "EDIT bar \"⚠ 4 issues ▲\" [adv] · 4 line(s): [adv ✕] Tight turn Jester — Tight turn: VL BFM → VL ACM, 60 min (needs 120). VL BFM landing 10:00, VL ACM T/O 11:00 ✕ || [adv ✕] Double turning Jester — 1 person is double turning: Jester ✕ || [adv ✕] SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on VL BFM (T/O 09:00) ✕ || [adv ✕] SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on VL ACM (T/O 11:00) ✕ ·· INFO \"Friday · Jul 17 · 1 X 1\" · Draft — not yet published 14 changes · 4 ADVISORY · 4 line(s): [] Advisory · Tight turn Jester — Tight turn: VL BFM → VL ACM, 60 min (needs 120). VL BFM landing 10:00, VL ACM T/O 11:00 || [] Advisory · Double turning Jester — 1 person is double turning: Jester || [] Advisory · SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on VL BFM (T/O 09:00) || [] Advisory · SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on VL ACM (T/O 11:00) ·· BOARD head \"▾ ⚠ 4 issues\" · 4 line(s): [✕] Jester — Tight turn: VL BFM → VL ACM, 60 min (needs 120). VL BFM landing 10:00, VL ACM T/O 11:00 ✕ || [✕] Jester — 1 person is double turning: Jester ✕ || [✕] Jester — SANS: no availability filed for today. Planned on VL BFM (T/O 09:00) ✕ || [✕] Jester — SANS: no availability filed for today. Planned on VL ACM (T/O 11:00) ✕ ·· PUCKS ipman week[flying line@Fri(4.0.0.0.p):amber/A ; flying line@Fri(4.1.0.0.p):amber/A] board[flying line(4.0.0.0.p):amber/A ; flying line(4.1.0.0.p):amber/A ; crew list (week):amber/A]",
+  "pics": "s23-s23-tt-e-list-clip-phone.png, s23-s23-tt-ipop-clip-phone.png, s23-s23-tt-b-clip-phone.png, s23-s23-tt-board-phone.png"
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "s23.tt-A",
+  "what": "a tight turn stands in the list, and his seat pucks still show \"A\", not \"TT\"; one chip a puck",
+  "ok": true,
+  "note": "1 tight-turn line(s) · flying line(4.0.0.0.p):amber/A ; flying line(4.1.0.0.p):amber/A"
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "s23.hid",
+  "what": "both SANS lines hidden (✕): the list and his pucks",
+  "ok": "REC",
+  "note": "EDIT bar \"⚠ 2 issues ▲\" [adv] · 4 line(s): [adv ✕] Tight turn Jester — Tight turn: VL BFM → VL ACM, 60 min (needs 120). VL BFM landing 10:00, VL ACM T/O 11:00 ✕ || [adv ✕] Double turning Jester — 1 person is double turning: Jester ✕ || [adv HIDDEN struck [drawn icon: Flag this again]] SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on VL BFM (T/O 09:00) || [adv HIDDEN struck [drawn icon: Flag this again]] SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on VL ACM (T/O 11:00) ·· INFO \"Friday · Jul 17 · 1 X 1\" · Draft — not yet published 16 changes · 2 ADVISORY · 4 line(s): [] Advisory · Tight turn Jester — Tight turn: VL BFM → VL ACM, 60 min (needs 120). VL BFM landing 10:00, VL ACM T/O 11:00 || [] Advisory · Double turning Jester — 1 person is double turning: Jester || [HIDDEN struck ] Advisory · SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on VL BFM (T/O 09:00) || [HIDDEN struck ] Advisory · SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on VL ACM (T/O 11:00) ·· BOARD head \"▾ ⚠ 2 issues\" · 4 line(s): [✕] Jester — Tight turn: VL BFM → VL ACM, 60 min (needs 120). VL BFM landing 10:00, VL ACM T/O 11:00 ✕ || [✕] Jester — 1 person is double turning: Jester ✕ || [HIDDEN struck [drawn icon: Flag this again]] Jester — SANS: no availability filed for today. Planned on VL BFM (T/O 09:00) || [HIDDEN struck [drawn icon: Flag this again]] Jester — SANS: no availability filed for today. Planned on VL ACM (T/O 11:00) ·· PUCKS ipman week[flying line@Fri(4.0.0.0.p):no ring/TT ; flying line@Fri(4.1.0.0.p):no ring/TT] board[flying line(4.0.0.0.p):no ring/TT ; flying line(4.1.0.0.p):no ring/TT ; crew list (week):no ring/TT]",
+  "pics": "s23-s23-hid-e-list-clip-phone.png, s23-s23-hid-ipop-clip-phone.png, s23-s23-hid-b-clip-phone.png, s23-s23-hid-board-phone.png"
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "s23.hid-TT",
+  "what": "with the SANS lines hidden his pucks show the turn chip (\"TT\" or \"DT\"), the turn lines still standing (D475)",
+  "ok": true,
+  "note": "flying line(4.0.0.0.p):no ring/TT ; flying line(4.1.0.0.p):no ring/TT"
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "s23.file",
+  "what": "set-up: Saber files SANS fly all day for ipman on 2026-07-17",
+  "ok": true,
+  "note": "{\"iid\":\"imrldkg0j3zm457\",\"people\":\"[{\\\"p\\\":\\\"ipman\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077311763}]\",\"date\":\"Jul 17\",\"endDate\":null,\"sans\":{\"f\":true},\"allday\":true,\"e\":1439,\"remarks\":\"\",\"by\":\"stiff\"}",
+  "pics": "s23-s23.file-form-phone.png, s23-s23.file-saved-phone.png"
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "s23.filed",
+  "what": "Fly filed all day: no SANS line; the turn chip shows; the turn lines stay",
+  "ok": true,
+  "note": "EDIT bar \"⚠ 2 issues ▲\" [adv] · 2 line(s): [adv ✕] Tight turn Jester — Tight turn: VL BFM → VL ACM, 60 min (needs 120). VL BFM landing 10:00, VL ACM T/O 11:00 ✕ || [adv ✕] Double turning Jester — 1 person is double turning: Jester ✕ ·· INFO \"Friday · Jul 17 · 1 X 1\" · Draft — not yet published 19 changes · 2 ADVISORY · 2 line(s): [] Advisory · Tight turn Jester — Tight turn: VL BFM → VL ACM, 60 min (needs 120). VL BFM landing 10:00, VL ACM T/O 11:00 || [] Advisory · Double turning Jester — 1 person is double turning: Jester ·· BOARD head \"▾ ⚠ 2 issues\" · 2 line(s): [✕] Jester — Tight turn: VL BFM → VL ACM, 60 min (needs 120). VL BFM landing 10:00, VL ACM T/O 11:00 ✕ || [✕] Jester — 1 person is double turning: Jester ✕ ·· PUCKS ipman week[flying line@Fri(4.0.0.0.p):no ring/TT ; flying line@Fri(4.1.0.0.p):no ring/TT ; SANS@Fri:no ring/TT] board[flying line(4.0.0.0.p):no ring/TT ; flying line(4.1.0.0.p):no ring/TT ; SANS:no ring/TT ; crew list (week):no ring/TT]",
+  "pics": "s23-s23-filed-e-list-clip-phone.png, s23-s23-filed-ipop-clip-phone.png, s23-s23-filed-b-clip-phone.png, s23-s23-filed-board-phone.png"
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "s23.unfiled",
+  "what": "the filing deleted: both SANS lines back, \"A\" back on both seat pucks",
+  "ok": true,
+  "note": "Input deleted · EDIT bar \"⚠ 4 issues ▲\" [adv] · 4 line(s): [adv ✕] Tight turn Jester — Tight turn: VL BFM → VL ACM, 60 min (needs 120). VL BFM landing 10:00, VL ACM T/O 11:00 ✕ || [adv ✕] Double turning Jester — 1 person is double turning: Jester ✕ || [adv ✕] SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on VL BFM (T/O 09:00) ✕ || [adv ✕] SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on VL ACM (T/O 11:00) ✕ ·· INFO \"Friday · Jul 17 · 1 X 1\" · Draft — not yet published 20 changes · 4 ADVISORY · 4 line(s): [] Advisory · Tight turn Jester — Tight turn: VL BFM → VL ACM, 60 min (needs 120). VL BFM landing 10:00, VL ACM T/O 11:00 || [] Advisory · Double turning Jester — 1 person is double turning: Jester || [] Advisory · SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on VL BFM (T/O 09:00) || [] Advisory · SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on VL ACM (T/O 11:00) ·· BOARD head \"▾ ⚠ 4 issues\" · 4 line(s): [✕] Jester — Tight turn: VL BFM → VL ACM, 60 min (needs 120). VL BFM landing 10:00, VL ACM T/O 11:00 ✕ || [✕] Jester — 1 person is double turning: Jester ✕ || [✕] Jester — SANS: no availability filed for today. Planned on VL BFM (T/O 09:00) ✕ || [✕] Jester — SANS: no availability filed for today. Planned on VL ACM (T/O 11:00) ✕ ·· PUCKS ipman week[flying line@Fri(4.0.0.0.p):amber/A ; flying line@Fri(4.1.0.0.p):amber/A] board[flying line(4.0.0.0.p):amber/A ; flying line(4.1.0.0.p):amber/A ; crew list (week):amber/A]",
+  "pics": "s23-s23-unfiled-e-list-clip-phone.png, s23-s23-unfiled-ipop-clip-phone.png, s23-s23-unfiled-b-clip-phone.png, s23-s23-unfiled-board-phone.png"
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

@@ -1639,3 +1639,29 @@ sides.
 **Issue:** The clashes were resolved and staged (git add -A), the document check then failed, a fix was made in the working files, the check passed — and the merge was committed from the index, without the fix. The pushed merge carried the doubled ruling row; it was caught only by a later git status.
 **Suggested improvement:** After any fix made between staging and committing, stage again (or commit with the changed paths named) and read git status --short before the commit; a check that passes on the working files proves nothing about the index.
 **Principle:** A check run on the working tree vouches for the working tree, not for what the commit will hold.
+
+### Observation 1095: An exported copy for an outside reader made from memory, not from the guide's steps
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** chat 207 — a copy of the branch for Astra's blind scenario design (numbered past other branches' 1091–1094)
+**Skill:** New skill candidate: outside-reader-copy (today the steps live in `raptor-port/docs/codex-guide.md`)
+**Type:** open-source
+**Phase/Area:** making the reader's copy
+
+**Issue:** The host typed the export from memory as a plain `git archive HEAD`; it pulled about 5.4 GB of old pictures and ran past five minutes before being stopped and redone. The guide's step 1 already gives the picture-free export (the same failure it records from 19 Nov 26), and its step 2 (take this round's handoff block and evidence sheet out of the copy) was skipped too.
+**Suggested improvement:** One script in the repo that makes the copy — picture-free export, this round's handoff block and sheets replaced by a line, `git init` and commit, the checks of step 3 — so the steps are run, never retyped; the guide's step list points to it.
+**Principle:** A multi-step recipe that is retyped each time will be retyped from memory; put it in a script the guide names.
+
+### Observation 1096: A comparison run drove another walker's server, and the printed build name was not checked
+
+**Status:** OPEN
+**Date:** 27 Nov 26
+**Session context:** chat 207 — comparing walker C's phone tap on this build, `main` and the commit before the column change
+**Skill:** New skill candidate: build-comparison runs (today `raptor-port/docs/walk-scripts.md`)
+**Type:** open-source
+**Phase/Area:** serving a second build beside running walkers
+
+**Issue:** The loop served `main`'s build on a port a walker already held; the second server failed to start, the curl printed the walker's build name (the branch's), and the run went on — its "main" result was the branch again. Only reading the printed name afterwards caught it.
+**Suggested improvement:** A comparison script takes the expected main-script name per build and stops when the served page names another; ports come from a free-port check, never a fixed list beside live walkers.
+**Principle:** A run that prints the identity of what it tested must also refuse to go on when that identity is wrong.

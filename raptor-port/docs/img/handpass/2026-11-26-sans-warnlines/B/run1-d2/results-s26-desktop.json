@@ -1,0 +1,116 @@
+[
+ {
+  "scn": "s26",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s26",
+  "size": "desktop",
+  "id": "s26.m",
+  "what": "set-up: Marlin on VL BFM 13:00 RCP, nothing filed",
+  "ok": true,
+  "note": "\"Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)\""
+ },
+ {
+  "scn": "s26",
+  "size": "desktop",
+  "id": "s26.f40a",
+  "what": "F40: the only issue is his SANS line — the bar amber, \"1 issue\" (in every place)",
+  "ok": true,
+  "note": "bar \"⚠ 1 issue ▲\" [daywarn adv] rgb(242, 214, 155) / rgba(229, 168, 59, 0.1) · board \"⚠ 1 issue\" · ⓘ Draft — not yet published 6 changes 1 ADVISORY",
+  "pics": "s26-s26-1-e-list-clip-desktop.png, s26-s26-1-ipop-clip-desktop.png, s26-s26-1-b-clip-desktop.png, s26-s26-1-board-desktop.png"
+ },
+ {
+  "scn": "s26",
+  "size": "desktop",
+  "id": "s26.f40b",
+  "what": "a red conflict added (Bolt over his SDO desk): the bar turns red",
+  "ok": true,
+  "note": "\"Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) (+3 more)\" · bar \"⚠ 5 issues · 1 warning ▲\" [daywarn hard] · bar \"⚠ 5 issues · 1 warning ▲\" [hard] · 5 line(s): [hard ✕] Conflict Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) ✕ || [adv ✕] Misses flight brief Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 ✕ || [adv ✕] Misses flight debrief Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 ✕ || [adv ✕] SANS availability — not filed, or planned outside it Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕",
+  "pics": "s26-s26-2-e-list-clip-desktop.png, s26-s26-2-ipop-clip-desktop.png, s26-s26-2-b-clip-desktop.png, s26-s26-2-board-desktop.png"
+ },
+ {
+  "scn": "s26",
+  "size": "desktop",
+  "id": "s26.a26-amber",
+  "what": "A26: the red line(s) hidden, the SANS lines still showing — the bar amber",
+  "ok": true,
+  "note": "bar \"⚠ 4 issues ▲\" [daywarn adv] · bar \"⚠ 4 issues ▲\" [adv] · 5 line(s): [hard HIDDEN struck [drawn icon: Flag this again]] Conflict Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) || [adv ✕] Misses flight brief Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 ✕ || [adv ✕] Misses flight debrief Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 ✕ || [adv ✕] SANS availability — not filed, or planned outside it Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕",
+  "pics": "s26-s26-3-e-list-clip-desktop.png, s26-s26-3-ipop-clip-desktop.png, s26-s26-3-b-clip-desktop.png, s26-s26-3-board-desktop.png"
+ },
+ {
+  "scn": "s26",
+  "size": "desktop",
+  "id": "s26.none",
+  "what": "every issue hidden: a quiet \"✓ No issues\" bar, the lines struck under it; the board \"No conflicts flagged ✓\" with the struck lines; no ring or \"A\" on Marlin (D471, D472)",
+  "ok": true,
+  "note": "EDIT bar \"✓ No issues ▲\" [calm] · 5 line(s): [hard HIDDEN struck [drawn icon: Flag this again]] Conflict Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) || [adv HIDDEN struck [drawn icon: Flag this again]] Misses flight brief Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 || [adv HIDDEN struck [drawn icon: Flag this again]] Misses flight debrief Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 || [adv HIDDEN struck [drawn icon: Flag this again]] SANS availability — not filed, or planned outside it Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [adv HIDDEN struck [drawn icon: Flag this again]] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ·· INFO \"Friday · Jul 17 · 1\" · Draft — not yet published 12 changes ·  · 5 line(s): [HIDDEN struck ] Warning · Conflict Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) || [HIDDEN struck ] Advisory · Misses flight brief Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 || [HIDDEN struck ] Advisory · Misses flight debrief Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 || [HIDDEN struck ] Advisory · SANS availability — not filed, or planned outside it Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [HIDDEN struck ] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ·· BOARD head \"No conflicts flagged for Friday ✓\" · 5 line(s): [HIDDEN struck [drawn icon: Flag this again]] Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) || [HIDDEN struck [drawn icon: Flag this again]] Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 || [HIDDEN struck [drawn icon: Flag this again]] Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 || [HIDDEN struck [drawn icon: Flag this again]] Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [HIDDEN struck [drawn icon: Flag this again]] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ·· PUCKS cards week[flying line@Fri(4.0.0.0.w):no ring] board[flying line(4.0.0.0.w):no ring ; crew list (week):no ring] / yeti week[flying line@Fri(4.0.0.0.p):no ring ; duty@Fri(d:4.0.0):no ring] board[flying line(4.0.0.0.p):no ring ; duty(d:4.0.0):no ring ; crew list (week):no ring]",
+  "pics": "s26-s26-4-e-list-clip-desktop.png, s26-s26-4-ipop-clip-desktop.png, s26-s26-4-b-clip-desktop.png, s26-s26-4-board-desktop.png"
+ },
+ {
+  "scn": "s26",
+  "size": "desktop",
+  "id": "s26.bar-opens",
+  "what": "the \"✓ No issues\" bar, pressed, opens the list and shuts it again",
+  "ok": true,
+  "note": "open true · shut true",
+  "pics": "s26-s26-shut-list-clip-desktop.png"
+ },
+ {
+  "scn": "s26",
+  "size": "desktop",
+  "id": "s26.reload",
+  "what": "after a reload and signing in again: still every line hidden, the quiet bar",
+  "ok": true,
+  "note": "EDIT bar \"✓ No issues ▲\" [calm] · 5 line(s): [hard HIDDEN struck [drawn icon: Flag this again]] Conflict Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) || [adv HIDDEN struck [drawn icon: Flag this again]] Misses flight brief Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 || [adv HIDDEN struck [drawn icon: Flag this again]] Misses flight debrief Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 || [adv HIDDEN struck [drawn icon: Flag this again]] SANS availability — not filed, or planned outside it Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [adv HIDDEN struck [drawn icon: Flag this again]] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ·· INFO \"Friday · Jul 17 · 1\" · Draft — not yet published 12 changes ·  · 5 line(s): [HIDDEN struck ] Warning · Conflict Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) || [HIDDEN struck ] Advisory · Misses flight brief Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 || [HIDDEN struck ] Advisory · Misses flight debrief Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 || [HIDDEN struck ] Advisory · SANS availability — not filed, or planned outside it Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [HIDDEN struck ] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ·· BOARD head \"No conflicts flagged for Friday ✓\" · 5 line(s): [HIDDEN struck [drawn icon: Flag this again]] Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) || [HIDDEN struck [drawn icon: Flag this again]] Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 || [HIDDEN struck [drawn icon: Flag this again]] Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 || [HIDDEN struck [drawn icon: Flag this again]] Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [HIDDEN struck [drawn icon: Flag this again]] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ·· PUCKS cards week[flying line@Fri(4.0.0.0.w):no ring] board[flying line(4.0.0.0.w):no ring ; crew list (week):no ring]",
+  "pics": "s26-s26-5-e-list-clip-desktop.png, s26-s26-5-ipop-clip-desktop.png, s26-s26-5-b-clip-desktop.png, s26-s26-5-board-desktop.png"
+ },
+ {
+  "scn": "s26",
+  "size": "desktop",
+  "id": "s26.member",
+  "what": "as Ranger, View-only Sched: the day's lines struck, the bar quiet; no ✕ and no Reset arrow on any line (D469, D471, N14)",
+  "ok": true,
+  "note": "bar \"✓ No issues ▲\" [calm] · 5 line(s): [hard HIDDEN struck] Conflict Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) || [adv HIDDEN struck] Misses flight brief Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 || [adv HIDDEN struck] Misses flight debrief Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 || [adv HIDDEN struck] SANS availability — not filed, or planned outside it Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [adv HIDDEN struck] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)",
+  "pics": "s26-s26-ranger-list-clip-desktop.png"
+ },
+ {
+  "scn": "s26",
+  "size": "desktop",
+  "id": "s26.member-info",
+  "what": "as Ranger, the ⓘ popup on View-only Sched (RECORD)",
+  "ok": "REC",
+  "note": "\"Friday · Jul 17 · 1\" · Draft — not yet published 12 new ·  · 5 line(s): [HIDDEN struck ] Warning · Conflict Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) || [HIDDEN struck ] Advisory · Misses flight brief Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 || [HIDDEN struck ] Advisory · Misses flight debrief Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 || [HIDDEN struck ] Advisory · SANS availability — not filed, or planned outside it Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [HIDDEN struck ] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) · closed true",
+  "pics": "s26-s26-ranger-ipop-clip-desktop.png"
+ },
+ {
+  "scn": "s26",
+  "size": "desktop",
+  "id": "s26.reset",
+  "what": "Marlin's line flagged again: shown, the bar amber, his ring and \"A\" back",
+  "ok": true,
+  "note": "EDIT bar \"⚠ 1 issue ▲\" [adv] · 5 line(s): [hard HIDDEN struck [drawn icon: Flag this again]] Conflict Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) || [adv HIDDEN struck [drawn icon: Flag this again]] Misses flight brief Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 || [adv HIDDEN struck [drawn icon: Flag this again]] Misses flight debrief Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 || [adv HIDDEN struck [drawn icon: Flag this again]] SANS availability — not filed, or planned outside it Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ ·· INFO \"Friday · Jul 17 · 1\" · Draft — not yet published 13 changes · 1 ADVISORY · 5 line(s): [HIDDEN struck ] Warning · Conflict Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) || [HIDDEN struck ] Advisory · Misses flight brief Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 || [HIDDEN struck ] Advisory · Misses flight debrief Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 || [HIDDEN struck ] Advisory · SANS availability — not filed, or planned outside it Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ·· BOARD head \"⚠ 1 issue\" · 5 line(s): [HIDDEN struck [drawn icon: Flag this again]] Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) || [HIDDEN struck [drawn icon: Flag this again]] Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 || [HIDDEN struck [drawn icon: Flag this again]] Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 || [HIDDEN struck [drawn icon: Flag this again]] Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [✕] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ ·· PUCKS cards week[flying line@Fri(4.0.0.0.w):amber/A] board[flying line(4.0.0.0.w):amber/A ; crew list (week):amber/A]",
+  "pics": "s26-s26-6-e-list-clip-desktop.png, s26-s26-6-ipop-clip-desktop.png, s26-s26-6-b-clip-desktop.png, s26-s26-6-board-desktop.png"
+ },
+ {
+  "scn": "s26",
+  "size": "desktop",
+  "id": "s26.member2",
+  "what": "as Ranger again: his line shown on View-only Sched",
+  "ok": true,
+  "note": "bar \"⚠ 1 issue ▲\" [adv] · 5 line(s): [hard HIDDEN struck] Conflict Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) || [adv HIDDEN struck] Misses flight brief Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 || [adv HIDDEN struck] Misses flight debrief Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 || [adv HIDDEN struck] SANS availability — not filed, or planned outside it Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [adv] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)",
+  "pics": "s26-s26-ranger2-list-clip-desktop.png"
+ },
+ {
+  "scn": "s26",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

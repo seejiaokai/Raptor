@@ -1,0 +1,129 @@
+[
+ {
+  "scn": "s36",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s36",
+  "size": "phone",
+  "id": "s36.m",
+  "what": "set-up: Marlin on VL BFM 13:00 RCP, nothing filed",
+  "ok": true,
+  "note": "\"Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)\""
+ },
+ {
+  "scn": "s36",
+  "size": "phone",
+  "id": "s36.g",
+  "what": "set-up: a Ground Programme row \"SWL GROUND\" 16:00–17:00 holding Marlin",
+  "ok": true,
+  "note": "row {\"prog\":\"SWL GROUND\",\"str\":\"16:00\",\"end\":\"17:00\",\"who\":\"\",\"rid\":\"rmrldieyozihnk6\"} · \"Marlin planned\""
+ },
+ {
+  "scn": "s36",
+  "size": "phone",
+  "id": "s36.copies",
+  "what": "every copy of his puck that day, week and board (RECORD each)",
+  "ok": "REC",
+  "note": "week[flying line@Fri(4.0.0.0.w):amber/A ; ground@Fri(g:4.2):amber/A] · board[flying line(4.0.0.0.w):amber/A ; ground(g:4.2):amber/A ; crew list (week):amber/A]",
+  "pics": "s36-s36-1-e-list-clip-phone.png, s36-s36-1-ipop-clip-phone.png, s36-s36-1-b-clip-phone.png, s36-s36-1-board-phone.png"
+ },
+ {
+  "scn": "s36",
+  "size": "phone",
+  "id": "s36.copies-A",
+  "what": "each drawn copy wears the amber ring and \"A\" — no other letter (N8, D2583)",
+  "ok": true,
+  "note": "flying line@Fri(4.0.0.0.w):amber/A ; ground@Fri(g:4.2):amber/A ; flying line(4.0.0.0.w):amber/A ; ground(g:4.2):amber/A ; crew list (week):amber/A"
+ },
+ {
+  "scn": "s36",
+  "size": "phone",
+  "id": "s36.one-line",
+  "what": "one SANS line for him (the ground row raises none, D2564)",
+  "ok": true,
+  "note": "bar \"⚠ 1 issue ▲\" [adv] · 1 line(s): [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕"
+ },
+ {
+  "scn": "s36",
+  "size": "phone",
+  "id": "s36.crew",
+  "what": "the board's crew list, nothing armed: his puck carries the amber ring and \"A\", and no reason line under it (D2420)",
+  "ok": true,
+  "note": "[SANS Avail, STRUCK] title \"Marlin — SANS — no availability filed for today\" (no reason printed) · painted crew list (week):amber/A",
+  "pics": "s36-s36-crew-clip-phone.png"
+ },
+ {
+  "scn": "s36",
+  "size": "phone",
+  "id": "s36.a27",
+  "what": "A27: a ground row 11:00–12:00 inside his brief: the list and his pucks (RECORD)",
+  "ok": "REC",
+  "note": "\"Marlin — Misses VL BFM brief 10:40–13:00: SWL BRIEF CLASH 11:00–12:00\" · EDIT bar \"⚠ 2 issues ▲\" [adv] · 2 line(s): [adv ✕] Misses flight brief Marlin — Misses VL BFM brief 10:40–13:00: SWL BRIEF CLASH 11:00–12:00 ✕ || [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ ·· INFO \"Friday · Jul 17 · 1\" · Draft — not yet published 16 changes · 2 ADVISORY · 2 line(s): [] Advisory · Misses flight brief Marlin — Misses VL BFM brief 10:40–13:00: SWL BRIEF CLASH 11:00–12:00 || [] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ·· BOARD head \"▾ ⚠ 2 issues\" · 2 line(s): [✕] Marlin — Misses VL BFM brief 10:40–13:00: SWL BRIEF CLASH 11:00–12:00 ✕ || [✕] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ ·· PUCKS cards week[flying line@Fri(4.0.0.0.w):amber/B ; ground@Fri(g:4.3):amber/B ; ground@Fri(g:4.2):amber/B] board[flying line(4.0.0.0.w):amber/B ; ground(g:4.3):amber/B ; ground(g:4.2):amber/B ; crew list (week):amber/B]",
+  "pics": "s36-s36-2-e-list-clip-phone.png, s36-s36-2-ipop-clip-phone.png, s36-s36-2-b-clip-phone.png, s36-s36-2-board-phone.png"
+ },
+ {
+  "scn": "s36",
+  "size": "phone",
+  "id": "s36.a27-both",
+  "what": "both advisories showing: the chip his seat puck wears (RECORD — which letter wins)",
+  "ok": "REC",
+  "note": "flying line(4.0.0.0.w):amber/B · count 2"
+ },
+ {
+  "scn": "s36",
+  "size": "phone",
+  "id": "s36.a27-1",
+  "what": "only the SANS line hidden: his seat puck keeps an amber ring with the other advisory's own letter (the flag of the one still showing, D475); the count down by one",
+  "ok": true,
+  "note": "flying line(4.0.0.0.w):amber/B · count 1",
+  "pics": "s36-s36-3-e-list-clip-phone.png, s36-s36-3-ipop-clip-phone.png, s36-s36-3-b-clip-phone.png, s36-s36-3-board-phone.png"
+ },
+ {
+  "scn": "s36",
+  "size": "phone",
+  "id": "s36.a27-2",
+  "what": "SANS flagged again, only the other advisory hidden: \"A\" on his seat puck, amber ring",
+  "ok": true,
+  "note": "flying line(4.0.0.0.w):amber/A · count 1",
+  "pics": "s36-s36-4-e-list-clip-phone.png, s36-s36-4-ipop-clip-phone.png, s36-s36-4-b-clip-phone.png, s36-s36-4-board-phone.png"
+ },
+ {
+  "scn": "s36",
+  "size": "phone",
+  "id": "s36.a27-3",
+  "what": "both hidden: no chip and no amber ring on his seat puck; the count down by both",
+  "ok": true,
+  "note": "flying line(4.0.0.0.w):no ring · bar \"✓ No issues ▲\"",
+  "pics": "s36-s36-5-e-list-clip-phone.png, s36-s36-5-ipop-clip-phone.png, s36-s36-5-b-clip-phone.png, s36-s36-5-board-phone.png"
+ },
+ {
+  "scn": "s36",
+  "size": "phone",
+  "id": "s36.a27-4",
+  "what": "SANS flagged again alone: its line and \"A\" back; the other stays hidden (one reset revives one)",
+  "ok": true,
+  "note": "flying line(4.0.0.0.w):amber/A · bar \"⚠ 1 issue ▲\" [adv] · 2 line(s): [adv HIDDEN struck [drawn icon: Flag this again]] Misses flight brief Marlin — Misses VL BFM brief 10:40–13:00: SWL BRIEF CLASH 11:00–12:00 || [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕",
+  "pics": "s36-s36-6-e-list-clip-phone.png, s36-s36-6-ipop-clip-phone.png, s36-s36-6-b-clip-phone.png, s36-s36-6-board-phone.png"
+ },
+ {
+  "scn": "s36",
+  "size": "phone",
+  "id": "s36.a27-letters",
+  "what": "the letters seen (RECORD)",
+  "ok": "REC",
+  "note": "both showing \"B\" · SANS hidden \"B\""
+ },
+ {
+  "scn": "s36",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

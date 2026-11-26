@@ -79,8 +79,11 @@ older tests decided one by one in chat 186 (`33c916756`, `1d50184c9`; `docs/supe
 4. **The walk chosen:** three Opus walkers (A, B, C — the walk brief) on one build of the branch head, desktop 1536 and
    phone 402 WebKit, every scenario of both designers combined, the plain-user round by each. NOT STARTED in chat 203:
    the checks lock was held all day by chats 190 and 201; the head now also carries the crew list's words and column
-   (`dbd8e9a4e`), walked in the same build with its drawing check — the next chat writes the build and its main script
-   here.
+   (`dbd8e9a4e`), walked in the same build with its drawing check. **Chat 207:** `main` brought in (`ab72316f4`, pull
+   request 855's code-check fix with it); the checks lock taken; built once into `D:/raptor-work/c203-build` (main script
+   `assets/index-ZgGJLqIy.js`); walkers A, B and C started on it. The crew list's words and column get their own scenario
+   designs (Astra and a fresh Fable, blind — `docs/superpowers/briefs/2026-11-26-sans-crewcol-scenarios-brief.md`) and
+   their walk with the drawing check on the same build.
 5. **After the walk:** its row in `docs/walk-ledger.md`.
 
 ## 5. The scenarios (Astra and a fresh Fable, blind to each other, combined by the host)
@@ -102,20 +105,75 @@ Astra (gpt-6-astra): 32 scenarios, 15 negatives, 3 questions (`…-scenarios-ast
 
 ## 6. The orders walked
 
+Chat 207, on the frozen build `D:/raptor-work/c203-build` (`ab72316f4`, `index-ZgGJLqIy.js`), desktop 1536 and phone 402
+WebKit, every scenario of both designers combined (the walk brief), the plain-user round by each: walker A (the line on
+every kind of seat, its words everywhere — 14 cited runs), B (hiding, publishing, Undo, marks, the note, print), C (his
+SANS date, filings, moves, the demo week, the Logic page). The crew list's words and column: a second scenario round
+(Astra and a fresh Fable, blind — `D:/raptor-work/c207-design/`, combined in
+`docs/superpowers/briefs/2026-11-27-sans-crewcol-walk-brief.md`), walked by B on the same build with the drawing check.
+Reports: `D:/raptor-work/c203-walk/{A,B,C}-report.md`, `D:/raptor-work/c207-walk/B-report.md`.
+
 ## 7. Cases carried by a test
+
+A hidden OFT line never hides an AMT line worded the same (`src/engine/sans-hide-event.test.ts`); each SANS man's puck as
+wide as what he is drawn as, the column after the drawn reason, no reason wrapped on a desktop beside a man's hours
+(`e2e/sans-unfiled-wrap.spec.ts`); the rest as §2 names.
 
 ## 8. The pictures
 
+`docs/img/handpass/2026-11-26-sans-warnlines/{A,B,C}/` (about 4,100, each walker's cited runs); the crew list's
+`docs/img/handpass/2026-11-27-sans-crewcol/B/` (90 deciding); the drawing check `docs/img/handpass/2026-11-27-drawcheck-sans-col/`
+(the walked build) and `…-sans-col-fixed/` (after the fixes). The host opened every deciding picture named in §14.
+
 ## 9. The break tests
+
+The three red-first tests of §7, each red before its fix (2 of 2; 2 of 2 sizes; 1 desktop), green after.
 
 ## 10. Errors seen
 
+None — every walker's console / page / request check passed on every run, both sizes.
+
 ## 11. Not walked, and why
+
+The Logic page's switch-off (the check has no switch there); F9 / F13 (the app refuses a filing with nothing ticked and a
+second filing a day — recorded); N2's brief / debrief rows (no seat to plant on; Astra's static case — question for him);
+phone drags (WebKit drives none — every phone placing was tap-to-plan); the crew list at 375 / 320 and a true 125% start
+(the flag did not take — his look on his PC, owed); A-09, C-05b/c, C-08, D-02 of the crew-list round.
 
 ## 12. The code reads
 
+Three blind readers on an exported copy of `ab72316f4` (this round's papers taken out): Astra (gpt-6-astra) 3 findings,
+a fresh Opus 3 + 3 notes, a fresh Fable 2 + 3 notes (`D:/raptor-work/c207-reads/`). Dispositions in §14. Not a security
+change (no sign-in, roles or what one person sees of another).
+
 ## 13. Gates
+
+GitHub's run on `fd26cb170` (the first two fixes): every job green, the code check included (it compares again since
+pull request 855). The run on `a0cd010e8` (the column's wrap fix) was started at the push — read it before his look.
 
 ## 14. What the walk found, and each disposition
 
+| # | Found by | What | Disposition |
+|---|---|---|---|
+| 1 | Walker C (Finding 1), host reproduced | Phone: a tap on Marlin's row planted Kraken — the new grid stretched each puck to the widest reason; the commit before the column planted Marlin | NEW, fixed `fd26cb170` (red-first); re-walked: Marlin planted 3 of 3 |
+| 2 | Astra F1 | A hidden OFT line hid an AMT line worded the same; the two folded into one | NEW, fixed `fd26cb170` (red-first); re-walked by A on `c207-build2`, both sizes — PASS |
+| 3 | Walker B (crew F1) | Desktop Board: one man's hours widened the letters' column; the widest reason wrapped | NEW, fixed `a0cd010e8` (red-first); the drawing check after: approved states match, the list 7px higher (its scroll) |
+| 4 | Walker B (F21 / F25e), Fable F1, Astra F3, Opus F2, B crew F2 | The note after a plant: the warning line's words, but the crew list's when his line was hidden; Ranger's start date lost | A builder's reading against D2587's — his question 1 (the page) |
+| 5 | Walker A (A6), Opus F1 | A sim's line says "Sim EP-9", not OFT / AMT, and prints an assumed end as if typed | Words — his question 2 (Fable adjusted) |
+| 6 | Fable F2 | The amber "A" hover words miss "nothing filed" | Words — his question 6 (Fable adjusted) |
+| 7 | Walkers A, C | The SANS tab ticks Fly · AMT · OFT; the card and lines F, O, A | Two surfaces (lesson 32) — his question 3 |
+| 8 | Astra F2, Opus O2 | An AMT row renamed BRIEF / DEBRIEF keeps its men's line though its seats hide | His question, still to come (not walked) |
+| 9 | Opus F3, Fable's note | Stale words in the scheduler page, engine-rules, the demo seed's comment; no contract for the column | Fixed `6b9c0aa3a`, `fd26cb170` |
+| 10 | Host | Phone: a tap on the blank beside a short SANS name plants the man above — on the build before the column too | Older — filed `[SANS-STANDBY-WALK-LEADS]` (5) |
+| 11 | Walker A | Sim "+" fills an empty seat first; a second extra place can leave the first empty (now on desktop too) | Older — `[SANS-STANDBY-WALK-LEADS]` (1)/(2), met again |
+| 12 | Walker B (crew) | AM / PM under the letter; a free man's badge splits; AM / PM reasons in clock times | Builder's readings — his questions 7–9 |
+| 13 | Walkers | One line a seat; on leave as well, two lines; a cancelled line goes | Recorded — questions 4 and 5; the cancelled line needs none |
+| 14 | Walker B (crew) | Escape left Edit Schedule's panel on Saturday instead of Sunday (desktop) | A lead, not reproduced — to check with the next Edit Schedule job |
+
+Clashes: none found between his rulings. His questions: https://claude.ai/artifact/Bu4f35Pm1R8X8sMsA3W4VC (rounds 1–2).
+
 ## 15. The Walk line
+
+Walk: FULL — three Opus walkers on one build (A, B, C), both designers' scenarios, plain-user rounds, both sizes; the crew
+list's own round and drawing check; 3 faults found and fixed red-first, each re-walked; reads: Astra, a fresh Opus, a fresh
+Fable — 2026-11-26-sans-warnlines/{A,B,C}, 2026-11-27-sans-crewcol/B, 2026-11-27-drawcheck-sans-col{,-fixed}.

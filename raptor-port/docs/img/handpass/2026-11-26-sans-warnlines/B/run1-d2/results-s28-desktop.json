@@ -1,0 +1,70 @@
+[
+ {
+  "scn": "s28",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s28",
+  "size": "desktop",
+  "id": "s28.file",
+  "what": "set-up: Saber files SANS fly all day for wrangler on 2026-07-17",
+  "ok": true,
+  "note": "{\"iid\":\"imrldi64a7ehkzn\",\"people\":\"[{\\\"p\\\":\\\"wrangler\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077205626}]\",\"date\":\"Jul 17\",\"endDate\":null,\"sans\":{\"f\":true},\"allday\":true,\"e\":1439,\"remarks\":\"\",\"by\":\"stiff\"}",
+  "pics": "s28-s28.file-form-desktop.png, s28-s28.file-saved-desktop.png"
+ },
+ {
+  "scn": "s28",
+  "size": "desktop",
+  "id": "s28.o",
+  "what": "set-up: Otter (filed Fly all day) on VL BFM 13:00 RCP: no SANS line",
+  "ok": true,
+  "note": "\"Otter planned\""
+ },
+ {
+  "scn": "s28",
+  "size": "desktop",
+  "id": "s28.pub",
+  "what": "published (\"Publish day\") clean: the issued face",
+  "ok": "REC",
+  "note": "bar \"(no bar)\" [] · 0 line(s)",
+  "pics": "s28-s28-0-list-desktop.png"
+ },
+ {
+  "scn": "s28",
+  "size": "desktop",
+  "id": "s28.del",
+  "what": "A1: his filing deleted after publishing — the working copy, the issued face, the pending count (RECORD)",
+  "ok": "REC",
+  "note": "deleted \"Input deleted\" · pending \"1 pending\" · EDIT bar \"⚠ 1 issue ▲\" [adv] · 1 line(s): [adv ✕] SANS availability — not filed, or planned outside it Otter — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)new once signed ✕ ·· INFO \"Friday · Jul 17 · 1\" · ✓ Published — APPROVED 1 unpublished edit · 1 ADVISORY · 1 line(s): [] Advisory · SANS availability — not filed, or planned outside it Otter — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ·· BOARD head \"⚠ 1 issue\" · 1 line(s): [✕] Otter — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ ·· PUCKS wrangler week[flying line@Fri(4.0.0.0.w):amber/A] board[flying line(4.0.0.0.w):amber/A ; crew list (week):amber/A] ·· VIEW bar \"(no bar)\" [] · 0 line(s)",
+  "pics": "s28-s28-1-e-list-clip-desktop.png, s28-s28-1-ipop-clip-desktop.png, s28-s28-1-b-clip-desktop.png, s28-s28-1-board-desktop.png, s28-s28-1-view-list-desktop.png"
+ },
+ {
+  "scn": "s28",
+  "size": "desktop",
+  "id": "s28.faces",
+  "what": "the working copy gains Otter's \"no availability filed\" line; the issued face stays without it, its count and list agreeing",
+  "ok": true,
+  "note": "working has · view \"(no bar)\" 0 line(s)"
+ },
+ {
+  "scn": "s28",
+  "size": "desktop",
+  "id": "s28.amend",
+  "what": "the amendment published (\"Publish AL1\"): the issued face gains Otter's line",
+  "ok": true,
+  "note": "bar \"⚠ 1 issue ▲\" [adv] · 1 line(s): [adv] SANS availability — not filed, or planned outside it Otter — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)",
+  "pics": "s28-s28-2-list-clip-desktop.png"
+ },
+ {
+  "scn": "s28",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]
