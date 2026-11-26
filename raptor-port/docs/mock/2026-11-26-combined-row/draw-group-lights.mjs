@@ -389,6 +389,34 @@ async function f4(p) {
   await shot(p, 'g4-after-press-proposed'); await unmark(p)
 }
 
+/* Chat 191, his D2784 (lesson 151): the held line reads the word "Change", then two short buttons — "3 pax" for the
+   group and "Cutter" for the tapped man — in place of frame 4's two long "Change for …" buttons. The word is the
+   line's own text (its "Whole day" span's look); the buttons are clones of the window's own Document button. */
+async function f6(p) {
+  await warJuly(p); await centre(p, 'riddler', '16')
+  await press(p, cellSel('psy', '15')); await sleep(1000)
+  const lit = await light(p, ['riddler', 'spaceman'], ['15', '16', '17'])
+  if (!lit.every(l => l.shadow && l.shadow.includes(CYAN) && l.sameBox)) throw new Error('the ring did not paint, or moved a box')
+  const hl = await heldLine(p, W.names, '3 pax'); fact(6, 'the held line with "3 pax"', hl)
+  const m = await p.evaluate(() => {
+    const line = [...document.querySelectorAll('.bidsheet [data-testid="bid-heldday"]')].find(e => e.getBoundingClientRect().width > 0)
+    const pax = line.querySelector('.dcr-newbtn')
+    const names = [...line.children].find(c => !c.querySelector('.c') && !c.classList.contains('c') && c.textContent.trim() && !c.classList.contains('dcr-newbtn'))
+    /* the word: the line's own text look, set a little apart from the names */
+    const word = (names || pax).cloneNode(false); word.textContent = 'Change'; word.classList.add('dcr-word'); word.style.display = ''
+    word.style.marginLeft = '6px'; word.style.color = 'var(--fg, #e7edf3)'; word.style.fontWeight = '600'
+    line.insertBefore(word, pax)
+    const one = pax.cloneNode(true); one.querySelector('span').textContent = 'Cutter'; one.classList.remove('dcr-newbtn'); one.classList.add('dcr-onebtn')
+    line.appendChild(one)
+    const r = (e) => e.getBoundingClientRect()
+    return { line: [Math.round(r(line).width), Math.round(r(line).height)], word: Math.round(r(word).width), pax: Math.round(r(pax).width), one: Math.round(r(one).width), oneRow: Math.abs(r(one).top - r(pax).top) < 2 && Math.abs(r(word).top + r(word).height / 2 - (r(pax).top + r(pax).height / 2)) < 6, fits: r(one).right <= r(line).right + 0.5 }
+  })
+  fact(6, 'the word and two buttons', m)
+  await picRows(p, ...R12); await picWin(p)
+  await tags(p, [['.bidsheet [data-testid="bid-heldday"]', '6'], ['.dcr-onebtn', 'New', 'r']])
+  await shot(p, 'g6-change-pax-proposed'); await unmark(p)
+}
+
 /* Chat 191, for D2782's page (a picture of today only, nothing drawn in): the group leave's window as Edit Schedule
    opens it from Cutter's Unavailable row on Wed 15 Jul — no dates, "the dates are changed on the Inputs page" */
 async function f5(p) {
@@ -429,7 +457,7 @@ try {
     fact('stage', k, { ...r.rec, asked: r.asked }); IIDS[k] = r.iid
     if (JSON.stringify([...r.rec.people].sort()) !== JSON.stringify([...spec.people].sort()) || r.rec.type !== spec.type) throw new Error('staged wrong: ' + k)
   }
-  const FR = { 1: f1, 2: f2, 3: f3, 4: f4, 5: f5 }
+  const FR = { 1: f1, 2: f2, 3: f3, 4: f4, 5: f5, 6: f6 }
   for (const n of ONLY) {
     try { await reset(p); console.log('--- frame', n); await FR[n](p) } catch (e) { failed.push(n + ': ' + e.message.split('\n')[0]); console.log('FRAME FAILED', n, e.message.split('\n')[0]); await p.screenshot({ path: path.join(IMG, `gfail-${n}-${PHONE ? 'phone' : 'desktop'}.png`) }).catch(() => {}) }
   }

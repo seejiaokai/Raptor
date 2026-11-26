@@ -75,6 +75,9 @@ His ask, a second button beside "Change for all 3 people". Run with `--only 4`, 
 - **4b, real staging, the window cloned** (`g4-after-press-proposed-*`): after the press, staged as Cutter on an LL of his own, 29–31 Jul, beside Ghost's and Dash's group LL of the same days (both filed through the Inputs page's window). Cutter's own leave's window, opened for real on the Inputs page ("Cutter · 29 Jul → 31 Jul"), is cloned over the war; its lists' picked values are put back on the clone (a copy of the markup had lost them: PERSON read "Ace"). No tap on Cutter's box, so the war's own window, which still has today's words, is not behind it.
 - Words: "Change for Cutter only", kept by a fresh Fable as the pair of "Change for all 3 people" (his "Change Cutter's only" left "Cutter's what?" open). Fable's catch, put to him as question 9: a split at the press leaves Cutter split when nothing is changed.
 
+## Frame 6 — "Change" · [3 pax] · [Cutter] (chat 191, his D2784, lesson 151)
+`g6-change-pax-proposed-*`: frame 2's proposal, the held line reading "Cutter, Ghost, Dash", the word "Change" (the line's own text, set in the window's white at weight 600), then two clones of the window's Document button, "3 pax" and "Cutter". Desktop: one row (the word 39px, "3 pax" 57px, "Cutter" 61px, the line 534 × 28). The phone: see its log line in the run.
+
 ## Frame 5 — today's window from Edit Schedule (chat 191, for D2782's page; real, nothing drawn in)
 `g5-schedule-window-today-desktop.png`: Cutter's Unavailable row on Wed 15 Jul (the group LL) tapped on Edit Schedule; the window has no dates and reads "The dates are changed on the Inputs page." (tag 5, the line scrolled into view). Desktop only.
 

@@ -34,7 +34,9 @@ schedule for the scheduler's planning. An existing item behaves the same whereve
 5. **"Change for Cutter only"** — one deliberate action on every page: on the war a button named for the tapped man
    beside "Change for all 3 people" (Astra's; the host took it: it is his own ask and keeps the war's day window, which
    carries the manning line and Grant OIL — Fable would open the group's window straight away, "Cutter only…" its side
-   door); on the Inputs card and the schedule's row, the tapped puck's action. **His D2783 (27 Nov), against both
+   door); on the Inputs card and the schedule's row, the tapped puck's action. **His D2784 (27 Nov):** the war's line
+   reads the word "Change", then two short buttons, "3 pax" and "Cutter" (`mock/2026-11-26-combined-row/img/g6-*`).
+   **His D2783 (27 Nov), against both
    readers' "only on a changed Save":** the press itself takes Cutter out of the group, with a leave of his own and its
    window open; closed unchanged he stays on his own; one Undo puts him back in the group. A change to some of his days
    shows what happens to the rest.
