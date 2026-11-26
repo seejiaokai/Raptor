@@ -20,6 +20,14 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/lw-postin-balance-8e8022 -->
+### CHAT 200 — the leave balance of a man posted in from outside the app: how it counts today, three questions put to him — written 26 Nov 26 — verify before use
+- **Started by** the multi-squadron coordinator on his question of 26 Nov 26 (how a posted-in man's balance is entered, against pending, and in which order). A question-and-design job: nothing is built until he answers; the build is its own job, on his word.
+- **How it counts today, pressed on the real app** (`raptor-port/scripts/handpass/lw-postin-bal-walk.mjs`, admin at his PC's size, a new man Lynx posted in Mon 7 Dec; pictures `raptor-port/docs/img/handpass/2026-11-26-lw-postin-balance/`, the marked ones in `marked/`; the same six cases run through the balance engine by a throwaway test, same answers): never typed → 0, and −1 once a leave is on; his old leave on first, then 25 typed → 25; a leave put on after the typing → 24 (counted twice); 25 typed again → right; a leave on a day before his post-in date comes off too (25 → 24). A pending bid touches only War bal until approved. The post-in date changes nothing in the balance. Lynx shows "No grade" until the URHO sets one (nothing added on 1 Jan without it).
+- **Put to him** on the one questions page, https://claude.ai/artifact/FcwAbDNH6dDCJUSYVJCfd6 (version 7), as questions **10** (keep today's order, no build — recommended; or a tick "already off his official balance" on each leave), **11** ("Not typed" in amber until a figure is typed — recommended, drawn as a mock-up on the real page; changes D1492's reading that a never-typed figure counts from 0; or keep 0) and **12** (leave before his post-in date shows but never comes off his balance here — recommended; or keep). The coordinator (chat 202) told, to relay his answers.
+- **Pick up here:** record his answers as D2745–D2747 (D2748–D2749 spare; all five checked free on every branch 26 Nov) on the Leave War page and its full rows — 11 also marks D1492 narrowed (D201) — then write the build plan in `raptor-port/docs/superpowers/plans/2026-11-26-lw-postin-balance-plan.md`, file it as a backlog item `[LW-POSTIN-BALANCE]`, and stop. If he picks 10 B, that is a new control on every leave window: drawn first (D1625).
+- **Rulings:** none yet. **Walk:** the investigation walk above (no build). **Reads owed:** none (no code changed). **Next chat number:** 203 was the highest seen on 26 Nov.
+<!-- /now -->
 <!-- now:claude/combined-input-rows-189 -->
 ### CHAT 189 — the combined-row job filed and his answers recorded (D2770–D2776); the leave question talked through, his yes owed — written 26 Nov 26, at 93% full — verify before use
 - **Done and live earlier this chat:** PRs 843 and 849 live on Vercel by a promoted build; his three iPhone looks (PR 851, merged).
