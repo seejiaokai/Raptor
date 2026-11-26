@@ -12,8 +12,8 @@ import { describe, it, expect, afterEach, beforeEach } from 'vitest'
 import { act, fireEvent } from '@testing-library/react'
 import { createRoot, type Root } from 'react-dom/client'
 import { useMsqWorld, signInAs } from '../test-support/msq-world'
-import { pickSquadron } from '../state/pick'
-import { notify } from '../state/store'
+import { notify, enterSquadron } from '../state/store'
+import { holdNow } from '../state/typing-hold'
 import { UNIT } from '../engine/unitview'
 import { InputEditor } from './InputWindow'
 import { INPEDIT, setInpEdit } from './pops'
@@ -26,6 +26,10 @@ useMsqWorld()
 const $ = (sel: string) => document.querySelector(sel) as HTMLElement | null
 const dead = (el: Element | null) => !!el && !!el.closest('[inert]')
 const LEAD = "This is 142's."
+/* THE RAW ENTRY (step K4; his D2403): since K4 a pick with a window open is refused, so the pick's band is reached by no
+   press; these tests drive the very entry the pick runs (state/store.ts enterSquadron, by pick) and are named so — removed
+   with the band in Build 2 */
+const rawPick = (u: string): void => { enterSquadron(u, holdNow() === 'war', true); notify() }
 
 describe('the "open the other input and lose them?" question, up at a pick (C1)', () => {
   let host: HTMLDivElement, root: Root
@@ -49,9 +53,9 @@ describe('the "open the other input and lose them?" question, up at a pick (C1)'
     return { first, other }
   }
 
-  it('a pick of 149, then "Discard and open": the other 142 input never stands live under 149', async () => {
+  it('a pick of 149, then "Discard and open": the other 142 input never stands live under 149 — reached by no press since D2403 (step K4: a pick is refused while a window is open), so by the raw entry; removed with the band in Build 2', async () => {
     const { first, other } = await asked()
-    await act(async () => { await pickSquadron('u149') })
+    await act(async () => { rawPick('u149') })
     expect(UNIT).toBe('u149')
     const go = $('[data-testid="inped-swap-go"]')
     if (go) await act(async () => { go.click() })
@@ -68,10 +72,10 @@ describe('the "open the other input and lose them?" question, up at a pick (C1)'
     expect($('[data-testid="inped-swap"]'), 'the question went with the pick').toBeNull()
   })
 
-  it('…and 142 picked again gives the first window back as it was, the question not coming back by itself', async () => {
+  it('…and 142 picked again gives the first window back as it was, the question not coming back by itself — reached by no press since D2403 (step K4: a pick is refused while a window is open), so by the raw entry; removed with the band in Build 2', async () => {
     const { first } = await asked()
-    await act(async () => { await pickSquadron('u149') })
-    await act(async () => { await pickSquadron('u142') })
+    await act(async () => { rawPick('u149') })
+    await act(async () => { rawPick('u142') })
     await act(async () => { notify() })
     expect($('[data-testid="inped-moveband"]')).toBeNull()
     expect(INPEDIT?.iid).toBe(first.iid)

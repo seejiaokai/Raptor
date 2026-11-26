@@ -16,7 +16,8 @@ import { saveAccess, signIn, sessionFor } from '../state/accounts'
 import { setSession, SESSION } from '../state/auth'
 import { setGrant } from '../state/units'
 import { pickSquadron } from '../state/pick'
-import { notify, switchRoleView } from '../state/store'
+import { notify, switchRoleView, enterSquadron } from '../state/store'
+import { holdNow } from '../state/typing-hold'
 import { UNIT } from '../engine/unitview'
 import { worldUnit, getState } from '../leavewar/state/store'
 import { Sheet } from '../leavewar/ui/Sheet'
@@ -32,6 +33,13 @@ import { globalUndo, globalRedo } from '../undo'
 
 useMsqWorld()
 afterEach(() => cleanup())
+
+/* THE RAW ENTRY (step K4 of the guard rail; his D2403): since K4 a pick with a window open is refused — the door asks the
+   guard first — so the pick's band below is reached by no press. The tests that hold the band drive the very entry the pick
+   runs (state/store.ts enterSquadron, by pick, the war held as the pick holds it) and are named so; the band and they are
+   removed together in Build 2. (The four tests of the held Input window across an Undo, a new object and a second input —
+   kind (a) of K0's census, owed to the midnight road — are not re-pointed here: K4's brief leaves them, and reports them.) */
+const rawPick = (u: string): void => { enterSquadron(u, holdNow() === 'war', true); notify() }
 
 const LEAD = "This is 142's."
 const REST = 'You picked 149 — close this to go on.'
@@ -52,10 +60,10 @@ describe('an open Leave War window (the drawing f7a)', () => {
       </Sheet>
     )
   }
-  it('picking 149: held on 142\'s war, the band\'s words, its controls greyed and dead, ✕ and Close live', () => {
+  it('picking 149: held on 142\'s war, the band\'s words, its controls greyed and dead, ✕ and Close live — reached by no press since D2403 (step K4: a pick is refused while a window is open), so by the raw entry; removed with the band in Build 2', () => {
     signInAs('saber')
     render(<BidWindow />)
-    act(() => { void pickSquadron('u149') })
+    act(() => { rawPick('u149') })
     expect(UNIT).toBe('u149')
     expect(worldUnit(), 'the war held by the open window').toBe('u142')
     const band = screen.getByTestId('move-band')
@@ -67,11 +75,11 @@ describe('an open Leave War window (the drawing f7a)', () => {
     expect(dead(screen.getByRole('button', { name: 'Close Ranger' })), 'the ✕ works').toBe(false)
     expect(dead(screen.getByRole('button', { name: 'Close' })), 'the band\'s Close works').toBe(false)
   })
-  it('picking 142 again gives the window back as it was', () => {
+  it('picking 142 again gives the window back as it was — reached by no press since D2403 (step K4: a pick is refused while a window is open), so by the raw entry; removed with the band in Build 2', () => {
     signInAs('saber')
     render(<BidWindow />)
-    act(() => { void pickSquadron('u149') })
-    act(() => { void pickSquadron('u142') })
+    act(() => { rawPick('u149') })
+    act(() => { rawPick('u142') })
     expect(screen.queryByTestId('move-band')).toBeNull()
     expect(dead(screen.getByTestId('save'))).toBe(false)
     expect(greyed(screen.getByTestId('remarks'))).toBe(false)
@@ -92,10 +100,10 @@ describe('an open Leave War window (the drawing f7a)', () => {
     expect(band.querySelector('b')!.textContent).toBe('This change could not be saved.')
     expect(dead(screen.getByTestId('save'))).toBe(false)
   })
-  it('Close closes it, and 149\'s war loads', async () => {
+  it('Close closes it, and 149\'s war loads — reached by no press since D2403 (step K4: a pick is refused while a window is open), so by the raw entry; removed with the band in Build 2', async () => {
     signInAs('saber')
     render(<BidWindow />)
-    act(() => { void pickSquadron('u149') })
+    act(() => { rawPick('u149') })
     fireEvent.click(screen.getByRole('button', { name: 'Close' }))
     await act(async () => { await Promise.resolve(); await Promise.resolve() })
     expect(screen.queryByTestId('bid-sheet')).toBeNull()
@@ -112,13 +120,13 @@ describe('an open Leave War window (the drawing f7a)', () => {
     signInAs('hunter')
     act(() => { setPage('leavewar'); notify() })
     render(<BidWindow />)
-    act(() => { void pickSquadron('u149') })
+    act(() => { rawPick('u149') })
     expect(UNIT).toBe('u149')
     expect(pageOffered('leavewar'), 'the premise: 149 is View only').toBe(false)
     expect(CURPAGE, 'held while the window is up').toBe('leavewar')
   }
   const settle = async () => { await act(async () => { await Promise.resolve(); await Promise.resolve() }) }
-  it('a View holder picks 149 with his window open: its ✕ closes it and he lands on 149\'s View-only Sched', async () => {
+  it('a View holder picks 149 with his window open: its ✕ closes it and he lands on 149\'s View-only Sched — reached by no press since D2403 (step K4: a pick is refused while a window is open), so by the raw entry; removed with the band in Build 2', async () => {
     viewHolderOnWar()
     fireEvent.click(screen.getByRole('button', { name: 'Close Ranger' }))
     await settle()
@@ -126,7 +134,7 @@ describe('an open Leave War window (the drawing f7a)', () => {
     expect(CURPAGE, 'the landing ran once the window closed').toBe('viewsched')
     expect(worldUnit(), 'his own war stays 142\'s').toBe('u142')
   })
-  it('…and with two windows open the landing waits for the last', async () => {
+  it('…and with two windows open the landing waits for the last — reached by no press since D2403 (step K4: a pick is refused while a window is open), so by the raw entry; removed with the band in Build 2', async () => {
     viewHolderOnWar()
     const second = render(<BidWindow />)
     second.unmount()
@@ -139,17 +147,17 @@ describe('an open Leave War window (the drawing f7a)', () => {
   /* its twin (D2323): that window, left open over a squadron he only views, is held as every window open at a pick is —
      the pick's band, its controls greyed and dead, ✕ and Close live; the band's Close lands him too; 142 picked again
      gives it back. Before, it stood live under 149's number with no band. Red first. */
-  it('a View holder\'s window at a pick of 149 wears the pick\'s band, greyed; Close lands him; 142 gives it back', async () => {
+  it('a View holder\'s window at a pick of 149 wears the pick\'s band, greyed; Close lands him; 142 gives it back — reached by no press since D2403 (step K4: a pick is refused while a window is open), so by the raw entry; removed with the band in Build 2', async () => {
     viewHolderOnWar()
     const band = screen.getByTestId('move-band')
     expect(band.querySelector('b')!.textContent).toBe(LEAD)
     expect(band.querySelector('.sv-rest')!.textContent).toBe(REST)
     expect(dead(screen.getByTestId('save')) && greyed(screen.getByTestId('save'))).toBe(true)
     expect(dead(screen.getByRole('button', { name: 'Close Ranger' })), 'the ✕ works').toBe(false)
-    act(() => { void pickSquadron('u142') })
+    act(() => { rawPick('u142') })
     expect(screen.queryByTestId('move-band'), '142 picked again: the window as it was').toBeNull()
     expect(dead(screen.getByTestId('save'))).toBe(false)
-    act(() => { void pickSquadron('u149') })
+    act(() => { rawPick('u149') })
     fireEvent.click(screen.getByRole('button', { name: 'Close' }))
     await settle()
     expect(screen.queryByTestId('bid-sheet')).toBeNull()
@@ -210,9 +218,9 @@ describe('an open Leave War window (the drawing f7a)', () => {
       await act(async () => { await Promise.resolve(); await Promise.resolve() })
       expect(screen.queryByTestId('bid-sheet')).toBeNull()
     })
-    it('(pin, D2323) in the member view, a pick that moves the page off the window still reads the pick\'s band', async () => {
+    it('(pin, D2323) in the member view, a pick that moves the page off the window still reads the pick\'s band — reached by no press since D2403 (step K4: a pick is refused while a window is open), so by the raw entry; removed with the band in Build 2', async () => {
       await on149()
-      act(() => { void pickSquadron('u142') })
+      act(() => { rawPick('u142') })
       const band = screen.getByTestId('move-band')
       expect(band.querySelector('b')!.textContent).toBe("This is 149's.")
       expect(band.querySelector('.sv-rest')!.textContent).toBe('You picked 142 — close this to go on.')
@@ -304,7 +312,7 @@ describe('an open Input window on Inputs (the drawing f7b)', () => {
      holder's own pages never leave 142, so his Inputs window, carried by the landing over 149's View-only Sched, judged
      itself not held — no band, Save and Delete live over a squadron he only views. Held as any window open at a pick
      (D2323): the pick's band, every control greyed and dead, ✕ and Close live; 142 picked again gives it back. Red first. */
-  it('a View holder picks 149 with an input window open on his Inputs: held over 149\'s View-only Sched, the pick\'s band, greyed', async () => {
+  it('a View holder picks 149 with an input window open on his Inputs: held over 149\'s View-only Sched, the pick\'s band, greyed — reached by no press since D2403 (step K4: a pick is refused while a window is open), so by the raw entry; removed with the band in Build 2', async () => {
     signInAs('saber')
     expect(saveAccess(ACCT.hunter, { grants: { u149: 'view' } })).toBeNull()
     signInAs('hunter')
@@ -312,7 +320,7 @@ describe('an open Input window on Inputs (the drawing f7b)', () => {
     await act(async () => { root.render(<InputEditor />) })
     await act(async () => { setInpEdit(INPUTS[0]); notify() })
     expect($('[data-testid="inped-moveband"]'), 'no band on his own Inputs').toBeNull()
-    await act(async () => { await pickSquadron('u149') })
+    await act(async () => { rawPick('u149') })
     expect(UNIT).toBe('u149')
     expect(CURPAGE, 'landed on 149\'s View-only Sched').toBe('viewsched')
     expect($('.inpedbox'), 'the window still open over View-only Sched').not.toBeNull()
@@ -325,7 +333,7 @@ describe('an open Input window on Inputs (the drawing f7b)', () => {
     const before = JSON.stringify(INPUTS[0])
     await act(async () => { $('#inpEditSave')!.click() })
     expect(JSON.stringify(INPUTS[0]), 'nothing saved').toBe(before)
-    await act(async () => { await pickSquadron('u142') })
+    await act(async () => { rawPick('u142') })
     expect($('[data-testid="inped-moveband"]'), '142 picked again: the window as it was').toBeNull()
     expect(dead($('#inpEditSave'))).toBe(false)
   })
@@ -419,11 +427,11 @@ describe('an open Input window on Inputs (the drawing f7b)', () => {
     await act(async () => { notify() })
     expect($('[data-testid="inped-moveband"]')).toBeNull()
   })
-  it('picking 149: the band\'s words, every control greyed and dead, Add saves nothing; ✕ and Close live; 142 gives it back', async () => {
+  it('picking 149: the band\'s words, every control greyed and dead, Add saves nothing; ✕ and Close live; 142 gives it back — reached by no press since D2403 (step K4: a pick is refused while a window is open), so by the raw entry; removed with the band in Build 2', async () => {
     signInAs('saber')
     await openNew()
     expect($('[data-testid="inped-moveband"]'), 'no band before the pick').toBeNull()
-    await act(async () => { await pickSquadron('u149') })
+    await act(async () => { rawPick('u149') })
     expect(UNIT).toBe('u149')
     const band = $('[data-testid="inped-moveband"]')!
     expect(band.querySelector('b')!.textContent).toBe(LEAD)
@@ -440,10 +448,10 @@ describe('an open Input window on Inputs (the drawing f7b)', () => {
     expect(dead($('[data-testid="win-inputedit-x"]')), 'the ✕ works').toBe(false)
     expect(band.querySelector('button'), 'the band\'s Close').toBeTruthy()
     expect(dead(band.querySelector('button')), 'Close works').toBe(false)
-    await act(async () => { await pickSquadron('u142') })
+    await act(async () => { rawPick('u142') })
     expect($('[data-testid="inped-moveband"]')).toBeNull()
     expect(dead($('#inpEditSave'))).toBe(false)
-    await act(async () => { await pickSquadron('u149') })
+    await act(async () => { rawPick('u149') })
     await act(async () => { ($('[data-testid="inped-moveband"]')!.querySelector('button') as HTMLElement).click() })
     expect(INPEDIT, 'Close closes the window').toBeNull()
   })

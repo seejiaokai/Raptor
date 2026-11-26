@@ -29,7 +29,10 @@ import { addPersonAndAccount, accountByName } from '../state/accounts'
 import { effectiveToday } from '../state/person-delete'
 import { readForeign } from '../leavewar/state/foreign'
 import { boxValue, pickDate } from './datecal-testkit'
-import { whatIsOpen } from './guard'
+import { whatIsOpen, closeShown, guardWords, guardRow, GUARD_LEADS, GUARD_ENDINGS } from './guard'
+import { VCONF, ruleFmt } from '../engine/rules'
+import { LGEDIT, setLgEdit } from '../state/auth'
+import { setOilList } from './pops'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 withThird()
@@ -341,4 +344,100 @@ describe('G6 — an add is the same call as today\'s, with the same notes (but f
     expect(fields().cs, 'the typing kept').toBe('Nova')
     expect(form()).not.toBeNull()
   })
+})
+
+/* G1 — A PICK ENDS LOGIC'S AND QUALS' EDIT MODE (the plan §18.1; his D2627 A4; D2729 Q2: words in "Add qualification" refuse
+   under their own lead and are kept) — step K4, written first and seen failing on the code as it stood (the pick left both
+   modes on, on the next squadron's page). Every pick is the bar's whole press: the Schedules button, then the row. Saber —
+   the master admin, every page following his pick (D2197) — so Logic and Quals show the squadron picked. */
+describe('G1 — a pick ends Logic\'s and Quals\' edit mode (D2627 A4)', () => {
+  async function onPage(p: 'logic' | 'quals') {
+    signInAs('saber')
+    page = render(<App />)
+    await settle()
+    await act(async () => { setPage(p); notify() })
+    await settle()
+  }
+  async function pickBy(u: string) {
+    await press($('#sqnMenuBtn'), 'the Schedules button')
+    await press($(`#sqnMenu .sqm-row[data-unit="${u}"]`), `the row of ${u}`)
+  }
+  const shown = (sel: string) => { const b = $(sel) as HTMLButtonElement | null; return !!b && !b.hidden }
+  afterEach(async () => {
+    setLgEdit(false)
+    await act(async () => { closeShown() })
+  })
+
+  it('Logic: Crew rest changed 12h → 13h in 142\'s edit mode, 149 picked — 142 keeps 13h, 149 reads 12h and opens with Edit, not Done; on to 150 and back to 142: not in edit mode', async () => {
+    await onPage('logic')
+    await press($('#lgEdit'), 'Logic\'s ✎ Edit')
+    const box = $('input[data-lgset="crewRest"]') as HTMLInputElement
+    expect(box, 'Crew rest\'s box').not.toBeNull()
+    expect(VCONF.crewRest, 'the premise: 12h').toBe(720)
+    await act(async () => { box.value = ruleFmt('crewRest', 780); fireEvent.change(box); fireEvent.blur(box) })
+    await act(async () => { await new Promise(r => setTimeout(r, 5)) })
+    expect(VCONF.crewRest, 'the premise: 13h on 142').toBe(780)
+    await pickBy('u149')
+    expect(UNIT).toBe('u149')
+    expect({ rest: VCONF.crewRest, edit: shown('#lgEdit'), done: shown('#lgDone'), mode: !!LGEDIT }, '149').toEqual({ rest: 720, edit: true, done: false, mode: false })
+    await pickBy(third.u150)
+    await pickBy('u142')
+    expect({ rest: VCONF.crewRest, edit: shown('#lgEdit'), done: shown('#lgDone'), mode: !!LGEDIT }, 'back on 142').toEqual({ rest: 780, edit: true, done: false, mode: false })
+  })
+
+  it('Quals: a tick made in 142\'s edit mode, 149 picked — the tick kept on 142, 149 opens with Edit, not Done; on to 150 and back: not in edit mode', async () => {
+    await onPage('quals')
+    await press($('#qEdit'), 'Quals\' ✎ Edit')
+    const cell = [...document.querySelectorAll<HTMLElement>('td.qcell[data-q]')].find(c => !c.classList.contains('qro') && !c.classList.contains('na'))
+    expect(cell, 'a cell he may tick').toBeTruthy()
+    const q = cell!.dataset.q!, before = cell!.innerHTML
+    await press(cell!, 'a qualification cell')
+    const after = $(`td.qcell[data-q="${q}"]`)!.innerHTML
+    expect(after, 'the premise: the tick made').not.toBe(before)
+    await pickBy('u149')
+    expect(UNIT).toBe('u149')
+    expect({ edit: shown('#qEdit'), done: shown('#qSave') }, '149 opens with Edit').toEqual({ edit: true, done: false })
+    await pickBy(third.u150)
+    await pickBy('u142')
+    expect({ edit: shown('#qEdit'), done: shown('#qSave') }, 'back on 142').toEqual({ edit: true, done: false })
+    expect($(`td.qcell[data-q="${q}"]`)!.innerHTML, 'the tick saved in 142\'s record').toBe(after)
+  })
+
+  it('a pick refused for an open window: the mode still on', async () => {
+    await onPage('logic')
+    await press($('#lgEdit'), 'Logic\'s ✎ Edit')
+    await act(async () => { setOilList({ from: '2026-07-18', to: '2026-07-18', name: 'Holiday' }); notify() })
+    await settle()
+    expect(whatIsOpen()?.row.id, 'the premise: the OIL list counts').toBe('oilday')
+    await pickBy('u149')
+    expect(UNIT, 'refused').toBe('u142')
+    expect({ done: shown('#lgDone'), mode: !!LGEDIT }, 'still in edit mode').toEqual({ done: true, mode: true })
+    await act(async () => { setOilList(null); notify() })
+  })
+
+  it('"LOW LEVEL" typed in Add qualification, then a pick: refused under its own lead, the words in the box, the mode on; the box cleared, the pick again: through, and 149\'s Quals opens with Edit and an empty box (D2729 Q2)', async () => {
+    await onPage('quals')
+    await press($('#qEdit'), 'Quals\' ✎ Edit')
+    await press($('#qEditQuals'), 'Edit quals')
+    await type('#qNewQual', 'LOW LEVEL')
+    await settle()
+    expect(whatIsOpen()?.row.id, 'the premise').toBe('qualsnew')
+    const words = guardWords('row', guardRow('qualsnew')!, 'pick', 'u149')
+    expect(words).toBe(`Blocked: ${GUARD_LEADS.newQual}, then ${GUARD_ENDINGS.pick('149')}`)
+    await pickBy('u149')
+    expect(UNIT, 'refused').toBe('u142')
+    expect((document.getElementById('toastEl')?.textContent || '').trim(), 'its own lead').toBe(words)
+    expect(($('#qNewQual') as HTMLInputElement).value, 'the words kept').toBe('LOW LEVEL')
+    expect(shown('#qSave'), 'the mode on').toBe(true)
+    await type('#qNewQual', '')
+    await settle()
+    await pickBy('u149')
+    expect(UNIT, 'through').toBe('u149')
+    expect({ edit: shown('#qEdit'), done: shown('#qSave') }).toEqual({ edit: true, done: false })
+    await press($('#qEdit'), '✎ Edit')
+    await press($('#qEditQuals'), 'Edit quals')
+    expect(($('#qNewQual') as HTMLInputElement).value, 'an empty box').toBe('')
+  })
+
+  it.todo('G1\'s bell-line sentence — "13h" typed in a Logic box and, without leaving it, a bell line to 149 pressed: 142 reads 13h, 149 12h (§18.1, Opus F-d) — the bell\'s door is step K6\'s')
 })
