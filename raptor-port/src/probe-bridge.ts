@@ -42,7 +42,7 @@ import { HOOKS } from './engine/hooks'
 import * as view from './state/view'
 import { setLgEdit, setEffectiveRole as setRoleOnly, setMe, SESSION } from './state/auth'
 import { roleOf } from './state/perms'
-import { notify, loadWeek, moveSection, moveSectionTo, writeInputs } from './state/store'
+import { notify, loadWeek, moveSection, moveSectionTo, writeInputs, setPage } from './state/store'
 import { globalUndo, globalRedo } from './undo'
 import { secOrder, SECTIONS, secDefault, setSecDefault, moveSecDefault } from './engine/order'
 import { setMemberTodayForTests as lwSetMemberToday, landingOf as lwLandingOf, memberToday as lwMemberToday } from './leavewar/engine'
@@ -150,7 +150,8 @@ export function installProbeBridge() {
      scheduler board open on a role/page combination no click path can ever
      reach (a squadron member's Edit Schedule link doesn't exist to click),
      the same way w.openScheduler already forces SBDAY open with no click. */
-  w.setPage = (p: string) => { view.setPage(p); notify() }
+  /* (through the page door, as every page change is — step K6, R5 (b)) */
+  w.setPage = (p: string) => { setPage(p); notify() }
   /* Shell.tsx and ui-contracts already claim this mirror exists — make it true */
   w.openWarns = (sev: any) => { view.openWarns(sev); notify() }
   /* the Leave War role, same precedent as w.setPage (this PC only, like the whole

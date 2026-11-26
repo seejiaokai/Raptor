@@ -597,6 +597,203 @@ describe('R4 — the Tracker\'s list is whole (K1c)', () => {
   })
 })
 
+/* ================= R5 (b), (c), (d) — THE PAGE DOOR AND THE BELL'S KINDS (step K6 — the plan §4.5) =================
+   Read from the source, as R1–R4 are. (b) no file but state/store.ts reaches the page change past its door. (c) every call
+   of the door has its kind, written here with its reason — a forgotten `then` (a window opened after the door answered
+   no), a forgotten ask-first line, or a new caller nobody weighed fails here. (d) every notice kind has a tap written for
+   it in ui/topstate.ts LINE_KINDS. */
+const SRC_EXT = /\.(ts|tsx|js|jsx)$/
+function doorSrcFiles(dir: string = SRC, out: string[] = []): string[] {
+  for (const name of readdirSync(dir)) {
+    const p = join(dir, name)
+    if (statSync(p).isDirectory()) { if (name !== 'node_modules' && name !== 'test-support') doorSrcFiles(p, out) }
+    else if (SRC_EXT.test(name) && !/\.test\.|\.spec\.|\.d\.ts$/.test(name)) out.push(p)
+  }
+  return out
+}
+const relOf = (abs: string) => abs.slice(SRC.length + 1).split('\\').join('/')
+/* comments blanked, line breaks kept (a call in a comment is not a call) */
+const uncomment = (s: string) => s.replace(/\/\*[\s\S]*?\*\//g, m => m.replace(/[^\n]/g, ' ')).replace(/(^|[^:'"`\\])\/\/.*$/gm, '$1')
+/* the module an import names, as a path under src/ with no extension */
+function importsOf(rel: string, src: string): { names: string[]; ns: string | null; mod: string }[] {
+  const out: { names: string[]; ns: string | null; mod: string }[] = []
+  const dir = rel.includes('/') ? rel.slice(0, rel.lastIndexOf('/')) : ''
+  const resolve = (spec: string) => {
+    if (!spec.startsWith('.')) return spec
+    const parts = (dir ? dir.split('/') : [])
+    for (const seg of spec.split('/')) { if (seg === '..') parts.pop(); else if (seg !== '.') parts.push(seg) }
+    return parts.join('/').replace(SRC_EXT, '')
+  }
+  for (const m of src.matchAll(/(?:import|export)\s*(?:type\s*)?\{([^}]*)\}\s*from\s*['"]([^'"]+)['"]/g)) {
+    out.push({ names: m[1]!.split(',').map(x => x.trim().split(/\s+as\s+/)[0]!.replace(/^type\s+/, '')).filter(Boolean), ns: null, mod: resolve(m[2]!) })
+  }
+  for (const m of src.matchAll(/import\s*\*\s*as\s*(\w+)\s*from\s*['"]([^'"]+)['"]/g)) out.push({ names: [], ns: m[1]!, mod: resolve(m[2]!) })
+  return out
+}
+/** R5 (b): what in this file reaches state/view.ts setPage — a named import of it, or a call through a namespace */
+export function viewSetPageReaches(rel: string, raw: string): string[] {
+  if (rel === 'state/store.ts' || rel === 'state/view.ts') return []
+  const src = uncomment(raw)
+  const hits: string[] = []
+  for (const im of importsOf(rel, src)) {
+    if (im.mod !== 'state/view') continue
+    if (im.names.includes('setPage')) hits.push(`${rel}: imports setPage from state/view`)
+    if (im.ns && new RegExp(`\\b${im.ns}\\.setPage\\b`).test(src)) hits.push(`${rel}: calls ${im.ns}.setPage`)
+  }
+  return hits
+}
+
+type DoorKind = 'last' | 'then' | 'answer' | 'asks first'
+/* every call of the page door outside state/store.ts, as built (the plan §4.5's table — sixteen calls of setPage and the
+   holiday line's ownSquadronFirst). `at` — words of the call's own line that find it; `fn` — for 'asks first', the
+   function that sets a mark before the page and must ask first */
+const DOOR_CENSUS: { file: string; at: string; kind: DoorKind; fn?: string; why: string }[] = [
+  { file: 'ui/Shell.tsx', at: 'const nav = (p: string) => { setPage(p)', kind: 'last', why: 'a tab: only the pages the squadron in view offers are drawn (row 14)' },
+  { file: 'ui/Drawer.tsx', at: 'const go = () => { setPage(p)', kind: 'last', why: 'a ☰ page: only offered pages are drawn; the menu closed after' },
+  { file: 'ui/Login.tsx', at: 'setPage(back)', kind: 'last', why: 'his home just entered at the sign-in: every page of it is offered' },
+  { file: 'ui/logout.ts', at: "setPage('tracker')", kind: 'last', why: 'guarded by pageOffered on the same line' },
+  { file: 'probe-bridge.ts', at: 'w.setPage = (p: string) => { setPage(p)', kind: 'last', why: 'the developer\'s browser tests only' },
+  { file: 'ui/topstate.ts', at: "setPage('help')", kind: 'last', why: 'the bell\'s bug alert: Help is always offered' },
+  { file: 'ui/interactions.ts', at: "setPage('leavewar'); notify()", kind: 'last', why: '"make a period" needs canEditSched(), false on a squadron he only views, so its page is always offered' },
+  { file: 'leavewar/sync.ts', at: "if (CURPAGE !== 'inputs') setPage('inputs')", kind: 'last', why: 'openInputsPage: nothing after the page but a redraw' },
+  { file: 'ui/WelcomeBack.tsx', at: "focusQualsRow(id); setPage('quals')", kind: 'last', why: 'the card is drawn only on his own squadron (§18.5), where Quals is offered: its gate stands before the call (checked below)' },
+  { file: 'ui/topstate.ts', at: "setPage('inputs', opts, waited =>", kind: 'then', why: 'openInputOnPage: the Input window opens on the door\'s then' },
+  { file: 'leavewar/sync.ts', at: "setPage('inputs', {}, () =>", kind: 'then', why: 'openInputWindow: the clash note\'s window on the door\'s then' },
+  { file: 'ui/topstate.ts', at: "ownSquadronFirst({ door: 'line', ...o }, () =>", kind: 'then', why: 'a holiday\'s line: the OIL list once his own squadron is in view' },
+  { file: 'ui/topstate.ts', at: "setPage('inputs', { door: 'line', ...o })", kind: 'asks first', fn: 'openNotice', why: 'his SANS reminder: the tab, month and day set before the page — openNotice asks first' },
+  { file: 'ui/adminopen.ts', at: "setPage('admin')", kind: 'asks first', fn: 'openAdminUsers', why: 'the Users intent set before the page' },
+  { file: 'leavewar/sync.ts', at: "askRing({ personId: onGrid ? pid : '', date: iso }); setPage('leavewar')", kind: 'asks first', fn: 'openWarAt', why: 'the war selected, Approvals and Balances put away, the ring asked for before the page' },
+  { file: 'leavewar/sync.ts', at: "if (CURPAGE !== 'leavewar') setPage('leavewar')", kind: 'asks first', fn: 'openNewPeriod', why: 'the new-period ask left before the page' },
+  { file: 'state/undo-wire.ts', at: "setPage(land.primary) !== 'went'", kind: 'answer', why: 'snapView: the landing\'s then only on went (row 13 — no road reaches it)' },
+]
+/** R5 (c): every call of the page door (setPage, ownSquadronFirst imported from state/store) in a file, by its line */
+export function doorCalls(rel: string, raw: string): string[] {
+  if (rel === 'state/store.ts') return []
+  const src = uncomment(raw)
+  const names = new Set<string>()
+  for (const im of importsOf(rel, src)) if (im.mod === 'state/store') for (const n of im.names) if (n === 'setPage' || n === 'ownSquadronFirst') names.add(n)
+  if (!names.size) return []
+  const re = new RegExp(`(^|[^.\\w])(${[...names].join('|')})\\(`)
+  return src.split('\n').filter(l => !/^\s*(import|export)\b/.test(l) && re.test(l)).map(l => l.trim())
+}
+/* the body of a function declared in `src`, its braces included (null where none) */
+function fnBody(src: string, name: string): string | null {
+  const at = src.search(new RegExp(`function\\s+${name}\\s*\\(`))
+  if (at < 0) return null
+  let i = src.indexOf('(', at), depth = 0
+  for (; i < src.length; i++) { if (src[i] === '(') depth++; else if (src[i] === ')' && --depth === 0) break }
+  let b = src.indexOf('{', i)
+  /* (a return type in braces is not the body: none of the functions read here has one) */
+  const start = b
+  for (depth = 0; b < src.length; b++) { if (src[b] === '{') depth++; else if (src[b] === '}' && --depth === 0) break }
+  return src.slice(start, b + 1)
+}
+const firstStatement = (body: string) => body.slice(1).trim().split('\n')[0]!.trim()
+function censusProblems(files: Record<string, string>): string[] {
+  const out: string[] = []
+  const found: { file: string; line: string }[] = []
+  for (const [rel, raw] of Object.entries(files)) for (const line of doorCalls(rel, raw)) found.push({ file: rel, line })
+  for (const f of found) {
+    const hits = DOOR_CENSUS.filter(c => c.file === f.file && f.line.includes(c.at))
+    if (hits.length !== 1) out.push(`${f.file}: "${f.line}" — ${hits.length ? 'matched twice' : 'not in the census: say its kind'}`)
+  }
+  for (const c of DOOR_CENSUS) {
+    const hits = found.filter(f => f.file === c.file && f.line.includes(c.at))
+    if (hits.length !== 1) { out.push(`census "${c.at}" (${c.file}) — ${hits.length} calls found`); continue }
+    const line = hits[0]!.line
+    const after = line.slice(line.indexOf(c.at) + c.at.length)
+    if (c.kind === 'then' && !/=>/.test(c.at + after)) out.push(`${c.file}: "${c.at}" hands the door no then`)
+    if (c.kind === 'answer' && !/(!==|===)\s*'went'/.test(line)) out.push(`${c.file}: "${c.at}" does not test the door's answer`)
+    if (c.kind === 'asks first') {
+      const body = fnBody(uncomment(files[c.file] ?? ''), c.fn!)
+      if (!body) { out.push(`${c.file}: no function ${c.fn}`); continue }
+      if (c.fn === 'openNotice') {
+        /* the ask before the list is closed and before any line is read — but the read of a kind LINE_KINDS does not know,
+           which opens nothing (its own line, before the ask) */
+        const ask = body.search(/ownPageRefused\(page, 'line', o, again\)/), close = body.search(/setBellList\(/)
+        const readsBefore = ask < 0 ? [] : body.slice(0, ask).split('\n').filter(l => /markNoticeRead\(/.test(l) && !/!LINE_KINDS\[kindOf\(n\)\]/.test(l))
+        if (ask < 0 || close < 0 || ask > close || readsBefore.length) out.push(`${c.file}: ${c.fn} does not ask the page door before it marks a line read`)
+      } else if (!/^if \(ownPageRefused\('[a-z]+'\)\) return\b/.test(firstStatement(body))) {
+        out.push(`${c.file}: ${c.fn}'s first statement is not its ownPageRefused line ("${firstStatement(body)}")`)
+      }
+    }
+  }
+  return out
+}
+const allSrc = (): Record<string, string> => Object.fromEntries(doorSrcFiles().map(p => [relOf(p), readFileSync(p, 'utf8')]))
+
+describe('R5 (b) — no file but state/store.ts reaches the page change past its door', () => {
+  it('no non-test file imports setPage from state/view or calls it through a namespace of state/view (the test kit aside)', () => {
+    expect(Object.entries(allSrc()).flatMap(([rel, raw]) => viewSetPageReaches(rel, raw))).toEqual([])
+  })
+  it('(the scanner\'s own check, true on any code) the scan catches a planted reach: a named import, an aliased one, a namespace call; a comment is not one', () => {
+    expect(viewSetPageReaches('ui/x.tsx', "import { notify } from '../state/store'\nimport { CURPAGE, setPage } from '../state/view'")).toHaveLength(1)
+    expect(viewSetPageReaches('ui/x.tsx', "import { setPage as go } from '../state/view'")).toHaveLength(1)
+    expect(viewSetPageReaches('state/y.ts', "import * as v from './view'\nv.setPage('x')")).toHaveLength(1)
+    expect(viewSetPageReaches('ui/x.tsx', "import * as view from '../state/view'\n/* view.setPage('x') */ view.CURPAGE")).toEqual([])
+    expect(viewSetPageReaches('ui/x.tsx', "import { setPage } from '../state/store'")).toEqual([])
+  })
+})
+
+describe('R5 (c) — every call of the page door, with its kind (the plan §4.5\'s table)', () => {
+  it('each call outside state/store.ts is in the census once; each then-call hands a then, the answer-call tests went, each asks-first function asks first', () => {
+    expect(censusProblems(allSrc())).toEqual([])
+  })
+  it('sixteen calls of setPage and the holiday line\'s ownSquadronFirst', () => {
+    const calls = Object.entries(allSrc()).flatMap(([rel, raw]) => doorCalls(rel, raw))
+    expect(calls.filter(l => /ownSquadronFirst\(/.test(l)).length).toBe(1)
+    expect(calls.length).toBe(17)
+  })
+  it('the "Welcome back" card\'s own gate (his own squadron in view) stands before its call of the door', () => {
+    const src = uncomment(read('ui/WelcomeBack.tsx'))
+    const gate = src.search(/if \(UNIT !== homeOn\(id, todayIso\(\)\)\) return null/), call = src.search(/setPage\('quals'\)/)
+    expect(gate, 'the gate').toBeGreaterThan(-1)
+    expect(gate < call, 'before the call').toBe(true)
+  })
+  it('the bell\'s access request asks the page door before Admin → Users opens and before its toast', () => {
+    const body = fnBody(uncomment(read('state/belltap.ts')), 'openBellRequest')!
+    const ask = body.search(/ownPageRefused\('admin', 'bell'/), open = body.search(/\bopen\(\)/)
+    expect(ask > -1 && ask < open).toBe(true)
+  })
+  it('the scan catches a planted caller, a then dropped, an answer not tested and an ask-first line gone', () => {
+    const files = allSrc()
+    expect(censusProblems({ ...files, 'ui/new.tsx': "import { setPage } from '../state/store'\nsetPage('admin')" })).toEqual(['ui/new.tsx: "setPage(\'admin\')" — not in the census: say its kind'])
+    const noThen = files['ui/topstate.ts']!.split("setPage('inputs', opts, waited =>").join("setPage('inputs', opts); (waited =>")
+    expect(censusProblems({ ...files, 'ui/topstate.ts': noThen }).length).toBeGreaterThan(0)
+    const noAnswer = files['state/undo-wire.ts']!.split("setPage(land.primary) !== 'went'").join("setPage(land.primary) !== 'gone'")
+    expect(censusProblems({ ...files, 'state/undo-wire.ts': noAnswer }).length).toBeGreaterThan(0)
+    const noAsk = files['ui/adminopen.ts']!.split("if (ownPageRefused('admin')) return").join('')
+    expect(censusProblems({ ...files, 'ui/adminopen.ts': noAsk })).toEqual(['ui/adminopen.ts: openAdminUsers\'s first statement is not its ownPageRefused line ("requestAdminUsers(!!opts.newPerson, opts.person)")'])
+  })
+})
+
+/* the kinds a notice is written with: the NoticePart union of state/notices.ts, read from its source */
+export function noticeKinds(src: string): string[] {
+  const at = src.indexOf('export type NoticePart =')
+  const end = src.indexOf('\nexport ', at + 1)
+  return [...new Set([...uncomment(src.slice(at, end)).matchAll(/\{\s*k:\s*'(\w+)'/g)].map(m => m[1]!))]
+}
+/* the kinds LINE_KINDS names in ui/topstate.ts, read from its source */
+export function lineKindKeys(src: string): string[] {
+  const s = uncomment(src)
+  const at = s.indexOf('export const LINE_KINDS')
+  const body = s.slice(s.indexOf('{', s.indexOf('=', at)), s.indexOf('\n}', at) + 2)
+  return [...body.matchAll(/(?:^|[\s,{])(\w+):\s/g)].map(m => m[1]!)
+}
+describe('R5 (d) — every notice kind has a tap written for it (ui/topstate.ts LINE_KINDS)', () => {
+  it('each kind of state/notices.ts NoticePart is a key of LINE_KINDS, and LINE_KINDS names no kind the union lacks', () => {
+    const kinds = noticeKinds(read('state/notices.ts')), keys = lineKindKeys(read('ui/topstate.ts'))
+    expect(kinds.length, 'the premise: the union read').toBeGreaterThan(20)
+    expect(kinds.filter(k => !keys.includes(k)).map(k => `${k}: say what a tap on this line opens`)).toEqual([])
+    expect(keys.filter(k => !kinds.includes(k)).map(k => `${k}: no notice is written with this kind`)).toEqual([])
+  })
+  it('the scan catches a planted kind', () => {
+    const src = read('state/notices.ts').split("  | { k: 'acct';").join("  | { k: 'plan'; who: string }\n  | { k: 'acct';")
+    const keys = lineKindKeys(read('ui/topstate.ts'))
+    expect(noticeKinds(src).filter(k => !keys.includes(k))).toEqual(['plan'])
+  })
+})
+
 describe('TO_COME — what is left is owed by a later step, by name, never by a pass of K1', () => {
   it('only the short row\'s report is left, owed "after S2\'s U1 fix merges" — none names K1a, K1b, K1c or K2b', () => {
     expect(TO_COME.filter(t => t.pass !== 'after S2\'s U1 fix merges' || /\bK(1[abc]?|2b)\b/.test(t.pass)).map(t => t.what)).toEqual([])

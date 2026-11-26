@@ -9,8 +9,7 @@
    itself is unchanged (the 7 Aug 26 "login page stays simple"). */
 import { useEffect, useReducer, useRef, useState } from 'react'
 import { signIn, sessionFor } from '../state/accounts'
-import { resetSession, notify } from '../state/store'
-import { setPage } from '../state/view'
+import { resetSession, notify, setPage } from '../state/store'
 import { takeReopen } from './pagedownload'
 import { SaveBand, useBandUp } from './SaveStatus'
 import { saveSettling, saveRefused, onSaveStatus } from '../storage/savewait'
