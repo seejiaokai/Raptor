@@ -2967,6 +2967,9 @@ bid) is not called undone. Drawn on the page of 24 Nov 26 (`raptor-port/docs/moc
 `claude/allavail-drawings-156`), reworded again by Fable under his D2422.
 **Also (his D2563, 24 Nov 26, chat 169):** an input's "Deleted" line is reworded in the same plain style — "Training on Wed
 15 Jul was deleted. · Saber" — drawn for him first, then built with this job.
+**Also (chat 192, 26 Nov 26, the rulings check's small point 8):** the bell's leave-bid lines "LL bid changed to OL", "LL
+bid moved to Thu 29 Jan" and "LL bid deleted" were never shown to him — drawn for him with this job's lines and put to him
+(three readers of round 2 found a "leave as built" on words he never saw; round 3 moved the point here).
 
 ### [READINGS-LAPSE-FIX] The lapse that let a builder's reading pass as his rule — fixed by Fable, and an audit against his rulings (his D2567, 24 Nov 26)
 

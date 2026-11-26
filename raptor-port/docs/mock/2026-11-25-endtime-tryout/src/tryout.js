@@ -166,7 +166,7 @@
     var so = day.querySelector('.signoff.day-sign'), any = ROLES.some(function (r) { return !!S.signs[r[0]] })
     var focusKey = document.activeElement && so.contains(document.activeElement) && document.activeElement.getAttribute('data-sign')
     var state
-    if (m.n) state = '<button type="button" class="so-state no et-count" data-et-count title="Go to the first missing time"><span class="et-n">' + m.n + ' ' + plural(m.n, 'item', 'items') + ' missing a time</span> · ' + toSign() + ' to sign</button>'
+    if (m.n) state = '<button type="button" class="so-state no et-count" data-et-count title="Go to the next missing time"><span class="et-n">' + m.n + ' ' + plural(m.n, 'item', 'items') + ' missing a time</span> · ' + toSign() + ' to sign</button>'
     else if (!signed) state = '<span class="so-state no">' + toSign() + ' to sign</span>'
     else if (!S.published) state = '<span class="so-state yes">Signed — this day can be published</span>'
     else state = '<span class="so-state yes">' + (pend.length ? 'Published at ' + verLabel(S.ver) + ' · ' + pend.length + ' ' + plural(pend.length, 'change', 'changes') + ' to publish — Publish AL' + nextAL : 'Published at ' + verLabel(S.ver) + ' — no changes to publish') + '</span>'
@@ -295,7 +295,7 @@
   day.addEventListener('change', function (e) {
     var s = e.target; if (!s.matches || !s.matches('select[data-sign]')) return
     if (missingBoxes().n) { s.value = ''; refuse('sign'); return }
-    S.pressed = true
+    /* round 3: a sign-off that goes through turns nothing red; only a refused press does (question J 2) */
     S.signs[s.getAttribute('data-sign')] = s.value
     render()
   })
