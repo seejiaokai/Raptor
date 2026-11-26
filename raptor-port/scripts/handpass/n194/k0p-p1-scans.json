@@ -1,0 +1,6 @@
+{
+  "closed-d": { "drawing": [["row", 190], ["col", 1000], ["col", 1640], ["col", 598], ["col", 606]], "build": [["row", 60], ["col", 500], ["col", 1080], ["col", 32], ["col", 40]] },
+  "closed-p": { "drawing": [["row", 200], ["row", 364], ["col", 300], ["col", 640], ["col", 70], ["col", 78]], "build": [["row", 60], ["row", 148], ["col", 300], ["col", 600], ["col", 32], ["col", 40]] },
+  "open-d": { "drawing": [["row", 68], ["row", 246], ["row", 682], ["col", 300], ["col", 900], ["col", 40], ["col", 46]], "build": [["row", 60], ["row", 242], ["row", 658], ["col", 300], ["col", 900], ["col", 32], ["col", 38]] },
+  "open-p": { "drawing": [["row", 68], ["row", 242], ["row", 720], ["col", 150], ["col", 500], ["col", 40], ["col", 46]], "build": [["row", 60], ["row", 238], ["row", 696], ["col", 150], ["col", 500], ["col", 32], ["col", 38]] }
+}
