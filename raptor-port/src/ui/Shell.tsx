@@ -209,7 +209,9 @@ export function Shell() {
       /* THE WRITE IS ui/oilsign.ts's (moved there whole, 22 Nov 26): on a day with an input whose OIL question nobody has
          answered, a name picked here is HELD and the day's OIL list opens first (his D2294, D2299) — the box goes back
          to what is written, and the list's Save or Later writes the name by that same path */
-      if (signPick(di, sel.dataset.sign!, sel.value) === 'held') { sel.value = signNow(di, sel.dataset.sign!); notify() }
+      /* …and a name refused because an item is missing a time ([END-TIME-GUARD], D2612) goes back the same way: nothing
+         was written */
+      if (signPick(di, sel.dataset.sign!, sel.value) !== 'signed') { sel.value = signNow(di, sel.dataset.sign!); notify() }
       HOOKS.reflow()   // histPush is INSIDE the sched.sign command (ui/oilsign.ts writeSign)
     }
     /* right-click a filled slot in edit mode → clear it (reference verbatim,
