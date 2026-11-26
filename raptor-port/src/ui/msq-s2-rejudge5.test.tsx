@@ -798,9 +798,12 @@ describe('§31 — a bell line\'s landing for another man, the open row having c
 /* ---- §32 A SHORT ROW WHOSE PICK CAN NO LONGER BE SENT (the security reader, by reading; the fresh Fable, by reading) ----
    A pick made in another squadron's man's short row; then another admin makes him a master admin (his lines go with the
    mark), or his sign-in is put on another man. Save closed the row and dropped the pick with no word. His row did change
-   while it was open: the note is said — on the draw where a draw comes (the master admin mark), at Save where none does
-   (both). A sign-in gone on a DRAW is still followed live, as the third round built and pinned it
-   (msq-s2-rejudge3.test.tsx §15): the row itself then shows the "No sign-in" words. */
+   while it was open: the note is said — on the draw where a draw comes, at Save where none does (both). (Corrected by
+   U1's sixth round: this header once said a sign-in gone on a DRAW was still followed live, the row falling back to the
+   "No sign-in" words with no note — the pick dropped without a word, which three readers of the fifth round found. A
+   pick whose sign-in is gone or another account's now closes the row with the note on the draw too: msq-s2-rejudge6
+   .test.tsx §35, and msq-s2-rejudge3.test.tsx §15's pin re-pointed. Only a short row with NO pick follows his sign-in
+   live.) */
 describe('§32 — a short row with a pick made, and the man can no longer be sent it', () => {
   const kestrelPicksForRanger = async () => {
     signInAs('kestrel')

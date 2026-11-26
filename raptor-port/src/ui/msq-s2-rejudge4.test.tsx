@@ -724,7 +724,11 @@ describe('§21 — a regrouping of the list never drops what the admin picked or
     closedWithNote(p, PID.kestrel)
     expect(accountById(ACCT.kestrel)!.name, 'nothing typed was saved').not.toBe('typed@mail')
   })
-  it('a pick is his for the sign-in it was made on: Kestrel picks None for Ranger; the master admin puts Ranger\'s sign-in on another man, then gives Ranger a new one — the row shows the new sign-in\'s line untouched, and Save sends nothing', async () => {
+  /* (re-pointed by U1's sixth round — the fresh Opus 1's and 2's finding 1, Astra's finding 1: the row once fell back to
+     the "No sign-in" words when his sign-in went, the pick dropped without a word, and then showed the new sign-in's line
+     untouched; it now closes with the note on the draw his sign-in goes — msq-s2-rejudge6.test.tsx §35. What this test
+     held stays held: no pick is ever carried onto the new sign-in, and nothing is sent.) */
+  it('a pick is his for the sign-in it was made on: Kestrel picks None for Ranger; the master admin puts Ranger\'s sign-in on another man — the row closes with the note, once; he is given a new one: nothing of the pick is carried onto it, and nothing is sent', async () => {
     signInAs('kestrel')
     const other = noSignIn('u142')
     const p = panel()
@@ -732,12 +736,17 @@ describe('§21 — a regrouping of the list never drops what the admin picked or
     await p.open(PID.ranger)
     await p.pickLine('u149', 'none')
     expect(p.$('.acc-edit')?.getAttribute('data-unsaved'), 'premise: marked').toBe('true')
+    vi.mocked(HOOKS.toast).mockClear()
+    spy.calls.length = 0
     expect(asOther('saber', () => updateAccount(ACCT.ranger, { pid: other }))).toBeNull(); reload(); await redraw()
-    expect(p.$('#accEdNoSignIn'), 'premise: the words, Cancel alone').not.toBeNull()
+    closedWithNote(p, PID.ranger)
     expect(asOther('saber', () => addAccount('ranger.new@mail', PID.ranger, 'main'))).toBeNull(); reload()
     const fresh = accountOfPid(PID.ranger)!
     expect(asOther('saber', () => saveAccess(fresh.id, { grants: { u149: 'view' } }))).toBeNull(); reload(); await redraw()
-    expect(p.pressed('u149'), 'the line his new sign-in holds').toBe('view')
+    expect(p.noEditor(), 'the row stays closed').toBe(true)
+    expect(anyRowNote(), 'and the note is not said again').toBe(1)
+    await p.open(PID.ranger)
+    expect(p.pressed('u149'), 'opened again: the line his new sign-in holds').toBe('view')
     expect(p.$('.acc-edit')?.hasAttribute('data-unsaved'), 'no pick is carried from the old sign-in').toBe(false)
     spy.calls.length = 0
     await p.press('#accEdSave')

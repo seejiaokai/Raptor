@@ -706,20 +706,30 @@ describe('§15 — pins: the short row sends one line, and the door still decide
     expect(level(acct.id, 'u149')).toBe('view')
     expect(accountById(acct.id)!.name, 'his sign-in name untouched').toBe('fresh.signin@mail')
   })
-  it('pin: his sign-in moved to another man under his open short row, a pick made — the row falls back to the words and Cancel alone: nothing can be sent for him or for the other man', async () => {
+  /* (re-pointed by U1's sixth round — the fresh Opus 1's and 2's finding 1, Astra's finding 1: this pin held that the row
+     fell back to the "No sign-in" words with no note, which dropped the admin's pick without a word; a pick whose sign-in
+     is no longer his now closes the row with the note, on the draw as at Save — msq-s2-rejudge6.test.tsx §35. A short row
+     with NO pick still follows his sign-in live: the pin above, and §15's sign-in-given pin.) */
+  it('his sign-in moved to another man under his open short row, a pick made — the row closes with the note, once: nothing can be sent for him or for the other man', async () => {
     signInAs('kestrel')
     const other = noSignIn('u142')
     const p = panel()
     await p.find(csOf(PID.ranger))
     await p.open(PID.ranger)
     await p.pickLine('u149', 'none')
+    vi.mocked(HOOKS.toast).mockClear()
     /* (a master admin: the sign-in holds rights in 149 and 150, so only he may put it on another man) */
     expect(asOther('saber', () => updateAccount(ACCT.ranger, { pid: other })), 'setup: the master admin puts Ranger\'s sign-in on another 142 man').toBeNull()
     reload()
+    const was = JSON.stringify(accountById(ACCT.ranger))
+    spy.calls.length = 0
     await redraw()
-    expect(p.$('#accEdNoSignIn')?.textContent).toBe('No sign-in. Ask 142\'s admin to give him one first.')
-    expect(p.$('#accEdSave'), 'no Save').toBeNull()
-    expect(anyRowNote()).toBe(0)
+    expect(p.$('.acc-edit'), 'the row closed').toBeNull()
+    expect(notesFor(csOf(PID.ranger)), 'the note, once').toBe(1)
+    expect(spy.calls, 'nothing sent').toEqual([])
+    expect(JSON.stringify(accountById(ACCT.ranger)), 'the sign-in, now the other man\'s, untouched').toBe(was)
+    await redraw()
+    expect(anyRowNote(), 'and not again').toBe(1)
   })
   it('pin: a master admin on 149\'s page gives Mako (150\'s admin) Plan of 149 from his short row: one call, 149\'s line alone', async () => {
     signInAs('saber')
