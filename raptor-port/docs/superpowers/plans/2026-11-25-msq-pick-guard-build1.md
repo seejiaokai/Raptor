@@ -831,6 +831,14 @@ stopped by** R5 (c), by the checker's second check under every test (§3.4), and
 
 ### 4.6 The note, and how `ui/toast.ts placeToast` learns the control
 
+**The note never covers a control it names (chat 191's call, 26 Nov 26; found drawing the phone Calendar notes).** On a
+phone the note stands at the foot (D2590). Where that place would cover a control its words name — a button they point
+to (Save, Cancel, Add, Create…, Close, Retry, a window's ✕) or a page control they name — it stands just above the
+highest such control: its foot 8px above that control's top, 12px from each side as at the foot, checked again at each
+new place until it covers none. Controls it does not name (a calendar's days, a list's rows) and plain text it may
+cover for its few seconds. Its test: the phone Calendar's "holiday with no leave period" note (drawing
+`s1-cal-noleave-p`) clears the form's Cancel, Save and "Create the 2028 leave period". The ✕ check below stands as well.
+
 **The words** — one table in `ui/guard.ts`, `guardWords(reason, door, to)`: **"Blocked: " + a lead + ", then " + an
 ending.** The number is the squadron's (`unitById(to)?.num`). Every test reads the leads and endings from the table's
 own constants, so a change of words moves no test.

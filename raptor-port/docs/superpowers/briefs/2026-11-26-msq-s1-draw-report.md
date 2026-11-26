@@ -121,3 +121,19 @@ The review's §5 facts, against these drawings:
 - **(5) "Every Monday" quoting the open window's own weekday:** the drawings hold. The form was opened from the Monday
   heading, and its window's title reads "Every Monday", the words the note quotes. A form opened from another weekday's
   heading must quote that day's name.
+- **Redrawn on the coordinator's call (a refusal note never covers the controls it names): `s1-cal-noleave-p`.**
+  **The placement rule used:** *on a phone the note stands at the foot (D2590). Where that place would cover a control
+  the note names — a button its words point to (Save, Cancel, Add, Create…, Close, Retry, a window's ✕), or a page
+  control it names — the note stands just above the highest such control it would cover: its foot 8px above that
+  control's top, 12px from each side, as at the foot. It is checked again at the new place, until it covers none.*
+  Controls it does not name (a calendar's days, a list's rows) and plain text it may cover for its few seconds. In
+  `s1-cal-noleave-p` the foot covered Cancel, "Save and add another" and Save; one step up it covered "Create the 2028
+  leave period", which its own words name; the second step is clear. It now stands over the line "It is kept here, and
+  saved by itself…", which is text. (`draw-s1-lib.mjs clearOfNamed`, log `.tmp/n191-s1/log-notes-phone-clear.txt`.)
+- **Every other s1 phone picture checked against the same rule** — all phone notes redrawn through it under the same
+  names: `s1-undo-p`, `s1-qual-p`, `s1-cal-new-p`, `s1-cal-changed-p`, `s1-cal-every-p`, `s1-cal-sheet-p`,
+  `s1-cal-settings-p`, `s1-cal-settings-alt-p`, `s1-bellline-p`, `s1-belltap-p`: the foot covers no control the note
+  names; they are unchanged. `s1-sans-drag-p` names no control. `s1-trk-p` and `s1-add-p` have no note.
+  `s1-input-nobody-p` is the app's own note at its own top place (D731); it does not cover the Person box it names,
+  but it covers the top part of the Input window's ✕. That is today's placement (plan §4.6, P3's table), not a guard note,
+  so it is left as the app draws it. It is said here for the builder.

@@ -48,34 +48,29 @@ export async function underCtl(s, k, ctlSel, edge = null) {
   await place(s, p)
 }
 /* THE COORDINATOR'S RULE (chat 191, after s1-cal-noleave-p): a refusal note never covers the controls it names. On a
-   phone, where the foot place would meet a control of the open window(s) - any visible button, box or list in a window,
-   a sheet or the bell's list, plus `extra` (the page's own controls the note names) - the note stands instead just above
-   the highest such control it would meet: its foot 8px above that control's top, 12px from each side, as the foot place.
-   Asked again at each new place, upward, until it meets none (the first redraw stopped one step short: lifted off the
-   form's Cancel and Save it landed on the "Create the 2028 leave period" button its own words name). Returns what it met. */
-export const NAMED = '.floatwin button, .floatwin input, .floatwin select, .bidsheet button, .bidsheet input, [data-testid="bell-list"] button, [data-testid="bell-list"] .bl-line, .modal button'
+   phone the note stands at the foot (D2590); where that place would meet a control the note names - the buttons its
+   words point to (Save, Cancel, Add, Create…, Close, Retry, the window's ✕), in front on the screen, plus `extra` (a
+   page control the note names, as Quals' box and Add) - it stands instead just above the highest such control it
+   meets: its foot 8px above that control's top, 12px from each side, as the foot place; asked again at each new place
+   until it meets none (the first redraw lifted it off Cancel and Save onto "Create the 2028 leave period", which its own
+   words name). Controls the note does not name (a calendar's days, a list's rows) it may cover for its few seconds. */
+const NAMES = '^(Save|Cancel|Add|Add person|Add person and sign-in|Save and add another|Save them|Discard them|Stay|Delete|Close|Retry|✕)$|^Create |^Add \\d+ holidays?$'
 export async function clearOfNamed(s, k, extra = '') {
-  const r = await s.page.evaluate(sel => {
-    const t = document.querySelector('#toastEl'), n = t.getBoundingClientRect()
-    const hits = [...document.querySelectorAll(sel)].filter(e => { const b = e.getBoundingClientRect(); if (b.width < 2 || b.height < 2) return false; for (let p = e; p; p = p.parentElement) { const c = getComputedStyle(p); if (c.display === 'none' || c.visibility === 'hidden') return false } return b.left < n.right && b.right > n.left && b.top < n.bottom && b.bottom > n.top })
-    return { met: hits.map(e => (e.getAttribute('data-testid') || e.id || e.textContent.trim().slice(0, 30) || e.tagName)), top: hits.length ? Math.min(...hits.map(e => e.getBoundingClientRect().top)) : null, H: innerHeight }
-  }, NAMED + (extra ? ', ' + extra : ''))
-  if (!r.met.length) { FACT(`${k}.clearOfNamed`, 'the foot place meets none of the open window\'s controls'); return r }
-  const steps = [r.met]
-  let top = r.top
-  for (let i = 0; i < 8; i++) {
-    await place(s, { bottom: Math.round(r.H - top + 8), left: 12, right: 12 })
-    const again = await s.page.evaluate(sel => {
-      const n = document.querySelector('#toastEl').getBoundingClientRect()
-      const hits = [...document.querySelectorAll(sel)].filter(e => { const b = e.getBoundingClientRect(); if (b.width < 2 || b.height < 2) return false; for (let p = e; p; p = p.parentElement) { const c = getComputedStyle(p); if (c.display === 'none' || c.visibility === 'hidden') return false } return b.left < n.right && b.right > n.left && b.top < n.bottom && b.bottom > n.top })
-      return { met: hits.map(e => (e.getAttribute('data-testid') || e.id || e.textContent.trim().slice(0, 30) || e.tagName)), top: hits.length ? Math.min(...hits.map(e => e.getBoundingClientRect().top)) : null }
-    }, NAMED + (extra ? ', ' + extra : ''))
-    if (!again.met.length) break
-    steps.push(again.met); top = again.top
-  }
+  const meets = () => s.page.evaluate(([names, extra]) => {
+    const t = document.querySelector('#toastEl'), n = t.getBoundingClientRect(), re = new RegExp(names)
+    const pool = [...document.querySelectorAll('button, [role="button"]')].filter(e => re.test(e.textContent.trim()) || (e.getAttribute('aria-label') || '') === 'Close')
+    if (extra) pool.push(...document.querySelectorAll(extra))
+    const pe = t.style.pointerEvents; t.style.pointerEvents = 'none'
+    const front = e => { const b = e.getBoundingClientRect(); const h = document.elementFromPoint(b.left + b.width / 2, b.top + Math.min(b.height / 2, 6)); return !!h && (h === e || e.contains(h)) }
+    const hits = pool.filter(e => { const b = e.getBoundingClientRect(); return b.width > 2 && b.height > 2 && front(e) && b.left < n.right && b.right > n.left && b.top < n.bottom && b.bottom > n.top })
+    t.style.pointerEvents = pe
+    return { met: hits.map(e => (e.getAttribute('data-testid') || e.id || e.textContent.trim().slice(0, 30))), top: hits.length ? Math.min(...hits.map(e => e.getBoundingClientRect().top)) : null, H: innerHeight }
+  }, [NAMES, extra])
+  let r = await meets(); const steps = []
+  for (let i = 0; i < 6 && r.met.length; i++) { steps.push(r.met); await place(s, { bottom: Math.round(r.H - r.top + 8), left: 12, right: 12 }); r = await meets() }
   const b = await boxOf(s, '#toastEl')
-  FACT(`${k}.clearOfNamed`, { met: steps, movedTo: 'just above the highest control met, asked again until clear', box: b })
-  return r
+  FACT(`${k}.clearOfNamed`, steps.length ? { metAtEachPlace: steps, movedTo: 'just above the highest named control met, until clear', box: b } : 'the foot place covers no control the note names')
+  return steps
 }
 /* the app's own phone foot place, read from ui/toast.ts placeToast: 12px from each side, 26px off the foot, no shift */
 export async function atFoot(s, k) {
