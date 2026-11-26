@@ -15,24 +15,25 @@
    Its own fault is the mirror one — a window nobody adds — which the roll-call tests catch by reading the source
    (ui/msq-guard-rollcall.test.ts, R1, R2, R8).
 
-   K1a, the first of three passes of part A: the table for every window whose state is a module's own. No door asks
-   yet, nothing closes yet — the app behaves exactly as before. K1b adds the windows and typed work whose state is a
-   component's own (Admin's rows, the Inputs list's OIL question, the Calendar family on his E1 answer, Quals' "Add
-   qualification", the two edit modes' end, the Leave War's show-only mark); K1c the Tracker. Plain modules only — no
-   component is imported, so the test world and the test set-ups can load it. */
+   K1a, the first of three passes of part A: the table for every window whose state is a module's own. K1b, the
+   second: the windows and typed work whose state is a component's own — Admin's six rows and forms, the Inputs list's
+   OIL question, a holiday sheet read in, Quals' "Add qualification" (each a `useGuardWork` report); the Calendar family
+   in his E1 shape (D2654: the Calendar and an unchanged settings window close at the press, a half-done form refuses);
+   the two edit modes' end() (D2627 A4, §18.1); the Leave War's two show-only sheets (D2740). K1c the Tracker. No door
+   asks yet, so the app still behaves as before. Plain modules only — no component is imported, so the test world and
+   the test set-ups can load it. */
 import { useEffect, useLayoutEffect, useRef } from 'react'
-import { setGuardAsk, setGuardClose, type GuardOpts, type GuardRefusal } from '../state/guard'
+import { setGuardAsk, setGuardClose, warSheetOpen, warShowOpen, closeWarShown, type GuardOpts, type GuardRefusal } from '../state/guard'
 import { CURPAGE, SBDAY, OILDAY, ARM, RESTARM, UNPUBARM, SECDEFOFFER, OILBAR } from '../state/view'
-import { LGEDIT } from '../state/auth'
+import { LGEDIT, setLgEdit } from '../state/auth'
 import { pageOffered } from '../state/perms'
-import { warWindowOpen } from '../state/typing-hold'
 import { saveRefused } from '../storage/savewait'
 import { closeDayPanel } from '../leavewar/ui/daypanelopen'
 import { winUp } from './winorder'
 import { availDrawn, chgDrawn, inputDlgDrawn, insightsDrawn, dutyTplDrawn, waveTplDrawn, dayTplDrawn, draftsDrawn, cxDrawn, sortAllDrawn, medMoveDrawn, oilWaitDrawn } from './windrawn'
 import { closeAvailWin } from './availopen'
 import { closeChanges } from './changesopen'
-import { setInsights, AIRKEY, DAYPOP, WEEKCAL, DOCVIEW, BELLLIST, DRAWER } from './pops'
+import { setInsights, setDaysWin, setInpSet, setSansSet, AIRKEY, DAYPOP, WEEKCAL, DOCVIEW, BELLLIST, DRAWER } from './pops'
 import { notify } from '../state/store'
 
 /* what a row is: a window that refuses, a row being edited (Admin's — K1b), a change not saved, a window that only
@@ -64,7 +65,9 @@ export type GuardRowId =
   | 'inputdlg' | 'insights' | 'dutytpl' | 'wavetpl' | 'daytpl' | 'drafts' | 'cxdlg' | 'sortall'
   | 'airpop' | 'daypop' | 'weekcal' | 'docview'
   | 'medmove' | 'oilwait'
-  | 'lwsheet'
+  | 'lwsheet' | 'lwshow'
+  | 'oilrevise' | 'holimport' | 'qualsnew'
+  | 'userrow' | 'archrow' | 'giveaccess' | 'newsqn' | 'sqnmove' | 'placeedit'
   | 'belllist' | 'sqnlist' | 'drawer' | 'insmenu' | 'boardmenus' | 'datecal' | 'medcal' | 'icpick'
   | 'board' | 'oilearn' | 'arm' | 'restarm' | 'unpubarm' | 'lgedit' | 'qedit' | 'secdef' | 'oilbar' | 'welcome'
   | 'unsaved'
@@ -90,6 +93,18 @@ export type GuardRow = {
   close?: () => void
   /* a 'no' row only: why it does not count */
   why?: string
+  /* a row its component reports (useGuardWork(id, on) — typed work no module flag holds): open() is workOn(id), and the
+     roll-call reads that its frame makes that very call (R1) */
+  report?: true
+  /* E1's shape (his D2654, §3.1): the window refuses only while dirty() — something in it differs from how it opened, or
+     a form in it is half done. A 'closes' row with `dirty` is closed by closeShown() while it is not; a 'window' row
+     with `dirty` (a form of the Calendar) counts nothing while it is not, and goes with the window that opened it */
+  dirty?: () => boolean
+  /* a 'closes' row only: while holds() a form of it holds something not saved, so closeShown() leaves it open — that form
+     refuses by its own row, and is named first (the Calendar: its two forms and a holiday sheet read in) */
+  holds?: () => boolean
+  /* a 'no' row only — a mode (§18.1): how closeShown() ends it at a door's last step, a refusal ending nothing */
+  end?: () => void
 }
 
 /* THE CLOSERS A COMPONENT HANDS OVER, for a 'closes' window whose state is its own (useGuardCloses, below) */
@@ -97,16 +112,20 @@ const CLOSERS = new Map<GuardRowId, () => void>()
 
 const FLOAT_ROW: Record<FloatId, Omit<GuardRow, 'id' | 'where' | 'open'>> = {
   inputedit: { name: 'the Input window', frame: 'ui/InputWindow.tsx', sel: '[data-testid="win-inputedit"]', counts: 'window', flags: ['INPEDIT'] },
-  /* inputsday, inputsset, sansset, days, everywd and holiday are plain 'window' rows in K1a, the refusing side: K1b gives
-     the Calendar family its E1 shape (his D2654 — 'closes' unless a form of it is half done, a settings window with
-     `dirty`) in the commit that cites his answer (R8) */
+  /* a day opened on the Inputs calendar stays a plain 'window' row (§3.2 (a)): it is not of the Calendar family E1 shaped */
   inputsday: { name: 'a day on the Inputs calendar', frame: 'ui/InputsCal.tsx', sel: '[data-testid="win-inputsday"]', counts: 'window' },
   sansday: { name: 'a SANS day', frame: 'ui/SansDay.tsx', sel: '[data-testid="win-sansday"]', counts: 'closes', close: () => CLOSERS.get('sansday')?.() },
-  inputsset: { name: 'Inputs calendar settings', frame: 'ui/InputsSettings.tsx', sel: '[data-testid="win-inputsset"]', counts: 'window', flags: ['INPSET'] },
-  sansset: { name: 'SANS calendar settings', frame: 'ui/SansSettings.tsx', sel: '[data-testid="win-sansset"]', counts: 'window', flags: ['SANSSET'] },
-  days: { name: 'the Calendar', frame: 'ui/DaysWindow.tsx', sel: '[data-testid="win-days"]', counts: 'window', flags: ['DAYSWIN'] },
-  everywd: { name: 'Every Monday', frame: 'ui/EveryWeekday.tsx', sel: '[data-testid="win-every"]', counts: 'window' },
-  holiday: { name: 'a holiday', frame: 'ui/HolidaysPanel.tsx', sel: '[data-testid="win-holiday"]', counts: 'window' },
+  /* THE CALENDAR FAMILY IN HIS E1 SHAPE (D2654 — "the Calendar closes at a pick unless a form of it is half done, an
+     unchanged settings window beside it closing too"; §3.2 (a)). The two settings windows close by their own setters while
+     nothing in them differs from how they opened (their component's report, `dirty`), and refuse once something does; the
+     Calendar closes by its own setter while none of its forms and no sheet read in holds something not saved (`holds`) —
+     each of those refuses by its own row, named ahead of it (GUARD_ORDER); Every Monday and a holiday refuse once
+     something in them is pressed or typed, and otherwise go with the Calendar */
+  inputsset: { name: 'Inputs calendar settings', frame: 'ui/InputsSettings.tsx', sel: '[data-testid="win-inputsset"]', counts: 'closes', flags: ['INPSET'], dirty: () => workOn('inputsset'), close: () => { setInpSet(false); notify() } },
+  sansset: { name: 'SANS calendar settings', frame: 'ui/SansSettings.tsx', sel: '[data-testid="win-sansset"]', counts: 'closes', flags: ['SANSSET'], dirty: () => workOn('sansset'), close: () => { setSansSet(false); notify() } },
+  days: { name: 'the Calendar', frame: 'ui/DaysWindow.tsx', sel: '[data-testid="win-days"]', counts: 'closes', flags: ['DAYSWIN'], holds: () => workOn('holiday') || workOn('everywd') || workOn('holimport'), close: () => { setDaysWin(null); notify() } },
+  everywd: { name: 'Every Monday', frame: 'ui/EveryWeekday.tsx', sel: '[data-testid="win-every"]', counts: 'window', dirty: () => workOn('everywd') },
+  holiday: { name: 'a holiday', frame: 'ui/HolidaysPanel.tsx', sel: '[data-testid="win-holiday"]', counts: 'window', dirty: () => workOn('holiday') },
   oilday: { name: 'the OIL list', frame: 'ui/OilDayList.tsx', sel: '[data-testid="win-oilday"]', counts: 'window', flags: ['OILLIST'] },
   lwday: { name: 'the Leave War\'s day panel', frame: 'leavewar/ui/DayPanel.tsx', sel: '[data-testid="win-lwday"]', counts: 'closes', close: closeDayPanel },
 }
@@ -141,9 +160,28 @@ export const GUARD_ROWS: readonly GuardRow[] = [
   /* (e) the question sheets that are windows of their own (the others stand over a window already counted) */
   { id: 'medmove', name: 'the medical question', frame: 'ui/MedMoveConfirm.tsx', where: 'any', open: medMoveDrawn, sel: '[data-testid="medclash"], .upconf-pop', counts: 'window', flags: ['MEDMOVE'] },
   { id: 'oilwait', name: 'the OIL question', frame: 'ui/OilWaitSheet.tsx', where: 'any', open: oilWaitDrawn, sel: '[data-testid="oilconf"]', counts: 'window', flags: ['OILWAIT'] },
-  /* (f) the Leave War: one row in K1a, every sheet refusing — the show-only mark and its row `lwshow` (his D2740) are
-     K1b's, with leavewar/ui/Sheet.tsx */
-  { id: 'lwsheet', name: 'a Leave War window', frame: 'leavewar/ui/Sheet.tsx', where: 'leavewar', open: warWindowOpen, sel: '.bidsheet', counts: 'window' },
+  /* the OIL question raised from a row of the Inputs list — the page's own state (`oilConf`), no Input window under it */
+  { id: 'oilrevise', name: 'the OIL question', frame: 'ui/InputsPage.tsx', where: 'inputs', open: () => workOn('oilrevise'), sel: '[data-testid="oilconf"]', counts: 'window', report: true },
+  /* typed work no frame holds (§3.1): a holiday sheet read in and not yet added (the Holidays list's own state, inside
+     the Calendar — counted on his E1 answer, a form of the Calendar half done); words in Quals' "Add qualification",
+     counted only while the box is drawn — edit mode on — and holds words (D2729 Q2) */
+  { id: 'holimport', name: 'a holiday sheet read in', frame: 'ui/HolidaysPanel.tsx', where: 'any', open: () => workOn('holimport'), sel: '[data-testid="hol-preview"]', counts: 'window', report: true },
+  { id: 'qualsnew', name: 'the new qualification', frame: 'ui/QualsPage.tsx', where: 'quals', open: () => workOn('qualsnew'), sel: '#qNewQual', counts: 'row', report: true },
+  /* (h) Admin's rows and forms — a component's own state, each its own report, counted once anything differs from how it
+     opened (D2595, D2598; a squadron's move and a place being edited by the same rule — §3.2 (h)). The Admin page hides
+     the section not shown, so a row counts while another section shows (D2627 A6), and unmounts when its tab is left */
+  { id: 'userrow', name: 'the open row', frame: 'ui/UsersPanel.tsx', where: 'admin', open: () => workOn('userrow'), sel: '[data-editing]', counts: 'row', report: true },
+  { id: 'archrow', name: 'the open row', frame: 'ui/UsersPanel.tsx', where: 'admin', open: () => workOn('archrow'), sel: '[data-restoring]', counts: 'row', report: true },
+  { id: 'giveaccess', name: 'Give access', frame: 'ui/UsersPanel.tsx', where: 'admin', open: () => workOn('giveaccess'), sel: '[data-approving]', counts: 'row', report: true },
+  { id: 'newsqn', name: 'the new squadron', frame: 'ui/SquadronsPanel.tsx', where: 'admin', open: () => workOn('newsqn'), sel: '[data-new-sqn]', counts: 'row', report: true },
+  { id: 'sqnmove', name: 'the open row', frame: 'ui/SquadronsPanel.tsx', where: 'admin', open: () => workOn('sqnmove'), sel: '[data-moving]', counts: 'row', report: true },
+  { id: 'placeedit', name: 'the open row', frame: 'ui/SquadronsPanel.tsx', where: 'admin', open: () => workOn('placeedit'), sel: '[data-placing]', counts: 'row', report: true },
+  /* (f) the Leave War: its one list of open sheets, read two ways (his D2740). Two sheets only show things and close by
+     themselves — a leave filed on the Inputs page (the sheet that also reads "OIL the app credited") and an OIL award —
+     each opened with the `showOnly` mark; every other sheet ("Open for bidding", a person's window and "OIL TRACKER"
+     among them) refuses, as before */
+  { id: 'lwsheet', name: 'a Leave War window', frame: 'leavewar/ui/Sheet.tsx', where: 'leavewar', open: warSheetOpen, sel: '.bidsheet', counts: 'window' },
+  { id: 'lwshow', name: 'a Leave War window', frame: 'leavewar/ui/Sheet.tsx', where: 'leavewar', open: warShowOpen, sel: '.bidsheet', counts: 'closes', close: closeWarShown },
   /* (i) lists, menus and modes */
   no('belllist', 'the bell\'s list', 'ui/topbits.tsx', 'a list — a press outside closes it', () => BELLLIST, ['BELLLIST']),
   no('sqnlist', 'the Schedules list', 'ui/SquadronMenu.tsx', 'a list — the component\'s own state; the pick is pressed in it'),
@@ -158,9 +196,14 @@ export const GUARD_ROWS: readonly GuardRow[] = [
   no('arm', 'an armed slot', 'ui/board.ts', 'a mode — a pick drops it, as today', () => ARM != null, ['ARM']),
   no('restarm', 'an armed "Discard N edits & load"', 'ui/board.ts', 'a two-tap control, armed — no window', () => RESTARM != null, ['RESTARM']),
   no('unpubarm', 'an armed Withdraw', 'ui/board.ts', 'a two-tap control, armed — no window', () => UNPUBARM != null, ['UNPUBARM']),
-  /* the two edit modes end at a pick (D2627 A4 — §18.1): their end() is K1b's */
-  no('lgedit', 'Logic\'s edit mode', 'ui/LogicPage.tsx', 'a mode — every change in it is saved as made; its end at a pick is K1b\'s (D2627 A4)', () => !!LGEDIT, ['LGEDIT']),
-  no('qedit', 'Edit quals', 'ui/QualsPage.tsx', 'a mode, the page\'s own state — every change saved as made; its end at a pick is K1b\'s (D2627 A4)'),
+  /* THE TWO EDIT MODES END AT A DOOR'S LAST STEP (D2627 A4 — §18.1): 'no' rows, since every change in either is saved as
+     it is made, each carrying the end() closeShown() runs. Logic's is handed over by its page — a value typed and still
+     waiting a beat (LogicPage.tsx flushRuleApply) written first, to the squadron it was typed for, then the mode off —
+     and, with the page not mounted (LGEDIT outlives it), the mode simply off: nothing can be waiting then. Quals' is the
+     page's own state, handed over while the mode is on; it never clears the "Add qualification" words, whose own row
+     (`qualsnew`) refuses the press while they stand. Neither says Done's own toast. */
+  { ...no('lgedit', 'Logic\'s edit mode', 'ui/LogicPage.tsx', 'a mode — every change in it is saved as made; a door ends it (D2627 A4)', () => !!LGEDIT, ['LGEDIT']), end: () => { const f = CLOSERS.get('lgedit'); if (f) f(); else { setLgEdit(false); notify() } } },
+  { ...no('qedit', 'Edit quals', 'ui/QualsPage.tsx', 'a mode, the page\'s own state — every change saved as made; a door ends it (D2627 A4)', () => CLOSERS.has('qedit')), end: () => CLOSERS.get('qedit')?.() },
   no('secdef', 'the "Set as default?" bar', 'ui/SecDefaultSnackbar.tsx', 'a bar shown for a while — no window', () => SECDEFOFFER != null, ['SECDEFOFFER']),
   no('oilbar', 'the "Not swapped" bar', 'ui/OilWaitSheet.tsx', 'a bar shown for a while — no window', () => !!OILBAR, ['OILBAR']),
   no('welcome', 'the welcome-back card', 'ui/WelcomeBack.tsx', 'a card — it is shown at home only (§18.5)'),
@@ -176,16 +219,19 @@ export const GUARD_ROWS: readonly GuardRow[] = [
   no('qualsfilter', 'the Quals filter box', 'ui/QualsPage.tsx', H13),
 ]
 
-/* THE ORDER THE ROWS ARE ASKED IN — the first open one names the note. What lies on top first (a question over a window,
-   the Calendar's forms ahead of the Calendar and the settings windows — §17 reading 6, his), then the windows, then the
-   change not saved, which a window open beside it outranks (A4). */
+/* THE ORDER THE ROWS ARE ASKED IN — the first open one names the note. What lies on top first (the question sheets; the
+   Calendar's forms, a holiday sheet read in among them, ahead of the Calendar and the settings windows — §17 reading 6,
+   his, and D2729 Q4: a half-done holiday is named before changed settings), then the windows, then the rows being edited
+   (one reason at a time — window, row, Retry: D2627), then the change not saved, which a window open beside it outranks
+   (A4). */
 export const GUARD_ORDER: readonly GuardRowId[] = [
-  'medmove', 'oilwait',
+  'medmove', 'oilwait', 'oilrevise',
   'inputedit', 'inputdlg',
-  'holiday', 'everywd', 'days', 'inputsset', 'sansset', 'inputsday', 'oilday',
+  'holiday', 'everywd', 'holimport', 'days', 'inputsset', 'sansset', 'inputsday', 'oilday',
   'dutytpl', 'wavetpl', 'daytpl', 'drafts', 'cxdlg', 'sortall',
   'lwsheet',
-  'avail', 'chg', 'insights', 'sansday', 'lwday',
+  'avail', 'chg', 'insights', 'sansday', 'lwday', 'lwshow',
+  'userrow', 'archrow', 'giveaccess', 'newsqn', 'sqnmove', 'placeedit', 'qualsnew',
   'airpop', 'daypop', 'weekcal', 'docview',
   'belllist', 'sqnlist', 'drawer', 'insmenu', 'boardmenus', 'datecal', 'medcal', 'icpick',
   'board', 'oilearn', 'arm', 'restarm', 'unpubarm', 'lgedit', 'qedit', 'secdef', 'oilbar', 'welcome',
@@ -207,20 +253,26 @@ export function whatIsOpen(skip: readonly string[] = []): { reason: 'window' | '
   for (const id of GUARD_ORDER) {
     if (skip.includes(id)) continue
     const row = BY_ID.get(id)!
-    if (row.counts !== 'window' && row.counts !== 'row' && row.counts !== 'unsaved') continue
+    if (!rowRefuses(row)) continue
     if (!row.open() || !rowReachable(row)) continue
-    return { reason: row.counts, row }
+    if (row.dirty && !row.dirty()) continue
+    return { reason: row.counts === 'row' || row.counts === 'unsaved' ? row.counts : 'window', row }
   }
   return null
 }
+/** a row that can refuse a press: a window, a row being edited, a change not saved — or a window that closes by itself
+ *  only while nothing in it is changed (E1's `dirty`) */
+export const rowRefuses = (row: GuardRow): boolean =>
+  row.counts === 'window' || row.counts === 'row' || row.counts === 'unsaved' || (row.counts === 'closes' && !!row.dirty)
 
-/** closes every 'closes' window that is open, each by its own closer — called by a door only once nothing can still
- *  stop its change (§4.2 step 6); a refusal, a Stay and a change he did not make close nothing. (The two edit modes'
- *  end — §18.1 — joins in K1b.) */
+/** closes every 'closes' window that is open, each by its own closer — but one changed (`dirty`) or holding a form half
+ *  done (`holds`), which refuses instead — and ends the two edit modes (§18.1); called by a door only once nothing can
+ *  still stop its change (§4.2 step 6); a refusal, a Stay and a change he did not make close nothing */
 export function closeShown(): void {
   for (const id of GUARD_ORDER) {
     const row = BY_ID.get(id)!
-    if (row.counts === 'closes' && row.close && row.open()) row.close()
+    if (row.counts === 'closes' && row.close && row.open() && !row.dirty?.() && !row.holds?.()) row.close()
+    else if (row.end && row.open()) row.end()
   }
 }
 

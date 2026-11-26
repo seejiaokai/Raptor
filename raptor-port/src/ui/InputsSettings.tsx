@@ -33,6 +33,7 @@ import { FloatWin } from './FloatWindow'
 import { bringForward, openBeside } from './winorder'
 import { INPSET, setDaysWin, setInpSet } from './pops'
 import { useVersion } from './useStore'
+import { useGuardWork } from './guard'
 
 export function InputsSettings({ unit }: { unit?: string } = {}) {
   useVersion()
@@ -51,11 +52,15 @@ export function InputsSettings({ unit }: { unit?: string } = {}) {
 }
 
 function Body({ unit }: { unit: string }) {
-  const [cut, setCut] = useState(() => cutDraftOf(getCut('inputs', unit)))
+  const [cut0] = useState(() => cutDraftOf(getCut('inputs', unit)))
+  const [cut, setCut] = useState(cut0)
   /* the window's own squadron's switch, as its cut-off is (the fix round of 22 Nov 26 — state/memberfile.ts membersFileOf) */
   const [was] = useState(() => membersFileOf(unit))
   const [members, setMembers] = useState(was)
   const [err, setErr] = useState('')
+  /* ANYTHING CHANGED SINCE IT OPENED: the guard counts the window then; unchanged, it closes by itself at a pick with the
+     Calendar (ui/guard.ts — his D2654 E1) */
+  useGuardWork('inputsset', JSON.stringify(cut) !== JSON.stringify(cut0) || members !== was)
 
   const close = () => { setInpSet(false); notify() }
   const save = () => {

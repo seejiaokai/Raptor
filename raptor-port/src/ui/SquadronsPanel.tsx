@@ -28,6 +28,7 @@ import { PEOPLE } from '../engine/people'
 import { actorIsMaster } from './useraccess-model'
 import { squadronRows, placeRows, tzChoices, firstAdminChoices, newSqnNote, NUM_EXAMPLE, NEW_PLACE } from './squadrons-model'
 import { useVersion } from './useStore'
+import { useGuardWork } from './guard'
 
 /* a door's answer said: refused — its words in the warning toast, the form kept; saved — the toast's words if any, then
    `then`. A save the command queued (a commit in flight) is answered when it lands. */
@@ -70,7 +71,10 @@ function PlaceOptions() {
 
 /* ---- a squadron's place (b1-4) ---- */
 function MoveEditor(p: { unit: string; onClose: () => void }) {
-  const [pick, setPick] = useState<PlacePick>(() => ({ place: placeOfOn(p.unit, todayIso())?.id ?? firstPlace(), name: '', tz: startTz() }))
+  const [pick0] = useState<PlacePick>(() => ({ place: placeOfOn(p.unit, todayIso())?.id ?? firstPlace(), name: '', tz: startTz() }))
+  const [pick, setPick] = useState<PlacePick>(pick0)
+  /* counted for the guard once anything differs from how the row opened (D2598, §3.2 (h); ui/guard.ts) */
+  useGuardWork('sqnmove', JSON.stringify(pick) !== JSON.stringify(pick0))
   const save = () => run(moveUnit(p.unit, pickOf(pick)), 'Saved', () => p.onClose())
   return (
     <div className="acc-edit" data-moving={p.unit}>
@@ -91,8 +95,11 @@ function MoveEditor(p: { unit: string; onClose: () => void }) {
 /* ---- "+ New squadron" (b1-9, b1-10) ---- */
 function NewSquadron(p: { onClose: () => void; onMade: (id: string) => void }) {
   const [num, setNum] = useState('')
-  const [pick, setPick] = useState<PlacePick>(() => ({ place: firstPlace(), name: '', tz: startTz() }))
+  const [pick0] = useState<PlacePick>(() => ({ place: firstPlace(), name: '', tz: startTz() }))
+  const [pick, setPick] = useState<PlacePick>(pick0)
   const [admin, setAdmin] = useState('')
+  /* counted for the guard once anything is typed or changed in it (D2598; ui/guard.ts) */
+  useGuardWork('newsqn', num !== '' || admin !== '' || JSON.stringify(pick) !== JSON.stringify(pick0))
   const admins = firstAdminChoices(todayIso())
   const fa = admin ? accountById(admin) : undefined
   const faCs = fa ? String((PEOPLE as any)[fa.pid]?.cs ?? '') : null
@@ -136,6 +143,8 @@ function PlaceEditor(p: { id: string; onClose: () => void }) {
   const pl = placeById(p.id)
   const [name, setName] = useState(pl?.name ?? '')
   const [tz, setTz] = useState(pl?.tz ?? '')
+  /* counted for the guard once its name or time zone differs from the place's (D2598, §3.2 (h); ui/guard.ts) */
+  useGuardWork('placeedit', name !== (pl?.name ?? '') || tz !== (pl?.tz ?? ''))
   const why = placeChangeProblem(p.id)
   const save = () => {
     if (pl && name === pl.name && tz === pl.tz) return p.onClose()

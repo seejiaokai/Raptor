@@ -10,8 +10,9 @@
    This file is one of those it reads, so it calls `withThird()` itself.
 
    K1a (the first of the three passes of part A, chat 198) writes R1, R2, R8 and R7's planted cases for R1's and R2's
-   scans. R3 (every frame counted, per file) is K1b's, R4 (the Tracker's list) K1c's — `TO_COME` below names each, with
-   the pass that owes it; K1c's last test proves the list empty. */
+   scans. K1b (the second) writes R3 (every frame counted, per file, outside the Tracker), its planted cases in R7, the
+   reports' half of R1 and R8's additions on his answers. R4 (the Tracker's list) is K1c's — `TO_COME` below names it,
+   with the pass that owes it; K1c's last test proves the list empty. */
 import { describe, it, expect } from 'vitest'
 import { readFileSync, readdirSync, statSync } from 'node:fs'
 import { join, basename } from 'node:path'
@@ -20,7 +21,7 @@ import { GUARD_ROWS, GUARD_ORDER, FLOAT_WHERE, type GuardRow } from './guard'
 import * as DRAWN from './windrawn'
 import { forward, gone, _resetFloatWins } from './winorder'
 import { saveRefused } from '../storage/savewait'
-import { warWindowOpen } from '../state/typing-hold'
+import { warSheetOpen, warShowOpen } from '../state/guard'
 
 withThird()
 
@@ -67,17 +68,12 @@ describe('R9 — every test file of the guard and of part V sets up three squadr
 /* ---- WHAT A LATER PASS OF PART A OWES (K1a's list — the brief's "One explicit list, TO_COME") ----
    Each row id, flag or test that K1b or K1c adds, with the pass that owes it, so that R1's "every flag has a row" and
    A2's "a row with no entry in the map fails" hold now for everything else. K1c's last test proves the list empty. */
-export const TO_COME: { what: string; pass: 'K1b' | 'K1c'; why: string }[] = [
-  { what: 'R3', pass: 'K1b', why: 'every frame counted, per file — the component-state windows are K1b\'s rows' },
+export const TO_COME: { what: string; pass: 'K1c' | 'K2b' | 'after S2\'s U1 fix merges'; why: string }[] = [
   { what: 'R4', pass: 'K1c', why: 'the Tracker\'s list is whole — TRK_WINDOWS is K1c\'s' },
-  { what: 'row oilrevise', pass: 'K1b', why: 'the OIL question from a row of the Inputs list — useGuardWork, the page\'s own state' },
-  { what: 'row holimport', pass: 'K1b', why: 'a holiday sheet read in, not yet added — the Calendar family on his E1 answer' },
-  { what: 'row qualsnew', pass: 'K1b', why: 'words typed in Quals\' "Add qualification" (D2729 Q2)' },
-  { what: 'row lwshow', pass: 'K1b', why: 'the Leave War\'s two show-only sheets (D2740) — Sheet.tsx\'s showOnly mark' },
-  { what: 'rows of Admin\'s typed work (PersonEditor, ArchivedEditor, Waiting, NewSquadron, MoveEditor, PlaceEditor)', pass: 'K1b', why: 'useGuardWork reports, D2595, D2598' },
-  { what: 'the E1 shape of days, inputsset, sansset, everywd, holiday, inputsday (closes with dirty)', pass: 'K1b', why: 'D2654 E1 — plain window rows in K1a' },
-  { what: 'the two edit modes\' end() (lgedit, qedit)', pass: 'K1b', why: 'D2627 A4 — §18.1; plain no rows in K1a' },
   { what: 'rows trk, trkask, trkinfo; trkinfo in R8\'s ruled list (D2597)', pass: 'K1c', why: 'the Tracker\'s bridge' },
+  { what: 'R3 for src/tracker/', pass: 'K1c', why: 'the Tracker\'s frames are R4\'s, counted with its list' },
+  { what: 'row addperson ("Add a person" — useGuardWork(\'addperson\', …))', pass: 'K2b', why: 'the form\'s report, after K1 (§21.1)' },
+  { what: 'the short row\'s report — UsersPanel.tsx ForeignEditor (its `unsaved`, `data-unsaved` on the row), counted with the opened row', pass: 'after S2\'s U1 fix merges', why: 'the Admin → Users section\'s editor, not in this branch yet (the orchestrator, chat 204)' },
 ]
 
 /* ---- the scans, each a function of the source text, so R7 can run them on a made-up source ---- */
@@ -144,8 +140,11 @@ const FLAG_FILES = ['ui/pops.ts', 'state/view.ts']
 const ALLOWED_OPEN: Record<string, (() => boolean)[]> = {
   'ui/windrawn.ts': Object.values(DRAWN) as (() => boolean)[],
   'storage/savewait.ts': [saveRefused],
-  'state/typing-hold.ts': [warWindowOpen],
+  'state/guard.ts': [warSheetOpen, warShowOpen],
 }
+/* a component's report (ui/guard.ts useGuardWork) or a closer it hands over (useGuardCloses): the call, in its frame */
+const reportsIn = (src: string, hook: 'useGuardWork' | 'useGuardCloses'): string[] =>
+  [...src.matchAll(new RegExp(`\\b${hook}\\('([a-z]+)'`, 'g'))].map(m => m[1]!)
 const drawnName = (f: () => boolean): string | null => Object.entries(DRAWN).find(([, g]) => g === f)?.[0] ?? null
 
 describe('R1 — every flag has a row, and every row reads what its window is drawn from', () => {
@@ -166,13 +165,31 @@ describe('R1 — every flag has a row, and every row reads what its window is dr
     expect(new Set(ids).size, 'no id twice').toBe(ids.length)
     expect([...GUARD_ORDER].sort()).toEqual([...ids].sort())
   })
-  it('each counting row\'s open() is a function of ui/windrawn.ts, storage/savewait.ts or state/typing-hold.ts — or a movable window\'s own place in the order', () => {
+  it('each counting row\'s open() is a function of ui/windrawn.ts, storage/savewait.ts or state/guard.ts — or a movable window\'s own place in the order, or its component\'s own report', () => {
     const allowed = Object.values(ALLOWED_OPEN).flat()
     for (const r of GUARD_ROWS) {
       if (r.counts === 'no') continue
       if (r.id in FLOAT_WHERE) continue          // the next test proves these read winUp
+      if (r.report) continue                     // the test after it proves these are their frame's own report
       expect(allowed.includes(r.open), `${r.id}: open() must be the very predicate its window is drawn from — a function of ui/windrawn.ts the component calls (§3.1), never a raw flag`).toBe(true)
     }
+  })
+  it('a reported row, a changed window (`dirty`) and a mode\'s end: its frame makes that very call, and no frame reports a row the table lacks', () => {
+    const ids = new Set(GUARD_ROWS.map(r => r.id))
+    for (const r of GUARD_ROWS) {
+      const src = read(r.frame)
+      if (r.report) expect(reportsIn(src, 'useGuardWork'), `${r.frame} reports ${r.id} (useGuardWork('${r.id}', …))`).toContain(r.id)
+      if (r.dirty) expect(reportsIn(src, 'useGuardWork'), `${r.frame} reports what is changed in ${r.id} (useGuardWork('${r.id}', …))`).toContain(r.id)
+      if (r.end) expect(reportsIn(src, 'useGuardCloses'), `${r.frame} hands over ${r.id}'s end (useGuardCloses('${r.id}', …))`).toContain(r.id)
+    }
+    /* every report and every closer in the source names a row of the table (the hook's type says so too; this reads it) */
+    for (const f of srcFiles(SRC)) {
+      const src = readFileSync(f, 'utf8')
+      for (const id of [...reportsIn(src, 'useGuardWork'), ...reportsIn(src, 'useGuardCloses')])
+        expect(ids.has(id as any), `${f.slice(SRC.length + 1)}: a report for "${id}", which is no row`).toBe(true)
+    }
+    /* the `holds` of the Calendar reads exactly its two forms and the sheet read in */
+    expect(GUARD_ROWS.filter(r => r.holds).map(r => r.id)).toEqual(['days'])
   })
   it('a movable window\'s row follows the order of windows that are up, and nothing else', () => {
     _resetFloatWins()
@@ -220,6 +237,115 @@ describe('R2 — every movable window has a row', () => {
   })
 })
 
+/* ---- R3 — EVERY FRAME IS COUNTED, ONE BY ONE (§3.4; K1b) ----
+   In every non-test file under src/ but the Tracker's (R4's, K1c): each frame's mark — role="dialog", aria-modal,
+   className="airpop…", className="modal", a <Sheet call — each call of the hooks a window is closed by (useSheetFocus,
+   useEscClose, useEscWindow, escCloses, useFloatWin, useBarFree), so a window drawn as a plain box is seen by its keys,
+   and each use of the five question components. The census pins, per file, every occurrence in the order it stands in the
+   source, each mapped: `row <id>` — the frame of that row; `in <id>` — a part of that row's window, or a question
+   standing over it; `no <reason>` — not a frame (a comment, a selector, the hook's own body, a component's own file whose
+   uses are counted where it is drawn). A Leave War <Sheet call is `row lwshow` exactly when it carries the show-only mark
+   (his D2740 — two calls), every other `row lwsheet`. */
+const FRAME_RE = /role="dialog"|aria-modal|className="airpop|className="modal"|<Sheet\s|\buseSheetFocus\(|\buseEscClose\(|\buseEscWindow\(|\bescCloses\(|\buseFloatWin\(|\buseBarFree\(|<OilConfirm\b|<UpchitConfirm\b|<MedClashConfirm\b|<DocConfirm\b|<AskCard\b/g
+/** the frame marks in a source, in order: the mark, and the rest of its line */
+export const framesIn = (src: string): { mark: string; line: string }[] =>
+  [...src.matchAll(FRAME_RE)].map(m => ({ mark: m[0].trim().replace(/\($/, ''), line: src.slice(m.index!, src.indexOf('\n', m.index!) < 0 ? undefined : src.indexOf('\n', m.index!)) }))
+const rep = (n: number, label: string): string[] => Array.from({ length: n }, () => label)
+const DEF = 'no the hook\'s own definition'
+const OWN = 'no the question component\'s own file — each use is counted where it is drawn'
+const FRAMES: Record<string, string[]> = {
+  'leavewar/ui/BidPicker.tsx': ['row lwsheet', 'in lwsheet', 'row lwshow', 'row lwshow', 'row lwsheet', 'in lwsheet', 'row lwsheet'],
+  'leavewar/ui/Chrome.tsx': ['no the under-manned list — a list over its own scrim, a tap outside closes it (§3.2 (f))', 'no the Legend — a list over its own scrim, a tap outside closes it (§3.2 (f), H2)'],
+  'leavewar/ui/ClosedNoteSheet.tsx': ['row lwsheet'],
+  'leavewar/ui/CounterForm.tsx': ['row lwsheet'],
+  'leavewar/ui/DayList.tsx': ['row lwsheet'],
+  'leavewar/ui/EventSheet.tsx': ['row lwsheet', 'row lwsheet'],
+  'leavewar/ui/EventsSheet.tsx': ['row lwsheet'],
+  'leavewar/ui/FlyRows.tsx': ['no the flying working-out — a peek a press outside closes (§3.2 (f))'],
+  'leavewar/ui/GradesSheet.tsx': ['row lwsheet'],
+  'leavewar/ui/ManningSheet.tsx': ['row lwsheet'],
+  'leavewar/ui/Matrix.tsx': ['no a comment', 'no a selector — what counts as a window over the page', 'no an event\'s peek — a press outside closes it (§3.2 (f))'],
+  'leavewar/ui/OilTracker.tsx': ['row lwsheet', 'row lwsheet'],
+  'leavewar/ui/OpenDatesSheet.tsx': ['row lwsheet'],
+  'leavewar/ui/PersonWindow.tsx': ['row lwsheet'],
+  'leavewar/ui/RemarksSheet.tsx': ['row lwsheet'],
+  'leavewar/ui/ReqNameForm.tsx': ['row lwsheet'],
+  'leavewar/ui/ReqPanel.tsx': ['row lwsheet'],
+  'leavewar/ui/SelectSheet.tsx': ['row lwsheet', 'in lwsheet'],
+  'leavewar/ui/SettingsSheet.tsx': ['row lwsheet'],
+  'leavewar/ui/Sheet.tsx': ['no a comment', 'row lwsheet'],
+  'leavewar/ui/WarSheet.tsx': ['row lwsheet'],
+  'leavewar/ui/select.ts': ['no a selector — what a press may start on'],
+  'ui/AskCard.tsx': ['no a selector — the frames a card hangs in'],
+  'ui/AvailWindow.tsx': rep(3, 'row avail'),
+  'ui/ChangesWindow.tsx': rep(4, 'row chg'),
+  'ui/DateBox.tsx': rep(2, 'row datecal'),
+  'ui/DayTplModal.tsx': rep(4, 'row daytpl'),
+  'ui/DocConfirm.tsx': rep(6, OWN),
+  'ui/DocViewer.tsx': rep(7, 'row docview'),
+  'ui/DraftsModal.tsx': rep(4, 'row drafts'),
+  'ui/Drawer.tsx': ['row drawer', 'row sqnlist'],
+  'ui/DutyTplModal.tsx': rep(4, 'row dutytpl'),
+  'ui/FloatWindow.tsx': ['no a comment', 'no a comment', ...rep(4, 'no the movable windows\' frame — each window its own row, by its id (R2)')],
+  'ui/InputWindow.tsx': ['row inputdlg', 'in inputdlg', 'in inputedit', 'in inputedit', 'in inputdlg', 'in inputedit', 'in inputedit', 'in inputedit', 'in inputedit', 'in inputedit', 'row inputdlg', 'row inputdlg', 'row inputdlg'],
+  'ui/InputsCal.tsx': ['in inputsday', 'row icpick', 'row icpick'],
+  'ui/InputsPage.tsx': ['row oilrevise'],
+  'ui/MedClashConfirm.tsx': rep(6, OWN),
+  'ui/MedMoveConfirm.tsx': rep(3, 'row medmove'),
+  'ui/MedicalView.tsx': ['row medcal'],
+  'ui/Modals.tsx': [...rep(8, 'row daypop'), ...rep(8, 'row airpop'), ...rep(4, 'row insights')],
+  'ui/OilConfirm.tsx': rep(6, OWN),
+  'ui/OilWaitSheet.tsx': ['row oilwait'],
+  'ui/SchedBoard.tsx': ['row boardmenus', ...rep(5, 'row cxdlg'), ...rep(7, 'row sortall')],
+  'ui/ScheduleInsightsMenu.tsx': ['row insmenu'],
+  'ui/SquadronMenu.tsx': ['row sqnlist'],
+  'ui/UpchitConfirm.tsx': rep(6, OWN),
+  'ui/UsersFilter.tsx': ['no the filter\'s tick boxes on Admin → Users — a list a press outside closes'],
+  'ui/UsersPanel.tsx': ['no the "Add a person" form\'s Escape — its report is step K2b\'s (TO_COME)'],
+  'ui/WaveTplModal.tsx': rep(4, 'row wavetpl'),
+  'ui/WeekCal.tsx': rep(8, 'row weekcal'),
+  'ui/barfree.ts': [DEF],
+  'ui/floatwin.ts': [DEF],
+  'ui/schedule-tab.ts': ['no a selector — what Tab passes over', 'no a selector — what Tab passes over'],
+  'ui/sheetfocus.ts': [DEF, DEF, DEF, 'no inside the hook\'s own body', 'no inside the hook\'s own body', 'no inside the hook\'s own body', DEF],
+}
+/** what is wrong between the source's frames and a census: a file not in it, a count that moved, a label naming no row,
+ *  a Leave War sheet whose label and show-only mark disagree, a file the census names that has no frame */
+export function frameProblems(files: Record<string, string>, census: Record<string, string[]>, ids: ReadonlySet<string>): string[] {
+  const out: string[] = []
+  for (const [f, src] of Object.entries(files)) {
+    const got = framesIn(src)
+    if (!got.length) { if (f in census) out.push(`${f}: the census names a file with no frame`); continue }
+    const want = census[f]
+    if (!want) { out.push(`${f}: ${got.length} frame(s) no census entry maps — give each a row in ui/guard.ts GUARD_ROWS, or name it here with its reason`); continue }
+    if (want.length !== got.length) { out.push(`${f}: ${got.length} frame(s), the census maps ${want.length} — give the new one a row in ui/guard.ts GUARD_ROWS, or name it here with its reason`); continue }
+    got.forEach((g, i) => {
+      const [kind, ...rest] = want[i]!.split(' ')
+      const what = rest.join(' ')
+      if (kind === 'row' || kind === 'in') { if (!ids.has(what)) out.push(`${f} #${i + 1} (${g.mark}): "${what}" is no row`) }
+      else if (kind !== 'no' || !what) out.push(`${f} #${i + 1} (${g.mark}): "${want[i]}" is neither a row nor a reason`)
+      if (g.mark === '<Sheet' && kind === 'row' && (what === 'lwshow') !== /\bshowOnly\b/.test(g.line))
+        out.push(`${f} #${i + 1}: a Leave War sheet is lwshow exactly when it carries showOnly (D2740)`)
+    })
+  }
+  for (const f of Object.keys(census)) if (!(f in files)) out.push(`${f}: the census names a file that is gone`)
+  return out
+}
+const SRC_NOT_TRACKER = (): Record<string, string> => Object.fromEntries(srcFiles(SRC)
+  .map(f => [f.slice(SRC.length + 1).replace(/\\/g, '/'), f] as const)
+  .filter(([rel]) => !rel.startsWith('tracker/'))
+  .map(([rel, f]) => [rel, readFileSync(f, 'utf8')]))
+
+describe('R3 — every frame is counted, one by one (outside the Tracker)', () => {
+  it('each frame mark, closing hook and question component in a non-test file is mapped, per file, to a row, the window it stands in, or a reason', () => {
+    expect(frameProblems(SRC_NOT_TRACKER(), FRAMES, new Set(GUARD_ROWS.map(r => r.id)))).toEqual([])
+  })
+  it('exactly two Leave War sheets carry the show-only mark — a leave filed on the Inputs page and an OIL award (D2740)', () => {
+    const marked = Object.entries(SRC_NOT_TRACKER()).flatMap(([f, src]) => framesIn(src).filter(g => g.mark === '<Sheet' && /\bshowOnly\b/.test(g.line)).map(g => `${f} ${/testid="([^"]+)"/.exec(g.line)?.[1]}`))
+    expect(marked).toEqual(['leavewar/ui/BidPicker.tsx raptor-sheet', 'leavewar/ui/BidPicker.tsx award-sheet'])
+  })
+})
+
 /* R8's list: the windows that close by themselves, each with the ruling that lets it (D2596, D2597). An id joins only in
    the commit that cites his answer. `trkinfo` is K1c's (TO_COME). */
 const RULED_CLOSES: Record<string, string> = {
@@ -228,6 +354,11 @@ const RULED_CLOSES: Record<string, string> = {
   insights: 'D2597 — Insights only shows things',
   sansday: 'D2597 — a SANS day only shows things',
   lwday: 'D2597 — the Leave War\'s day panel only shows things',
+  /* K1b, on his answers */
+  days: 'D2654 E1 — the Calendar closes at a pick unless a form of it is half done',
+  inputsset: 'D2654 E1 — an unchanged settings window beside the Calendar closes too',
+  sansset: 'D2654 E1 — an unchanged settings window beside the Calendar closes too',
+  lwshow: 'D2740 — of the Leave War\'s windows a leave filed on Inputs and an OIL award close by themselves',
 }
 export function closesProblems(rows: readonly Pick<GuardRow, 'id' | 'counts' | 'close'>[], ruled: Record<string, string>): string[] {
   const out: string[] = []
@@ -263,11 +394,26 @@ describe('R7 — the scans catch a planted window', () => {
     expect(floatIdsIn('<FloatWin id="timing" bystander title="t" onClose={() => {}}><i /></FloatWin>')).toEqual([])
     expect(floatIdsIn('<FloatWin id={someId} title="t" onClose={() => {}}><i /></FloatWin>'), 'an id R2 cannot read is reported, never skipped').toEqual(['(an id that is not a plain string)'])
   })
+  it('R3\'s scan: a second dialog in Modals.tsx, a second <OilConfirm in a page file, a sheet marked show-only without his ruling and a new file with a frame are each reported', () => {
+    const files = SRC_NOT_TRACKER()
+    const ids = new Set(GUARD_ROWS.map(r => r.id))
+    const plant = (f: string, extra: string) => frameProblems({ ...files, [f]: files[f] + extra }, FRAMES, ids)
+    expect(plant('ui/Modals.tsx', '\nconst X = () => <div className="modal" id="newModal" />\n'))
+      .toEqual(['ui/Modals.tsx: 21 frame(s), the census maps 20 — give the new one a row in ui/guard.ts GUARD_ROWS, or name it here with its reason'])
+    expect(plant('ui/InputsPage.tsx', '\nconst Y = () => <OilConfirm who="x" />\n'))
+      .toEqual(['ui/InputsPage.tsx: 2 frame(s), the census maps 1 — give the new one a row in ui/guard.ts GUARD_ROWS, or name it here with its reason'])
+    const marked = files['leavewar/ui/BidPicker.tsx']!.replace('<Sheet testid="postin-sheet"', '<Sheet showOnly testid="postin-sheet"')
+    expect(frameProblems({ ...files, 'leavewar/ui/BidPicker.tsx': marked }, FRAMES, ids))
+      .toEqual(['leavewar/ui/BidPicker.tsx #7: a Leave War sheet is lwshow exactly when it carries showOnly (D2740)'])
+    expect(frameProblems({ ...files, 'ui/NewPop.tsx': 'export const P = () => <div role="dialog" />\n' }, FRAMES, ids))
+      .toEqual(['ui/NewPop.tsx: 1 frame(s) no census entry maps — give each a row in ui/guard.ts GUARD_ROWS, or name it here with its reason'])
+  })
   it('R8\'s check: a "closes" row not ruled, a closer on a refusing row, and a ruled id with no row are each reported', () => {
     const rows = [...GUARD_ROWS, { id: 'newshow', counts: 'closes' as const, close: () => {} }]
     expect(closesProblems(rows as any, RULED_CLOSES)).toEqual(['newshow: a window closes by itself only on his ruling'])
-    const withCloser = GUARD_ROWS.map(r => r.id === 'days' ? { ...r, close: () => {} } : r)
-    expect(closesProblems(withCloser, RULED_CLOSES)).toEqual(['days: only a "closes" row carries a closer'])
+    /* (a refusing row given a closer — K1a planted it on `days`, which closes by itself since K1b on his D2654 E1) */
+    const withCloser = GUARD_ROWS.map(r => r.id === 'everywd' ? { ...r, close: () => {} } : r)
+    expect(closesProblems(withCloser, RULED_CLOSES)).toEqual(['everywd: only a "closes" row carries a closer'])
     expect(closesProblems(GUARD_ROWS, { ...RULED_CLOSES, trkinfo: 'D2597' })).toEqual(['trkinfo: ruled to close by itself, but no "closes" row'])
   })
 })
