@@ -1976,3 +1976,16 @@ sides.
 **Issue:** The rule under test was "a value still waiting is written BEFORE the mode ends", because the very next step changes which record a late write would land in. The builder's test called the closing function, awaited the page settling, then read the value. It passed with the new code taken out: the old code writes the same value on a zero-delay timer, and the wait let that timer run. The builder reported honestly that the test "could not fail first", but had no fix. The fix was one line: assert the value on the line right after the call, inside the same synchronous block, before any await or timer.
 **Suggested improvement:** In the skill's section on watching a test fail, add: when the requirement is about ORDER or about "at once", the assertion must sit before any await, timer flush or settle helper; a test that settles first proves only the end state. And: "this test cannot fail first" is a finding about the test, to be resolved by asking what observable differs between old and new code at the earliest moment, never accepted as a pin.
 **Principle:** To test that something happens before something else, observe it at the moment in between; an end-state check cannot fail for ordering.
+
+### Observation 1094: A check that could not run locally hid a file-shape finding until it could
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** Multi-squadron section 1 (the guard rail), chat 204: fixing three code-check findings named by the coordinator, the local run then reported 57 (numbered past 1092 and 1093, taken on other branches).
+**Skill:** subagent-driven-development
+**Type:** open-source
+**Phase/Area:** The builder's brief — its list of checks; the orchestrator's review of a new file
+
+**Issue:** A shared test-helper file was created as a component-type file (markup extension) holding only helper exports. The static code check reads such a file as a component file and reported one finding per export (54). No step had run that check, because it could not run in the working copy at the time and the remote run was read only for the three findings someone named, so the file's shape went through a build, a review and a merge unseen.
+**Suggested improvement:** In the builder's brief template, list the static code check beside the tests and the build as a required check of every step, with "could not run" reported as NOT RUN and carried in the handoff as owed until it runs. In the orchestrator's review of any NEW file, ask what kind of file its extension declares and whether the checks treat that kind differently.
+**Principle:** A check that cannot run is a debt to record and repay at the first chance, not a check passed; and a new file's type is a decision the linters read, so pick it by what the file exports.
