@@ -13,7 +13,7 @@ import { saveAccess, signIn, sessionFor } from './accounts'
 import { setSession, SESSION } from './auth'
 import { setGrant } from './units'
 import { setTrkUnitProbe, pageUnit } from './perms'
-import { notify, switchRoleView } from './store'
+import { notify, switchRoleView, switchRoleViewRaw } from './store'
 import { pickSquadron } from './pick'
 import * as hold from './typing-hold'
 import { setStorageHeld } from '../tracker/storage.js'
@@ -77,12 +77,14 @@ describe('(a) the band of a pick is gone (D2395): he is still an admin of the Tr
     act(() => { void pickSquadron('u142') })
     expect(words(), 'no band').toBeNull()
   })
-  it('the Tracker\'s own Undo and Redo in the top bar offer nothing while it is covered (the member view over held edits)', () => {
+  /* (step K5: the held edits are faked through the probe, and the switch now asks about real ones first — D2627 A20 — so
+     this state is reached by no press; made by the raw switch, switchRoleViewRaw, the switch as it was, named so) */
+  it('the Tracker\'s own Undo and Redo in the top bar offer nothing while it is covered (the member view over held edits) — reached by no press since D2627 A20, by the raw switch', () => {
     give(ACCT.hunter, 'plan')
     signInAs('hunter')
     act(() => { void pickSquadron('u149') })
     trackerOn('u149'); setStorageHeld(true)
-    act(() => { switchRoleView(); notify() })
+    act(() => { switchRoleViewRaw(); notify() })
     expect(cover()).not.toBeNull()
     const e = trackerUndoEngine()
     expect([e.canUndo, e.canRedo]).toEqual([false, false])
@@ -120,14 +122,15 @@ describe('the member view over held chart edits: hidden, its own line; leaving i
     act(() => { switchRoleView(); notify() })
     expect(cover()).toBeNull()
   })
-  it('Hunter with Plan of 149, his Tracker held on 149 for unsaved edits, taps into the member view and back (the drawing f2c)', () => {
+  /* (step K5: as above — the held edits faked through the probe, a state no press reaches since D2627 A20; the raw switch) */
+  it('Hunter with Plan of 149, his Tracker held on 149 for unsaved edits, taps into the member view and back (the drawing f2c) — reached by no press since D2627 A20, by the raw switch', () => {
     give(ACCT.hunter, 'plan')
     signInAs('hunter')
     act(() => { void pickSquadron('u149') })
     trackerOn('u149'); setStorageHeld(true); act(() => { notify() })
-    act(() => { switchRoleView(); notify() })
+    act(() => { switchRoleViewRaw(); notify() })
     expect(words()).toBe("member: This is 149's Tracker. Leave the member view to open it.")
-    act(() => { switchRoleView(); notify() })
+    act(() => { switchRoleViewRaw(); notify() })
     expect(cover()).toBeNull()
   })
 })

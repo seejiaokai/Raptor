@@ -16,7 +16,7 @@ import { render, cleanup, act, fireEvent } from '@testing-library/react'
 import { useMsqWorld, signInAs, ACCT } from '../test-support/msq-world'
 import { saveAccess } from '../state/accounts'
 import { viewOnlyPick, pageOffered } from '../state/perms'
-import { switchRoleView, setPage, notify } from '../state/store'
+import { switchRoleView, switchRoleViewRaw, setPage, notify } from '../state/store'
 import { pickSquadron } from '../state/pick'
 import { UNIT } from '../engine/unitview'
 import { CURPAGE } from '../state/view'
@@ -183,13 +183,16 @@ describe('the ☰ menu\'s TALON mark as the squadron drop-down (D2382–D2384)',
 /* THE READS OF 23 Nov 26 (docs/superpowers/briefs/2026-11-23-msq-view-only-read-{opus,astra}.md) — red first */
 describe('the reads\' findings', () => {
   afterEach(() => { setWarWindowsProbe(null) })
-  it('Opus F1: an open Leave War window holds the landing until it closes, then View-only Sched', () => {
+  /* (step K5, kind (b) of K0's census: a war window faked through the hold's probe, which the guard does not read — a real
+     window open at the switch refuses it since D2403, so this state is reached by no press; made by the raw switch,
+     switchRoleViewRaw, the switch as it was, named so) */
+  it('Opus F1: an open Leave War window holds the landing until it closes, then View-only Sched — reached by no press since D2403 (step K5: the switch is refused while a window is open), so by the raw switch', () => {
     give(ACCT.hunter, 'u149', 'plan')
     signInAs('hunter')
     act(() => { void pickSquadron('u149') })
     act(() => { setPage('leavewar'); notify() })
     setWarWindowsProbe(() => 1)
-    act(() => { switchRoleView() })
+    act(() => { switchRoleViewRaw() })
     expect(CURPAGE, 'the window and his words stay in sight').toBe('leavewar')
     setWarWindowsProbe(() => 0)
     act(() => { notify() })

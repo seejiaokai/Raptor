@@ -50,6 +50,11 @@ import type { Span } from './inputedit'
    WIN_FIELDS alone missed the last two, so a window holding only a new "Goes to" or "To" closed at once and lost it
    (found beside Fable's Inputs F1/F2, 22 Nov 26). */
 const unsavedFields = (draft: any, saved: any): boolean => draftChanges(draft, saved).length > 0
+/* THE ROLE CHIP'S SWITCH BACK (the guard rail's plan §4.1 row 5): the held window's own way back to the admin view, so the
+   window it is drawn on — the Input window's two rows — is left out of the guard's count, every other row still asked; it
+   stands where the badge stands, so a refusal's note hangs there. No press reaches a window the member view holds after
+   Build 1 (B16), and Build 2 removes the chip */
+const CHIP_SWITCH = { skip: ['inputedit', 'inputdlg'], from: 'bar' as const }
 /* THE FIELDS THE WINDOW FOLLOWS when its record changes behind it (the calendar plan §3.7): every window field, and the
    two it draws apart from them — an Attach's "To" and an Other's "Goes to" (Astra's code read of 22 Nov 26, F1: an Undo
    pressed behind the open window put the input back on the programme, and the remark saved next wrote "Unavailable"
@@ -1526,7 +1531,7 @@ export function InputEditor() {
         {chipAt && (
           <button type="button" className="abtn rolechip tgl inped-rolechip" data-testid="inped-rolechip" title="Back to the admin view"
             style={{ position: 'fixed', left: chipAt.left, top: chipAt.top, width: chipAt.width, height: chipAt.height, margin: 0 }}
-            onClick={() => switchRoleView()}>{chipAt.text}</button>
+            onClick={() => { void switchRoleView(CHIP_SWITCH) }}>{chipAt.text}</button>
         )}
         {moveBand}
         {inner}
