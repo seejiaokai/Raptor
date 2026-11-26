@@ -1,0 +1,391 @@
+<title>The bell, colours and Display</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Space+Grotesk:wght@600&display=swap">
+<style>
+/* Layout: one reading column for a phone. Top: how to answer, the cast in one line, then every question as one tappable row (code, what it is, the recommendation in green). Each question: the recommendation in short under its heading, when it happens, today with its picture, the full recommendation, the other choice, then a way back and a "Differently" button that builds the reply in the bar at the foot. Amber marks only what the second review changed; everything on the page is new this round, so "new" is said once at the top and never marked. Wide desktop pictures are cut on the page itself (.cut) to the part the question is about, so the words in them are readable at a phone's width; a tap still opens the whole picture. */
+:root{
+  --bg:#f4f6f8; --panel:#ffffff; --ink:#151b22; --muted:#55606e; --edge:#d6dde5; --accent:#0a6f8a; --rec:#0b6b45; --new:#8a5a0f; --newbg:#fbf3e2; --r6:#0b7a70; --r6bg:#e3f4f1;
+  --display:"Space Grotesk",system-ui,sans-serif; --body:"Inter",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c0f13;--panel:#151a21;--ink:#e6ebf0;--muted:#97a3b0;--edge:#27303b;--accent:#38c6e8;--rec:#4fd39a;--new:#e9b04f;--newbg:#231c0f;--r6:#4fd1c2;--r6bg:#0f2624;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0c0f13;--panel:#151a21;--ink:#e6ebf0;--muted:#97a3b0;--edge:#27303b;--accent:#38c6e8;--rec:#4fd39a;--new:#e9b04f;--newbg:#231c0f;--r6:#4fd1c2;--r6bg:#0f2624;color-scheme:dark}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1.5;margin:0;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px calc(96px + env(safe-area-inset-bottom,0px))}
+main{max-width:760px;margin:0 auto;display:grid;gap:28px}
+header{display:grid;gap:6px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0}
+h1{font-size:1.45rem;line-height:1.2}
+h2{font-size:1.15rem;line-height:1.25}
+h3{font-size:1.3rem;margin-top:20px;padding-top:12px;border-top:2px solid var(--edge)}
+p{margin:0;max-width:68ch}
+a{color:var(--accent)}
+.lede{color:var(--muted)}
+.rec{color:var(--rec);font-weight:600}
+.top{background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:14px 12px;display:grid;gap:10px}
+.top .how{font-size:1rem}
+.top .count,.top .cast{font-size:.9rem;color:var(--muted)}
+.top .cast b{color:var(--ink)}
+.top h2.g{font-size:1rem;margin-top:8px;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.top h2.g span{font-family:var(--body);font-weight:400;font-size:.85rem;color:var(--muted);white-space:nowrap}
+.top ol{margin:0;padding:0;list-style:none}
+.top li{border-top:1px solid var(--edge)}
+.top li a{display:grid;grid-template-columns:2.5em 1fr;gap:6px;padding:9px 2px;min-height:44px;text-decoration:none;color:var(--ink)}
+.top li a>b{font-variant-numeric:tabular-nums}
+.top li a>span{display:grid}
+.top li .t{font-weight:600;font-size:.95rem}
+.top li .r{color:var(--rec);font-size:.92rem}
+.top li.chg a{}
+.top li.r6 a{background:var(--r6bg);box-shadow:-10px 0 0 var(--r6bg),10px 0 0 var(--r6bg)}
+.tag{font-style:normal;font-weight:600;font-size:.78rem;color:var(--muted);white-space:nowrap}
+.tag6{font-style:normal;font-weight:700;font-size:.78rem;color:var(--r6);white-space:nowrap}
+.top li.done a{opacity:.6}
+.top li.done a>b::after{content:" ✎"}
+details>summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:600;color:var(--accent)}
+details.who{font-size:.92rem}
+details.who p{margin-bottom:8px;color:var(--muted)}
+details#gb{display:block}
+details#gb>summary{font-family:var(--display);font-size:1.15rem;border-top:2px solid var(--edge);margin-top:20px;padding-top:8px}
+details#gb>section{margin-top:28px}
+section{display:grid;gap:12px;scroll-margin-top:12px}
+.short{color:var(--rec);font-weight:600;font-size:1.02rem}
+.label{font-size:.85rem;font-weight:600;color:var(--muted)}
+.pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;align-items:start}
+figure{margin:0;display:grid;gap:6px;min-width:0}
+figure img{width:100%;border:1px solid var(--edge);border-radius:6px;cursor:zoom-in}
+figure.tall img{max-height:520px;width:auto;max-width:100%;justify-self:center}
+/* a wide picture cut to the part that matters: the frame hides the rest, the picture inside is drawn larger and shifted (sizes written on each one) */
+.cut{display:block;overflow:hidden;border:1px solid var(--edge);border-radius:6px;background:#0c0f13}
+.cut img{display:block;max-width:none;border:0;border-radius:0}
+figure.tall .cut img{max-height:none;max-width:none}
+figure.tall .cut{max-width:320px;width:100%;justify-self:center}
+figcaption{font-size:.94rem;color:var(--muted)}
+figcaption b{color:var(--ink)}
+/* the films of the squadron number: only the end of the top bar that holds the number, at about its real size */
+.film{display:block;overflow:hidden;border:1px solid var(--edge);border-radius:6px;background:#000}
+.film video{display:block;max-width:none;height:auto}
+.film.d{aspect-ratio:3/1}
+.film.d video{width:400%;aspect-ratio:1536/128}
+.film.p{aspect-ratio:804/230}
+.film.p video{width:100%;aspect-ratio:804/1748}
+button.play{justify-self:start}
+.words{background:var(--panel);border:1px solid var(--edge);border-radius:8px;padding:10px 12px;font-size:.95rem;display:grid;gap:8px}
+.note{font-size:.94rem;color:var(--muted)}
+.when{border-left:3px solid var(--edge);padding-left:10px}
+.told{background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:14px 14px;display:grid;gap:8px}
+.told ul{margin:0;padding-left:1.2em;display:grid;gap:6px}
+p.chg,div.chg{border-left:3px solid var(--edge);padding-left:10px;font-size:.95rem;color:var(--muted);max-width:none}
+p.r6,div.r6{background:var(--r6bg);border-radius:8px;padding:10px 12px;font-size:.95rem;max-width:none}
+p.r6>b:first-child,div.r6>p>b:first-child{color:var(--r6)}
+div.r6{display:grid;gap:8px}
+section.r6{border-left:4px solid var(--r6);padding-left:10px}
+.r6key{display:inline-block;width:.8em;height:.8em;border-radius:3px;border:2px dashed #0D9488;vertical-align:-1px;margin-right:4px}
+p.chg>b:first-child,div.chg>p>b:first-child,.told.chg .label{color:var(--muted)}
+div.chg{display:grid;gap:8px}
+.told.chg{background:var(--newbg);border-color:transparent}
+p.was{border-left:3px solid var(--edge);padding-left:10px;font-size:.95rem;color:var(--muted);max-width:none}
+/* the small readings: one short block each, its own Differently */
+.rd{background:var(--panel);border:1px solid var(--edge);border-radius:8px;padding:10px 12px;display:grid;gap:8px;scroll-margin-top:12px}
+.rd p{font-size:.96rem}
+.rd .eg{color:var(--muted)}
+.rd button{justify-self:end}
+.rd .ch{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:12px;max-width:none;flex-wrap:wrap}
+.nav a{display:inline-flex;align-items:center;min-height:44px}
+.nav .ch{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+button{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--edge);border-radius:8px;min-height:44px;padding:0 14px;cursor:pointer}
+button.diff[aria-pressed="true"]{border-color:var(--new);color:var(--new);font-weight:600}
+.end{color:var(--muted)}
+.reply{position:fixed;left:0;right:0;bottom:0;display:flex;gap:10px;align-items:center;justify-content:space-between;background:var(--panel);border-top:1px solid var(--edge);padding:8px max(16px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));z-index:10;font-size:.92rem}
+.reply span{min-width:0;overflow-wrap:anywhere;max-height:4.5em;overflow:auto}
+.zoom{position:fixed;inset:0;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;padding:max(12px,env(safe-area-inset-top,0px)) 12px max(12px,env(safe-area-inset-bottom,0px));z-index:20;overflow:auto}
+.zoom img{max-width:100%;max-height:100%;object-fit:contain}
+.zoom.big{align-items:flex-start;justify-content:flex-start}
+.zoom.big img{max-width:none;max-height:none}
+.zoom .x{position:fixed;top:max(10px,env(safe-area-inset-top,0px));right:10px;min-width:44px;background:#151a21;color:#e6ebf0;border-color:#445}
+</style>
+
+<main>
+  <header>
+    <h1>Section 3: the bell, its colours and Display</h1>
+    <p class="lede">Your last look before this section is built. Nothing here is built yet. Every picture is the real app; a drawing adds only the new thing on top. Green is what I recommend.</p>
+  </header>
+
+  <div class="top" id="list">
+    <p class="how"><b>To answer:</b> reply "Section 3: go, as recommended". Or tap <b>Differently</b> on any question, then copy the reply from the bar at the foot and add your words.</p>
+    <p class="cast"><b>Saber</b> master admin, home 142 · <b>Hunter</b> 142's admin, Plan of 149, View of 150 · <b>Kestrel</b> 149's admin · <b>Mako</b> 150's admin · <b>Ranger</b> a 142 member</p>
+    <p class="count"><span class="r6key"></span>A teal dashed ring marks what is new in the app. A teal edge and <i class="tag6">new drawing</i> mark a picture drawn for this page; the rest you approved in round 6.</p>
+    <h2 class="g">Questions <span>7</span></h2>
+    <ol>
+      <li><a href="#q1"><b>Q1</b><span><span class="t">Display for an admin who looks after one squadron</span><span class="r">No Display card for him until it has something for him.</span></span></a></li>
+      <li><a href="#q2"><b>Q2</b><span><span class="t">A squadron switched off under Show: do its colours stay on Display?</span><span class="r">They stay, ready for when he switches it back on.</span></span></a></li>
+      <li><a href="#q3"><b>Q3</b><span><span class="t">Four small things on the Display page</span><span class="r">Reset goes back to the starting colour; each squadron listed; one start everywhere; no Undo step.</span></span></a></li>
+      <li><a href="#q4"><b>Q4</b><span><span class="t">A colour slid and not saved, then a squadron picked</span><span class="r">The pick is refused until he saves or puts it back.</span></span></a></li>
+      <li><a href="#q5"><b>Q5</b><span><span class="t">Bug reports: whose look puts the bell out</span><span class="r">Each admin's own look puts out only his own bell.</span></span></a></li>
+      <li><a href="#q6"><b>Q6</b><span><span class="t">Bug reports: grey numbers, or your squadron colours</span><span class="r">Grey, as you approved.</span></span></a></li>
+      <li><a href="#q7"><b>Q7</b><span><span class="t">A published day signed by another squadron's man</span><span class="r">Its signed line reads "Hunter · 142", as the box he signed in.</span></span></a></li>
+    </ol>
+    <h2 class="g">What this section builds <span>5 places</span></h2>
+    <ol>
+      <li><a href="#s-bell"><b></b><span><span class="t">The bell</span><span class="r">Numbers in squadron colours. All approved.</span></span></a></li>
+      <li class="r6"><a href="#s-display"><b></b><span><span class="t">Admin → Display</span><span class="r">Approved; one new drawing of where its card sits. <i class="tag6">new drawing</i></span></span></a></li>
+      <li class="r6"><a href="#s-help"><b></b><span><span class="t">Help: bug reports</span><span class="r">Approved on a desktop; the phone and a member's own list drawn new. <i class="tag6">new drawing</i></span></span></a></li>
+      <li><a href="#s-badge"><b></b><span><span class="t">The name badge where he only views</span><span class="r">All approved.</span></span></a></li>
+      <li><a href="#s-signoff"><b></b><span><span class="t">The sign-off boxes</span><span class="r">All approved.</span></span></a></li>
+      <li><a href="#notdrawn"><b></b><span><span class="t">Not drawn, and why</span><span class="r">Six things, each with its reason.</span></span></a></li>
+    </ol>
+  </div>
+
+  <section id="q1">
+    <h2>Q1. Display for an admin who looks after one squadron</h2>
+    <p class="short">No Display card for him at all until something on it applies to him.</p>
+    <p class="when"><b>When</b>: Kestrel, 149's admin, has only 149 on his bell. He opens Admin most days to manage 149's people. Squadron colours are the only thing on Display, and he has nothing to colour.</p>
+    <p><b>Today</b> Admin has no Display card for anyone, so today looks the same as the first two pictures.</p>
+    <div class="pair">
+      <figure class="tall"><span class="cut" style="aspect-ratio:560/932"><img src="drawn/s3-7-d-A-nocard-crop.png" alt="Desktop: Kestrel's Admin column, Users, Squadrons, Squadron config, Data, and no Display card" style="width:325.71%;margin-left:-0.00%;margin-top:-0.00%"></span><figcaption><b>Recommended, desktop</b> <i class="tag6">new drawing</i>: Kestrel's Admin column ends at Data. The ringed jumps under Users belong to section 2, not to this question.</figcaption></figure>
+      <figure class="tall"><img src="drawn/s3-7-p-A-nocard-crop.png" alt="Phone: Kestrel's Admin list ends at Data, no Display"><figcaption><b>Recommended, phone</b> <i class="tag6">new drawing</i>: the list ends at Data.</figcaption></figure>
+    </div>
+    <p><span class="rec">Recommended:</span> no card. It appears by itself the day his bell can show a second squadron, say when a master admin gives Kestrel Plan of 150. Nobody opens a page with nothing on it.</p>
+    <p><b>The other choice</b>: the card is always there, and for him its page says one quiet line.</p>
+    <div class="pair">
+      <figure><img src="drawn/s3-7-d-B-empty-crop.png" alt="Desktop: the Display card at the foot of the column, its page saying there is nothing to set yet"><figcaption><b>Other choice, desktop</b> <i class="tag6">new drawing</i>: the Display card under Data, and its page: "Nothing to set yet. Squadron colours appear here once your bell shows more than one squadron."</figcaption></figure>
+      <figure><img src="drawn/s3-7-p-B-empty-crop.png" alt="Phone: the Display page with its one line"><figcaption><b>Other choice, phone</b> <i class="tag6">new drawing</i>: the same line. Kestrel meets a card that does nothing for him every time he opens Admin.</figcaption></figure>
+    </div>
+    <p class="nav"><a href="#list">↑ The list</a><span class="ch"><button type="button" class="diff" data-q="Q1" data-say="(the Display card always there, with its one line)">Card always there</button><button type="button" class="diff" data-q="Q1" aria-pressed="false">Differently</button></span></p>
+  </section>
+
+  <section id="q2">
+    <h2>Q2. A squadron switched off under Show: do its colours stay on Display?</h2>
+    <p class="short">They stay, ready for when he switches it back on.</p>
+    <p class="when"><b>When</b>: now and then. Hunter, who plans 149, switches 149 off under Show for a quiet week. For that week his bell shows only 142's lines.</p>
+    <figure><span class="cut" style="aspect-ratio:804/100"><img src="drawn/e3d-p-both-crop.png" alt="The Show buttons at the foot of the bell: 142, 149 and 150" style="width:100.00%;margin-left:-0.00%;margin-top:-69.03%"></span><figcaption>The Show buttons at the foot of the bell, each in its squadron's colour. You approved this in round 6.</figcaption></figure>
+    <p><span class="rec">Recommended:</span> Squadron colours, and the Display card, stay for Hunter while 149 is switched off. What counts is that his bell <i>can</i> show more than one squadron, not what is switched on today. So the card never appears and vanishes as he presses Show, and he can set 149's colour before he switches it back on.</p>
+    <p><b>The other choice</b>: they go while only one squadron is switched on, and come back when he switches 149 on again.</p>
+    <p class="note">The bell's own numbers are not this question: with 149 switched off, his bell shows one squadron and so no numbers at all, as approved.</p>
+    <p class="nav"><a href="#list">↑ The list</a><span class="ch"><button type="button" class="diff" data-q="Q2" data-say="(Squadron colours only while two squadrons are switched on)">Only while switched on</button><button type="button" class="diff" data-q="Q2" aria-pressed="false">Differently</button></span></p>
+  </section>
+
+  <section id="q3">
+    <h2>Q3. Four small things on the Display page</h2>
+    <p class="short">Each as recommended below.</p>
+    <p class="when"><b>When</b>: once, the first time an admin colours his squadrons; again only if he changes his mind.</p>
+    <figure class="tall"><span class="cut" style="aspect-ratio:780/415"><img src="drawn/e3g-p-display-crop.png" alt="Phone: 149 opened on Display, its colour and brightness sliders, Save and Reset" style="width:100.00%;margin-left:-0.00%;margin-top:-46.79%"></span><figcaption>149 opened on Display, with Save and Reset. You approved this in round 6.</figcaption></figure>
+    <div class="rd" id="q3a"><p><b>a. What Reset does.</b> <span class="eg">Hunter made 149 green last week and saved it. Today he presses Reset on 149.</span> <span class="rec">Recommended:</span> 149 goes back to the colour it started on, gold. The other choice: Reset only throws away a slide he has not saved yet, and then the button is named "Cancel", the app's word for that.</p><div class="ch"><button type="button" class="diff" data-q="Q3a" data-say="(Reset only throws away a slide not saved, named Cancel)">Named Cancel</button><button type="button" class="diff" data-q="Q3a" aria-pressed="false">Differently</button></div></div>
+    <div class="rd" id="q3b"><p><b>b. Which squadrons are listed.</b> <span class="eg">Saber has 150 switched off under Show.</span> <span class="rec">Recommended:</span> 150 is still listed, so he can choose its colour before he switches it on. Every squadron he could switch on is listed. The other choice: only the squadrons switched on.</p><button type="button" class="diff" data-q="Q3b" aria-pressed="false">Differently</button></div>
+    <div class="rd" id="q3c"><p><b>c. One starting colour everywhere.</b> <span class="eg">Before Hunter picks anything, 149 is gold on his PC, gold on his phone, and gold on Kestrel's.</span> <span class="rec">Recommended:</span> yes, each squadron's starting colour is the same on every screen until someone picks his own. The other choice: each device starts on its own colours, so 149 could be gold on his PC and blue on his phone.</p><button type="button" class="diff" data-q="Q3c" aria-pressed="false">Differently</button></div>
+    <div class="rd" id="q3d"><p><b>d. Saving a colour is not an Undo step.</b> <span class="eg">Hunter saves 149 green, then presses Undo meaning his last change to the schedule.</span> <span class="rec">Recommended:</span> Undo takes back his schedule change and the colour stays, as pressing a Show button is not an Undo step today. The other choice: Undo takes back the colour first.</p><button type="button" class="diff" data-q="Q3d" aria-pressed="false">Differently</button></div>
+    <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="Q3" aria-pressed="false">Differently</button></p>
+  </section>
+
+  <section id="q4">
+    <h2>Q4. A colour slid and not saved, then a squadron picked</h2>
+    <p class="short">The pick is refused until he saves the colour or puts it back.</p>
+    <p class="when"><b>When</b>: rarely. Hunter slides 149 towards green on Display, has not pressed Save yet, and picks 149 at the top to check its week.</p>
+    <figure class="tall"><span class="cut" style="aspect-ratio:454/780"><img src="drawn/e3g2-d-display-moved-crop.png" alt="Desktop: 149 slid to green, Save not yet pressed" style="width:400.00%;margin-left:-122.47%;margin-top:-30.84%"></span><figcaption>149 slid to green, Save not pressed yet. You approved this in round 6.</figcaption></figure>
+    <p><span class="rec">Recommended:</span> refused, as with every other form left unsaved. That is the point of the guard rail: no squadron switch while something is left unsaved. A grey note says what to do, a draft: "Blocked: save your colour change or put it back, then pick 149." Its words get a fresh read before it is built.</p>
+    <p><b>The other choice</b>: the pick goes through. Nothing on Display belongs to 149 and the colours are his alone; a slide he never saves is simply not kept once he leaves Display.</p>
+    <p class="nav"><a href="#list">↑ The list</a><span class="ch"><button type="button" class="diff" data-q="Q4" data-say="(the pick goes through)">The pick goes through</button><button type="button" class="diff" data-q="Q4" aria-pressed="false">Differently</button></span></p>
+  </section>
+
+  <section id="q5">
+    <h2>Q5. Bug reports: whose look puts the bell out</h2>
+    <p class="short">Each admin's own look puts out only his own bell.</p>
+    <p class="when"><b>When</b>: a few times a month. Osprey, a 149 member, sends a report. Kestrel's bell lights, and so does Saber's. Kestrel opens Help that afternoon.</p>
+    <p><b>Today</b> the first admin who opens Help puts the bell out for every admin. Kestrel looks, and Saber's bell goes dark too, so Saber may never know a report came in. (Not pictured: what changes is only whether a bell stays lit.)</p>
+    <p><span class="rec">Recommended:</span> each admin's own look. Kestrel opens Help and his bell goes out; Saber's stays lit until Saber looks. A report one admin has read is not read by the others. This is how the bell already treats a new access request. Its cost: a bell stays lit for an admin who never opens Help.</p>
+    <p><b>The other choice</b>: one look for all, as today.</p>
+    <p class="nav"><a href="#list">↑ The list</a><span class="ch"><button type="button" class="diff" data-q="Q5" data-say="(one look for all, as today)">One look for all</button><button type="button" class="diff" data-q="Q5" aria-pressed="false">Differently</button></span></p>
+  </section>
+
+  <section id="q6">
+    <h2>Q6. Bug reports: grey numbers, or your squadron colours</h2>
+    <p class="short">Grey, as you approved.</p>
+    <p class="when"><b>When</b>: a few times a month. An admin's bell rings for a new report; he opens Help and reads the list.</p>
+    <p>The bell now wears your squadron colours; you approved Help's numbers in grey before that. So it is asked again.</p>
+    <div class="pair">
+      <figure class="tall"><img src="drawn/s3-9-p-numbers-crop.png" alt="Phone: Help's bug reports, each wearing a grey 150, 149 or 142"><figcaption><b>Recommended, phone</b> <i class="tag6">new drawing</i>: each report's number in grey, as the desktop you approved in round 6.</figcaption></figure>
+      <figure class="tall"><img src="drawn/s3-9-p-colour-crop.png" alt="Phone: the same reports, 150 blue, 149 gold, 142 orange"><figcaption><b>Other choice, phone</b> <i class="tag6">new drawing</i>: each number in that admin's own squadron colours.</figcaption></figure>
+    </div>
+    <p><span class="rec">Recommended:</span> grey. Every admin reads every squadron's reports, including one who looks after only one squadron. Kestrel sees 142's and 150's reports but has no colours to set (Q1), so on Help they would wear colours he can never change. Colour stays where he sets it: the bell.</p>
+    <p><b>The other choice</b>: each admin's own colours on Help too, so a squadron looks the same on the bell and on Help. Display's line would then read "The colour each squadron's number wears. Only you see your colours."</p>
+    <p class="nav"><a href="#list">↑ The list</a><span class="ch"><button type="button" class="diff" data-q="Q6" data-say="(squadron colours on Help's reports too)">Colours on Help</button><button type="button" class="diff" data-q="Q6" aria-pressed="false">Differently</button></span></p>
+  </section>
+
+  <section id="q7">
+    <h2>Q7. A published day signed by another squadron's man</h2>
+    <p class="short">Its signed line reads "Hunter · 142", as the box he signed in.</p>
+    <p class="when"><b>When</b>: on any day a Plan holder signs. Hunter, who plans 149, signs PLANNED BY on 149's day; Kestrel publishes it; every 149 member reads that day on their phone.</p>
+    <div class="pair">
+      <figure><span class="cut" style="aspect-ratio:790/110"><img src="drawn/e11b-d-chosen-crop.png" alt="Desktop: the PLANNED BY box reading Hunter · 142" style="width:186.58%;margin-left:-41.77%;margin-top:-1.90%"></span><figcaption><b>The box he signs in</b>: "Hunter · 142". You approved this in round 6.</figcaption></figure>
+      <figure><img src="drawn/m6-p-plannedby-chosen-crop.png" alt="Phone: the sign-off boxes, PLANNED BY reading Hunter · 142"><figcaption>The same on a phone. You approved this in round 6.</figcaption></figure>
+    </div>
+    <p><b>Checked in today's app</b>: the published day keeps the signers' names as they were when it was published, with no number. So it would read "Hunter" alone unless the number is kept as well. (The closed box needs a small addition in the build to show "· 142"; that is only making it match what you approved.)</p>
+    <p><span class="rec">Recommended:</span> yes, "Hunter · 142" on the published day too. 149's members see the signer is from another squadron, in the same words as the box. Drawn before it is built. Because it changes what a published day says, it gets the extra careful check before building.</p>
+    <p><b>The other choice</b>: the published day reads "Hunter", as today.</p>
+    <p class="nav"><a href="#list">↑ The list</a><span class="ch"><button type="button" class="diff" data-q="Q7" data-say="(the published day reads Hunter alone)">Hunter alone</button><button type="button" class="diff" data-q="Q7" aria-pressed="false">Differently</button></span></p>
+  </section>
+
+  <h3>What this section builds</h3>
+
+  <section id="s-bell">
+    <h2>The bell</h2>
+    <p>With more than one squadron on his bell, each line starts with its squadron's number in that squadron's colour, the same colour as its Show button. The unread dot stays blue.</p>
+    <div class="pair">
+      <figure><img src="drawn/e3d-d-both-crop.png" alt="Desktop bell: each squadron number in its own colour"><figcaption><b>Desktop.</b> "Hunter 142" on the top line: a man's home number after his name wears its colour too. You approved this in round 6.</figcaption></figure>
+      <figure><img src="drawn/e3d-p-both-crop.png" alt="Phone bell with coloured squadron numbers"><figcaption><b>Phone.</b> You approved this in round 6.</figcaption></figure>
+      <figure><img src="drawn/e3d2-d-both-read-crop.png" alt="The same lines once read, numbers keeping their colour"><figcaption><b>Once read</b>: each number keeps its colour, so a read line still says whose it is. You approved this in round 6.</figcaption></figure>
+    </div>
+    <p>Lines about his own account keep the number's place empty.</p>
+    <div class="pair">
+      <figure><img src="drawn/m6-d-itshim-bell-crop.png" alt="Desktop: Hunter's own two lines with an empty number column"><figcaption><b>Desktop</b>: Hunter's two lines about his own access, the column empty. The ringed top line comes with the later transfer work. You approved this in round 6.</figcaption></figure>
+      <figure><img src="drawn/m6-p-itshim-bell-crop.png" alt="Phone: the same"><figcaption><b>Phone</b>. You approved this in round 6.</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="s-display">
+    <h2>Admin → Display</h2>
+    <p>A new page under Admin. Its first section, Squadron colours: each squadron with its colour; press one to open a colour slider and a brightness slider, with Save and Reset; a preview of your own bell below, changing as you slide.</p>
+    <div class="pair">
+      <figure><img src="drawn/e3g-d-display-crop.png" alt="Desktop: Display, 149 opened with two sliders, the bell preview"><figcaption><b>Desktop.</b> You approved this in round 6.</figcaption></figure>
+      <figure class="tall"><img src="drawn/e3g-p-display-crop.png" alt="Phone: Display, 149 opened, the preview below"><figcaption><b>Phone.</b> You approved this in round 6.</figcaption></figure>
+      <figure><img src="drawn/e3g2-d-display-moved-crop.png" alt="The slider moved and the preview changed with it"><figcaption><b>Slid</b>: the preview changes before Save. You approved this in round 6.</figcaption></figure>
+    </div>
+    <div class="r6">
+      <p><b>Where its card sits</b> <i class="tag6">new drawing</i>: last in Admin's list, under Data. On a desktop it sits under the jumps of Users from section 2; both drawn together for the first time.</p>
+      <div class="pair">
+        <figure class="tall"><span class="cut" style="aspect-ratio:560/1048"><img src="drawn/s3-8-d-column-crop.png" alt="Desktop: Admin's column with the Users jumps and the Display card at the foot" style="width:325.71%;margin-left:-0.00%;margin-top:-0.00%"></span><figcaption><b>Desktop</b>: Hunter on 142. The jumps under Users and the Display card, each ringed.</figcaption></figure>
+        <figure class="tall"><img src="drawn/s3-8-p-list-crop.png" alt="Phone: Admin's list with Display at the foot, ringed"><figcaption><b>Phone</b>: Display at the foot of Admin's list. A phone has no left column; its jumps sit under the search on the Users page, as you approved.</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="s-help">
+    <h2>Help: bug reports</h2>
+    <p>One list for every admin, newest first, each report wearing its squadron's number. Reports are kept now, past Logout and a reload.</p>
+    <div class="pair">
+      <figure><img src="drawn/e7t-d-today-crop.png" alt="Today: reports with no squadron"><figcaption><b>Today</b>: nothing says which squadron a report came from.</figcaption></figure>
+      <figure><img src="drawn/e7-d-numbers-crop.png" alt="Desktop: reports wearing 150, 149 and 142 in grey"><figcaption><b>Desktop.</b> You approved this in round 6.</figcaption></figure>
+    </div>
+    <div class="r6">
+      <p><b>The phone</b> <i class="tag6">new drawing</i>: the same list; each report's title line stays on one line at your phone's width. Drawn grey, as recommended in Q6.</p>
+      <figure class="tall"><img src="drawn/s3-9-p-numbers-crop.png" alt="Phone: bug reports with grey numbers"><figcaption>Saber's three reports, one sent on each squadron.</figcaption></figure>
+    </div>
+    <div class="r6">
+      <p><b>A member's own "Your reports"</b> <i class="tag6">new drawing</i>: no number. He sees only his own reports, so a number would say nothing. Nothing on it is new: it looks as today.</p>
+      <div class="pair">
+        <figure><img src="drawn/s3-10-d-mine-crop.png" alt="Desktop: Ranger's own two reports, no squadron number"><figcaption><b>Desktop</b>: Ranger, who views 149, sent one report on 142 and one on 149. Neither wears a number.</figcaption></figure>
+        <figure><img src="drawn/s3-10-p-mine-crop.png" alt="Phone: the same two reports"><figcaption><b>Phone.</b></figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="s-badge">
+    <h2>The name badge where he only views</h2>
+    <p>On a squadron he only views, the badge reads "Hunter · View only" as plain words, not a switch, and the ☰ menu has no "Switch to the member view" there. Where he plans, it reads "Admin" and switches as today.</p>
+    <div class="pair">
+      <figure><img src="drawn/e8-d-badge-r-crop.png" alt="Top bar: HUNTER · VIEW ONLY"><figcaption><b>On 150</b>, which he only views. You approved this in round 6.</figcaption></figure>
+      <figure><img src="drawn/e8b-d-badge-149-crop.png" alt="Top bar: HUNTER · ADMIN"><figcaption><b>On 149</b>, which he plans. You approved this in round 6.</figcaption></figure>
+      <figure><img src="drawn/e8-p-menu-r-crop.png" alt="Phone menu: Signed in as Hunter · View only, Logout"><figcaption><b>Phone, ☰ menu on 150</b>. You approved this in round 6.</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="s-signoff">
+    <h2>The sign-off boxes</h2>
+    <p>A name from another squadron reads "Hunter · 142" in plain letters. Who is offered does not change. The list stays your phone's own list.</p>
+    <div class="pair">
+      <figure><img src="drawn/e11b-d-chosen-crop.png" alt="Desktop: PLANNED BY reading Hunter · 142"><figcaption><b>Desktop.</b> You approved this in round 6.</figcaption></figure>
+      <figure><img src="drawn/m6-p-plannedby-chosen-crop.png" alt="Phone: PLANNED BY reading Hunter · 142"><figcaption><b>Phone.</b> You approved this in round 6.</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="notdrawn">
+    <h2>Not drawn, and why</h2>
+    <div class="told">
+      <ul>
+        <li><b>The bell with one squadron shown</b>: no numbers at all. It is today's bell.</li>
+        <li><b>The end of the brightness slider</b>: it stops just short of a colour too dark or too pale to read. Only the slider's end differs.</li>
+        <li><b>A sign-off box's open list</b>: it is your iPhone's own list, which cannot be pictured from here. Your own picture of it stands.</li>
+        <li><b>A new report rings only its squadron's admins and a master admin</b>: the bell's usual light; nothing new to see.</li>
+        <li><b>The published day's signed line</b>: drawn before it is built if you answer Q7 yes.</li>
+        <li><b>The order of the Show buttons</b>: waits on your answer to "your home squadron first", asked on section 2's page. Until then, by number as today.</li>
+      </ul>
+    </div>
+    <p class="nav"><a href="#list">↑ The list</a></p>
+  </section>
+</main>
+
+
+<div class="reply" role="region" aria-label="Your reply">
+  <span id="replytext">Section 3: go, as recommended.</span>
+  <button type="button" id="copy">Copy</button>
+</div>
+
+<script>
+// Pictures: tap to see the whole picture fitted to the screen; tap again for a readable size (half the picture's own pixels, pan by scrolling); tap again or Close to leave.
+document.addEventListener('click', function (e) {
+  var z = document.querySelector('.zoom'), t = e.target;
+  if (z) {
+    var zi = z.querySelector('img');
+    if (t === zi && !z.classList.contains('big')) { z.classList.add('big'); zi.style.width = Math.max(zi.naturalWidth / 2, window.innerWidth - 24) + 'px'; return; }
+    z.remove(); return;
+  }
+  if (t.tagName === 'IMG' && t.closest('figure')) {
+    var d = document.createElement('div'); d.className = 'zoom';
+    var i = document.createElement('img'); i.src = t.src; i.alt = t.alt;
+    var x = document.createElement('button'); x.className = 'x'; x.type = 'button'; x.textContent = 'Close';
+    d.appendChild(i); d.appendChild(x); document.body.appendChild(d);
+  }
+});
+document.addEventListener('keydown', function (e) { var z = document.querySelector('.zoom'); if (z && e.key === 'Escape') z.remove(); });
+
+// The films: a tap on the film or on Play runs it from the start.
+document.addEventListener('click', function (e) {
+  var f = e.target.closest && e.target.closest('figure'); if (!f) return;
+  var v = f.querySelector('video'); if (!v) return;
+  if (e.target === v || (e.target.classList && e.target.classList.contains('play'))) {
+    try { v.currentTime = 0; var p = v.play(); if (p && p.catch) p.catch(function () {}); } catch (err) {}
+  }
+});
+
+// A link into the folded Group B opens the fold first.
+function openFor(hash) {
+  if (!hash || hash.length < 2) return;
+  var el = document.getElementById(hash.slice(1)); if (!el) return;
+  var d = el.closest('details'); if (d && !d.open) { d.open = true; el.scrollIntoView(); }
+}
+window.addEventListener('hashchange', function () { openFor(location.hash); });
+openFor(location.hash);
+
+// "Differently" and the named other choices build the reply. One choice a question: a second button of the same question replaces the first. Kept on this phone only; the page reads the same if that is blocked.
+var KEY = 'msq-s3-differently', picked = [];
+try { picked = JSON.parse(localStorage.getItem(KEY) || '[]') || []; } catch (err) { picked = []; }
+function qOf(k) { return k.split('|')[0]; }
+function keyOf(b) { return b.dataset.q + (b.dataset.say ? '|' + b.dataset.say : ''); }
+function parts(q) { var m = /^([A-Z])(\d+)([a-z]?)$/.exec(q) || [0, 'Z', '0', '']; return [ 'QWS'.indexOf(m[1]), parseInt(m[2], 10), m[3] ]; }
+function order(a, b) { var x = parts(qOf(a)), y = parts(qOf(b)); return x[0] - y[0] || x[1] - y[1] || (x[2] < y[2] ? -1 : x[2] > y[2] ? 1 : 0); }
+function show() {
+  picked.sort(order);
+  document.querySelectorAll('button.diff').forEach(function (b) { b.setAttribute('aria-pressed', picked.indexOf(keyOf(b)) >= 0 ? 'true' : 'false'); });
+  document.querySelectorAll('.top li').forEach(function (li) {
+    var a = li.querySelector('a'); if (!a) return;   // the "Told" box's rows are not links
+    var code = a.getAttribute('href').slice(1).toUpperCase();
+    li.classList.toggle('done', picked.some(function (k) { var q = qOf(k); return q === code || q.replace(/[a-z]$/, '') === code; }));
+  });
+  var said = picked.map(function (k) { var p = k.split('|'); return p[0] + (p[1] ? ' ' + p[1] : ''); });
+  document.getElementById('replytext').textContent = picked.length ? 'Section 3: go, as recommended, except ' + said.join(', ') + ': ' : 'Section 3: go, as recommended.';
+}
+document.addEventListener('click', function (e) {
+  var b = e.target.closest && e.target.closest('button.diff'); if (!b) return;
+  var k = keyOf(b), had = picked.indexOf(k) >= 0;
+  picked = picked.filter(function (p) { return qOf(p) !== b.dataset.q; });
+  if (!had) picked.push(k);
+  try { localStorage.setItem(KEY, JSON.stringify(picked)); } catch (err) {}
+  show();
+});
+document.getElementById('copy').addEventListener('click', function () {
+  var text = document.getElementById('replytext').textContent, btn = this;
+  function done(ok) { btn.textContent = ok ? 'Copied' : 'Hold the words to copy'; setTimeout(function () { btn.textContent = 'Copy'; }, 2500); }
+  try { navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(false); }); } catch (err) { done(false); }
+});
+show();
+</script>
