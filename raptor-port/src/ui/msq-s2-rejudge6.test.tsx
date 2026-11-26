@@ -449,9 +449,15 @@ describe('§38 — an archived row whose post-in date he picked, across midnight
 /* ---- §39 "GIVE ACCESS", CHANGED, IS THROWN AWAY WHEN ITS REQUEST LEAVES THE PAGE'S LIST ----
    A stranger asks to join 149; Hunter, on 149's page by his Plan, opens Give access and sets its Role to Admin, then picks
    142. The form and its change were held out of sight and no longer counted; a pick of 149 brought the form back open
-   with the change. Now it is thrown away while drawing, as an open row is at a pick today. */
+   with the change. Now it is thrown away while drawing, as an open row is at a pick today. Since the core's K4 (the
+   pick's door) the changed form refuses the pick instead; its first test was re-pointed, by name. */
 describe('§39 — Give access, changed, across a squadron pick', () => {
-  it('picked away to 142: the form is gone and not counted; back on 149 the request waits with its Give access button, the form closed, nothing counted', async () => {
+  /* (re-pointed since the core's K4, by name — was "picked away to 142: the form is gone and not counted; back on 149 the
+     request waits with its Give access button, the form closed, nothing counted". Give access with something changed in
+     it now REFUSES the pick (his D2598, D2403, D2627 A6 — "Blocked: finish or cancel giving access, then pick 149."), so
+     the changed form is never carried across a pick. Its Role then put back to Member, the open form holds no change, and
+     the pick goes through: the purpose kept — a form open at a pick is never brought back open) */
+  it('a pick of 142 while Give access holds a change: refused, the "Blocked:" note, the form open with its change and counted; its change put back, picked away to 142: the form is gone and not counted; back on 149 the request waits with its Give access button, the form closed, nothing counted', async () => {
     signInAs('newface@mail')
     expect(requestAccess({ cs: 'Newface', ini: 'NF', seat: 'FCP', cat: 'C' }, 'u149'), 'setup: a stranger asks to join 149').toBeNull()
     signInAs('hunter')
@@ -461,6 +467,22 @@ describe('§39 — Give access, changed, across a squadron pick', () => {
     await p.press('[data-approve]')
     await act(async () => { fireEvent.change(p.$('#apvRole')!, { target: { value: 'admin' } }) })
     expect(workOn('giveaccess'), 'premise: counted').toBe(true)
+    spy.calls.length = 0
+    vi.mocked(HOOKS.toast).mockClear()
+    await pick('u142')
+    /* K4: refused — 149's page stays, the form stays open with its change, still counted, nothing written */
+    expect(pageUnit('own'), 'K4: the pick is refused — 149\'s page stays').toBe('u149')
+    expect((document.getElementById('toastEl')?.textContent ?? '').trim(), 'K4: the grey note, his D2627 A6 words')
+      .toBe('Blocked: finish or cancel giving access, then pick 142.')
+    expect(p.$('[data-approving]'), 'K4: the form still open').not.toBeNull()
+    expect((p.$('#apvRole') as HTMLSelectElement | null)?.value, 'K4: its change kept').toBe('admin')
+    expect(workOn('giveaccess'), 'K4: still counted').toBe(true)
+    expect(spy.calls, 'K4: nothing written').toEqual([])
+    expect(anyRowNote(), 'K4: no "row changed" note').toBe(0)
+    /* its Role put back to Member: the open form holds no change */
+    await act(async () => { fireEvent.change(p.$('#apvRole')!, { target: { value: 'main' } }) })
+    expect(workOn('giveaccess'), 'premise: unchanged — not counted').toBe(false)
+    expect(p.$('[data-approving]'), 'premise: the form still open').not.toBeNull()
     await pick('u142')
     expect(pageUnit('own')).toBe('u142')
     expect(p.$('[data-approving]'), 'on 142: no form').toBeNull()

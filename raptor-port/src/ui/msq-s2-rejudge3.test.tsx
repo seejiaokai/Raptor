@@ -22,7 +22,10 @@
    was re-pointed, by name — §12's "as built today: Hunter is made a member by a master admin while Ranger's row is open …
    nothing is said" now reads "… and the note is said, once, as his standing goes", run as the app runs too (every draw
    twice), with a pin beside it for the same from a squadron he works by his Plan (typed work is never dropped without a
-   word; the page holds who is looking). No other test here was changed.
+   word; the page holds who is looking). No other test here was changed then.
+   SINCE THE CORE'S K4 (the pick's door, merged from the batch branch — his D2403, D2595, D2627 A6): three of §12's "his own
+   pick" tests were re-pointed, by name, each its old name in a comment above it — a pick while the row holds his typing is
+   refused with the grey "Blocked:" note, then the typing is put back by hand and the pick made as the test was written for.
    The world: three squadrons (withThird — his D2630), Wed 15 Jul 26, 09:00. Hunter — 142's admin, Plan of 149, View of
    150; Saber — master admin, home 142; Ranger — 142's member, View of 149 and of 150; Kestrel — 149's admin; Osprey —
    149's member; Mako — 150's own admin. */
@@ -183,6 +186,28 @@ const landedOffTheAdminPage = () => {
   expect($('.acc-edit'), 'premise: his open row is gone').toBeNull()
 }
 const nothingSaved = (acct: string) => expect(accountById(acct)!.name, 'nothing typed was saved').not.toBe('typed@mail')
+/* SINCE THE CORE'S K4 (the pick's door — his D2403, D2595, D2627 A6; the plan's V4c): a pick while the open row holds his
+   typing is REFUSED — the grey "Blocked:" note names the way out, the squadron and the page stay, the row stays open with
+   what he typed, nothing is written and no "row changed" note is said. These helpers hold that, then put the row back as
+   it opened (his typing taken back by hand, so the row holds no change) — the ruled way to the state the §12 tests below
+   were written for: an open row, and his own pick. */
+const blockedNote = () => (document.getElementById('toastEl')?.textContent ?? '').trim()
+async function pickRefusedOverTyping(to: string, num: string, acct: string) {
+  const unit0 = UNIT, own0 = pageUnit('own'), page0 = CURPAGE
+  await pick(to)
+  await settle()
+  expect(UNIT, 'K4: the pick is refused — the squadron in view stays').toBe(unit0)
+  expect(pageUnit('own'), 'K4: his own pages stay').toBe(own0)
+  expect(CURPAGE, 'K4: the page stays').toBe(page0)
+  expect(blockedNote(), 'K4: the grey note, his D2627 A6 words').toBe(`Blocked: save or cancel the open row, then pick ${num}.`)
+  expect(($('#accEdName') as HTMLInputElement | null)?.value, 'K4: the row still open with his typing').toBe('typed@mail')
+  nothingSaved(acct)
+  expect(anyRowNote(), 'K4: no "row changed" note').toBe(0)
+}
+async function putTypingBack(acct: string) {
+  await act(async () => { fireEvent.change($('#accEdName')!, { target: { value: accountById(acct)!.name } }) })
+  expect($('#accEdName'), 'premise: the row is still open, holding no change').not.toBeNull()
+}
 
 /* ---- §12 THE NOTE WHEN THE APP ITSELF TAKES THE ADMIN PAGE AWAY (the brief's item 1 — the Opus read 1, the Fable read 1) ----
    Hunter has a row open on 149's Admin → Users with a rename typed. Another admin LOWERS his Plan of 149 to View: the same
@@ -276,8 +301,13 @@ describe('§12 — the whole app: the Admin page taken away under an open row sa
     nothingSaved(ACCT.osprey)
     expect(anyRowNote(), 'his own leaving: no note').toBe(0)
   })
-  it('silent: his own pick of a squadron he only views (150), from 149\'s Admin → Users with the row open: the Admin page goes with the pick — no note', async () => {
+  /* (re-pointed since the core's K4, by name — was "silent: his own pick of a squadron he only views (150), from 149's
+     Admin → Users with the row open: the Admin page goes with the pick — no note"; with his rename typed the pick is now
+     refused, so the open row is first put back as it opened) */
+  it('his own pick of a squadron he only views (150), from 149\'s Admin → Users: refused while the row holds his typing (K4); with the row open and his typing put back, the Admin page goes with the pick — no note', async () => {
     await hunterOn149()
+    await pickRefusedOverTyping(third.u150, '150', ACCT.osprey)
+    await putTypingBack(ACCT.osprey)
     await pick(third.u150)
     await settle()
     expect(UNIT, 'premise: 150 in view').toBe(third.u150)
@@ -291,8 +321,14 @@ describe('§12 — the whole app: the Admin page taken away under an open row sa
      typed in it"): the rule's "a pick of a squadron he may only view leaves the row open" holds for the list drawn alone
      (msq-s2-rejudge2 §10), but in the app that pick lands him on the squadron's View-only Sched and the Admin page is
      taken away with the row. */
-  it('silent, as the app stands: Hunter\'s View-only pick of 150 from 142\'s own Admin → Users with Ranger\'s row open — the Admin page goes with the row; back on 142\'s Admin → Users the row is closed and nothing is said', async () => {
+  /* (re-pointed since the core's K4, by name — was "silent, as the app stands: Hunter's View-only pick of 150 from 142's
+     own Admin → Users with Ranger's row open — the Admin page goes with the row; back on 142's Admin → Users the row is
+     closed and nothing is said"; the brief's "for now, a pick closes an open row and drops what was typed in it" ended
+     with K4: a row with his typing refuses the pick) */
+  it('Hunter\'s View-only pick of 150 from 142\'s own Admin → Users with Ranger\'s row open: refused while it holds his typing (K4); with his typing put back the Admin page goes with the row; back on 142\'s Admin → Users the row is closed and nothing is said', async () => {
     await appOnUsers('hunter', PID.ranger)
+    await pickRefusedOverTyping(third.u150, '150', ACCT.ranger)
+    await putTypingBack(ACCT.ranger)
     await pick(third.u150)
     await settle()
     expect(pageUnit('own'), 'his own pages stay 142\'s').toBe('u142')
@@ -306,8 +342,13 @@ describe('§12 — the whole app: the Admin page taken away under an open row sa
     expect(anyRowNote(), 'no note').toBe(0)
     nothingSaved(ACCT.ranger)
   })
-  it('silent: his own pick where the Admin page stays (Saber picks 149 with Ranger\'s row open — the Fable read\'s soundness test): the row closes, no note; Ranger found again on 149\'s page is the short row', async () => {
+  /* (re-pointed since the core's K4, by name — was "silent: his own pick where the Admin page stays (Saber picks 149 with
+     Ranger's row open — the Fable read's soundness test): the row closes, no note; Ranger found again on 149's page is
+     the short row") */
+  it('his own pick where the Admin page stays (Saber picks 149 with Ranger\'s row open — the Fable read\'s soundness test): refused while the row holds his typing (K4); with his typing put back the row closes at the pick, no note; Ranger found again on 149\'s page is the short row', async () => {
     await appOnUsers('saber', PID.ranger)
+    await pickRefusedOverTyping('u149', '149', ACCT.ranger)
+    await putTypingBack(ACCT.ranger)
     await pick('u149')
     await settle()
     expect(CURPAGE).toBe('admin')

@@ -9,7 +9,8 @@
    Since then: U1's fix (chat 205) re-pointed two cases of V4b — the row now closes as the change lands, or at the pick,
    never waiting for its Save — and added the no-redraw case beside them (msq-s2-rejudge.test.tsx holds that fix's own
    proofs); the fix's second round made the open row read his line on every draw and hold only the admin's pick
-   (msq-s2-rejudge2.test.tsx §9), which V4's "changed and not saved" case still holds as written.
+   (msq-s2-rejudge2.test.tsx §9), which V4's "changed and not saved" case still holds as written. Since the core's K4
+   (the pick's door) the last V4b case is the plan's V4c, re-pointed by name: a changed short row refuses the pick.
    The world: three squadrons (withThird — his D2630; R9), Wed 15 Jul 26, 09:00. Hunter — 142's admin, Plan of 149, View
    of 150; Saber — master admin, home 142; Ranger — 142's member, View of 149 and of 150; Kestrel — 149's admin; Osprey —
    149's member; Mako — 150's own admin; a 142 man with no sign-in, found on the roster. */
@@ -24,6 +25,7 @@ import { pickSquadron } from '../state/pick'
 import { PEOPLE } from '../engine/people'
 import { rosterOf } from '../engine/roster'
 import { HOOKS } from '../engine/hooks'
+import { UNIT } from '../engine/unitview'
 import { notify } from '../state/store'
 import { globalUndo } from '../undo/timeline'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -350,8 +352,12 @@ describe('V4b — the save sends the line alone, and judges the row again', () =
     expect(spy.calls, 'one key, grants, holding one squadron').toEqual([[accountOfPid(PID.osprey)!.id, { grants: { u149: 'view' } }]])
   })
   /* (re-pointed by U1's fix, chat 205's brief: the row closes at the pick itself, and with no note — the pick was the
-     signed-in admin's own act; U1 held it open on 150's page until its Save refused) */
-  it('the page\'s squadron changes while the row is open (150 picked): closed at the pick, no note, nothing sent', async () => {
+     signed-in admin's own act; U1 held it open on 150's page until its Save refused.
+     Re-pointed again since the core's K4, by name — was "the page's squadron changes while the row is open (150 picked):
+     closed at the pick, no note, nothing sent": this is the plan's V4c — the short row with its line changed and not saved
+     refuses the pick (his D2403, D2595, D2627 A6), the grey "Blocked:" note naming the way out. His pick then put back to
+     the line he holds, the row holds no change, and the pick goes through as before) */
+  it('V4c — 150 picked while the short row holds a changed line: refused, the "Blocked:" note, the row open with his pick, nothing sent; his pick put back, the page\'s squadron changes: closed at the pick, no note, nothing sent', async () => {
     signInAs('saber')
     await pick('u149')
     const p = panel()
@@ -360,9 +366,23 @@ describe('V4b — the save sends the line alone, and judges the row again', () =
     await p.open(PID.ranger)
     await p.pickLine('u149', 'none')
     spy.calls.length = 0
+    vi.mocked(HOOKS.toast).mockClear()
     await pick(third.u150)
-    /* (the pick's refusal of an opened row with a change not saved is the core's K1/K4 — not built here, so the pick
-       lands; he is still found by the search on 150's page) */
+    /* V4c: refused — 149 stays in view, the row stays open holding his pick, nothing is sent, no "row changed" note */
+    expect(UNIT, 'V4c: the pick is refused — 149 stays in view').toBe('u149')
+    expect((document.getElementById('toastEl')?.textContent ?? '').trim(), 'V4c: the grey note, his D2627 A6 words')
+      .toBe('Blocked: save or cancel the open row, then pick 150.')
+    expect(p.rowOf(PID.ranger)!.querySelector('.acc-edit[data-unsaved]'), 'V4c: his row still open, marked not saved').not.toBeNull()
+    expect(p.lines(), 'V4c: still the one line, his pick kept').toEqual([{ n: '149', what: 'None* View Plan(off)', note: 'Plan is for admins only.' }])
+    expect(vi.mocked(HOOKS.toast).mock.calls.filter(c => String(c[0]).includes('row changed')), 'V4c: no "row changed" note').toEqual([])
+    expect(spy.calls, 'V4c: nothing sent').toEqual([])
+    expect(level(ACCT.ranger, 'u149'), 'V4c: nothing saved').toBe('view')
+    /* his pick put back to the line he holds: the row is open and holds no change */
+    await p.pickLine('u149', 'view')
+    expect(p.rowOf(PID.ranger)!.querySelector('.acc-edit[data-unsaved]'), 'premise: the row holds no change').toBeNull()
+    await pick(third.u150)
+    expect(UNIT, 'premise: 150 in view').toBe(third.u150)
+    /* (he is still found by the search on 150's page) */
     expect(p.rowOf(PID.ranger), 'premise: he is still on 150\'s page').not.toBeNull()
     expect(p.rowOf(PID.ranger)!.querySelector('.acc-edit'), 'his row closed at the pick').toBeNull()
     expect(vi.mocked(HOOKS.toast).mock.calls.filter(c => c[0] === `${cs}’s row changed while it was open, so nothing was saved. Open it again.`),

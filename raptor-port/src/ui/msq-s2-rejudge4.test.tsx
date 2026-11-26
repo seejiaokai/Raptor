@@ -1014,10 +1014,33 @@ describe('§25 — the whole app: a row changed unseen, then his own pick of a s
     expect(homeOn(PID.ranger, todayIso()), 'premise: the move day — he is 149\'s').toBe('u149')
     expect($('#accEdName'), 'premise: nothing redrew — the row still stands').not.toBeNull()
   }
-  it('the security read 2, the Fable read 2: Ranger\'s move landed with nothing redrawn; Hunter picks 150 (View only) from 142\'s own Admin → Users — the Admin page goes with his pick: his own leaving, no note', async () => {
+  /* SINCE THE CORE'S K4 (the pick's door — his D2403, D2595, D2627 A6; the plan's V4c): a pick of 150 while Ranger's row
+     holds the typed rename is REFUSED — the grey "Blocked:" note, 142 and the Admin page staying, the row open with the
+     typing, nothing written, no "row changed" note. The typing is then put back by hand, so the open row holds no change:
+     the ruled way to the state these tests were written for — an open row, and his own pick. */
+  const blockedNote = () => (document.getElementById('toastEl')?.textContent ?? '').trim()
+  const refusedThenPutBack = async () => {
+    await pick(third.u150)
+    await settle()
+    expect(UNIT, 'K4: the pick is refused — 142 stays in view').toBe('u142')
+    expect(CURPAGE, 'K4: the Admin page stays').toBe('admin')
+    expect(blockedNote(), 'K4: the grey note, his D2627 A6 words').toBe('Blocked: save or cancel the open row, then pick 150.')
+    expect(($('#accEdName') as HTMLInputElement | null)?.value, 'K4: the row still open with his typing').toBe('typed@mail')
+    expect(accountById(ACCT.ranger)!.name, 'K4: nothing typed was saved').not.toBe('typed@mail')
+    expect(anyRowNote(), 'K4: no "row changed" note').toBe(0)
+    await act(async () => { fireEvent.change($('#accEdName')!, { target: { value: accountById(ACCT.ranger)!.name } }) })
+    expect($('#accEdName'), 'premise: the row still open, holding no change').not.toBeNull()
+    expect(anyRowNote(), 'premise: putting his typing back says nothing').toBe(0)
+  }
+  /* (re-pointed since the core's K4, by name — was "the security read 2, the Fable read 2: Ranger's move landed with
+     nothing redrawn; Hunter picks 150 (View only) from 142's own Admin → Users — the Admin page goes with his pick: his
+     own leaving, no note". The refusal comes before the move lands: a draw after it — the typing put back — would judge
+     the stale row and rightly close it with the note) */
+  it('the security read 2, the Fable read 2: Hunter\'s pick of 150 is refused while Ranger\'s row holds his typing (K4); his typing put back, Ranger\'s move lands with nothing redrawn and Hunter picks 150 (View only) from 142\'s own Admin → Users — the Admin page goes with his pick: his own leaving, no note', async () => {
     signInAs('saber')
     expect(moveMan(PID.ranger, 'u149'), 'setup: Ranger moves to 149 from tomorrow').toMatchObject({ ok: true })
     await hunterOn142WithRangerOpen()
+    await refusedThenPutBack()
     rangersMoveLandsUnseen()
     await pick(third.u150)
     await settle()
@@ -1038,8 +1061,11 @@ describe('§25 — the whole app: a row changed unseen, then his own pick of a s
     expect($('#admUsers')).toBeNull()
     expect(anyRowNote(), 'his own leaving: no note').toBe(0)
   })
-  it('pin (the readers\' control): the same pick with no move waiting — silent', async () => {
+  /* (re-pointed since the core's K4, by name — was "pin (the readers' control): the same pick with no move waiting —
+     silent") */
+  it('pin (the readers\' control): the same pick with no move waiting — refused while the row holds his typing (K4); his typing put back, silent', async () => {
     await hunterOn142WithRangerOpen()
+    await refusedThenPutBack()
     await pick(third.u150)
     await settle()
     expect(CURPAGE).toBe('viewsched')
