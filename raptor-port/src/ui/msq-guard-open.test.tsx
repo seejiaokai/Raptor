@@ -16,7 +16,7 @@ import { App } from './App'
 import { INPUTS, inpId } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { notify, resetSession, writeInputs } from '../state/store'
-import { pageUnit, switchRoleInForce } from '../state/perms'
+import { pageUnit } from '../state/perms'
 import { saveAccess } from '../state/accounts'
 import { homeOn, todayIso } from '../state/units'
 import { CURPAGE, setPage, setInpView, setInpMode, setCalMonth, setAvailWin, AVAILWIN, CHGWIN, setChgWin, setBoardDay, setOilWait } from '../state/view'
@@ -50,8 +50,8 @@ import * as TRK from '../tracker/app/core.js'
 import { endTrackerSession, trackerWindowsOpen, trackerAsking } from '../tracker/role.js'
 import { getPeople } from '../tracker/people.js'
 import { pageOffered, setTrkUnitProbe } from '../state/perms'
-import { trackerCover, holdNow } from '../state/typing-hold'
-import { enterSquadron } from '../state/store'
+import { trackerCover } from '../state/typing-hold'
+import { rawEnter, rawRole } from '../test-support/raw-entry'
 import { rowReachable } from './guard'
 import { setStorageMaker, storageUnit } from '../tracker/storage.js'
 import { Whiteboard } from '../storage/whiteboard'
@@ -762,7 +762,10 @@ describe('A10 — counted means drawn', () => {
         await doing(() => {})
       },
     },
-    'the role in force changed': { change: async () => { await doing(() => { switchRoleInForce('main') }) } },
+    /* (step K7: the role moved with nothing asked — the stand-in for his account's role changed while he is signed in
+       (state/store.ts refreshAccess), never the view switch's press — so through the test kit's raw role change, which
+       tells the entry checker it is made on purpose) */
+    'the role in force changed': { change: async () => { await doing(() => { rawRole('main') }) } },
     'his move at midnight': {
       setup: () => { signInAs('saber'); expect(moveMan(PID.hunter, third.u150).ok).toBe(true) },
       change: async () => { await act(async () => { pastMidnight() }); await settle() },
@@ -977,7 +980,7 @@ describe('A7 (the Tracker\'s half) — a Tracker window on a page out of sight, 
     await app('hunter')
     await OPEN.trk!.open()
     await doing(() => setPage('inputs'))
-    await doing(() => { enterSquadron(third.u150, holdNow() === 'war', true) })
+    await doing(() => { rawEnter(third.u150) })
     expect({ unit: UNIT, offered: pageOffered('tracker'), set: C.showAllOpen, rowOpen: row('trk').open(), reachable: rowReachable(row('trk')), open: whatIsOpen()?.row.id ?? null })
       .toEqual({ unit: third.u150, offered: false, set: true, rowOpen: true, reachable: false, open: null })
   })

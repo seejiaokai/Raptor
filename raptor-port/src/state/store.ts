@@ -52,7 +52,7 @@ import { holdNow, setBands, warBand, setHoldRelease, setEnteredByPick, enteredBy
 import { endUndoSession } from '../undo/timeline'
 import { setRole as lwSetRole } from '../leavewar/state/store'
 import { endTrackerSession, trackerSwitchAsk, trackerSwitchNeeds } from '../tracker/role.js'
-import { refuse, closeShown, type GuardOpts } from './guard'
+import { refuse, closeShown, checkEntry, rawOnPurpose, type GuardOpts } from './guard'
 import { saveGoing, waitForSave, dropDoorWait } from './doorwait'
 import { rebindStorageUnit, storageHeld } from '../tracker/storage.js'
 import { isHydrated, hydratePlan, hydrateRolesFor, persistWb } from './persist'
@@ -749,8 +749,10 @@ function switchRoleBody(): boolean {
 /** THE RAW SWITCH — the body alone, then notify(), asking nothing and closing nothing: the switch exactly as it was before
  *  the guard rail. No control calls it. Tests that need a state no press reaches since D2403 and D2627 A20 (a draft held in
  *  the member view, a window the member view holds) make it with this, as the raw pick is enterSquadron — the checker's
- *  allow-list names it (step K7) */
+ *  allow-list names it (step K7): it tells the checker so itself, for the turn it runs in (state/guard.ts rawOnPurpose — a
+ *  no-op in the app) */
 export function switchRoleViewRaw(): void {
+  rawOnPurpose()
   if (switchRoleBody()) notify()
 }
 /** the view switch would ask the Tracker's question: unsaved chart edits, whichever squadron — both ways, on his own
@@ -1171,6 +1173,9 @@ let ENTERING = false
    pick (the war held by a window) keeps it, and his midnight move or a right ended clears it */
 export function enterSquadron(scheduleUnit: string, holdWar = false, byPick = false): Entered {
   if (ENTERING) return { unit: UNIT, own: pageUnit('own', todayIso()), tracker: 'none' }
+  /* an entry by his press: the test set-ups' entry checker asks the guard again first (§3.4 — step K7; a no-op in the
+     app). An entry with `byPick` false (his move at midnight, maybeReenter) is not seen by it — its limit */
+  if (byPick) checkEntry('enter', scheduleUnit)
   ENTERING = true
   try {
     if (scheduleUnit !== UNIT) setEnteredByPick(byPick)

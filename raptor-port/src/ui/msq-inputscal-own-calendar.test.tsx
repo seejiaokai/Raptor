@@ -62,6 +62,15 @@ const openDay = async (iso: string) => {
   await act(async () => { cell!.dispatchEvent(ptr('pointerdown')); cell!.dispatchEvent(ptr('pointerup')); cell!.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true })) })
   expect(document.querySelector('[data-testid="win-inputsday"]'), `the ${iso} day opened`).toBeTruthy()
 }
+/* (K7) the opened day closed by its own ✕ — the press a person makes — before an Undo whose landing brings 142 back: no
+   press reaches an Undo on 149's Inputs for a View holder since D2381 (no Inputs page offered, no Undo drawn on View-only
+   Sched), and the landing must not enter 142 with the day window open (the entry checker, step K7) */
+const closeDay = async () => {
+  const x = document.querySelector('[data-testid="win-inputsday-x"]') as HTMLElement | null
+  expect(x, 'the day window’s ✕').toBeTruthy()
+  await act(async () => { x!.click() })
+  expect(document.querySelector('[data-testid="win-inputsday"]'), 'the day window closed').toBeNull()
+}
 const typeInto = async (el: Element, value: string) => act(async () => {
   Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!.call(el, value)
   el.dispatchEvent(new Event('input', { bubbles: true }))
@@ -137,7 +146,7 @@ describe('a 142 plain admin with View of 149 picks 149 — his Inputs calendar s
     expect($$(`[data-ichead="${DAY}"] .ic-rmk`).map(e => e.textContent), 'the month shows the title too').toEqual(['Exercise'])
   })
 
-  it('an edit of that note is 142’s note, saved as a change (its before-image the stored note); Undo puts it back, stored and cached; Redo', async () => {
+  it('an edit of that note is 142’s note, saved as a change (its before-image the stored note); Undo puts it back, stored and cached; Redo — reached by no press since D2381 and K6 (the Undo’s landing would enter 142 with the open day window), so the day window is closed first', async () => {
     const id = hunterViewOn149()
     await show()
     await openDay(DAY)
@@ -149,9 +158,11 @@ describe('a 142 plain admin with View of 149 picks 149 — his Inputs calendar s
     expect(loaded(id), "149's calendar never holds it").toBeNull()
     expect(notesShown(), 'the screen shows the edit').toEqual(['Range day — moved'])
 
+    await closeDay()
     const u = await press('undo')
     expect(u.ok, JSON.stringify(u.reason)).toBe(true)
     expect([kept('u142', id)?.text, savedRow('u142', `pp:${id}`)?.text], 'the note as it was, stored and cached — never deleted').toEqual(['Range day', 'Range day'])
+    await openDay(DAY)
     expect(notesShown(), 'and on the screen').toEqual(['Range day'])
     /* rewritten by his D2381 (23 Nov 26): 149 he only views offers no Inputs page, so the Undo's landing on his Inputs
        brings 142 back into view (store.ts landOnOfferedPage) — the note 142's all along, now on the calendar loaded */
@@ -163,7 +174,7 @@ describe('a 142 plain admin with View of 149 picks 149 — his Inputs calendar s
     expect(notesShown()).toEqual(['Range day — moved'])
   })
 
-  it('a day title edited there is 142’s title; its Undo puts the title back', async () => {
+  it('a day title edited there is 142’s title; its Undo puts the title back — reached by no press since D2381 and K6 (the Undo’s landing would enter 142 with the open day window), so the day window is closed first', async () => {
     hunterViewOn149()
     await show()
     await openDay(DAY)
@@ -172,12 +183,13 @@ describe('a 142 plain admin with View of 149 picks 149 — his Inputs calendar s
     expect(c).toMatchObject({ op: 'put', id: `u142@dm:${DAY}`, before: 'Exercise', after: 'Exercise — day 2' })
     expect([keptPlan('u142')?.titles[DAY], savedRow('u142', `dm:${DAY}`)]).toEqual(['Exercise — day 2', 'Exercise — day 2'])
     expect(DAYRMK[DAY], "149's titles untouched").toBeUndefined()
+    await closeDay()
     const u = await press('undo')
     expect(u.ok, JSON.stringify(u.reason)).toBe(true)
     expect([keptPlan('u142')?.titles[DAY], savedRow('u142', `dm:${DAY}`)]).toEqual(['Exercise', 'Exercise'])
   })
 
-  it('a new note made there lands on 142’s calendar, and its Undo takes it away again', async () => {
+  it('a new note made there lands on 142’s calendar, and its Undo takes it away again — reached by no press since D2381 and K6 (the Undo’s landing would enter 142 with the open day window), so the day window is closed first', async () => {
     hunterViewOn149()
     await show()
     await openDay(DAY)
@@ -193,8 +205,10 @@ describe('a 142 plain admin with View of 149 picks 149 — his Inputs calendar s
     expect(keptPlan('u142')!.pucks.filter((p: any) => p.date === DAY).map((p: any) => p.text).sort()).toEqual(['Range day', 'Sim block'])
     expect(PLANPUCKS.length, "nothing on 149's calendar").toBe(0)
     expect(notesShown().sort()).toEqual(['Range day', 'Sim block'])
+    await closeDay()
     const u = await press('undo')
     expect(u.ok, JSON.stringify(u.reason)).toBe(true)
+    await openDay(DAY)
     expect(notesShown()).toEqual(['Range day'])
   })
 })

@@ -12,7 +12,8 @@ import { describe, it, expect, afterEach, beforeEach } from 'vitest'
 import { act, fireEvent } from '@testing-library/react'
 import { createRoot, type Root } from 'react-dom/client'
 import { useMsqWorld, signInAs } from '../test-support/msq-world'
-import { notify, enterSquadron } from '../state/store'
+import { notify } from '../state/store'
+import { rawEnter } from '../test-support/raw-entry'
 import { holdNow } from '../state/typing-hold'
 import { UNIT } from '../engine/unitview'
 import { InputEditor } from './InputWindow'
@@ -29,7 +30,8 @@ const LEAD = "This is 142's."
 /* THE RAW ENTRY (step K4; his D2403): since K4 a pick with a window open is refused, so the pick's band is reached by no
    press; these tests drive the very entry the pick runs (state/store.ts enterSquadron, by pick) and are named so — removed
    with the band in Build 2 */
-const rawPick = (u: string): void => { enterSquadron(u, holdNow() === 'war', true); notify() }
+/* (step K7: through the test kit's raw entry, which tells the entry checker the state is made on purpose) */
+const rawPick = (u: string): void => { rawEnter(u, holdNow() === 'war'); notify() }
 
 describe('the "open the other input and lose them?" question, up at a pick (C1)', () => {
   let host: HTMLDivElement, root: Root

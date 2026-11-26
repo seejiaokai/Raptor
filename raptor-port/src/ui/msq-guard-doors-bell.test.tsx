@@ -34,8 +34,8 @@ import { CURPAGE, setPage, ADMINOPEN, INPMODE, INPVIEW, CALMONTH, SANSDAYASK, AV
 import { INPEDIT, OILASK, OILLIST, BELLLIST, setInpEdit, setOilList, INSIGHTS, setInsights } from './pops'
 import { me, pageUnit, isAdmin } from '../state/perms'
 import { homeOn, todayIso } from '../state/units'
-import { enterSquadron, switchRoleViewRaw, notify } from '../state/store'
-import { holdNow } from '../state/typing-hold'
+import { switchRoleViewRaw, notify } from '../state/store'
+import { rawEnter } from '../test-support/raw-entry'
 import { NOTICES, type Notice } from '../state/notices'
 import { isUnread } from '../state/noticeseen'
 import { requestAccess } from '../state/accounts'
@@ -646,12 +646,12 @@ describe('B25 — a card of the OIL list: its page first, then the window; refus
   it('the list standing over a squadron he only views (by a raw entry — reached by no press since D2403 and D2627 A19): not refused by the list it sits in — 142 comes into view and the window opens; with a change not saved: refused, 150 in view, no window', async () => {
     await app('hunter')
     const x = await cardList()
-    await doing(() => { enterSquadron(third.u150, holdNow() === 'war', true) })
+    await doing(() => { rawEnter(third.u150) })
     expect([UNIT, !!OILLIST], 'the premise: the list over 150').toEqual([third.u150, true])
     await press(card(x), 'the card')
     expect([UNIT, CURPAGE, INPEDIT?.iid], 'through: its squadron, its page, then the window').toEqual(['u142', 'inputs', x.iid])
     await doing(() => { setInpEdit(null); setPage('viewsched'); setOilList({ from: '2026-07-18', to: '2026-07-18', name: 'Holiday', unit: 'u142' }) })
-    await doing(() => { enterSquadron(third.u150, holdNow() === 'war', true) })
+    await doing(() => { rawEnter(third.u150) })
     await OPEN.unsaved!.open()
     await press(card(x), 'the card')
     expect([UNIT, INPEDIT], 'refused').toEqual([third.u150, null])

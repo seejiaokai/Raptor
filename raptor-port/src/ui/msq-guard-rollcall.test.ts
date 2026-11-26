@@ -14,16 +14,19 @@
    reports' half of R1 and R8's additions on his answers. K1c (the third) writes R4 — the Tracker's list, and its frames,
    which R3 leaves to it — R7's planted cases for R4, R1's and R8's Tracker additions, and the last test, which proves that
    `TO_COME` holds nothing a pass of K1 owes. */
-import { describe, it, expect } from 'vitest'
-import { readFileSync, readdirSync, statSync } from 'node:fs'
+import { describe, it, expect, beforeEach, afterEach } from 'vitest'
+import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs'
 import { join, basename } from 'node:path'
 import { withThird } from '../test-support/msq-world'
-import { GUARD_ROWS, GUARD_ORDER, FLOAT_WHERE, trackerWindowUp, TRACKER_SHOWS, type GuardRow } from './guard'
+import { GUARD_ROWS, GUARD_ORDER, FLOAT_WHERE, trackerWindowUp, TRACKER_SHOWS, guardAsk, type GuardRow } from './guard'
 import { trackerAsking } from '../tracker/role.js'
 import * as DRAWN from './windrawn'
 import { forward, gone, _resetFloatWins } from './winorder'
 import { saveRefused } from '../storage/savewait'
-import { warSheetOpen, warShowOpen } from '../state/guard'
+import { warSheetOpen, warShowOpen, setGuardAsk, setEntryChecker, refuse, checkEntry, rawOnPurpose, type GuardOpts, type GuardRefusal } from '../state/guard'
+import { makeEntryChecker, INSTALLED, RAW_BY_NAME, type Checker } from '../testing/entry-checker'
+import { enterSquadron } from '../state/store'
+import { UNIT } from '../engine/unitview'
 
 withThird()
 
@@ -791,6 +794,174 @@ describe('R5 (d) — every notice kind has a tap written for it (ui/topstate.ts 
     const src = read('state/notices.ts').split("  | { k: 'acct';").join("  | { k: 'plan'; who: string }\n  | { k: 'acct';")
     const keys = lineKindKeys(read('ui/topstate.ts'))
     expect(noticeKinds(src).filter(k => !keys.includes(k))).toEqual(['plan'])
+  })
+})
+
+/* ================= R5 (a) and R6 — THE DOORS' CALLERS, AND THE CHECKER THAT RUNS UNDER EVERY TEST (step K7 — the plan
+   §3.4) =================
+   (a) a pin: the only non-test callers of enterSquadron( with a third argument (an entry as his press), of
+   switchRoleInForce(, switchRoleView(, pickSquadron( and enterForLine( are these, as they stand at K7 — §4.1's table.
+   K9 adds its new enterForLine callers in the commit that makes them. A call in a comment is not a call; a function's own
+   definition is not a call of it. */
+const DOOR_FNS = ['enterSquadron', 'switchRoleInForce', 'switchRoleView', 'pickSquadron', 'enterForLine'] as const
+type DoorFn = typeof DOOR_FNS[number]
+/* the arguments of the call that opens at `open` (the index of its "("), counted at its own depth: 0 for "()" */
+function argCount(src: string, open: number): number {
+  let depth = 0, args = 0, any = false, q: string | null = null
+  for (let i = open; i < src.length; i++) {
+    const ch = src[i]!
+    if (q) { if (ch === '\\') i++; else if (ch === q) q = null; continue }
+    if (ch === '\'' || ch === '"' || ch === '`') { q = ch; any = true; continue }
+    if (ch === '(' || ch === '[' || ch === '{') { if (depth === 1) any = true; depth++; continue }
+    if (ch === ')' || ch === ']' || ch === '}') { if (--depth === 0) return any ? args + 1 : 0; continue }
+    if (depth === 1 && ch === ',') { args++; continue }
+    if (depth === 1 && !/\s/.test(ch)) any = true
+  }
+  return any ? args + 1 : 0
+}
+/** R5 (a): each call of a door's function in a file — `fn: the call's line` (enterSquadron only with a third argument) */
+export function doorCallers(rel: string, raw: string): string[] {
+  const src = uncomment(raw)
+  const out: string[] = []
+  for (const fn of DOOR_FNS) {
+    for (const m of src.matchAll(new RegExp(`(^|[^.\\w])${fn}\\(`, 'g'))) {
+      const at = m.index! + m[1]!.length
+      if (/\bfunction\s+$/.test(src.slice(Math.max(0, at - 20), at))) continue
+      if (fn === 'enterSquadron' && argCount(src, at + fn.length) < 3) continue
+      const lineStart = src.lastIndexOf('\n', at) + 1, lineEnd = src.indexOf('\n', at)
+      out.push(`${rel}: ${fn}: ${src.slice(lineStart, lineEnd < 0 ? undefined : lineEnd).trim()}`)
+    }
+  }
+  return out
+}
+/* the callers as they stand at K7, each with the door it is and §4.1's row */
+const DOOR_CALLERS: { file: string; fn: DoorFn; line: string; why: string }[] = [
+  { file: 'state/pick.ts', fn: 'enterSquadron', line: "enterSquadron(u, holdNow() === 'war', true)", why: 'enterPicked — the pick\'s entry (rows 1, 2)' },
+  { file: 'state/belltap.ts', fn: 'enterSquadron', line: "enterSquadron(u, holdNow() === 'war', true)", why: 'enterForLine\'s entry (rows 6, 8, 9b, 15)' },
+  { file: 'state/store.ts', fn: 'enterSquadron', line: "if (!asked) { if (kept) closeShown(); enterSquadron(home, holdNow() === 'war', true); return null }", why: 'the landing, no question asked (rows 7, 9–13, 22)' },
+  { file: 'state/store.ts', fn: 'enterSquadron', line: "enterSquadron(home, holdNow() === 'war', true)", why: 'the landing\'s second ask, after the Tracker\'s question (§4.5)' },
+  { file: 'state/store.ts', fn: 'enterSquadron', line: "if (pageUnit('own', iso) !== ownWas) { enterSquadron(UNIT, false, true); markEntryTried() }", why: 'enterRoleView — the switch moving his own pages (rows 3–5)' },
+  { file: 'state/store.ts', fn: 'switchRoleInForce', line: "if (!switchRoleInForce(toMember ? 'main' : 'admin')) return false", why: 'switchRoleBody — the view switch\'s body, behind switchRoleView and the raw switch (rows 3–5)' },
+  { file: 'ui/Shell.tsx', fn: 'switchRoleView', line: "onClick={() => { void switchRoleView({ from: 'bar' }) }}>{mineCs ? `${mineCs} · ` : ''}{admin ? 'Admin' : 'Member'}</button>", why: 'the role badge (row 3)' },
+  { file: 'ui/Drawer.tsx', fn: 'switchRoleView', line: "onClick={() => { setDrawer(false); notify(); void switchRoleView({ from: 'drawer' }) }}>{admin ? 'Switch to the member view' : 'Back to the admin view'}</button></div>}", why: 'the ☰ menu\'s switch (row 4)' },
+  { file: 'ui/InputWindow.tsx', fn: 'switchRoleView', line: 'onClick={() => { void switchRoleView(CHIP_SWITCH) }}>{chipAt.text}</button>', why: 'the Input window\'s own chip (row 5)' },
+  { file: 'ui/SquadronMenu.tsx', fn: 'pickSquadron', line: "const pick = (u: string) => { setOpen(null); btn.current?.focus(); void pickSquadron(u, { from: 'bar' }) }", why: 'the bar\'s Schedules list (row 1)' },
+  { file: 'ui/Drawer.tsx', fn: 'pickSquadron', line: "void pickSquadron(u, { from: 'drawer' })", why: 'the ☰ menu\'s list (row 2)' },
+  { file: 'state/belltap.ts', fn: 'enterForLine', line: "const w = enterForLine(rq.unit, again, 'bell')", why: 'openBellRequest — the bell itself (row 8)' },
+  { file: 'ui/topstate.ts', fn: 'enterForLine', line: "const where = isAcctNotice(n) ? 'here' : enterForLine(u, again, 'line', o)", why: 'openNotice — a bell line (rows 6, 7, 9b, 11, 15)' },
+]
+function callerProblems(files: Record<string, string>): string[] {
+  const want = DOOR_CALLERS.map(c => `${c.file}: ${c.fn}: ${c.line}`)
+  const found = Object.entries(files).flatMap(([rel, raw]) => doorCallers(rel, raw))
+  return [
+    ...found.filter(f => !want.includes(f)).map(f => `${f} — a door's caller the roll-call does not know: add it to §4.1's table and here`),
+    ...want.filter(w => !found.includes(w)).map(w => `${w} — no longer found`),
+  ]
+}
+describe('R5 (a) — the doors are these, and no others (a pin: the list as it stands at K7)', () => {
+  it('the non-test callers of enterSquadron with a third argument, switchRoleInForce, switchRoleView, pickSquadron and enterForLine are §4.1\'s', () => {
+    expect(callerProblems(allSrc())).toEqual([])
+  })
+  it('(the scanner\'s own check) a planted caller is caught; a two-argument entry, a definition and a comment are not callers', () => {
+    const files = allSrc()
+    expect(callerProblems({ ...files, 'ui/new.tsx': "pickSquadron('u149')" })).toEqual(["ui/new.tsx: pickSquadron: pickSquadron('u149') — a door's caller the roll-call does not know: add it to §4.1's table and here"])
+    expect(doorCallers('ui/x.ts', "enterSquadron(u, held)\nexport function enterForLine(u) {}\n/* switchRoleView() */\n// pickSquadron(u)")).toEqual([])
+    expect(doorCallers('ui/x.ts', "enterSquadron(f(a, b), [1, 2], true)")).toHaveLength(1)
+  })
+})
+
+/* R6 "the checker fires" (§3.4): the entry checker of the test set-ups (src/testing/entry-checker.ts), fed made-up
+   squadron changes by press through the real seam — a stand-in guard over a list of open rows, so no window need be drawn
+   (this file mounts no app). The installed checker is put back after each. */
+describe('R6 — the checker fires', () => {
+  let open: string[] = []
+  const fakeAsk = (_door: string, _to: string, opts: GuardOpts): GuardRefusal | null => {
+    const left = open.filter(id => !(opts.skip ?? []).includes(id))
+    return left.length ? { reason: 'window', id: left[0]!, where: 'any' } : null
+  }
+  let c: Checker
+  const turn = async () => { await Promise.resolve(); await Promise.resolve() }
+  beforeEach(() => {
+    open = []
+    c = makeEntryChecker({ ask: fakeAsk, openRows: () => [...open] })
+    setGuardAsk(fakeAsk)
+    setEntryChecker(c.hooks)
+  })
+  afterEach(() => {
+    setGuardAsk(guardAsk)
+    setEntryChecker(INSTALLED.hooks)
+  })
+
+  it('with a window open and no door\'s leave, an entry by press and the view switch each throw, naming the row', () => {
+    open = ['docview']
+    expect(() => checkEntry('enter', 'u149')).toThrow(/a squadron entered by press \(u149\) with "docview" open \(window\) — no door gave a leave/)
+    expect(() => checkEntry('switch', 'main')).toThrow(/the view switched \(to main\) with "docview" open/)
+    expect(c.failures).toHaveLength(2)
+  })
+  it('the store\'s own entry by press asks it: a raw enterSquadron(…, true) with a window open throws before anything is entered', () => {
+    open = ['docview']
+    const was = UNIT
+    expect(() => enterSquadron(was, false, true)).toThrow(/"docview" open/)
+    expect(UNIT).toBe(was)
+  })
+  it('with a leave and a window outside its skip, it throws, naming the door and what it left out', async () => {
+    open = ['oilday']
+    expect(refuse('card', 'u142', { skip: ['oilday'] })).toBe(false)
+    open.push('docview')
+    expect(() => checkEntry('enter', 'u142')).toThrow(/"docview" open \(window\) — the door 'card' gave the leave, leaving out oilday/)
+    await turn()
+  })
+  it('with the leave and only its skipped window open, or with nothing open, it passes', async () => {
+    open = ['oilday']
+    expect(refuse('card', 'u142', { skip: ['oilday'] })).toBe(false)
+    expect(() => checkEntry('enter', 'u142')).not.toThrow()
+    open = []
+    await turn()
+    expect(() => checkEntry('enter', 'u149')).not.toThrow()
+    expect(() => checkEntry('switch', 'admin')).not.toThrow()
+    expect(c.failures).toEqual([])
+  })
+  it('the leave lasts the synchronous turn it was given in, and no longer', async () => {
+    open = ['oilday']
+    expect(refuse('card', 'u142', { skip: ['oilday'] })).toBe(false)
+    await turn()
+    expect(() => checkEntry('enter', 'u142')).toThrow(/no door gave a leave/)
+  })
+  it('a raw entry made on purpose (the raw switch, the test kit\'s raw entry) passes for its turn alone', async () => {
+    open = ['docview']
+    rawOnPurpose()
+    expect(() => checkEntry('enter', 'u149')).not.toThrow()
+    expect(() => checkEntry('switch', 'main')).not.toThrow()
+    await turn()
+    expect(() => checkEntry('enter', 'u149')).toThrow(/"docview" open/)
+  })
+  it('a window opened in the turn of a refusal fails by name; one open before it, or none opened, does not', async () => {
+    open = ['inputedit']
+    expect(refuse('pick', 'u149')).toBe(true)
+    open.push('docview')
+    await turn()
+    expect(c.failures).toHaveLength(1)
+    expect(c.failures[0]).toMatch(/opened behind a refusal: docview — the press at the door 'pick' was refused for "inputedit"/)
+    c.reset()
+    open = ['inputedit']
+    expect(refuse('line', 'u149', { line: 'n1' })).toBe(true)
+    await turn()
+    expect(c.failures).toEqual([])
+  })
+  it('it is installed under every test: both suites\' set-ups load it, and the store and perms call it', () => {
+    const cfg = readFileSync(join(SRC, '..', 'vite.config.ts'), 'utf8')
+    expect(cfg).toMatch(/setupFiles: \['src\/testing\/marks-guard\.ts', 'src\/testing\/entry-checker\.ts'\]/)
+    expect(read('leavewar/test-setup.ts')).toMatch(/^import '\.\.\/testing\/entry-checker'/m)
+    expect(uncomment(read('state/store.ts'))).toMatch(/if \(byPick\) checkEntry\('enter', scheduleUnit\)/)
+    expect(uncomment(read('state/perms.ts'))).toMatch(/checkEntry\('switch', next\)\s*\n\s*setEffectiveRole\(next\)/)
+  })
+  it('its allow-list by name: each entry names a test file that exists, a test it holds, and a reason', () => {
+    for (const e of RAW_BY_NAME) {
+      expect(existsSync(join(SRC, e.file)), e.file).toBe(true)
+      const last = e.test.split(' > ').pop()!
+      expect(readFileSync(join(SRC, e.file), 'utf8').includes(last), `${e.file}: ${e.test}`).toBe(true)
+      expect(e.why.length, e.test).toBeGreaterThan(20)
+    }
   })
 })
 

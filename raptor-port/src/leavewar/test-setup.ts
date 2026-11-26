@@ -7,6 +7,7 @@
 // second initStore, exactly as the app's persisted Inputs do.
 import { beforeEach } from 'vitest'
 import '../testing/marks-guard'   // every validate() this suite runs is checked too ([WARN-HIDE-KEPT])
+import '../testing/entry-checker' // every entry by press and every refusal is checked too (the guard rail's step K7)
 import { INPUTS, filingOf, inpId } from '../engine/inputs'
 import { SEED_ABSENCES, seedWars, setMemberTodayForTests, warHolding } from './engine'
 import { inputRowFor } from './absences'

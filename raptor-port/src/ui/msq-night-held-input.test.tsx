@@ -13,8 +13,8 @@ import { createRoot, type Root } from 'react-dom/client'
 import { useMsqWorld, signInAs, ACCT } from '../test-support/msq-world'
 import { saveAccess } from '../state/accounts'
 import { pickSquadron } from '../state/pick'
-import { notify, switchRoleViewRaw, enterSquadron } from '../state/store'
-import { holdNow } from '../state/typing-hold'
+import { notify, switchRoleViewRaw } from '../state/store'
+import { rawEnter } from '../test-support/raw-entry'
 import { isAdmin } from '../state/perms'
 import { InputEditor } from './InputWindow'
 import { INPEDIT, setInpEdit } from './pops'
@@ -98,8 +98,9 @@ describe('a window held by a pick, through the member view and back (the securit
     const other = INPUTS.find((x: any) => x.person && PEOPLE[x.person] && x.person !== 'prowler' && x.person !== 'stiff' && (x.unit == null || x.unit === 'u142'))!
     await act(async () => { setInpEdit(other); notify() })
     expect($('.inped-body')?.hasAttribute('inert'), 'the premise: he may change it, before the pick').toBe(false)
-    /* (the raw entry the pick runs — state/store.ts enterSquadron, by pick: since K4 the pick's own door refuses this press) */
-    await act(async () => { enterSquadron('u149', holdNow() === 'war', true); notify() })
+    /* (the raw entry the pick runs — state/store.ts enterSquadron, by pick: since K4 the pick's own door refuses this press;
+       through the test kit's raw entry since K7, which tells the entry checker it is made on purpose) */
+    await act(async () => { rawEnter('u149'); notify() })
     expect($('[data-testid="inped-moveband"]'), 'the premise: held by the pick').not.toBeNull()
     await act(async () => { switchRoleViewRaw() })
     await act(async () => { switchRoleViewRaw() })
