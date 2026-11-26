@@ -5531,7 +5531,9 @@ export function balancesLocked(): boolean { return state.balLock }
  *  world and Approvals' DAYS (approvals.ts ownDays) read this one list, so the two never part (the code read's 5). */
 export function peopleCountedFor(pid: string): Person[] {
   const hidden = HIDDEN_IDENTITY && !state.people.some(p => p.id === pid) ? HIDDEN_IDENTITY(pid) : null
-  return hidden ? [...state.people, hidden] : state.people
+  /* …with HIS OWN stored posting laid on (withStored): the bare projection has no post-in date, so a leave before it came
+     off a hidden man's balance (D2747 — both scenario designers of [LW-POSTIN-BALANCE], 27 Nov 26) */
+  return hidden ? [...state.people, withStored(hidden)] : state.people
 }
 function leaveWorld(pid: string): LeaveYearWorld {
   return {
@@ -5546,7 +5548,8 @@ const FIG_CACHE = new Map<string, PersonFigures>()
 let FIG_KEY: unknown[] = []
 function figKey(): unknown[] {
   const st = getState()
-  return [st.wars, absenceVersion(), state.balances, state.gradeHist, state.grades, state.ledger, state.openings, state.people, state.eventDefs, memberToday()]
+  /* …and the stored postings: a hidden man's post-in date is read from them (peopleCountedFor — D2747) */
+  return [st.wars, absenceVersion(), state.balances, state.gradeHist, state.grades, state.ledger, state.openings, state.people, state.postOuts, state.eventDefs, memberToday()]
 }
 /** EVERY FIGURE OF ONE PERSON (engine/leaveyear.ts personFigures) — the person window, the Balances page, the grid's
  *  figure beside his name, My leave, Approvals' LVE BAL and the bid windows all read this one answer. */

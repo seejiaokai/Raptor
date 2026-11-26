@@ -2932,8 +2932,9 @@ since D2810.)
 
 **Leave before his post-in date is never deducted (D2747, built 27 Nov 26 — [LW-POSTIN-BALANCE]).** Each of the three sets
 is charged WHOLE, then every date before his post-in date is dropped from the charges (`leaveyear.ts beforePostIn`): a date
-before his earliest stint (`people.ts beforeFirstStint`), or in the gap right before his current stint (`gapBeforeCurrent`
-— a man back from overseas). A leave across the date keeps its run, weekends and holidays as they fall and only its days
+before his current stint that falls in none of his earlier stints — before his first, or in ANY gap between them (a man
+back from overseas, once or twice; the scenario designers' find, 27 Nov 26). A man the war shows no row for (a SANS man
+while SANS is off) is counted with his own stored posting laid on (`store.ts peopleCountedFor` → `withStored`). A leave across the date keeps its run, weekends and holidays as they fall and only its days
 before the date go; the snapshot's days are dropped by the same test, so the order of typing and approving never matters,
 nor a post-in date moved later. A day of an earlier stint still counts (a figure typed then stays right), and a day after a
 posting out is untouched (D1541). A man the count has no record of, or one with no post-in date, has nothing dropped. The

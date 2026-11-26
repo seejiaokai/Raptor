@@ -33,7 +33,6 @@ import { chargedDays, type CountCtx, type LeaveSource, type Taken } from './char
 import type { CounterName } from './codes'
 import type { Ledger, Openings } from './counters'
 import { AM, dayView, FULL, overlaps, PM, portionOf, type Contrib, type DayView, type Win } from './dayview'
-import { beforeFirstStint, gapBeforeCurrent } from './people'
 
 /** The kinds a person's figure is typed for, in the order the screens list them. */
 export type BalKind = 'LVE' | 'CCL' | 'FCL' | 'PL' | 'EL' | 'CL'
@@ -316,7 +315,11 @@ function withWhatIf(days: DayRecs, f: WhatIf | undefined): DayRecs {
 function beforePostIn(w: LeaveYearWorld, pid: string): (date: string) => boolean {
   const p = w.ctx.people?.find(x => x.id === pid)
   if (!p || p.from === null) return () => false
-  return d => beforeFirstStint(p, d) || gapBeforeCurrent(p, d)
+  const from = p.from
+  /* EVERY day before his current stint that falls in none of his earlier stints — not only the gap right before the current
+     one (`gapBeforeCurrent`, the posting sheet's door): a man away twice had the older gap's leave deducted (both scenario
+     designers, 27 Nov 26). `beforeFirstStint` is the same test's first case. */
+  return d => d < from && !(p.past ?? []).some(s => !(s.from && d < s.from) && d <= s.to)
 }
 function dropDates<T>(m: Map<string, T>, out: (date: string) => boolean): Map<string, T> {
   for (const d of [...m.keys()]) if (out(d)) m.delete(d)

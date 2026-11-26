@@ -292,6 +292,16 @@ describe('D2747 — leave before his post-in date is never deducted', () => {
     expect(at({ person: back, typed: lve(24, 0, '2026-01-05'), days: away }).kinds.LVE.app).toBe(24)
     expect(at({ person: back, typed: lve(24, 0, '2026-01-05'), days: earlier }).kinds.LVE.app).toBe(23)
   })
+  it('a man away twice: leave in EITHER gap before his current stint is not deducted; deleting one gives nothing back (both scenario designers, 27 Nov 26)', () => {
+    const twice = man({ past: [{ from: '2026-01-05', to: '2026-03-31' }, { from: '2026-06-01', to: '2026-08-31' }], from: '2026-11-02' })
+    const firstGap = approved(new Map(), 'LL', '2026-04-13')
+    const lastGap = approved(new Map(), 'LL', '2026-09-14')
+    expect(at({ person: twice, typed: lve(24, 0, '2026-01-06'), days: firstGap }).kinds.LVE.app).toBe(24)
+    expect(at({ person: twice, typed: lve(24, 0, '2026-01-06'), days: lastGap }).kinds.LVE.app).toBe(24)
+    /* typed with the first gap's leave in its snapshot, then that leave deleted: no day given back */
+    const snap = snapshotOf(firstGap, 'LVE')
+    expect(at({ person: twice, typed: lve(24, 0, '2026-04-20', snap), days: new Map() }).kinds.LVE.app).toBe(24)
+  })
   it('a day after his posting-out date is untouched (D1541): still deducted', () => {
     const out = man({ from: '2026-01-01', to: '2026-12-15' })
     const days = approved(new Map(), 'LL', '2026-12-21')
