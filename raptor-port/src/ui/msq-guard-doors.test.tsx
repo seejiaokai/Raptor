@@ -21,15 +21,11 @@ import { withThird, third, signInAs } from '../test-support/msq-world'
 import { UNIT } from '../engine/unitview'
 import { INPUTS } from '../engine/inputs'
 import { notify } from '../state/store'
-import { CURPAGE, setPage, setAvailWin, AVAILWIN, CHGWIN } from '../state/view'
-import { DRAWER, setDrawer, INSIGHTS, setInsights, setDocView, DOCVIEW, INPEDIT, setInpEdit, setInpSet, setSansSet, setDaysWin, DAYSWIN, INPSET, SANSSET } from './pops'
-import { openChanges } from './changesopen'
-import { openDayPanel, dayPanelDate } from '../leavewar/ui/daypanelopen'
+import { CURPAGE, setPage, AVAILWIN } from '../state/view'
+import { DRAWER, setDrawer, setDocView, DOCVIEW, INPEDIT, setInpEdit } from './pops'
 import { lwUnitNow, pageUnit } from '../state/perms'
 import { storageUnit } from '../tracker/storage.js'
 import { watchSaves } from '../storage/savewait'
-import { Postman } from '../storage/postman'
-import { Whiteboard } from '../storage/whiteboard'
 import { clearToast } from './toast'
 import { setCxt, setSortAll } from './board'
 import { whatIsOpen, guardWords, GUARD_ROWS, GUARD_LEADS, GUARD_ENDINGS, rowRefuses, type GuardRow } from './guard'
@@ -38,8 +34,9 @@ import { holdNow, warBand } from '../state/typing-hold'
 import { setReloadSeam } from './logout'
 import { SESSION } from '../state/auth'
 import {
-  $, C, OPEN, TRK_OPENERS, app, doing, press, settle, tid, tap, typeIn, goInputsCal, goLeaveWar, goTracker, chartEdit,
+  $, C, OPEN, app, doing, press, settle, tid, typeIn, goLeaveWar, goTracker, chartEdit,
   guardTeardown, openLeaveFiled, openUserRow, ownInput, drawnBox, row, named, saver, topPick, warAsRanger,
+  avail, SHOWN, note, nothingHeld, answeringSaver,
 } from '../test-support/msq-guard-testkit'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -65,12 +62,8 @@ async function drawerPick(u: string) {
 const LISTS = { 'the bar\'s list': topPick, 'the ☰ menu\'s list': drawerPick } as const
 type ListName = keyof typeof LISTS
 
-/* ---- what a refusal leaves ---- */
-/** the note on the page now (the grey "Blocked:" note's words; '' when none is up) */
-const note = (): string => {
-  const t = document.getElementById('toastEl')
-  return t && t.style.opacity !== '0' ? (t.textContent || '').trim() : ''
-}
+/* ---- what a refusal leaves (note, nothingHeld and answeringSaver moved whole to test-support/msq-guard-testkit.ts at step K5:
+   the view switch's tests read them too) ---- */
 /** the note the tables say this state takes, for a pick of `u` — read before the press */
 function noteFor(u: string): string {
   const w = whatIsOpen()
@@ -78,11 +71,6 @@ function noteFor(u: string): string {
   const words = guardWords(w!.reason, w!.row, 'pick', u)
   expect(words, 'the premise: the pick has words for it').toBeTruthy()
   return words!
-}
-/** no press made a window held by a pick or by the member view (B16) */
-function nothingHeld() {
-  expect(document.querySelector('[data-heldro]'), 'no held window').toBeNull()
-  for (const t of ['inped-moveband', 'move-band', 'trk-move-band', 'inped-rolechip']) expect(tid(t), `no ${t}`).toBeNull()
 }
 /** B1's assertions, after a refused pick of `u` by `list`: nothing changed, the note said, the row still open and drawn */
 async function refusedBy(list: ListName, u: string, r: GuardRow) {
@@ -201,28 +189,8 @@ describe('B4 — every window that counts refuses, by its whole press (D2403)', 
 })
 
 /* ================= B4b ================= */
-const avail = () => setAvailWin({ di: 0, item: 'x', ver: '', name: 'x', when: '', tab: 'who' } as any)
-/* each window that only shows things (and the Calendar family while unchanged), opened by its own door, and how to read
-   that it is closed (the openers of A3, ui/msq-guard-open.test.tsx) */
-const SHOWN: Record<string, { who?: 'hunter' | 'ranger'; open: () => Promise<void>; box: string; shut: () => boolean }> = {
-  avail: { open: async () => { await doing(() => { setPage('editsched'); avail() }) }, box: '.availwin', shut: () => !AVAILWIN },
-  chg: { open: async () => { await doing(() => { setPage('editsched'); openChanges('week', 'all') }) }, box: '.chgwin', shut: () => !CHGWIN },
-  insights: { open: async () => { await doing(() => setInsights(true)) }, box: '#insightModal', shut: () => !INSIGHTS },
-  sansday: { open: async () => { await goInputsCal('sans'); await tap(tid('sc-day-2026-07-15'), 'the 15th on the SANS calendar') }, box: '[data-testid="win-sansday"]', shut: () => !tid('win-sansday') },
-  lwday: { open: async () => { await goLeaveWar(); await doing(() => openDayPanel('2026-07-15')) }, box: '[data-testid="win-lwday"]', shut: () => dayPanelDate() === null },
-  'lwday behind another tab': { open: async () => { await goLeaveWar(); await doing(() => openDayPanel('2026-07-15')); await doing(() => setPage('inputs')) }, box: '', shut: () => dayPanelDate() === null },
-  days: { open: async () => { await doing(() => setDaysWin('2026-07-01')) }, box: '[data-testid="win-days"]', shut: () => !DAYSWIN },
-  inputsset: { open: async () => { await goInputsCal('member'); await doing(() => setInpSet(true)) }, box: '[data-testid="win-inputsset"]', shut: () => !INPSET },
-  sansset: { open: async () => { await goInputsCal('sans'); await doing(() => setSansSet(true)) }, box: '[data-testid="win-sansset"]', shut: () => !SANSSET },
-  'an untouched "Every Monday", with the Calendar': { open: async () => { await doing(() => setDaysWin('2026-07-01')); await press(tid('days-wd-0'), 'Every Monday…') }, box: '[data-testid="win-every"]', shut: () => !DAYSWIN && !tid('win-every') },
-  'an untouched "Add a holiday", with the Calendar': { open: async () => { await doing(() => setDaysWin('2026-07-01')); await press(tid('hol-add'), 'Add a holiday') }, box: '[data-testid="win-holiday"]', shut: () => !DAYSWIN && !tid('win-holiday') },
-  /* (its opener signs Ranger in itself — a member's tap opens the sheet, D1548) */
-  lwshow: { open: openLeaveFiled, box: '[data-testid="raptor-sheet"]', shut: () => !tid('raptor-sheet') },
-  trkinfo: { open: async () => { await goTracker(); await TRK_OPENERS.bubble!() }, box: '#detailBubble[style*="display: block"]', shut: () => !$('#detailBubble[style*="display: block"]') },
-  trkpop: { open: async () => { await goTracker(); await TRK_OPENERS.pop!() }, box: '#pop', shut: () => !C.pop },
-  trkdown: { open: async () => { await goTracker(); await TRK_OPENERS.downLog!() }, box: '#downLog', shut: () => !C.downLog },
-  trkfail: { open: async () => { await goTracker(); await TRK_OPENERS.failLog!() }, box: '#failLog', shut: () => !C.failLog },
-}
+/* (avail and SHOWN — each window that only shows things, by its own door — moved whole to test-support/msq-guard-testkit.ts at
+   step K5: the view switch's tests, ui/msq-guard-doors-switch.test.tsx, read the same list) */
 describe('B4b — every window that only shows things closes, and the pick goes through (D2596, D2597; D2654 E1)', () => {
   it('every "closes" row has its opener here', () => {
     expect(GUARD_ROWS.filter(r => r.counts === 'closes' && !SHOWN[r.id]).map(r => r.id)).toEqual([])
@@ -410,23 +378,6 @@ describe('B11 — Admin\'s unsaved work (D2595, D2598), by each list', () => {
 })
 
 /* ================= B19, B20 — the saver ================= */
-/* A SAVER THE TEST ANSWERS: the app's own Postman over a store whose answer the test gives (or never gives — the stand-in
-   for a connection that hangs: with the stores the app ships a save answers in the same turn, D2742), watching its own
-   whiteboard. A change written to it is "a change made"; storage/savewait.ts is handed it as main.tsx hands the app's. */
-function answeringSaver() {
-  const wb = new Whiteboard()
-  const answers: Array<(ok: boolean) => void> = []
-  const sent: unknown[] = []
-  const pm = new Postman({ putMany: (g: unknown) => new Promise<void>((res, rej) => { sent.push(g); answers.push(ok => (ok ? res() : rej(new Error('refused')))) }) } as any, { coalesceMs: 300 })
-  pm.attach(wb)
-  watchSaves(pm)
-  let n = 0
-  return {
-    pm, sent,
-    change: () => { wb.set('inputs' as any, 'k4-' + (++n), 'v' + n) },
-    answer: async (ok: boolean) => { await act(async () => { answers.shift()?.(ok); await Promise.resolve(); await Promise.resolve(); await Promise.resolve() }); await settle() },
-  }
-}
 describe('B20 — a save still going (D2627 A9): the pick waits for the saver\'s own answer, never a timer of its own', () => {
   it('a change made and a pick pressed in the same tick: the save is sent first and lands, then the pick', async () => {
     await app('hunter')

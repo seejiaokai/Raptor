@@ -127,9 +127,12 @@ export function Drawer() {
             reopen the drawer from the previous user's session. */}
         <p className="drawer-acct" id="drawerAcct">Signed in as <b>{mineCs || '—'}</b> · {admin ? 'Admin' : 'Member'}</p>
         {/* D292 (27 Sep 26): on a phone the badge is hidden, so the admin's switch to the member view and back sits
-            here, under his name (the approved picture 7c); it closes the menu first, as every drawer action does */}
+            here, under his name (the approved picture 7c); it closes the menu first, as every drawer action does — and
+            redraws it closed itself (the guard rail's plan §4.1 row 4, §4.4): the switch may now be refused, or wait on
+            the Tracker's question, before its own notify(), and the menu must be gone either way, the note at the foot
+            with the window in sight (D2627 A16) */}
         {mayViewAsMember() && <div className="drawer-row"><button className="abtn" id="drawerRole"
-          onClick={() => { setDrawer(false); switchRoleView() }}>{admin ? 'Switch to the member view' : 'Back to the admin view'}</button></div>}
+          onClick={() => { setDrawer(false); notify(); void switchRoleView({ from: 'drawer' }) }}>{admin ? 'Switch to the member view' : 'Back to the admin view'}</button></div>}
         <div className="drawer-row"><button className="abtn" id="drawerLogout"
           onClick={() => { setDrawer(false); void logOut() }}>Logout</button></div>
       </div>

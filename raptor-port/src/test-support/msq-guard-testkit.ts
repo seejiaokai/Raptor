@@ -51,6 +51,7 @@ import { trackerCover } from '../state/typing-hold'
 import { rowReachable } from '../ui/guard'
 import { setStorageMaker, storageUnit } from '../tracker/storage.js'
 import { Whiteboard } from '../storage/whiteboard'
+import { Postman } from '../storage/postman'
 import { trackerTarget } from '../storage/adapters'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -495,4 +496,57 @@ export const OPEN: Record<string, Opener> = {
     open: openTrkAsk,
     outs: { Stay: sel('#dlgCancel'), Escape: escape },
   },
+}
+
+/* (moved whole from ui/msq-guard-doors.test.tsx at step K5, so the pick's B4b and the view switch's read one list) */
+export const avail = () => setAvailWin({ di: 0, item: 'x', ver: '', name: 'x', when: '', tab: 'who' } as any)
+/* each window that only shows things (and the Calendar family while unchanged), opened by its own door, and how to read
+   that it is closed (the openers of A3, ui/msq-guard-open.test.tsx) */
+export const SHOWN: Record<string, { who?: 'hunter' | 'ranger'; open: () => Promise<void>; box: string; shut: () => boolean }> = {
+  avail: { open: async () => { await doing(() => { setPage('editsched'); avail() }) }, box: '.availwin', shut: () => !AVAILWIN },
+  chg: { open: async () => { await doing(() => { setPage('editsched'); openChanges('week', 'all') }) }, box: '.chgwin', shut: () => !CHGWIN },
+  insights: { open: async () => { await doing(() => setInsights(true)) }, box: '#insightModal', shut: () => !INSIGHTS },
+  sansday: { open: async () => { await goInputsCal('sans'); await tap(tid('sc-day-2026-07-15'), 'the 15th on the SANS calendar') }, box: '[data-testid="win-sansday"]', shut: () => !tid('win-sansday') },
+  lwday: { open: async () => { await goLeaveWar(); await doing(() => openDayPanel('2026-07-15')) }, box: '[data-testid="win-lwday"]', shut: () => dayPanelDate() === null },
+  'lwday behind another tab': { open: async () => { await goLeaveWar(); await doing(() => openDayPanel('2026-07-15')); await doing(() => setPage('inputs')) }, box: '', shut: () => dayPanelDate() === null },
+  days: { open: async () => { await doing(() => setDaysWin('2026-07-01')) }, box: '[data-testid="win-days"]', shut: () => !DAYSWIN },
+  inputsset: { open: async () => { await goInputsCal('member'); await doing(() => setInpSet(true)) }, box: '[data-testid="win-inputsset"]', shut: () => !INPSET },
+  sansset: { open: async () => { await goInputsCal('sans'); await doing(() => setSansSet(true)) }, box: '[data-testid="win-sansset"]', shut: () => !SANSSET },
+  'an untouched "Every Monday", with the Calendar': { open: async () => { await doing(() => setDaysWin('2026-07-01')); await press(tid('days-wd-0'), 'Every Monday…') }, box: '[data-testid="win-every"]', shut: () => !DAYSWIN && !tid('win-every') },
+  'an untouched "Add a holiday", with the Calendar': { open: async () => { await doing(() => setDaysWin('2026-07-01')); await press(tid('hol-add'), 'Add a holiday') }, box: '[data-testid="win-holiday"]', shut: () => !DAYSWIN && !tid('win-holiday') },
+  /* (its opener signs Ranger in itself — a member's tap opens the sheet, D1548) */
+  lwshow: { open: openLeaveFiled, box: '[data-testid="raptor-sheet"]', shut: () => !tid('raptor-sheet') },
+  trkinfo: { open: async () => { await goTracker(); await TRK_OPENERS.bubble!() }, box: '#detailBubble[style*="display: block"]', shut: () => !$('#detailBubble[style*="display: block"]') },
+  trkpop: { open: async () => { await goTracker(); await TRK_OPENERS.pop!() }, box: '#pop', shut: () => !C.pop },
+  trkdown: { open: async () => { await goTracker(); await TRK_OPENERS.downLog!() }, box: '#downLog', shut: () => !C.downLog },
+  trkfail: { open: async () => { await goTracker(); await TRK_OPENERS.failLog!() }, box: '#failLog', shut: () => !C.failLog },
+}
+
+/* ---- what a refusal leaves, and a saver the test answers (moved whole from ui/msq-guard-doors.test.tsx at step K5) ---- */
+/** the note on the page now (the grey "Blocked:" note's words; '' when none is up) */
+export const note = (): string => {
+  const t = document.getElementById('toastEl')
+  return t && t.style.opacity !== '0' ? (t.textContent || '').trim() : ''
+}
+/** no press made a window held by a pick or by the member view (B16) */
+export function nothingHeld() {
+  expect(document.querySelector('[data-heldro]'), 'no held window').toBeNull()
+  for (const t of ['inped-moveband', 'move-band', 'trk-move-band', 'inped-rolechip']) expect(tid(t), `no ${t}`).toBeNull()
+}
+/* A SAVER THE TEST ANSWERS: the app's own Postman over a store whose answer the test gives (or never gives — the stand-in
+   for a connection that hangs: with the stores the app ships a save answers in the same turn, D2742), watching its own
+   whiteboard. A change written to it is "a change made"; storage/savewait.ts is handed it as main.tsx hands the app's. */
+export function answeringSaver() {
+  const wb = new Whiteboard()
+  const answers: Array<(ok: boolean) => void> = []
+  const sent: unknown[] = []
+  const pm = new Postman({ putMany: (g: unknown) => new Promise<void>((res, rej) => { sent.push(g); answers.push(ok => (ok ? res() : rej(new Error('refused')))) }) } as any, { coalesceMs: 300 })
+  pm.attach(wb)
+  watchSaves(pm)
+  let n = 0
+  return {
+    pm, sent,
+    change: () => { wb.set('inputs' as any, 'k4-' + (++n), 'v' + n) },
+    answer: async (ok: boolean) => { await act(async () => { answers.shift()?.(ok); await Promise.resolve(); await Promise.resolve(); await Promise.resolve() }); await settle() },
+  }
 }

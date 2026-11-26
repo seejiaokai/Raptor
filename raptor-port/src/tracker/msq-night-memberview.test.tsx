@@ -19,7 +19,7 @@ import { saveAccess } from '../state/accounts'
 import { SESSION } from '../state/auth'
 import { todayIso } from '../state/units'
 import { lwUnitNow, pageUnit, setTrkUnitProbe } from '../state/perms'
-import { notify, switchRoleView } from '../state/store'
+import { notify, switchRoleView, switchRoleViewRaw } from '../state/store'
 import { CURPAGE, setPage } from '../state/view'
 import { pickSquadron } from '../state/pick'
 import { logOut, setReloadSeam } from '../ui/logout'
@@ -68,7 +68,13 @@ beforeEach(async () => {
   reloads = 0
 })
 
-/* Hunter on 149 with an unsaved chart edit, in the member view: the Tracker held on 149 */
+/* Hunter on 149 with an unsaved chart edit, in the member view: the Tracker held on 149.
+   REACHED BY NO PRESS SINCE D2627 A20 (step K5): the switch to the member view now asks about unsaved chart edits first —
+   Save or Discard leaves nothing unsaved, Stay does not switch — and no other road was found that holds a draft under the
+   member view (read in core.js and state/store.ts: the Tracker is held for the member view only where it is bound to a
+   squadron his pages have left, which only an unasked switch made). So the held draft is made by the raw switch
+   (state/store.ts switchRoleViewRaw — the switch as it was, asking nothing), named so; every assertion of the file as
+   before. What a press over this state does stays worth holding: it is the state a change he did not make could leave. */
 async function heldDraft(name: string) {
   await pick('u149')
   await act(async () => {
@@ -78,7 +84,7 @@ async function heldDraft(name: string) {
     await settle()
   })
   expect(C.sylDirty, 'the premise: an unsaved chart edit').toBe(true)
-  await act(async () => { switchRoleView(); await settle() })
+  await act(async () => { switchRoleViewRaw(); await settle() })
   expect(S.storageUnit(), 'the premise: the Tracker held on 149').toBe('u149')
   expect(UNIT).toBe('u149')
   expect(CURPAGE).toBe('viewsched')
@@ -103,7 +109,7 @@ async function discardNow() {
   await act(async () => { const p = pickSquadron('u142'); await until(() => C.dlg); C.dlgClose('__alt__'); await p; await settle() })
 }
 
-describe('a tap in the member view that opens one of his own pages, over a held draft', () => {
+describe('a tap in the member view that opens one of his own pages, over a held draft — reached by no press since D2627 A20, by the raw switch', () => {
   it('asks first, over the page he is on; Stay keeps the draft, the door and the page', async () => {
     await heldDraft('F-TAP1')
     await act(async () => { setPage('leavewar'); notify(); await tick() })
@@ -136,7 +142,7 @@ describe('a tap in the member view that opens one of his own pages, over a held 
   })
 })
 
-describe('Logout in the member view, over a held draft', () => {
+describe('Logout in the member view, over a held draft — reached by no press since D2627 A20, by the raw switch', () => {
   it('asks over the page he is on; Stay keeps him signed in with the draft', async () => {
     await heldDraft('F-OUT1')
     let out: any
@@ -176,12 +182,13 @@ describe('Logout in the member view, over a held draft', () => {
   })
 })
 
-describe('back from the member view over a held draft (fix list item 4 — the security read\'s F1)', () => {
+describe('back from the member view over a held draft (fix list item 4 — the security read\'s F1) — reached by no press since D2627 A20, by the raw switch', () => {
   it('the Leave War comes back to the squadron picked, not left on his home under 149\'s number', async () => {
     await heldDraft('F-WAR1')
     expect(lwUnitNow(), 'in the member view the war is his own').toBe('u142')
     await act(async () => { notify(); await settle() })   /* anything that repaints, as moving a week does */
-    await act(async () => { switchRoleView(); await settle() })
+    /* (back by the raw switch too: the real one now asks about the draft first — B15, ui/msq-guard-doors-switch.test.tsx) */
+    await act(async () => { switchRoleViewRaw(); await settle() })
     expect(UNIT).toBe('u149')
     expect(lwUnitNow(), 'the Leave War loaded is 149\'s').toBe('u149')
     expect(S.storageUnit()).toBe('u149')
@@ -222,7 +229,7 @@ describe('the same squadron wanted again before its memory is emptied (Fable\'s 
   })
 })
 
-describe('a pick in the member view, over a held draft', () => {
+describe('a pick in the member view, over a held draft — reached by no press since D2627 A20, by the raw switch', () => {
   it('its question is drawn over the page, and answers', async () => {
     await heldDraft('F-PICK1')
     let done: any

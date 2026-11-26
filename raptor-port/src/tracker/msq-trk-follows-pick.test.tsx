@@ -17,8 +17,8 @@ import { trackerTarget } from '../storage/adapters'
 import { saveAccess, signIn, sessionFor } from '../state/accounts'
 import { setSession, SESSION } from '../state/auth'
 import { addUnit, setGrant, todayIso, units } from '../state/units'
-import { pageUnit, setTrkUnitProbe } from '../state/perms'
-import { notify, switchRoleView } from '../state/store'
+import { pageUnit, setTrkUnitProbe, isAdmin } from '../state/perms'
+import { notify, switchRoleView, switchRoleViewRaw } from '../state/store'
 import { pickSquadron, pickWillAsk } from '../state/pick'
 import { trackerBand, trackerCover } from '../state/typing-hold'
 import { trackerUndoApi } from './undo-bridge.js'
@@ -352,20 +352,41 @@ describe('his own move at midnight (D2243)', () => {
 })
 
 describe('the member view', () => {
-  it('unsaved edits on 149 at the switch: the Tracker keeps them, its band says how to get back, and back it is whole', async () => {
+  /* STEP K5 (the census's kind (c) — D2627 A20): the switch asks about unsaved chart edits first, both ways, so the draft held
+     under the member view's cover below is reached by no press any more. The old test stands whole by the raw switch
+     (state/store.ts switchRoleViewRaw — the switch as it was, asking nothing), renamed so; the asking switch is the test
+     after it. */
+  it('unsaved edits on 149 at the switch: the Tracker keeps them, its band says how to get back, and back it is whole — reached by no press since D2627 A20, by the raw switch', async () => {
     await pick('u149')
     await editChart('F-MEMBER')
-    await act(async () => { switchRoleView(); await settle() })
+    await act(async () => { switchRoleViewRaw(); await settle() })
     expect(S.storageUnit(), 'the draft is not thrown away').toBe('u149')
     expect(trackerCover()?.lead).toBe("This is 149's Tracker.")
     expect(trackerCover()?.rest).toBe('Leave the member view to open it.')
-    await act(async () => { switchRoleView(); await settle() })
+    await act(async () => { switchRoleViewRaw(); await settle() })
     expect(trackerCover()).toBeNull()
     expect(C.byid['F-MEMBER'], 'his edit is still there').toBeTruthy()
     await C.saveChangesClick()
     await act(async () => { await settle() })
     expect(storedHas('u149', 'F-MEMBER')).toBe(true)
     expect(S.storageUnit(), 'back on 149 and saved: the hold is over and the door stays on the squadron his pages are on').toBe('u149')
+  })
+
+  it('unsaved edits on 149 at the switch: asked first (D2627 A20); Stay keeps them and the admin view; Discard drops them and the Tracker goes with his pages to 142, no cover', async () => {
+    await pick('u149')
+    await editChart('F-MEMBER-ASK')
+    let done: any
+    await act(async () => { done = switchRoleView(); await until(() => C.dlg) })
+    expect(C.dlg.msg).toContain('Save them before switching to the member view?')
+    await act(async () => { C.dlgClose(false); await done; await settle() })
+    expect({ admin: isAdmin(), trk: S.storageUnit(), kept: !!C.byid['F-MEMBER-ASK'] }, 'Stay').toEqual({ admin: true, trk: 'u149', kept: true })
+    await act(async () => { done = switchRoleView(); await until(() => C.dlg) })
+    await act(async () => { C.dlgClose('__alt__'); await done; await settle() })
+    expect(isAdmin(), 'Discard: the member view').toBe(false)
+    expect(S.storageUnit(), 'the Tracker on his own pages\' squadron').toBe('u142')
+    expect(trackerCover(), 'no cover').toBeNull()
+    expect(storedHas('u149', 'F-MEMBER-ASK')).toBe(false)
+    await act(async () => { switchRoleView(); await settle() })
   })
 
   it('nothing unsaved: the member view on 149 puts the Tracker on his own squadron, and back follows the pick', async () => {
@@ -377,10 +398,10 @@ describe('the member view', () => {
     expect(S.storageUnit()).toBe('u149')
   })
 
-  it('held on 149 in the member view, a pick of 142 asks about the edits first', async () => {
+  it('held on 149 in the member view, a pick of 142 asks about the edits first — reached by no press since D2627 A20, by the raw switch', async () => {
     await pick('u149')
     await editChart('F-MEMBER2')
-    await act(async () => { switchRoleView(); await settle() })
+    await act(async () => { switchRoleViewRaw(); await settle() })
     expect(pickWillAsk('u142'), 'the question comes first').toBe(true)
     let done: any
     await act(async () => { done = pickSquadron('u142'); await until(() => C.dlg) })

@@ -33,7 +33,7 @@ import { GUARD_ROWS, whatIsOpen, closeShown, guardAsk, guardCloseShown, rowRefus
 import { setGuardAsk, setGuardClose } from '../state/guard'
 import { DAYSWIN, INPSET, SANSSET } from './pops'
 import { LGEDIT, setLgEdit } from '../state/auth'
-import { switchRoleView } from '../state/store'
+import { switchRoleViewRaw } from '../state/store'
 import { requestAccess } from '../state/accounts'
 import { archivePerson } from '../leavewar/sync'
 import { setDayAward } from '../leavewar/state/store'
@@ -685,12 +685,14 @@ describe('the one behaviour change of K1b — words left hidden in "Add qualific
 })
 
 describe('B18 (pin, once step 1 exists) — no road to "switch back" with a row open', () => {
-  it('pin — a row changed on Admin → Users, then the member view: the Admin page is not drawn, and no row of Admin\'s counts', async () => {
+  /* (step K5: the switch with a changed row is refused since D2403 — B11, ui/msq-guard-doors-switch.test.tsx — so the member
+     view over a changed row is reached by no press; made by the raw switch, switchRoleViewRaw, the switch as it was) */
+  it('pin — a row changed on Admin → Users, then the member view: the Admin page is not drawn, and no row of Admin\'s counts — reached by no press since D2403 (step K5: the switch is refused while a row holds a change), so by the raw switch', async () => {
     await app('hunter')
     await openUserRow()
     await typeIn('#accEdName, #accGiveName', 'someone.else@mail')
     expect(named(), 'the premise').toBe('userrow')
-    await doing(() => { switchRoleView() })
+    await doing(() => { switchRoleViewRaw() })
     expect($('#admUsers'), 'the Admin page not drawn').toBeNull()
     for (const id of ['userrow', 'archrow', 'giveaccess', 'addperson', 'newsqn', 'sqnmove', 'placeedit'] as const) expect(workOn(id), id).toBe(false)
   })
@@ -890,9 +892,10 @@ describe('A8 — the Tracker: each window of its own table reported on the bridg
     await press($('#dlgCancel'), 'Stay')
     expect(whatIsOpen()).toBeNull()
   })
-  it('…with the page\'s cover up (the member view, the Tracker held on 149 for the edits): a Tracker window under the cover is not counted; the question asked over it is', async () => {
+  it('…with the page\'s cover up (the member view, the Tracker held on 149 for the edits): a Tracker window under the cover is not counted; the question asked over it is — reached by no press since D2403 and D2627 A20 (step K5: the switch is refused with Show All open, and asks about the edits first), so by the raw switch', async () => {
     /* (his road to the cover, his D2395: on 149's Tracker by his Plan, an unsaved chart edit, then the member view — his
-       pages go home to 142 and the Tracker is held on 149 for the edits, covered) */
+       pages go home to 142 and the Tracker is held on 149 for the edits, covered. Since K5 that switch is refused (Show All
+       counts) and would ask about the edits first, so the cover is made by the raw switch, switchRoleViewRaw) */
     await app('hunter')
     await topPick('u149')
     await goTracker()
@@ -900,7 +903,7 @@ describe('A8 — the Tracker: each window of its own table reported on the bridg
     await chartEdit()
     await press($('#showAllTab'), 'Show All')
     await doing(() => setPage('inputs'))
-    await doing(() => { switchRoleView() })
+    await doing(() => { switchRoleViewRaw() })
     await settle()
     expect({ cover: !!trackerCover(), bound: storageUnit() }, 'the premise: the cover is up, the Tracker held on 149').toEqual({ cover: true, bound: 'u149' })
     expect(C.showAllOpen, 'the premise: Show All still set under it').toBe(true)
