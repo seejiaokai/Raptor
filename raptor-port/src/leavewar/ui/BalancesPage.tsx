@@ -327,7 +327,9 @@ interface RowApi {
 function Ro({ v, sm, nt }: { v: number; sm?: boolean; nt?: boolean }) {
   /* a figure never typed, read only (D2746): the amber dash — "Not typed" itself stands in War bal's place; the boxes' room
      is too narrow for the words */
-  if (nt) return <span className={`bp-ro nt${sm ? ' sm' : ''}`}>–</span>
+  /* …named "Not typed" on hover and to a screen reader, so the dash never reads as a minus or a nothing (the words review,
+     a fresh Fable, 27 Nov 26 — D2441) */
+  if (nt) return <span className={`bp-ro nt${sm ? ' sm' : ''}`} title="Not typed" aria-label="Not typed">–</span>
   return <span className={`bp-ro${sm ? ' sm' : ''}${v === 0 ? ' z' : ''}`}>{figWords(v)}</span>
 }
 /* A PENDING FIGURE (his D2154, D2156 — option B, 17 Nov 26): never a minus, which some read as days taken this year; the

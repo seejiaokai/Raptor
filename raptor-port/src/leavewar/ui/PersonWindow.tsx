@@ -75,7 +75,7 @@ function Clip() {
 function Ro({ v, sm, testid, nt }: { v: number; sm?: boolean; testid?: string; nt?: boolean }) {
   /* a figure never typed, read only (D2746): the amber dash, as the Balances page draws it — "Not typed" itself stands in War
      bal's place */
-  if (nt) return <span className={`r17-box ro nt${sm ? ' sm' : ''}`} data-testid={testid}>–</span>
+  if (nt) return <span className={`r17-box ro nt${sm ? ' sm' : ''}`} data-testid={testid} title="Not typed" aria-label="Not typed">–</span>
   return <span className={`r17-box ro${sm ? ' sm' : ''}${v === 0 ? ' z' : ''}`} data-testid={testid}>{figWords(v)}</span>
 }
 
@@ -295,7 +295,7 @@ export function PersonWindow({ person, since, hasRow, onClose, onOil, onGo }: {
                 </span>
                 {K.pending !== 0 && <>
                   <span className="ln a"><span>Pending</span><b className="pd" data-testid={`pw-${k}-pend`}>−{figWords(K.pending)}</b></span>
-                  <span className="ln b"><span>War bal</span><b className={K.notTyped ? 'nt' : undefined} data-testid={`pw-${k}-war`}>{K.notTyped ? '–' : figWords(K.war)}</b></span>
+                  <span className="ln b"><span>War bal</span><b className={K.notTyped ? 'nt' : undefined} title={K.notTyped ? 'Not typed' : undefined} data-testid={`pw-${k}-war`}>{K.notTyped ? '–' : figWords(K.war)}</b></span>
                 </>}
               </div>
             )

@@ -984,6 +984,7 @@ describe('[LW-POSTIN-BALANCE] the Balances page', () => {
     render(<BalancesPage />)
     const row = screen.getByTestId('bal-row-stiff')
     expect(row.querySelector('.bp-ro.nt')?.textContent).toBe('–')
+    expect(row.querySelector('.bp-ro.nt')?.getAttribute('aria-label')).toBe('Not typed')   // the words review, D2441
     expect(screen.getByTestId('bal-war-stiff').textContent).toBe('Not typed')
   })
 })
