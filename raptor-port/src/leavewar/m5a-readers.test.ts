@@ -32,6 +32,7 @@ import { figuresOf, linesOfWar, ownDays } from './approvals'
 import { myLeaveOf } from './ui/myleave'
 import { nameFigures, nameLines } from './ui/matrixrowparts'
 import { balanceLabel, belowZeroAsk, goesBelow } from './ui/belowzero'
+import { saveTypedFigure } from './ui/balancefigs'
 
 const mem: Record<string, string> = {}
 let PEOPLE0 = ''
@@ -169,6 +170,20 @@ describe('the change history: a typed figure, a grade, the grades list, the lock
     ELOG.rows.length = 0
     globalUndo()
     expect(lines().map(r => r.lbl)).toEqual(['Undo — LVE balance 18 → 20'])
+  })
+  it('a first Official bal typed into the empty box carries nothing forward from the figure counted underneath (the fresh Opus code read\'s F1, 27 Nov 26)', () => {
+    /* a grade given in 2026, two 1 Jans since: underneath "Not typed" the count from 0 holds 66 incl. 33 carried forward —
+       no figure at all (D2746). Typed 20, the row must be 20 incl. 0, one history line; never 20 incl. 20, which the next
+       1 Jan would wipe as carried-forward days */
+    expect(setPersonGrade('bane', 'jp')).toBe(true)
+    setMemberTodayForTests('2028-01-15')
+    const under = leaveFiguresOf('bane').kinds.LVE
+    expect(under.notTyped).toBe(true)
+    expect(under.cf).toBeGreaterThan(0)
+    ELOG.rows.length = 0
+    expect(saveTypedFigure('bane', 'LVE', 20)).toBeNull()
+    expect(rawState().balances.bane?.LVE).toMatchObject({ amount: 20, cf: 0 })
+    expect(lines().map(r => r.lbl)).toEqual(['Leave War · Ranger · LVE balance →'])
   })
   it('a change of the carried-forward part alone is its own line, and its Undo says so', () => {
     expect(setTypedBalance('bane', 'LVE', 18, 2)).toBe(true)

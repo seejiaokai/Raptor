@@ -32,7 +32,11 @@ export function saveTypedFigure(pid: string, kind: BalKind, n: number, part?: 'c
        clamp that lands on the figure already shown saves nothing, as a figure typed equal to it does (FigBox) */
     /* only a half is clamped (the fresh read of the fixes, finding 4): clamped first, "25.3" became 20 and saved, nothing said */
     const half = Number.isFinite(n) && Number.isInteger(n * 2)
-    const cf = part === 'cf' ? (half ? Math.max(0, Math.min(n, Math.max(amount, 0))) : n) : Math.max(0, Math.min(k.cf, Math.max(n, 0)))
+    /* a FIRST figure typed into the empty box carries nothing forward (the fresh Opus code read's F1, 27 Nov 26): the
+       carried-forward box stood empty too, and the cf counted underneath "Not typed" is no figure (D2746) — kept, it saved a
+       first 20 as "20 incl. 20", wiped as carried-forward days on the next 1 Jan */
+    const shownCf = k.notTyped ? 0 : k.cf
+    const cf = part === 'cf' ? (half ? Math.max(0, Math.min(n, Math.max(amount, 0))) : n) : Math.max(0, Math.min(shownCf, Math.max(n, 0)))
     if (part === 'cf' && cf === k.cf) return null
     const why = balanceProblem(pid, 'LVE', amount, cf)
     if (why) return why

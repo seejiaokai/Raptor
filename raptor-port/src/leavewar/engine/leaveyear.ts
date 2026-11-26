@@ -305,8 +305,9 @@ function withWhatIf(days: DayRecs, f: WhatIf | undefined): DayRecs {
 
 /** THE DATES BEFORE HIS POST-IN DATE (D2747, question 12 A, 26 Nov 26): a leave there still shows on the grid but never
  *  comes off his balance — his old squadron's leave, already in the figure typed from the official leave app; the same
- *  for a man back from overseas, his days away. "Before his post-in date" is before his EARLIEST stint, or in the gap
- *  right before his CURRENT one (people.ts — the plan's step 2): a day of an earlier stint here was his leave here and
+ *  for a man back from overseas, his days away. "Before his post-in date" is any day before his CURRENT stint that falls
+ *  in none of his earlier ones — before the earliest, or in any gap between them (the plan's step 2, widened to every
+ *  gap by the scenario designers' fault, 27 Nov 26): a day of an earlier stint here was his leave here and
  *  still counts, so a figure typed during that stint stays right; a day after a posting out is untouched (D1541 — the
  *  next squadron may refuse it). A man the count has no record of, or one here always, has none.
  *  The dates are left out of the CHARGES, not of the leave: a leave across his post-in date is charged whole — its run,
