@@ -428,15 +428,21 @@ describe('§38 — an archived row whose post-in date he picked, across midnight
      with the note, as an untouched box does" and "…the date left untouched — midnight closes the row with the note, once
      (msq-s2-rejudge4.test.tsx §19)". An untouched box now rolls forward with the clock on a draw, the copy's date with it,
      and the row is judged after — the clock alone never closes it (the fresh Opus 2's finding 2 of the sixth read;
-     msq-s2-rejudge7.test.tsx §40). A date picked back to the day the box opened on is untouched again, so it rolls too.) */
-  it('pin: his date picked, then picked back to the day the box opened on: untouched again — midnight rolls the box to the new day, as an untouched box does; the row stays open with his callsign, no note', async () => {
+     msq-s2-rejudge7.test.tsx §40). A date picked back to the day the box opened on is untouched again, so it rolls too.)
+     (…and the first of them re-pointed again in U1's eighth round, by name — it read "pin: his date picked, then picked
+     back to the day the box opened on: untouched again — midnight rolls the box to the new day, as an untouched box does;
+     the row stays open with his callsign, no note". The reason: the date's mark, once set by his own pick, stays his
+     whatever the day; only Cancel, his own finishing press or a close clears it — "untouched" is never read from equal
+     dates again (the plan docs/superpowers/plans/2026-11-27-msq-s2-open-work-judge.md §1.2, §5.2; the orchestrator's
+     call 1 on the plan's red team — opus1 F2, opus2 F6; msq-s2-rejudge8.test.tsx §43).) */
+  it('pin: his date picked back to the day the box opened on is his: it stays on that day across midnight, counted, no note', async () => {
     const p = await kestrelPicksADate()
     await p.pickDate('2026-07-15')
     expect(p.postIn(), 'premise: back on the date the box opened on').toBe('2026-07-15')
     on(16); reload()
     await redraw()
     expect({ open: !!p.$('#accArCs'), box: p.box(), date: p.postIn(), notes: anyRowNote(), counted: workOn('archrow') })
-      .toEqual({ open: true, box: 'Typedname', date: '2026-07-16', notes: 0, counted: true })
+      .toEqual({ open: true, box: 'Typedname', date: '2026-07-15', notes: 0, counted: true })
   })
   it('pin: the date left untouched — midnight rolls the box to the new day; the row stays open with his callsign, counted, no note (msq-s2-rejudge4.test.tsx §19)', async () => {
     signInAs('kestrel')

@@ -26,7 +26,8 @@
      they draw the list alone, and in the app a View-only pick takes the Admin page away with the row (msq-s2-rejudge3
      §12, "silent, as the app stands"). They are kept: the page's own rule is theirs to hold, and a later step that keeps
      the Admin page across such a pick would reach it. §10's "lowers Hunter's Plan of 149 to View" likewise draws the list
-     alone; what the app does there is msq-s2-rejudge3 §12's first test.
+     alone; what the app does there is msq-s2-rejudge3 §12's first test. (Since U1's eighth round no open work outlives a
+     change of the squadron in view, so the three are re-pointed by name, their reason beside them in §10.)
    The world: three squadrons (withThird — his D2630), Wed 15 Jul 26, 09:00. Hunter — 142's admin, Plan of 149, View of
    150; Saber — master admin, home 142; Ranger — 142's member, View of 149 and of 150; Kestrel — 149's admin; Osprey —
    149's member; Mako — 150's own admin. */
@@ -876,31 +877,35 @@ describe('§10 — the page\'s squadron changes under an open row with no pick o
     await redraw()
     expect(notesFor(csOf(PID.ranger)), 'another draw must not repeat the notice').toBe(1)
   })
-  it('pin: Hunter (View of 150 only) picks 150 with Ranger\'s whole row open on 142\'s page (the Fable read\'s soundness test): his own pages stay 142\'s, so the row stays open, no note', async () => {
+  /* (the pin below and the two tests after it re-pointed in U1's eighth round, by name, with their reason: no open work
+     outlives a change of the squadron in view any more — the one judge closes every entry at ANY change of it, silently
+     where his own pick made it (the plan docs/superpowers/plans/2026-11-27-msq-s2-open-work-judge.md §2.1 step 2, §5.2).
+     The pin read "pin: Hunter (View of 150 only) picks 150 with Ranger's whole row open on 142's page (the Fable read's
+     soundness test): his own pages stay 142's, so the row stays open, no note"; it now says the row closes without a word.
+     The two read "Hunter's row of Ranger survives his View-only pick of 150; then …": their row is now OPENED AFTER the
+     View-only pick, started on the squadron in view 150, and the rest is unchanged — it still closes with the note, once,
+     since the squadron in view did not move at that close, so it is not his pick: the judge's exactness, held by a test.
+     As the file's head says, the app itself takes the Admin page away at such a pick — msq-s2-rejudge3.test.tsx §12.) */
+  it('pin: Hunter (View of 150 only) picks 150 with Ranger\'s whole row open on 142\'s page (the Fable read\'s soundness test): his own pages stay 142\'s, and the row closes without a word (his own pick)', async () => {
     signInAs('hunter')
     const p = panel()
     await p.find(csOf(PID.ranger))
     await p.open(PID.ranger)
     await pick(third.u150)
     expect(pageUnit('own')).toBe('u142')
-    expect(p.$('#accEdName'), 'still open').not.toBeNull()
+    expect(p.noEditor(), 'the row closed').toBe(true)
     expect(anyRowNote()).toBe(0)
   })
-  /* A ROW THAT SURVIVED A VIEW-ONLY PICK, CLOSED LATER WITH NO PICK. "Did he pick?" is read from the app's own record
-     (state/typing-hold.ts enteredByPick) with the squadron in view the row was last judged on. Held from the press alone,
-     the pick of 150 he made earlier — which did not close the row — would be taken for the cause when the page later
-     becomes 150's by another road, and the row would close without a word (the brief's "one rare case"). The page holds
-     the squadron in view again on every draw the row survives, so that earlier pick is not counted twice. */
-  it('Hunter\'s row of Ranger survives his View-only pick of 150; then his own move to 150 lands at midnight: the row closes — with the note, once (he did not pick then)', async () => {
+  it('Hunter\'s row of Ranger opened after his View-only pick of 150; then his own move to 150 lands at midnight: the row closes — with the note, once (he did not pick then)', async () => {
     signInAs('saber')
     expect(moveMan(PID.hunter, third.u150), 'setup: Hunter moves to 150 from tomorrow').toMatchObject({ ok: true })
     signInAs('hunter')
     const p = panel()
-    await p.find(csOf(PID.ranger))
-    await p.open(PID.ranger)
     await pick(third.u150)
     expect(pageUnit('own'), 'premise: a View-only pick — his own pages stay 142\'s').toBe('u142')
-    expect(p.$('#accEdName'), 'premise: the row survived the pick').not.toBeNull()
+    await p.find(csOf(PID.ranger))
+    await p.open(PID.ranger)
+    expect(p.$('#accEdName'), 'premise: the row open, started on 150 in view').not.toBeNull()
     vi.mocked(HOOKS.toast).mockClear()
     await act(async () => { pastMidnight() })
     expect(homeOn(PID.hunter, todayIso()), 'the move day: Hunter is 150\'s').toBe(third.u150)
@@ -908,14 +913,14 @@ describe('§10 — the page\'s squadron changes under an open row with no pick o
     expect(p.noEditor(), 'the row closed').toBe(true)
     expect(notesFor(csOf(PID.ranger)), 'closed with no pick of his at that moment: the note, once').toBe(1)
   })
-  it('Hunter\'s row of Ranger survives his View-only pick of 150; then a master admin gives him Plan of 150: his page becomes 150\'s and the row closes — with the note, once', async () => {
+  it('Hunter\'s row of Ranger opened after his View-only pick of 150; then a master admin gives him Plan of 150: his page becomes 150\'s and the row closes — with the note, once', async () => {
     signInAs('hunter')
     const p = panel()
-    await p.find(csOf(PID.ranger))
-    await p.open(PID.ranger)
     await pick(third.u150)
     expect(pageUnit('own')).toBe('u142')
-    expect(p.$('#accEdName'), 'premise: the row survived the pick').not.toBeNull()
+    await p.find(csOf(PID.ranger))
+    await p.open(PID.ranger)
+    expect(p.$('#accEdName'), 'premise: the row open, started on 150 in view').not.toBeNull()
     vi.mocked(HOOKS.toast).mockClear()
     expect(asOther('saber', () => saveAccess(ACCT.hunter, { grants: { [third.u150]: 'plan' } })), 'setup: Saber gives Hunter Plan of 150').toBeNull()
     reload()

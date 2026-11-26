@@ -532,7 +532,10 @@ function propsOf(fn: string, src: string = SRC): { declared: string[]; read: str
    draw and judged again by the doors; never a fact of the man). In the archived row, `Typed` — what the admin has typed
    in its two boxes, the page's since the fifth round, as the whole row's typing is: his, never a reading of the man.
    (The rows' reports to the leave-guard — useGuardWork, with typedDiffers — left both lists in the fifth round: the page
-   works them out now, from what it holds, and an editor reports nothing.) */
+   works them out now, from what it holds, and an editor reports nothing.)
+   (The archived row's list gained `effectiveToday` in U1's eighth round, by name, with its reason: the box he never set
+   shows today live, and its press checks the day it showed — a clock reading, never a reading of the man; the copy holds
+   no date since then — the plan docs/superpowers/plans/2026-11-27-msq-s2-open-work-judge.md §1.3, §5.2.) */
 const WHOLE_MAY_USE = [
   'OpenedOn', 'Shown', 'Typed', 'useState', 'useJudgedOnDraw', 'askAgain', 'rowLocks', 'actorIsMaster', 'accessWant',
   'saveAccess', 'updateAccount', 'addAccount', 'archivePerson', 'deletePerson', 'markBack', 'done', 'notify',
@@ -541,7 +544,7 @@ const WHOLE_MAY_USE = [
 const ARCH_MAY_USE = [
   'OpenedOn', 'Shown', 'Typed', 'useState', 'useJudgedOnDraw', 'askAgain',
   'restoreArchivedAs', 'restoreArchivedPerson', 'restoreProblem', 'callsignProblem', 'updatePersonField', 'deletePerson',
-  'done', 'notify', 'HOOKS', 'PostInField', 'CALLSIGN_LABEL', 'DELETE_GOES',
+  'done', 'notify', 'HOOKS', 'PostInField', 'CALLSIGN_LABEL', 'DELETE_GOES', 'effectiveToday',
 ].sort()
 /* WHAT EACH EDITOR IS HANDED — exactly: whose row (`pid`, an id — never a reading of him), the judgement held from the
    press (`on`), the copy (`s`), what the admin has typed (`typed`, with `onTyped`), and what it tells the page: close
