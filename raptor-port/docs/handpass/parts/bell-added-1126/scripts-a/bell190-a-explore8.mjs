@@ -1,0 +1,21 @@
+// bell190 walker A — exploration 8: the Publish day button on Wed; is a sign-in per tab (two tabs, one browser)
+import * as L from './bell190-a-lib.mjs'
+console.log('bell190-a-explore8 v1')
+const w = await L.newWorld('desk')
+await L.signIn(w, 'ad')
+const p = w.page
+await L.openBoard(w, 2)
+const beak = p.locator('#schedBoard [data-beak="2"]').first()
+console.log('beak', await beak.evaluate(e => ({ cls: e.className, title: e.title, dis: e.disabled, aria: e.getAttribute('aria-disabled') })))
+await beak.click(); await L.sleep(800)
+console.log('toast', await L.toast(p))
+const dlg = await p.evaluate(() => [...document.querySelectorAll('[role="dialog"], [data-testid^="win-"], .modal, .pubsheet, [data-testid*="pub"]')].filter(e => e.getBoundingClientRect().width > 3).map(e => ({ id: e.getAttribute('data-testid') || e.id || e.className, text: (e.innerText || '').replace(/\s+/g, ' ').slice(0, 400), btns: [...e.querySelectorAll('button')].map(b => (b.getAttribute('data-testid') || b.id || '') + '|' + (b.textContent || '').trim()).slice(0, 12) })))
+console.log('dialogs', L.J(dlg, null, 1))
+await L.shot(w, 'explore8-publish')
+/* two tabs */
+await L.closeBoard(w)
+const p2 = await w.ctx.newPage()
+await p2.goto(L.URL, { waitUntil: 'domcontentloaded' }); await L.sleep(1500)
+console.log('tab2 shows sign-in?', await p2.locator('#luser').isVisible().catch(() => false), 'tab2 bell?', await p2.locator('#notifyBell').count())
+console.log('storage keys about session', await p.evaluate(() => ({ ss: Object.keys(sessionStorage), ls: Object.keys(localStorage).filter(k => /sess|auth|user|login|me/i.test(k)).slice(0, 10) })))
+await L.closeAll()

@@ -1,0 +1,55 @@
+// bell190-c probe 7: place LL (auto on) for Ranger 22 Jul, read NOTICES; then a pending LL 23 Jul; reopen both cells and
+// list the window's controls; the select sheet's controls; the OD button's result; the ⋯ Other result; Post out sheet.
+import { createRequire } from 'module'
+const require = createRequire(process.cwd() + '/package.json')
+const { chromium } = require('playwright')
+console.log('bell190-c-probe7 v1')
+const URL = 'http://localhost:4190/'
+const OUT = process.argv[2]
+const b = await chromium.launch()
+const ctx = await b.newContext({ viewport: { width: 1536, height: 864 } })
+const page = await ctx.newPage()
+const errs = []; page.on('pageerror', e => errs.push(String(e))); page.on('console', m => { if (m.type() === 'error') errs.push(m.text()) })
+const T = id => `[data-testid="${id}"]`
+const vis = async s => { const l = page.locator(s).first(); return (await l.count()) > 0 && await l.isVisible() }
+const ctl = sel => page.evaluate(sel => { const p = document.querySelector(sel); if (!p) return 'NONE'; return [...p.querySelectorAll('[data-testid]')].filter(e => e.getBoundingClientRect().height > 0).map(e => e.dataset.testid + (e.getAttribute('aria-checked') ? '[' + e.getAttribute('aria-checked') + ']' : '') + ':' + (e.innerText || '').replace(/\s+/g, ' ').trim().slice(0, 22)).join(' | ') }, sel)
+await page.goto(URL); await page.waitForSelector('#luser')
+await page.fill('#luser', 'ad'); await page.fill('#lpass', 'a')
+await page.click('#loginForm button[type=submit]'); await page.waitForSelector('#notifyBell')
+await page.evaluate(() => window.go('leavewar'))
+await page.waitForSelector(T('row-bane')); await page.waitForTimeout(1000)
+await page.click(T('month-JUL')); await page.waitForTimeout(1000)
+async function open(d) { const c = page.locator(T('cell-bane-' + d)); await c.scrollIntoViewIfNeeded(); await c.click(); await page.waitForTimeout(600) }
+async function close() { for (const id of ['bid-cancel', 'sel-cancel']) if (await vis(T(id))) { await page.click(T(id)); await page.waitForTimeout(300) } }
+await open('2026-07-22')
+await page.click(T('bid-LL')); await page.waitForTimeout(800)
+console.log('after LL picker still?', await vis(T('bid-picker')))
+console.log('NOTICES', JSON.stringify(await page.evaluate(() => window.NOTICES)).slice(0, 1200))
+await close()
+await open('2026-07-23')
+const tick = page.locator(T('bid-approve-tick')); console.log('tick', await tick.getAttribute('aria-checked'))
+await tick.click(); await page.waitForTimeout(300); console.log('tick now', await tick.getAttribute('aria-checked'))
+await page.click(T('bid-LL')); await page.waitForTimeout(800)
+await close()
+console.log('NOTICES n', await page.evaluate(() => (window.NOTICES || []).length))
+await open('2026-07-23')
+console.log('pending cell window:', await ctl(T('bid-picker')))
+await page.screenshot({ path: OUT + '/probe7-pending.png' })
+await close()
+await open('2026-07-22')
+console.log('approved cell window:', await ctl(T('bid-picker')))
+await page.screenshot({ path: OUT + '/probe7-approved.png' })
+await close()
+// drag on the row 27..29
+const A = await page.locator(T('cell-bane-2026-07-27')).boundingBox(), Z = await page.locator(T('cell-bane-2026-07-29')).boundingBox()
+await page.mouse.move(A.x + A.width / 2, A.y + A.height / 2); await page.mouse.down(); await page.mouse.move(Z.x + Z.width / 2, Z.y + Z.height / 2, { steps: 10 }); await page.mouse.up(); await page.waitForTimeout(600)
+console.log('select sheet:', await ctl(T('select-sheet')))
+await page.screenshot({ path: OUT + '/probe7-sel.png' })
+await close()
+await open('2026-07-30')
+await page.click(T('bid-file-OD')); await page.waitForTimeout(800)
+console.log('after OD: picker?', await vis(T('bid-picker')), 'inp window?', await vis('#inpEditSave'), await page.evaluate(() => [...document.querySelectorAll('[data-testid]')].filter(e => e.getBoundingClientRect().height > 0 && e.getBoundingClientRect().top > 400).slice(0, 30).map(e => e.dataset.testid + ':' + (e.innerText || '').replace(/\s+/g, ' ').trim().slice(0, 18)).join(' | ')))
+await page.screenshot({ path: OUT + '/probe7-od.png' })
+console.log('NOTICES', JSON.stringify(await page.evaluate(() => window.NOTICES)).slice(0, 1500))
+console.log('errors', errs)
+await b.close()

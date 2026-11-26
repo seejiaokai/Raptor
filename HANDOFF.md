@@ -20,13 +20,13 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/combined-input-rows-189 -->
-### CHAT 189 — the combined-row job filed and his answers recorded (D2770–D2776); the leave question talked through, his yes owed — written 26 Nov 26, at 93% full — verify before use
-- **Done and live earlier this chat:** PRs 843 and 849 live on Vercel by a promoted build; his three iPhone looks (PR 851, merged).
-- **This branch, `claude/combined-input-rows-189` (PR below, needs his "merge live" — it raises the scheduler page's size limit in `raptor-port/scripts/docsize.mjs`, D2148):** `OUTSTANDING.md` `[COMBINED-INPUT-ROWS]`; his answers D2770–D2776 on the scheduler page; the plan `raptor-port/docs/superpowers/specs/2026-11-26-combined-input-rows.md` (the survey of every drop place, checked on the running app; the three blind reads — Fable, Astra, a fresh Opus — whole in `raptor-port/docs/superpowers/briefs/2026-11-26-combined-input-rows-*`).
-- **Pick up here (chat 190):** put him the six leave points in the plan's §His answers ("Leave — talked through") for ONE yes, record them (the scheduler page, D2777 on; check the free numbers on every branch first — this chat took D2770–D2779, held to D2779), mark D2770 narrowed for leave on the Leave War, D737 replaced, D755/D776 narrowed by D2772; then revise the plan by the readers' points (the backlog item's "To do") and DRAW the combined row, its add place, the Leave War's "all / his only" question and the medical refusal for his look (desktop and his iPhone) — Opus draws, a fresh Fable adjusts the words (D2441). Nothing is built before his look. High risk: Fable, Astra and a fresh Opus read the revised plan.
-- **Left:** the folders `C:/Users/User/projects/Raptor-r4` and `D:/rw4/r183/` can be deleted (unlink their node_modules junctions first). His weekly allowance was 93% used on 26 Nov (resets 30 Nov).
-- **Rulings:** D2770–D2776 (scheduler). **Reads owed:** none. **Skill notes:** 1079. **Next chat number:** 190.
+<!-- now:claude/leave-points-notifications-7a2f04 -->
+### CHAT 190 — his leave answers recorded (D2777–D2780), the bell walk of every adding door (no fault), the combined row drawn and put to him — written 26 Nov 26 — verify before use
+- **This branch, `claude/leave-points-notifications-7a2f04` (PR below, needs his "merge live" — it raises the scheduler page's and the OIL page's size limits in `raptor-port/scripts/docsize.mjs`, D2148):** D2777–D2780 (scheduler page; D2778 on the Leave War page — point 2 changed to his way: a group leave changes as one, no "his only"); D737 archived, D661/D755/D776/D2771 marked; the bell walk `raptor-port/docs/handpass/2026-11-26-bell-added.md` (Astra's and a fresh Fable's scenarios, three Opus walkers, 457 pictures, no fault, ten records); a fresh Fable's ripple read `raptor-port/docs/superpowers/briefs/2026-11-26-combined-input-rows-ripple-fable.md` (21 items, 10 his); the drawings `raptor-port/docs/mock/2026-11-26-combined-row/` (six frames, both sizes, words adjusted by a fresh Fable).
+- **Waiting on him:** the questions page https://claude.ai/artifact/2eVK15sBtPsnPYuVwvfMja — round 1's seven answers. **Pick up here:** record his answers; draw a clearer shared mark for the Leave War (question 3, two or three looks); put round 2 (the page's "Next round"); then revise the plan by the readers' points (the backlog item's "To do") — high risk: Fable, Astra and a fresh Opus read the revised plan before any build.
+- **Machine:** `vite preview` here answers on `[::1]` only, so WebKit cannot reach it by `localhost` — serve a second port or pipe it (the walk sheet §Errors seen).
+- **Left:** the folders `C:/Users/User/projects/Raptor-r4`, `D:/rw4/r183/` and `D:/rw4/c190a` can be deleted (unlink their node_modules junctions first).
+- **Rulings:** D2777–D2780. **Reads owed:** none. **Next chat number:** 191.
 <!-- /now -->
 <!-- now:claude/allavail-sans-postout-141 -->
 ### THE SANS WORDS JOB — LIVE 25 Nov 26 (pull request 825, his "merge live"; chats 141–174) — what is left

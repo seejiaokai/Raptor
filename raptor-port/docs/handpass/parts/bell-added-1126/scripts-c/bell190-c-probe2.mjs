@@ -1,0 +1,36 @@
+// bell190-c probe 2: Ranger's July/August cells, the bid window's controls, its ⋯ menu.
+import { createRequire } from 'module'
+const require = createRequire(process.cwd() + '/package.json')
+const { chromium } = require('playwright')
+console.log('bell190-c-probe2 v1')
+const URL = 'http://localhost:4190/'
+const OUT = process.argv[2]
+const b = await chromium.launch()
+const ctx = await b.newContext({ viewport: { width: 1536, height: 864 } })
+const page = await ctx.newPage()
+const errs = []; page.on('pageerror', e => errs.push(String(e))); page.on('console', m => { if (m.type() === 'error') errs.push(m.text()) })
+await page.goto(URL); await page.waitForSelector('#luser')
+await page.fill('#luser', 'ad'); await page.fill('#lpass', 'a')
+await page.click('#loginForm button[type=submit]'); await page.waitForSelector('#notifyBell')
+await page.evaluate(() => window.go('leavewar'))
+await page.waitForSelector('[data-testid="row-bane"]')
+await page.waitForTimeout(1000)
+await page.click('[data-testid="month-JUL"]'); await page.waitForTimeout(1200)
+const cells = await page.evaluate(() => [...document.querySelectorAll('td[data-testid^="cell-bane-2026-0"]')].filter(e => /2026-0[78]/.test(e.dataset.testid)).map(e => e.dataset.testid.slice(10) + '=' + (e.innerText || '').replace(/\s+/g, ' ').trim()).filter(s => !/=$/.test(s)).join(' '))
+console.log('bane Jul/Aug filled:', cells)
+const nickRow = await page.evaluate(() => !!document.querySelector('[data-testid="row-nick"]'))
+console.log('nick row?', nickRow)
+const c = page.locator('[data-testid="cell-bane-2026-07-22"]')
+await c.scrollIntoViewIfNeeded(); await c.click(); await page.waitForTimeout(700)
+const ctrls = await page.evaluate(() => { const p = document.querySelector('[data-testid="bid-picker"]'); if (!p) return 'NO PICKER'; return [...p.querySelectorAll('[data-testid]')].filter(e => e.getBoundingClientRect().height > 0).map(e => e.dataset.testid + (e.getAttribute('aria-checked') ? '[' + e.getAttribute('aria-checked') + ']' : '') + ':' + (e.innerText || '').replace(/\s+/g, ' ').trim().slice(0, 25)).join(' | ') })
+console.log('picker', ctrls)
+await page.screenshot({ path: OUT + '/probe2-bid.png' })
+const more = page.locator('[data-testid="bid-more"]')
+if (await more.count()) {
+  await more.click(); await page.waitForTimeout(400)
+  const m = await page.evaluate(() => [...document.querySelectorAll('[data-testid]')].filter(e => e.getBoundingClientRect().height > 0 && /^bid-|^more-|^menu-/.test(e.dataset.testid)).map(e => e.dataset.testid + ':' + (e.innerText || '').replace(/\s+/g, ' ').trim().slice(0, 25)).join(' | '))
+  console.log('more menu', m)
+  await page.screenshot({ path: OUT + '/probe2-more.png' })
+}
+console.log('errors', errs)
+await b.close()
