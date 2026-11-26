@@ -1,8 +1,8 @@
-# The leave balance of a man posted in — build plan (DRAFT, chat 200, 26 Nov 26)
+# The leave balance of a man posted in — build plan (chat 200, 26 Nov 26; every question answered)
 
 **Status: a draft written while his answers to questions 10, 11, 12 and 16 (the one questions page, version 11) are
-awaited.** It assumes the recommended answers; each alternative is noted where it would change the work. Steps 2 and 3 are rewritten
-against his recorded answers (D2747, D2749, D2810, D2812); 10 and 11 (D2745, D2746) are still awaited. The build is its own job, on his word. Model: Opus, high
+awaited.** It assumes the recommended answers; each alternative is noted where it would change the work. Rewritten
+against his recorded answers (D2745, D2746, D2747, D2749, D2810, D2812): every question answered. The build is its own job, on his word. Model: Opus, high
 (medium risk — the balance is a figure he relies on, not money or OIL; the engine change in step 2 is the riskiest part).
 
 ## What is true today (checked on the running app, 26 Nov 26 — `raptor-port/docs/img/handpass/2026-11-26-lw-postin-balance/`)
@@ -13,7 +13,7 @@ against his recorded answers (D2747, D2749, D2810, D2812); 10 and 11 (D2745, D27
 - The person window (`leavewar/ui/PersonWindow.tsx`) and the Balances page (`leavewar/ui/BalancesPage.tsx`) say
   nothing about when the figure was typed or what came off since.
 
-## Step 1 — question 11 A: "Not typed" (screens only)
+## Step 1 — question 11 A, RULED (D2746): "Not typed" (screens only)
 - A kind with no typed figure and no old opening (`KindFigures.typed === null` and no `openings` entry) reads
   "Not typed" in amber where War bal stands, the boxes empty with "No grade"'s dashed amber edge — Balances page,
   person window, the grid's figure beside the name (the grid: a dash, its amber — to draw). Every kind, LVE first.
@@ -44,9 +44,8 @@ against his recorded answers (D2747, D2749, D2810, D2812); 10 and 11 (D2745, D27
 - Drawn on the questions page (version 22) before the build, as D1625 asks; the words were written and checked by
   fresh Fables (`docs/superpowers/specs/2026-11-26-lw-balance-instructions-postin-*.md`); "Official bal" is his word.
 
-## Question 10
-- A (recommended): nothing to build. If B (a tick on every leave), it is a new control on the Inputs and Leave War
-  leave windows — drawn first (D1625) and planned on its own.
+## Question 10 — RULED A (D2745)
+- Nothing to build: today's order stands (his leave approved elsewhere first, then the figure).
 
 ## Checks (the bug-check order decides the tier at the build; expected WALK)
 - Unit tests in `leaveyear.test.ts` for every case in the questions (his numbers), red first.
