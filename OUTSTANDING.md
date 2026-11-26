@@ -120,6 +120,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [SANS-PREVIOUS-REPORT-OFFER] — a previous evening's availability is not combined with the day's — his rule first; with caps and ops limits.
 
 **OIL**
+- [OIL-LATER-PASSES-ON] — Later on a day's OIL list passes the question to the next sign-off until someone answers, and an OIL answer leaves the names already signed (his D2800); draw the two new or changed lines first, then build.
 - [OIL-INERT-WHY-CX-INFO] — in OIL Earn a cancelled or ⓘ row with times says "This row gives him no working hours to count OIL from" (as D1783 ruled); a finer reason is his question.
 - [OIL-EARN-WORDS-LEFT] — two OIL Earn wordings not ruled: the switch's passing note "…and the marks underneath are back" and an item's hover "the day blanket is on" — his look.
 - [OIL-WINDOW-FOOT-SHAPE] — in OIL Earn the ALL AVAIL window's foot gives an inert man's reason as "<callsign> — <reason>", where the board now says "Nothing changed for <callsign>. <Reason>." — older; his question.
@@ -2785,6 +2786,9 @@ Put to him on https://claude.ai/artifact/CaQkNnknq7J57JvDKMj5Gg as Q3 (drawn by 
 recommended red when any row turns red, a row a line, before → after. Not answered. Since then his D1313 / D1314 put the day
 line's rows side by side and only amber or red (design lesson 50 names the bubble as a place it would apply), so it is redrawn
 with those in place before it is asked again (D1301's step 4). **Place:** after [LW-ROUND3-BUILD].
+
+### [OIL-LATER-PASSES-ON] Later passes the OIL question on to the next sign-off (his D2800, 26 Nov 26 — chat 202, `claude/readings-lapse-fix-fdbb3c`)
+**His rule (D2800):** Later on a day's OIL list means "not my call": each next press of any of the four sign-off boxes asks again until someone answers; an OIL answer does not clear the names already signed; Save with rows left unpicked leaves them as Later does. **What the app does today** (`ui/oilsign.ts`): Later is kept only in the open screen and the other three boxes then sign at once; an OIL answer after a name is signed clears it (`engine/publish.ts` signShown, AM11). **To do:** (1) draw first (D1625), a fresh Fable adjusting the words (D2441): the list's foot line in place of "Later: Ace signs, but nobody on it earns OIL." (D2299), and the new line saying Save leaves unpicked rows as Later does; (2) build: drop the remembering of Later (`OILSIGN_LATER`) so each press asks while a row stands unanswered; let an OIL answer leave the four names (the sign-off binding leaves OIL answers out — AM11 narrowed), with its own tests, a failing one first; rewrite the comments in `ui/oilsign.ts` and `ui/OilDayList.tsx` that state the 22 Nov rule; (3) his open reading in D2800's row — whether an answer given on the input's "OIL?" sign or from a bell also leaves the names. **Risk:** high — saved sign-offs and OIL: Fable reads beside Astra and a fresh Opus, a WALK at least. **Place:** OIL; after round 3's answers, with [END-TIME-GUARD]'s sign-off work, which touches the same boxes.
 
 ### [OIL-INERT-WHY-CX-INFO] A cancelled or ⓘ row's reason in OIL Earn (walk find, 8 Nov 26 — chat 5, `claude/pr-oil-earn-ffbf07`)
 W2's A21 (pictures `raptor-port/docs/img/handpass/2026-11-08-oil-earn-board/``w2/s21-*`): in OIL Earn a tap on a man on a cancelled (CX) or information-only (ⓘ) row says
