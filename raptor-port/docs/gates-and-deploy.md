@@ -54,6 +54,13 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
     own pass/fail OFF — the run passes whatever it holds (read in its source, 31 Oct 26). So the script reads its JSON
     report and goes red ("could not compare", exit 2) unless the report says it compared — mode "baseline", not marked degraded, no check skipped, no file its linter dropped ("lint:partial"); never run the check by its bare
     command and believe its exit code.
+  - **Trap — "could not read origin/main's side" that is not main's side (26 Nov 26, his D2752):** React Doctor 0.9.18
+    skips its duplicate-markup check once the WHOLE tree holds more than 5,000 JS/TS files (a limit no setting raises),
+    marks the branch's own scan incomplete and so never starts the comparison — only "degraded" shows. Pull request
+    850 held 5,017, 4,763 of them walk scripts. Since D2752 the walk scripts are skipped (`doctor.config.json`'s
+    `scripts/handpass/**`), and the script names every skipped-check reason in its message. If it comes back, count the
+    tree's JS/TS files first (`git ls-files '*.ts' '*.tsx' '*.js' '*.jsx' '*.mjs' '*.cjs' | wc -l`, from `raptor-port/`,
+    less the ignored folders). Another known cause: a raw NUL byte in a file changed on both sides.
   - **Trap — a new file not yet staged is not read:** by hand, run `npm run lint:changed -- --include-untracked` and
     check the intended new files were read — its "N changed files" counts against its base, normally `origin/main`,
     not the working folder `git status` shows (11 Nov 26: a new test file's finding was met only on GitHub).
