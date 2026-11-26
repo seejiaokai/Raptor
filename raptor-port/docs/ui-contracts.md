@@ -12431,7 +12431,9 @@ superseded sections above). Code: `leavewar/ui/BalancesPage.tsx` (the page, `Fig
   whose stints miss the period, are not listed. Each name is the schedule's own puck (D1476, D1482 — `sync.ts puckHtml`, the one
   Approvals draws, not `NamePuck`); a tap on a name opens his person window (D1148; reading 23 — not drawn).
 - **The Balances view's columns (D1482, D1486, D1487):** GRADE · AUTO + LVE ON 1 JAN (a box with the grade and its "+36", its list
-  of grades with their days and "No grade" in amber dashed; a member sees his grade as words with its "+36"); LVE: APP BAL (box),
+  of grades with their days and "No grade" in amber dashed; a member sees his grade as words with its "+36"); LVE: APP BAL (box —
+  to read OFFICIAL BAL here and "Official bal" in the person window, with the one line "Only leave after post-in is
+  deducted." where a balance can be typed: D2810, D2749, filed as [LW-POSTIN-BALANCE]),
   INCL. CARRIED FWD (box), PENDING (amber), WAR BAL (bold); OIL read only, "0 ›" opening his OIL tracker on his row (D1255 —
   the `lwnav` ask `{ kind: 'oil', id }`); OTHER LEAVE: CCL, FCL, PL, EL, CL — a box each, the pending figure in amber after it,
   every box keeping its column. Every figure is the store's one engine (`leaveFiguresOf`), so this page, the person window, the
