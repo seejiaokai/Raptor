@@ -83,7 +83,7 @@ html .et-off :is(#eWeek,.week,#schedBoard) .et-miss{box-shadow:none !important}
 .alx-pk-tab .seat[data-aln]::after{content:'' !important;position:absolute;top:-3px;right:-3px;z-index:4;width:12px;height:7px;padding:0 !important;
   box-sizing:border-box;border:1.5px solid var(--alc) !important;border-radius:2.5px;background:#0B0D10 !important;box-shadow:0 0 0 1.5px #0B0D10;pointer-events:none}
 /* (the hollow tab is a plain ring: dots are noise at this size) */
-/* his D2729 (26 Nov 26): beside the newest AL's number an older AL's mark must be the QUIETER one — the 12px tab was
+/* his D2737 (26 Nov 26): beside the newest AL's number an older AL's mark must be the QUIETER one — the 12px tab was
    wider than the number badge and pulled the eye to the old change. In his pick (mix) an older AL is a 5px dot, set
    inside the corner, smaller than the number in both width and height. */
 .alx-pk-mix .seat.alx-old[data-alc]::after{width:5px;height:5px;top:-1px;right:-1px;border-radius:50%;box-shadow:0 0 0 1px #0B0D10}

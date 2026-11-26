@@ -1435,7 +1435,7 @@ sides.
 
 **Status:** OPEN
 **Date:** 26 Nov 26
-**Session context:** Chat 192 writing D2729 as a design-guide lesson
+**Session context:** Chat 192 writing D2737 as a design-guide lesson
 **Skill:** New skill candidate: next-free-number (lessons, rulings, skill notes)
 **Type:** open-source
 **Phase/Area:** taking a number before writing a numbered entry

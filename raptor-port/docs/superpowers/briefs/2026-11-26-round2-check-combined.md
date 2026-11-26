@@ -53,6 +53,6 @@ K; E2, E4, E8, E9, E10; F1, F3, F4; small points 2, 3, 4, 5, 6, 10, 11, 13, 14, 
 
 ## Outside the brief
 - **Ruling numbers clash:** D2729–D2733 are also used on `claude/msq-b1-screens-135` (chat 191) with other meanings;
-  this branch holds D2729, D2730 (and D2734–D2736). Whichever merges later renumbers its own (shipping rules).
+  this branch's D2729 and D2730 were renumbered D2737 and D2738 the same day (the readers' reports keep the old numbers).
 - The cause: the page and the chat were written on a branch 97 commits behind main, never checked against the other
   branches' rulings of 25–26 Nov, and the chat changed a recommendation without saying so (skill note 1083).
