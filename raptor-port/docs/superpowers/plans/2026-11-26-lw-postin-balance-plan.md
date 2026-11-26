@@ -1,8 +1,8 @@
 # The leave balance of a man posted in — build plan (DRAFT, chat 200, 26 Nov 26)
 
 **Status: a draft written while his answers to questions 10, 11, 12 and 16 (the one questions page, version 11) are
-awaited.** It assumes the recommended answers; each alternative is noted where it would change the work. Rewrite it
-against his recorded answers (D2745–D2748) before any build. The build is its own job, on his word. Model: Opus, high
+awaited.** It assumes the recommended answers; each alternative is noted where it would change the work. Steps 2 and 3 are rewritten
+against his recorded answers (D2747, D2749, D2810); 10 and 11 (D2745, D2746) are still awaited. The build is its own job, on his word. Model: Opus, high
 (medium risk — the balance is a figure he relies on, not money or OIL; the engine change in step 2 is the riskiest part).
 
 ## What is true today (checked on the running app, 26 Nov 26 — `raptor-port/docs/img/handpass/2026-11-26-lw-postin-balance/`)
@@ -22,7 +22,7 @@ against his recorded answers (D2745–D2748) before any build. The build is its 
 - D1492's reading "never typed counts from 0" is narrowed (D201): the engine may keep counting from 0 underneath;
   only the screens and the ask change. Drawing of record: the question's mock-up; the full drawing before the build.
 
-## Step 2 — question 12 A: leave before his post-in date never comes off (engine)
+## Step 2 — question 12 A, RULED (D2747): leave before his post-in date is never deducted (engine)
 - In `personFigures`, drop from both the approved and the pending rows every date on which the man is not in the
   squadron and that falls before his current stint (`engine/people.ts beforeFirstStint` / `gapBeforeCurrent`); the
   Person comes from `ctx.people`. The snapshot keeps them out the same way, so the order never matters.
@@ -32,20 +32,17 @@ against his recorded answers (D2745–D2748) before any build. The build is its 
 - Tests first: his example both orders (posted in Mon 7 Dec, leave Wed 2 Dec, 24 typed → 24 either way); a gap
   between stints; a half day; a leave across the post-in date (only its days from the post-in date count).
 
-## Step 3 — question 16 A: the balance shows its own sum (engine output + screens)
-- The engine returns, per kind, the dates (and halves) whose charge came off since typing — the positive deltas
-  against the snapshot — and their total. After a 1 Jan roll-over the line counts from that 1 Jan (Fable's reading,
-  to settle at the build).
-- Person window, LVE tile, last line, grey: "typed 26 Nov"; with something since, "24 typed 26 Nov · 1 day approved
-  since" (.5 / days by D1246); not typed and a box shown: "Type what the official leave app shows" in amber.
-  On a phone its own line; measure on his iPhone's letters (it may need two lines).
-- Person window leave list: each leave that came off carries "−1" (−0.5) at its row's right, the tile's white.
-- Balances page: one closed "How it works" fold at the page's foot, its four sentences as in the question's card.
-- Words: as the second Fable left them (`2026-11-26-lw-balance-shows-its-sum-words-review.md`); any change goes
-  through a fresh Fable again (D2441). Rulings it touches: D1479's "no added line" and the tile's lines (D1241,
-  D1252, D1520) — his answer is the word for it.
-- If he picks C: the tap on "−1" — "Already off his official balance" — adds the day to the snapshot (an admin's
-  command, its own Undo line); drawn first. If B: one sentence at the box plus "Typed 26 Nov", no engine change.
+## Step 3 — question 16, RULED (D2749, D2810): one line at the box, and "Official bal" (screens only)
+- Where a balance can be typed (an admin always; a member on his own window and row while unlocked), one grey line is
+  always shown: "Only leave after post-in is deducted." — in the person window under the LVE box, and once above the
+  rows on the Balances page, phone and desktop. No other instruction line, no fold (D2749, settling D2748).
+- The line "from official leave app on <date>" under the figure stays (D2749's row): the typed date from
+  `setTypedBalance`, in the tile's grey; no "−1" on leave rows, no sum line (the sum design was not chosen).
+- The label "App bal" becomes "Official bal" everywhere it shows — the person window's tile, the Balances page's
+  heading ("OFFICIAL BAL"), any other place found by a search of the screens; "War bal" unchanged (D2810). The
+  reference docs (`ui-contracts.md`, `word-list.md`) are corrected in the same change.
+- Drawn on the questions page (version 22) before the build, as D1625 asks; the words were written and checked by
+  fresh Fables (`docs/superpowers/specs/2026-11-26-lw-balance-instructions-postin-*.md`); "Official bal" is his word.
 
 ## Question 10
 - A (recommended): nothing to build. If B (a tick on every leave), it is a new control on the Inputs and Leave War
