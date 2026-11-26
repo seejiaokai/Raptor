@@ -180,3 +180,50 @@ the Calendar's notes, the Undo note, the two "Plan of 149 ended: …" lines.
 - Sizes are estimates built from the plan's own rows plus round 6's additions; nothing was measured.
 - The drawings ledger (`2026-11-26-msq-sections-drawings-ledger.md`) was opened only for the two rows the coordinator
   named.
+
+## After the red team (26 Nov 26)
+
+Astra (5 findings) and a fresh Opus (14) read the fold blind. I took each against the plan and, where it names code,
+against the file on this branch — by reading; nothing run or pressed. **None was judged false; three were taken in
+part.** The plan's new §24 is the ledger. Only the plan was edited; nothing committed. `npm run docsize` passes.
+
+**What changed in the plan**
+- **Holds (Opus 1; call b).** A rule in §21: a "(reading)" or open code in a step's text holds that piece even where
+  its cell does not name it. Copied into the cells: N14 at K5 and K6; reading 18 at K6; 19 at K9; 17 and 20 at K1;
+  22, 23 and 24 at U2. Every "told to him" hold (U5, BL2, §19.13) now reads "answered, or that piece left out".
+- **The posting sheet ships from `main` (Astra 3, Opus 3; call a).** §21.4: its own three-squadron test set-up
+  (`leavewar/ui/msq-s4-world.ts`); the plan and rulings read from the batch branch, never copied; the four posting
+  files compared between `main` and the batch branch before PS1. K0's world as a shared prerequisite was weighed and
+  not taken — it would put the core's file on `main` ahead of the core.
+- **Ranges (Opus 5, 9; call c).** A table in §21: ruling numbers, lesson numbers, test ports and test-file prefixes
+  per section. New files are `msq-s2-*` (Users), `msq-s3-*` (bell), `msq-s4-*` (posting); the core keeps
+  `msq-guard-*`. The old `msq-users-*` / `msq-bell-*` names were already used by eight two-squadron files.
+- **Two product questions left open, each a hold with its recommendation (call d).**
+  Opus 8 — home squadron first in every list of squadrons, or on Admin → Users only (recommended: everywhere): holds
+  the headings' order at U3 and the Show row's at BL1; no list is reordered before he answers.
+  Astra 2 — each admin's own look puts out his own bell, or one look for all (recommended: his own): holds V24 and the
+  per-admin "seen" records at BL4; the rest of bug reports is built.
+- **Group B's reminder (Opus 10; call e).** Back to "after the first build": put to him when the core's last step
+  lands.
+- **The core's K2 split (Opus 6).** K2a (the top row's look) straight after K0; K2b (its report to the guard) after
+  K1. Admin → Users now waits on K2a alone. The bell still waits on everything in K1–K6, and §21.3 says so.
+- **U1's tests split (Astra 4, Opus 7).** U1 proves the short row, its own save and its report of an unsaved change.
+  The refusal at a pick is V4c (after K4); "Edit on 142 →" is V11b, in U3.
+- **`BidPicker.tsx` (Opus 2).** Named as shared: the posting sheet first; the core adds a one-word mark on two
+  show-only sheets there. The guard's frame count is re-run on the batch branch after the posting sheet ships.
+- **The bell's files (Opus 4).** The Undo engine's no-step list and the settings files are now on its list.
+- **§22.** PT6 rewritten: the last admin's posting is saved and waits, it is not refused (Astra 1). "To squadron"
+  no longer leans on D2646; its opened list is the Transfer step's (Astra 5, D2659). "Pressing the day again" is
+  written as two presses, no change to the sheet's own file — a reading (Opus 12). Tests renamed PT1–PT8 so they do
+  not clash with steps PS0–PS4. D2659 and D2660 carried into the tests and the owed drawings.
+- **Smaller.** Three joint checks named for the coordinator (J1–J3); a jump's count is its heading's (Opus 13);
+  §19.11's V0 clause struck (Opus 11); Opus 14's six slips; D2658–D2660 added to §23.
+
+**Taken in part, and why**
+- Astra 3 / Opus 3: I could not verify whether a check on `main` objects to a ruling number cited before its row is
+  there. PS0 finds out; the fallback is written.
+- Opus 2: the posting chat cannot pin the guard's count test, which is not on `main`; it writes the counts down.
+- Opus 6: the bell cannot be freed from K1's waits; it is said plainly instead.
+
+**Not verified:** what `main` holds for the four posting files (not fetched here); what one press under an open
+posting sheet does on the day's cell.

@@ -44,7 +44,9 @@ was the page's recommendation while he had not answered. **From this fold, every
 D8, D10, D11 or D12 is his answer — he took each "as recommended" — and "the other answer" written beside it is kept
 only as the record of what was not taken: it is not built. A place this fold did not reword is read that way; the
 places that carry most weight are reworded, the replaced words struck through.** A "(default)" on N14 or on NQ1–NQ3 is
-still unanswered and never his ruling. **Still open, none answered here: NQ1–NQ3 (§8.4), N14 (§4.2), V-Q2, §17's
+still unanswered and never his ruling. **One exception, found by the fold's red team (§24, Astra 2): the page's E9j
+never asked whether each admin's own look at Help puts out his own bell only — that clause of §17's reading 12 is
+still open, a hold on the bell section's bug-report step (§19.6, §21.3).** **Still open, none answered here: NQ1–NQ3 (§8.4), N14 (§4.2), V-Q2, §17's
 readings 17–24, §5.5's home-page row, and §8.5's list — each a switch point that holds only its own rows.** §8's
 table gives each E and D code its N code, his answer and its step. N11 is the page's B7 and waits with group B
 (D2636) — but for the one Undo E7 asked about, now answered: refused in Build 1 (D2654). The page he answered numbers its questions
@@ -138,7 +140,7 @@ midnight, a right taken away, the Tracker failing part-way.
    door of this guard, and the round-5 page now tells him and asks. Refused in Build 1 (default, step 6b), or left
    open on his word — never left open unsaid.
 2. **No answer still open is built before he gives it** — NQ1–NQ3, N14, V-Q2, §17's readings 17–24 and §8.5's
-   list (E1–E9, D5, D8 and D10 are answered: D2654, D2655): each row and step that waits on one says so (§8.4, §8.5,
+   list (E1–E9, D5, D6, D8 and D10–D12 are answered: D2654, D2655): each row and step that waits on one says so (§8.4, §8.5,
    §10, §21).
 3. **Every new look and word has been drawn and seen by him** (D1625) — the note's new words, the Add a person button
    and its Cancel, the fades (a short film) — and every `[WNS]` word has had its fresh Fable's read (D2441).
@@ -1446,12 +1448,14 @@ marked "this fold" are readings this fold made and are on no page.**
 | **The Plan lines' tap** (§19.2) | What a tap on "Given Plan of 149" opens — the plan's default (that squadron's Admin → Users at the man's row), on no page | that tap; without an answer the line is only read |
 | **The lull pop-ups; E9b's list** | Pressed before the build and told to him (D2654 E4, E9b: "each is checked before the build") | the four Info-panel rows; each window E9b lets close |
 | **"Mark all read" across squadrons; the OIL question taking the bell's tap** | Found at the round-5 page's review, "still to be put to you as questions" | nothing here — owed to him (§14) |
-| **Which postings Incoming and Outgoing show before the Transfer step** — this fold (reading) | The app can make no posting to another squadron yet; §19.12 builds the two groups on the postings it can make today | what the Users section's mock-up page tells him about those two groups |
+| **Which postings Incoming and Outgoing show before the Transfer step** — this fold (reading) | The app can make no posting to another squadron yet; §19.12 builds the two groups on the postings it can make today | the two groups' contents: built on today's postings only on his answer, else the two headings wait for the Transfer step (U5) |
 | **A press on an Outgoing row before the Transfer step** — this fold (reading) | "Undo post out" inside the opened row is N6's, the Transfer step's | what that row opens to meanwhile (§19.12) |
 | **A squadron colour changed and not saved, then a pick or the view switch** — this fold (reading) | Display's form has a Save; no ruling says whether it counts for the guard | one row of the guard's table and one lead (§19.13) |
 | **Who sees an Admin → Display with no section for him** — this fold (reading) | N2 e hides "Squadron colours" from one whose bell shows one squadron; the page then has nothing on it | whether the Admin list shows "Display" to him (§19.13) |
 | **The phone's jump row with a group missing, at 375 px, and with a two-figure count** | D2652 names it owed: "need a rule and a drawing before the build" | the Users section's jump step (U6) |
 | **Which "lot" the one FULL check covers, and when** | §10 placed it after Builds 2 and 3; D2657 has the coordinator run it for the four sections | when the batch may be put to him for "merge live" (§21) |
+| **Home squadron first — in every list of squadrons, or on Admin → Users only** (the red team's Opus 8) | N3 h says "wherever squadrons are listed"; the plan built it on one page. Recommended: everywhere | the order of the folded headings (U3) and, on "everywhere", a piece of the core's menus and of the bell's Show row and Display list — no list is reordered before he answers (§19.3) |
+| **Bug reports: each admin's own look puts out his own bell, or one look for all** (the red team's Astra 2) | E9j did not ask it. Recommended: each admin's own | V24 and the per-admin "seen" records of BL4; the rest of bug reports is built (§19.6) |
 | **Group B** (B1–B12) | Logout, Undo, the refresh card — his after Build 1 is built (D2636) | nothing in this batch; the closing step reminds him |
 
 **Drawings owed before a step that needs them (D1625) — named by the rulings themselves:** the Calendar's five notes
@@ -1664,8 +1668,8 @@ Undo waits with group B (D2636).
 | 35 | **A pinned row that leaks, or a control that moves under the finger.** The phone's search and jump rows stay under the top bar and Admin's left column stays put — nothing on Admin is pinned today, and the Users pane clips what is inside it. | "Nothing pinned leaks" (D1518) is checked at every zoom on both; a jump whose group a search hides goes grey where it stands and never moves (lesson 27); the phone's row at 375 px, with a group missing and with a two-figure count, has its rule and its drawing before the step (D2652) |
 | 36 | **One man opened in two places.** A man with a posting out ahead stands in "People" and in Outgoing; a Plan holder in the block and under his squadron's heading. Two opened rows of one man could hold two different unsaved choices for one access line. | One opened row a page, as today: opening the second closes the first as its Cancel does — the builder reads how the page keeps its one opened row today and V32 pins it; the guard counts the one that is open |
 | 37 | **Incoming and Outgoing drawn with moves the app cannot make yet.** The drawings show Cinch posted from 142 to 149; "Transfer to Sqn" is greyed until the Transfer step. | The two groups are built on the postings the app makes today — overseas, to SANS, to Delete, and a restore or an add with a post-in date ahead — and read a posting's target, so a move between squadrons shows the day the Transfer step can make one **(reading)**. The section's mock-up page says so in plain words |
-| 38 | **The posting sheet's new look changes what the sheet does.** With a posting open the leave buttons are gone, so a way to file leave from that sheet goes; its head no longer names the day (D1462 narrowed); the main button changes from the grey chip he asked for on 18 Aug. | Each is his answer (D2653 d, f, b). The tests that press a leave button with a posting open are re-pointed by name, none deleted; the "Delete Cinch?" card (D1626–D1628) hangs from the same parts and is drawn in the new look before the build; ✕ and pressing the day again give the leave buttons back — PS3 |
-| 39 | **A section shipped alone, then met by the batch.** The posting sheet may merge live on its own while the other three are still being built. | It touches the Leave War's sheet files and their stylesheet, which no other section edits — but for one rule in `ui/postout.css` (§21's finding 2). The batch branch brings `main` in after it merges, and the coordinator runs the posting sheet's tests on the batch branch then |
+| 38 | **The posting sheet's new look changes what the sheet does.** With a posting open the leave buttons are gone, so a way to file leave from that sheet goes; its head no longer names the day (D1462 narrowed); the main button changes from the grey chip he asked for on 18 Aug. | Each is his answer (D2653 d, f, b). The tests that press a leave button with a posting open are re-pointed by name, none deleted; the "Delete Cinch?" card (D1626–D1628) hangs from the same parts and is drawn in the new look before the build; ✕ and pressing the day again give the leave buttons back — PT3 |
+| 39 | **A section shipped alone, then met by the batch.** The posting sheet may merge live on its own while the other three are still being built. | It touches the Leave War's sheet files and their stylesheet, which no other section edits — but for two rules in `ui/postout.css` (§21's finding 1) and the core's one-word marks in `BidPicker.tsx` (§21.5). The batch branch brings `main` in after it merges, and the coordinator runs the posting sheet's tests on the batch branch then — **and the guard's roll-call test (`msq-guard-rollcall.test.ts`: R3 counts the frames in the posting files, so a sheet or card added or removed by way C is met there, not in the posting sheet's own tests)** |
 | 40 | **One FULL check over four chats' work.** A fault found at the end must point at one section. | Each section's own tests and its three code reads are done before its merge into the batch branch; the coordinator merges one at a time, each a named range of commits; the roll-call is kept by section (§21) |
 
 ---
@@ -1954,7 +1958,9 @@ where it has one and an example; **an item with no letter is on no page yet.**
 a–n "as the page wrote them", so each is built and is no longer a reading — E9g as round 6 rewrote it (the Plan
 holder leaves the main list for the block: D2652 N3 d; the role in words: N3 e). Item 2 is answered (D2654 E7); in
 item 14, V-Q1, V-Q3 and V-Q4 are answered (D2654 E8, E9i; D2655 D10) and **V-Q2 is still open**; item 12's "not on the
-page" stands. **Items 17–24 are on no page and stay readings; so do the readings this fold made (§8.5, §19.12, §19.13,
+page" stands — **and one more clause of item 12 was not on the page: "each admin's own look at Help is what puts his
+bell out". E9j asked three things — reports kept, the number shown, a Plan holder rung — and not that one (the red
+team's Astra 2). It stays a reading, open, with its recommendation in §19.6.** **Items 17–24 are on no page and stay readings; so do the readings this fold made (§8.5, §19.12, §19.13,
 §22), each marked "(reading)" where it stands.**
 
 1. **"A squadron he can still pick" (D2621) is built as "a squadron whose Inputs page he can open"** — else a moved man
@@ -2193,8 +2199,9 @@ Escape; what each does at a change he did not make.
   step (D1625): the form drawn opened at the top — D2652's own list names it; the drawing under the People row no
   longer shows where it is built.** In this step the search still filters what it filters today; making it filter
   every group is the Users section's (§19.12).
-- **After.** A button "+ Add a person" `[ruled]` on the People row after Filter (`.od-findrow`), full width under the
-  search on a phone. A press opens the same form in place, under that row and above the first person; nothing of its
+- **After.** A button "+ Add a person" `[ruled]` ~~on the People row after Filter (`.od-findrow`), full width under the
+  search on a phone. A press opens the same form in place, under that row and above the first person~~ **in the
+  page's top row, the form under that row — the round-6 bullet above**; nothing of its
   fields, their checks or their words changes. Its foot: "Add person" and "Cancel" `[ruled]`, side by side as the
   opened row's Save and Cancel are. **Cancel is `resetAddForm()` and the fold shut.** Quals' "+ Add person" lands with
   the form open and the callsign box ready — no scroll to a foot. The form reports to the guard
@@ -2209,7 +2216,7 @@ Escape; what each does at a change he did not make.
   the app's "on" look, so the form visibly belongs to it (the design review's drawing note). **The Home squadron box
   is NQ2's (§8.4):** on its recommendation the form adds to the squadron in view and the box goes; until he answers
   it stays as built and nothing here pins it.
-- **Tests first.** **G3** — the button stands after Filter; the form is not on the page until it is pressed; pressed,
+- **Tests first.** **G3** — the button stands in the page's top row, after the search and Filter (~~after Filter on the People row~~); the form is not on the page until it is pressed; pressed,
   it is drawn under the page's top row, above "Waiting for access" (D2652 N13 i — ~~above the first person's row~~), with the callsign box focused (a desktop); **the search, Filter and the button are one row at the very top of the page, and no "Add a person" block stands at its foot.** **G4** — every field typed or
   changed (callsign, seat, sign-in, role, the post-in date — and the Home squadron, **as NQ2 decides: no assertion
   about what that box offers is written before his answer**),
@@ -2384,14 +2391,15 @@ Display (D2638–D2640, D2649, D2652) — and part V is now built by two section
   or 150** (fails today). **A 142 man with no sign-in, opened: the words, Cancel, and no `#accGive`, `#accGiveName`,
   `#accGiveRole`.** A 142 member with a sign-in: Plan greyed, "Plan is for admins only." **Blade, a 142 admin, on 149's page: his
   row ends "· admin"; Saber's "· master admin, full access"; a member's and a no-sign-in man's add nothing. Under "▾
-  142" no row wears the grey number; in the block, in Incoming and in a search each does. "Edit on 142 →" is drawn for
+  142" no row wears the grey number; in the block, in Incoming and in a search each does. **(These link clauses are V11b — the Users section's U3, after the core's K4 — not V1, and not U1's to build: the red team's Astra 4 and Opus 7.)** "Edit on 142 →" is drawn for
   Hunter and for Saber on Ranger's opened row and not for Kestrel; pressed: 142 picked, Ranger's whole row open
   there; pressed with the line changed and not saved, or with a window open: refused as a pick, nothing changed.**
   **V2** — the same row for
   Kestrel, and for Saber with 149 picked; and for Mako on 150's page: one line, for 150. **V3** — pins: on 142's page
   Ranger's row is whole for Hunter and for Saber, every button as today; Kestrel never reaches 142's page. **V4** —
   the line itself still saves: Kestrel gives Ranger View of 149 from that row — one Undo step, the words "Saved"; and
-  the row with its line changed and not saved refuses a pick (§3.2 (h)). **V4b — the save sends the line alone:**
+  the row with its line changed and not saved **reports its unsaved change (what U1 proves)**; that it then refuses
+  a pick (§3.2 (h)) is **V4c, a named check run once the core's K4 has landed — U1 does not wait for it**. **V4b — the save sends the line alone:**
   Astra's sequence above, for Saber and for Hunter — after Save Ranger's sign-in name is the one the Undo left, his
   role and every other squadron's line as they were, and a spy on `saveAccess` sees one key, `grants`, holding one
   squadron; **a row whose man's home changes while it is open** (his move lands, or an Undo of one): Save sends
@@ -2647,7 +2655,12 @@ the squadron in view no longer stands on its main list** — he is in the "From 
 own squadron's heading, so "People" lists the squadron's own alone and each heading's count and rows agree (D2652 N3
 d, N4 a; this replaces E9g's "stays on the main list"); (4) **inside a folded group no row wears the grey number**
 (N4). **The order in which squadrons are listed, wherever they are listed: his home squadron first, then the rest by
-number (D2652 N3 h)** — for Mako, home 150 and holding Plan of 149, 149's page lists "▸ 150" before "▸ 142". The
+number (D2652 N3 h)** — for Mako, home 150 and holding Plan of 149, 149's page lists "▸ 150" before "▸ 142". **Held — a question for him (the red team's Opus 8; the coordinator puts it on the section
+pages): N3 h's words are "wherever squadrons are listed", and today the Schedules menu, the ☰ menu's list and the
+bell's Show row list by number. Recommended: everywhere — one order in every list of squadrons, as his words say and
+as "the same everywhere" asks (D754); its cost, those three lists reorder for anyone whose home is not the lowest
+number, and it adds a piece to the core (the two menus) and to the bell (the Show row, Display's list). The other
+answer: Admin → Users only. Until he answers, no list is reordered and V11's Mako case is not written.** The
 page's whole order, its one search, the folding groups and the jumps are §19.12.
 
 - **Today.** `ui/userslist-model.ts usersListOf(unit, iso, query)` answers the squadron's own people, the Plan holders
@@ -2813,6 +2826,15 @@ page's whole order, its one search, the folding groups and the jumps are §19.12
   of its own, in `perms.ts`'s table and `data-model.md` §11:** an admin reads every squadron's; a member reads only
   his own — or the database step will let a member read every squadron's report text. A member's own "Your reports"
   wears no number (he sees only his own) — a look, drawn with D9.
+  **Held — a question for him (the red team's Astra 2; the coordinator puts it on the bell section's page):
+whose look puts a bell out.** Today one admin opening Help marks every report seen for every admin. This plan has
+each admin's own look put out his own bell only — Kestrel opens Help and his bell goes out, Saber's stays lit until
+Saber looks. E9j did not ask it and D9 is the list's look; D227 rules separate looks for access requests, not for
+reports. **Recommended: each admin's own look** — a report one admin has read is not thereby read by the others, and
+it is how the bell already treats access requests; its cost, a "seen" record an admin a report and a bell that stays
+lit for an admin who never opens Help. **The other answer: one look for all, as today.** **Until he answers: reports
+are saved and rung as §19.6 says, one look still puts every admin's bell out, and V24 and the per-admin "seen"
+records are left out.**
   **(readings, §17 item 12 — the page's E9j)** — that reports become
   saved records at all (the table list for the database step gains two: D473), each admin's own look, a Plan holder
   rung as the squadron's admin, the number shown whenever the app has more than one squadron. **Told to him on the
@@ -2896,7 +2918,7 @@ form; the Archived fold's own note for a man archived on the page's squadron.
 
 | Step | What | Tests | Waits on |
 |---|---|---|---|
-| **V0** | The pins; `main` in and `withThird()` (Build 1's step 0); Kestrel's view of a 142 man's row read from chat 176's presser | the as-is file | **each step below waits on its own drawing seen by him (D1625) and its own `[WNS]` words read (D2441) — not on every drawing of §19**; the security reader's check of `mayGivePlanOf` (§19.2) — **done 25 Nov 26 and built into §19.2**; the two new NQ1 pins written here as tests |
+| **V0** | The pins; `main` in and `withThird()` (Build 1's step 0); Kestrel's view of a 142 man's row read from chat 176's presser | the as-is file | ~~each step below waits on its own drawing seen by him (D1625) and its own `[WNS]` words read (D2441) — not on every drawing of §19~~ **replaced by D2657: the section's whole mock-up page is seen by him before any of it is built (§21); a step still waits on its own `[WNS]` words read**; the security reader's check of `mayGivePlanOf` (§19.2) — **done 25 Nov 26 and built into §19.2**; the two new NQ1 pins written here as tests |
 | **V1** | §19.1 — the row's face **and its own save** | V1–V4, V4b | Build 1's step 1b landed (the same file); **D5 answered (D2655) and its row drawn — to redraw: Hunter's row put right on D4's phone picture, the role in words — nothing else: the hiding of another squadron's sign-in name, Role and buttons does not wait for §19.3–§19.8's drawings** (security S7: until V1 lands, Hunter sees and can change Ranger's sign-in and role from 149's page) |
 | **V2** | §19.2 — `mayGivePlanOf`, the two doors, `saveAccess`, **the re-link door**, the gate **with its `first` rule**, the restore's rule **and `planRestoreStuck`**, the line, the words, the bell line and its register rows — **one commit: no step leaves the gate and the doors disagreeing** | V5, V5b, V6–V10; the nine re-pointed files | the new words for the refusal and the roles table; ~~E6~~ answered (D2654); the line with its two coloured numbers drawn (§19.13); **the re-link door's sentence read by a fresh Fable**; the lines and their tap drawn; **NQ1** holds only the making of an admin by a Plan holder |
 | **V3** | §19.3 — the headings, live people only | V11–V15 | ~~E8~~, ~~E9h~~ answered (D2654); the headings at the page's foot (D2652 N13 c); **NQ3** the search's match |
@@ -2974,7 +2996,8 @@ the moving itself is the Transfer step's (§19.9).
   left column — People 60, Outgoing 1, Incoming 1, From other squadrons 1, the counts in one column — and the left
   column stays put while the page scrolls**, on every Admin page. One press runs the page to that heading (the
   browser's own smooth scroll; with less motion, there at once); the jump of the group in view is lit as he scrolls;
-  a jump to a folded group opens it. **The heading reached stands white for about a second, then grey again — a new
+  a jump to a folded group opens it. **A jump's count is its heading's count, always** — for "From other squadrons", everyone in the
+  block, the people under "View only" counted. **The heading reached stands white for about a second, then grey again — a new
   mark, ruled (N13 b)**; nothing glows or rings, and with less motion the white still shows. **On a phone: four jump
   buttons in one row under the search, sharing its width, the fourth reading "Others" (N13 f); the search row and
   the jumps stay under the top bar while the list scrolls.** A jump whose group a search hides goes grey where it
@@ -2989,7 +3012,7 @@ the moving itself is the Transfer step's (§19.9).
   phone's width, so these two need a rule as well as a drawing; the phone's row with a group missing; "Nobody
   matches."; the empty block; people waiting for access; a master admin's view; a block row and "View only" opened;
   the day a posting lands.
-- **Tests first** (`src/ui/msq-users-page.test.tsx`, jsdom, `withThird()`; each fails today unless a pin).
+- **Tests first** (`src/ui/msq-s2-page.test.tsx`, jsdom, `withThird()`; each fails today unless a pin).
   **V31 — the order:** on 149's page for Kestrel, top to bottom: the top row, Waiting for access, People, Outgoing,
   Incoming, From other squadrons, the rule, the folded squadrons; "People" lists no man of another squadron. **V32 —
   the folds:** each of the three headings open at first, folded by a press, its count kept; "People" has no fold; a
@@ -3001,11 +3024,11 @@ the moving itself is the Transfer step's (§19.9).
   restored man with a post-in date ahead under Incoming; on the day: gone from both; an empty group: no heading.
   **V35 — the search:** "Bol" typed on 149: every group with no match hidden, "View only" opened on Bolt, Bolt once;
   the counts whole; cleared: every fold as he left it; nothing matches: "Nobody matches."; NQ3's clause as he
-  answers it. **V36 — the jumps:** the four under "Users" with their counts; a press brings the heading into sight,
+  answers it. **V36 — the jumps:** the four under "Users" with their counts, each equal to its heading's; a press brings the heading into sight,
   lights its jump and marks the heading for its second; a folded group opens; a hidden group's jump is greyed and
   does nothing; an empty group has none; on a phone's width four buttons, the fourth "Others"; every one a button
   with a name. **V37 — pins:** the list A to Z, never reordered (D322); the Archived fold and the Waiting list as
-  today; Filter's ticks hiding rows inside a group. The e2e (`e2e/msq-users.spec.ts`): the left column and the
+  today; Filter's ticks hiding rows inside a group. The e2e (`e2e/msq-s2-users.spec.ts`): the left column and the
   phone's pinned rows stay put through a scroll at every zoom and nothing leaks under them (D1518); each jump's box
   unmoved by a search (lesson 27); each look against its drawing on a desktop and his phone's size (D1494).
 - **Twins:** a desktop · a phone; Kestrel · Hunter · Saber · Mako; 149's page · 150's · his own 142; a group with
@@ -3039,9 +3062,10 @@ the moving itself is the Transfer step's (§19.9).
   nothing is refused or warned after he chooses. **No warning when a colour is close to another squadron's or to one
   the app uses for a meaning: he judges by the page's own list and its preview (D2649 — the agent's recommendation
   not taken).** **e — only one whose bell can show more than one squadron sees the section** — the test is that, not
-  his role: an admin holding Plan of another squadron, a master admin (View of a squadron never
+  his role **(reading: his words are "shows"; it is built as "can show", so one who has switched his other squadrons
+  off under Show still sees the section — put to him with the others below)**: an admin holding Plan of another squadron, a master admin (View of a squadron never
   shows its bell lines).
-  **(readings — this fold's, none his; each on §8.5's list or told in the section's mock-up page):** Reset puts that
+  **(readings — this fold's, none his; each is put to him as its own question on the section's page and answered before its piece is built, or that piece is left out — telling him is not his answer, D2611):** Reset puts that
   squadron back on its starting colour; the section lists every squadron he can switch on under Show, switched on or
   not; a starting colour is worked out from the squadron itself, so it is the same on every device before he picks;
   a colour Save is no Undo step, as a report's "seen" is none; **for one who has no section to see, "Display" is not
@@ -3055,7 +3079,7 @@ the moving itself is the Transfer step's (§19.9).
   that a person writes his own colours and nobody else's**; one collection for the whole app, never a store bound to
   the squadron in view; one more table on the database step's list (D473). The security reader reads the rule
   (D1411 — what one person may write of another's).
-- **Tests first** (`src/ui/msq-bell-colours.test.tsx`, `withThird()`). **V38** — Saber, Show 142, 149 and 150 on:
+- **Tests first** (`src/ui/msq-s3-colours.test.tsx`, `withThird()`). **V38** — Saber, Show 142, 149 and 150 on:
   each line's number wears its squadron's colour, the same as its Show button; the unread dot the app's blue; a line
   marked read keeps its colour; "Hunter 142" inside a 149 line wears 142's; Hunter: two colours, no line of 150;
   one squadron shown: no number, no colour (V22's twin). **V39** — the page: "Display" in Admin's list, one section,
@@ -3067,7 +3091,7 @@ the moving itself is the Transfer step's (§19.9).
   background never under the contrast the builder sets and names; no warning line for a colour set equal to another
   squadron's or to the unread dot's (D2649, a pin by name). **V43** — the gate: a colour written for another
   person's account, by an admin and by a master admin — refused by name; a member with one squadron: no section;
-  the guard's row as he answers. The e2e (`e2e/msq-bell.spec.ts`): the bell and the Display page against their
+  the guard's row as he answers. The e2e (`e2e/msq-s3-bell.spec.ts`): the bell and the Display page against their
   drawings, a desktop and his phone's size; the sliders worked by touch.
 - **Twins:** one · two · three squadrons shown; unread · read; a line with a name from another squadron · without;
   a desktop · a phone; picked · never picked. **Stays:** the Show buttons' own behaviour, what lights the bell, a
@@ -3200,6 +3224,29 @@ order follows from the work itself, it is written as a **finding** at the end, n
   (D1770, D790; Fable on every code read of this build by his standing call — D2208, D2224, D2440), each claim a
   failing test before it is believed; the security reader besides wherever sign-in, permissions or what one person
   sees of another changes (D1411). A chat that wrote a piece never reads it.
+- **A hold binds even where a cell does not name it.** A "(reading)" or an open code in the text of your step holds
+  that piece: it is put to him as its own question and answered, or the piece is left out and the step says so. Being
+  told is not his answer (D2611, lesson 32). The cells below name every hold this plan knows; the rule covers one
+  they miss.
+- **Each section's own ranges** (the coordinator's, 26 Nov 26 — so two chats never take one number or one port):
+
+  | Section | Ruling numbers | Lesson numbers | Test ports | New test files |
+  |---|---|---|---|---|
+  | The core | D2661–D2680 | 107–116 | 4741–4744 | `msq-guard-*` (as §3–§5 name them), `e2e/msq-guard.spec.ts` |
+  | Admin → Users | D2681–D2700 | 117–126 | 4745–4748 | `msq-s2-*`, `e2e/msq-s2-users.spec.ts` |
+  | The bell | D2701–D2715 | 127–136 | 4749–4752 | `msq-s3-*`, `e2e/msq-s3-bell.spec.ts` |
+  | The posting sheet | D2716–D2725 | 137–146 | 4753–4756 | `msq-s4-*`, `e2e/msq-s4-posting.spec.ts` |
+
+  A number is still checked free before it is taken; a section that runs out asks the coordinator. A row a section
+  adds to the notifications register carries no number of its own until the coordinator numbers it at the merge.
+  **R9 reads this table's prefixes** — `msq-guard-`, `msq-s2-`, `msq-s3-` must call `withThird()`; `msq-s4-` its own
+  set-up (§21.4) — never a looser match, which would catch the eight existing `msq-users-*` and `msq-bell-*` files
+  that stay on two squadrons.
+- **Checks that span two sections are the coordinator's, named, and run on the batch branch after the second of the
+  two has merged — a section's own step is green without them:** **J1** — a Plan line on Saber's bell shows "149"
+  and, after Hunter's name, "142", each in its colour (the Users section's V10 asserts only what the line carries;
+  the bell's V38 asserts the drawing from a line it makes itself); **J2** — V4c and V11b's refusals with the real
+  pick's door; **J3** — the guard's roll-call test with `main` in, after the posting sheet has shipped.
 - Only the coordinator edits this plan, `HANDOFF.md`'s coordinator block and the shared lists; a section writes its
   own `## Now` block, its own backlog lines and its own rows of the shared documents (the last table below).
 
@@ -3211,19 +3258,20 @@ order follows from the work itself, it is written as a **finding** at the end, n
 | Step | Old | What | Waits on |
 |---|---|---|---|
 | **K0** | 0 | `main` brought in, the third squadron in the test world, the pins, the census; the reads and presses owed (the lull pop-ups, E9b's list, the saver's end, §5.5's last column) | — |
-| **K1** | 1 | Part A — the guard's table and function, the drawn predicates, the closers | the lull pop-ups pressed and E9b's list told to him (D2654 E4, E9b); the Calendar's notes drawn (E1); the `qualsnew` reading holds its own row |
-| **K2** | 1b | "+ Add a person" **in the page's top row** — the search, Filter and the button one row at the very top, the form under it, the foot block gone (D2652 N13 i) — with its Cancel and the pair measured from the app (D2644) | the form redrawn at the top and seen (owed — D2652); **NQ2** holds only the Home squadron box |
+| **K1** | 1 | Part A — the guard's table and function, the drawn predicates, the closers | the lull pop-ups pressed; E9b's list of windows put to him and answered — a window he has not answered keeps refusing, its closer left out (D2654 E4, E9b; D2611); the Calendar's notes drawn (E1); **readings 17 (`qualsnew`) and 20 (the Calendar's note named first) each hold their own row — answered, or that piece left out**; the `showOnly` marks in `BidPicker.tsx`: §21.5 |
+| **K2a** | 1b (the look) | "+ Add a person" **in the page's top row** — the search, Filter and the button one row at the very top, the form under it, the foot block gone (D2652 N13 i) — with its Cancel and the pair measured from the app (D2644). **Taken straight after K0, ahead of K1: it needs nothing of the guard, and it is the step Admin → Users waits for (the red team's Opus 6)** | the form redrawn at the top and seen (owed — D2652); **NQ2** holds only the Home squadron box |
+| **K2b** | 1b (its report) | The form's report to the guard (`useGuardWork('addperson', …)`), with A6's Add a person half — after K1, whose table it reports to | K1 |
 | **K3** | 2 | The note's place | — |
 | **K4** | 3 | The pick's door | **N14** holds the wait for a save alone |
-| **K5** | 4 | The view switch and the Tracker's question | — |
-| **K6** | 5 | The bell and the page door — nothing behind a refusal; `lineOpens`' table | — |
+| **K5** | 4 | The view switch and the Tracker's question | **N14** holds the wait for a save at this door |
+| **K6** | 5 | The bell and the page door — nothing behind a refusal; `lineOpens`' table | **N14** holds the wait for a save at this door; **reading 18** (his own SANS reminder brings his own squadron into view first) holds the reminder's branch — answered, or left as today |
 | **K7** | 6 | The checker, switched on | — |
 | **K8** | 6b | The one Undo that changes the squadron in view (D2654 E7) | the Undo note drawn and seen; its words `[WNS]` |
-| **K9** | 7 | Part F's list and doors; "+ Input" and "+ Commitment" on another squadron | D11 redrawn with the reason as words under the button |
+| **K9** | 7 | Part F's list and doors; "+ Input" and "+ Commitment" on another squadron | D11 redrawn with the reason as words under the button; **reading 19** (a moved master admin's old inputs follow the view he is in) holds F15's member-view half — answered, or that piece left out |
 | **K10** | 8 | Part F's root | §5.5's home-page row settled |
 | **K11** | 8b | The squadron number's two fades — on a phone after the ☰ menu, or the bell's list, has closed (D2642, N8) | the bell-list case filmed and seen |
 | **K12** | 9 | The browser tests and the records | the checks lock |
-| **the closing step** | — | The report that reminds him of group B (D2636) — **made by the coordinator when the batch is built**, the core's own report saying so | — |
+| **the closing step** | — | The report that reminds him of group B — **put to him when the core's last step (K12) has landed: "after the first build", his words (D2636) — never held for the other sections; the core's orchestrator tells the coordinator, who puts the twelve to him and builds none** (~~when the batch is built~~ — the red team's Opus 10) | — |
 
 - **The files it changes.** New: `state/guard.ts`, `ui/guard.ts`, `ui/windrawn.ts`, `ui/guardnote.ts`,
   `state/inputsqn.ts`, the test files `src/ui/msq-guard-*.test.tsx`, `src/ui/msq-guard-rollcall.test.ts`,
@@ -3232,14 +3280,15 @@ order follows from the work itself, it is written as a **finding** at the end, n
   (K8), `state/view.ts` and `ui/pops.ts` as the table needs, `ui/winorder.ts`; `ui/topstate.ts`, `ui/toast.ts`
   (`placeToast`, `toastAt` only — §9), `ui/Drawer.tsx`, `ui/SquadronMenu.tsx`, `ui/Shell.tsx` and
   `ui/WelcomeBack.tsx` (the card at home), `ui/icons.tsx` and `ui/scheduler/02-shell.css` (the fades);
-  `ui/UsersPanel.tsx` and `ui/postout.css` (K1's reports, K2's row and form); `ui/QualsPage.tsx`, `ui/LogicPage.tsx`;
+  `ui/UsersPanel.tsx` and `ui/postout.css` (K2a's row and form, K1's and K2b's reports); `ui/SquadronsPanel.tsx` (K1's reports for "+ New squadron", a squadron's move and a place being edited — §3.2 (h)); `ui/QualsPage.tsx`, `ui/LogicPage.tsx`;
   the Calendar's and the settings windows' files; `engine/inputs.ts` (`inputsListed` — the reach test only),
   `ui/InputsPage.tsx`, `ui/InputsCal.tsx`, `ui/inputedit.tsx`, `ui/InputWindow.tsx`, `ui/OilDayList.tsx`,
   `ui/MedicalView.tsx`, `ui/sansadd.ts`, `ui/SansDay.tsx`, `ui/SansCal.tsx`; `leavewar/sync.ts` (`openInputWindow`),
   `leavewar/ui/Sheet.tsx` and the Leave War's show-only sheets as E9b's list decides; `tracker/app/core.js` (five
   places — §9), `tracker/role.js`; the 37 + 13 existing test files, each only in its own door's step.
 - **It must not touch:** `leavewar/ui/BidPicker.tsx`, `SelectSheet.tsx`, `OutcomeChips.tsx`, `bidpicker.css` (the
-  posting sheet's); `ui/topbits.tsx`'s `BellList` body (the bell's — the note's anchor reads its `data-testid`
+  posting sheet's) — **but for the one-word `showOnly` mark on the `<Sheet …>` call of each sheet E9b's answer lets
+  close, two of which are in `BidPicker.tsx` (§21.5)**; `ui/topbits.tsx`'s `BellList` body (the bell's — the note's anchor reads its `data-testid`
   only); `state/perms.ts` beyond reading; `state/accounts.ts`, `state/units.ts`, `ui/userslist-model.ts`,
   `ui/usersfilter-model.ts`, `ui/AdminPage.tsx`, `state/reports.ts`, `ui/HelpPage.tsx`, `ui/html.ts`; anything of
   §19 or §22; `ui/SchedBoard.tsx` beyond its bell and two dialogs (§9's promise to pull request 843).
@@ -3256,22 +3305,22 @@ order follows from the work itself, it is written as a **finding** at the end, n
 ### 21.2 Admin → Users across squadrons (§19.1–§19.4, §19.12)
 
 **Who:** a Fable chat (the latest, high) as orchestrator, Opus helpers building every step (D2658), with the security reader (D1411) — it changes who may give a right (D2626) and what
-one squadron's admin sees and may change of another's man. **When:** **once the core's K2 (old 1b) has landed in the
-batch branch** — K2 moves "+ Add a person" to the top row in the very file this section rebuilds. **This section does
+one squadron's admin sees and may change of another's man. **When:** **once the core's K2a (old 1b's look — the top row) has landed in the
+batch branch** — K2a, taken straight after K0, moves "+ Add a person" to the top row in the very file this section rebuilds. **This section does
 not move that button or its form again:** it adds the row of jumps on a phone and makes the search filter every
 group, in place.
 
 | Step | Old | What | Waits on |
 |---|---|---|---|
-| **U0** | V0 | The pins (`msq-users-asis.test.tsx`); NQ1's three ways written as tests | the core's K0 (`withThird()`) |
-| **U1** | V1 | §19.1 — another squadron's man: the short row, the role in words, no grey number inside his group, the one access line with Save and Cancel, the no-sign-in words, **the row's own save** | the core's K2; its row drawn. **Nothing else — this is the step that stops a 142 record being changed from 149's page (security S7; §11 risk 23)** |
-| **U2** | V2 | §19.2 — Plan given and ended by the squadron's own admins: `mayGivePlanOf`, the doors, the gate, the replay rule, the lines — one commit | the lines drawn with their two coloured numbers; the refusal's and the re-link door's sentences read by a fresh Fable; **the core's K6** for the lines' tap (`lineOpens`); **NQ1** holds only the making of an admin by a Plan holder; the Plan lines' tap is on §8.5's list |
-| **U3** | V3 | §19.3 — the folded squadrons at the page's foot, live people only, the tick retired (D2654 E8), "Edit on 142 →" (D2652 N5) | **the core's K4** (the pick's door) for the link; **NQ3** the search's match |
+| **U0** | V0 | The pins (`msq-s2-asis.test.tsx`); NQ1's three ways written as tests | the core's K0 (`withThird()`) |
+| **U1** | V1 | §19.1 — another squadron's man: the short row, the role in words, no grey number inside his group, the one access line with Save and Cancel, the no-sign-in words, **the row's own save**, and the row reporting its unsaved change. **Not here: "Edit on 142 →" (U3) and the refusal at a pick (V4c)** | the core's K2a; its row drawn; the row's report is counted once the core's K1 has landed (a one-line call the core adds in this file — §21.5). **Nothing else — this is the step that stops a 142 record being changed from 149's page (security S7; §11 risk 23)** |
+| **U2** | V2 | §19.2 — Plan given and ended by the squadron's own admins: `mayGivePlanOf`, the doors, the gate, the replay rule, the lines — one commit | the lines drawn with their two coloured numbers; the refusal's and the re-link door's sentences read by a fresh Fable; **the core's K6** for the lines' tap (`lineOpens`); **NQ1** holds only the making of an admin by a Plan holder; the Plan lines' tap is on §8.5's list; **readings 22 ("own admins" as admins who can sign in — the fail-closed clause for a switched-off, archived or posted-out admin), 23 (a replay by one who lost the right blocked for good) and 24 (the re-link door's sentence) each hold their own clause — permission rules: answered, or that clause left out and said** |
+| **U3** | V3 | §19.3 — the folded squadrons at the page's foot, live people only, the tick retired (D2654 E8), "Edit on 142 →" (D2652 N5) | **the core's K4** (the pick's door) for the link, with its tests V11b; **NQ3** the search's match; **"home squadron first" — everywhere or here only — holds the headings' order (§19.3): by number until he answers** |
 | **U4** | V9 (part) | §19.12 — the one search over every group; the order; the three folding headings; "People" not folding | its drawings ("Nobody matches."); **NQ3** |
-| **U5** | V9 (part) | §19.12 — "From other squadrons" with "View only" folded; Outgoing and Incoming | the empty block and the opened rows drawn; the two readings of §8.5 told to him on the mock-up page |
+| **U5** | V9 (part) | §19.12 — "From other squadrons" with "View only" folded; Outgoing and Incoming | the empty block and the opened rows drawn; **the readings of §19.12 — which postings the two groups show before the Transfer step, what a press on an Outgoing row opens, a man of the squadron's own shown in two groups while searching, one opened row a page — each answered, or that piece left out (D2611)** |
 | **U6** | V9 (part) | §19.12 — the jumps: Admin's left column made to stay put and its list under "Users"; the phone's pinned rows | the jump's film; the rule and drawing for 375 px, a two-figure count and a missing group (D2652); **finding 3 settled with the bell section** |
 | **U7** | V4 | §19.4 — the callsign note, its bell line, the taken refusals | the two-squadron list redrawn; the core's K6 for the line's tap; **V-Q2** holds only the admin-of-both case |
-| **U8** | V8 (part) | The browser tests (`e2e/msq-users.spec.ts`), the drawing checks, its records | the checks lock |
+| **U8** | V8 (part) | The browser tests (`e2e/msq-s2-users.spec.ts`), the drawing checks, its records | the checks lock |
 
 - **The files it changes.** `ui/UsersPanel.tsx`, `ui/userslist-model.ts`, `ui/usersfilter-model.ts`,
   `ui/UsersFilter.tsx`, `ui/useraccess-model.ts`, `ui/UserAccess.tsx`, `ui/rolestable.ts`; `ui/postout.css`
@@ -3282,8 +3331,8 @@ group, in place.
   lines and the callsign line), `leavewar/sync.ts` (the restore's taken refusal; the pass after a restore),
   `state/roster-add.ts`, `state/roster-restore.ts`, `state/quals-write.ts`, `engine/people.ts` only if
   `archivedHolders` must answer a squadron (its body is a port — a change there is the behaviour change only); the
-  nine test files that pin "a master admin only", re-pointed by name; new tests `src/ui/msq-users-*.test.tsx`,
-  `src/state/msq-users-plan.test.ts`.
+  nine test files that pin "a master admin only", re-pointed by name; new tests `src/ui/msq-s2-*.test.tsx`,
+  `src/state/msq-s2-plan.test.ts`.
 - **Appended, in files another section owns** (one row or line each, after that section's step has landed):
   `ui/guard.ts` — nothing new is needed while the opened row's report (the core's K1) covers every opened row, which
   the builder checks for the short row; `ui/topstate.ts lineOpens` and the tests B7 and R5 (d) — a kind for the Plan
@@ -3291,7 +3340,7 @@ group, in place.
 - **It must not touch:** `ui/topbits.tsx`, `state/belltap.ts lineSqnMark`, `state/reports.ts`, `ui/HelpPage.tsx`,
   `ui/Shell.tsx`, `ui/Drawer.tsx`, `ui/html.ts`; the top row and the Add a person form beyond what U4 and U6 need
   around them; every file of the posting sheet; the posting itself — N6, N7 and N9 are the Transfer step's.
-- **Tests:** V1–V4, V4b, V5, V5b, V6–V20; V31–V37; its share of V29 and V30.
+- **Tests:** V1–V4, V4b, V4c (after K4), V5, V5b, V6–V20, V11b (U3); V31–V37; its share of V29 and V30.
 - **Size:** about 60 hours (§13).
 - **Readers:** Astra, a fresh blind Opus, a fresh blind Fable, **and the security reader on U1, U2 and U5** (what a
   squadron's admin sees of who holds rights in it); the lines' words by a fresh Fable.
@@ -3303,17 +3352,19 @@ group, in place.
 ### 21.3 The bell, its colours and the Display page (§19.5–§19.8, §19.13)
 
 **Who:** Opus, high. **When:** **once the core's K6 (old 5 — the bell and the page door) has landed** — it edits the
-file the bell's door lives in and the ☰ menu's and the top bar's files the core's K4 and K5 change. **Bug reports
+file the bell's door lives in and the ☰ menu's and the top bar's files the core's K4 and K5 change. **So it
+waits on every wait of K1 to K6 as well — the lull pop-ups, E9b's list, the Calendar's notes — about 44 of the core's
+hours; said plainly, not hidden (the red team's Opus 6).** **Bug reports
 (D2623) are kept here.**
 
 | Step | Old | What | Waits on |
 |---|---|---|---|
 | **BL0** | V0 (part) | The pins for the bell, Help, the badge and the sign-off boxes | the core's K0 |
-| **BL1** | V5, V10 (part) | §19.5 with §19.13 — the number first on every line, in its squadron's colour; the Show buttons' colours; a name's home number | the core's K6; the Plan line with two coloured numbers drawn |
-| **BL2** | V10 (part) | §19.13 — Admin → Display: the page of sections, "Squadron colours", the sliders, the preview, the colours saved per admin with their gate rule | its two readings (§8.5) answered or left out; **finding 3** (Admin's left column); the security reader's look at the write rule |
+| **BL1** | V5, V10 (part) | §19.5 with §19.13 — the number first on every line, in its squadron's colour; the Show buttons' colours; a name's home number | the core's K6; the Plan line with two coloured numbers drawn; **"home squadron first" holds the Show row's order — as today until he answers (§19.3)** |
+| **BL2** | V10 (part) | §19.13 — Admin → Display: the page of sections, "Squadron colours", the sliders, the preview, the colours saved per admin with their gate rule | **every reading of §19.13 answered, or that piece left out (D2611)** — Reset, which squadrons the section lists, how a starting colour is worked out, a colour Save being no Undo step, "can show" for "shows", who sees a page with no section, an unsaved colour and the guard; **finding 3** (Admin's left column); the security reader's look at the write rule |
 | **BL3** | V7 | §19.7 — the badge as plain words where he only views, the ☰ menu without its switch; §19.8 — "Hunter · 142" in the sign-off boxes, the browser's own list kept (D2646) | the core's K5; D12's check of the signed box |
-| **BL4** | V6 | §19.6 — bug reports saved: one collection, "seen" records, no Undo step, the gate and the read rule | **finding 2** (`state/perms.ts` — after the Users section's U2) |
-| **BL5** | V8 (part) | The browser tests (`e2e/msq-bell.spec.ts`), the drawing checks, its records | the checks lock |
+| **BL4** | V6 | §19.6 — bug reports saved: one collection, "seen" records, no Undo step, the gate and the read rule | **finding 2** (`state/perms.ts` — after the Users section's U2); **whose look puts a bell out (§19.6) holds V24 and the per-admin "seen" records — answered, or left out: one look for all, as today** |
+| **BL5** | V8 (part) | The browser tests (`e2e/msq-s3-bell.spec.ts`), the drawing checks, its records | the checks lock |
 
 - **The files it changes.** `ui/topbits.tsx` (`BellList`), `state/belltap.ts` (`lineSqnMark` only), the bell's
   stylesheet rules; new `ui/DisplayPanel.tsx` and a small store of its own for a person's colours (never a field
@@ -3321,8 +3372,8 @@ file the bell's door lives in and the ☰ menu's and the top bar's files the cor
   and the panel's mount) and `ui/scheduler/15-admin-help.css` (the page's own rules); `state/perms.ts`
   (`mayViewAsMember` for D10; the report's and the colours' gate and read rules); `ui/Shell.tsx` (`#roleBadge`),
   `ui/Drawer.tsx` (the "Signed in as" line and the switch row); `ui/html.ts` (the sign-off boxes' list);
-  `state/reports.ts`, `ui/HelpPage.tsx`, the storage and command files a saved report needs; new tests
-  `src/ui/msq-bell-*.test.tsx`.
+  `state/reports.ts`, `ui/HelpPage.tsx`; **the files every saved setting that is no Undo step is registered in, as `bell.squadrons` is today (the red team's Opus 4): `undo/timeline.ts` (`NOT_STEPS` only), `state/people-settings-commit.ts` (`SETTINGS_ROW_PREFIXES`), `state/people-settings-wire.ts`, `state/perms.ts`'s row table and owner check, and the command layer's table of collections (`LOGICAL_TO_BLOB`)** — for the colours and for a report and its "seen"; `state/bellsqn.ts` only if the Show row's order changes; new tests
+  `src/ui/msq-s3-*.test.tsx`.
 - **Appended, in files another section owns:** `ui/guard.ts` and `ui/guardnote.ts` — a row and a lead for Display,
   on his word (§19.13's reading); R1–R4 as the scans ask.
 - **It must not touch:** `state/notices.ts` (the lines' words and kinds are their writers'), `ui/topstate.ts`
@@ -3346,16 +3397,32 @@ file the bell's door lives in and the ☰ menu's and the top bar's files the cor
 
 **Who:** Opus, high. **When:** **at once — it waits on no step of another section — and it ships on its own**
 (D2657). **The Leave War side only:** the Admin → Users side — the form inside the man's row — rides the Transfer
-step (D2634, batch 4). **(reading — the coordinator's to settle):** "ships on its own" is taken as its own branch cut
-from `main`, its own pull request, its own check sized by the bug-check order when it is built, and its own "merge
-live"; the batch branch then brings `main` in. Cut from the batch branch instead, it would wait for the batch.
+step (D2634, batch 4). **The coordinator's call (26 Nov 26, after the fold's red team): it ships on its own, cut from
+`main`, with its own pull request, its own check sized by the bug-check order when it is built, and its own "merge
+live" — as D2657 rules.** What it needs that `main` does not hold, and how it gets each:
+1. **Its test set-up is its own:** `leavewar/ui/msq-s4-world.ts`, three squadrons — 142, 149, 150 — made through the
+   real doors, used by its test files alone. The rule "every new test file calls `withThird()`" does not bind this
+   section (D2630 still does); R9 knows its prefix. K0's world as a shared prerequisite was weighed and not taken:
+   it would put the core's file on `main` ahead of the core and give two chats one file (the red team's Astra 3).
+2. **The plan and the rulings are read from the batch branch, never copied:** §22, the rows of D2648, D2653, D2659
+   and D2660, lesson 105, the design report and the `p6-*` pictures are read with `git show
+   origin/claude/msq-b1-screens-135:<path>`. Its code comments and its own rows of the records may cite those
+   numbers; the rows themselves reach `main` with the batch. **Not verified by this fold:** whether a check on `main`
+   objects to a ruling's number cited before its row is there — PS0 finds out with `npm run docsize`; if it does, the
+   coordinator first lands the rulings' rows on `main` as notes (the lesson's line in the design guide is a working
+   guide's and waits for his word). A ruling he makes in this chat takes a number of its own range, on its branch.
+3. **The files it builds on may differ:** PS0 compares the four posting files between `main` and the batch branch
+   and tells the coordinator of any difference before PS1 (the red team's Opus 3).
+4. **The guard counts its frames:** the core's R3 pins how many sheets and cards each file holds. PS0 writes down the
+   counts in `BidPicker.tsx` and `SelectSheet.tsx`, and its closing report gives them again — the core takes the
+   later figures (J3).
 
 | Step | What | Waits on |
 |---|---|---|
 | **PS0** | The pins: every posting test green as today, named (`leavewar/ui/po.test.tsx`, `pi.test.tsx`, `postout-date-delete.test.tsx`, `leavewar/postout-*.test.ts`) | — |
-| **PS1** | The Post out sheet as way C on a day's sheet: the posting alone, the leave buttons aside; Posting first, then "PO from"; the line just above a blue main "Post out"; the head "Cinch  Post out" | its mock-up page seen; **the six looks not drawn yet (D2653) drawn and seen** |
+| **PS1** | The Post out sheet as way C on a day's sheet: the posting alone, the leave buttons aside; Posting first, then "PO from"; the line just above a blue main "Post out"; the head "Cinch  Post out" | its mock-up page seen; **the looks not drawn yet drawn and seen — the "Delete Cinch?" card, the last-admin line, an existing posting's sheet with "Undo post out (PO)" redesigned through the design skill (D2660), the drag sheet's posting, a ground-crew man's choices; "Transfer to Sqn" is in none of them (D2659), and the opened "To squadron" list is the Transfer step's** |
 | **PS2** | The same shape for an existing posting's sheet, the drag sheet's posting and Post in ("Cinch  Post in") | the same |
-| **PS3** | ✕ and pressing the day again give the leave buttons back; the "Delete Cinch?" card, the last-admin line, a ground-crew man's three chips in the new look | the same |
+| **PS3** | ✕ closes the sheet, and the day pressed after it opens the day's sheet afresh with its leave buttons (§22 — no change to `Sheet.tsx`); the "Delete Cinch?" card, the last-admin line, a ground-crew man's three chips in the new look | the same |
 | **PS4** | The browser test, the drawing check on a desktop and his phone's size, its records (`ui-contracts.md`'s bid windows' title bar — D1462 narrowed; the stylesheet's note of 18 Aug) | the checks lock |
 
 - **The files it changes.** `leavewar/ui/BidPicker.tsx` (its posting rows and the existing posting's sheet),
@@ -3363,7 +3430,7 @@ live"; the batch branch then brings `main` in. Cut from the batch branch instead
   `leavewar/ui/bidpicker.css`; `leavewar/ui/outcomewords.ts` only if a word moves; its tests.
 - **It must not touch:** `ui/UsersPanel.tsx`; `leavewar/sync.ts` and every rule of a posting; `leavewar/ui/Sheet.tsx`
   (the core reads it); `ui/postout.css` — **but see finding 1**.
-- **Tests:** PS1–PS8 (§22).
+- **Tests:** PT1–PT8 (§22).
 - **Size:** about 11 hours (§13).
 - **Readers:** Astra, a fresh blind Opus, a fresh blind Fable; no security reader — who may post whom does not
   change (the reader's brief says so, so the finding is not produced).
@@ -3374,15 +3441,17 @@ live"; the batch branch then brings `main` in. Cut from the batch branch instead
 | File | Who changes it | Who goes first, and why |
 |---|---|---|
 | `ui/UsersPanel.tsx` | the core (K1's reports, K2's top row and form) · Admin → Users (all of it) · later, the Transfer step | **The core, through K2;** then Admin → Users owns it. K2 builds the top row once and the Users section leaves it where it is |
-| `test-support/msq-world.ts` | the core (K0: `withThird()`) · read by all | the core's K0; nobody else edits it — a section that needs a new man in the world asks the coordinator |
+| `test-support/msq-world.ts` | the core (K0: `withThird()`) · read by all | the core's K0; nobody else edits it — a section that needs a new man in the world asks the coordinator. **The posting sheet does not use it: its own set-up (§21.4)** |
 | `ui/guard.ts`, `ui/guardnote.ts`, the roll-call test | the core · a row or a lead appended by the bell (Display) and, if its check finds one missing, by Admin → Users | the core through K3; after that an append, one row a commit |
 | `ui/topstate.ts` (`lineOpens`), tests B7 and R5 | the core (K6) · Admin → Users (a kind for each new line; "Edit on 142 →" in R5 (a)) | the core through K6 (K4 for the link); then appends |
 | `state/belltap.ts` | the core (`enterForLine`, `openBellRequest`) · the bell (`lineSqnMark`) | the core's K6; different functions |
 | `ui/Drawer.tsx`, `ui/Shell.tsx` | the core (K4, K5, K6; K11 reads the menu's open state) · the bell (BL3: the badge, the menu's switch row) | the core through K6. **K11 comes late in the core's chain and may land after BL3** — it only reads whether the menu is open; whoever lands second brings the batch branch in first |
-| `state/undo-wire.ts`, `undo/timeline.ts` | the core (`snapView`; K8's hook) · Admin → Users (`planRestoreStuck` on the `stuck` hook) | different functions and hooks; the core's K8 first if both are ready, else whoever is second brings the branch in |
+| `state/undo-wire.ts`, `undo/timeline.ts` | the core (`snapView`; K8's hook) · Admin → Users (`planRestoreStuck` on the `stuck` hook) · **the bell (`timeline.ts NOT_STEPS` only — one name a kind)** | different functions and hooks; the core's K8 first if both are ready, else whoever is second brings the branch in |
 | `leavewar/sync.ts` | the core (`openInputWindow`) · Admin → Users (the restore's refusal, the pass after a restore) | the core's K6; different functions |
 | `state/notices.ts` | Admin → Users (new kinds and words) · read by the core and the bell | Admin → Users alone |
 | `ui/topbits.tsx` | the bell (`BellList`) · read by the core (the note's anchor) | the bell alone — and the contract of §21.3 with Admin → Users |
+| **`leavewar/ui/BidPicker.tsx`** | the posting sheet (its posting rows, the existing posting's sheet) · **the core (K1: a `showOnly` word on the `<Sheet …>` call of "Your OIL award" and of "Leave filed on the Inputs page" / "OIL the app credited", if E9b's answer lets them close — the red team's Opus 2)** | **The posting sheet, which ships first from `main`;** the core adds its marks after the batch branch has brought `main` in — different lines, one word each. If the core reaches K1 first it adds them and the posting sheet's merge is met by the batch branch as any other. The posting sheet never removes or renames those two sheets |
+| `ui/UsersPanel.tsx` — the core's later lines | the core's K1 and K2b add `useGuardWork` calls after Admin → Users has started | one call a line, added by the core; the Users section brings the batch branch in and keeps them — it never removes a report |
 | **`ui/postout.css`** | the core (K2) · Admin → Users · **the posting sheet (one rule)** | **finding 1** |
 | **`state/perms.ts`** | Admin → Users (U2) · the bell (BL2, BL3, BL4) | **finding 2** |
 | **`ui/AdminPage.tsx`, `ui/scheduler/15-admin-help.css`** | Admin → Users (U6: the left column) · the bell (BL2: the Display entry and panel) | **finding 3** |
@@ -3415,8 +3484,8 @@ live"; the batch branch then brings `main` in. Cut from the batch branch instead
    is kept; it is named because a test of each section asserts on the other's work.
 5. **The test and browser-test files of part V** were one set in the plan (`src/ui/msq-views.test.tsx`,
    `src/state/msq-views-plan.test.ts`, `msq-views-asis.test.tsx`, `e2e/msq-views.spec.ts`). **Two chats cannot share
-   them: each section has its own, as named above** (`msq-users-*`, `msq-bell-*`, `e2e/msq-users.spec.ts`,
-   `e2e/msq-bell.spec.ts`); the names in §19 are read so.
+   them: each section has its own** — and not under `msq-users-*` or `msq-bell-*`, which eight existing two-squadron test files already use (the red team's Opus 9), but by section number (`msq-s2-*` for Admin → Users, `msq-s3-*` for the bell, `msq-s4-*` for the posting sheet; the core keeps `msq-guard-*`; `e2e/msq-s2-users.spec.ts`,
+   `e2e/msq-s3-bell.spec.ts`); the names in §19 are read so.
 6. **The core's K2 now waits on a drawing that does not exist** — the form opened under the top row (D2652's own
    "owed before the build"); the picture he took as D1 shows it under the People row. And that redraw shows the Home
    squadron box, which is NQ2's. So the first step that lets the Users section start waits on one drawing and,
@@ -3464,15 +3533,17 @@ lesson for it is lesson 105 (`raptor-port/docs/design-practices.md` §9).
   ("Comes with the shared database").~~ **His D2659: "Transfer to Sqn" is left out of the sheet altogether until the Transfer step — no greyed button, no line saying why. His D2660: "Undo post out (PO)" on an existing posting's sheet is redesigned through the design skill and shown to him before it is built.**
 - **After — way C (D2653).**
   - **a, d — the sheet is the posting's alone:** while a posting is open the leave buttons and the day's other leave
-    controls step aside; ✕ closes it as today, and pressing the day again gives the leave buttons back.
+    controls step aside; ✕ closes it as today, and pressing the day again gives the leave buttons back — **(reading of "pressing the day again", the red team's Opus 12: the day is the grid's cell behind the sheet, and a press aimed under an open sheet closes that sheet today; so the first press closes the posting and the next press on the day opens the day's sheet afresh, with its leave buttons. `Sheet.tsx` is not changed; if he means one press, that is a question for him and a line of the core's file).**
   - **e — the kind of posting first:** the four choices, equal, one row at a desk and two by two on a phone — the
     chosen one ticked; a ground-crew man's three in the same grid. (The order of D300's approved mock-up changes;
     its "each thing once" is kept.)
   - **Then "PO from" and "To squadron" side by side,** each label over its box, each half the width. "To squadron"
     appears beside the date only when "Transfer to Sqn" is chosen, and nothing below it moves — the sheet is the
     same height without it. **h — the label reads "To squadron" on every sheet that sends a man to a squadron,**
-    never a bare "To", which beside a date reads as the end of a range; it is a drop-down (D2652 N6 b), opened as
-    the phone's own list (D2646's kind of list — not drawn by the app).
+    never a bare "To", which beside a date reads as the end of a range; it is a drop-down (D2652 N6 b: "a small drop-down … in the app's own drop-down look"). ~~Opened as the phone's
+    own list (D2646's kind of list)~~ — **struck: D2646 names the sign-off boxes and "+ Input"'s Person list and no
+    other; how this list looks when opened is not settled by it (the red team's Astra 5). It is drawn and put to him
+    with the Transfer step, which is when "Transfer to Sqn" — and so this box — comes back (D2659).**
   - **The one line just above the button,** on its own strip one step off what it lies on — "On 14 Dec: archived,
     account suspended." as the app writes it today.
   - **b — "Post out" is the app's blue main button,** in the posting button's own size and place. His 18 Aug
@@ -3490,20 +3561,24 @@ lesson for it is lesson 105 (`raptor-port/docs/design-practices.md` §9).
   so the chosen choice is the same height as its neighbours (the designer's note for the build); where the strip
   lies on the sheet it reads raised, one rule for both doors — "one step off what it lies on".
 - **Owed before the build (D2653's own list, D1625):** the "Delete Cinch?" card; the last-admin line; an existing
-  posting's sheet ("Undo post out"); the drag sheet's posting; a ground-crew man's three choices; the opened "To
-  squadron" list. Each is drawn in the new look on the real app and seen by him on the section's mock-up page.
+  posting's sheet ("Undo post out"); the drag sheet's posting; a ground-crew man's choices — two while "Transfer to Sqn" is left out (D2659; no SANS for
+  him, D1709). ~~The opened "To squadron" list~~ is the Transfer step's. Each is drawn in the new look on the real app and seen by him on the section's mock-up page.
 - **For the guard.** The posting sheet is a Leave War sheet as before — counted by the guard through
   `leavewar/ui/Sheet.tsx` as every editing sheet is (§3.2); this part changes no row of the guard's table, and the
   core changes no file of this part.
-- **Tests first** (`leavewar/ui/posting-sheet-c.test.tsx`; the existing posting tests stay green, the parts keeping
-  their names). **PS1** — ⋯ → Post out: the head reads the callsign and "Post out", no day in it; no leave button
-  is on the sheet (fails today). **PS2** — the order: the choices, then "PO from", then the line, then the button;
-  "To squadron" not drawn while "Transfer to Sqn" cannot be chosen, and the sheet's height the same with it drawn
-  (the builder's stub). **PS3** — ✕: the sheet gone, nothing posted; the day pressed again: the leave buttons back.
-  **PS4** — "Post out" carries the main button's look and posts exactly as today: one call, the same arguments, for
-  each of the four outcomes (a pin of the call). **PS5** — Delete: its first tap arms it and the card hangs from
-  the same parts (D1626–D1628), a pin of what it does. **PS6** — the last admin: the amber line and no posting, as
-  today. **PS7** — Post in: the head "Post in", "PI from", the note, the blue button; posts as today. **PS8** — an
+- **Tests first** (`leavewar/ui/msq-s4-posting.test.tsx, on its own set-up `leavewar/ui/msq-s4-world.ts` — §21.4`; the existing posting tests stay green, the parts keeping
+  their names). **PT1** — ⋯ → Post out: the head reads the callsign and "Post out", no day in it; no leave button
+  is on the sheet (fails today). **PT2** — the order: the choices, then "PO from", then the line, then the button;
+  **no "Transfer to Sqn" among the choices and no "To squadron" box (D2659) — three choices for an aircrew man.** **PT3** — ✕: the sheet gone, nothing posted; the day pressed after it: the day's sheet opens afresh with its
+  leave buttons and no posting rows; a press on the day with the posting still open: the posting closes, nothing
+  posted (as a press under any open sheet does today — a pin).
+  **PT4** — "Post out" carries the main button's look and posts exactly as today: one call, the same arguments, for
+  each of the four outcomes (a pin of the call). **PT5** — Delete: its first tap arms it and the card hangs from
+  the same parts (D1626–D1628), a pin of what it does. **PT6** — the last admin (D306), as today, in two events kept apart (the red team's Astra 1): **confirming
+  saves the posting and its date; while he is the squadron's last admin who can sign in, none of its effects runs —
+  not archived, his account still on — and the amber line saying it waits stays in sight; once another admin can sign
+  in, the saved posting runs without another confirmation.** A real refusal — deleting oneself — is a separate case
+  and stays a refusal. A pin of what happens; only the look is new. **PT7** — Post in: the head "Post in", "PI from", the note, the blue button; posts as today. **PT8** — an
   existing posting's sheet and the drag sheet's posting in the same shape; a ground-crew man: three choices. The
   tests that today press a leave button with a posting open are re-pointed by name in the report, none deleted. The
   e2e: each sheet against its drawing on a desktop and at his phone's size; the choices two by two on a phone with
@@ -3539,11 +3614,14 @@ pressed, and no reader has read this fold.**
 | **D2650** | The squadron's own people first, then Outgoing and Incoming, then "From other squadrons"; each of the three folds, open by default | §19.12; V31, V32 — U4 | round 6's drawing (the block at the top) |
 | **D2651** | A way to jump straight to each heading, on a desktop and on a phone | §19.12 (the jumps); V36 — U6 | — |
 | **D2652** | Group N as recommended: way A for the jumps; N1–N11 and N13's readings as the page wrote them | §8.5's table gives each N its place; §18.3 (N11, N13 i), §18.4 (N8), §19.1 (N3 e, N4, N5), §19.3 (N13 c, N3 d, h), §19.12, §19.13; N6, N7, N9 — the Transfer step | D2629 (the folded squadrons' place), D2625 (the role in words) |
-| **D2653** | The posting sheet takes way C, with readings a–i | §22; §11 risk 38; PS1–PS8 | D1462 for this sheet; D300's order; his 18 Aug direction of a grey chip |
+| **D2653** | The posting sheet takes way C, with readings a–i | §22; §11 risk 38; PT1–PT8 | D1462 for this sheet; D300's order; his 18 Aug direction of a grey chip |
 | **D2654** | Group E as recommended: E1–E9, and E9 a–n as the page wrote them | §8's table and §8.3 (each E its N and its step); §1; §10's "waits on" cells; §17's list; §19.2 (E6, E9l), §19.3 (E8, E9h) | D2631 and D2270 (the tick retired) |
 | **D2655** | Group D as drawn and recommended: D1–D12 | §8's table; §4.6 (the Add a person note's words now his); §18.3, §18.4, §18.6, §18.7; §19.1 (D5), §19.2 (D6), §19.4 (D8), §19.6 (D9), §19.7 (D10), §19.8 (D12) | D2625 (the short row and its press), D2628 C7 (the badge), D2632 as narrowed by D2633 (who adds) |
 | **D2656** | The build is split into focused chats that build at once under a coordinator; each section's mock-ups shown first; each chat's model by its risk | §21 | — (answered by D2657) |
 | **D2657** | A coordinator and four section chats: the core first; Admin → Users once the core has moved "+ Add a person"; the bell once the core's bell door is settled; the posting sheet at once, shipping alone | §21; §10's head; §13's sizes by section | — |
+| **D2658** | The core and Admin → Users are each run by a Fable chat as orchestrator, Opus helpers building every step; the bell and the posting sheet stay Opus chats; Astra keeps every role | §21's head, §21.1, §21.2 (written in by the coordinator) | D2657 (who builds those two) |
+| **D2659** | Until the Transfer step the posting sheet leaves "Transfer to Sqn" out altogether | §22 (PT2; the choices; "To squadron" not built here), §21.4 | — |
+| **D2660** | "Undo post out (PO)" on an existing posting's sheet is redesigned through the design skill and shown to him first | §22, §21.4 (PS1's owed looks) | — |
 
 **Where the plan and a ruling disagreed, and how this fold settled it.**
 - **"+ Add a person" on the People row (the plan, from D2599 and D2628 C11) against the page's top row (D2652 N13
@@ -3583,5 +3661,42 @@ Fable has read.
 the Calendar, the marking window, Down days and Failures; every "other answer" to E1–E9, D5, D8 and D10 as something
 that may be built; the grey number on the bell; the "All squadrons" tick; the People row as the place of "+ Add a
 person"; the Plan holder on the main list; the folded squadrons straight under the own people; one set of part-V
-test files. **No test is dropped. New:** G9b; V31–V43; PS1–PS8; steps K0–K12, U0–U8, BL0–BL5, PS0–PS4 (§21); §19.12,
+test files. **No test is dropped. New:** G9b; V31–V43; PT1–PT8; steps K0–K12, U0–U8, BL0–BL5, PS0–PS4 (§21); §19.12,
 §19.13, §22; risks 29–40; §8.5.
+
+---
+
+## 24. The red team of the fold (26 Nov 26) — the ledger
+
+Two readers read the fold at `22ada16e1`, each blind to the other: **Astra**
+(`../briefs/2026-11-26-msq-r6-fold-read-astra.md` — four MEDIUM, one LOW) and a fresh **Opus**
+(`…-msq-r6-fold-read-opus.md` — fourteen, one HIGH). Both found the fold true to his rulings in the main and the split
+not yet safe to build from. The same Fable took each finding against the plan and, where it names code, against the
+file on this branch — **by reading; nothing run, nothing pressed.** The coordinator's five calls of the same day are
+applied and marked (a)–(e). **None was judged false; three were taken in part.**
+
+| Reader · # | Severity | The finding | Verdict | Where it is fixed |
+|---|---|---|---|---|
+| Astra 1 | MEDIUM | PT6 said "no posting" for the last admin; today the posting is saved and waits | Taken — true (`leavewar/postout-outcomes.test.ts`: "The posting waits until 142 has another admin.") | §22 PT6 |
+| Astra 2 | MEDIUM | "Each admin's own look puts his bell out" was not asked by E9j | Taken — true (the page's E9j asks three things, not this; `state/reports.ts markReportsSeen` marks all today). **Open for him — call (d)** | the head; §17's note; §19.6's hold; §8.5; BL4's cell |
+| Astra 3 · Opus 3 | MEDIUM | The posting sheet starts at once from `main` but must use the core's test world, and its plan and rulings are on the batch branch | Taken — **call (a)**: its own set-up; the plan and rulings read from the batch branch; the files compared first. **In part:** whether a check on `main` objects to a cited number is not verified — PS0 finds out | §21.4; §21.5's test-world row; §21's ranges |
+| Astra 4 · Opus 7 | MEDIUM | U1's tests need the pick's refusal (K4) and "Edit on 142 →" (U3) | Taken | §19.1 (V4c, V11b); §21.2's U1 and U3 rows and tests line |
+| Astra 5 | LOW | D2646 stretched to the "To squadron" list | Taken — true (D2646 names two lists; N6 b says the app's own drop-down look) | §22, struck; the list is the Transfer step's (D2659) |
+| Astra, closing | — | "Whichever lands second meets the test" needs a named joint check | Taken | §21's rules: J1–J3 |
+| Opus 1 | HIGH | §21's cells dropped holds — N14 at K5 and K6, readings 18, 19, 20, 22, 23; "told" stood for "answered" | Taken — **call (b)** | §21's rule "a hold binds…"; K1, K5, K6, K9, U2, U5, BL2 cells; §19.13; §8.5 |
+| Opus 2 | HIGH-MEDIUM | The core must mark two sheets in `BidPicker.tsx`; R3 counts the posting files' frames | Taken — true (`BidPicker.tsx` l.1250, l.1356; five `<Sheet` there, one in `SelectSheet.tsx`). **In part:** PS0 cannot pin R3, which is not on `main` — it writes the counts down instead | §21.1; §21.5's new row; §21.4 point 4; J3; §11 risk 39 |
+| Opus 4 | MEDIUM | The bell must edit the Undo engine's and the settings' files | Taken — true (`undo/timeline.ts NOT_STEPS` l.275, `people-settings-commit.ts` l.97) | §21.3's files; §21.5's Undo row |
+| Opus 5 | MEDIUM | No ruling, lesson or port range for a section | Taken — **call (c)** | §21's ranges table |
+| Opus 6 | MEDIUM | Admin → Users and the bell really wait on K1's waits | **Taken in part:** K2 is split — its look (K2a) straight after K0, its report (K2b) after K1 — so Admin → Users no longer waits on K1; the bell, behind K6, does, and §21.3 now says so. The core's later one-line reports in `UsersPanel.tsx` are a new row of §21.5 | §21.1; §21.2; §21.3; §21.5 |
+| Opus 8 | MEDIUM | "Home squadron first" is ruled "wherever squadrons are listed" and built on one page | Taken — true (`state/bellsqn.ts`: "By number, as the Schedules menu lists them"). **Open for him — call (d)**, recommended everywhere | §19.3's hold; §8.5; U3's and BL1's cells |
+| Opus 9 | MEDIUM-LOW | `msq-users-*` and `msq-bell-*` are taken by eight two-squadron files | Taken | `msq-s2-*`, `msq-s3-*`, `msq-s4-*` throughout; R9 reads the table |
+| Opus 10 | LOW-MEDIUM | Group B's reminder moved to "when the batch is built" | Taken — **call (e)**: after the core's last step | §21.1's closing step |
+| Opus 11 | LOW-MEDIUM | §19.11 V0 lets a step start on its own drawing, against D2657 | Taken | §19.11 V0, struck |
+| Opus 12 | LOW-MEDIUM | "Pressing the day again" may need `Sheet.tsx` | Taken as a **(reading)** — two presses, no change to `Sheet.tsx`; not pressed by anyone | §22 (a, d; PT3); §21.4 PS3 |
+| Opus 13 | LOW | Does a jump's count match its heading's? | Taken — it does | §19.12; V36 |
+| Opus 14 | LOW | Six slips: risk 39's finding number; PS used for tests and steps; `SquadronsPanel.tsx` missing; §18.3's old "After" unstruck; "can show" unmarked; two lists of answered codes | Taken, all six | §11 risk 39; tests PT1–PT8; §21.1; §18.3 and G3; §19.13; §1 |
+
+**Still his to answer after this ledger, each a hold on a named step:** the two questions of call (d); the readings
+17–20 and 22–24; every reading of §19.12 and §19.13; NQ1–NQ3; N14; V-Q2; §5.5's home-page row; the Plan lines' tap.
+**Not verified by this ledger:** what `main` holds for the four posting files and for the rulings' check (the
+`origin/main` on this PC was not fetched for it); what one press under an open sheet does on the day's cell.
