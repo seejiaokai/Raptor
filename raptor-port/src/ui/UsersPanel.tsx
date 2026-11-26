@@ -54,7 +54,7 @@ import {
 } from '../leavewar/sync'
 import './postout.css'
 import { DateBox } from './DateBox'
-import { useGuardWork } from './guard'
+import { useGuardSection, useGuardWork } from './guard'
 
 const P = (pid: string): any => (PEOPLE as any)[pid]
 const cs = (pid: string) => (P(pid) ? String(P(pid).cs) : '')
@@ -618,6 +618,9 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
      post-in date the one it last opened fresh on (never today's, which moves at midnight under an untouched form).
      Folded counts nothing: only Cancel and Escape fold it, and both empty it first. */
   useGuardWork('addperson', adding && (name !== '' || JSON.stringify(np) !== JSON.stringify(BLANK) || role !== 'main' || postIn !== postIn0))
+  /* …AND WHETHER THIS SECTION IS IN SIGHT (the guard's note — his "save or cancel the open row on Users", D2627 A6, said
+     while a row here is open and another Admin section shows): the Admin page's own `shown`, handed on as it is */
+  useGuardSection('users', !!p.shown)
   const add = () => {
     const nm = name.trim().toLowerCase()
     const who = np.cs.trim()

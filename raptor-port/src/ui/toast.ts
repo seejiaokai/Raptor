@@ -85,6 +85,9 @@ export function toastBatch<T>(fn:()=>T):T{
    `data-wide` to keep its movement in step with this place. */
 export function placeToast(){
   const t=$('toastEl'); if(!t)return;
+  /* the guard's note, while it is the note showing (toastAt, below): its own place; every other note as before */
+  if(AT&&AT.n!==SHOWN)AT=null;
+  if(AT){ placeAt(t,AT.at); return; }
   const phone=phoneLayout();
   if(phone)t.dataset.wide='1'; else delete t.dataset.wide;
   t.style.left=phone?'12px':'50%';
@@ -104,6 +107,154 @@ export function placeToast(){
   t.dataset.at=up?'top':'foot';
   t.style.top=up?'calc(env(safe-area-inset-top, 0px) + 10px)':'';
   t.style.bottom=up?'auto':'26px';
+}
+
+/* THE GUARD'S NOTE STANDS BY THE CONTROL PRESSED (the guard rail's plan §4.6 "How placeToast learns the control"; his
+   D2590, D2627 A13–A15; step K3). A refused pick, view switch or bell line raises "Blocked: …" — and the note must stand
+   where his eye already is: under the squadron picker for a pick (the drawing p1b), under the role badge for the switch
+   (p2b), under the pressed line inside the bell's list (p4b), at the foot on an upright phone (p3-p). It cannot ask "what
+   was pressed last" (the pressed row is gone with its list by the time the note is raised), so the door says, through
+   ui/guardnote.ts, and this file only measures and places.
+   `AT` is the guard note's place while that note is the one showing: `toastAt` sets it and raises the note; any later note
+   (a toast() that did not come through toastAt — `n`, the count of notes shown, has moved on) takes the ordinary place
+   again, and every ordinary note's place is today's, untouched. Inside an open batch toastAt is a plain toast (no door
+   runs inside the publish batch). */
+export type NoteAt = {
+  /** the control the note stands under (or null, or not drawn: the foot) */
+  under: () => HTMLElement | null
+  /** which edge of the note lines up with the same edge of the control */
+  edge: 'left' | 'right'
+  /** 8px under the foot of the bar the control stands in ('bar'), or under the control itself ('self') */
+  below: 'bar' | 'self'
+  /** a list the control stands in (the bell's): under the control where the note fits inside it, else 8px under the list */
+  inside?: () => HTMLElement | null
+  /** where the press was made — the ☰ menu's ('drawer') puts the note at the foot (noteAtFoot) */
+  from?: 'bar' | 'drawer' | 'board'
+  /** the controls its words name (the guard's table, beside the words — ui/guard.ts guardLead), one selector list: the note
+   *  never stands over one */
+  names?: string
+}
+let AT:{at:NoteAt,n:number}|null=null;
+/* while it shows, its place is worked out again only when the window is resized and when a shell window opens
+   (ui/FloatWindow.tsx already calls placeToast) — a note is not moved about while it is read; the listener does nothing
+   for any other note */
+let resizeOn=false;
+/** raise a "Blocked:" note that stands by the control pressed */
+export function toastAt(msg:string,at:NoteAt):void{
+  if(BATCH){ toast(msg,'blocked'); return; }
+  if(!resizeOn&&typeof window!=='undefined'){ resizeOn=true; window.addEventListener('resize',()=>{ if(AT&&AT.n===SHOWN)placeToast() }) }
+  AT={at,n:SHOWN+1};
+  toast(msg,'blocked');
+}
+/* EVERY WINDOW'S ✕ — the note never stands over one (D2590: "never the window's ✕"): the windows' shell, the Traffic window,
+   the schedule's dialogs, and the ✕ each Leave War sheet draws in its title strip. One constant; a place whose box meets
+   one is passed over for the next */
+export const NOTE_X='.floatwin .win-x, .airpop-head .x, .modal-head .x, .bidsheet-hd .x';
+/** THE ONE ANSWER TO "A PHONE" FOR THIS NOTE (D2627 A14): the foot where the press was made inside the ☰ menu, or where the
+ *  top bar does not show the picker as the desktop's does — an upright phone, the shell's own width (ui/floatwin.ts
+ *  phoneLayout, the stylesheet's 620px). Wherever else — a desktop, a tablet upright, a phone on its side — the note
+ *  stands under the control pressed. */
+export const noteAtFoot=(from?:NoteAt['from']):boolean=>from==='drawer'||phoneLayout();
+
+export type NoteBox={left:number,top:number,right:number,bottom:number};
+export type NotePlaceIn={
+  /** the note's own size, its words at their own width (a desktop's), and its height held 12px from each side (a phone's) */
+  w:number,h:number,wideH:number,
+  /** the screen */
+  sw:number,sh:number,
+  /** noteAtFoot, and the shell's phone look (the foot's and the top's width) */
+  foot:boolean,phone:boolean,
+  /** the control pressed, drawn — or null */
+  ctl:NoteBox|null,edge:NoteAt['edge'],below:NoteAt['below'],
+  /** the foot of the bar the control stands in, the "Not saved" band under it counted when it is up */
+  barFoot:number|null,
+  /** the list the control stands in, drawn — or null */
+  inside:NoteBox|null,
+  /** every window's ✕ on screen, and every control the note's words name */
+  xs:NoteBox[],named:NoteBox[],
+};
+export type NotePlace={at:'ctl'|'foot'|'top',top:number,left:number,w:number,h:number};
+const meets=(a:NoteBox,b:NoteBox)=>a.left<b.right&&b.left<a.right&&a.top<b.bottom&&b.top<a.bottom;
+const boxAt=(left:number,top:number,w:number,h:number):NoteBox=>({left,top,right:left+w,bottom:top+h});
+/** WHICH PLACE — one pure function of boxes (so jsdom, which draws nothing, can test it with made-up ones): under the
+ *  control, then the foot, and only then the top. Under the control, a place over a window's ✕ or a control the words name
+ *  is passed over; at the foot the note rises to stand 8px above the highest such control or ✕ it would cover, checked
+ *  again at each new place (§4.6's first paragraph; the orchestrator's review). The top only when no room is left. */
+export function placeNote(p:NotePlaceIn):NotePlace{
+  const clearOfX=(b:NoteBox)=>!p.xs.some(x=>meets(b,x));
+  const named=(b:NoteBox)=>p.named.filter(n=>meets(b,n));
+  /* 1. under the control: 8px under the bar's foot (or the control's own), its left or right edge on the control's, held
+     8px inside the screen's sides */
+  if(!p.foot&&p.ctl){
+    const c=p.ctl;
+    let top=(p.below==='bar'&&p.barFoot!=null?p.barFoot:c.bottom)+8;
+    let left=p.edge==='left'?c.left:c.right-p.w;
+    /* inside a list (the bell's): where the note does not fit under the line inside it, 8px under the list, on its left edge */
+    if(p.inside&&top+p.h>p.inside.bottom){ top=p.inside.bottom+8; left=p.inside.left; }
+    left=Math.max(8,Math.min(left,p.sw-8-p.w));
+    const b=boxAt(left,top,p.w,p.h);
+    if(top+p.h<=p.sh&&clearOfX(b)&&!named(b).length)return {at:'ctl',top,left,w:p.w,h:p.h};
+  }
+  /* 2. the foot — today's foot: 26px up, on a phone 12px from each side, on a desktop centred; risen to stand 8px above any
+     control it names, or any window's ✕, that it would cover (the orchestrator's review of K3: a ✕ in the way is treated
+     as a named control is), checked again at each new place */
+  const fw=p.phone?p.sw-24:p.w, fh=p.phone?p.wideH:p.h, fl=p.phone?12:(p.sw-fw)/2;
+  const inWay=(b:NoteBox)=>[...named(b),...p.xs.filter(x=>meets(b,x))];
+  let top=p.sh-26-fh;
+  for(let i=0;i<=p.named.length+p.xs.length&&top>=8;i++){
+    const hit=inWay(boxAt(fl,top,fw,fh));
+    if(!hit.length)break;
+    top=Math.min(...hit.map(n=>n.top))-8-fh;
+  }
+  if(top>=8&&!inWay(boxAt(fl,top,fw,fh)).length)return {at:'foot',top,left:fl,w:fw,h:fh};
+  /* 3. the top — only when rising leaves no room on the screen; no case of §4.6's table of sizes reaches it (D2627 A15) */
+  return {at:'top',top:10,left:fl,w:fw,h:fh};
+}
+const drawn=(el:Element|null|undefined):el is HTMLElement=>!!el&&el.getClientRects().length>0;
+const rectOf=(el:Element):NoteBox=>{ const r=el.getBoundingClientRect(); return {left:r.left,top:r.top,right:r.right,bottom:r.bottom} };
+const drawnBoxes=(sel:string|undefined):NoteBox[]=>sel?[...document.querySelectorAll(sel)].filter(drawn).map(rectOf):[];
+/* placeToast's half for the guard's note: it measures and applies; placeNote decides */
+function placeAt(t:HTMLElement,at:NoteAt){
+  const phone=phoneLayout();
+  /* the note's two sizes: its words at their own width, and held 12px from each side */
+  t.style.transform='none'; t.style.bottom='auto'; t.style.top='0px';
+  t.style.left='8px'; t.style.right=''; t.style.textAlign='';
+  const own=t.getBoundingClientRect();
+  t.style.left='12px'; t.style.right='12px'; t.style.textAlign='center';
+  const wideH=t.getBoundingClientRect().height;
+  let ctl:HTMLElement|null=null;
+  try{ ctl=at.under() }catch(_){ ctl=null }
+  const c=drawn(ctl)?ctl:null;
+  let inside:HTMLElement|null=null;
+  try{ inside=at.inside?at.inside():null }catch(_){ inside=null }
+  /* the bar the control stands in, and the "Not saved" band under it while it is up (D2627 A13: the note stands under the
+     band, never over the Retry it points to) */
+  const bar=c?c.closest('.topbar, .sb-top'):null;
+  let barFoot:number|null=bar?bar.getBoundingClientRect().bottom:null;
+  if(barFoot!=null)for(const b of drawnBoxes('.savestat.failed'))if(b.top<=barFoot+1)barFoot=Math.max(barFoot,b.bottom);
+  const p=placeNote({
+    w:own.width,h:own.height,wideH,sw:window.innerWidth,sh:window.innerHeight,
+    foot:noteAtFoot(at.from),phone,ctl:c?rectOf(c):null,edge:at.edge,below:at.below,barFoot,
+    inside:drawn(inside)?rectOf(inside):null,xs:drawnBoxes(NOTE_X),named:drawnBoxes(at.names),
+  });
+  t.dataset.at=p.at;
+  if(p.at==='ctl'){
+    /* `data-wide`: the note is not shifted by half its width, so the rise-in in toast() carries no sideways shift (its one
+       reader — the rise-in reads it to keep its movement in step with this place) */
+    t.dataset.wide='1';
+    t.style.left=p.left+'px'; t.style.right=''; t.style.transform='none'; t.style.textAlign='';
+    t.style.top=p.top+'px'; t.style.bottom='auto';
+    return;
+  }
+  /* the foot and the top: the ordinary note's own look there */
+  if(phone)t.dataset.wide='1'; else delete t.dataset.wide;
+  t.style.left=phone?'12px':'50%';
+  t.style.right=phone?'12px':'';
+  t.style.transform=phone?'none':'translateX(-50%)';
+  t.style.textAlign=phone?'center':'';
+  if(p.at==='top'){ t.style.top='calc(env(safe-area-inset-top, 0px) + 10px)'; t.style.bottom='auto'; return; }
+  t.style.top='';
+  t.style.bottom=(window.innerHeight-p.top-p.h)+'px';
 }
 /* A NOTE IS TOLD TO A SCREEN READER TOO ([BATCH-14OCT-LEFTOVERS] (f), 21 Oct 26 — found by the leftovers' own walk,
    14 Oct 26): the note's box was a plain box, so where a note was shown a screen reader heard nothing. Every note's words
@@ -211,8 +362,9 @@ export function toast(msg:any,kind:any,part?:ToastPart){
     if(typeof (t as any).animate==='function'&&!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches)){
       const shift=t.dataset.wide?'':'translateX(-50%) ';
       (t as any).animate(
-        /* it rises into its place at the foot, and drops into it at the top */
-        [{transform:`${shift}translateY(${t.dataset.at==='top'?-8:8}px)`},{transform:shift?'translateX(-50%)':'none'}],
+        /* it rises into its place at the foot, and drops into it at the top — and under the control pressed (the guard's
+           note, data-at="ctl" — placeToast's anchored branch; §4.6) */
+        [{transform:`${shift}translateY(${t.dataset.at==='top'||t.dataset.at==='ctl'?-8:8}px)`},{transform:shift?'translateX(-50%)':'none'}],
         {duration:200,easing:'cubic-bezier(.22,.61,.36,1)'})
     }
   }catch(_){/* motion is decoration — a throw here must never eat the toast */}

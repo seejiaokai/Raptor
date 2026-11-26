@@ -41,6 +41,8 @@ import { settleWorld } from './world'
 /* the guard rail's table installs itself into its seam as it loads (state/guard.ts — the plan §3.1 "Who installs it"):
    every test of this world has the guard answering, as the app does */
 import '../ui/guard'
+/* …and its note (ui/guardnote.ts — K3): the seam's one way to say a refusal, installed as it loads, as the shell loads it */
+import '../ui/guardnote'
 
 /* the memory store behind the app's storage, emptied each test */
 export const mem: Record<string, string> = {}
