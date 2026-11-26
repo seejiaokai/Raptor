@@ -1872,3 +1872,16 @@ sides.
 **Issue:** Each brief described the shared sheet in its own words; one drawer made its new "To" line a drop-down, the other a row of chips. Only the later words review caught it, and fixing it cost a second round of messages to both drawers (and one reversal when the reviewer's reason for the drop-down turned out better).
 **Suggested improvement:** When two parallel briefs touch the same screen part, name ONE owner for that part in both briefs; the other drawer copies the owner's finished picture (or waits for it), and its brief says so. Add to the parallel-dispatch checklist: "list the parts more than one helper will draw; give each a single owner".
 **Principle:** Parallel workers given overlapping scope diverge on the overlap; assign each shared piece a single owner up front rather than reconciling afterwards.
+
+### Observation 1080: A caption written while a picture was being redrawn described the old picture
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** chat 191, the multi-squadron coordinator — four section mock-up pages built by helpers while drawers redrew pictures under the same file names (1079 is taken on another branch; numbered past it)
+**Skill:** New skill candidate: mock-up page pipeline (draw → words review → page → page review → publish)
+**Type:** open-source
+**Phase/Area:** assembling a page from pictures that are still being changed
+
+**Issue:** A drawer redrew a phone picture so a note no longer covered the buttons it named, under the same file name. The page reviewer, working at the same time, recut the picture and wrote a caption saying the note "lies over the form's own Cancel and Save" — true of the old picture, false of the new one. The host caught it only by opening the final picture before publishing.
+**Suggested improvement:** In the pipeline, a picture redrawn after a page was built is listed by name to the page reviewer and the host; the host opens every such picture beside its caption as the last step before publishing. Prefer a new file name for a redraw that changes what the picture shows.
+**Principle:** When an asset is replaced in place while other workers describe it, every description written in that window must be re-checked against the final asset; a changed meaning deserves a new name.
