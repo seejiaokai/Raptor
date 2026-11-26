@@ -12,7 +12,7 @@ import { getState } from '../state/store'
 import { Matrix } from './Matrix'
 import { SelectSheet } from './SelectSheet'
 import { more } from './more-testkit'
-import { useS4World, signInAs, PID, ids } from './msq-s4-world'
+import { useS4World, signInAs, PID, ids } from '../../test-support/msq-s4-world'
 
 useS4World()
 
