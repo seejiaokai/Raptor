@@ -1,0 +1,628 @@
+
+<title>Combined Row Look</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one reading column; each question a card with its pictures today-beside-proposed, stacking on a phone. */
+:root{
+  --bg:#f3f5f8; --panel:#ffffff; --fg:#17202b; --muted:#5b6878; --line:#d9e0e8;
+  --accent:#0f8fb3; --accent-soft:#e3f4f9; --rec:#1d7a4a; --rec-soft:#e4f4ea; --warn:#a4660a; --warn-soft:#fbf0dc;
+  --font-body:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --font-head:"Space Grotesk","Inter",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f141a; --panel:#18202a; --fg:#e7edf3; --muted:#9aa7b6; --line:#2a3542;
+  --accent:#43c3e6; --accent-soft:#12303b; --rec:#5fd394; --rec-soft:#14301f; --warn:#f0b75a; --warn-soft:#33270f; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f141a; --panel:#18202a; --fg:#e7edf3; --muted:#9aa7b6; --line:#2a3542;
+  --accent:#43c3e6; --accent-soft:#12303b; --rec:#5fd394; --rec-soft:#14301f; --warn:#f0b75a; --warn-soft:#33270f; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 48px}
+.wrap{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+h1,h2,h3{font-family:var(--font-head);text-wrap:balance;margin:0}
+h1{font-size:1.6rem} h2{font-size:1.2rem} h3{font-size:1rem}
+p{margin:0} .muted{color:var(--muted)}
+.now{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.now ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:6px}
+.now a{color:var(--accent)}
+.q{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.when{font-size:.9rem;color:var(--muted)}
+.rec{background:var(--rec-soft);color:var(--fg);border-left:3px solid var(--rec);padding:8px 10px;border-radius:6px}
+.rec b{color:var(--rec)}
+.note{background:var(--warn-soft);border-left:3px solid var(--warn);padding:8px 10px;border-radius:6px;font-size:.93rem}
+.pics{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+figure{margin:0;display:flex;flex-direction:column;gap:4px;min-width:0}
+figure img{width:100%;height:auto;border:1px solid var(--line);border-radius:6px;background:#000;cursor:zoom-in}
+figure.phone img{max-width:300px}
+figcaption{font-size:.85rem;color:var(--muted)}
+.tag{display:inline-block;font-size:.75rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:1px 6px;border-radius:4px;background:var(--accent-soft);color:var(--accent)}
+.words{font-family:ui-monospace,Consolas,monospace;font-size:.9rem;background:var(--accent-soft);padding:1px 5px;border-radius:4px}
+.later{background:var(--panel);border:1px dashed var(--line);border-radius:10px;padding:16px}
+.later ul{margin:6px 0 0;padding-left:1.2em}
+dialog{border:none;padding:0;background:transparent;max-width:96vw;max-height:96vh}
+dialog img{max-width:96vw;max-height:92vh;display:block}
+dialog::backdrop{background:rgba(0,0,0,.8)}
+a:focus-visible,img:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+/* only what is new since the last round is highlighted; earlier rounds take the normal colour */
+.q.new{border:2px solid var(--accent)}
+.now li.newline .tag{margin-right:2px}
+
+/* Clean-sheet sketches (27 Nov, chat 192): schematic layouts in the app's own dark look, drawn as HTML so they stay
+   sharp at any size. The page's own tokens frame them; the sketch inside keeps the app's colours whatever the theme. */
+.fq{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:6px}
+.tight{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:4px}
+.sk-fig{margin:0;display:flex;flex-direction:column;gap:6px;min-width:0}
+.pics.phones{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.skwrap{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:8px;background:#0d0e12}
+.skwrap > .sk{transform-origin:0 0}
+figcaption .n,.mk::after{display:inline-grid;place-items:center;width:17px;height:17px;border-radius:50%;background:#f5b82e;color:#111;font:700 11px/1 system-ui,sans-serif}
+figcaption .n{margin:0 2px;vertical-align:1px}
+button.full{display:inline-block;margin-left:6px;font:inherit;font-size:.82rem;color:var(--accent);background:none;border:1px solid var(--line);border-radius:6px;padding:1px 8px;cursor:pointer}
+/* the app's look, approximated for a sketch */
+.sk{--a-bg:#121318;--a-pan:#1b1c22;--a-line:#2b2d36;--a-fg:#e8e9ee;--a-mut:#8b8e9a;--a-cy:#35c2e3;--a-red:#e2474d;--a-amb:#f2a51f;
+  background:var(--a-bg);color:var(--a-fg);font:12px/1.35 -apple-system,"Segoe UI",system-ui,sans-serif;position:relative}
+.sk-desk{width:980px}
+.sk-sched{width:760px;padding:10px}
+.sk-phone{width:390px;min-height:640px;display:flex;flex-direction:column}
+.sk-phone.sk-short{min-height:0}
+.mk{position:relative;outline:2px solid #f5b82e;outline-offset:2px;border-radius:4px}
+.mk::after{content:attr(data-n);position:absolute;top:-10px;left:-10px;z-index:2}
+.s-top{display:flex;align-items:center;gap:14px;padding:8px 12px;background:#0b0c10;border-bottom:1px solid #1d6f86}
+.s-top.p{justify-content:space-between}
+.s-logo{font-weight:800;letter-spacing:.06em;color:#fff}
+.s-nav{display:flex;gap:12px;color:var(--a-mut);font-weight:600}
+.s-nav .on{color:#fff;border-bottom:2px solid var(--a-cy);padding-bottom:2px}
+.s-icons{margin-left:auto;color:var(--a-mut);letter-spacing:.3em}
+.s-tabs{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--a-line);color:var(--a-mut);font-weight:600}
+.s-tabs > span:not(.s-btn):not(.s-chip):not(.s-sp){padding:4px 8px;border-radius:6px}
+.s-tabs .on:not(.s-btn){background:var(--a-pan);color:#fff}
+.s-sp{flex:1}
+.s-chip{padding:4px 9px;border-radius:12px;font-weight:600}
+.s-green{background:#123a24;color:#7fe0a3;border:1px solid #2c7a4a}
+.s-btn{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:6px;background:#23252d;border:1px solid #343743;color:#dfe1e7;font-weight:600;white-space:nowrap}
+.s-btn.on{border-color:var(--a-cy);color:#fff;background:#14303a}
+.s-btn.s-pri{background:#1c6f88;border-color:#2a8fab;color:#fff}
+.s-btn.ok{color:#7fe0a3}
+.s-btn.del{color:#ff8a8a}
+.s-btn.sm{padding:2px 7px;font-size:11px}
+.s-body{display:flex;gap:0}
+.s-grid{flex:1;padding:8px 6px 10px 10px;min-width:0}
+.g-row{display:grid;grid-template-columns:78px repeat(12,1fr);gap:2px;align-items:center;min-height:24px}
+.g-row > span{height:22px;display:grid;place-items:center;border-radius:3px}
+.g-head > span{height:auto;color:var(--a-mut);font-size:10.5px;text-align:center;line-height:1.15}
+.g-name{justify-content:start!important;place-items:center start!important;color:var(--a-mut);font-weight:600;font-size:11px}
+.g-row .we{background:#17181e}
+.g-man > span{background:#191c24;color:#cfd3dc;font-weight:700;font-size:11px}
+.g-man > span.g-name{background:none}
+.g-av > span{background:#152322}
+.g-man .amb{color:var(--a-amb)}
+.g-man small{display:block;font-size:8.5px;color:var(--a-mut);font-weight:600;line-height:1}
+.g-man .amb{display:flex;flex-direction:column;line-height:1.05}
+.g-key{margin-top:8px;color:var(--a-mut);font-size:11px;display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.pk{display:inline-block;padding:1px 7px;border-radius:4px;font-weight:700;font-size:11px;color:#fff;white-space:nowrap}
+.pk.g{background:#2a6a45}.pk.o{background:#6d6a2a}
+.bx{font-weight:800;font-size:10px;color:#fff;letter-spacing:.02em}
+.bx.k{display:inline-grid;place-items:center;padding:2px 5px;border-radius:3px;min-width:26px}
+.bx.ll{background:#2f8a5a}.bx.od{background:#56708a}.bx.cse{background:#7b4fd0}.bx.med{background:#c4433d}.bx.sd{background:#3c6fa8}
+.bx.bid{background:transparent;border:1.5px dashed #6fd39b;color:#9ce6bd}
+.bx.lit{outline:2px solid var(--a-cy);outline-offset:-2px}
+.bx.sel{outline:2px solid #f5b82e;outline-offset:-1px}
+.s-side{width:300px;border-left:1px solid var(--a-line);background:#15161b;padding:8px;display:flex;flex-direction:column;gap:6px;margin:4px}
+.sd-h{display:flex;justify-content:space-between;align-items:center}
+.sd-f{display:flex;gap:4px;font-size:11px;color:var(--a-mut)}
+.sd-f span{padding:2px 7px;border-radius:10px;border:1px solid var(--a-line)}
+.sd-f .on{color:#fff;border-color:var(--a-cy)}
+.ap{display:grid;grid-template-columns:auto auto 1fr;gap:4px 6px;align-items:center;padding:6px;border-radius:6px;background:var(--a-pan);border:1px solid var(--a-line)}
+.ap.on{border-color:#f5b82e}
+.ap.done{opacity:.7}
+.ap-d{font-weight:600}
+.ap-m{grid-column:1 / span 2;color:#cfd3dc;font-size:11px}
+.ap-b{grid-column:3;justify-self:end;display:flex;gap:4px}
+.ap .amb,.amb2{color:var(--a-amb)}
+.muted2{color:var(--a-mut)}
+.sd-more{color:var(--a-mut);font-size:11px;text-align:center}
+/* phone */
+.s-seg{display:flex;margin:10px 12px 6px;background:#1b1c22;border-radius:8px;padding:2px}
+.s-seg span{flex:1;text-align:center;padding:6px;border-radius:6px;color:var(--a-mut);font-weight:700}
+.s-seg .on{background:#2b2e38;color:#fff}
+.p-banner{margin:0 12px 6px;padding:6px 9px;border-radius:6px;background:#123a24;color:#7fe0a3;font-weight:600}
+.p-month{margin:0 12px;padding:8px;background:var(--a-pan);border-radius:8px}
+.pm-h{text-align:center;font-weight:700;margin-bottom:4px}
+.pm-g{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;text-align:center}
+.pm-g span{color:var(--a-mut);font-size:10px}
+.pm-g i{font-style:normal;padding:4px 0;border-radius:4px;background:#22242c;border-top:2px solid #2c7a4a}
+.pm-g i.w{background:#1a1b21}
+.pm-g i.b{background:transparent;outline:1.5px dashed #6fd39b;outline-offset:-2px}
+.pm-g i.s{background:#3c6fa8}
+.pm-k{color:var(--a-mut);font-size:10px;margin-top:4px}
+.p-list{padding:6px 12px;display:flex;flex-direction:column;gap:6px;flex:1}
+.p-sub{color:var(--a-mut);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-top:4px}
+.pc{display:flex;gap:10px;align-items:center;padding:8px;border-radius:8px;background:var(--a-pan);border:1px solid var(--a-line)}
+.p-foot{display:flex;justify-content:space-between;padding:10px 12px;border-top:1px solid var(--a-line)}
+/* the window */
+.win{margin:14px 10px;background:#1d1f26;border:1px solid #343743;border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:10px;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.w-h{display:flex;align-items:center;gap:7px;font-size:13px}
+.w-date{color:#fff;font-weight:700}
+.w-x{margin-left:auto;color:var(--a-mut)}
+.w-r{display:grid;grid-template-columns:68px 1fr;gap:8px;align-items:start}
+.w-l{color:var(--a-mut);font-weight:600;padding-top:3px}
+.pks{display:flex;flex-wrap:wrap;gap:3px}
+.chg{display:flex;align-items:center;gap:5px;margin-top:6px;font-weight:600}
+.seg{display:flex;gap:3px;flex-wrap:wrap}
+.seg span{padding:4px 8px;border-radius:6px;background:#23252d;border:1px solid #343743;font-weight:600}
+.seg .on{border-color:var(--a-cy);background:#14303a;color:#fff}
+.w-box{padding:5px 8px;border-radius:6px;background:#23252d;border:1px solid #343743}
+.w-box.dark{background:#0f1014;color:var(--a-mut)}
+.w-f{display:flex;justify-content:space-between;padding-top:4px;border-top:1px solid var(--a-line)}
+/* schedule day */
+.sc-day{font-weight:700;margin-bottom:8px}
+.sc-sec{border-left:3px solid var(--a-red);background:var(--a-pan);border-radius:6px;padding:6px 8px 8px;margin-bottom:10px}
+.sc-sec:has(.amb){border-left-color:var(--a-amb)}
+.sc-t{font-weight:800;letter-spacing:.08em;font-size:11px;margin-bottom:4px}
+.sc-t.red{color:var(--a-red)}.sc-t.amb{color:var(--a-amb)}
+.sc-row{display:flex;align-items:center;gap:10px;padding:5px 4px;border-top:1px solid #24262e;flex-wrap:wrap}
+.sc-k{width:44px;font-weight:600}
+.sc-tm{width:78px;color:var(--a-mut);font-family:ui-monospace,Consolas,monospace;font-size:11px}
+.sc-rm{color:#cfd3dc;flex:1;min-width:120px}
+.late{background:var(--a-amb);color:#111;font-weight:800;font-size:9.5px;padding:1px 4px;border-radius:3px;margin-left:4px}
+/* the road of three stops */
+.road{display:flex;flex-direction:column;gap:4px;border-left:3px solid var(--line);padding-left:12px;margin:2px 0 4px}
+.road .st{padding:6px 10px;border-radius:6px;background:var(--panel);border:1px solid var(--line)}
+.road .st b{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--accent-soft);color:var(--accent);margin-right:6px}
+.road .stop{font-weight:700;color:var(--muted);font-size:.9rem;padding:2px 0 6px 2px}
+.road .stop::before{content:"■ ";color:var(--accent)}
+.road .stop.rec{color:var(--rec)}
+.road .stop.rec::before{color:var(--rec)}
+/* full-size viewer for a sketch, and the picture viewer's Close */
+dialog .dlg-bar{display:flex;justify-content:flex-end;padding:6px}
+dialog .dlg-close{font:600 14px system-ui,sans-serif;color:#fff;background:#23252d;border:1px solid #444;border-radius:6px;padding:6px 14px;cursor:pointer}
+dialog .dlg-body{max-width:96vw;max-height:86vh;overflow:auto;background:#0d0e12;border-radius:8px}
+</style>
+
+<div class="wrap">
+<header style="display:flex;flex-direction:column;gap:6px">
+  <span class="tag">Leave and inputs · 27 Nov · new: your clean sheet</span>
+  <h1>Leave and inputs: your look</h1>
+  <p class="muted">Everything here is drawn on the real app with throwaway data: the "today" pictures are the app as it is, the "proposed" ones have the new parts drawn in. Tap a picture to see it full size. Nothing is built yet.</p>
+</header>
+
+<section class="now">
+  <h2>What to look at now</h2>
+  <p><span class="tag">New</span> <b>Your clean sheet: how we would design leave and inputs from scratch.</b> Fable and Astra each answered on their own, then read each other's answer and agreed. Four questions:</p>
+  <ol type="1" class="fq">
+    <li><a href="#f1"><b>F1</b> How far to go</a>: the whole new design, one home called Availability, built in steps? <b>Recommended: yes, the whole design.</b></li>
+    <li><a href="#f2"><b>F2</b> On dates open for bidding, leave is always a bid</a>, and leave approved by word of mouth there is entered by an admin? <b>Recommended: yes.</b></li>
+    <li><a href="#f3"><b>F3</b> "To review" on the schedule</a>, in place of the Personal Inputs list? <b>Recommended: yes.</b></li>
+    <li><a href="#f4"><b>F4</b> Deciding bids</a>: one man at a time, or everyone asking for the same days together? <b>Recommended: both, in one list.</b></li>
+  </ol>
+  <p class="muted" style="margin-top:4px">The earlier questions: A (the direction) is now F1. B to E and 1, 2, 5, 7 still stand whichever you pick, since the first steps are the same. Question 3 (the shared mark): both readers now recommend B, no mark in the box.</p>
+  
+  <p class="muted" style="margin-top:6px"><b>Still open from earlier</b>, the same whichever stop you pick in F1:</p>
+  <ol type="A">
+    <li class="muted"><a href="#sa">The direction</a>: <b>replaced by F1</b>.</li>
+    <li><a href="#sb">"Change for Cutter only" on every page</a>, not just the Leave War? <b>Recommended: yes.</b></li>
+    <li><a href="#sc">A member drags his own approved leave on the Leave War</a>, and it just moves? <b>Recommended: yes.</b></li>
+    <li><a href="#sd">An overseas duty or a course works the same everywhere</a>: several men make one item, and morning, afternoon or hours on every page? <b>Recommended: yes.</b></li>
+    <li><a href="#se">An admin adds a man to leave that came from someone's approved bid</a>? <b>Recommended: yes, built last.</b></li>
+  </ol>
+  <ol>
+    <li value="1"><a href="#q1">The one row under Unavailable</a>: build it as drawn? <b>Recommended: yes.</b></li>
+    <li><a href="#q2">The three "Blocked" notes</a>: these words? <b>Recommended: yes.</b></li>
+    <li class="muted"><a href="#q3">The shared mark on the Leave War</a>: <b>paused</b>; both readers now recommend B, no mark in the box.</li>
+    <li class="muted"><a href="#q4">A tap on a group leave on the Leave War</a>: <b>paused</b>, covered by question A.</li>
+    <li><a href="#q5">Swapping one man for another on a leave</a>: only the leave type and days pass over? <b>Recommended: yes.</b></li>
+    <li><a href="#q6">Papers on a group leave</a>: <b>answered, B</b> — several papers, each one man's, opened only by him and the admins.</li>
+    <li><a href="#q7">A medical or a posting-out over one man of a group leave</a>: he still gets his own leave by itself? <b>Recommended: yes.</b></li>
+    <li class="muted"><a href="#q8">Your "Change Cutter's only" button on the Leave War</a>: <b>paused</b>, covered by question B.</li>
+    <li class="muted"><a href="#q9">When that button takes Cutter out of the group</a>: <b>answered, A</b>: the moment the button is pressed.</li>
+  </ol>
+  <p class="muted">Answer by letter and number, for example "F1–F4 as recommended", or tell me which to change.</p>
+</section>
+
+<section class="q new" id="f1">
+  <span class="tag">New · clean sheet</span>
+  <h2>F1 · How far to go: one home called Availability</h2>
+  <p class="when">When: every day, for everyone. A member files a medical on his phone, the admin decides bids in January, the scheduler replans an hour before publishing.</p>
+  <p><b>The idea.</b> The Leave War and the Inputs page become one place, <b>Availability</b>. A leave, a medical, a course or a duty is one thing, entered once, with one window that works the same everywhere. A bid stays the same thing when it is approved: it just turns from pending to approved. The schedule stays your working page and opens the same window. Their words for it: <i>"If you can see it, you can open it, and it behaves the same wherever you opened it."</i></p>
+  <div class="pics">
+    <figure><img src="img/f6-war-window-today-desktop.png" alt="Leave War window today sending you to the Inputs page" loading="lazy"><figcaption>Today, the Leave War: a leave filed on the Inputs page reads "change it on the Inputs page".</figcaption></figure>
+    <figure><img src="img/g5-schedule-window-today-desktop.png" alt="Edit Schedule's window today with no dates" loading="lazy"><figcaption>Today, Edit Schedule: the same leave opens a third window, without its dates.</figcaption></figure>
+  </div>
+
+  <h3>The sketches</h3>
+  <p class="muted">Rough layouts in the app's look, to show where things sit. Not finished drawings: each step is drawn on the real app before it is built. The numbered amber marks are the new parts.</p>
+
+  <figure class="sk-fig">
+    <div class="skwrap" data-w="980"><div class="sk sk-desk">
+      <div class="s-top"><span class="s-logo">142 TALON</span><span class="s-nav"><span>Edit Schedule</span><span>View-only Sched</span><span class="on">Availability</span><span>Quals</span><span>Logic</span><span>Tracker</span><span>Admin</span></span><span class="s-icons">↶ ↷ ● 🔔︎</span></div>
+      <div class="s-tabs"><span class="on">Squadron</span><span>Mine</span><span>Medical</span><span>SANS</span><span>Balances</span><span>OIL</span><span class="s-sp"></span><span class="s-chip s-green mk" data-n="1">Leave War · Mar–Apr · closes 20 Jan</span><span class="s-btn">‹ Mar 27 ›</span><span class="s-btn s-pri">+ Add</span><span class="s-btn on mk" data-n="2">Approvals 12</span></div>
+      <div class="s-body">
+        <div class="s-grid">
+          <div class="g-row g-head"><span class="g-name"></span>
+            <span class="g-d">8<br>M</span><span class="g-d">9<br>T</span><span class="g-d">10<br>W</span><span class="g-d">11<br>T</span><span class="g-d">12<br>F</span><span class="g-d we">13<br>S</span><span class="g-d we">14<br>S</span><span class="g-d">15<br>M</span><span class="g-d">16<br>T</span><span class="g-d">17<br>W</span><span class="g-d">18<br>T</span><span class="g-d">19<br>F</span></div>
+          <div class="g-row g-man"><span class="g-name">Req P</span><span>8</span><span>8</span><span>8</span><span>8</span><span>8</span><span class="we"></span><span class="we"></span><span>8</span><span>8</span><span>8</span><span>8</span><span>8</span></div>
+          <div class="g-row g-man g-av mk" data-n="3"><span class="g-name">Avail P</span><span>11</span><span class="amb">9<small>10</small></span><span class="amb">9<small>10</small></span><span class="amb">9<small>10</small></span><span class="amb">9<small>10</small></span><span class="we"></span><span class="we"></span><span>11</span><span>12</span><span>12</span><span>12</span><span>12</span></div>
+          <div class="g-row"><span class="g-name"><span class="pk g">Cutter</span></span><span></span><span class="bx ll">LL</span><span class="bx ll">LL</span><span class="bx ll">LL</span><span class="bx ll">LL</span><span class="we"></span><span class="we"></span><span></span><span></span><span class="bx sd lit">SD</span><span class="bx sd lit">SD</span><span></span></div>
+          <div class="g-row g-sel"><span class="g-name"><span class="pk g">Ghost</span></span><span></span><span class="bx bid sel">LL</span><span class="bx bid sel">LL</span><span class="bx bid sel">LL</span><span class="bx bid sel">LL</span><span class="we"></span><span class="we"></span><span></span><span></span><span class="bx sd lit">SD</span><span class="bx sd lit">SD</span><span></span></div>
+          <div class="g-row"><span class="g-name"><span class="pk g">Dash</span></span><span class="bx med">ATT C</span><span></span><span></span><span></span><span></span><span class="we"></span><span class="we"></span><span></span><span></span><span class="bx sd lit">SD</span><span class="bx sd lit">SD</span><span></span></div>
+          <div class="g-row"><span class="g-name"><span class="pk o">Ranger</span></span><span class="bx od">OD</span><span class="bx od">OD</span><span class="bx od">OD</span><span></span><span></span><span class="we"></span><span class="we"></span><span></span><span class="bx bid">OIL</span><span class="bx sd lit">SD</span><span class="bx sd lit">SD</span><span></span></div>
+          <div class="g-row"><span class="g-name"><span class="pk g">Hex</span></span><span></span><span></span><span></span><span class="bx cse">CSE</span><span class="bx cse">CSE</span><span class="we"></span><span class="we"></span><span></span><span></span><span class="bx sd lit">SD</span><span class="bx sd lit">SD</span><span></span></div>
+          <div class="g-row"><span class="g-name"><span class="pk g">Drifter</span></span><span></span><span class="bx bid">LL</span><span class="bx bid">LL</span><span></span><span></span><span class="we"></span><span class="we"></span><span></span><span></span><span class="bx sd lit">SD</span><span class="bx sd lit">SD</span><span></span></div>
+          <div class="g-key"><span class="bx bid k">LL</span> dashed: a bid, pending &nbsp; <span class="bx ll k">LL</span> solid: approved &nbsp; <span class="bx sd lit k">SD</span> a stand-down for six, lit together because one box was tapped</div>
+        </div>
+        <div class="s-side mk" data-n="4">
+          <div class="sd-h"><b>Approvals</b><span class="sd-f"><span class="on">All 12</span><span>Same dates</span></span></div>
+          <div class="ap on"><span class="pk g">Ghost</span><span class="bx bid k">LL</span><span class="ap-d">9–12 Mar · 4 days</span><span class="ap-m">Avail P <b class="amb">9</b> · <span class="muted2">10 without</span></span><span class="ap-b"><span class="s-btn ok">Approve</span><span class="s-btn">Refuse</span></span></div>
+          <div class="ap"><span class="pk g">Drifter</span><span class="bx bid k">LL</span><span class="ap-d">9–10 Mar · 2 days</span><span class="ap-m">Avail P 9</span><span class="ap-b"><span class="s-btn">Approve</span><span class="s-btn">Refuse</span></span></div>
+          <div class="ap done"><span class="pk g">Cutter</span><span class="bx ll k">LL</span><span class="ap-d">9–12 Mar</span><span class="ap-m">Approved · Saber</span></div>
+          <div class="ap"><span class="pk o">Ranger</span><span class="bx bid k">OIL</span><span class="ap-d">16 Mar · 1 day</span><span class="ap-m">Avail P 12</span><span class="ap-b"><span class="s-btn">Approve</span><span class="s-btn">Refuse</span></span></div>
+          <div class="sd-more">8 more ↓</div>
+        </div>
+      </div>
+    </div></div>
+    <figcaption><b>Sketch 1 · Availability on a desk, the admin deciding bids.</b> In the top bar Availability takes the place of Inputs and the Leave War. Inside it, the Leave War's grid, with the requests beside it. <span class="n">1</span> "Leave War" stays as the name of the bidding period. <span class="n">2</span> Approvals opens beside the grid, never on another page. <span class="n">3</span> Manning counts pending bids as today; with Ghost's request picked, his days also show the figure without him (10), so you see what a refusal gives back before you press it. <span class="n">4</span> A decided request stays where it was for that visit, so the buttons don't move under your hand. <button class="full" type="button">Open full size</button></figcaption>
+  </figure>
+
+  <div class="pics phones">
+    <figure class="sk-fig">
+      <div class="skwrap" data-w="390"><div class="sk sk-phone">
+        <div class="s-top p"><span class="s-logo">☰ TALON</span><span class="s-icons">↶ ↷ 🔔︎</span></div>
+        <div class="s-seg mk" data-n="1"><span class="on">Mine</span><span>Squadron</span></div>
+        <div class="p-banner">Leave War open: Mar–Apr, closes 20 Jan</div>
+        <div class="p-month"><div class="pm-h">‹ March 27 ›</div>
+          <div class="pm-g"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
+          <i class="op">1</i><i class="op">2</i><i class="op">3</i><i class="op">4</i><i class="op">5</i><i class="op w">6</i><i class="op w">7</i>
+          <i class="op">8</i><i class="op b">9</i><i class="op b">10</i><i class="op b">11</i><i class="op b">12</i><i class="op w">13</i><i class="op w">14</i>
+          <i class="op">15</i><i class="op">16</i><i class="op s">17</i><i class="op s">18</i><i class="op">19</i><i class="op w">20</i><i class="op w">21</i></div>
+          <div class="pm-k">green top: open for bidding</div></div>
+        <div class="p-list">
+          <div class="p-sub">Needs you</div>
+          <div class="pc"><span class="bx med k">ATT C</span><div><b>Today</b> · Whole day<br><span class="muted2">Add your chit</span></div></div>
+          <div class="p-sub">Coming up</div>
+          <div class="pc"><span class="bx bid k">LL</span><div><b>9–12 Mar</b> · 4 days<br><span class="amb2">Bid, pending</span></div></div>
+          <div class="pc mk" data-n="2"><span class="bx sd k">SD</span><div><b>17–18 Mar</b> · Stand-down<br><span class="muted2">6 pax · filed by Saber</span></div></div>
+        </div>
+        <div class="p-foot"><span class="s-btn">+ Medical</span><span class="s-btn s-pri">+ Input</span></div>
+      </div></div>
+      <figcaption><b>Sketch 2 · Availability on your iPhone, a member.</b> <span class="n">1</span> It opens on his own list, with the month he knows; "Squadron" is the grid. <span class="n">2</span> What others filed for him shows too: the stand-down Saber filed for six. Filing a medical never waits for the whole year to load. <button class="full" type="button">Open full size</button></figcaption>
+    </figure>
+    <figure class="sk-fig">
+      <div class="skwrap" data-w="390"><div class="sk sk-phone">
+        <div class="s-top p"><span class="s-logo">☰ TALON</span><span class="s-icons">↶ ↷ 🔔︎</span></div>
+        <div class="win">
+          <div class="w-h"><span class="bx sd k">SD</span><b>Stand-down</b> <span class="w-date">Thu 17 – Fri 18 Mar</span><span class="w-x">✕</span></div>
+          <div class="w-r mk" data-n="1"><span class="w-l">People</span><div><div class="pks"><span class="pk g">Cutter</span><span class="pk g">Ghost</span><span class="pk g">Dash</span><span class="pk o">Ranger</span><span class="pk g">Hex</span><span class="pk g">Drifter</span></div><div class="chg">Change <span class="s-btn on">6 pax</span><span class="s-btn">Cutter</span></div></div></div>
+          <div class="w-r"><span class="w-l">Dates</span><div class="w-box">17 Mar → 18 Mar</div></div>
+          <div class="w-r mk" data-n="2"><span class="w-l">Duration</span><div class="seg"><span class="on">Whole day</span><span>AM</span><span>PM</span><span>Times</span></div></div>
+          <div class="w-r"><span class="w-l">Means</span><div class="seg"><span class="on">Away</span><span>Attending</span></div></div>
+          <div class="w-r"><span class="w-l">Remarks</span><div class="w-box dark">Recalled? Change Cutter only.</div></div>
+          <div class="w-r"><span class="w-l">Papers</span><div><span class="s-btn">⤒ Document</span> <span class="muted2">each man's own</span></div></div>
+          <div class="w-f"><span class="s-btn del">Delete</span><span class="s-btn s-pri">Save</span></div>
+        </div>
+      </div></div>
+      <figcaption><b>Sketch 3 · The one window, the same from every page.</b> Opened from the grid, the member's list or the schedule, it holds the same things and lets the same person do the same things. <span class="n">1</span> Your "Change · 6 pax · Cutter", on every page. <span class="n">2</span> One way to say "when": whole day, morning, afternoon or hours. On a desk the same parts, in the same order. <button class="full" type="button">Open full size</button></figcaption>
+    </figure>
+  </div>
+
+  <figure class="sk-fig">
+    <div class="skwrap" data-w="760"><div class="sk sk-desk sk-sched">
+      <div class="sc-day"><b>THU 17 MAR</b> <span class="muted2">· Draft</span></div>
+      <div class="sc-sec"><div class="sc-t red">⠿ UNAVAILABLE</div>
+        <div class="sc-row mk" data-n="1"><span class="sc-k">SD</span><span class="sc-tm">all day</span><span class="pks"><span class="pk g">Cutter</span><span class="pk g">Ghost</span><span class="pk g">Dash</span><span class="pk o">Ranger</span><span class="pk g">Hex</span><span class="pk g">Drifter</span></span><span class="sc-rm">Stand-down till 18 Mar</span></div>
+        <div class="sc-row"><span class="sc-k">ATT C</span><span class="sc-tm">all day</span><span class="pks"><span class="pk o">Piston</span></span><span class="sc-rm">till 19 Mar</span></div>
+        <div class="sc-row"><span class="sc-k">OD</span><span class="sc-tm">06:00 18:00</span><span class="pks"><span class="pk g">Nomad</span></span><span class="sc-rm">Overseas duty</span><span class="s-btn sm mk" data-n="2">Reject</span></div>
+      </div>
+      <div class="sc-sec"><div class="sc-t amb">⠿ TO REVIEW · 1</div>
+        <div class="sc-row mk" data-n="3"><span class="sc-k">APPT</span><span class="sc-tm">14:00 15:00</span><span class="pks"><span class="pk g">Grit</span></span><span class="sc-rm">Dentist <span class="late">LATE</span></span><span class="s-btn sm">→ Ground</span><span class="s-btn sm">→ Unavailable</span><span class="s-btn sm">Reject</span></div>
+      </div>
+    </div></div>
+    <figcaption><b>Sketch 4 · Edit Schedule, a day (question F3).</b> <span class="n">1</span> A group is one row with everyone on it; tap it and the same window opens, dates included. <span class="n">2</span> An item already placed carries its own Reject. <span class="n">3</span> "To review" holds only what still waits for you, so it is usually short or empty; rejected ones stay findable behind a filter. Unavailable keeps its name. <button class="full" type="button">Open full size</button></figcaption>
+  </figure>
+
+  <h3>How far: three stops on one road</h3>
+  <div class="road">
+    <div class="st s1"><b>1</b> One window from all three pages, dates and "when" in it</div>
+    <div class="st s1"><b>2</b> Groups done properly: one row, "Change · 6 pax · Cutter", no quiet splits</div>
+    <div class="st s1"><b>3</b> One way to say "when" everywhere</div>
+    <div class="stop">Smaller stop: the fix you saw as A</div>
+    <div class="st s2"><b>4</b> A bid and its leave become one thing. No page you know moves.</div>
+    <div class="stop">Middle stop</div>
+    <div class="st s3"><b>5</b> Availability: Mine, Squadron, Approvals beside manning. The Leave War and Inputs tabs fold into it.</div>
+    <div class="st s3"><b>6</b> "To review" on the schedule</div>
+    <div class="stop rec">The whole design (recommended)</div>
+  </div>
+  <p class="muted">Steps 1 to 3 are the same whichever stop you pick, so nothing is lost by starting now. Each step is drawn for you first and checked in the running app.</p>
+  <p><b>What each stop still leaves confusing:</b></p>
+  <ul class="tight">
+    <li><b>Smaller stop:</b> two places to choose between when filing; a bid and its approved leave stay two different records, so their odd cases get patched one by one (a member's change on the Inputs page quietly changing what an admin can do on the Leave War); approvals a page away from the manning; the schedule's second list.</li>
+    <li><b>Middle stop:</b> the record problem is gone, and nobody relearns a page. Still two places to file, approvals apart from the manning, the second list.</li>
+    <li><b>The whole design:</b> members relearn one page, once. The biggest change the app has had: leave balances and OIL run through it, so steps 3, 4 and 5 are high risk and get full checks.</li>
+  </ul>
+  <p class="note">What it changes from your rulings: the Leave War and Inputs as separate pages (and the Inputs page opening on its calendar); the Personal Inputs list (F3); an overseas duty or a course whole days only on the Leave War (question D); the "box marked shared" (question 3). On the new platform: nothing needs an outside service, but saving a group change all at once and keeping a man's paper private must be proven in the hosting trial. Another person's change shows when the app next checks, not the instant it is saved.</p>
+  <p class="muted">"What changed since I last looked": Astra wanted a new mark on each day, Fable none. Both missed that the changes window's "New to you" tab already lists every change someone else made, inputs and the Leave War included, with a gold dot on each day. So nothing new is built; the check is that every absence change shows up there.</p>
+  <p class="rec"><b>Recommended: the whole design, in these six steps.</b> Step 1 is drawn for you first; you can stop at either stop later and the squadron is better off at each one.</p>
+</section>
+
+<section class="q new" id="f2">
+  <span class="tag">New · clean sheet</span>
+  <h2>F2 · On dates open for bidding, leave is always a bid</h2>
+  <p class="when">When: in January the Leave War is open for March. Ghost wants 9 March off. Today he can bid on the Leave War, or file it on the Inputs page, where it stands at once without waiting for the bids to be decided.</p>
+  <div class="pics phones">
+    <figure class="sk-fig">
+      <div class="skwrap" data-w="390"><div class="sk sk-phone sk-short">
+        <div class="win">
+          <div class="w-h"><span class="bx bid k">LL</span><b>Leave</b> <span class="w-date">Mon 9 – Thu 12 Mar</span><span class="w-x">✕</span></div>
+          <div class="w-r"><span class="w-l">Duration</span><div class="seg"><span class="on">Whole day</span><span>AM</span><span>PM</span></div></div>
+          <div class="w-r"><span class="w-l">Balance</span><div>War bal 14.5 → 10.5</div></div>
+          <div class="w-f"><span></span><span class="s-btn s-pri mk" data-n="1">Bid</span></div>
+        </div></div></div>
+      <figcaption><b>A date open for bidding.</b> <span class="n">1</span> One button, <b>Bid</b>. There is no second button beside it to enter the leave as already approved.</figcaption>
+    </figure>
+    <figure class="sk-fig">
+      <div class="skwrap" data-w="390"><div class="sk sk-phone sk-short">
+        <div class="win">
+          <div class="w-h"><span class="bx ll k">LL</span><b>Leave</b> <span class="w-date">Mon 18 – Tue 19 May</span><span class="w-x">✕</span></div>
+          <div class="w-r"><span class="w-l">Duration</span><div class="seg"><span class="on">Whole day</span><span>AM</span><span>PM</span><span>Times</span></div></div>
+          <div class="w-r"><span class="w-l">Document</span><div><span class="s-btn">⤒ Document</span></div></div>
+          <div class="w-f"><span></span><span class="s-btn s-pri mk" data-n="2">Record approved leave</span></div>
+        </div></div></div>
+      <figcaption><b>Any other date.</b> <span class="n">2</span> Leave approved by word of mouth, entered by the member and standing at once, as today on the Inputs page.</figcaption>
+    </figure>
+  </div>
+  <p>The date decides, not the page. On an open date, leave approved by word of mouth is entered by an admin. A range that crosses open and closed dates shows which part is a bid before it is sent.</p>
+  <p class="note">What it changes: today a member can file leave on the Inputs page on an open date and it stands at once (your rulings so far spoke only about closed dates).</p>
+  <p class="rec"><b>Recommended: yes.</b> One rule a member can predict, and no way round the bidding beside it.</p>
+</section>
+
+<section class="q new" id="f3">
+  <span class="tag">New · clean sheet</span>
+  <h2>F3 · "To review" in place of the Personal Inputs list</h2>
+  <p class="when">When: every day of planning. Today a commitment that is already on the Ground Programme or under Unavailable still sits in Personal Inputs too, and the schedule says "to take an input off, press Reject on it in Personal Inputs below".</p>
+  <p>Proposed (sketch 4 above): an item already placed carries its own Reject on its own row. A short "To review" list holds only what still waits for you, usually short or empty. Rejected items stay findable behind a filter and can be accepted again. Medicals and leave never go through it; they stand as today.</p>
+  <p class="rec"><b>Recommended: yes.</b> You act on a thing where you see it, never on its copy further down.</p>
+</section>
+
+<section class="q new" id="f4">
+  <span class="tag">New · clean sheet</span>
+  <h2>F4 · Deciding bids</h2>
+  <p class="when">When: bidding has closed, and you sit down to decide forty requests.</p>
+  <p>Do you usually go person by person, or look at everyone who asked for the same days together? Both readers would offer both in the one Approvals list (sketch 1), with a "Same dates" filter. Your habit decides which it opens on.</p>
+  <p class="rec"><b>Recommended: both in one list</b>, opening on whichever you tell us you do most.</p>
+</section>
+
+
+<section class="q" id="sa">
+  <span class="tag">Step back</span>
+  <h2>A · The direction: one item, the same on every page</h2>
+  <p class="note"><b>Replaced by F1.</b> This is the smaller stop on F1's road: steps 1 to 3 of the clean sheet.</p>
+  <p class="when">You asked whether we are moving in the right direction. You said the Leave War is mostly for bidding, the Inputs page for members' day-to-day and last-minute inputs, and the schedule for your own last-minute planning. Fable and Astra each read the app on their own, then read each other's answer and agreed.</p>
+  <p><b>What they found.</b> The three pages are right for their jobs. The confusion comes from four things:</p>
+  <ul style="margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:4px">
+    <li><b>What you can do depends on where a leave was first entered, not on what it is.</b> A leave approved on the Leave War drags there. The same leave filed on the Inputs page says "change it on the Inputs page". If a member changes his war leave on the Inputs page, the Leave War quietly stops letting you move it.</li>
+    <li><b>Each page opens a different window for the same thing.</b> The Inputs page opens the full window. The schedule opens it without the dates. The Leave War never opens it at all. About 15 different lines send you to another page.</li>
+    <li><b>A group is one thing on one page and several on another, and some actions split a man off without saying so.</b> Typing a time on Cutter's Unavailable row takes him out of the group. So does Cutter saving a remark on his own Leave War box.</li>
+    <li><b>Three ways to say "when".</b> The Leave War has whole day, AM and PM. Leave on the Inputs page also has custom times. An overseas duty or a course has an all-day tick and times, with no AM or PM. So an Attach filed for the morning on the war turns into "00:00–12:00" on the Inputs page.</li>
+  </ul>
+  <div class="pics">
+    <figure><img src="img/f6-war-window-today-desktop.png" alt="Leave War window today sending you to the Inputs page" loading="lazy"><figcaption>Today, the Leave War: a leave filed on the Inputs page reads "change it on the Inputs page".</figcaption></figure>
+    <figure><img src="img/g5-schedule-window-today-desktop.png" alt="Edit Schedule's window today with no dates" loading="lazy"><figcaption>Today, Edit Schedule: the same leave opened from Cutter's Unavailable row has no dates. It says "The dates are changed on the Inputs page." (marked 5).</figcaption></figure>
+    <figure><img src="img/f1-week-unavailable-today-desktop.png" alt="Unavailable list today, a row a man" loading="lazy"><figcaption>Today, Unavailable: one leave for three men shows as three rows, so it looks like three leaves.</figcaption></figure>
+  </div>
+  <p><b>The design they agreed, in five rules:</b></p>
+  <ol style="margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:4px">
+    <li><b>Tap = the item's own window, the same on every page.</b> It opens over the page you're on, with the people, dates, time, remarks and papers, and closes back to where you were. No more "change it on the Inputs page".</li>
+    <li><b>Drag = move.</b> On the Leave War and the Inputs calendar a drag moves its days. On the schedule a puck dragged changes who. Every drag also has a tap way.</li>
+    <li><b>What you can do depends on who you are, never on the page or where it was first entered.</b> A member changes his own; an admin changes anyone's. A published day still waits for a signed amendment.</li>
+    <li><b>A group is one item everywhere, and nothing splits a man off by itself.</b> One card, one row of pucks, and on the Leave War each man's box lights up with the group's when you tap one. Changing one man alone is one deliberate button, "Change for Cutter only" (question B).</li>
+    <li><b>One way to say "when" everywhere:</b> whole day, AM, PM, or hours. A bid keeps whole day, AM and PM, and the Leave War grid still shows halves. Where an item has exact hours, its window shows how the Leave War counts it.</li>
+  </ol>
+  <p class="muted">The Leave War stays where leave is bid for and decided, and a bid is still one man's. The Inputs page stays the everyday place to file. The schedule stays the scheduler's.</p>
+  <div class="pics">
+    <figure><img src="img/f6-war-input-window-proposed-desktop.png" alt="The item's own window over the Leave War" loading="lazy"><figcaption>Step 1 looks like this: the leave's own window opens over the Leave War, the grid still behind it (drawn earlier for question 4).</figcaption></figure>
+  </div>
+  <p><b>The order to build it in</b>, each step drawn for you first and checked in the running app:</p>
+  <ol style="margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:2px">
+    <li><b>One window from all three pages</b>, with dates. The go-elsewhere lines go. This alone fixes three of your five examples.</li>
+    <li><b>Groups done properly:</b> one row under Unavailable, the group lighting up on the Leave War, "Change for Cutter only", no silent splits.</li>
+    <li><b>One way to say "when"</b>: whole day, AM, PM or hours.</li>
+    <li><b>Drag everything on the Leave War</b>, a group moving together.</li>
+    <li><b>Adding several people:</b> on the Leave War, and with a range of days from the schedule.</li>
+    <li><b>Adding a man to leave that came from a bid</b> (question E). Last.</li>
+  </ol>
+  <p class="note">What it changes from what you ruled before: your "no 'him only' button" (question B), and that an overseas duty or a course is whole days only on the Leave War and an Other's own times are set only on the Inputs page (question D). One point the readers still differ on: whether a Leave War box shows a small "shared" mark when nothing is tapped. Each moved to the other's view, so both will be drawn for you to pick.</p>
+  <p class="rec"><b>Recommended: yes.</b> Then I draw step 1 at your iPhone's size and a desktop's for your look before anything is built.</p>
+</section>
+
+<section class="q" id="sb">
+  <span class="tag">Step back</span>
+  <h2>B · "Change for Cutter only" on every page</h2>
+  <p class="when">When: a stand-down leave is filed for six, and Cutter is recalled a day early. A few times a year, at short notice.</p>
+  <p>You asked for this button on the Leave War (questions 8 and 9 below). Both readers say it belongs on every page, so the rule is the same wherever you meet the group. On the Leave War it sits beside "Change for all 3 people", already named for the man you tapped. On the Inputs page and the schedule you tap his puck first. Pressing it takes him out of the group at once and opens his own leave for the change (your answer to question 9). One Undo puts him back.</p>
+  <div class="pics">
+    <figure><img src="img/g6-change-pax-proposed-desktop.png" alt="Change, then 3 pax and Cutter, on the Leave War" loading="lazy"><figcaption>Redrawn your way: the word "Change", then two short buttons, "3 pax" and "Cutter". It fits one line.</figcaption></figure>
+    <figure class="phone"><img src="img/g6-change-pax-proposed-phone.png" alt="The same on the iPhone" loading="lazy"><figcaption>On your iPhone's size it fits one line too, so the window no longer grows a row.</figcaption></figure>
+  </div>
+  <p class="muted">A fresh reader checked the words: clear as drawn, "pax" kept as your word. One optional tweak: "Cutter only" on the second button would say he leaves the group. Your call; it's drawn as you asked.</p>
+  <p class="rec"><b>Recommended: yes, on every page.</b> One step instead of taking him out and filing him again, and there is never a moment where Cutter shows as not away.</p>
+</section>
+
+<section class="q" id="sc">
+  <span class="tag">Step back</span>
+  <h2>C · A member drags his own approved leave on the Leave War</h2>
+  <p class="when">When: Ghost's leave for March was approved in the January bidding. In February his flight commander says yes to shifting it a day, and Ghost is looking at the Leave War.</p>
+  <p>Today he can only change its remarks there, but on the Inputs page he can move it freely. Proposed: he drags it on the Leave War and it just moves, keeping its approval, as it does on the Inputs page. A member in someone else's group still can't move everyone.</p>
+  <p class="rec"><b>Recommended: yes.</b> The same right on both pages. If you would rather a moved leave wait for approval again, that should hold on both pages, not one.</p>
+</section>
+
+<section class="q" id="sd">
+  <span class="tag">Step back</span>
+  <h2>D · An overseas duty or a course works the same everywhere</h2>
+  <p class="when">When: a six-man detachment is filed months ahead, or a course takes only one morning.</p>
+  <p>Today six men dragged on the Leave War for one overseas duty make six separate items, while on the Inputs page "Several people" makes one. Later, changing its dates is six jobs or one, depending on where it was filed. And on the Leave War an overseas duty or a course can only be whole days.</p>
+  <p class="rec"><b>Recommended: yes.</b> Several men filed together make one item on both pages, and morning, afternoon or hours are offered on every page, starting on whole day. Leave bids stay one man each.</p>
+</section>
+
+<section class="q" id="se">
+  <span class="tag">Step back</span>
+  <h2>E · Adding a man to leave that came from someone's approved bid</h2>
+  <p class="when">When: Ranger's approved week turns into a stand-down, and three more men join it.</p>
+  <p>Today a leave approved from a bid stays one man's and refuses a second. Proposed: an admin may add men to it. They are recorded as added by the admin, Ranger keeps his own approval, and sending Ranger's leave back to a bid affects only Ranger.</p>
+  <p class="rec"><b>Recommended: yes, built last.</b> Otherwise where a leave was first entered still decides what you can do with it.</p>
+</section>
+
+<section class="q" id="q8">
+  <h2>8 · Your "Change Cutter's only" button on the Leave War</h2>
+  <p class="when">When: an admin on the Leave War taps Cutter's box of a leave filed for Cutter, Ghost and Dash, because only Cutter's days need to change. Say his leave is cut short by a day, and Ghost and Dash keep theirs. Not often: a few times in a war.</p>
+  <p>You asked for a second button beside "Change for all 3 people". A fresh reader kept the pair alike, so it reads <span class="words">Change for Cutter only</span>. Your "Change Cutter's only" left open "Cutter's what?". Pressing it gives Cutter a leave of his own: the same type, days and OIL answer, and his own paper if he has one. His new leave's window then opens over the war, so you can change his days. Ghost and Dash are not touched.</p>
+  <div class="pics">
+    <figure><img src="img/g4-two-buttons-proposed-desktop.png" alt="The war's window with both buttons" loading="lazy"><figcaption>The tap on Cutter's box: Ghost's and Dash's boxes light up (question 3's B), and the line has both buttons.</figcaption></figure>
+    <figure class="phone"><img src="img/g4-two-buttons-proposed-phone.png" alt="Both buttons on the iPhone" loading="lazy"><figcaption>On your iPhone's size the two don't fit side by side. "Change for Cutter only" goes on a line of its own and the window grows by one row.</figcaption></figure>
+    <figure><img src="img/g4-after-press-proposed-desktop.png" alt="Cutter's own leave's window over the war" loading="lazy"><figcaption>After the press: Cutter's own leave, with its own window over the war, ready for his new days. Ghost's and Dash's leave stays as one.</figcaption></figure>
+    <figure class="phone"><img src="img/g4-after-press-proposed-phone.png" alt="Cutter's own leave's window on the iPhone" loading="lazy"><figcaption>The same on your iPhone's size. The window covers the screen there, as the app's windows do on a phone.</figcaption></figure>
+  </div>
+  <p class="note">What it changes: you ruled twice that there is no "him only" button (26 Nov). One man was to be taken out of the group and given a new leave by hand. This button does those two steps in one, on the Leave War only. On Edit Schedule and the Inputs page you would still file him a separate leave.</p>
+  <p class="rec"><b>Recommended: yes, on the Leave War only.</b> The war is where one man's days get changed most, and the button saves the delete-and-file-again round. Elsewhere the two steps stay, as you ruled.</p>
+</section>
+
+<section class="q" id="q9">
+  <h2>9 · When that button takes Cutter out of the group</h2>
+  <p class="when">When: right after an admin presses "Change for Cutter only", whether or not they go on to change anything.</p>
+  <p>The fresh reader found a catch. If Cutter is taken out the moment the button is pressed, an admin who presses it, changes nothing and closes the window still finds Cutter on a leave of his own. Only Undo would put him back.</p>
+  <ul style="margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:4px">
+    <li><b>A, at the press:</b> he leaves the group at once. Cancel leaves him on his own leave, the same days as before.</li>
+    <li><b>B, on Save:</b> the window opens with his copy of the leave. Save gives him his own leave with the change. Cancel or ✕ leaves him in the group, as if nothing was pressed.</li>
+  </ul>
+  <p class="rec"><b>Your answer (27 Nov): A.</b> Pressing the button takes Cutter out of the group at once; closed with nothing changed, he stays on his own leave, and one Undo puts him back.</p>
+</section>
+
+<section class="q" id="q1">
+  <h2>1 · The one row under Unavailable</h2>
+  <p class="when">When: every day the schedule is planned. An admin files one overseas duty or one leave for several men, and the scheduler sees it under Unavailable.</p>
+  <p>Today a group's overseas duty or leave shows one row a man, so it looks like three separate inputs, though Reject on any one row takes it out for all three. Proposed: one row, everyone's pucks on it, one time, remark and Reject, and an empty place at the end to drop a man on to add him. A drop on a man's puck swaps him. Medical stays one row a man.</p>
+  <div class="pics">
+    <figure><img src="img/f1-week-unavailable-today-desktop.png" alt="Edit Schedule today: the leave and the overseas duty each three rows" loading="lazy"><figcaption>Edit Schedule, today: the LL for Cutter, Ghost and Dash is three rows; the OD for Ranger, Hex and Drifter is three rows, each with its own Reject.</figcaption></figure>
+    <figure><img src="img/f1-week-unavailable-proposed-desktop.png" alt="Edit Schedule proposed: each one row" loading="lazy"><figcaption>Proposed: each is one row, the pucks one under another (this column is one puck wide), one Reject.</figcaption></figure>
+    <figure><img src="img/f1-week-unavailable-proposed-carrying-desktop.png" alt="The add place shown while a puck is carried" loading="lazy"><figcaption>The empty place to add a man shows only while a puck is being carried, as on a Ground Programme row today.</figcaption></figure>
+    <figure class="phone"><img src="img/f1-week-unavailable-proposed-phone.png" alt="Edit Schedule proposed on the iPhone" loading="lazy"><figcaption>The same on your iPhone's size.</figcaption></figure>
+    <figure><img src="img/f2-board-unavailable-today-desktop.png" alt="Scheduler Board today" loading="lazy"><figcaption>The Scheduler Board, today.</figcaption></figure>
+    <figure><img src="img/f2-board-unavailable-proposed-desktop.png" alt="Scheduler Board proposed" loading="lazy"><figcaption>The Scheduler Board, proposed: the pucks sit side by side here.</figcaption></figure>
+    <figure class="phone"><img src="img/f2-board-unavailable-proposed-phone.png" alt="Scheduler Board proposed on the iPhone" loading="lazy"><figcaption>The Scheduler Board on your iPhone's size, proposed.</figcaption></figure>
+  </div>
+  <p class="rec"><b>Recommended: build it as drawn.</b> The rows get shorter (the overseas duty goes from three rows to one), and nothing can be mistaken for one man's input.</p>
+</section>
+
+<section class="q" id="q2">
+  <h2>2 · The three "Blocked" notes</h2>
+  <p class="when">When: a scheduler drags a man onto a row that cannot take him. Today a drop on a medical swaps the man without a word, and a drop on a Personal Inputs line does nothing and says nothing.</p>
+  <div class="pics">
+    <figure><img src="img/f3-medical-drop-today-desktop.png" alt="Today a drop on a medical swaps the man" loading="lazy"><figcaption>Today: Anvil dropped on Piston's ATT C took his medical: "Anvil is now unavailable instead of Piston".</figcaption></figure>
+    <figure><img src="img/f3-medical-drop-proposed-desktop.png" alt="Proposed: the drop is refused with a grey note" loading="lazy"><figcaption>Proposed: refused with the app's grey "Blocked" note. Piston stays.</figcaption></figure>
+    <figure><img src="img/f4a-personal-on-programme-drop-proposed-desktop.png" alt="Proposed note on a Personal Inputs line" loading="lazy"><figcaption>A drop on a Personal Inputs line whose input is on the Ground Programme.</figcaption></figure>
+    <figure><img src="img/f4b-personal-waiting-drop-proposed-desktop.png" alt="Proposed note on a waiting Personal Inputs line" loading="lazy"><figcaption>A drop on a Personal Inputs line still waiting, with no Ground Programme row yet.</figcaption></figure>
+  </div>
+  <p>The pictures show the first drafts. A fresh reader adjusted the words; these are the ones to build:</p>
+  <ul style="margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:4px">
+    <li>Medical: <span class="words"><b>Blocked:</b> a medical entry is always one person's</span></li>
+    <li>Personal Inputs, input on the programme: <span class="words"><b>Blocked:</b> change who is in this input on its Ground Programme row</span></li>
+    <li>Personal Inputs, input still waiting: <span class="words"><b>Blocked:</b> this input has no Ground Programme row yet. Accept it first.</span></li>
+  </ul>
+  <p class="rec"><b>Recommended: these words.</b></p>
+</section>
+
+<section class="q" id="q3">
+  <h2>3 · The shared mark on the Leave War</h2>
+  <p class="when">When: an admin looks across the Leave War grid and needs to see that a box is part of a group's leave, not the man's own.</p>
+  <div class="pics">
+    <figure><img src="img/f5-war-ranger-today-desktop.png" alt="Leave War today" loading="lazy"><figcaption>Today: each man's box reads "OD" or "LL", nothing says it is shared.</figcaption></figure>
+    <figure><img src="img/f5-war-ranger-proposed-desktop.png" alt="Leave War proposed with the small mark" loading="lazy"><figcaption>Drawn: "3·LL", the Inputs calendar's way of marking a shared bar. At the grid's box size it is very small.</figcaption></figure>
+    <figure class="phone"><img src="img/f5-war-cutter-proposed-phone.png" alt="Leave War proposed on the iPhone" loading="lazy"><figcaption>The same on your iPhone's size.</figcaption></figure>
+  </div>
+  <p class="note">Two things found while drawing: a SANS man has no row on the Leave War, so a group of 3 with one SANS man shows "3" on only two rows. And a group of 10 or more, or a three-letter kind like OIL or CSE, does not fit the box at all.</p>
+  <p><b>Your half-day question, drawn.</b> A correction first: a half day does not split the box left and right, it stacks top and bottom, so "3·LL" does fit in a half box. But it is tiny, about 8px tall.</p>
+  <div class="pics">
+    <figure><img src="img/g3-half-count-attempt-desktop-closeup.png" alt="3·LL in half-day boxes, close up" loading="lazy"><figcaption>Choice A: "3·LL" written in the box. Ghost has OIL in the morning and the group leave in the afternoon. It fits, but it's very small even enlarged here.</figcaption></figure>
+    <figure><img src="img/g2-tap-cutter-proposed-desktop.png" alt="A tap lights the group" loading="lazy"><figcaption>Choice B: nothing written in the box. A tap on Cutter's box rings Dash's and Ghost's boxes of the same leave, and the window names all three, with "Change for all 3 people".</figcaption></figure>
+    <figure><img src="img/g3-half-tap-proposed-boxring-desktop-closeup.png" alt="The ring on a half-day box" loading="lazy"><figcaption>Choice B on a half day: only the afternoon box is ringed. The ring touches the morning OIL's edge.</figcaption></figure>
+    <figure class="phone"><img src="img/g2-tap-cutter-proposed-phone.png" alt="Choice B on the iPhone" loading="lazy"><figcaption>Choice B on your iPhone's size.</figcaption></figure>
+  </div>
+  <p class="note">Choice B's ring would stay while the window is open, where the war's ring fades after six seconds today. That is a small new behaviour.</p>
+  <p class="rec"><b>Recommended: B.</b> The grid stays as easy to read as today, and you see the whole group before any change, since every change on the war starts with that tap. What you give up: the grid at rest doesn't show which boxes are shared.</p>
+</section>
+
+<section class="q" id="q4">
+  <h2>4 · A tap on a group leave on the Leave War</h2>
+  <p class="when">When: an admin on the Leave War taps one man's box of a leave filed for several, to move it or change it.</p>
+  <p>You ruled that a group leave changes as one, for everyone. Proposed: the tap still opens the war's own window, which keeps the manning line and Grant OIL. Its line for the group leave becomes a button that opens the input's own window over the war, where a change is for everyone.</p>
+  <div class="pics">
+    <figure><img src="img/f6-war-window-today-desktop.png" alt="The war's window today" loading="lazy"><figcaption>Today: the line reads "LL · Whole day · change it on the Inputs page".</figcaption></figure>
+    <figure><img src="img/f6-war-window-proposed-desktop.png" alt="The war's window with the new button" loading="lazy"><figcaption>Proposed: a button on that line. Drawn as "Change for all 3"; the adjusted words are "Change for all 3 people", since "all 3" alone could read as 3 days.</figcaption></figure>
+    <figure><img src="img/f6-war-input-window-proposed-desktop.png" alt="The input's own window over the war" loading="lazy"><figcaption>The button opens the group leave's own window over the war, the grid still behind it.</figcaption></figure>
+  </div>
+  <p class="rec"><b>Recommended: yes, as drawn, with "Change for all 3 people".</b> The admin keeps the grid and the war's help in view and is never sent off to another page.</p>
+</section>
+
+<section class="q" id="q5">
+  <h2>5 · Swapping one man for another on a leave</h2>
+  <p class="when">When: a scheduler drags Hex onto Ranger's puck on a leave row under Unavailable, which your new rule allows with no question.</p>
+  <p>Today a swap keeps the whole record and changes only the name. So Hex would take over Ranger's remark, his "till" tick, any paper attached (a compassionate or paternity paper, say) and the "approved on the Leave War" tag, and his leave balance would be charged for a leave he never asked for.</p>
+  <p class="rec"><b>Recommended: on a swap only the leave type and the days pass to the new man.</b> The remark, papers and approval tag stay behind and go with Ranger's removal. See the leave row in picture 1.</p>
+</section>
+
+<section class="q" id="q6">
+  <h2>6 · Papers on a group leave</h2>
+  <p class="when">When: a man in a group leave (a stand-down, say) needs to attach a paper for his own reason.</p>
+  <p>A group leave is one input, so a paper on it would belong to the whole group: one man's compassionate paper readable by the other five, and the Inputs list showing "has a document" for all six.</p>
+  <p class="rec"><b>Your answer (26 Nov): B.</b> A group leave may hold several papers, each marked as one man's and opened only by him and the admins; the others in the group never open it. Who may see what changes, so it gets an extra security check before it is built.</p>
+</section>
+
+<section class="q" id="q7">
+  <h2>7 · A medical or a posting-out over one man of a group leave</h2>
+  <p class="when">When: one man of a six-man stand-down goes sick on its second day, or is posted out during it.</p>
+  <p>You ruled that the war never splits a man off by itself. But two other things do today, and must: a medical filed over his days, and a posting-out. Without the split, his sick day would cut the leave of all six.</p>
+  <p class="rec"><b>Recommended: "never by itself" means never by a change made on his box.</b> A medical over his days and his posting-out still give him his own leave, and his row then stands under the group's.</p>
+</section>
+
+<section class="later">
+  <h2>Next round, after these answers</h2>
+  <ul>
+    <li>A leave approved on the Leave War is one man's today and refuses a second man, so its row would show an add place that always says no.</li>
+    <li>A member in a group leave can no longer add his own remark there; who may change what.</li>
+    <li>A drag on the war across only some men of a group leave.</li>
+    <li>The bell's words when a leave passes from one man to another.</li>
+    <li>What the bell check found with no rule to judge by: leave entered for a man without Auto-approve tells him nothing; OL placed over his waiting LL doesn't say the LL went; a man put on a calendar note is told nothing; an Other for the morning doesn't say AM.</li>
+  </ul>
+</section>
+</div>
+
+<dialog id="zoom" aria-label="Full size"><div class="dlg-bar"><button class="dlg-close" type="button">Close</button></div><div class="dlg-body"></div></dialog>
+<script>
+  var dlg = document.getElementById('zoom'), body = dlg.querySelector('.dlg-body'), opener = null;
+  function show(node, from) { body.innerHTML = ''; body.appendChild(node); opener = from; dlg.showModal(); }
+  function closeIt() { dlg.close(); }
+  dlg.querySelector('.dlg-close').addEventListener('click', closeIt);
+  dlg.addEventListener('click', function (e) { if (e.target === dlg) closeIt(); });
+  dlg.addEventListener('close', function () { if (opener) opener.focus(); });
+  document.querySelectorAll('figure img').forEach(function (im) {
+    im.tabIndex = 0;
+    function open() { var big = document.createElement('img'); big.src = im.src; big.alt = im.alt; big.style.cssText = 'display:block;max-width:none'; show(big, im); }
+    im.addEventListener('click', open);
+    im.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
+  });
+  // a sketch is drawn at its real width, then scaled down to fit its box
+  function fit() {
+    document.querySelectorAll('.skwrap').forEach(function (w) {
+      var sk = w.firstElementChild, full = +w.dataset.w || sk.offsetWidth;
+      var k = Math.min(1, w.clientWidth / full);
+      sk.style.transform = 'scale(' + k + ')';
+      w.style.height = Math.ceil(sk.offsetHeight * k) + 'px';
+    });
+  }
+  window.addEventListener('resize', fit); fit();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+  document.querySelectorAll('button.full').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var sk = btn.closest('.sk-fig').querySelector('.sk').cloneNode(true);
+      sk.style.transform = 'none'; show(sk, btn);
+    });
+  });
+</script>
+
