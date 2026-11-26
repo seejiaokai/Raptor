@@ -38,6 +38,9 @@ import { projectPeople } from '../leavewar/state/raptorRoster'
 import { wireLeaveWarSync, setWarWorldDoor, installPostingClock } from '../leavewar/sync'
 import { setUnitSeeds, unitsLoad, setHome, homeOn, todayIso, addUnit, type UnitSave } from '../state/units'
 import { settleWorld } from './world'
+/* the guard rail's table installs itself into its seam as it loads (state/guard.ts — the plan §3.1 "Who installs it"):
+   every test of this world has the guard answering, as the app does */
+import '../ui/guard'
 
 /* the memory store behind the app's storage, emptied each test */
 export const mem: Record<string, string> = {}

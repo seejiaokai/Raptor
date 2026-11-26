@@ -21,10 +21,9 @@ import {
 import { DAYTPLEDIT, setDayTplEdit } from './pops'
 import { useVersion } from './useStore'
 import { HOOKS } from '../engine/hooks'
-import { SESSION } from '../state/auth'
-import { canEditSched } from '../state/auth'   // the schedule in view (step A — D2317: its templates follow it)
 import { clickedOutside } from './outside'
 import { useSheetFocus, useEscClose } from './sheetfocus'
+import { dayTplDrawn } from './windrawn'
 
 export function DayTplModal() {
   useVersion()
@@ -40,7 +39,7 @@ export function DayTplModal() {
   /* it takes and keeps the keyboard while it is up, Escape closes it, and the keyboard goes back to the button that
      opened it ([BOARD-MODALS-ESCAPE], [WINDOWS-KEEP-KEYS] — ui/sheetfocus.ts); before the early return, as hooks must be */
   const boxRef = useRef<HTMLDivElement>(null)
-  const open = !!DAYTPLEDIT && !(SESSION && !canEditSched())
+  const open = dayTplDrawn()   // !!DAYTPLEDIT && !(SESSION && !canEditSched()) — the one predicate the guard reads too (ui/windrawn.ts)
   useSheetFocus(boxRef, open)
   useEscClose(boxRef, open, () => { setDayTplEdit(false); notify() })
   /* self-hide for a non-admin, not just at the admin-gated opener (bug hunt,

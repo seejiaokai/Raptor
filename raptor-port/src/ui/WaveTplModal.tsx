@@ -30,12 +30,13 @@ import {
 } from '../engine/wavetpl'
 import type { WaveKind, WaveTplLine } from '../engine/wavetpl'
 import { hmOK } from '../engine/time'
-import { canEditSched, SESSION } from '../state/auth'   // canEditSched: the schedule in view (step A — D2317: its templates follow it)
-import { WAVEEDIT, setWaveEdit } from './pops'
+import { canEditSched } from '../state/auth'   // canEditSched: the schedule in view (step A — D2317: its templates follow it)
+import { setWaveEdit } from './pops'
 import { useVersion } from './useStore'
 import { HOOKS } from '../engine/hooks'
 import { clickedOutside } from './outside'
 import { useSheetFocus, useEscClose } from './sheetfocus'
+import { waveTplDrawn } from './windrawn'
 import { EYE_INNER } from './glyphs'
 
 /* inline glyphs — crisp at any size and theme-safe (stroke:currentColor), the same
@@ -53,7 +54,7 @@ export function WaveTplModal() {
   /* it takes and keeps the keyboard while it is up, Escape closes it, and the keyboard goes back to the button that
      opened it ([WINDOWS-KEEP-KEYS], [BOARD-MODALS-ESCAPE] — ui/sheetfocus.ts); before the early return, as hooks must be */
   const boxRef = useRef<HTMLDivElement>(null)
-  const open = WAVEEDIT && !(SESSION && !canEditSched())
+  const open = waveTplDrawn()   // WAVEEDIT && !(SESSION && !canEditSched()) — the one predicate the guard reads too (ui/windrawn.ts)
   useSheetFocus(boxRef, !!open)
   useEscClose(boxRef, !!open, () => { setWaveEdit(false); notify() })
   /* GATE THE WHOLE EDITOR ON THE ROLE, not just the two admin-gated openers
