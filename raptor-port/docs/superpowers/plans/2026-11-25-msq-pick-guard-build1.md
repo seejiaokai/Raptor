@@ -3536,18 +3536,18 @@ the page was read by a fresh Fable before he saw it (the words review), so none 
 1. **Q8's look.** His answer gives the rule; what a Plan holder then sees was never drawn or worded (D1625, D2441):
    the Role choice "Admin" where he may no longer pick it, its reason under it, and the door's refusal sentence —
    today's nearest words say the opposite ("Only a master admin or an admin of 150 can make another."). **Question
-   9.** Until answered, U2 lands without Q8's clause and V5's three cases stay pins; the clause then lands whole —
+   10** (the page's own numbers: the guard rail took 9). Until answered, U2 lands without Q8's clause and V5's three cases stay pins; the clause then lands whole —
    the doors, the gate and the row together — as U2b.
 2. **A Plan holder's Undo of his own "made a member".** By Q8 it would make a man an admin again, so it is refused —
    a mistaken press is then put right only by one of that squadron's own admins or a master admin (there is always
    one: a Plan holder cannot make its last own admin a member, D2247). The other way, his own step's Undo let
-   through, is a real choice and his. **Question 10.** Built with U2b.
+   through, is a real choice and his. **Question 11.** Built with U2b.
 3. **A Plan ended by an archive or an overseas posting (D2311), or by "a master admin's making" (§19.2).** E9l rules
-   that such an ending is told; only "he moved to 150" and "made a member" were worded and drawn. **Question 11.**
+   that such an ending is told; only "he moved to 150" and "made a member" were worded and drawn. **Question 12.**
    Until answered these endings write no line to the squadron's admins, as today, and U2's report says so.
 
 **What can start now, and what waits.** U0 and U1: now (K0 and K2a have landed). U2: now, without the lines' tap
-(K6), without Q8's clause (question 9) and without item 3's lines. U3, U4, U5, U6: in that order after U1, on the
+(K6), without Q8's clause (question 10) and without item 3's lines. U3, U4, U5, U6: in that order after U1, on the
 same file; U3 without "Edit on 142 →" (K4). U7: without its link (K4) and its line's tap (K6). Appended when the
 core's steps land: V4c and V11b and the two links (K4), the three taps (K6). **Also this section's:**
 `addHomeChoices` (`ui/usersfilter-model.ts`), which nothing calls since K2a, is removed in U3 with the comment in
