@@ -26,11 +26,18 @@ const realLines = s => s.page.evaluate(L => [...document.querySelectorAll(L + ' 
    fixed width; the new lines' own squadron number in its place, the man's home number after his name */
 async function topLines(s, lines, home) {
   return s.page.evaluate(({ L, lines, home, about }) => {
-    const first = document.querySelector(L + ' .bl-line')
+    let first = document.querySelector(L + ' .bl-line'), tmpl = null
+    /* Saber's bell can be empty in this world ("Nothing new", 26 Nov 26 run): then one line is built in the app's own
+       markup (ui/topbits.tsx's bell list, copied), cloned from, and removed */
+    if (!first) { const sc = document.querySelector(L + ' .bl-scroll'); sc.querySelector('.bl-empty')?.remove()
+      tmpl = first = document.createElement('button'); first.type = 'button'; first.className = 'bl-line'; first.setAttribute('role', 'menuitem')
+      first.innerHTML = '<span class="bl-dot" aria-hidden="true"></span><span class="bl-main"><span class="bl-t"><b class="bl-name"></b><i class="bl-day"></i></span><span class="bl-what"></span></span><span class="bl-ago"></span>'
+      sc.appendChild(first) }
     for (const c of [...lines].reverse()) { const e = first.cloneNode(true); e.removeAttribute('data-testid'); e.dataset.s2q = c.id; e.classList.add('unread')
       e.querySelector('.bl-name').textContent = c.name; e.querySelectorAll('.bl-sqn').forEach(m => m.remove())
       e.querySelector('.bl-day').textContent = c.day; e.querySelector('.bl-what').textContent = c.what; e.querySelector('.bl-ago').textContent = c.ago
       document.querySelector(L + ' .bl-line').before(e) }
+    tmpl?.remove()
     for (const e of document.querySelectorAll(L + ' .bl-line')) {
       const t = e.querySelector('.bl-t'), what = e.querySelector('.bl-what').textContent, own = !e.dataset.s2q && about.some(re => new RegExp(re).test(what))
       let m = e.querySelector('.bl-sqn')
@@ -71,6 +78,9 @@ try {
       FACT(`${k}.realLines`, (await realLines(s)).slice(0, 8))
       const show = await showAll(s)
       const col = await topLines(s, [{ id: 'master', name: 'Hunter', home: '142', sq: '149', day: DAY, what: `${WQ.planEndMaster('149')} · Saber`, ago: 'now' }], '149')
+      /* only the new line (the coordinator's word, 26 Nov 26): Kestrel's two older lines of this world, about his Plan of
+         150, are not what the question is about and left a blank number place - taken out of the picture */
+      FACT(`${k}.removed`, await s.page.evaluate(L => { const r = [...document.querySelectorAll(L + ' .bl-line:not([data-s2q])')]; r.forEach(e => e.remove()); return r.length }, LIST))
       await paintBell(s)
       FACT(`${k}.drawn`, { show, column: col, lines: (await realLines(s)).slice(0, 5) })
       await bellShot(s, k, ['master'])

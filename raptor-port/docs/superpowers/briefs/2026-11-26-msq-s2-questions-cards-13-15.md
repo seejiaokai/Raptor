@@ -10,14 +10,17 @@ word, with only these changes, each for a reason in the prep report (`…-msq-s2
   (the review's §3 point 3 left this to the builder; it said then "the words are the bare sentence");
 - **card 13**: one sentence added on a row whose man is already an admin (read in the code — the review's §3 point 4),
   and the reworded last-admin line added as one more quoted line (the review's §3 point 11, its first way);
-- **card 13**: "On a phone it should take two lines" is unmeasured — the host keeps it only if the drawing run's
-  `q13-p-rec.reasonLines` says 2, else drops that sentence;
+- **card 13**: "On a phone it should take two lines" is dropped — the drawing run measured three lines on his
+  iPhone's size (`q13-p-rec.reasonLines` = 3); and the last-admin picture is now the app's real refusal (Osprey
+  made a member first through the real Save), so the card says that in place of "the note is drawn on" (chat 205);
 - **a second fresh Fable's cold read** (`2026-11-26-msq-s2-questions-cards-read.md`, each change before → after with its
   reason): card 13's two added passages rewritten (the row of a man already an admin; the last-admin note, which now
   says it is one more approval and no longer calls Kestrel the last admin on a card where Osprey is one too); one
   sentence on card 14 and three on card 15 reworded. No sentence the app would show was changed.
 
-Each card says when it happens in real life first. No picture exists yet: none of the three goes to him until drawn.
+Each card says when it happens in real life first. The pictures were drawn on 26 Nov 26 (chat 205) and each was opened by the host; five were redrawn once (the boxes
+level, the list opening downward as its own picture, the last-admin case made real, question 14 dimmed whole-screen,
+the master admin line alone on its bell).
 Plain words only: no ruling numbers, file names or review codes in the card text.
 
 ---
@@ -46,8 +49,7 @@ says who can:
 
 Hunter sees it is not his to do before he presses anything, and nothing he has typed on the row is lost. The line
 follows the one you approved under the greyed Plan button ("Only 149's own admins or a master admin can give or end
-Plan of 149."). On a phone it should take two lines, as that one does. *[host: keep this last sentence only if the
-drawing run measures two lines]*
+Plan of 149.").
 
 The same greyed "Admin" and the same line would show in the three other places a role is picked: "+ Add a person",
 "Give access" on a waiting request, and "Give sign-in" on a man with no sign-in. Those three are not drawn.
@@ -80,21 +82,24 @@ replace the ones you approved for someone who cannot make an admin of 149, "Only
 make another.", which Hunter could read as meaning himself. Either answer above approves the new words. If you want
 them different, say so with your answer.
 
-In the picture the note is drawn on: there 149 has a second admin, Osprey, so the real app would let that Save
-through.
+The picture shows that case: Osprey has been made a member first, so Kestrel is 149's only admin, and the app really
+does refuse Hunter's Save. Only the note's words are drawn in.
 
 **Radio labels and reply values** (the page's shape: `<label><input type="radio" name="a13" … value="…">label</label>`)
 - "A — grey it, with the reason" → value `A (Admin greyed, reason under the Role box)` (checked: recommended)
 - "B — leave it, refuse the Save" → value `B (Admin stays pickable, Save refused with a note)`
 
 **Pictures** (in `raptor-port/docs/mock/2026-11-25-msq-pick-guard-q3/drawn/`; publish the crops as `img/…`):
-- `q13-d-rec.png`, `q13-d-rec-crop.png` — desktop: the Role box's list open, "Admin" greyed, the reason line, ringed
+- `q13-d-rec.png`, `q13-d-rec-crop.png` — desktop: the Role box closed, the reason line under it, both ringed
+- `q13-d-rec-open.png`, `q13-d-rec-open-crop.png` — desktop: the box's list open below it as a browser opens it,
+  "Admin" and "Master admin" greyed, ringed (the open list covers the reason line, as it really would)
 - `q13-p-rec.png`, `q13-p-rec-crop.png` — his iPhone's size: the box shown closed (the phone draws its own list), the
-  reason line, ringed
+  reason line (three lines), ringed
 - `q13-d-other.png`, `q13-d-other-crop.png` — desktop: "Admin" picked, the amber note at the foot, ringed
 - `q13-p-other.png`, `q13-p-other-crop.png` — phone: the same
 - `q13-d-lastadmin.png`, `q13-d-lastadmin-crop.png` — desktop: Kestrel's row, Member picked, the reworded last-admin
-  note at the foot, ringed (drawn: in the test world Osprey is a second 149 admin, so the real app would not refuse)
+  note at the foot, ringed (the app's real refusal — Osprey made a member first, so Kestrel is 149's only admin; only
+  the note's words are drawn in)
 - `q13-p-lastadmin.png`, `q13-p-lastadmin-crop.png` — phone: the same
 
 ---
@@ -139,8 +144,9 @@ just made a member, and only until he signs out, when his Undo list empties.
 - "B — let his Undo through" → value `B (his own Undo goes through)`
 
 **Pictures:**
-- `q14-d-refused.png`, `q14-d-refused-crop.png` — desktop: after the real Save, the Undo button and the amber note with
-  the new sentence, ringed
+- `q14-d-refused.png`, `q14-d-refused-crop.png` — desktop: after the real Save; the "-crop" file is the whole screen
+  dimmed but for three lit places — the Undo button (ringed), Osprey's row reading Member, the amber note with the new
+  sentence (ringed)
 - `q14-p-refused.png`, `q14-p-refused-crop.png` — phone: the same
 
 ---
@@ -187,11 +193,12 @@ longer has it, or why.
 - "B — no line, as today" → value `B (no bell line for these four)`
 
 **Pictures:**
-- `q15-d-ended.png`, `q15-d-ended-crop.png` — desktop: Saber's bell, 142, 149 and 150 shown, the three new lines
-  (archived · Hunter, posted out overseas, deleted · Hunter) on top, ringed
+- `q15-d-ended.png`, `q15-d-ended-crop.png` — desktop: the three new lines (archived · Hunter, posted out overseas,
+  deleted · Hunter), each ringed. **Caption on the page:** "Shown on Saber's bell — a master admin sees every
+  squadron's lines; 149's admins see the same three."
 - `q15-p-ended.png`, `q15-p-ended-crop.png` — phone: the same
-- `q15-d-master.png`, `q15-d-master-crop.png` — desktop: Kestrel's bell, "Plan of 149 ended: made a master admin ·
-  Saber" under Hunter's name, ringed
+- `q15-d-master.png`, `q15-d-master-crop.png` — desktop: Kestrel's bell (149's admin), "Plan of 149 ended: made a
+  master admin · Saber" under Hunter's name, ringed, alone on the bell
 - `q15-p-master.png`, `q15-p-master-crop.png` — phone: the same
 
 (Cobra, Blade and Basher holding Plan of 149 is drawn, not in the test world — the card and the pictures use the same
