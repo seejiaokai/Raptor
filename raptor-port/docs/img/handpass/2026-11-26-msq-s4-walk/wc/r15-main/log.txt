@@ -1,0 +1,36 @@
+msq-s4w-lib v1 who=wc run=r15-main port=4755
+wc-r15 v1
+STEP ERROR setup locator.fill: Timeout 5000ms exceeded.
+ROW NOT REACHED | setup | desk-chromium-main | step threw | saw: locator.fill: Timeout 5000ms exceeded.
+ROW PASS | F-S10(1) every chip | desk-chromium-main | press Delete, SANS, Overseas, Overseas again | saw: delete: On 10 Dec the app deletes him automatically. Days he flew keep his puck. [img/handpass/2026-11-26-msq-s4-walk/wc/r15-main/002-desk-chromium-main-r15-chip-delete.png] | sans: On 10 Dec: becomes SANS. | overseas: On 10 Dec: archived. | overseas tapped again (un-chosen): On 10 Dec: off the manpower, nothing else. aria false
+ROW PASS | F-S10(2) the PO from calendar, every way out | desk-chromium-main | open the date box; close by a pick, Escape, a press outside it, the box again | saw: pick: opened true, calendar now false, sheet bid-picker, date 2026-12-11 | escape: opened true, calendar now false, sheet bid-picker, date 2026-12-11 | outside: opened true, calendar now false, sheet bid-picker, date 2026-12-11 | box-again: opened true, calendar now false, sheet bid-picker, date 2026-12-11
+ROW PASS | F-S10 every way out of a new Post out | desk-chromium-main | ✕, Escape, a press outside, the day under it | saw: x: window none, 10 Dec act |  | kids: | escape: window none, 10 Dec act |  | kids: | outside: window none, 10 Dec act |  | kids: | day: window none, 10 Dec act |  | kids:
+ROW PASS | F-S10(3) Post out | desk-chromium-main | Overseas Sqn, PO from 14 Dec, Post out | saw: line: On 14 Dec: archived. | window none | 14 Dec gone act hasc | PO | kids:c whole
+reload asked to sign in again
+ROW RECORD | F-S10(8) reload after-post | desk-chromium-main | reload the page; the war, December | saw: 13 Dec weekend act pofin bx-last | PO | kids:polast | 14 Dec gone act hasc | PO | kids:c whole | 16 Dec gone outlv act hasc bx-gone | LL | kids:c k-ll s-w whole
+ROW RECORD | F-S10(4) grid | desk-chromium-main | after the posting: grid | saw: 12 Dec weekend act |  | kids: | 13 Dec weekend act pofin bx-last | PO | kids:polast | 14 Dec gone act hasc | PO | kids:c whole | 16 Dec gone outlv act hasc bx-gone | LL | kids:c k-ll s-w whole
+ROW RECORD | F-S10(4) legend | desk-chromium-main | after the posting: legend | saw: WHAT THE GRID IS TELLING YOU THE COLOUR: WHAT KIND LL Local leave OL Overseas leave OIL OIL taken: time off spent FO OIL given: FO a day, HO half a day; a star, the app credited it CCL Other leave: CCL, FCL, PL, CL, EL CSE Course OD Overseas duty OTH Under Unavailable on the schedule: OTH, ATCH and the rest, out of the manning C Medical: B, C, OML, HL THE FILL: WHERE IT STANDS LL Approved LL Pendi
+ROW RECORD | F-S10(4) approvals | desk-chromium-main | after the posting: approvals | saw: Cinch IP posting out 14 Dec · Overseas Sqn LL Wed 16 Dec › 1 day 21.5 26 Nov 18:24 · by Saber Approve Refuse
+ROW RECORD | F-S10(4) balances | desk-chromium-main | after the posting: balances | saw: CinchIP21.52LLPOPOPOLLPOPOPOPOPOPOPOPOPOPOPOPOPOPOPO
+ROW RECORD | F-S10(4) person | desk-chromium-main | after the posting: person | saw: Cinch ✕ BALANCES LVE 0 taken App bal Pending War bal −1 21.5 incl. carried fwd · till 31 Dec OIL 0 › MED 0 days CCL FCL PL EL CL LEAVE 2026 and ahead LL Mon 7 Dec 1 Approved LL Wed 16 Dec 1 Pending
+ROW RECORD | F-S10(4) period | desk-chromium-main | after the posting: period | saw: period y2027=JAN - DEC 27: Cinch row absent (first head head-2027-01-01) [img/handpass/2026-11-26-msq-s4-walk/wc/r15-main/013-desk-chromium-main-r15-after-period27.png]
+ROW RECORD | F-S10(4) admin | desk-chromium-main | after the posting: admin | saw: Cinch no sign-in · Pilot · CAT IP POSTING OUT 14 DEC · OVERSEAS SQN
+ROW RECORD | F-S10(4) quals | desk-chromium-main | after the posting: quals | saw: Cinch IPIP ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ IP · instructor pilot
+ROW RECORD | F-S10(4) bell | desk-chromium-main | after the posting: bell | saw: Nothing new
+ROW PASS | F-S10(5) top-bar Undo / Redo | desk-chromium-main | place LL for Anvil 22 Dec; top-bar Undo; Redo | saw: after LL:  act hasc | LL | kids:c k-ll s-a whole | after Undo:  act |  | kids: ; Cinch 14 Dec gone act hasc | PO | kids:c whole | after Redo:  act hasc | LL | kids:c k-ll s-a whole
+postout chips ["postout-sheet=Cinch Tue 22 Dec ✕ PO FROM Mon 14 Dec 26 ▾ POSTING ✓ Oversea","postout-cancel=✕","postout-date=Mon 14 Dec 26 ▾","postout-overseas=✓ Overseas Sqn","postout-delete=Delete","postout-sans=SANS","postout-transfer=Transfer to Sqn","postout-line=On 14 Dec: archived.","postout-undo=Undo post out (PO)","postout-place=Place leave or OIL here instead…"]
+STEP ERROR existing sheet: SANS, date, undo no po-sans on existing sheet
+ROW NOT REACHED | existing sheet: SANS, date, undo | desk-chromium-main | step threw | saw: no po-sans on existing sheet
+reload asked to sign in again
+ROW RECORD | F-S10(8) reload after-undo | desk-chromium-main | reload the page; the war, December | saw: 13 Dec weekend act pofin bx-last | PO | kids:polast | 14 Dec gone act hasc | PO | kids:c whole | 16 Dec gone outlv act hasc bx-gone | LL | kids:c k-ll s-w whole
+ROW RECORD | F-S10(7) grid | desk-chromium-main | back the posting: grid | saw: 12 Dec weekend act |  | kids: | 13 Dec weekend act pofin bx-last | PO | kids:polast | 14 Dec gone act hasc | PO | kids:c whole | 16 Dec gone outlv act hasc bx-gone | LL | kids:c k-ll s-w whole
+ROW RECORD | F-S10(7) legend | desk-chromium-main | back the posting: legend | saw: WHAT THE GRID IS TELLING YOU THE COLOUR: WHAT KIND LL Local leave OL Overseas leave OIL OIL taken: time off spent FO OIL given: FO a day, HO half a day; a star, the app credited it CCL Other leave: CCL, FCL, PL, CL, EL CSE Course OD Overseas duty OTH Under Unavailable on the schedule: OTH, ATCH and the rest, out of the manning C Medical: B, C, OML, HL THE FILL: WHERE IT STANDS LL Approved LL Pendi
+ROW RECORD | F-S10(7) approvals | desk-chromium-main | back the posting: approvals | saw: Cinch IP posting out 14 Dec · Overseas Sqn LL Wed 16 Dec › 1 day 21.5 26 Nov 18:24 · by Saber Approve Refuse
+ROW RECORD | F-S10(7) balances | desk-chromium-main | back the posting: balances | saw: CinchIP21.52LLPOPOPOLLPOPOPOPOPOPOPOPOPOPOPOPOPOPOPO
+ROW RECORD | F-S10(7) person | desk-chromium-main | back the posting: person | saw: Cinch ✕ BALANCES LVE 0 taken App bal Pending War bal −1 21.5 incl. carried fwd · till 31 Dec OIL 0 › MED 0 days CCL FCL PL EL CL LEAVE 2026 and ahead LL Mon 7 Dec 1 Approved LL Wed 16 Dec 1 Pending
+ROW RECORD | F-S10(7) period | desk-chromium-main | back the posting: period | saw: period y2027=JAN - DEC 27: Cinch row absent (first head head-2027-01-01) [img/handpass/2026-11-26-msq-s4-walk/wc/r15-main/026-desk-chromium-main-r15-back-period27.png]
+ROW RECORD | F-S10(7) admin | desk-chromium-main | back the posting: admin | saw: Cinch no sign-in · Pilot · CAT IP POSTING OUT 14 DEC · OVERSEAS SQN
+ROW RECORD | F-S10(7) quals | desk-chromium-main | back the posting: quals | saw: Cinch IPIP ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ IP · instructor pilot
+ROW RECORD | F-S10(7) bell | desk-chromium-main | back the posting: bell | saw: Nothing new
+errors []
+DONE 5 PASS 0 FAIL 22 OTHER of 27

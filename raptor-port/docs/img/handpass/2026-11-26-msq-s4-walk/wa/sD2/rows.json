@@ -1,0 +1,101 @@
+[
+ [
+  "F-S3(1)",
+  "phone-chromium",
+  "page at its foot (scrollY 629); Widget (last row) 10 Dec tapped",
+  "the day above the window (D1290, as on main)",
+  "cell 715-733 sheetTop 595 hit=false at=span-range scrollY 629",
+  "FAIL",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sD2/002-phone-chromium-S3-daywindow.png"
+ ],
+ [
+  "F-S3(2)",
+  "phone-chromium",
+  "⋯ → Post out on the last row",
+  "the day STILL above the taller posting sheet (D1290); if the page cannot scroll so far: RECORD",
+  "cell 715-733 sheetTop 578 hit=false at=po-fields scrollY 629; chips: Widget Post out ✕ POSTING ✓ Overseas Sqn Delete PO FROM Thu 10 Dec 26 ▾ On 10 Dec: archive",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sD2/004-phone-chromium-S3-postout-settled.png"
+ ],
+ [
+  "F-S3(3)(4)",
+  "phone-chromium",
+  "press the day",
+  "pressable",
+  "press: [data-testid=\"cell-gizmo-2026-12-10\"] is covered at its centre by po-fields",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sD2/005-phone-chromium-S3-q3-refused.png"
+ ],
+ [
+  "F-S3(5)",
+  "phone-chromium",
+  "posting open; flick hard to the foot, then back (lesson 24); picture img/handpass/2026-11-26-msq-s4-walk/wa/sD2/006-phone-chromium-S3-flick-foot.png",
+  "the top bar, the pinned dates row and the sheet where they were",
+  "{\"before\":{\"y\":629,\"sheet\":{\"x\":12,\"y\":578,\"w\":378,\"h\":282},\"head\":{\"x\":11,\"y\":49,\"w\":380,\"h\":44}},\"after\":{\"y\":294,\"sheet\":{\"x\":12,\"y\":578,\"w\":378,\"h\":282},\"head\":{\"x\":11,\"y\":49,\"w\":380,\"h\":44},\"st\":{\"bid\":578,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":638,\"confirm\":815,\"leaveGroup\":false,\"card\":null,\"head\":\"Widget Post out ✕\",\"gone\":0}}}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sD2/007-phone-chromium-S3-flick-back.png"
+ ],
+ [
+  "F-S40 flicks",
+  "phone-chromium",
+  "posting open (scrollY 0→299 on opening); flicked to the top (img/handpass/2026-11-26-msq-s4-walk/wa/sD2/008-phone-chromium-S40-flicked-top.png) and the foot (img/handpass/2026-11-26-msq-s4-walk/wa/sD2/009-phone-chromium-S40-flicked-foot.png)",
+  "the sheet stays docked; top bar and dates row stay",
+  "scrollY top 0, foot 629; sheet {\"x\":12,\"y\":542,\"w\":378,\"h\":318}→{\"x\":12,\"y\":542,\"w\":378,\"h\":318}; {\"bid\":542,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":602,\"confirm\":815,\"leaveGroup\":false,\"card\":null,\"head\":\"Outlaw Post out ✕\",\"gone\":0}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sD2/009-phone-chromium-S40-flicked-foot.png"
+ ],
+ [
+  "F-S40 Q3 after flicks",
+  "phone-chromium",
+  "the day back in sight (356); pressed",
+  "closes the posting; RECORD the scroll before/after (not left in empty space)",
+  "closed=true; scrollY before open 0, after open 299, after close 459",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sD2/011-phone-chromium-S40-q3-settled.png"
+ ],
+ [
+  "F-S40 flick the sheet",
+  "phone-chromium",
+  "a flick up on the sheet itself",
+  "RECORD: does the page behind move; the sheet stays docked",
+  "scrollY 459→459; sheet {\"x\":12,\"y\":542,\"w\":378,\"h\":318}→{\"x\":12,\"y\":542,\"w\":378,\"h\":318}",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sD2/012-phone-chromium-S40-sheet-flick.png"
+ ],
+ [
+  "F-S3(1)",
+  "phone-chromium-main",
+  "page at its foot (scrollY 629); Widget (last row) 10 Dec tapped",
+  "the day above the window (D1290, as on main)",
+  "cell 715-733 sheetTop 595 hit=false at=span-range scrollY 629",
+  "FAIL",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sD2/014-phone-chromium-main-S3-daywindow.png"
+ ],
+ [
+  "F-S3(2)",
+  "phone-chromium-main",
+  "⋯ → Post out on the last row",
+  "the day STILL above the taller posting sheet (D1290); if the page cannot scroll so far: RECORD",
+  "cell 715-733 sheetTop 420 hit=false at=bidsheet-row postout po-outcomes scrollY 629; chips: Widget Thu 10 Dec Auto-approve ✕ No manning row turns amber or red till 10 Dec Document Wh",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sD2/016-phone-chromium-main-S3-postout-settled.png"
+ ],
+ [
+  "F-S3(3)(4)",
+  "phone-chromium-main",
+  "press the day",
+  "pressable",
+  "press: [data-testid=\"cell-gizmo-2026-12-10\"] is covered at its centre by bidsheet-row postout po-outcomes",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sD2/017-phone-chromium-main-S3-q3-refused.png"
+ ],
+ [
+  "F-S3(5)",
+  "phone-chromium-main",
+  "posting open; flick hard to the foot, then back (lesson 24); picture img/handpass/2026-11-26-msq-s4-walk/wa/sD2/018-phone-chromium-main-S3-flick-foot.png",
+  "the top bar, the pinned dates row and the sheet where they were",
+  "{\"before\":{\"y\":629,\"sheet\":{\"x\":12,\"y\":420,\"w\":378,\"h\":440},\"head\":{\"x\":11,\"y\":49,\"w\":380,\"h\":44}},\"after\":{\"y\":294,\"sheet\":{\"x\":12,\"y\":420,\"w\":378,\"h\":440},\"head\":{\"x\":11,\"y\":49,\"w\":380,\"h\":44},\"st\":{\"bid\":420,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":null,\"confirm\":815,\"leaveGroup\":true,\"card\":null,\"head\":\"Widget Thu 10 Dec Auto-approve ✕\",\"gone\":0}}}",
+  "FAIL",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sD2/019-phone-chromium-main-S3-flick-back.png"
+ ]
+]

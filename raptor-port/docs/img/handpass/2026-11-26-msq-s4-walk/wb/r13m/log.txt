@@ -1,0 +1,28 @@
+msq-s4w-lib v1 who=wb run=r13m port=4754
+wb-r13 v2
+Ace: SPAN.acc-name
+ROW RECORD | F-S43 | desk chromium main | Admin → Users: Ace's row opened, then its Delete pressed once | saw: opened: ["Give sign-in | bg rgb(59, 198, 232) | border solid rgb(59, 198, 232) | text rgb(5, 42, 52) | 95×28 @559,404","Archive | bg rgb(26, 31, 38) | border solid rgb(42, 49, 58) | text rgb(241, 244, 247) | 70×28 @660,404","Delete | bg rgb(26, 31, 38) | border solid rgba(240, 85, 95, 0.5) | text rgb(251, 180, 185) | 62×28 @736,404","Cancel | bg rgb(26, 31, 38) | border solid rgb(42, 49, 58) | tex
+Ace again: SPAN.acc-name
+ROW RECORD | F-S43 | desk chromium main | Admin → Users: Ace → Archive (pressed, and its confirm if it asks) | saw: after the first press: [] || Ace archived Ace archived
+ERROR locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('input[placeholder*="callsign"]').nth(1)[22m
+[2m    - locator resolved to <input id="searchE" placeholder="name / callsign" aria-label="Search by name or callsign"/>[22m
+[2m  - attempting click action[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is not visible[22m
+[2m    - retrying click action[22m
+[2m    - waiting 20ms[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is not visible[22m
+[2m    - retrying click action[22m
+[2m      - waiting 100ms[22m
+[2m    58 × waiting for element to be visible, enabled and stable[22m
+[2m       - element is not visible[22m
+[2m     - retrying click action[22m
+[2m       - waiting 500ms[22m
+
+    at C:\Users\User\AppData\Roaming\Claude\side-session-notes\local_eeb07289-ed8b-483b-8502-00962970c7d1\s4-chat201\wb\wb-r13.mjs:25:26
+errors []
+errors []
+DONE 0 PASS 0 FAIL 2 OTHER of 2

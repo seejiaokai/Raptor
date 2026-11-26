@@ -1,0 +1,8 @@
+msq-s4w-lib v1 who=wb run=r7c port=4754
+wb-r7 v1
+ERROR TypeError: Cannot read properties of null (reading 'filter')
+    at sheetRead (file:///C:/Users/User/AppData/Roaming/Claude/side-session-notes/local_eeb07289-ed8b-483b-8502-00962970c7d1/s4-chat201/wb/wb-r7.mjs:17:86)
+    at async file:///C:/Users/User/AppData/Roaming/Claude/side-session-notes/local_eeb07289-ed8b-483b-8502-00962970c7d1/s4-chat201/wb/wb-r7.mjs:99:44
+errors []
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0
