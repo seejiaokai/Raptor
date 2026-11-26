@@ -148,8 +148,12 @@ change (no sign-in, roles or what one person sees of another).
 
 ## 13. Gates
 
-GitHub's run on `fd26cb170` (the first two fixes): every job green, the code check included (it compares again since
-pull request 855). The run on `a0cd010e8` (the column's wrap fix) was started at the push — read it before his look.
+GitHub's run on `ab72316f4` (`main` brought in, pull request 855 with it): every job green, the code check included.
+The pushes of the fixes (`fd26cb170`, `a0cd010e8`) ran NO checks — `main` had moved 30 commits and the pull request
+clashed (first read as green by the host, wrongly: an empty check list). `main` brought in again at `0787b0143` (the
+clashes record files only — both handoff blocks and file-map entries kept, main's Leave War map line and this branch's
+Scheduler line, the backlog tripwire 3350 with both reasons); the SANS and hiding tests 710 of 710 and the type check
+after it. Its run is the one to read before his look.
 
 ## 14. What the walk found, and each disposition
 
