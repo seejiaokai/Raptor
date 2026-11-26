@@ -34,11 +34,12 @@ import { clearToast } from './toast'
 import { setCxt, setSortAll } from './board'
 import { whatIsOpen, guardWords, GUARD_ROWS, GUARD_LEADS, GUARD_ENDINGS, rowRefuses, type GuardRow } from './guard'
 import { homeOn, todayIso } from '../state/units'
+import { holdNow, warBand } from '../state/typing-hold'
 import { setReloadSeam } from './logout'
 import { SESSION } from '../state/auth'
 import {
   $, C, OPEN, TRK_OPENERS, app, doing, press, settle, tid, tap, typeIn, goInputsCal, goLeaveWar, goTracker, chartEdit,
-  guardTeardown, openLeaveFiled, openUserRow, ownInput, drawnBox, row, named, saver, topPick,
+  guardTeardown, openLeaveFiled, openUserRow, ownInput, drawnBox, row, named, saver, topPick, warAsRanger,
 } from '../test-support/msq-guard-testkit'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -258,6 +259,61 @@ describe('B4b — every window that only shows things closes, and the pick goes 
       expect(UNIT).toBe('u142')
       expect(note()).toBe(words)
       expect(SHOWN[id]!.shut(), `${id} still open`).toBe(false)
+    })
+  }
+})
+
+/* THE ONE BEAT AT THE ENTRY (step K4's round 2, item 3): the pick's entry closes the windows that only show things and then
+   asks whether the war is held (state/pick.ts enterPicked: closeShown(), then holdNow()) — and holdNow() counts every war
+   sheet still mounted, a show-only one included, until it unmounts. So the war might be entered "held" for one beat and
+   let go when the sheet goes. Read: after everything settles, the war is 149's, nothing held; and, in the same run as the
+   entry, whether a held band was ever put on the page or a war band ever stood. */
+describe('the entry with a show-only Leave War sheet up: never held, not even for a beat', () => {
+  const BAND_NO_SHEET: Record<string, unknown> = {}
+  for (const list of Object.keys(LISTS) as ListName[]) {
+    it(`(control) Ranger on the Leave War with no sheet up, a pick by ${list}: what the war and its band are after it`, async () => {
+      await app('hunter')
+      await warAsRanger()
+      await LISTS[list]('u149')
+      await settle()
+      expect(UNIT).toBe('u149')
+      expect(holdNow()).toBe('none')
+      /* (a View holder's pick leaves his own war on a page 149 does not offer, so the store keeps the pick's band for a
+         war window — none is open, so nothing draws it; read here so the case with the sheet is compared against it) */
+      BAND_NO_SHEET[list] = warBand()
+    })
+  }
+  for (const list of Object.keys(LISTS) as ListName[]) {
+    it(`"Leave filed on the Inputs page" up, a pick by ${list}: through, the war unheld, no held band drawn at any moment, nothing held`, async () => {
+      await app('hunter')
+      await openLeaveFiled()
+      expect(lwUnitNow(), 'the premise: the war is 142\'s').toBe('u142')
+      const drawn: string[] = []
+      const BANDS = '[data-testid="move-band"], [data-testid="inped-moveband"], [data-heldro]'
+      const mo = new MutationObserver(recs => {
+        for (const r of recs) for (const n of r.addedNodes) {
+          const el = n as Element
+          if (el.nodeType === 1 && (el.matches(BANDS) || el.querySelector(BANDS))) drawn.push(el.outerHTML.slice(0, 120))
+        }
+      })
+      mo.observe(document.body, { childList: true, subtree: true })
+      /* (read 27 Nov 26, reported, not pinned: the war band itself does stand for that one beat — the store's band reads
+         "This is 142's." between the entry and the sheet's unmount — but it is never put on the page: the sheet that would
+         carry it unmounts in the same render) */
+      try {
+        await LISTS[list]('u149')
+        await settle()
+      } finally { mo.disconnect() }
+      /* (the war band the store keeps after the pick is the same as a pick with no sheet up makes — the control below) */
+      expect(warBand(), 'the store\'s war band as with no sheet up').toEqual(BAND_NO_SHEET[list])
+      expect(UNIT, 'through').toBe('u149')
+      /* (Ranger, a member, sees 149 by View only: his own pages, the Leave War among them, stay 142's at the pick — D2197 —
+         so the war's world the entry gives, unheld, is his own pages' squadron) */
+      expect(lwUnitNow(), 'the war\'s world is what the entry gives it, unheld: his own pages\' squadron').toBe(pageUnit('own', todayIso()))
+      expect(tid('raptor-sheet'), 'the sheet gone').toBeNull()
+      expect(holdNow(), 'nothing holds').toBe('none')
+      expect(drawn, 'no held band drawn between the entry and the release').toEqual([])
+      nothingHeld()
     })
   }
 })

@@ -11,7 +11,8 @@ import { describe, it, expect, afterEach, beforeEach } from 'vitest'
 import { render, screen, fireEvent, cleanup, act } from '@testing-library/react'
 import { createRoot, type Root } from 'react-dom/client'
 import { useState } from 'react'
-import { useMsqWorld, signInAs, ACCT, PID } from '../test-support/msq-world'
+import { useMsqWorld, signInAs, ACCT, PID, on, moveMan, pastMidnight } from '../test-support/msq-world'
+import { SCHED_MOVE_WORDS } from '../state/typing-hold'
 import { saveAccess, signIn, sessionFor } from '../state/accounts'
 import { setSession, SESSION } from '../state/auth'
 import { setGrant } from '../state/units'
@@ -37,8 +38,9 @@ afterEach(() => cleanup())
 /* THE RAW ENTRY (step K4 of the guard rail; his D2403): since K4 a pick with a window open is refused — the door asks the
    guard first — so the pick's band below is reached by no press. The tests that hold the band drive the very entry the pick
    runs (state/store.ts enterSquadron, by pick, the war held as the pick holds it) and are named so; the band and they are
-   removed together in Build 2. (The four tests of the held Input window across an Undo, a new object and a second input —
-   kind (a) of K0's census, owed to the midnight road — are not re-pointed here: K4's brief leaves them, and reports them.) */
+   removed together in Build 2. (The tests of the held Input window across an Undo, a new object and a second input —
+   kind (a) of K0's census — hold the window by the road that still makes that state, his own move at midnight: K4's
+   round 2, below.) */
 const rawPick = (u: string): void => { enterSquadron(u, holdNow() === 'war', true); notify() }
 
 const LEAD = "This is 142's."
@@ -340,82 +342,130 @@ describe('an open Input window on Inputs (the drawing f7b)', () => {
   /* The second fix round's fresh Opus read (23 Nov 26), the third time a held input window came back live (D2233): the
      window took its "opened on" note afresh whenever its record became a new OBJECT — and an Undo, a Redo and a refused
      command all put the list back as new objects, which the window follows — so the fresh note read the squadron in view
-     now and both holds were forgotten. The note now stays for as long as the window shows the same input. Red first. */
-  const heldPlan = async () => {
+     now and both holds were forgotten. The note now stays for as long as the window shows the same input. Red first.
+     HELD BY HIS OWN MOVE AT MIDNIGHT (step K4's round 2): since K4 a pick with a window open is refused (D2403), so these
+     tests hold the window by the road that still makes that state — Hunter, 142's admin, moved to 149 from tomorrow, his
+     window open on 142's Inputs at 23:57, then midnight (the shape of ui/msq-fix-sched-windows-midnight.test.tsx). Held so,
+     the band reads the generic words and the controls stay live (store.ts heldWords: not a pick, not the member view), so
+     "held" is read by the band and by Save going nowhere — the window stays open and nothing is saved — where the pick's
+     hold was read by its words and its greyed, dead controls. */
+  const heldAtMidnight = async (prep?: () => Promise<void>) => {
+    on(15, 23, 57)
+    signInAs('saber')
+    expect(moveMan(PID.hunter, 'u149'), 'Hunter is 149\'s from tomorrow').toMatchObject({ ok: true })
+    signInAs('hunter')
+    setPage('inputs'); setInpView('cal')
+    await act(async () => { root.render(<InputEditor />) })
+    if (prep) await prep()
+    else await act(async () => { setInpEdit(INPUTS[0]); notify() })
+    expect($('[data-testid="inped-moveband"]'), 'no band before midnight').toBeNull()
+    await act(async () => { pastMidnight() })
+    await act(async () => { notify() })
+    expect($('[data-testid="inped-moveband"]'), 'held at midnight').not.toBeNull()
+  }
+  const stillHeld = (when: string) => {
+    expect($('.inpedbox'), `the window still open ${when}`).not.toBeNull()
+    const band = $('[data-testid="inped-moveband"]')
+    expect(band, `still held ${when}`).not.toBeNull()
+    expect(band!.querySelector('b')!.textContent, `the midnight band's words ${when}`).toBe(SCHED_MOVE_WORDS)
+  }
+  /* Save goes nowhere while held: an unchanged window's Save would close it (InputWindow.tsx save, "the save just closes"),
+     a held one returns first — the window stays, the list unchanged */
+  const saveGoesNowhere = async (when: string) => {
+    const was = INPEDIT, list = JSON.stringify(INPUTS)
+    await act(async () => { $('#inpEditSave')!.click() })
+    expect([INPEDIT === was, JSON.stringify(INPUTS) === list], `Save ${when}: the window stays, nothing saved`).toEqual([true, true])
+  }
+  /* THE UNDO AND REDO ACROSS A HOLD — the midnight road does not make it (step K4's round 2, reported): an Undo of his
+     change made at 23:57 is refused after midnight ("Something else changed this after your action — it can't be undone
+     now."), because the app's own run at midnight writes to the inputs (in this world it accepts one appointment onto the
+     Ground Programme); and after midnight he is a member of 149 with no input of his own to change. So the whole of the
+     old test — held through an Undo and a Redo, and 142 picked again giving it back (a move does not reverse, so that
+     last step never had a midnight twin) — stays the pick's band's, reached by no press since D2403, by the raw entry */
+  it('a Plan holder\'s window held at a pick of 149 through an Undo and a Redo; 142 picked again gives it back — reached by no press since D2403 (step K4: a pick is refused while a window is open), so by the raw entry; removed with the band in Build 2', async () => {
     signInAs('saber')
     expect(saveAccess(ACCT.hunter, { grants: { u149: 'plan' } })).toBeNull()
     signInAs('hunter')
     setPage('inputs'); setInpView('cal')
     await act(async () => { root.render(<InputEditor />) })
-    /* one change of his own on 142's Inputs, so Undo has a step */
     const iid0 = INPUTS[0].iid
     await act(async () => { expect(commitInputEdit(INPUTS[0], { ...draftOf(INPUTS[0]), remarks: 'PROBE-UNDO' })).toBe(true); notify() })
     await act(async () => { setInpEdit(INPUTS.find((x: any) => x.iid === iid0)); notify() })
-    expect($('[data-testid="inped-moveband"]')).toBeNull()
-    await act(async () => { await pickSquadron('u149') })
+    await act(async () => { rawPick('u149') })
     expect(UNIT).toBe('u149')
-    expect(CURPAGE, 'Full access: Inputs is offered, the page stays').toBe('inputs')
     expect($('[data-testid="inped-moveband"]'), 'held at the pick').not.toBeNull()
-  }
-  const stillHeld = (when: string) => {
-    expect($('.inpedbox'), `the window still open ${when}`).not.toBeNull()
-    const sv = $('#inpEditSave')
-    expect([dead(sv), greyed(sv)], `Save dead and greyed ${when}`).toEqual([true, true])
-    const band = $('[data-testid="inped-moveband"]')
-    expect(band, `still held ${when}`).not.toBeNull()
-    expect(band!.querySelector('b')!.textContent).toBe(LEAD)
-  }
-  it('a Plan holder\'s window held at a pick of 149 stays held through an Undo and a Redo; 142 picked again gives it back', async () => {
-    await heldPlan()
+    const heldByPick = (when: string) => {
+      expect($('.inpedbox'), `the window still open ${when}`).not.toBeNull()
+      const sv = $('#inpEditSave')
+      expect([dead(sv), greyed(sv)], `Save dead and greyed ${when}`).toEqual([true, true])
+      const band = $('[data-testid="inped-moveband"]')
+      expect(band, `still held ${when}`).not.toBeNull()
+      expect(band!.querySelector('b')!.textContent).toBe(LEAD)
+    }
     const before = INPEDIT
     await act(async () => { globalUndo(); notify() })
     await act(async () => { notify() })
     expect([CURPAGE, UNIT, INPEDIT !== before, INPUTS.some((x: any) => x.remarks === 'PROBE-UNDO')], 'after the Undo: page, unit, record replaced, change gone').toEqual(['inputs', 'u149', true, false])
-    stillHeld('after the Undo')
+    heldByPick('after the Undo')
     const mid = INPEDIT
     await act(async () => { globalRedo(); notify() })
     await act(async () => { notify() })
     expect([INPEDIT !== mid, INPUTS.some((x: any) => x.remarks === 'PROBE-UNDO')], 'after the Redo: record replaced, change back').toEqual([true, true])
-    stillHeld('after the Redo')
-    await act(async () => { await pickSquadron('u142') })
+    heldByPick('after the Redo')
+    await act(async () => { rawPick('u142') })
     expect($('[data-testid="inped-moveband"]'), '142 picked again: the window as it was').toBeNull()
     expect(dead($('#inpEditSave'))).toBe(false)
   })
-  it('a View holder\'s window held over 149\'s View-only Sched stays held when its record is put back as a new object', async () => {
+  it('a window held across his own move at midnight stays held when its record is put back as a new object', async () => {
+    await heldAtMidnight()
+    /* a refused command or an Undo puts the list back as new objects (InputWindow.tsx "the record behind the window") */
+    await act(async () => { INPUTS[0] = { ...INPUTS[0] }; notify() })
+    await act(async () => { notify() })
+    stillHeld('after its record is found again')
+    await saveGoesNowhere('after its record is found again')
+  })
+  /* the View holder's half of the old test: a window held because its own page is no longer offered (InputWindow.tsx
+     `kept.offered`) is a state the midnight road does not make — a man who moves arrives a member, whose Inputs page is
+     still offered — so that half keeps the pick's band, by the raw entry */
+  it('a View holder\'s window held over 149\'s View-only Sched stays held when its record is put back as a new object — reached by no press since D2403 (step K4: a pick is refused while a window is open), so by the raw entry; removed with the band in Build 2', async () => {
     signInAs('saber')
     expect(saveAccess(ACCT.hunter, { grants: { u149: 'view' } })).toBeNull()
     signInAs('hunter')
     setPage('inputs'); setInpView('cal')
     await act(async () => { root.render(<InputEditor />) })
     await act(async () => { setInpEdit(INPUTS[0]); notify() })
-    await act(async () => { await pickSquadron('u149') })
+    await act(async () => { rawPick('u149') })
     expect(CURPAGE).toBe('viewsched')
     expect($('[data-testid="inped-moveband"]'), 'held after the pick').not.toBeNull()
-    /* a refused command or an Undo puts the list back as new objects (InputWindow.tsx "the record behind the window") */
     await act(async () => { INPUTS[0] = { ...INPUTS[0] }; notify() })
     await act(async () => { notify() })
-    stillHeld('after its record is found again')
+    expect($('.inpedbox'), 'the window still open after its record is found again').not.toBeNull()
+    const sv = $('#inpEditSave')
+    expect([dead(sv), greyed(sv)], 'Save dead and greyed after its record is found again').toEqual([true, true])
+    const band = $('[data-testid="inped-moveband"]')
+    expect(band, 'still held after its record is found again').not.toBeNull()
+    expect(band!.querySelector('b')!.textContent).toBe(LEAD)
   })
   /* the same cause by another door: another input asked for over unsaved words is the window's record for one paint,
      then the first is put back (InputWindow.tsx "one editor at a time") — and the note was taken afresh both times */
-  it('another input asked for over the held window\'s unsaved words: the window keeps the first, and stays held', async () => {
-    signInAs('saber')
-    expect(saveAccess(ACCT.hunter, { grants: { u149: 'plan' } })).toBeNull()
-    signInAs('hunter')
-    setPage('inputs'); setInpView('cal')
-    await act(async () => { root.render(<InputEditor />) })
-    await act(async () => { setInpEdit(INPUTS[0]); notify() })
-    await act(async () => { fireEvent.change($('#inpEditRmk')!, { target: { value: 'UNSAVED-WORDS' } }) })
-    await act(async () => { await pickSquadron('u149') })
-    expect($('[data-testid="inped-moveband"]'), 'held at the pick').not.toBeNull()
+  it('another input asked for over the held window\'s unsaved words (held across his own move at midnight): the window keeps the first, and stays held', async () => {
+    await heldAtMidnight(async () => {
+      await act(async () => { setInpEdit(INPUTS[0]); notify() })
+      await act(async () => { fireEvent.change($('#inpEditRmk')!, { target: { value: 'UNSAVED-WORDS' } }) })
+    })
     const first = INPEDIT
     await act(async () => { setInpEdit(INPUTS[1]); notify() })
     await act(async () => { notify() })
     expect(INPEDIT, 'the window keeps the first input').toBe(first)
     stillHeld('after the other input was asked for')
+    const list = JSON.stringify(INPUTS)
+    await act(async () => { $('#inpEditSave')!.click() })
+    expect(JSON.stringify(INPUTS), 'Save with his unsaved words: nothing saved').toBe(list)
+    expect(INPUTS.some((x: any) => x.remarks === 'UNSAVED-WORDS')).toBe(false)
+    expect(INPEDIT, 'the window stays').toBe(first)
   })
-  it('(control) a different input opened in the held window takes a fresh note: not held', async () => {
-    await heldPlan()
+  it('(control) a different input opened in a window held across his own move at midnight takes a fresh note: not held', async () => {
+    await heldAtMidnight()
     const first = INPEDIT
     const other = INPUTS.find((x: any) => x.iid !== first.iid)
     await act(async () => { setInpEdit(other); notify() })
