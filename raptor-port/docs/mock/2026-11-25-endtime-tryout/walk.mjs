@@ -26,6 +26,10 @@ async function run(name, phone) {
   p.on('console', m => { if (m.type() === 'error') errors.push(`${name} console ${m.text()}`) })
   await p.goto(URL)
   const press = async sel => { const l = p.locator(sel).first(); await l.scrollIntoViewIfNeeded(); if (phone) await l.tap(); else await l.click() }
+  /* round 3 (26 Nov 26): the page starts on the recommendations — "Block too" and grey on a published day. The flow below
+     was written for "Never block" and "Red at once", so it sets those first; step 6 checks the new start. */
+  { const d = await p.evaluate(() => window.__tryout.state().set); ok(d.a === 'grey' && d.b === 'block' && d.c === 'grey', 'round 3: starts on the recommendations (grey, block too, grey on a published day)') }
+  await press('[data-set="b"][data-val="never"]'); await press('[data-set="c"][data-val="red"]'); await p.waitForTimeout(80)
   const st = () => p.evaluate(() => { const s = window.__tryout.state(), m = window.__tryout.missing(); return { n: m.n, boxes: m.boxes.map(b => b.getAttribute('data-txt')), red: document.querySelectorAll('.et-red').length, grey: document.querySelectorAll('.et-miss:not(.et-red)').length, pub: s.published, ver: s.ver, pressed: s.pressed } })
   const note = () => p.evaluate(() => { const t = document.getElementById('toastEl'); return t && t.style.opacity === '1' ? t.textContent.trim() : '' })
   /* a person's tap and first key are never in the same instant: a short wait, as a hand gives, lets the tap pick the time */
@@ -117,7 +121,7 @@ async function run(name, phone) {
   ok(m.line === 'underline' && m.style === 'dotted' && m.after === '"00:00"', `step 1: the app's dotted underline runs across the empty box (${m.line} ${m.style} ${m.after})`)
   await rowsShot('amend-1-emptied')
   await press('[data-et-publish]'); await p.waitForTimeout(250)
-  ok((await note()) === 'Blocked: 1 item is missing a time, outlined in red. Thursday was not published.', 'Publish AL1 refused: ' + await note())
+  ok((await note()) === 'Blocked: 1 item is missing a time, outlined in red. AL1 was not published.', 'Publish AL1 refused (round 3: names the AL): ' + await note())
   await typeIn('dr:3.0.1.end', '15:00')
   s = await st(); ok(s.n === 0, 'filled again')
   m = await mark('dr:3.0.1.end')
@@ -136,6 +140,8 @@ async function run(name, phone) {
 
   // 6. the switches
   await press('#ttReset'); await p.waitForTimeout(100)
+  s = await st(); ok(s.n === 5 && s.boxes.includes('ap:3.3.end'), 'Reset: back to the round-3 start, block too (the dinner counts)')
+  await press('[data-set="b"][data-val="never"]'); await press('[data-set="c"][data-val="red"]'); await p.waitForTimeout(80)
   s = await st(); ok(s.n === 4 && !s.pub && s.grey === 4 + 1, 'Reset: back to the draft (5 grey boxes: SXO has two)')
   await press('[data-set="b"][data-val="block"]'); await p.waitForTimeout(80)
   s = await st(); ok(s.n === 5 && s.boxes.includes('ap:3.3.end'), '(b) block too: the dinner counts')

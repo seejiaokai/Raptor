@@ -6,7 +6,7 @@
   'use strict'
   var DI = 3, DOW = 'Thursday', DOW3 = 'Thu'
   var day = document.querySelector('#eWeek section.day')
-  var DEFAULTS = { a: 'grey', b: 'never', c: 'red' }
+  var DEFAULTS = { a: 'grey', b: 'block', c: 'grey' }   // round 3: the page's recommendations (J 2, H 1, the same on a published day)
   var ROLES = [['cur', 'CUR CK', false], ['sked', 'SKED CK', true], ['plan', 'PLANNED BY', true], ['appr', 'APPROVED BY', true]]
   var NAMES = { cur: ['Ace', 'Anvil', 'Basher', 'Blade'], sked: ['Anvil', 'Basher', 'Bolt', 'Cinch'], plan: ['Anvil', 'Basher', 'Bolt', 'Cinch'], appr: ['Anvil', 'Basher', 'Bolt', 'Cinch'] }
   var TICK = '<svg class="vtick" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><circle cx="6" cy="6" r="6"></circle><path d="M3.3 6.2l1.8 1.8 3.6-3.8"></path></svg>'
@@ -221,7 +221,7 @@
     var n = missingBoxes().n
     S.pressed = true
     var lead = n === 1 ? 'Blocked: 1 item is missing a time, outlined in red.' : 'Blocked: ' + n + ' items are missing a time, each outlined in red.'
-    var tail = what === 'sign' ? (n === 1 ? ' Type the missing time, then sign.' : ' Type the missing times, then sign.') : ' ' + DOW + ' was not published.'
+    var tail = what === 'sign' ? (n === 1 ? ' Type the missing time, then sign.' : ' Type the missing times, then sign.') : (S.published ? ' AL' + (S.ver + 1) + ' was not published.' : ' ' + DOW + ' was not published.')
     render()
     toast(lead + tail, 'blocked')
   }
@@ -273,7 +273,10 @@
       publish(); return
     }
     if (t.closest('[data-et-count]')) {
-      var first = missingBoxes().boxes[0]; if (!first) return
+      var bx = missingBoxes().boxes; if (!bx.length) return
+      /* each tap goes to the next empty box in turn (round 3, question G) */
+      S.countTap = ((S.countTap == null ? -1 : S.countTap) + 1) % bx.length
+      var first = bx[S.countTap]
       first.scrollIntoView({ block: 'center', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
       first.focus({ preventScroll: true })
       return
