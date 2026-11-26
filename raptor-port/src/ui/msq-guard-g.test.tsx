@@ -258,6 +258,32 @@ describe('G5 — Quals\' "+ Add person" lands on Admin → Users with the form o
     expect(opener(), 'Cancel brings it back').not.toBeNull()
     expect(form()).toBeNull()
   })
+  /* the form opened for Quals stays folded once Cancel folds it — a redraw with the same request does not open it again —
+     and a second press of Quals' "+ Add person" (a new request) opens it again, the callsign box ready (the code check's
+     fix, 26 Nov 26: the opening moved from an effect to the draw; this pins that nothing a person sees changed) */
+  it('Cancel folds it for good until Quals asks again; a second ask opens it again, the callsign box ready', async () => {
+    signInAs('saber')
+    page = render(<App />)
+    await settle()
+    await act(async () => { setPage('quals'); notify() })
+    await settle()
+    await press($('#qAddToggle'), 'Quals\' "+ Add person"')
+    await settle()
+    expect(form(), 'the form open').not.toBeNull()
+    await press($('#accAddCancel'))
+    expect(form(), 'folded by Cancel').toBeNull()
+    await act(async () => { notify() })
+    await settle()
+    expect(form(), 'a redraw does not open it again').toBeNull()
+    expect(opener(), 'the opener stays').not.toBeNull()
+    await act(async () => { setPage('quals'); notify() })
+    await settle()
+    await press($('#qAddToggle'), 'Quals\' "+ Add person", a second time')
+    await settle()
+    expect(CURPAGE).toBe('admin')
+    expect(form(), 'the second ask opens it').not.toBeNull()
+    expect(document.activeElement && document.activeElement.id, 'the callsign box ready again').toBe('accAddCs')
+  })
 })
 
 describe('G6 — an add is the same call as today\'s, with the same notes (but for the home: the squadron in view)', () => {

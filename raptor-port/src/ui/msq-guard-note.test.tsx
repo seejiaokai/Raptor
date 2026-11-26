@@ -8,7 +8,7 @@
    - The door → place table, row by row; a press inside the ☰ menu → the foot; toastAt then a plain toast → the plain
      place again, toastAt's own toast never; the reader's region carries the words; the note wears the blocked face.
    - The words: every lead of the two tables raised by its REAL state — each opened by the very opener part A's tests use
-     (ui/msq-guard-testkit.tsx, shared, never a second set) — joined to every ending, the whole sentence compared with the
+     (ui/msq-guard-testkit.ts, shared, never a second set) — joined to every ending, the whole sentence compared with the
      tables' own constants (a change of words moves no test).
    - "Words owed": each state that has no words of his yet is pinned to the plain words it says today, with a comment
      naming the words that wait for him.

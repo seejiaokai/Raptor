@@ -1,7 +1,10 @@
 /* THE GUARD RAIL'S TEST OPENERS, SHARED (step K3, chat 204 — moved whole out of ui/msq-guard-open.test.tsx, not one
    assertion changed): each window and typed work opened through the app's own opener, so ui/msq-guard-note.test.tsx raises
    each lead of the note from its real state with the very openers part A's tests use — one set, never a second that can
-   drift. A test file that uses them calls withThird() itself (R9) and hands guardTeardown to its own afterEach. */
+   drift. A test file that uses them calls withThird() itself (R9) and hands guardTeardown to its own afterEach.
+   A plain .ts file on purpose (the app drawn by createElement): it exports helpers, never a component, and the code
+   check reads a .tsx file as a component file (26 Nov 26). */
+import { createElement } from 'react'
 import { describe, it, expect, afterEach, vi } from 'vitest'
 import { render, act, fireEvent, cleanup } from '@testing-library/react'
 import { withThird, third, signInAs, PID, ACCT, moveMan, pastMidnight } from '../test-support/msq-world'
@@ -101,7 +104,7 @@ export async function escape() {
 export const doing = async (f: () => void) => { await act(async () => { f(); notify() }); await settle() }
 export async function app(who: 'hunter' | 'saber' | 'ranger' = 'hunter') {
   signInAs(who)
-  page = render(<App />)
+  page = render(createElement(App))
   await settle()
 }
 export async function topPick(u: string) {
@@ -280,7 +283,9 @@ export async function openTrkAsk() {
 export async function linkedStudent(): Promise<string> {
   const have = C.roster.find((r: any) => r.pid)
   if (have) return have.id
-  const pid = getPeople().find((p: any) => !C.roster.some((r: any) => r.pid === p.id))!.id
+  const free = getPeople().find((p: any) => !C.roster.some((r: any) => r.pid === p.id))
+  if (!free) throw new Error('no person left to enrol on the Tracker')
+  const pid = free.id
   await act(async () => {
     const p = C.addStudent()
     await vi.waitFor(() => expect(C.dlg, '"+ Add" is up').toBeTruthy(), { timeout: 5000, interval: 5 })
