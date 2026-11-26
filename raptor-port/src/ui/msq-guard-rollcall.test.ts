@@ -648,7 +648,7 @@ export function viewSetPageReaches(rel: string, raw: string): string[] {
 
 type DoorKind = 'last' | 'then' | 'answer' | 'asks first'
 /* every call of the page door outside state/store.ts, as built (the plan §4.5's table — sixteen calls of setPage and the
-   holiday line's ownSquadronFirst). `at` — words of the call's own line that find it; `fn` — for 'asks first', the
+   holiday line's ownSquadronFirst; since K7b fifteen, snapView's call moved to the Undo's own stepPage). `at` — words of the call's own line that find it; `fn` — for 'asks first', the
    function that sets a mark before the page and must ask first */
 const DOOR_CENSUS: { file: string; at: string; kind: DoorKind; fn?: string; why: string }[] = [
   { file: 'ui/Shell.tsx', at: 'const nav = (p: string) => { setPage(p)', kind: 'last', why: 'a tab: only the pages the squadron in view offers are drawn (row 14)' },
@@ -667,14 +667,17 @@ const DOOR_CENSUS: { file: string; at: string; kind: DoorKind; fn?: string; why:
   { file: 'ui/adminopen.ts', at: "setPage('admin')", kind: 'asks first', fn: 'openAdminUsers', why: 'the Users intent set before the page' },
   { file: 'leavewar/sync.ts', at: "askRing({ personId: onGrid ? pid : '', date: iso }); setPage('leavewar')", kind: 'asks first', fn: 'openWarAt', why: 'the war selected, Approvals and Balances put away, the ring asked for before the page' },
   { file: 'leavewar/sync.ts', at: "if (CURPAGE !== 'leavewar') setPage('leavewar')", kind: 'asks first', fn: 'openNewPeriod', why: 'the new-period ask left before the page' },
-  { file: 'state/undo-wire.ts', at: "setPage(land.primary) !== 'went'", kind: 'answer', why: 'snapView: the landing\'s then only on went (row 13 — no road reaches it)' },
+  /* (K7b: snapView asks the Undo's own door, stepPage — the same question, the page set with no notify of its own, so the
+     landing enters his own squadron on the step's own notify, after its writes; still an 'answer', its then only on went) */
+  { file: 'state/undo-wire.ts', at: "stepPage(land.primary) !== 'went'", kind: 'answer', why: 'snapView: the landing\'s then only on went (row 13 — no road reaches it); the step\'s own door, so the landing comes after the step\'s writes (K7b)' },
 ]
-/** R5 (c): every call of the page door (setPage, ownSquadronFirst imported from state/store) in a file, by its line */
+/** R5 (c): every call of the page door (setPage, ownSquadronFirst and — K7b — the Undo's own stepPage, imported from
+ *  state/store) in a file, by its line */
 export function doorCalls(rel: string, raw: string): string[] {
   if (rel === 'state/store.ts') return []
   const src = uncomment(raw)
   const names = new Set<string>()
-  for (const im of importsOf(rel, src)) if (im.mod === 'state/store') for (const n of im.names) if (n === 'setPage' || n === 'ownSquadronFirst') names.add(n)
+  for (const im of importsOf(rel, src)) if (im.mod === 'state/store') for (const n of im.names) if (n === 'setPage' || n === 'ownSquadronFirst' || n === 'stepPage') names.add(n)
   if (!names.size) return []
   const re = new RegExp(`(^|[^.\\w])(${[...names].join('|')})\\(`)
   return src.split('\n').filter(l => !/^\s*(import|export)\b/.test(l) && re.test(l)).map(l => l.trim())
@@ -742,9 +745,10 @@ describe('R5 (c) — every call of the page door, with its kind (the plan §4.5\
   it('each call outside state/store.ts is in the census once; each then-call hands a then, the answer-call tests went, each asks-first function asks first', () => {
     expect(censusProblems(allSrc())).toEqual([])
   })
-  it('sixteen calls of setPage and the holiday line\'s ownSquadronFirst', () => {
+  it('fifteen calls of setPage, the holiday line\'s ownSquadronFirst and the Undo\'s stepPage (K7b: snapView\'s call, moved from setPage)', () => {
     const calls = Object.entries(allSrc()).flatMap(([rel, raw]) => doorCalls(rel, raw))
     expect(calls.filter(l => /ownSquadronFirst\(/.test(l)).length).toBe(1)
+    expect(calls.filter(l => /(^|[^.\w])stepPage\(/.test(l)).length, 'the Undo alone calls its own door').toBe(1)
     expect(calls.length).toBe(17)
   })
   it('the "Welcome back" card\'s own gate (his own squadron in view) stands before its call of the door', () => {
@@ -763,7 +767,7 @@ describe('R5 (c) — every call of the page door, with its kind (the plan §4.5\
     expect(censusProblems({ ...files, 'ui/new.tsx': "import { setPage } from '../state/store'\nsetPage('admin')" })).toEqual(['ui/new.tsx: "setPage(\'admin\')" — not in the census: say its kind'])
     const noThen = files['ui/topstate.ts']!.split("setPage('inputs', opts, waited =>").join("setPage('inputs', opts); (waited =>")
     expect(censusProblems({ ...files, 'ui/topstate.ts': noThen }).length).toBeGreaterThan(0)
-    const noAnswer = files['state/undo-wire.ts']!.split("setPage(land.primary) !== 'went'").join("setPage(land.primary) !== 'gone'")
+    const noAnswer = files['state/undo-wire.ts']!.split("stepPage(land.primary) !== 'went'").join("stepPage(land.primary) !== 'gone'")
     expect(censusProblems({ ...files, 'state/undo-wire.ts': noAnswer }).length).toBeGreaterThan(0)
     const noAsk = files['ui/adminopen.ts']!.split("if (ownPageRefused('admin')) return").join('')
     expect(censusProblems({ ...files, 'ui/adminopen.ts': noAsk })).toEqual(['ui/adminopen.ts: openAdminUsers\'s first statement is not its ownPageRefused line ("requestAdminUsers(!!opts.newPerson, opts.person)")'])

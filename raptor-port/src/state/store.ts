@@ -100,9 +100,12 @@ let LANDED = { unit: '', page: '' }
    setHoldRelease), and the landing runs then (the fresh Opus read of 23 Nov 26, F1; the fix rounds' read, Astra 1) */
 const warHeld = (): boolean => view.CURPAGE === 'leavewar' && holdNow() === 'war'
 function landOnOfferedPage(): void {
+  /* (an Undo's or Redo's page, set by stepPage below, is spent here, on the first notify after it — the step's own) */
+  const step = STEP && STEP.page === view.CURPAGE ? { door: STEP.door, opts: STEP.opts } : null
+  STEP = null
   const opened = view.CURPAGE !== LANDED.page && UNIT === LANDED.unit
   if (!pageOffered(view.CURPAGE) && !warHeld()) {
-    if (opened && !ENTERING) landOnOwnPage()
+    if (opened && !ENTERING) landOnOwnPage(step)
     else view.setPage('viewsched')
   }
   LANDED = { unit: UNIT, page: view.CURPAGE }
@@ -118,8 +121,8 @@ function landOnOfferedPage(): void {
    or a failed save may have arrived while the question stood — and waits again for a save still going. Refused: nothing is
    entered, the page stays as it was, and the press's `then` never runs. A landing no door made (a test's raw page change)
    is as before. `want` — the page he opened; null for a press that opens no page (ownSquadronFirst). */
-function landOnOwnPage(): void {
-  const asked = landOwn(view.CURPAGE, KEPT)
+function landOnOwnPage(step: KeptDoor | null): void {
+  const asked = landOwn(view.CURPAGE, KEPT ?? step)
   if (asked) LANDASK = asked
 }
 function landOwn(want: string | null, kept: KeptDoor | null): Promise<boolean> | null {
@@ -228,6 +231,29 @@ export function ownSquadronFirst(o: PageOpts, then: (waited: boolean) => void): 
   if (!awayFromOwn()) { then(false); return 'went' }
   const { door, opts } = doorOf(o)
   return ownFirst(null, pressDoor(door, opts), () => { ownSquadronFirst(o, then) }, then)
+}
+/* THE UNDO'S AND REDO'S OWN PAGE DOOR (step K7b): an Undo or a Redo whose step lands on a page — undo-wire.ts snapView —
+   asks this, never setPage. It asks the page door's question first, as setPage does, and a refusal changes nothing; but
+   where the page goes, it is set with NO notify of its own, so the landing (landOnOfferedPage, his own squadron back for
+   a page the squadron in view does not offer) runs on the step's own notify, AFTER the step's writes — as before K6.
+   Why: snapView runs BEFORE the step writes (undo/timeline.ts globalUndo / globalRedo → snap → applyRestore), and K6's
+   setPage notified at once, so 142 was entered inside snapView, ahead of the Undo: the saved row was put back while the
+   kept copy of 142's calendar (state/plan-foreign.ts keptPlan), entered too early, still held the edit — the Undo half
+   applied (K7's report, finding 1; ui/msq-inputscal-own-calendar.test.tsx). The door it asked through is kept (STEP) for
+   that landing alone, so the landing still closes the windows that only show things and asks again after the Tracker's
+   question, as the door's own landing does; it is spent on the first notify after it, whatever that notify lands.
+   A save still going: the door's own wait, the page asked for again once the saver has answered (ownFirst's `again`),
+   as K6 left it. Its answers are the door's: 'went' (the page set, the landing to come on the step's notify), 'asked',
+   'refused' (the note said, nothing changed). */
+let STEP: (KeptDoor & { page: string }) | null = null
+export function stepPage(p: string): PageGo {
+  if (p === view.CURPAGE || pageOffered(p)) { view.setPage(p); return 'went' }
+  const k = pressDoor(undefined, undefined)
+  if (refuse(k.door, myUnit(todayIso()), k.opts)) return 'refused'
+  if (saveGoing()) { void waitForSave().then(r => { if (r === 'go') setPage(p) }); return 'asked' }
+  STEP = { ...k, page: p }
+  view.setPage(p)
+  return 'went'
 }
 /* one body for both (§4.5: the page door is ownSquadronFirst plus view.setPage, so the two can never differ) */
 function ownFirst(p: string | null, k: KeptDoor, again: () => void, then?: (waited: boolean) => void): PageGo {

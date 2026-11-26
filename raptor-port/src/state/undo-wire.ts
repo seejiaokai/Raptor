@@ -36,7 +36,7 @@ import { setRecordKeyHook } from '../command/commit'
 import { weekOf, dayKeyOf, recordKeyIn, stampOf } from '../undo/derive'
 import { todayIso } from './units'
 import { schedStore, schedPostRestore } from './sched-commit'
-import { weekstashStore, loadWeek, setPage } from './store'
+import { weekstashStore, loadWeek, stepPage } from './store'
 import { HIST } from './history'
 import { armDrop, prunePreviews, SBDAY, CURPAGE, setBoardDay, focusQualsRow, requestAdminUsers, requestAdminSquadrons, setSecDefOffer, setInpView, setInpMode, setCalMonth, INPVIEW, CALMONTH, clearInpReveal, requestInpReveal, requestPlanReveal } from './view'
 import { canEditSched, SESSION } from './auth'
@@ -289,7 +289,9 @@ function snapView(entry: UndoEntry, dir: 'undo' | 'redo'): void {
      on one of his own pages while a squadron he only views is picked, so the door is the belt; where it does not go (a
      refusal, or the Tracker's question), the landing's own `then` and the rest of the view-snap are not run — only on
      'went' */
-  if (land && land.primary && CURPAGE !== land.primary && !land.also.includes(CURPAGE) && setPage(land.primary) !== 'went') return
+  /* …THE STEP'S OWN DOOR, stepPage (step K7b): the same question, but the page set with no notify of its own, so his own
+     squadron is entered on the step's own notify, AFTER its writes — never here, ahead of them (store.ts stepPage) */
+  if (land && land.primary && CURPAGE !== land.primary && !land.also.includes(CURPAGE) && stepPage(land.primary) !== 'went') return
   if (land && land.then) land.then()
   if (land && land.primary === 'leavewar') {
     const date = lwDateOf(entry) ?? flyDateOf(entry)

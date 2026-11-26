@@ -614,6 +614,19 @@ describe('B23 — an Undo\'s landing on his own page (a belt: no button reaches 
     await doing(() => { _snapView(step, 'undo') })
     expect([UNIT, CURPAGE, INPMODE]).toEqual(['u142', 'inputs', 'member'])
   })
+  /* K7b: snapView runs BEFORE the step writes (undo/timeline.ts globalUndo / globalRedo → snap), so the landing that
+     brings 142 back must wait for the step's own notify, after its writes — K6's door notified at once, inside snapView,
+     and an Undo of a 142 calendar note was left half applied (ui/msq-inputscal-own-calendar.test.tsx) */
+  it('(the order) with nothing open, _snapView sets the page and enters nothing; 142 comes back only on the next notify — the step\'s, after its writes', async () => {
+    await app('ranger')
+    await topPick('u149')
+    const step: any = { id: 'k7b-b23o', label: 'x', scope: { module: 'inputs' }, forward: [{ collection: 'inputs', id: 'x', before: { iid: 'x', person: PID.ranger, type: 'LL', date: 'Jul 20' }, after: null }], inverse: [] }
+    let seen: [string, string] | null = null
+    await act(async () => { _snapView(step, 'undo'); seen = [UNIT, CURPAGE] })
+    expect(seen, 'inside the step, before its notify: the page set, 149 still in view').toEqual(['u149', 'inputs'])
+    await doing(() => {})
+    expect([UNIT, CURPAGE], 'the step\'s notify: the landing, 142 back on his Inputs').toEqual(['u142', 'inputs'])
+  })
 })
 
 /* ================= B25 — a card of the OIL list ================= */

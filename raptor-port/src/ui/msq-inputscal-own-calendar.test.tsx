@@ -18,7 +18,7 @@ import { PLANPUCKS, DAYRMK, addPlanPuck, setDayRemark } from '../state/plan'
 import { keptPlan, setPlanStoreDoor } from '../state/plan-foreign'
 import { persistWb, wireRows } from '../state/persist'
 import { setGrant } from '../state/units'
-import { setPage, setInpView, setCalMonth } from '../state/view'
+import { setPage, setInpView, setCalMonth, CURPAGE } from '../state/view'
 import { Whiteboard } from '../storage/whiteboard'
 import { UNIT, BOOT_UNIT } from '../engine/unitview'
 import { _timelineEntries } from '../undo/timeline'
@@ -187,6 +187,26 @@ describe('a 142 plain admin with View of 149 picks 149 — his Inputs calendar s
     const u = await press('undo')
     expect(u.ok, JSON.stringify(u.reason)).toBe(true)
     expect([keptPlan('u142')?.titles[DAY], savedRow('u142', `dm:${DAY}`)]).toEqual(['Exercise', 'Exercise'])
+  })
+
+  /* (K7b) THE REDO'S LANDING COMES AFTER THE REDO'S WRITES, as the Undo's does: snapView runs for both before the step
+     writes (undo/timeline.ts globalRedo → snap), and the landing that brings 142 back must run on the step's own repaint,
+     never inside snapView — or 142's kept calendar is entered before the Redo writes it, and keeps the title undone */
+  it('the same title, undone, then 149 picked again: its Redo lands on his Inputs and brings 142 back AFTER the Redo writes — the title redone, stored and cached — reached by no press since D2381 and K6, so the day window is closed first', async () => {
+    hunterViewOn149()
+    await show()
+    await openDay(DAY)
+    await editTitle('Exercise — day 2')
+    await closeDay()
+    const u = await press('undo')
+    expect(u.ok, JSON.stringify(u.reason)).toBe(true)
+    expect(UNIT, 'the Undo brought 142 back').toBe('u142')
+    await act(async () => { switchUnit('u149'); notify() })
+    expect([UNIT, CURPAGE], 'the premise: 149 picked again, on its View-only Sched').toEqual(['u149', 'viewsched'])
+    const r = await press('redo')
+    expect(r.ok, JSON.stringify(r.reason)).toBe(true)
+    expect([UNIT, CURPAGE], 'the Redo landed on his Inputs, 142 back').toEqual(['u142', 'inputs'])
+    expect([keptPlan('u142')?.titles[DAY], savedRow('u142', `dm:${DAY}`)], 'the title redone, stored and cached').toEqual(['Exercise — day 2', 'Exercise — day 2'])
   })
 
   it('a new note made there lands on 142’s calendar, and its Undo takes it away again — reached by no press since D2381 and K6 (the Undo’s landing would enter 142 with the open day window), so the day window is closed first', async () => {
