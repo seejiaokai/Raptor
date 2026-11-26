@@ -1571,3 +1571,16 @@ sides.
 **Issue:** the copied window showed its PERSON list reading the first name in the squadron ("Ace") instead of the man the window was for (Cutter): a copy of an element's markup keeps each option list but not which entry is picked (the picked value is live state, not markup), and the same holds for typed text and ticks. The script's own premise check passed, since it read the original window's text; only looking at the picture caught it.
 **Suggested improvement:** in the guide's section on cloning a real element, add: when a window is copied by its markup, read every list's, box's and tick's live value from the original before closing it and set them on the copy; then read the copy's values back and assert them, not the original's.
 **Principle:** A copy of an interface element made from its markup drops its live state; a mock-up that copies one must carry the state across and check the copy, not the source.
+
+### Observation 1093: "You two agree on it" — a shared fact map, then two rounds
+
+**Status:** OPEN
+**Date:** 27 Nov 26
+**Session context:** chat 191, his step back on how the Leave War, the Inputs pages and the schedule fit together (D2782), asking Fable and Astra to agree a design
+**Skill:** New skill candidate: design-agreement (two readers converge on a design)
+**Type:** open-source
+**Phase/Area:** setting up a design question for two independent readers who must end in one answer
+
+**Issue:** the method that worked: (1) one helper first wrote a fact map of today from the code, each cell cited, inferences marked, no opinions; (2) both readers got the same brief and the map and proposed blind; (3) the host listed the points where they differed (A–H) in a round-2 brief, and each read the other's proposal and settled every point (agree / hold / a third way), blind to the other's round 2; (4) the host merged and put only the questions left to him. On one point the readers each moved to the other's first view, so a round 2 alone does not guarantee agreement; the host named that point and drew both rather than picking.
+**Suggested improvement:** write this as a short method (in the brainstorming or impeccable notes for this project): a fact map before blind proposals, a round-2 brief that names the differences point by point, a fixed answer form per point, and the rule that a point still split after round 2 goes to the owner drawn both ways.
+**Principle:** Two readers converge faster and more honestly when they start from one shared set of checked facts and round 2 names each disagreement explicitly; a disagreement that survives is shown to the decision-maker, not resolved by the host.
