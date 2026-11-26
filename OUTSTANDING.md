@@ -189,6 +189,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **People, accounts and Quals**
 - [MSQ-S2-U1-READS-LEFT] — what the reads of Admin → Users' step U1 left: two doors' words (one names a sign-in, one tells of a move), the row's ids in the markup, the whole row's stale lines, and a question for him — may an archived man be moved, or a man with a move be archived.
+- [LAPSED-SESSION-DOORS] — the account doors and the commit gate accept a write from a signed-in person whose own sign-in was just switched off, archived, deleted or made a member, until his screen next redraws; cannot happen in one browser today — closed before the database step.
 - [MSQ-PLAN-AUDIT] — a dedicated check of everything built and planned for an admin with Plan of a squadron left out or let in wrongly, faults fixed before the reshape build; his D2242 (20 Nov 26).
 - [MSQ-FABLE-REVIEW] — Fable reviews what it has not read: the kinds of sign-in together first (who edits, who only views, is each guarded), then the areas ranked by risk; his D2259 (21 Nov 26).
 - [MSQ-FIXREAD17-OPEN] — fix read 17's, the core read's and the full review's 35 faults, all reproduced red, in seven cause families; his shape question first, then the fixes and one combined fix read (20 Nov 26).
@@ -325,6 +326,13 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [LAPSED-SESSION-DOORS] The doors and the commit gate accept a write from a session that no longer stands (27 Nov 26, chat 205 — the security reader of Admin → Users' step U1) — OPEN
+**What it is:** where a signed-in admin's own sign-in is switched off, or he is archived, deleted or made a member by ANOTHER admin, the app ends or remakes his session at its next redraw (`ui/App.tsx`, `state/accounts.ts sessionLapsed`). Until that redraw, a press on his screen still writes: the account doors read the signed-in account with the role forced to admin and never ask whether the account is switched on or its man still there (`state/accounts.ts` — `levelAcct(mine, 'admin')` and its neighbours; `state/perms.ts` — the same reading at the gate). Proved by the security reader and Astra on Admin → Users (a suspended admin renaming, suspending, archiving and deleting a man from a row left open; proofs in the shared notes folder, `s2-chat205/fixread4/security/zz-security-proof-1`, `-2`, `astra/zz-astra-proof-1`).
+**What is already closed:** Admin → Users' opened rows ask the question themselves before every draw and every action (U1's fifth round — `ui/UsersPanel.tsx`), so those rows write nothing. Every OTHER control that writes through the doors is as before.
+**Why it waits:** it needs another person's change to reach this browser with nothing redrawn — today accounts are read once at start and one browser holds one person, so it cannot happen; it becomes real when the shared database brings other people's changes in live.
+**What to build, before the database step:** every door and the commit gate refuse a command whose actor's account, as the store has it at that moment, is switched off, gone, on an archived or deleted man, or no longer of the role the session was made with — one check in one place, asked by all; tests calling each door directly as such a person.
+**Where:** People & accounts; `state/accounts.ts`, `state/perms.ts`. With the database step.
 
 ### [MSQ-S2-U1-READS-LEFT] What the reads of Admin → Users' step U1 saw and left — two doors' words, the row's ids, the whole row's lines, an archived man with a move (26 Nov 26, chat 205) — OPEN
 **What it is:** the four blind reads of step U1 with its fix (Astra, a fresh Fable, a fresh Opus, the security reader; reports in the shared notes folder, `s2-chat205/`) saw five things outside the step and left them. None can be reached from a screen today.

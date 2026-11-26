@@ -3621,7 +3621,9 @@ not greyed on a man already an admin of 149; the last-admin note reads for him "
 149's own admins or a master admin can make another." (2) **D2807** — his Undo of his own "made a member" is refused
 with "Only 149's own admins or a master admin can make an admin of 149, so this can't be undone." (3) **D2808** — a
 Plan ended by an archive, an overseas posting, a delete or a master admin's making writes one bell line to that
-squadron's admins, in the four approved wordings; built with the bell section's lines. **So U2 is built WHOLE — Q8's
+squadron's admins, in the four approved wordings; **built by this section (S2) as a step of its own right after U2 —
+"U2L", the same file and gate rule as U2's other Plan lines — the bell section only draws them (the coordinator's
+call, 27 Nov 26; §21.3's rule that the bell section does not write `state/notices.ts` stands).** **So U2 is built WHOLE — Q8's
 clause, the doors, the gate, the row and the refused Undo together; there is no separate U2b** (read "U2b" above as
 U2). Every comment and test of these cites its number.
 
