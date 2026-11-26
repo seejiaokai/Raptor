@@ -54,7 +54,7 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
     own pass/fail OFF — the run passes whatever it holds (read in its source, 31 Oct 26). So the script reads its JSON
     report and goes red ("could not compare", exit 2) unless the report says it compared — mode "baseline", not marked degraded, no check skipped, no file its linter dropped ("lint:partial"); never run the check by its bare
     command and believe its exit code.
-  - **Trap — "could not read origin/main's side" that is not main's side (26 Nov 26, his D2752):** React Doctor 0.9.18
+  - **Trap — "could not read origin/main's side" that is not main's side (26 Nov 26, his D2752; the backlog item [CODE-CHECK-FILE-LIMIT], found 25 Nov on pull request 826, closed by it):** React Doctor 0.9.18
     skips its duplicate-markup check once the WHOLE tree holds more than 5,000 JS/TS files (a limit no setting raises),
     marks the branch's own scan incomplete and so never starts the comparison — only "degraded" shows. Pull request
     850 held 5,017, 4,763 of them walk scripts. Since D2752 the walk scripts are skipped (`doctor.config.json`'s
