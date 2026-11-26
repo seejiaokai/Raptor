@@ -132,6 +132,9 @@
   .bp-bx.nt:not(:focus) { border: 1px dashed rgba(242, 200, 121, .8); background: transparent; }
   .bp-ro.nt { color: #F2C879; font-weight: 600; }
   .bp-nt { color: #F2C879; font: 700 14px system-ui; white-space: nowrap; }
+  /* on a phone War bal's column is 55 wide: "Not typed" on one line ran over the OIL column — two lines, as its heading
+     (the phone walk's fault 1, 27 Nov 26) */
+  .bp-row .bp-nt { display: inline-block; white-space: normal; font-size: 12px; line-height: 1.1; text-align: right; }
   /* THE ONE LINE WHERE A BALANCE CAN BE TYPED (D2749, D2812): once above the rows, as drawn
      (scripts/handpass/lw-postin-bal-q16b-draw.mjs pageShot — 13px, #9aa4b2, 8px 16px 8px, its line 2px below that) */
   .bp-pi { flex: none; margin: 10px 16px 8px; color: #9aa4b2; font: 400 13px/1.45 system-ui; }
