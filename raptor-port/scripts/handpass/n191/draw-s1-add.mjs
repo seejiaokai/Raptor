@@ -16,7 +16,8 @@ async function run(key, sz, fn) {
   const s = await mk(sz, { storageState: await world() })
   try { await fn(s) } catch (e) { FACT(`${key}.error`, String(e).split('\n')[0].slice(0, 300)); process.exitCode = 1; await s.page.screenshot({ path: `${TMP1}/${key}-error.png` }).catch(() => {}) } finally { await s.ctx.close().catch(() => {}) }
 }
-for (const [key, keepHome] of [['add', false], ['add-home', true]]) for (const sz of ['d', 'p']) if (want(`${key}-${sz}`)) await run(`${key}-${sz}`, sz, async s => {
+/* after his D2726: add2-a (recommended) and add2-b; add-home redrawn in design a */
+for (const [key, keepHome, design] of [['add', false, null], ['add-home', true, 'a'], ['add2-a', false, 'a'], ['add2-b', false, 'b']]) for (const sz of ['d', 'p']) if (want(`${key}-${sz}`)) await run(`${key}-${sz}`, sz, async s => {
   const k = `s1.${key}.${sz}`
   await as(s, 'hunter'); await reachPick(s, 149, s.desk ? 'bar' : 'menu'); await wait(s, 700)
   await usersTab(s); await wait(s, 500)
@@ -51,14 +52,39 @@ for (const [key, keepHome] of [['add', false], ['add-home', true]]) for (const s
     return { home: home ? { offered: [...home.options].map(o => o.textContent), shown: keepHome, field: homeField.tagName + '.' + homeField.className } : 'no Home squadron box on this page', bar: r(bar), form: r(blk), afterForm: next ? (next.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 60) : null, footBlockLeft: !!users.querySelector(':scope > #accAddBlock:last-child') }
   }, { save: S1.addSave, cancel: S1.addCancel, keepHome, desk: s.desk })
   FACT(`${k}.laid`, laid)
+  /* HIS D2726 (lesson 147): never two add buttons on screen. design 'a' - the opener hidden while the form is open, the
+     form wearing its own heading (the page's own h4 "Add a person", which round 5 hid); design 'b' - the opener's place
+     in the row taken by that same heading, not pressable, the form under the row without a heading of its own. */
+  if (design) FACT(`${k}.design`, await s.page.evaluate(({ design, desk }) => {
+    const add = document.querySelector('#n176add'), blk = document.querySelector('#accAddBlock'), h = blk.querySelector('h4.adm-sub')
+    if (design === 'a') { add.style.display = 'none'; h.style.display = ''; h.id = 's1head' }
+    else {
+      const lab = h.cloneNode(true); lab.id = 's1head'; lab.style.display = ''
+      if (desk) Object.assign(lab.style, { margin: '0 0 0 4px', alignSelf: 'center', whiteSpace: 'nowrap' })
+      else Object.assign(lab.style, { margin: '14px 0 2px', display: 'block' })
+      add.replaceWith(lab)
+    }
+    const hh = document.querySelector('#s1head'), c = getComputedStyle(hh), b = hh.getBoundingClientRect()
+    return { design, heading: hh.textContent, look: `${c.fontSize} ${c.fontWeight} ${c.letterSpacing} ${c.textTransform} ${c.color}`, box: { x: Math.round(b.left), y: Math.round(b.top), w: Math.round(b.width), h: Math.round(b.height) }, openerOnScreen: !!document.querySelector('#n176add') && getComputedStyle(document.querySelector('#n176add')).display !== 'none', addButtonsOnScreen: [...document.querySelectorAll('button')].filter(x => x.getBoundingClientRect().width > 0 && /add (a )?person/i.test(x.textContent)).map(x => x.textContent.trim()) }
+  }, { design, desk: s.desk }))
   FACT(`${k}.typed`, await typeInto(s, '#accAddCs', 'Nova'))
   await s.page.evaluate(() => document.activeElement?.blur?.())
   FACT(`${k}.foot`, await footLikeRow(s, ref))
   await s.page.evaluate(desk => { if (desk) { scrollTo(0, 0); return } const h = document.querySelector('#s1bar').getBoundingClientRect(), bar = document.querySelector('.topbar').getBoundingClientRect(); scrollBy(0, h.top - bar.bottom - 10) }, s.desk); await wait(s, 300)
   const bar = await boxOf(s, '#s1bar'), form = await boxOf(s, '#accAddBlock')
   FACT(`${k}.onScreen`, { bar, form, pair: await words(s, '#n176acts button'), screenH: s.H, formFoot: form.y + form.h })
-  const btnNow = await boxOf(s, '#n176add')
-  const r1 = (await tring(s, btnNow, 'the new button')).ring, r2 = (await tring(s, form, 'the form')).ring
-  await sshot(s, `${key}-${sz}`, [bar, r1, r2], 12)
+  /* the rings: before D2726, the new button and the form; after it, what changed - the row (its opener gone, or turned
+     into the heading) and the form's heading */
+  if (design) {
+    /* one ring: a - the row (its opener gone) and the form's heading under it, as one; b - the heading where the opener stood */
+    const hd = await boxOf(s, '#s1head')
+    const u = design === 'a' ? { x: Math.min(bar.x, hd.x), y: bar.y, w: Math.max(bar.x + bar.w, hd.x + hd.w) - Math.min(bar.x, hd.x), h: hd.y + hd.h - bar.y } : hd
+    const r1 = (await tring(s, u, design === 'a' ? 'the row and the heading' : 'the heading in the opener\'s place')).ring
+    await sshot(s, `${key}-${sz}`, [bar, r1, form], 12)
+  } else {
+    const btnNow = await boxOf(s, '#n176add')
+    const r1 = (await tring(s, btnNow, 'the new button')).ring, r2 = (await tring(s, form, 'the form')).ring
+    await sshot(s, `${key}-${sz}`, [bar, r1, r2], 12)
+  }
 })
 await closeAll()

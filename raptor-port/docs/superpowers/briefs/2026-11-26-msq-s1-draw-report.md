@@ -137,3 +137,29 @@ The review's §5 facts, against these drawings:
   `s1-input-nobody-p` is the app's own note at its own top place (D731); it does not cover the Person box it names,
   but it covers the top part of the Input window's ✕. That is today's placement (plan §4.6, P3's table), not a guard note,
   so it is left as the app draws it. It is said here for the builder.
+
+## After his D2726 (lesson 147: never two add buttons on screen at once)
+
+Redrawn through the design skill (Operate mode: a scheduler at a desk, sometimes on a phone), using the app's own parts.
+Hunter is on 149 with the form open and "Nova" typed. The form's fields, its words and its measured "Add person" ·
+"Cancel" pair are as approved, and there is no Home squadron box. FACT check in each picture: the only add button on
+screen is the form's "Add person". Log: `.tmp/n191-s1/log-add2.txt`; script `draw-s1-add.mjs` (the `design` switch).
+Every picture opened.
+
+- **(a) Recommended — `s1-add2-a-d`, `s1-add2-a-p`:** while the form is open, "+ Add a person" is hidden. The search
+  and Filter keep the top row, and on a desktop the search widens into the space. The form opens under the row
+  wearing its own heading, "ADD A PERSON" — the page's own heading, which the form already had and round 5 hid. **Why:**
+  one add button on the screen. The open block still says what it is, in the app's usual way of naming a section.
+  Cancel stays the one way out, as already ruled (E9f).
+- **(b) The other way — `s1-add2-b-d`, `s1-add2-b-p`:** the opener's place at the end of the row is taken by the same
+  heading, which cannot be pressed. The form sits under the row with no heading of its own. **Its cost:** on a desktop
+  a section heading standing in a row of controls reads like one more control. **On a phone (a) and (b) come out the
+  same picture:** the opener's full-width row and the form's first line are in the same place. So the choice between
+  them is the desktop's.
+- **The closed state (form shut) does not change:** the row reads search · Filter · "+ Add a person", as in `s1-add-d`
+  and `s1-add-p` (taken by D2652 N13 i). After Cancel the opener comes back. After an add the form clears and stays
+  open (E9f), so the opener stays hidden.
+- **`s1-add-home-d`, `s1-add-home-p` redrawn in design (a)** (it was cheap): NQ2's other answer, with the Home squadron
+  box kept.
+- `s1-add-d`, `s1-add-p` (both add buttons showing, as drawn before his D2726) are superseded and should not go on
+  the page.
