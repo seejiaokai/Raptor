@@ -1,0 +1,62 @@
+[
+ {
+  "scn": "extra",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "extra",
+  "size": "desktop",
+  "id": "ex.set",
+  "what": "set-up: an untimed OFT row EP-9 on Fri 17 with Rebel (not SANS-filed for Fri) already in its front seat",
+  "ok": true,
+  "note": "\"Rebel — SANS — no availability filed for today\""
+ },
+ {
+  "scn": "extra",
+  "size": "desktop",
+  "id": "ex.1",
+  "what": "S11 the untimed row's extra place armed and Marlin tapped: he lands in the extra place; reason \"SANS — no availability filed for today\"; note \"Marlin — SANS — no availability filed for today\"; line \"… Planned on OFT EP-9 (no times yet)\"",
+  "ok": true,
+  "note": "{\"armed\":\"s:4.oft.2.+\",\"why\":\"SANS — no availability filed for today\",\"struck\":true,\"note\":\"Marlin — SANS — no availability filed for today\",\"held\":[\".sims.oft[2].w\"],\"pic\":\"extra-ex-1-crew-desktop.png, extra-ex-1-note-desktop.png\"} · \"SANS: no availability filed for today. Planned on OFT EP-9 (no times yet)\"",
+  "pics": "extra-ex-1-crew-desktop.png, extra-ex-1-note-desktop.png, extra-ex-1-list-clip-desktop.png"
+ },
+ {
+  "scn": "extra",
+  "size": "desktop",
+  "id": "ex.2",
+  "what": "S11 a later extra place: Pixel tapped in beside Marlin — the same words",
+  "ok": true,
+  "note": "{\"armed\":\"s:4.oft.2.+\",\"why\":\"SANS — no availability filed for today\",\"struck\":true,\"note\":\"Pixel — SANS — no availability filed for today\",\"held\":[\".sims.oft[2].more[0]\"],\"pic\":\"extra-ex-2-crew-desktop.png, extra-ex-2-note-desktop.png\"} · \"SANS: no availability filed for today. Planned on OFT EP-9 (no times yet)\"",
+  "pics": "extra-ex-2-crew-desktop.png, extra-ex-2-note-desktop.png, extra-ex-2-list-clip-desktop.png"
+ },
+ {
+  "scn": "extra",
+  "size": "desktop",
+  "id": "ex.3",
+  "what": "S11 with 10:00–11:00 typed: \"… Planned on OFT EP-9 10:00–11:00\"",
+  "ok": true,
+  "note": "\"SANS: no availability filed for today. Planned on OFT EP-9 10:00–11:00\"",
+  "pics": "extra-ex-3-list-clip-desktop.png"
+ },
+ {
+  "scn": "extra",
+  "size": "desktop",
+  "id": "ex.4",
+  "what": "S11 Marlin filed Fly only: \"SANS: offered Fly only today. Planned on OFT EP-9 10:00–11:00\"",
+  "ok": true,
+  "note": "\"SANS: offered Fly only today. Planned on OFT EP-9 10:00–11:00\"",
+  "pics": "extra-ex-4-list-clip-desktop.png"
+ },
+ {
+  "scn": "extra",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

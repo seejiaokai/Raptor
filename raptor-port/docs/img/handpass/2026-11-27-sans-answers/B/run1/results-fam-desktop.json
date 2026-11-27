@@ -1,0 +1,105 @@
+[
+ {
+  "scn": "fam",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "fam",
+  "size": "desktop",
+  "id": "fam.rows",
+  "what": "set-up: OFT EP-9 10:00–11:00 and AMT BOX 13:00–14:00 on Fri 17",
+  "ok": true,
+  "note": "[{\"label\":\"EP-9\",\"str\":\"10:00\",\"end\":\"11:00\"},{\"label\":\"BOX\",\"str\":\"13:00\",\"end\":\"14:00\"}]"
+ },
+ {
+  "scn": "fam",
+  "size": "desktop",
+  "id": "fam.plant",
+  "what": "set-up: Jester on OFT EP-9, Kraken on AMT BOX (both SANS, nothing filed on Fri)",
+  "ok": true,
+  "note": "\"Jester — SANS — no availability filed for today\" / \"Kraken — SANS — no availability filed for today\""
+ },
+ {
+  "scn": "fam",
+  "size": "desktop",
+  "id": "fam.none",
+  "what": "S8 nothing filed: \"SANS: no availability filed for today. Planned on OFT EP-9 10:00–11:00\" / \"… AMT BOX 13:00–14:00\", the same on the board's panel",
+  "ok": true,
+  "note": "Jester \"SANS: no availability filed for today. Planned on OFT EP-9 10:00–11:00\" · Kraken \"SANS: no availability filed for today. Planned on AMT BOX 13:00–14:00\" · board J [\"SANS: no availability filed for today. Planned on OFT EP-9 10:00–11:00\"] K [\"SANS: no availability filed for today. Planned on AMT BOX 13:00–14:00\"]",
+  "pics": "fam-fam-none-list-clip-desktop.png, fam-fam-none-board-clip-desktop.png"
+ },
+ {
+  "scn": "fam",
+  "size": "desktop",
+  "id": "fam.fly",
+  "what": "set-up: Jester and Kraken filed Fly only, all day, for Fri on the SANS tab",
+  "ok": true,
+  "note": "[\"\",\"\"]"
+ },
+ {
+  "scn": "fam",
+  "size": "desktop",
+  "id": "fam.fly",
+  "what": "S8 Fly only: \"SANS: offered Fly only today. Planned on OFT EP-9 10:00–11:00\" / \"… AMT BOX 13:00–14:00\" (list and board)",
+  "ok": true,
+  "note": "Jester \"SANS: offered Fly only today. Planned on OFT EP-9 10:00–11:00\" · Kraken \"SANS: offered Fly only today. Planned on AMT BOX 13:00–14:00\" · board [\"SANS: offered Fly only today. Planned on OFT EP-9 10:00–11:00\"] [\"SANS: offered Fly only today. Planned on AMT BOX 13:00–14:00\"]",
+  "pics": "fam-fam-fly-list-clip-desktop.png, fam-fam-fly-board-clip-desktop.png"
+ },
+ {
+  "scn": "fam",
+  "size": "desktop",
+  "id": "fam.f18",
+  "what": "F18 Fly-only man on OFT EP-9 10:00 with no end: \"SANS: offered Fly only today. Planned on OFT EP-9 10:00–11:30 (end assumed)\"",
+  "ok": true,
+  "note": "\"SANS: offered Fly only today. Planned on OFT EP-9 10:00–11:30 (end assumed)\"",
+  "pics": "fam-fam-f18-list-clip-desktop.png"
+ },
+ {
+  "scn": "fam",
+  "size": "desktop",
+  "id": "fam.hrs",
+  "what": "S8 the sim offered 08:00–09:00 only: \"SANS: available 08:00–09:00 only. Planned on OFT EP-9 10:00–11:00\" / \"… AMT BOX 13:00–14:00\"",
+  "ok": true,
+  "note": "Jester \"SANS: available 08:00–09:00 only. Planned on OFT EP-9 10:00–11:00\" · Kraken \"SANS: available 08:00–09:00 only. Planned on AMT BOX 13:00–14:00\" · board [\"SANS: available 08:00–09:00 only. Planned on OFT EP-9 10:00–11:00\"] [\"SANS: available 08:00–09:00 only. Planned on AMT BOX 13:00–14:00\"]",
+  "pics": "fam-fam-hrs-list-clip-desktop.png, fam-fam-hrs-board-clip-desktop.png"
+ },
+ {
+  "scn": "fam",
+  "size": "desktop",
+  "id": "fam.f19a",
+  "what": "F19 AMT filed 08:00–12:00, planted on AMT BOX 13:00–14:00: \"SANS: available 08:00–12:00 only. Planned on AMT BOX 13:00–14:00\"",
+  "ok": true,
+  "note": "\"SANS: available 08:00–12:00 only. Planned on AMT BOX 13:00–14:00\"",
+  "pics": "fam-fam-f19a-list-clip-desktop.png"
+ },
+ {
+  "scn": "fam",
+  "size": "desktop",
+  "id": "fam.f19b",
+  "what": "F19 BOX's end cleared: \"… Planned on AMT BOX 13:00–14:30 (end assumed)\"",
+  "ok": true,
+  "note": "\"SANS: available 08:00–12:00 only. Planned on AMT BOX 13:00–14:30 (end assumed)\"",
+  "pics": "fam-fam-f19b-list-clip-desktop.png"
+ },
+ {
+  "scn": "fam",
+  "size": "desktop",
+  "id": "fam.f19c",
+  "what": "F19 both times cleared: his line goes (nothing to hold his hours against), and his crew-list strike goes too",
+  "ok": true,
+  "note": "no SANS line · armed s:4.amt.1.+ · crew Kraken plain [A08:00–12:00] hours under: \"08:00–12:00\"",
+  "pics": "fam-fam-f19c-list-clip-desktop.png, fam-fam-f19c-crew-desktop.png"
+ },
+ {
+  "scn": "fam",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

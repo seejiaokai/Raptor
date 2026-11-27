@@ -1665,3 +1665,16 @@ sides.
 **Issue:** The loop served `main`'s build on a port a walker already held; the second server failed to start, the curl printed the walker's build name (the branch's), and the run went on — its "main" result was the branch again. Only reading the printed name afterwards caught it.
 **Suggested improvement:** A comparison script takes the expected main-script name per build and stops when the served page names another; ports come from a free-port check, never a fixed list beside live walkers.
 **Principle:** A run that prints the identity of what it tested must also refuse to go on when that identity is wrong.
+
+### Observation 1101: "Only stored data" judged without asking whether a saved copy is re-compared against a moving input
+
+**Status:** OPEN
+**Date:** 27 Nov 26
+**Session context:** chat 208 — building his SANS warning-line answers; a new field added to each warning for the drop's note. (Numbered past other branches' 1097–1100.)
+**Skill:** bug-check order (§2b, "what is not a finding")
+**Type:** open-source
+**Phase/Area:** the host's own triage of a designer's warning, before the reads
+
+**Issue:** A scenario designer warned that a changed warning could make a published day read as changed. The host waved it off as "only data already stored" (D56). Both blind code readers then found the real case: the new field was SAVED with each published day and COMPARED against a fresh judgement, and one of its inputs (a posting's start date) changes by itself with time — so NEW days published after the change would also turn "Not yet signed" when the posting ran. The walk could not see it either: nothing shows on screen until the clock crosses the date.
+**Suggested improvement:** In §2b, before applying "only stored data": for every field a change adds to anything that is saved and later compared (a published copy, a snapshot, a hash), ask "can today's re-computation of this field differ from the saved one without anyone changing anything — a date passing, a posting running, a setting moving?" If yes, it hurts new data and is a finding. Add the same question to the code reader's brief.
+**Principle:** Data saved and later compared against a fresh computation breaks whenever an input of that computation can change by itself; "old data only" holds only when nothing saved from now on can drift.

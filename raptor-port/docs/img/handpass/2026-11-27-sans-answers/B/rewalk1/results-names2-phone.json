@@ -1,0 +1,142 @@
+[
+ {
+  "scn": "names2",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "names2",
+  "size": "phone",
+  "id": "rw.bundle",
+  "what": "the served bundle (re-walk 1 must be index-0HKWKnT7.js)",
+  "ok": "REC",
+  "note": "http://localhost:4962/assets/index-0HKWKnT7.js"
+ },
+ {
+  "scn": "names2",
+  "size": "phone",
+  "id": "rw.plant",
+  "what": "set-up: Jester on an OFT row 10:00–11:00 on Fri 17",
+  "ok": true,
+  "note": "\"Jester — SANS — no availability filed for today\""
+ },
+ {
+  "scn": "names2",
+  "size": "phone",
+  "id": "rw-nm-0",
+  "what": "Re-walk 1 / F17: the OFT row named \"SIM\": the line reads \"SANS: no availability filed for today. Planned on OFT SIM 10:00–11:00\"",
+  "ok": true,
+  "note": "label \"SIM\" · \"SANS: no availability filed for today. Planned on OFT SIM 10:00–11:00\"",
+  "pics": "names2-rw-nm-0-list-clip-phone.png"
+ },
+ {
+  "scn": "names2",
+  "size": "phone",
+  "id": "rw-nm-1",
+  "what": "Re-walk 1 / F17: the OFT row named \"Sim\": the line reads \"SANS: no availability filed for today. Planned on OFT Sim 10:00–11:00\"",
+  "ok": true,
+  "note": "label \"Sim\" · \"SANS: no availability filed for today. Planned on OFT Sim 10:00–11:00\"",
+  "pics": "names2-rw-nm-1-list-clip-phone.png"
+ },
+ {
+  "scn": "names2",
+  "size": "phone",
+  "id": "rw-nm-2",
+  "what": "Re-walk 1 / F17: the OFT row named \"sim\": the line reads \"SANS: no availability filed for today. Planned on OFT sim 10:00–11:00\"",
+  "ok": true,
+  "note": "label \"sim\" · \"SANS: no availability filed for today. Planned on OFT sim 10:00–11:00\"",
+  "pics": "names2-rw-nm-2-list-clip-phone.png"
+ },
+ {
+  "scn": "names2",
+  "size": "phone",
+  "id": "rw-nm-3",
+  "what": "Re-walk 1 / F17: the OFT row named \"SIM 2\": the line reads \"SANS: no availability filed for today. Planned on OFT SIM 2 10:00–11:00\"",
+  "ok": true,
+  "note": "label \"SIM 2\" · \"SANS: no availability filed for today. Planned on OFT SIM 2 10:00–11:00\"",
+  "pics": "names2-rw-nm-3-list-clip-phone.png"
+ },
+ {
+  "scn": "names2",
+  "size": "phone",
+  "id": "rw-nm-4",
+  "what": "Re-walk 1 / F17: the OFT row named \"Sim 2\" (no EXPECTED given) — RECORD",
+  "ok": "REC",
+  "note": "label \"Sim 2\" · \"SANS: no availability filed for today. Planned on OFT Sim 2 10:00–11:00\"",
+  "pics": "names2-rw-nm-4-list-clip-phone.png"
+ },
+ {
+  "scn": "names2",
+  "size": "phone",
+  "id": "rw-nm-5",
+  "what": "Re-walk 1 / F17: the OFT row named \"Simba\": the line reads \"SANS: no availability filed for today. Planned on OFT Simba 10:00–11:00\"",
+  "ok": true,
+  "note": "label \"Simba\" · \"SANS: no availability filed for today. Planned on OFT Simba 10:00–11:00\"",
+  "pics": "names2-rw-nm-5-list-clip-phone.png"
+ },
+ {
+  "scn": "names2",
+  "size": "phone",
+  "id": "rw-nm-6",
+  "what": "Re-walk 1 / F17: the OFT row named \"OFT 1\": the line reads \"SANS: no availability filed for today. Planned on OFT OFT 1 10:00–11:00\"",
+  "ok": true,
+  "note": "label \"OFT 1\" · \"SANS: no availability filed for today. Planned on OFT OFT 1 10:00–11:00\"",
+  "pics": "names2-rw-nm-6-list-clip-phone.png"
+ },
+ {
+  "scn": "names2",
+  "size": "phone",
+  "id": "rw-nm-7",
+  "what": "Re-walk 1 / F17: the OFT row named \"   \": the line reads \"SANS: no availability filed for today. Planned on this OFT row 10:00–11:00\"",
+  "ok": true,
+  "note": "label \"\" · \"SANS: no availability filed for today. Planned on this OFT row 10:00–11:00\"",
+  "pics": "names2-rw-nm-7-list-clip-phone.png"
+ },
+ {
+  "scn": "names2",
+  "size": "phone",
+  "id": "rw-nm-8",
+  "what": "Re-walk 1 / F17: the OFT row named \"\": the line reads \"SANS: no availability filed for today. Planned on this OFT row 10:00–11:00\"",
+  "ok": true,
+  "note": "label \"\" · \"SANS: no availability filed for today. Planned on this OFT row 10:00–11:00\"",
+  "pics": "names2-rw-nm-8-list-clip-phone.png"
+ },
+ {
+  "scn": "names2",
+  "size": "phone",
+  "id": "rw.two",
+  "what": "Re-walk 1: Jester on a row named SIM and on a blank row, both 10:00–11:00 — two separate lines \"SANS: no availability filed for today. Planned on OFT SIM 10:00–11:00\" and \"SANS: no availability filed for today. Planned on this OFT row 10:00–11:00\"",
+  "ok": true,
+  "note": "rows [{\"label\":\"SIM\",\"str\":\"10:00\",\"end\":\"11:00\"},{\"label\":\"\",\"str\":\"10:00\",\"end\":\"11:00\"}] · note \"Jester — Conflict: Sim SIM 10:00–11:00 & Sim 10:00–11:00 (+1 more)\" · \"SANS: no availability filed for today. Planned on OFT SIM 10:00–11:00\" | \"SANS: no availability filed for today. Planned on this OFT row 10:00–11:00\" · bar \"⚠ 3 issues · 1 warning ▲\"",
+  "pics": "names2-rw-two-list-clip-phone.png"
+ },
+ {
+  "scn": "names2",
+  "size": "phone",
+  "id": "rw.two-hide",
+  "what": "Re-walk 1: the SIM row's line hidden — the blank row's line stays shown, the count down by one",
+  "ok": true,
+  "note": "\"SANS: no availability filed for today. Planned on OFT SIM 10:00–11:00\" HIDDEN | \"SANS: no availability filed for today. Planned on this OFT row 10:00–11:00\" · count 3 → 2",
+  "pics": "names2-rw-two-hid-list-clip-phone.png"
+ },
+ {
+  "scn": "names2",
+  "size": "phone",
+  "id": "rw.two-board",
+  "what": "Re-walk 1: the board's panel carries the same two lines",
+  "ok": true,
+  "note": "[\"SANS: no availability filed for today. Planned on OFT SIM 10:00–11:00\",\"SANS: no availability filed for today. Planned on this OFT row 10:00–11:00\"]",
+  "pics": "names2-rw-two-board-clip-phone.png"
+ },
+ {
+  "scn": "names2",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

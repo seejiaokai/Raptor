@@ -1,0 +1,97 @@
+[
+ {
+  "scn": "amt",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "amt",
+  "size": "phone",
+  "id": "amt.row",
+  "what": "set-up: an AMT row \"BOX\" 13:00–14:00 on Fri 17",
+  "ok": true,
+  "note": "{\"ri\":0,\"r\":{\"label\":\"BOX\",\"str\":\"13:00\",\"end\":\"14:00\"}}"
+ },
+ {
+  "scn": "amt",
+  "size": "phone",
+  "id": "amt.plant",
+  "what": "set-up: Jester tapped into its front seat",
+  "ok": true,
+  "note": "note \"Jester — SANS — no availability filed for today\"",
+  "pics": "amt-amt-plant-armed-clip-phone.png, amt-amt-plant-sans-clip-phone.png, amt-amt-plant-armed-phone.png, amt-amt-plant-note-clip-phone.png, amt-amt-plant-picked-phone.png"
+ },
+ {
+  "scn": "amt",
+  "size": "phone",
+  "id": "amt.note",
+  "what": "the note after the plant (A's; recorded)",
+  "ok": "REC",
+  "note": "\"Jester — SANS — no availability filed for today\""
+ },
+ {
+  "scn": "amt",
+  "size": "phone",
+  "id": "amt.a",
+  "what": "F16 / S9 AMT (a) 13:00–14:00: the line reads \"SANS: no availability filed for today. Planned on AMT BOX 13:00–14:00\"",
+  "ok": true,
+  "note": "row {\"label\":\"BOX\",\"str\":\"13:00\",\"end\":\"14:00\"} · \"SANS: no availability filed for today. Planned on AMT BOX 13:00–14:00\"",
+  "pics": "amt-amt-a-list-clip-phone.png"
+ },
+ {
+  "scn": "amt",
+  "size": "phone",
+  "id": "amt.b",
+  "what": "F16 / S9 AMT (b) the end cleared: the line reads \"SANS: no availability filed for today. Planned on AMT BOX 13:00–14:30 (end assumed)\"",
+  "ok": true,
+  "note": "row {\"label\":\"BOX\",\"str\":\"13:00\",\"end\":\"\"} · \"SANS: no availability filed for today. Planned on AMT BOX 13:00–14:30 (end assumed)\"",
+  "pics": "amt-amt-b-list-clip-phone.png"
+ },
+ {
+  "scn": "amt",
+  "size": "phone",
+  "id": "amt.d",
+  "what": "F16 / S9 AMT (d) name and start cleared: the line reads \"SANS: no availability filed for today. Planned on this AMT row (no times yet)\"",
+  "ok": true,
+  "note": "row {\"label\":\"\",\"str\":\"\",\"end\":\"\"} · \"SANS: no availability filed for today. Planned on this AMT row (no times yet)\"",
+  "pics": "amt-amt-d-list-clip-phone.png"
+ },
+ {
+  "scn": "amt",
+  "size": "phone",
+  "id": "amt.st",
+  "what": "F16 / S9 AMT (st) named BOX, start 09:00 only (S9): the line reads \"SANS: no availability filed for today. Planned on AMT BOX 09:00–10:30 (end assumed)\"",
+  "ok": true,
+  "note": "row {\"label\":\"BOX\",\"str\":\"09:00\",\"end\":\"\"} · \"SANS: no availability filed for today. Planned on AMT BOX 09:00–10:30 (end assumed)\"",
+  "pics": "amt-amt-st-list-clip-phone.png"
+ },
+ {
+  "scn": "amt",
+  "size": "phone",
+  "id": "amt.en",
+  "what": "F16 / S9 AMT (en) end 10:30 typed (S9): the line reads \"SANS: no availability filed for today. Planned on AMT BOX 09:00–10:30\"",
+  "ok": true,
+  "note": "row {\"label\":\"BOX\",\"str\":\"09:00\",\"end\":\"10:30\"} · \"SANS: no availability filed for today. Planned on AMT BOX 09:00–10:30\"",
+  "pics": "amt-amt-en-list-clip-phone.png"
+ },
+ {
+  "scn": "amt",
+  "size": "phone",
+  "id": "amt.eo",
+  "what": "F16 / S9 AMT (eo) the start cleared, end left (S9: no made-up start): the line reads \"SANS: no availability filed for today. Planned on AMT BOX (no times yet)\"",
+  "ok": true,
+  "note": "row {\"label\":\"BOX\",\"str\":\"\",\"end\":\"10:30\"} · \"SANS: no availability filed for today. Planned on AMT BOX (no times yet)\"",
+  "pics": "amt-amt-eo-list-clip-phone.png"
+ },
+ {
+  "scn": "amt",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

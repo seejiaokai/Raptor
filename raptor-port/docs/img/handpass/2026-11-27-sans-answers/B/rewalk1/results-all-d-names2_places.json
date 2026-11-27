@@ -1,0 +1,271 @@
+[
+ {
+  "scn": "names2",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "names2",
+  "size": "desktop",
+  "id": "rw.bundle",
+  "what": "the served bundle (re-walk 1 must be index-0HKWKnT7.js)",
+  "ok": "REC",
+  "note": "http://localhost:4962/assets/index-0HKWKnT7.js"
+ },
+ {
+  "scn": "names2",
+  "size": "desktop",
+  "id": "rw.plant",
+  "what": "set-up: Jester on an OFT row 10:00–11:00 on Fri 17",
+  "ok": true,
+  "note": "\"Jester — SANS — no availability filed for today\""
+ },
+ {
+  "scn": "names2",
+  "size": "desktop",
+  "id": "rw-nm-0",
+  "what": "Re-walk 1 / F17: the OFT row named \"SIM\": the line reads \"SANS: no availability filed for today. Planned on OFT SIM 10:00–11:00\"",
+  "ok": true,
+  "note": "label \"SIM\" · \"SANS: no availability filed for today. Planned on OFT SIM 10:00–11:00\"",
+  "pics": "names2-rw-nm-0-list-clip-desktop.png"
+ },
+ {
+  "scn": "names2",
+  "size": "desktop",
+  "id": "rw-nm-1",
+  "what": "Re-walk 1 / F17: the OFT row named \"Sim\": the line reads \"SANS: no availability filed for today. Planned on OFT Sim 10:00–11:00\"",
+  "ok": true,
+  "note": "label \"Sim\" · \"SANS: no availability filed for today. Planned on OFT Sim 10:00–11:00\"",
+  "pics": "names2-rw-nm-1-list-clip-desktop.png"
+ },
+ {
+  "scn": "names2",
+  "size": "desktop",
+  "id": "rw-nm-2",
+  "what": "Re-walk 1 / F17: the OFT row named \"sim\": the line reads \"SANS: no availability filed for today. Planned on OFT sim 10:00–11:00\"",
+  "ok": true,
+  "note": "label \"sim\" · \"SANS: no availability filed for today. Planned on OFT sim 10:00–11:00\"",
+  "pics": "names2-rw-nm-2-list-clip-desktop.png"
+ },
+ {
+  "scn": "names2",
+  "size": "desktop",
+  "id": "rw-nm-3",
+  "what": "Re-walk 1 / F17: the OFT row named \"SIM 2\": the line reads \"SANS: no availability filed for today. Planned on OFT SIM 2 10:00–11:00\"",
+  "ok": true,
+  "note": "label \"SIM 2\" · \"SANS: no availability filed for today. Planned on OFT SIM 2 10:00–11:00\"",
+  "pics": "names2-rw-nm-3-list-clip-desktop.png"
+ },
+ {
+  "scn": "names2",
+  "size": "desktop",
+  "id": "rw-nm-4",
+  "what": "Re-walk 1 / F17: the OFT row named \"Sim 2\" (no EXPECTED given) — RECORD",
+  "ok": "REC",
+  "note": "label \"Sim 2\" · \"SANS: no availability filed for today. Planned on OFT Sim 2 10:00–11:00\"",
+  "pics": "names2-rw-nm-4-list-clip-desktop.png"
+ },
+ {
+  "scn": "names2",
+  "size": "desktop",
+  "id": "rw-nm-5",
+  "what": "Re-walk 1 / F17: the OFT row named \"Simba\": the line reads \"SANS: no availability filed for today. Planned on OFT Simba 10:00–11:00\"",
+  "ok": true,
+  "note": "label \"Simba\" · \"SANS: no availability filed for today. Planned on OFT Simba 10:00–11:00\"",
+  "pics": "names2-rw-nm-5-list-clip-desktop.png"
+ },
+ {
+  "scn": "names2",
+  "size": "desktop",
+  "id": "rw-nm-6",
+  "what": "Re-walk 1 / F17: the OFT row named \"OFT 1\": the line reads \"SANS: no availability filed for today. Planned on OFT OFT 1 10:00–11:00\"",
+  "ok": true,
+  "note": "label \"OFT 1\" · \"SANS: no availability filed for today. Planned on OFT OFT 1 10:00–11:00\"",
+  "pics": "names2-rw-nm-6-list-clip-desktop.png"
+ },
+ {
+  "scn": "names2",
+  "size": "desktop",
+  "id": "rw-nm-7",
+  "what": "Re-walk 1 / F17: the OFT row named \"   \": the line reads \"SANS: no availability filed for today. Planned on this OFT row 10:00–11:00\"",
+  "ok": true,
+  "note": "label \"\" · \"SANS: no availability filed for today. Planned on this OFT row 10:00–11:00\"",
+  "pics": "names2-rw-nm-7-list-clip-desktop.png"
+ },
+ {
+  "scn": "names2",
+  "size": "desktop",
+  "id": "rw-nm-8",
+  "what": "Re-walk 1 / F17: the OFT row named \"\": the line reads \"SANS: no availability filed for today. Planned on this OFT row 10:00–11:00\"",
+  "ok": true,
+  "note": "label \"\" · \"SANS: no availability filed for today. Planned on this OFT row 10:00–11:00\"",
+  "pics": "names2-rw-nm-8-list-clip-desktop.png"
+ },
+ {
+  "scn": "names2",
+  "size": "desktop",
+  "id": "rw.two",
+  "what": "Re-walk 1: Jester on a row named SIM and on a blank row, both 10:00–11:00 — two separate lines \"SANS: no availability filed for today. Planned on OFT SIM 10:00–11:00\" and \"SANS: no availability filed for today. Planned on this OFT row 10:00–11:00\"",
+  "ok": true,
+  "note": "rows [{\"label\":\"SIM\",\"str\":\"10:00\",\"end\":\"11:00\"},{\"label\":\"\",\"str\":\"10:00\",\"end\":\"11:00\"}] · note \"Jester — Conflict: Sim SIM 10:00–11:00 & Sim 10:00–11:00 (+1 more)\" · \"SANS: no availability filed for today. Planned on OFT SIM 10:00–11:00\" | \"SANS: no availability filed for today. Planned on this OFT row 10:00–11:00\" · bar \"⚠ 3 issues · 1 warning ▲\"",
+  "pics": "names2-rw-two-list-clip-desktop.png"
+ },
+ {
+  "scn": "names2",
+  "size": "desktop",
+  "id": "rw.two-hide",
+  "what": "Re-walk 1: the SIM row's line hidden — the blank row's line stays shown, the count down by one",
+  "ok": true,
+  "note": "\"SANS: no availability filed for today. Planned on OFT SIM 10:00–11:00\" HIDDEN | \"SANS: no availability filed for today. Planned on this OFT row 10:00–11:00\" · count 3 → 2",
+  "pics": "names2-rw-two-hid-list-clip-desktop.png"
+ },
+ {
+  "scn": "names2",
+  "size": "desktop",
+  "id": "rw.two-board",
+  "what": "Re-walk 1: the board's panel carries the same two lines",
+  "ok": true,
+  "note": "[\"SANS: no availability filed for today. Planned on OFT SIM 10:00–11:00\",\"SANS: no availability filed for today. Planned on this OFT row 10:00–11:00\"]",
+  "pics": "names2-rw-two-board-clip-desktop.png"
+ },
+ {
+  "scn": "names2",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "places",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "places",
+  "size": "desktop",
+  "id": "pl.row",
+  "what": "set-up: an OFT row EP-9 with a start 10:00 and no end, Fri 17",
+  "ok": true,
+  "note": "{\"label\":\"EP-9\",\"str\":\"10:00\",\"end\":\"\"}"
+ },
+ {
+  "scn": "places",
+  "size": "desktop",
+  "id": "pl.plant",
+  "what": "set-up: Jester tapped into its front seat",
+  "ok": true,
+  "note": "\"Jester — SANS — no availability filed for today\""
+ },
+ {
+  "scn": "places",
+  "size": "desktop",
+  "id": "pl.all",
+  "what": "F22: the same words \"SANS: no availability filed for today. Planned on OFT EP-9 10:00–11:30 (end assumed)\" on Edit Schedule's list, the day's ⓘ popup and the board's panel",
+  "ok": true,
+  "note": "EDIT bar \"⚠ 1 issue ▲\" [adv] · 1 line(s): [adv ✕] SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on OFT EP-9 10:00–11:30 (end assumed) ✕ ·· INFO \"Friday · Jul 17 · 0 X 0 X 0\" · Draft — not yet published 4 changes · 1 ADVISORY · 1 line(s): [] Advisory · SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on OFT EP-9 10:00–11:30 (end assumed) ·· BOARD head \"⚠ 1 issue\" · 1 line(s): [✕] Jester — SANS: no availability filed for today. Planned on OFT EP-9 10:00–11:30 (end assumed) ✕ ·· PUCKS ipman week[sim@Fri(s:4.oft.2.p):amber/A] board[sim(s:4.oft.2.p):amber/A ; crew list (week):amber/A]",
+  "pics": "places-pl-all-e-list-clip-desktop.png, places-pl-all-ipop-clip-desktop.png, places-pl-all-b-clip-desktop.png, places-pl-all-board-desktop.png"
+ },
+ {
+  "scn": "places",
+  "size": "desktop",
+  "id": "pl.puck",
+  "what": "F22: his puck on the sim seat wears the amber ring and the \"A\" (board and week)",
+  "ok": true,
+  "note": "board sim(s:4.oft.2.p):amber/A ; crew list (week):amber/A · week sim@Fri(s:4.oft.2.p):amber/A"
+ },
+ {
+  "scn": "places",
+  "size": "desktop",
+  "id": "pl.tap",
+  "what": "F22: a tap on the line's words — what lights / where it takes him (RECORD)",
+  "ok": "REC",
+  "note": "page editsched · board open true · lit [\"ipman@g:1.1\",\"ipman@s:4.oft.2.p\"] · scrollY 794",
+  "pics": "places-pl-tap-desktop.png"
+ },
+ {
+  "scn": "places",
+  "size": "desktop",
+  "id": "pl.view0",
+  "what": "F22: View-only Sched (the working day, not yet published) reads the same line",
+  "ok": true,
+  "note": "\"SANS: no availability filed for today. Planned on OFT EP-9 10:00–11:30 (end assumed)\"",
+  "pics": "places-pl-view0-list-clip-desktop.png"
+ },
+ {
+  "scn": "places",
+  "size": "desktop",
+  "id": "pl.pub",
+  "what": "F22: published (\"Publish day\"): View-only Sched keeps \"(end assumed)\"",
+  "ok": true,
+  "note": "\"SANS: no availability filed for today. Planned on OFT EP-9 10:00–11:30 (end assumed)\"",
+  "pics": "places-pl-view1-list-clip-desktop.png"
+ },
+ {
+  "scn": "places",
+  "size": "desktop",
+  "id": "pl.reload",
+  "what": "F22: after a reload and signing in again — \"(end assumed)\" survives on View-only Sched and Edit Schedule",
+  "ok": true,
+  "note": "view \"SANS: no availability filed for today. Planned on OFT EP-9 10:00–11:30 (end assumed)\" · edit \"SANS: no availability filed for today. Planned on OFT EP-9 10:00–11:30 (end assumed)\"",
+  "pics": "places-pl-view2-list-clip-desktop.png, places-pl-edit2-list-clip-desktop.png"
+ },
+ {
+  "scn": "places",
+  "size": "desktop",
+  "id": "pl.typed",
+  "what": "the end 11:15 typed after publishing: Edit Schedule (working copy) and View-only Sched (the issued face, frozen till republished, D179)",
+  "ok": "REC",
+  "note": "edit \"SANS: no availability filed for today. Planned on OFT EP-9 10:00–11:15\" · view \"SANS: no availability filed for today. Planned on OFT EP-9 10:00–11:30 (end assumed)\"",
+  "pics": "places-pl-edit3-list-clip-desktop.png, places-pl-view3-list-clip-desktop.png"
+ },
+ {
+  "scn": "places",
+  "size": "desktop",
+  "id": "pl.typed-edit",
+  "what": "the working copy reads \"… OFT EP-9 10:00–11:15\", no \"(end assumed)\"",
+  "ok": true,
+  "note": "\"SANS: no availability filed for today. Planned on OFT EP-9 10:00–11:15\""
+ },
+ {
+  "scn": "places",
+  "size": "desktop",
+  "id": "pl.repub",
+  "what": "republished (\"Publish AL1\"): View-only Sched reads the new words \"… OFT EP-9 10:00–11:15\"",
+  "ok": true,
+  "note": "\"SANS: no availability filed for today. Planned on OFT EP-9 10:00–11:15\"",
+  "pics": "places-pl-view4-list-clip-desktop.png"
+ },
+ {
+  "scn": "places",
+  "size": "desktop",
+  "id": "pl.member",
+  "what": "as Ranger (a member), View-only Sched of Fri 17 after the republish: the line",
+  "ok": "REC",
+  "note": "\"SANS: no availability filed for today. Planned on OFT EP-9 10:00–11:15\" · bar \"⚠ 1 issue ▲\"",
+  "pics": "places-pl-ranger-list-clip-desktop.png"
+ },
+ {
+  "scn": "places",
+  "size": "desktop",
+  "id": "pl.print",
+  "what": "Export as PDF after the republish (lesson 18): does a SANS line print, and in which words? (RECORD)",
+  "ok": "REC",
+  "note": "printed yes · prints 0 · SANS in print: false · OFT EP-9 in print: false · end assumed in print: false · Friday: \"(no \"Friday Jul 17\" in the print)\"",
+  "pics": "places-print-chromium-desktop.png, places-print-webkit-desktop.png"
+ },
+ {
+  "scn": "places",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

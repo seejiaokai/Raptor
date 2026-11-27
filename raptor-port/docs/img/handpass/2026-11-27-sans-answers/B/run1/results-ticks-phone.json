@@ -1,0 +1,192 @@
+[
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "tk.order",
+  "what": "F23 / S2: the boxes left to right Fly · OFT · AMT",
+  "ok": true,
+  "note": "{\"labels\":[\"Fly\",\"OFT\",\"AMT\"],\"ticked\":[\"Fly\"],\"lefts\":[28,80,139],\"tops\":[238,238,238],\"save\":\"live\",\"type\":\"\",\"person\":\"ipman\"}",
+  "pics": "ticks-tk-boxes-phone.png"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "tk.opens",
+  "what": "\"+ Commitment\" opens with these ticked (RECORD)",
+  "ok": "REC",
+  "note": "[\"Fly\"]"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "tk.behind",
+  "what": "lesson 4: the form open, Fri 17 pressed on the calendar behind it — what lights and what the form says (RECORD)",
+  "ok": "REC",
+  "note": "before \"Jul 16\" · under the press: dcal-hd · after {\"form\":1,\"read\":\"Jul 16\",\"day\":\"Pilots · 1 to fly\",\"lit\":[]}",
+  "pics": "ticks-tk-behind-phone.png"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "tk.refuse",
+  "what": "F23 / S2: every box unticked, Save — refused \"Tick at least one of Fly / OFT / AMT\"",
+  "ok": true,
+  "note": "{\"words\":\"\",\"toast\":\"Tick at least one of Fly / OFT / AMT\",\"save\":\"live\",\"stayed\":true}",
+  "pics": "ticks-tk-empty-phone.png, ticks-tk-refused-phone.png"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "tk.oft",
+  "what": "set-up: Jester filed with only the middle box (OFT) ticked, all day, Thu 16",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "tk.oft-saved",
+  "what": "F24: the middle box saved OFT (the record carries O only)",
+  "ok": true,
+  "note": "{\"o\":true}"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "tk.oft-day",
+  "what": "F24: the SANS calendar's Thu 16 window — Jester's line",
+  "ok": "REC",
+  "note": "Zenith[F All day Zenith · 22 Jun, 15:52] Jester[O All day Saber for Jester · 15 Jul, 09:00]"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "tk.oft-crew",
+  "what": "F24: armed on a flying seat, Jester's letter \"O\", struck \"SANS — offered OFT only, not Fly\"",
+  "ok": true,
+  "note": "armed 3.2.0.0.p · Jester struck \"SANS — offered OFT only, not Fly\" [O]",
+  "pics": "ticks-tk-oft-crew-phone.png, now/ticks-tk-oft-press-now-phone.png"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "tk.oft-card",
+  "what": "F24: his SANS card on Edit Schedule's Thu 16",
+  "ok": "REC",
+  "note": "JesterBOall day"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "tk.oft-reopen",
+  "what": "F24: reopened — only OFT ticked, boxes Fly · OFT · AMT",
+  "ok": true,
+  "note": "{\"labels\":[\"Fly\",\"OFT\",\"AMT\"],\"ticked\":[\"OFT\"],\"lefts\":[28,80,139],\"tops\":[396,396,396],\"save\":\"live\",\"type\":\"SANS Availability\",\"person\":\"ipman\"}",
+  "pics": "ticks-tk-oft-reopen-phone.png"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "tk.amt-saved",
+  "what": "F24: only the third box (AMT) saved A for Kraken",
+  "ok": true,
+  "note": "{\"a\":true}"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "tk.amt-crew",
+  "what": "F24: Kraken's letter \"A\", struck \"SANS — offered AMT only, not Fly\"",
+  "ok": true,
+  "note": "Kraken struck \"SANS — offered AMT only, not Fly\" [A]",
+  "pics": "ticks-tk-amt-crew-phone.png"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "tk.amt-reopen",
+  "what": "F24: reopened — only AMT ticked",
+  "ok": true,
+  "note": "{\"labels\":[\"Fly\",\"OFT\",\"AMT\"],\"ticked\":[\"AMT\"],\"lefts\":[28,80,139],\"tops\":[396,396,396],\"save\":\"live\",\"type\":\"SANS Availability\",\"person\":\"krait\"}",
+  "pics": "ticks-tk-amt-reopen-phone.png"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "s2.A",
+  "what": "S2: changed to AMT — saved, reopened with exactly those ticked; letters \"A\"",
+  "ok": true,
+  "note": "now {\"a\":true} · reopened [\"AMT\"] · day Zenith[F All day Zenith · 22 Jun, 15:52] Kraken[A All day Saber for Kraken · 15 Jul, 09:01] Jester[A All day Saber for Jester · 15 Jul, 09:00 · changed by Saber · 15 Jul, 09:01]",
+  "pics": "ticks-s2-A-phone.png"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "s2.F/O",
+  "what": "S2: changed to Fly + OFT — saved, reopened with exactly those ticked; letters \"F/O\"",
+  "ok": true,
+  "note": "now {\"f\":true,\"o\":true} · reopened [\"Fly\",\"OFT\"] · day Jester[F · O All day Saber for Jester · 15 Jul, 09:00 · changed by Saber · 15 Jul, 09:01] Zenith[F All day Zenith · 22 Jun, 15:52] Kraken[A All day Saber for Kraken · 15 Jul, 09:01]",
+  "pics": "ticks-s2-FO-phone.png"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "s2.F/A",
+  "what": "S2: changed to Fly + AMT — saved, reopened with exactly those ticked; letters \"F/A\"",
+  "ok": true,
+  "note": "now {\"f\":true,\"a\":true} · reopened [\"Fly\",\"AMT\"] · day Jester[F · A All day Saber for Jester · 15 Jul, 09:00 · changed by Saber · 15 Jul, 09:02] Zenith[F All day Zenith · 22 Jun, 15:52] Kraken[A All day Saber for Kraken · 15 Jul, 09:01]",
+  "pics": "ticks-s2-FA-phone.png"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "s2.O/A",
+  "what": "S2: changed to OFT + AMT — saved, reopened with exactly those ticked; letters \"O/A\"",
+  "ok": true,
+  "note": "now {\"a\":true,\"o\":true} · reopened [\"OFT\",\"AMT\"] · day Zenith[F All day Zenith · 22 Jun, 15:52] Kraken[A All day Saber for Kraken · 15 Jul, 09:01] Jester[O · A All day Saber for Jester · 15 Jul, 09:00 · changed by Saber · 15 Jul, 09:02]",
+  "pics": "ticks-s2-OA-phone.png"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "s2.F/O/A",
+  "what": "S2: changed to Fly + OFT + AMT — saved, reopened with exactly those ticked; letters \"F/O/A\"",
+  "ok": true,
+  "note": "now {\"a\":true,\"o\":true,\"f\":true} · reopened [\"Fly\",\"OFT\",\"AMT\"] · day Jester[F · O · A All day Saber for Jester · 15 Jul, 09:00 · changed by Saber · 15 Jul, 09:02] Zenith[F All day Zenith · 22 Jun, 15:52] Kraken[A All day Saber for Kraken · 15 Jul, 09:01]",
+  "pics": "ticks-s2-FOA-phone.png"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "s2.close",
+  "what": "lesson 19: the edit form (over the SANS day window) closed by its ✕ (the discard question answered) — the form gone, the day window under it still there",
+  "ok": true,
+  "note": "{\"form\":0,\"day\":1,\"asked\":1}",
+  "pics": "ticks-s2-closed-phone.png"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "s2.cancel",
+  "what": "S2: an edit to OFT only cancelled (✕, discard) — reopened, the previous offer (all three) kept",
+  "ok": true,
+  "note": "[\"Fly\",\"OFT\",\"AMT\"]",
+  "pics": "ticks-s2-cancel-phone.png"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

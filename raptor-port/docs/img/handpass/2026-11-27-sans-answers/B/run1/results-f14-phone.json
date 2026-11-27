@@ -1,0 +1,44 @@
+[
+ {
+  "scn": "f14",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "f14",
+  "size": "phone",
+  "id": "f14.note",
+  "what": "Jester (SANS, nothing filed) tapped into the seed OFT EP-4 on Wed: the note after the plant (A's scenario; recorded)",
+  "ok": "REC",
+  "note": "row {\"label\":\"EP-4\",\"str\":\"0900\",\"end\":\"1030\"} · placed true · note \"Jester — SANS — no availability filed for today\"",
+  "pics": "now/f14-f14-arm-press-now-phone.png, now/f14-f14-pick-now-phone.png, f14-f14-note-phone.png (armed by the tap armed nothing — a script click used)"
+ },
+ {
+  "scn": "f14",
+  "size": "phone",
+  "id": "f14.line",
+  "what": "F14: Wed's list reads \"SANS: no availability filed for today. Planned on OFT EP-4 09:00–10:30\"",
+  "ok": true,
+  "note": "\"SANS: no availability filed for today. Planned on OFT EP-4 09:00–10:30\"",
+  "pics": "f14-f14-list-list-clip-phone.png"
+ },
+ {
+  "scn": "f14",
+  "size": "phone",
+  "id": "f14.nosim",
+  "what": "F14: no SANS line on any day of the week says \"Sim\"",
+  "ok": true,
+  "note": "1: SANS: no availability filed for today. Planned on RU ACM (T/O 14:40) || 2: SANS: no availability filed for today. Planned on RU ACM (T/O 10:35) || 2: SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || 2: SANS: no availability filed for today. Planned on RU BFM (T/O 13:00) || 2: SANS: no availability filed for today. Planned on OFT EP-4 09:00–10:30 || 3: SANS: no availability filed for today. Planned on RU AD (T/O 12:45)"
+ },
+ {
+  "scn": "f14",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

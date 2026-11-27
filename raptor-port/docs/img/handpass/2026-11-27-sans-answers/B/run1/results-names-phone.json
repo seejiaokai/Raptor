@@ -1,0 +1,151 @@
+[
+ {
+  "scn": "names",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "names",
+  "size": "phone",
+  "id": "nm.plant",
+  "what": "set-up: Jester on an OFT row 10:00–11:00 on Fri 17",
+  "ok": true,
+  "note": "\"Jester — SANS — no availability filed for today\""
+ },
+ {
+  "scn": "names",
+  "size": "phone",
+  "id": "nm-0",
+  "what": "F17 / S10 the OFT row named \"Sim\": the line reads \"SANS: no availability filed for today. Planned on this OFT row 10:00–11:00\"",
+  "ok": true,
+  "note": "label \"Sim\" · \"SANS: no availability filed for today. Planned on this OFT row 10:00–11:00\"",
+  "pics": "names-nm-0-list-clip-phone.png"
+ },
+ {
+  "scn": "names",
+  "size": "phone",
+  "id": "nm-1",
+  "what": "F17 / S10 the OFT row named \"sim\": the line reads \"SANS: no availability filed for today. Planned on this OFT row 10:00–11:00\"",
+  "ok": true,
+  "note": "label \"sim\" · \"SANS: no availability filed for today. Planned on this OFT row 10:00–11:00\"",
+  "pics": "names-nm-1-list-clip-phone.png"
+ },
+ {
+  "scn": "names",
+  "size": "phone",
+  "id": "nm-2",
+  "what": "F17 / S10 the OFT row named \"SIM 2\": the line reads \"SANS: no availability filed for today. Planned on OFT SIM 2 10:00–11:00\"",
+  "ok": true,
+  "note": "label \"SIM 2\" · \"SANS: no availability filed for today. Planned on OFT SIM 2 10:00–11:00\"",
+  "pics": "names-nm-2-list-clip-phone.png"
+ },
+ {
+  "scn": "names",
+  "size": "phone",
+  "id": "nm-3",
+  "what": "F17 the OFT row named \"Sim 2\" (no EXPECTED: the rule strips a leading \"Sim\") — RECORD for him",
+  "ok": "REC",
+  "note": "label \"Sim 2\" · \"SANS: no availability filed for today. Planned on OFT Sim 2 10:00–11:00\"",
+  "pics": "names-nm-3-list-clip-phone.png"
+ },
+ {
+  "scn": "names",
+  "size": "phone",
+  "id": "nm-4",
+  "what": "F17 / S10 the OFT row named \"Simba\": the line reads \"SANS: no availability filed for today. Planned on OFT Simba 10:00–11:00\"",
+  "ok": true,
+  "note": "label \"Simba\" · \"SANS: no availability filed for today. Planned on OFT Simba 10:00–11:00\"",
+  "pics": "names-nm-4-list-clip-phone.png"
+ },
+ {
+  "scn": "names",
+  "size": "phone",
+  "id": "nm-5",
+  "what": "F17 / S10 the OFT row named \"OFT 1\": the line reads \"SANS: no availability filed for today. Planned on OFT OFT 1 10:00–11:00\"",
+  "ok": true,
+  "note": "label \"OFT 1\" · \"SANS: no availability filed for today. Planned on OFT OFT 1 10:00–11:00\"",
+  "pics": "names-nm-5-list-clip-phone.png"
+ },
+ {
+  "scn": "names",
+  "size": "phone",
+  "id": "nm-6",
+  "what": "F17 / S10 the OFT row named \"   \": the line reads \"SANS: no availability filed for today. Planned on this OFT row 10:00–11:00\"",
+  "ok": true,
+  "note": "label \"\" · \"SANS: no availability filed for today. Planned on this OFT row 10:00–11:00\"",
+  "pics": "names-nm-6-list-clip-phone.png"
+ },
+ {
+  "scn": "names",
+  "size": "phone",
+  "id": "nm-7",
+  "what": "F17 / S10 the OFT row named \"EP-9 & EP-10 (LONG NAME FOR THE REAR)\": the line reads \"SANS: no availability filed for today. Planned on OFT EP-9 & EP-10 (LONG NAME FOR THE REAR) 10:00–11:00\"",
+  "ok": true,
+  "note": "label \"EP-9 & EP-10 (LONG NAME FOR THE REAR)\" · \"SANS: no availability filed for today. Planned on OFT EP-9 & EP-10 (LONG NAME FOR THE REAR) 10:00–11:00\"",
+  "pics": "names-nm-7-list-clip-phone.png"
+ },
+ {
+  "scn": "names",
+  "size": "phone",
+  "id": "nm.amt-plant",
+  "what": "set-up: Kraken (SANS, nothing filed on Fri) on a new unnamed AMT row 13:00–14:00",
+  "ok": true,
+  "note": "\"Kraken — SANS — no availability filed for today\""
+ },
+ {
+  "scn": "names",
+  "size": "phone",
+  "id": "nm.amt-blank",
+  "what": "S10 the AMT row named \"\": Kraken's line reads \"SANS: no availability filed for today. Planned on this AMT row 13:00–14:00\"",
+  "ok": true,
+  "note": "label \"\" · \"SANS: no availability filed for today. Planned on this AMT row 13:00–14:00\"",
+  "pics": "names-nm-amt-blank-list-clip-phone.png, names-nm-amt-blank-board-phone.png"
+ },
+ {
+  "scn": "names",
+  "size": "phone",
+  "id": "nm.amt-box",
+  "what": "S10 the AMT row named \"BOX\": Kraken's line reads \"SANS: no availability filed for today. Planned on AMT BOX 13:00–14:00\"",
+  "ok": true,
+  "note": "label \"BOX\" · \"SANS: no availability filed for today. Planned on AMT BOX 13:00–14:00\"",
+  "pics": "names-nm-amt-box-list-clip-phone.png, names-nm-amt-box-board-phone.png"
+ },
+ {
+  "scn": "names",
+  "size": "phone",
+  "id": "nm.amt-brief",
+  "what": "S10 / the host: the AMT row renamed \"BRIEF\" — does Kraken in it still raise a SANS line? (RECORD, an open question for him)",
+  "ok": "REC",
+  "note": "label \"BRIEF\" · his places [\".sims.amt[0].p\"] · \"SANS: no availability filed for today. Planned on AMT BRIEF 13:00–14:00\" · every SANS line SANS: no availability filed for today. Planned on AMT BRIEF 13:00–14:00 | SANS: no availability filed for today. Planned on OFT EP-9 & EP-10 (LONG NAME FOR THE REAR) 10:00–11:00",
+  "pics": "names-nm-amt-brief-list-clip-phone.png, names-nm-amt-brief-board-phone.png"
+ },
+ {
+  "scn": "names",
+  "size": "phone",
+  "id": "nm.amt-debrief",
+  "what": "S10 / the host: the AMT row renamed \"DEBRIEF\" — does Kraken in it still raise a SANS line? (RECORD, an open question for him)",
+  "ok": "REC",
+  "note": "label \"DEBRIEF\" · his places [\".sims.amt[0].p\"] · \"SANS: no availability filed for today. Planned on AMT DEBRIEF 13:00–14:00\" · every SANS line SANS: no availability filed for today. Planned on AMT DEBRIEF 13:00–14:00 | SANS: no availability filed for today. Planned on OFT EP-9 & EP-10 (LONG NAME FOR THE REAR) 10:00–11:00",
+  "pics": "names-nm-amt-debrief-list-clip-phone.png, names-nm-amt-debrief-board-phone.png"
+ },
+ {
+  "scn": "names",
+  "size": "phone",
+  "id": "nm.amt-box2",
+  "what": "S10 the AMT row named \"BOX\": Kraken's line reads \"SANS: no availability filed for today. Planned on AMT BOX 13:00–14:00\"",
+  "ok": true,
+  "note": "label \"BOX\" · \"SANS: no availability filed for today. Planned on AMT BOX 13:00–14:00\"",
+  "pics": "names-nm-amt-box2-list-clip-phone.png, names-nm-amt-box2-board-phone.png"
+ },
+ {
+  "scn": "names",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

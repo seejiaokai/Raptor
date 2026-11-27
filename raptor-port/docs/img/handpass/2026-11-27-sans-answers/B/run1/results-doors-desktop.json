@@ -1,0 +1,155 @@
+[
+ {
+  "scn": "doors",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "doors",
+  "size": "desktop",
+  "id": "dr.file",
+  "what": "set-up: Jester filed OFT, all day, Thu 16 (a record for the edit doors)",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "doors",
+  "size": "desktop",
+  "id": "dr.commit",
+  "what": "F25 / S2 door: \"+ Commitment\" on the SANS day window — boxes Fly · OFT · AMT, and every box unticked is refused \"Tick at least one of Fly / OFT / AMT\"",
+  "ok": true,
+  "note": "opened ticked [\"Fly\"] · type  · refusal {\"words\":\"\",\"toast\":\"Tick at least one of Fly / OFT / AMT\",\"save\":\"live\"}",
+  "pics": "doors-dr-commit-desktop.png, doors-dr-commit-empty-desktop.png, doors-dr-commit-refused-desktop.png"
+ },
+ {
+  "scn": "doors",
+  "size": "desktop",
+  "id": "dr.dayline",
+  "what": "F25 / S2 door: his line on the SANS day window (edit) — boxes Fly · OFT · AMT, and every box unticked is refused \"Tick at least one of Fly / OFT / AMT\"",
+  "ok": true,
+  "note": "opened ticked [\"OFT\"] · type SANS Availability · refusal {\"words\":\"\",\"toast\":\"Tick at least one of Fly / OFT / AMT\",\"save\":\"live\"}",
+  "pics": "doors-dr-dayline-desktop.png, doors-dr-dayline-empty-desktop.png, doors-dr-dayline-refused-desktop.png"
+ },
+ {
+  "scn": "doors",
+  "size": "desktop",
+  "id": "dr.dayline-kept",
+  "what": "the refused edit changed nothing: his filing still OFT",
+  "ok": true,
+  "note": "{\"o\":true}"
+ },
+ {
+  "scn": "doors",
+  "size": "desktop",
+  "id": "dr.boardadd",
+  "what": "F25 / S2 door: the board's SANS panel \"+ Add\" — boxes Fly · OFT · AMT, and every box unticked is refused \"Tick at least one of Fly / OFT / AMT\"",
+  "ok": true,
+  "note": "opened ticked [] · type  · refusal {\"words\":\"\",\"toast\":\"Tick at least one of Fly / OFT / AMT\",\"save\":\"live\"}",
+  "pics": "doors-dr-boardadd-desktop.png, doors-dr-boardadd-empty-desktop.png, doors-dr-boardadd-refused-desktop.png"
+ },
+ {
+  "scn": "doors",
+  "size": "desktop",
+  "id": "dr.boardcard",
+  "what": "F25 / S2 door: his SANS card on the board (edit) — boxes Fly · OFT · AMT, and every box unticked is refused \"Tick at least one of Fly / OFT / AMT\"",
+  "ok": true,
+  "note": "opened ticked [\"OFT\"] · type SANS Availability · refusal {\"words\":\"\",\"toast\":\"Tick at least one of Fly / OFT / AMT\",\"save\":\"live\"}",
+  "pics": "doors-dr-boardcard-desktop.png, doors-dr-boardcard-empty-desktop.png, doors-dr-boardcard-refused-desktop.png"
+ },
+ {
+  "scn": "doors",
+  "size": "desktop",
+  "id": "dr.boardcard-kept",
+  "what": "the refused edit changed nothing: his filing still OFT",
+  "ok": true,
+  "note": "{\"o\":true}"
+ },
+ {
+  "scn": "doors",
+  "size": "desktop",
+  "id": "dr.weekcard",
+  "what": "F25 / S2 door: his SANS card on Edit Schedule's week (edit) — boxes Fly · OFT · AMT, and every box unticked is refused \"Tick at least one of Fly / OFT / AMT\"",
+  "ok": true,
+  "note": "opened ticked [\"OFT\"] · type SANS Availability · refusal {\"words\":\"\",\"toast\":\"Tick at least one of Fly / OFT / AMT\",\"save\":\"live\"}",
+  "pics": "doors-dr-weekcard-desktop.png, doors-dr-weekcard-empty-desktop.png, doors-dr-weekcard-refused-desktop.png"
+ },
+ {
+  "scn": "doors",
+  "size": "desktop",
+  "id": "dr.weekcard-kept",
+  "what": "the refused edit changed nothing: his filing still OFT",
+  "ok": true,
+  "note": "{\"o\":true}"
+ },
+ {
+  "scn": "doors",
+  "size": "desktop",
+  "id": "dr.list",
+  "what": "F25 door: the Inputs page's list row (SANS) — not found",
+  "ok": "REC",
+  "note": "no row for Jester's filing drawn on the List",
+  "pics": "doors-dr-list-desktop.png"
+ },
+ {
+  "scn": "doors",
+  "size": "desktop",
+  "id": "dr.daytap",
+  "what": "F25 door: a tap on a SANS calendar day (Fri 17) — what opens (RECORD: the day window, whose \"+ Commitment\" is the first door)",
+  "ok": "REC",
+  "note": "{\"day\":1,\"form\":0}",
+  "pics": "doors-dr-daytap-desktop.png"
+ },
+ {
+  "scn": "doors",
+  "size": "desktop",
+  "id": "dr.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "doors-dr.post-postout-open-desktop.png, doors-dr.post-postout-sheet-desktop.png"
+ },
+ {
+  "scn": "doors",
+  "size": "desktop",
+  "id": "dr.post",
+  "what": "Ranger posted SANS from Fri 17 (the Leave War's posting controls)",
+  "ok": "REC",
+  "note": "{\"line\":\"On 17 Jul: becomes SANS.\",\"pic\":\"doors-dr.post-postout-open-desktop.png, doors-dr.post-postout-sheet-desktop.png\",\"after\":{\"san\":false,\"sanFrom\":null},\"chips0\":\"po-date po-overseas[on] po-delete po-sans po-transfer po-line po-confirm\",\"chips1\":\"po-date po-overseas po-delete po-sans[on] po-t"
+ },
+ {
+  "scn": "doors",
+  "size": "desktop",
+  "id": "dr.member",
+  "what": "F25 / S2 door: Ranger (member) filing his own — boxes Fly · OFT · AMT, refusal \"Tick at least one of Fly / OFT / AMT\"",
+  "ok": true,
+  "note": "person Ranger · ticked [\"Fly\"] · {\"words\":\"\",\"toast\":\"Tick at least one of Fly / OFT / AMT\",\"save\":\"live\"}",
+  "pics": "doors-dr-member-desktop.png, doors-dr-member-empty-desktop.png, doors-dr-member-refused-desktop.png"
+ },
+ {
+  "scn": "doors",
+  "size": "desktop",
+  "id": "dr.member-save",
+  "what": "Ranger saves OFT for himself, then edits it to OFT + AMT",
+  "ok": "REC",
+  "note": "made {\"o\":true} "
+ },
+ {
+  "scn": "doors",
+  "size": "desktop",
+  "id": "dr.member-edit",
+  "what": "S2 member: his own edit saved as OFT + AMT, letters \"O/A\"",
+  "ok": true,
+  "note": "{\"o\":true,\"a\":true} · Ranger[O · A All day Ranger · 15 Jul, 09:01 · changed by Ranger · 15 Jul, 09:01]"
+ },
+ {
+  "scn": "doors",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

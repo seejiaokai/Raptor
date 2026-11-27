@@ -1,0 +1,35 @@
+[
+ {
+  "scn": "quiet",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "quiet",
+  "size": "phone",
+  "id": "qt.plants",
+  "what": "S17: Marlin (SANS, nothing filed) on a ground row 14:00–15:00, a duty desk and SC MAIN / SC SPARE / AVALON / BB",
+  "ok": "REC",
+  "note": "ground {\"prog\":\"SA208 GROUND\",\"str\":\"14:00\",\"end\":\"15:00\",\"who\":\"cards\",\"rid\":\"rmrldi601jb1hte\"} · duty d:4.0.0.+ placed true \"Marlin — Conflict: SDO duty 07:30–17:30 & SA208 GROUND 14:00–15:00\" · SC MAIN (4.0.0.0.w): placed true note \"Marlin — Conflict: SC AM 07:00–13:00 & SDO duty 07:30–17:30\" · SC SPARE (4.0.0.2.w): placed true note \"Marlin — Conflict: SC AM SPARE 07:00–13:00 & SC AM MAIN 07:00–13:00\" · AVALON (4.1.0.0.w): placed true note \"Marlin planned\" · BB (4.2.0.0.w): placed true note \"Marlin planned\""
+ },
+ {
+  "scn": "quiet",
+  "size": "phone",
+  "id": "qt.none",
+  "what": "S17: ground, duty and standby alone — no SANS line for Marlin, and no \"A\" chip on his pucks",
+  "ok": true,
+  "note": "no SANS line · his chips [\"C\",\"C\",\"\",\"\",\"C\",\"C\"] · every line of his [\"Conflict Marlin — Conflict: SC AM 07:00–13:00 & SDO duty 07:30–17:30 ✕\",\"Conflict Marlin — Conflict: SDO duty 07:30–17:30 & SA208 GROUND 14:00–15:00 ✕\",\"Conflict Marlin — Conflict: SC AM SPARE 07:00–13:00 & SC AM MAIN 07:00–13:00 ✕\"]",
+  "pics": "quiet-qt-list-list-clip-phone.png, quiet-qt-board-phone.png"
+ },
+ {
+  "scn": "quiet",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]
