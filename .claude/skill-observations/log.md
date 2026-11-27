@@ -2103,3 +2103,16 @@ recheck every standing resource (locks, loops, write rights) after a restart, be
 **Issue:** A figure was made to read "Not typed" (empty boxes) instead of a count from 0, but the count kept running underneath. The first save of the main figure copied a companion part (the carried-forward days) from that hidden count, so a first entry silently saved a value nobody saw or typed. Both blind code readers caught it; the build's own red tests, all about what the screen shows, did not.
 **Suggested improvement:** when a test list is written for a new "not yet set" state over a value still computed underneath, add one red test per save door: the FIRST real entry into the blank state writes only what the person typed, and every companion part saved with it comes from what was shown (blank → its zero), never from the hidden computed value.
 **Principle:** hiding a computed default on screen does not remove it from the save path; test that the first write after a blank state takes nothing the person could not see.
+
+### Observation 1103: Ask "could we do without it?" before building a safety mechanism across many steps
+
+**Status:** OPEN
+**Date:** 27 Nov 26
+**Session context:** multi-squadron build, section 1 (the guard rail) — eight build steps refused presses while work was open; the owner, shown one picture of a refused pick beside the press going through, chose to drop every refusal (D2825), and a removal plan of 8 steps followed
+**Skill:** New skill candidate: guard-rail design check (brainstorming / writing-plans)
+**Type:** open-source
+**Phase/Area:** design, before a plan builds a mechanism that blocks the user
+
+**Issue:** A mechanism that blocks the user (refusing a press while something is open) was designed, red-teamed and built across many steps from rulings given one question at a time. Only when the whole of it was shown as one plain picture — today's refusal beside the press going through — did the owner ask "could we go without the block", and he chose to drop it. The cost of building it, and then of planning its removal, would have been saved by putting the whole trade-off to him once, with a picture, before the first step.
+**Suggested improvement:** In the brainstorming or plan skill, before a plan adds a mechanism that refuses or blocks the user's own action, put one card to the owner: the situation, a picture of the block and of the action simply going through (with what would be lost), the size of building each, and a recommendation. Build the block only on his choice.
+**Principle:** A guard that stops the user is a product choice, not a technical one. Show the owner the simplest alternative, letting the action through and accepting what is lost, with its cost, before investing in the guard.
