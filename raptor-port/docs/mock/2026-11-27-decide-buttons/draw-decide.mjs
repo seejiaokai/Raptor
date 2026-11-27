@@ -31,8 +31,19 @@ const LOOKS = {
   B: {
     pending: `<button class="dchip dk-b dk-a">${TICK}Approve</button><button class="dchip dk-b dk-r">${CROSS}Refuse</button>` + MOVE + DEL,
     approved: `<button class="dchip dk-b dk-a on">${TICK}Approved</button><button class="dchip dk-b dk-r">${CROSS}Refuse</button>` + MOVE + DEL },
+  /* round 2 (his "Doesn't feel like approved is selected", D2880): only the picked one keeps a colour. A2 — the switch's
+     picked half is a raised solid block inside a darker track, the other half grey; B2 — the picked button solid, the
+     other steps back to grey words and a plain edge. Both still pressable, as today. */
+  A2: {
+    pending: `<span class="dk-seg dk-track"><button class="dchip dk-a">${TICK}Approve</button><button class="dchip dk-r">${CROSS}Refuse</button></span>` + MOVE + DEL,
+    approved: `<span class="dk-seg dk-track dk-done"><button class="dchip dk-a on">${TICK}Approved</button><button class="dchip dk-r dk-off">${CROSS}Refuse</button></span>` + MOVE + DEL,
+    refused: `<span class="dk-seg dk-track dk-done"><button class="dchip dk-a dk-off">${TICK}Approve</button><button class="dchip dk-r on">${CROSS}Refused</button></span>` + MOVE + DEL },
+  B2: {
+    pending: `<button class="dchip dk-b dk-a">${TICK}Approve</button><button class="dchip dk-b dk-r">${CROSS}Refuse</button>` + MOVE + DEL,
+    approved: `<button class="dchip dk-b dk-a on">${TICK}Approved</button><button class="dchip dk-b dk-r dk-off">${CROSS}Refuse</button>` + MOVE + DEL,
+    refused: `<button class="dchip dk-b dk-a dk-off">${TICK}Approve</button><button class="dchip dk-b dk-r on">${CROSS}Refused</button>` + MOVE + DEL },
 }
-const STATE_WORDS = { pending: 'Pending · Whole day', approved: 'Approved · Whole day' }
+const STATE_WORDS = { pending: 'Pending · Whole day', approved: 'Approved · Whole day', refused: 'Refused · Whole day' }
 
 async function setup(p) {
   /* the app's own colours, read off the real card's buttons in the window: the resting words and fill, and the lit fill */
@@ -58,6 +69,14 @@ const css = c => `
 .dl-acts .dk-b.dk-a{border-color:color-mix(in srgb, ${c.ag} 45%, transparent) !important}
 .dl-acts .dk-b.dk-r{border-color:color-mix(in srgb, ${c.rg} 45%, transparent) !important}
 .dl-acts .dk-b.dk-a.on{background:${c.abg} !important;border-color:${c.abg} !important;color:${c.lw} !important}
+.dl-acts .dk-b.dk-r.on{background:${c.rbg} !important;border-color:${c.rbg} !important;color:${c.lw} !important}
+.dl-acts .dk-track{background:#0c0f13;padding:3px;gap:3px;align-self:stretch}
+.dl-acts .dk-track .dchip{border-radius:7px !important;height:auto !important;min-height:0 !important;padding-top:0 !important;padding-bottom:0 !important}
+.dl-acts .dk-track .dchip + .dchip{border-left:none !important}
+.dl-acts .dk-track:not(.dk-done) .dchip{background:${c.rest} !important}
+.dl-acts .dk-track .dchip.on{box-shadow:0 1px 3px rgba(0,0,0,.55)}
+.dl-acts .dchip.dk-off{color:#7d8794 !important}
+.dl-acts .dk-b.dk-off{border-color:${c.edge} !important}
 .dk-chev{margin-left:auto;align-self:center;font:400 26px/1 system-ui,sans-serif;color:#8b95a7;padding:0 2px 0 8px}
 .daylist.dk-list{margin:0;padding:0}`
 
@@ -71,7 +90,7 @@ function transform(f) {
   sheet.querySelectorAll('[data-testid="bid-placed"], [data-testid="bid-actions"]').forEach(e => e.remove())
   sheet.querySelector('.dk-list')?.remove()
   const ul = document.createElement('ul'); ul.className = 'daylist flat dk-list'
-  const box = f.state === 'approved' ? 'c k-ll s-a whole' : 'c k-ll s-w whole'
+  const box = f.state === 'approved' ? 'c k-ll s-a whole' : f.state === 'refused' ? 'c k-ll s-r whole' : 'c k-ll s-w whole'
   ul.innerHTML = `<li class="dl-line dl-card"><div class="dl-head"><span class="leg-box dl-box" aria-hidden="true"><span class="${box}">LL</span></span><div class="dl-text"><span class="dl-main">${f.words}</span><span class="dl-sub bp-placed"><span class="bp-placedline">Placed <b>Saber</b> · Fri 27 Nov, 12:46</span></span></div><span class="dk-chev" aria-hidden="true">›</span></div><div class="dl-acts bp-acts">${f.acts}</div></li>`
   ;(sheet.querySelector('[data-testid="bid-dayline"]') || sheet.querySelector('.bidsheet-hd')).after(ul)
   sheet.querySelectorAll('[data-testid^="bid-"].lv.lit').forEach(b => b.classList.remove('lit'))
@@ -104,7 +123,8 @@ try {
   await reach(p, CUT, '2026-12-02')
   const c = await setup(p); console.log('app colours', JSON.stringify(c))
   await p.addStyleTag({ content: css(c) })
-  for (const [look, states] of Object.entries(LOOKS)) for (const state of ['pending', 'approved']) {
+  const only = process.argv.includes('--round2') ? ['A2', 'B2'] : Object.keys(LOOKS)
+  for (const [look, states] of Object.entries(LOOKS).filter(([k]) => only.includes(k))) for (const state of Object.keys(states)) {
     const r = await p.evaluate(transform, { state, words: STATE_WORDS[state], acts: states[state] })
     if (r !== 'ok') throw new Error(r)
     await shot(p, `${look}-${state}`)
