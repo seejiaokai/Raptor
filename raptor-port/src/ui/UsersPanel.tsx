@@ -842,6 +842,7 @@ function rowLocks(pid: string, role: RolePick): { rest: boolean; roleLocked: boo
    own row (another admin changes it). A row with an account keeps `data-acct` (the account's id) beside `data-person`. */
 /* (`listed`, `afterWrite` — the page's own two functions, handed on to the editor: is he still on the page's list at a
    press (askAgain), and run a write with the other piece of open work judged in its batch (UsersPanel's afterWrite)) */
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function -- one man's row, whole or short, drawn from one copy of open work and its locks; split, a part could read a field the copy does not hold and an open row stay open on stale facts (msq-s2-rejudge4 §20 pins what it may read); the per-squadron edit-rights branching; the split filed for the tidiness audit before the database step ([USERS-PANEL-SPLIT], D486)
 function PersonRow(p: {
   pid: string; open: boolean; openOn?: OpenedOn | null; typed?: Typed | null; onTyped: (t: Typed) => void
   ringed?: boolean; onToggle: () => void; onClose: (found?: true) => void; onStale: () => void
@@ -1329,6 +1330,7 @@ const NO_WORK: OpenWork = { row: null, give: null }
      draw, holding a change); kept, whether it is on his screen held again (`shown`).
    The notes owed are said together (sayChanged), after the draw, by one effect keyed on one page state set in the
    idempotent shape (never an updater), so React's strict mode says them once. */
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function -- the one judge: every piece of open work judged in one pass on one draw, its notes said once; split, two judges could disagree on one draw (plans/2026-11-27-msq-s2-open-work-judge.md); the per-squadron edit-rights branching; the split filed for the tidiness audit before the database step ([USERS-PANEL-SPLIT], D486)
 function useOpenWorkJudged(
   work: OpenWork, setWork: (w: OpenWork) => void, see: (s: SeenAt) => void,
   j: { closedNow: boolean; seen: SeenAt | null; now: PageAt; shown: boolean },
@@ -1571,6 +1573,7 @@ function useOpenRequest(openNew: number | undefined, setAdding: (v: boolean) => 
 const rowInView = (v: UsersView, pid: string | null, archOpen: boolean): boolean =>
   !!pid && (v.groups.some(g => g.rows.includes(pid)) || (archOpen && v.archived.includes(pid)))
 
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function -- the page holds the one record of open work, its press paths and the bell's landing in one set of state; split, the order its hooks and effects run in would move under the security-read guard; the per-squadron edit-rights branching; the split filed for the tidiness audit before the database step ([USERS-PANEL-SPLIT], D486)
 export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring } = {}) {
   /* ALL OPEN WORK — the open row and Give access, each with what it was started on, its copy and what he typed (OpenWork,
      the plan's §1.1): the one record, judged on every draw by useOpenWorkJudged, which alone writes it in a draw */

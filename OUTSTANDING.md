@@ -199,6 +199,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [U2-WORDS-TWO-QUESTIONS] — three optional questions from Fable's word review of U2, for the next questions round, each drawn first: "Plan of 149 ended" also for a drop to View; the grey line's short form for a squadron with no admin of its own.
 - [GATE-APP-ACTOR-DOORS] — the save check runs a command made with nobody signed in, or through the app's projection door, as the app itself; U2's fix round makes the gate ask the app's actor the Plan and make-admin rule; the two doors themselves stay open — for the security review before the database step.
 - [LW-UNDO-POSTOUT-ADMIN-WORDS] — the Leave War's "Undo post out" of another squadron's admin, by one who may not make its admins, is refused only by the save check, with "That did not save" in place of the ruled sentence; words only.
+- [USERS-PANEL-SPLIT] — Admin → Users' three most branched functions (one man's row, the one judge of open work, the page) kept whole with a reason for the code check; split at the tidiness audit before the database step, with its reads.
 - [USERS-JUDGE-THREE-COPIES] — Admin → Users' judging of the other open work at a press is written three times; fold into one (a tidiness note).
 
 **Publishing and checks**
@@ -394,6 +395,11 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 **What:** U2's fix round makes Enable and Restore of an admin "making an admin" (the agent's reading of R2), asked at both doors with D2806's sentence. The Leave War's "Undo post out" (a restore with no post-in date) is not asked at its own door; the save check catches it through the archived-mark trigger, so Hunter, 142's admin who also plans 149, undoing the post out of Kestrel, 149's admin, is refused — nothing is written — but told "That did not save" instead of "Only 149's own admins or a master admin can make an admin of 149." Not tested yet.
 **To do:** a failing test first; the Undo-post-out door asks the same check as `restoreProblem` (`restoreMakesAdminProblem`) and says D2806's sentence.
 **Where:** the Leave War (`leavewar/sync.ts`, its undo of a post out); People & accounts.
+
+### [USERS-PANEL-SPLIT] Admin → Users: three functions too branched for the code check, kept whole for now (28 Nov 26, the batch's code check; filed by chat 205 on chat 206's word) — OPEN
+**What:** the code check (React Doctor) flags `ui/UsersPanel.tsx`'s `PersonRow` (one man's row, whole or short), `useOpenWorkJudged` (the one judge of open work) and `UsersPanel` (the page) as "high control-flow complexity" — they came in with step U1. Each is kept with its reason in a disable comment on the line above (commit after 3f6cbb18a on `claude/msq-s2-users-685735`): this code decides who may edit whom across squadrons, and a split mid-read would need the full reads again (206's word).
+**To do:** at the tidiness audit before the database step (D486): split each where it does not move the guard's pinned contract (`msq-s2-rejudge4` §20), the order of the page's hooks and effects, or the one judge (plan `2026-11-27-msq-s2-open-work-judge.md`); read by the readers a permission change takes; take the three disable comments out.
+**Where:** People & accounts (Admin → Users).
 
 ### [GH-PAGES-PREVIEW-DOCS] A preview on GitHub Pages — the documents and the steps (27 Nov 26, chat 206, his D2832) — OPEN
 **What:** his D2832 lets a preview for his look be published on GitHub Pages (public, one site, each preview replacing the last); the live app stays on Vercel. `.github/workflows/deploy.yml`'s head and `raptor-port/docs/gates-and-deploy.md` still say there is no GitHub Pages site (D343).
