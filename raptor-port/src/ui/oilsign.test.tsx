@@ -15,7 +15,7 @@ import { createRoot } from 'react-dom/client'
 import { DAYS } from '../engine/data'
 import { INPUTS } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
-import { SCHED, signOf, signShown, setSign, setDayApproved, dayApproved, dayHasChanges } from '../engine/publish'
+import { SCHED, signOf, signShown, setSign, setDayApproved, dayApproved, dayHasChanges, publishALDay } from '../engine/publish'
 import { VCONF } from '../engine/rules'
 import { curDraftId, dayDrafts, draftDup, draftSelect } from '../engine/drafts'
 import { HOOKS } from '../engine/hooks'
@@ -286,6 +286,56 @@ describe('a sign-off pressed on a day with an unanswered OIL question (D2294, D2
     expect(signShown(SAT).cur, 'the published Saturday’s name stands').toBe('ignite')
     expect(dayHasChanges(SAT), 'and its answer waits to go out').toBe(true)
     expect(signShown(SUN), 'the Sunday’s names stand').toMatchObject({ cur: 'ignite', sked: 'bane' })
+  })
+
+  /* Fable's scenario design, 6 and contradiction 1 (28 Nov 26): an answer given to an open question on a published day
+     leaves the Later names; once the amendment carrying it is published, a later CHANGE of that answer must not go out
+     on names nobody gave over it. Publishing re-bases the day, so the next amendment is signed afresh — over the
+     answer as it then stands. */
+  it('after the amendment carrying the answer goes out, changing that answer needs the day signed again', async () => {
+    for (const [role, who] of [['cur', 'ignite'], ['sked', 'bane'], ['plan', 'stiff'], ['appr', 'pump']] as const) setSign(SAT, role, who)
+    setDayApproved(SAT, true)
+    expect(writeInputsBatch(() => { INPUTS.push(row('fx-late', 'stiff')) })).toBe(true); view.afterSchedMutate()
+    for (const [role, who] of [['cur', 'ignite'], ['sked', 'bane'], ['plan', 'stiff']] as const) {
+      expect(signPick(SAT, role, who), role).toBe('held'); await draw(); await click('odl-later')
+    }
+    expect(signPick(SAT, 'appr', 'pump')).toBe('held')
+    await draw(); await click('odl-yes-fx-late'); await click('odl-yes-fx-train'); await click('odl-save')
+    expect(signShown(SAT), 'setup: four stand over the answers').toMatchObject({ cur: 'ignite', sked: 'bane', plan: 'stiff', appr: 'pump' })
+    publishALDay(SAT); view.afterSchedMutate()
+    expect(dayHasChanges(SAT), 'the amendment went out').toBe(false)
+    const r: any = INPUTS.find((x: any) => x.iid === 'fx-late')
+    expect(writeInputsBatch(() => { r.oil = { [SAT_ISO]: 0 } })).toBe(true); view.afterSchedMutate()
+    expect(dayHasChanges(SAT), 'the changed answer waits').toBe(true)
+    expect(signShown(SAT), 'and no name stands over it').toMatchObject({ cur: '', sked: '', plan: '', appr: '' })
+  })
+
+  /* the two scenario designers' break tests (28 Nov 26 — Astra 7, 25, 26; Fable 8, 9) */
+  it('two inputs whose answers swap — the day’s OIL the same in total — still clear the names signed over them', () => {
+    file(row('fx-meet', 'stiff'))
+    const a: any = INPUTS.find((x: any) => x.iid === 'fx-train'), b: any = INPUTS.find((x: any) => x.iid === 'fx-meet')
+    expect(writeInputsBatch(() => { a.oil = { [SAT_ISO]: 1 }; b.oil = { [SAT_ISO]: 0 } })).toBe(true); view.afterSchedMutate()
+    setSign(SAT, 'cur', 'ignite'); setSign(SAT, 'sked', 'bane')
+    expect(writeInputsBatch(() => { a.oil = { [SAT_ISO]: 0 }; b.oil = { [SAT_ISO]: 1 } })).toBe(true); view.afterSchedMutate()
+    expect(signShown(SAT)).toMatchObject({ cur: '', sked: '' })
+  })
+  it('a full day changed to a half day is a changed answer; the same answer saved again is not', () => {
+    const r: any = INPUTS.find((x: any) => x.iid === 'fx-train')
+    expect(writeInputsBatch(() => { r.oil = { [SAT_ISO]: 1 } })).toBe(true); view.afterSchedMutate()
+    setSign(SAT, 'cur', 'ignite'); setSign(SAT, 'sked', 'bane')
+    expect(writeInputsBatch(() => { r.oil = { [SAT_ISO]: 1 } })).toBe(true); view.afterSchedMutate()
+    expect(signShown(SAT), 'the same answer again').toMatchObject({ cur: 'ignite', sked: 'bane' })
+    expect(writeInputsBatch(() => { r.oil = { [SAT_ISO]: 0.5 } })).toBe(true); view.afterSchedMutate()
+    expect(signShown(SAT), 'FO became HO').toMatchObject({ cur: '', sked: '' })
+  })
+  it('on a published day an answer to an open question saved WITH another change of the input still clears the names', () => {
+    for (const [role, who] of [['cur', 'ignite'], ['sked', 'bane'], ['plan', 'stiff'], ['appr', 'pump']] as const) setSign(SAT, role, who)
+    setDayApproved(SAT, true)
+    setSign(SAT, 'cur', 'ignite'); setSign(SAT, 'sked', 'bane')
+    const r: any = INPUTS.find((x: any) => x.iid === 'fx-train')
+    expect(writeInputsBatch(() => { r.oil = { [SAT_ISO]: 1 }; r.remarks = 'moved to the sim' })).toBe(true); view.afterSchedMutate()
+    expect(dayHasChanges(SAT)).toBe(true)
+    expect(signShown(SAT), 'the remark is a change of its own (D103)').toMatchObject({ cur: '', sked: '' })
   })
 
   /* Astra's red-team read of the plan, finding 2 (27 Nov 26): a time emptied behind the open list — the foot must not
