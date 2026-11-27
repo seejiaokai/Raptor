@@ -338,21 +338,80 @@
   border: 1px dashed var(--ink-3);
 }
 
-/* Post-out: a management action, not a bid — a muted grey chip set apart from
-   the coloured bid/decision chips (owner, 18 Aug 26). The row gives it a top
-   rule so it reads as a step below the bidding controls, not one of them. */
+/* A management row below the bidding controls — the OIL panel's rows: a top rule so it reads as a step below them, not
+   one of them. (Post out and Post in sat here too, as a muted, hatched grey chip set apart from the coloured bid buttons
+   — his direction of 18 Aug 26. That direction was given when the posting sat AMONG the bid buttons; way C takes the
+   posting onto a sheet of its own, where "Post out" is the app's blue main button (his D2653 b, 26 Nov 26), so the
+   hatched `.dchip.po` is set aside: see THE POSTING SHEET, WAY C, below.) */
 .bidsheet .bidsheet-row.postout {
   border-top: 1px solid var(--edge);
   margin-top: 4px;
   padding-top: 10px;
 }
-.bidsheet .dchip.po {
-  background: repeating-linear-gradient(45deg, var(--panel-2), var(--panel-2) 5px, rgba(120, 130, 145, .16) 5px, rgba(120, 130, 145, .16) 8px);
-  color: var(--ink-2);
-  border: 1px solid var(--edge);
+
+/* THE POSTING SHEET, WAY C (his D2648, D2653; his go D2732; lesson 105) — the five posting sheets (Post out and Post in
+   from a day, from a drag, and an existing posting's) laid out from OutcomeChips.tsx's parts: the choices first, equal,
+   one row at a desk and two to a line on a phone; "PO from" (its label over its box, the box half the width); the line
+   of what happens on a strip one step off the sheet; an amber line; the one button. Measured from the approved drawings
+   (the batch branch's scripts/handpass/n191/draw-s4.mjs, pictures docs/mock/2026-11-25-msq-pick-guard-q3/drawn/s4-*):
+   12px between the parts, 10px above an amber line, every colour the app's own. Its rules live here, under the sheet's
+   own selector — never ui/postout.css, which Admin → Users' rows share (the plan §21.5 finding 1). */
+.bidsheet .po-form { margin-top: 12px; }
+.bidsheet .po-form > * + * { margin-top: 12px; }
+.bidsheet .po-form > .po-warn { margin-top: 10px; }
+.bidsheet .po-form .lab {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  font-weight: 600;
 }
-.bidsheet .dchip.po:hover {
-  border-color: var(--ink-3);
+.bidsheet .po-chips {
+  display: grid;
+  grid-template-columns: repeat(var(--po-n, 3), minmax(0, 1fr));
+  /* every line of chips as tall as the tallest: on a phone (two to a line) WebKit gave the chosen chip's "✓ " a 2px
+     taller line, so SANS alone on the second line stood shorter than the two above it (the walk, W-D FAIL 2 —
+     chat 201, 26 Nov 26; pinned by e2e/msq-s4-posting-leavewar.spec.ts "every chip as tall as the tallest") */
+  grid-auto-rows: 1fr;
+  gap: 6px;
+  min-width: 0;
+}
+/* the chosen one's ✓ is inline, so it stands no taller than its neighbours (the designer's note for the build) */
+.bidsheet .po-chips .pchip { white-space: nowrap; text-align: center; min-width: 0; }
+.bidsheet .po-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.bidsheet .po-f { min-width: 0; }
+.bidsheet .po-f .datebox { display: flex; width: 100%; box-sizing: border-box; }
+.bidsheet .po-line {
+  background: var(--panel-2);
+  border-radius: 9px;
+  padding: 9px 12px;
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+.bidsheet .po-warn,
+.bidsheet .po-foot { display: flex; }
+/* "Post out" / "Post in": the app's main button's colours (.abtn.primary), in the posting button's own box and letters —
+   no button changes size (D487) */
+.bidsheet .dchip.po-main {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border: 1px solid var(--accent);
+}
+.bidsheet .dchip.po-main:disabled { opacity: .45; cursor: default; }
+/* "Delete Cinch?": the card's Delete in the Leave War's one Delete look, a dashed grey edge, never red (his D2732 Q4,
+   D332) — on the Leave War's cards only; its own box kept, the same height as Cancel beside it. The app-wide reddish
+   .abtn.danger is untouched. */
+.bidsheet .askcard .abtn.po-del {
+  background: var(--panel-2);
+  color: var(--ink-2);
+  border: 1px dashed var(--ink-3);
+}
+.bidsheet .askcard .abtn.po-del:hover { color: var(--ink); border-color: var(--ink-2); }
+@media (max-width: 520px) {
+  .bidsheet .po-chips { grid-template-columns: 1fr 1fr; }
 }
 
 .bidsheet .dateinput {

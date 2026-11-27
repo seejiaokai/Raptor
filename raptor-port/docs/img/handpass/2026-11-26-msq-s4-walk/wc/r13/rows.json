@@ -1,0 +1,191 @@
+[
+ [
+  "F-S17 fixture",
+  "desk-chromium",
+  "Ridge posted out Overseas today; Admin → Users → Restore with Post in 7 Dec",
+  "archived, then restored with a later post-in date",
+  "line: On 26 Nov: archived. | post-in picked 2026-12-07 | toast: Ridge restored — he'll be asked to check his quals and CAT | row: Ridge no sign-in · Pilot · CAT C POSTING IN 7 DEC",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r13/001-desk-chromium-r13-ridge-restored.png"
+ ],
+ [
+  "F-S17(1)(2) Ridge 2026-12-01",
+  "desk-chromium",
+  "tap Ridge's 2026-12-01",
+  "1 Dec (between stints): the Post in sheet, \"Back from a posting…\", RECORD Undo post in present or absent; 26 Nov: RECORD (the earlier stint's gone stretch: read-only, a locked amber line, no chips, no Undo — D328)",
+  "postin-sheet: Ridge Post in ✕ PI FROM Mon 7 Dec 26 ▾ Back from a posting on 26 Nov 26 — on the manpower from 7 Dec 26. The days between count nobody, but leave can still be dated there. | undo buttons: 0 | chips: 0",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r13/002-desk-chromium-r13-ridge-2026-12-01.png"
+ ],
+ [
+  "F-S17(1)(2) Ridge 2026-11-26",
+  "desk-chromium",
+  "tap Ridge's 2026-11-26",
+  "1 Dec (between stints): the Post in sheet, \"Back from a posting…\", RECORD Undo post in present or absent; 26 Nov: RECORD (the earlier stint's gone stretch: read-only, a locked amber line, no chips, no Undo — D328)",
+  "postin-sheet: Ridge Post in ✕ PI FROM Mon 7 Dec 26 ▾ Back from a posting on 26 Nov 26 — on the manpower from 7 Dec 26. The days between count nobody, but leave can still be dated there. | undo buttons: 0 | chips: 0",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r13/003-desk-chromium-r13-ridge-2026-11-26.png"
+ ],
+ [
+  "F-S17(1)(2) Ridge 2026-11-25",
+  "desk-chromium",
+  "tap Ridge's 2026-11-25",
+  "1 Dec (between stints): the Post in sheet, \"Back from a posting…\", RECORD Undo post in present or absent; 26 Nov: RECORD (the earlier stint's gone stretch: read-only, a locked amber line, no chips, no Undo — D328)",
+  "bid-picker: Ridge Wed 25 Nov Auto-approve ✕ No manning row turns amber or red till 25 Nov Document Whole day AM PM Pick a range LL 31.5 OL 31.5 OIL −1 CCL 2 FCL −1 PL −1 EL −1 CL −1 CSE OD Grant OIL ⋯ | undo buttons: 0 | chips: 0",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r13/004-desk-chromium-r13-ridge-2026-11-25.png"
+ ],
+ [
+  "F-S17(3) refusal from the one-day sheet",
+  "desk-chromium",
+  "Ridge 15 Dec → ⋯ → Post out, PO from 27 Nov (his earlier stint's gone time), Post out",
+  "refused, the reason in amber UNDER the button, the sheet open; the button does not move (lesson 27)",
+  "sheet: bid-picker: Ridge Post out ✕ POSTING ✓ Overseas Sqn Delete SANS PO FROM Fri 27 Nov 26 ▾ On 27 Nov: archived. Post out Ridge was posted out on 26 Nov 26 and came back on 7 Dec 26 — an earlier stint's dates can't be moved here. | button before 453,841 87x32 after 453,798 87x32 | reason els: [\"post-err: Ridge was posted out on 26 Nov 26 and came back on 7 Dec 26 — an earlier stint's dates can't be moved here.\"]",
+  "FAIL",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r13/005-desk-chromium-r13-refused.png"
+ ],
+ [
+  "F-S17 lesson 16 same bad date pressed again",
+  "desk-chromium",
+  "press Post out again with the same bad date",
+  "the reason still / again there",
+  "[\"post-err: Ridge was posted out on 26 Nov 26 and came back on 7 Dec 26 — an earlier stint's dates can't be moved here.\"]",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r13/006-desk-chromium-r13-refused-again.png"
+ ],
+ [
+  "F-S17 a good date clears it",
+  "desk-chromium",
+  "PO from → 28 Dec",
+  "the reason goes",
+  "[]",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r13/007-desk-chromium-r13-good-date.png"
+ ],
+ [
+  "F-S17 posts with the good date",
+  "desk-chromium",
+  "press Post out",
+  "the posting set from 28 Dec",
+  "29 Dec: gone act hasc | PO | kids:c whole | window none",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r13/008-desk-chromium-r13-posted.png"
+ ],
+ [
+  "F-S17(4) refusal from the drag window",
+  "desk-chromium",
+  "drag Ridge 8–9 Dec → ⋯ → Post out, PO from 27 Nov, Post out",
+  "a refused posting keeps the window and says why",
+  "select-sheet: Ridge Post out ✕ POSTING ✓ Overseas Sqn Delete SANS PO FROM Fri 27 Nov 26 ▾ On 27 Nov: archived. Post out Ridge was posted out on 26 Nov 26 and came back on 7 Dec 26 — an earlier stint's dates can't be moved here. | [\"sel-note: Ridge was posted out on 26 Nov 26 and came back on 7 Dec 26 — an earlier stint's dates can't be moved here.\"]",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r13/009-desk-chromium-r13-drag-refused.png"
+ ],
+ [
+  "A3/F-S34(b) Undo post in",
+  "desk-chromium",
+  "Drifter: ⋯ → Post in 21 Dec; tap 10 Dec → Undo post in",
+  "his days before 21 Dec count again (all back)",
+  "before: gone act |  | kids: | sheet: postin-sheet: Drifter Post in ✕ PI FROM Mon 21 Dec 26 ▾ Posted in on 21 Dec 26 — on the manpower from that day. Days before it count nobody, but leave can still be dated there. ↶Undo post in | after:  act |  | kids: | window: none",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r13/010-desk-chromium-r13-undo-postin.png"
+ ],
+ [
+  "F-S37 a man deleted on Admin → Users",
+  "desk-chromium",
+  "Admin → Users → Comet → Delete → tap again; the war, his past day",
+  "no posting sheet for a deleted man; a past day's window has leave buttons and its ⋯ no Post out (D327) — RECORD",
+  "ask: SIGN-IN (DEFENCE MAIL) ROLE Member — own inputs, quals and bids Admin — schedules and manages Give sign-in Archive Tap again to delete Comet Cancel Goes: his account, his Quals row, every day still to | toast: Comet deleted | row on war: 1 | bid-picker: Comet Tue 10 Nov Auto-approve ✕ No manning row turns amber or red till 10 Nov Document Whole day AM PM Pick a range LL 14 OL 14 OIL −1 CCL 4 FCL −1 PL −1 EL −1 CL −1 CSE OD Grant OIL ⋯ | menu: bid-more-menu=Attach Other",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r13/011-desk-chromium-r13-deleted.png"
+ ],
+ [
+  "A7/F-S13 chip opened (Overseas chosen)",
+  "desk-chromium",
+  "Saber (the only admin able to sign in) → his day today → ⋯ → Post out → opened (Overseas chosen)",
+  "Overseas & Delete: an amber line just above the button, the posting waits because he is the last admin (D306); SANS & none: no amber line — RECORD; chips never move (lesson 27)",
+  "chips 453,658 174x30 | 633,658 174x30 | 813,658 174x30 | button 453,841 87x32 | line: On 26 Nov: archived, account suspended. | amber: [\"po-blocked: Saber is 142's last admin. The posting waits until 142 has another admin.\",\"DIV: Kestrel is 149's last admin. Make another admin of 149 first.\"]",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r13/012-desk-chromium-r13-hold-overseas.png"
+ ],
+ [
+  "A7/F-S13 chip Delete",
+  "desk-chromium",
+  "Saber (the only admin able to sign in) → his day today → ⋯ → Post out → Delete",
+  "Overseas & Delete: an amber line just above the button, the posting waits because he is the last admin (D306); SANS & none: no amber line — RECORD; chips never move (lesson 27)",
+  "chips 453,658 174x30 | 633,658 174x30 | 813,658 174x30 | button 453,841 87x32 | line: On 26 Nov the app deletes him automatically, with his account. Days he flew keep his puck. | amber: [\"po-blocked: Saber is a master admin, so he can't be deleted\",\"DIV: Kestrel is 149's last admin. Make another admin of 149 first.\"]",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r13/013-desk-chromium-r13-hold-delete.png"
+ ],
+ [
+  "A7/F-S13 chip SANS",
+  "desk-chromium",
+  "Saber (the only admin able to sign in) → his day today → ⋯ → Post out → SANS",
+  "Overseas & Delete: an amber line just above the button, the posting waits because he is the last admin (D306); SANS & none: no amber line — RECORD; chips never move (lesson 27)",
+  "chips 453,684 174x30 | 633,684 174x30 | 813,684 174x30 | button 453,841 87x32 | line: On 26 Nov: becomes SANS. | amber: [\"DIV: Kestrel is 149's last admin. Make another admin of 149 first.\"]",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r13/014-desk-chromium-r13-hold-sans.png"
+ ],
+ [
+  "A7/F-S13 chip none",
+  "desk-chromium",
+  "Saber (the only admin able to sign in) → his day today → ⋯ → Post out → none",
+  "Overseas & Delete: an amber line just above the button, the posting waits because he is the last admin (D306); SANS & none: no amber line — RECORD; chips never move (lesson 27)",
+  "chips 453,684 174x30 | 633,684 174x30 | 813,684 174x30 | button 453,841 87x32 | line: On 26 Nov: off the manpower, nothing else. | amber: [\"DIV: Kestrel is 149's last admin. Make another admin of 149 first.\"]",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r13/015-desk-chromium-r13-hold-none.png"
+ ],
+ [
+  "A7/F-S13 chip Overseas again",
+  "desk-chromium",
+  "Saber (the only admin able to sign in) → his day today → ⋯ → Post out → Overseas again",
+  "Overseas & Delete: an amber line just above the button, the posting waits because he is the last admin (D306); SANS & none: no amber line — RECORD; chips never move (lesson 27)",
+  "chips 453,658 174x30 | 633,658 174x30 | 813,658 174x30 | button 453,841 87x32 | line: On 26 Nov: archived, account suspended. | amber: [\"po-blocked: Saber is 142's last admin. The posting waits until 142 has another admin.\",\"DIV: Kestrel is 149's last admin. Make another admin of 149 first.\"]",
+  "RECORD",
+  ""
+ ],
+ [
+  "A7/F-S13 chips do not move",
+  "desk-chromium",
+  "chip boxes across the five states",
+  "the chips stay put (lesson 27)",
+  "453,658 174x30 | 633,658 174x30 | 813,658 174x30 ## 453,684 174x30 | 633,684 174x30 | 813,684 174x30",
+  "FAIL",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r13/012-desk-chromium-r13-hold-overseas.png"
+ ],
+ [
+  "A7/F-S13 Delete card under the hold",
+  "desk-chromium",
+  "Delete chosen, Post out",
+  "the same hold said on the card — RECORD its words",
+  "Delete Saber? On 26 Nov the app deletes him automatically, with his account. Days he flew keep his puck. Delete Cancel | amber: [\"DIV: Kestrel is 149's last admin. Make another admin of 149 first.\"]",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r13/016-desk-chromium-r13-hold-card.png"
+ ],
+ [
+  "A7 the posting waits whole",
+  "desk-chromium",
+  "Overseas, today, Post out; Admin → Users",
+  "the posting waits whole — not half-archived or suspended; Admin → Users says why (D306)",
+  "Saber row before: Saber ad · Pilot · CAT IP YOU ADMIN | after: Saber ad · Pilot · CAT IP YOU ADMIN Saber is 142's last admin. The posting waits until 142 has another admin. | still signed in: SABER · ADMIN",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r13/017-desk-chromium-r13-hold-admin.png"
+ ],
+ [
+  "A7 grid while held",
+  "desk-chromium",
+  "the war, Saber's row today",
+  "RECORD",
+  "gone act hasc | PO | kids:c whole",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r13/018-desk-chromium-r13-hold-grid.png"
+ ],
+ [
+  "A7/F-S13 last admin",
+  "desk-chromium",
+  "step threw",
+  "",
+  "locator.boundingBox: Timeout 30000ms exceeded.",
+  "NOT REACHED",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r13/019-desk-chromium-A7_F-S13_last_admin-error.png"
+ ]
+]

@@ -1,0 +1,7 @@
+msq-s4w-lib v1 who=wd run=r12gw port=4756
+wd-lib v1
+wd-gridw v1
+phone branch open {"sw":7623,"cw":380,"sl":6814,"n":184,"first":"cell-stiff-2026-07-01","last":"cell-stiff-2026-12-31","w0":20.44,"w100":19.19,"zoom":"1"} after DEC {"sw":7623,"sl":6913}
+phone main open {"sw":7623,"cw":380,"sl":6814,"n":184,"first":"cell-stiff-2026-07-01","last":"cell-stiff-2026-12-31","w0":20.44,"w100":19.19,"zoom":"1"} after DEC {"sw":7623,"sl":6913}
+desk branch open {"sw":9561,"cw":1398,"sl":8006,"n":184,"first":"cell-stiff-2026-07-01","last":"cell-stiff-2026-12-31","w0":25.05,"w100":24,"zoom":"1"} after DEC {"sw":9483,"sl":8062}
+desk main open {"sw":9486,"cw":1398,"sl":7897,"n":214,"first":"cell-stiff-2026-06-01","last":"cell-stiff-2026-12-31","w0":27.03,"w100":25.05,"zoom":"1"} after DEC {"sw":9285,"sl":7731}

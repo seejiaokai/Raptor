@@ -1,0 +1,164 @@
+[
+ [
+  "F-S5(h1) Balances tab and back to Grid",
+  "phone-webkit",
+  "new posting, SANS chosen, PO from 10 Dec [Cinch Post out ✕ POSTING Overseas Sqn Delete ✓ SAN] → Balances tab and back to Grid",
+  "RECORD: the page he left; the sheet the posting or closed, never a half-state",
+  " page=leavewar url=/; {\"bid\":null,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":null,\"confirm\":null,\"leaveGroup\":false,\"card\":null,\"head\":null,\"gone\":0}; sheet \"\"; lit []; gone 0",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sC2/002-phone-webkit-S5h1-settled.png"
+ ],
+ [
+  "F-S5(h1) next tap",
+  "phone-webkit",
+  "then Cinch's day once more",
+  "the day AFRESH: leave buttons, Duration, Remarks, Auto-approve, the day in the head, no posting rows (D2732 Q3)",
+  "{\"bid\":605,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":null,\"confirm\":null,\"leaveGroup\":true,\"card\":null,\"head\":\"Cinch Mon 14 Dec Auto-approve ✕\",\"gone\":0} | Cinch Mon 14 Dec Auto-approve ✕ No manning row turns amber or red till 14 Dec Document Who",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sC2/004-phone-webkit-S5h1-again-settled.png"
+ ],
+ [
+  "F-S5(h1) remembered?",
+  "phone-webkit",
+  "⋯ → Post out again",
+  "opens on the default: Overseas Sqn chosen, PO from the tapped day (14 Dec) — RECORD if anything is remembered",
+  "chips [✓ Overseas Sqn*,Delete,SANS] date \"Mon 14 Dec 26 ▾\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sC2/005-phone-webkit-S5h1-reopened.png"
+ ],
+ [
+  "F-S5(h2) OIL tab and back to Grid",
+  "phone-webkit",
+  "new posting, SANS chosen, PO from 10 Dec [Cinch Post out ✕ POSTING Overseas Sqn Delete ✓ SAN] → OIL tab and back to Grid",
+  "RECORD: the page he left; the sheet the posting or closed, never a half-state",
+  " page=leavewar url=/; {\"bid\":null,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":null,\"confirm\":null,\"leaveGroup\":false,\"card\":null,\"head\":null,\"gone\":0}; sheet \"\"; lit []; gone 0",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sC2/007-phone-webkit-S5h2-settled.png"
+ ],
+ [
+  "F-S5(h2) next tap",
+  "phone-webkit",
+  "then Cinch's day once more",
+  "the day AFRESH: leave buttons, Duration, Remarks, Auto-approve, the day in the head, no posting rows (D2732 Q3)",
+  "{\"bid\":605,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":null,\"confirm\":null,\"leaveGroup\":true,\"card\":null,\"head\":\"Cinch Mon 14 Dec Auto-approve ✕\",\"gone\":0} | Cinch Mon 14 Dec Auto-approve ✕ No manning row turns amber or red till 14 Dec Document Who",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sC2/009-phone-webkit-S5h2-again-settled.png"
+ ],
+ [
+  "F-S5(h2) remembered?",
+  "phone-webkit",
+  "⋯ → Post out again",
+  "opens on the default: Overseas Sqn chosen, PO from the tapped day (14 Dec) — RECORD if anything is remembered",
+  "chips [✓ Overseas Sqn*,Delete,SANS] date \"Mon 14 Dec 26 ▾\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sC2/010-phone-webkit-S5h2-reopened.png"
+ ],
+ [
+  "F-S5(h3) Approvals tab and back to Grid",
+  "phone-webkit",
+  "new posting, SANS chosen, PO from 10 Dec [Cinch Post out ✕ POSTING Overseas Sqn Delete ✓ SAN] → Approvals tab and back to Grid",
+  "RECORD: the page he left; the sheet the posting or closed, never a half-state",
+  " page=leavewar url=/; {\"bid\":null,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":null,\"confirm\":null,\"leaveGroup\":false,\"card\":null,\"head\":null,\"gone\":0}; sheet \"\"; lit []; gone 0",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sC2/012-phone-webkit-S5h3-settled.png"
+ ],
+ [
+  "F-S5(h3) next tap",
+  "phone-webkit",
+  "then Cinch's day once more",
+  "the day AFRESH: leave buttons, Duration, Remarks, Auto-approve, the day in the head, no posting rows (D2732 Q3)",
+  "{\"bid\":605,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":null,\"confirm\":null,\"leaveGroup\":true,\"card\":null,\"head\":\"Cinch Mon 14 Dec Auto-approve ✕\",\"gone\":0} | Cinch Mon 14 Dec Auto-approve ✕ No manning row turns amber or red till 14 Dec Document Who",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sC2/014-phone-webkit-S5h3-again-settled.png"
+ ],
+ [
+  "F-S5(h3) remembered?",
+  "phone-webkit",
+  "⋯ → Post out again",
+  "opens on the default: Overseas Sqn chosen, PO from the tapped day (14 Dec) — RECORD if anything is remembered",
+  "chips [✓ Overseas Sqn*,Delete,SANS] date \"Mon 14 Dec 26 ▾\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sC2/015-phone-webkit-S5h3-reopened.png"
+ ],
+ [
+  "F-S5(h1) Balances tab and back to Grid",
+  "phone-chromium",
+  "new posting, SANS chosen, PO from 10 Dec [Cinch Post out ✕ POSTING Overseas Sqn Delete ✓ SAN] → Balances tab and back to Grid",
+  "RECORD: the page he left; the sheet the posting or closed, never a half-state",
+  " page=leavewar url=/; {\"bid\":null,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":null,\"confirm\":null,\"leaveGroup\":false,\"card\":null,\"head\":null,\"gone\":0}; sheet \"\"; lit []; gone 0",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sC2/017-phone-chromium-S5h1-settled.png"
+ ],
+ [
+  "F-S5(h1) next tap",
+  "phone-chromium",
+  "then Cinch's day once more",
+  "the day AFRESH: leave buttons, Duration, Remarks, Auto-approve, the day in the head, no posting rows (D2732 Q3)",
+  "{\"bid\":595,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":null,\"confirm\":null,\"leaveGroup\":true,\"card\":null,\"head\":\"Cinch Mon 14 Dec Auto-approve ✕\",\"gone\":0} | Cinch Mon 14 Dec Auto-approve ✕ No manning row turns amber or red till 14 Dec Document Who",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sC2/019-phone-chromium-S5h1-again-settled.png"
+ ],
+ [
+  "F-S5(h1) remembered?",
+  "phone-chromium",
+  "⋯ → Post out again",
+  "opens on the default: Overseas Sqn chosen, PO from the tapped day (14 Dec) — RECORD if anything is remembered",
+  "chips [✓ Overseas Sqn*,Delete,SANS] date \"Mon 14 Dec 26 ▾\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sC2/020-phone-chromium-S5h1-reopened.png"
+ ],
+ [
+  "F-S5(h2) OIL tab and back to Grid",
+  "phone-chromium",
+  "new posting, SANS chosen, PO from 10 Dec [Cinch Post out ✕ POSTING Overseas Sqn Delete ✓ SAN] → OIL tab and back to Grid",
+  "RECORD: the page he left; the sheet the posting or closed, never a half-state",
+  " page=leavewar url=/; {\"bid\":null,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":null,\"confirm\":null,\"leaveGroup\":false,\"card\":null,\"head\":null,\"gone\":0}; sheet \"\"; lit []; gone 0",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sC2/022-phone-chromium-S5h2-settled.png"
+ ],
+ [
+  "F-S5(h2) next tap",
+  "phone-chromium",
+  "then Cinch's day once more",
+  "the day AFRESH: leave buttons, Duration, Remarks, Auto-approve, the day in the head, no posting rows (D2732 Q3)",
+  "{\"bid\":595,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":null,\"confirm\":null,\"leaveGroup\":true,\"card\":null,\"head\":\"Cinch Mon 14 Dec Auto-approve ✕\",\"gone\":0} | Cinch Mon 14 Dec Auto-approve ✕ No manning row turns amber or red till 14 Dec Document Who",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sC2/024-phone-chromium-S5h2-again-settled.png"
+ ],
+ [
+  "F-S5(h2) remembered?",
+  "phone-chromium",
+  "⋯ → Post out again",
+  "opens on the default: Overseas Sqn chosen, PO from the tapped day (14 Dec) — RECORD if anything is remembered",
+  "chips [✓ Overseas Sqn*,Delete,SANS] date \"Mon 14 Dec 26 ▾\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sC2/025-phone-chromium-S5h2-reopened.png"
+ ],
+ [
+  "F-S5(h3) Approvals tab and back to Grid",
+  "phone-chromium",
+  "new posting, SANS chosen, PO from 10 Dec [Cinch Post out ✕ POSTING Overseas Sqn Delete ✓ SAN] → Approvals tab and back to Grid",
+  "RECORD: the page he left; the sheet the posting or closed, never a half-state",
+  " page=leavewar url=/; {\"bid\":null,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":null,\"confirm\":null,\"leaveGroup\":false,\"card\":null,\"head\":null,\"gone\":0}; sheet \"\"; lit []; gone 0",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sC2/027-phone-chromium-S5h3-settled.png"
+ ],
+ [
+  "F-S5(h3) next tap",
+  "phone-chromium",
+  "then Cinch's day once more",
+  "the day AFRESH: leave buttons, Duration, Remarks, Auto-approve, the day in the head, no posting rows (D2732 Q3)",
+  "{\"bid\":595,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":null,\"confirm\":null,\"leaveGroup\":true,\"card\":null,\"head\":\"Cinch Mon 14 Dec Auto-approve ✕\",\"gone\":0} | Cinch Mon 14 Dec Auto-approve ✕ No manning row turns amber or red till 14 Dec Document Who",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sC2/029-phone-chromium-S5h3-again-settled.png"
+ ],
+ [
+  "F-S5(h3) remembered?",
+  "phone-chromium",
+  "⋯ → Post out again",
+  "opens on the default: Overseas Sqn chosen, PO from the tapped day (14 Dec) — RECORD if anything is remembered",
+  "chips [✓ Overseas Sqn*,Delete,SANS] date \"Mon 14 Dec 26 ▾\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sC2/030-phone-chromium-S5h3-reopened.png"
+ ]
+]

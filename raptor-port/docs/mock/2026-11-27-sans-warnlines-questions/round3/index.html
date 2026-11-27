@@ -1,0 +1,141 @@
+<title>SANS Warning Lines Questions</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one reading column; a short answer list on top, then one card per question with its pictures beside it. */
+:root{
+  --bg:#f5f6f8; --card:#ffffff; --fg:#1b2230; --muted:#5b6577; --line:#dde1e8; --accent:#1d6fd8; --amber:#b7791f; --rec:#0f7a4a; --shot:#121821;
+  --f-head:"Space Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif; --f-body:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#11151c;--card:#19202a;--fg:#e7ebf1;--muted:#9aa5b5;--line:#2a3340;--accent:#6aa8ff;--amber:#f0b44c;--rec:#4cc38a;--shot:#0b0f15;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#11151c;--card:#19202a;--fg:#e7ebf1;--muted:#9aa5b5;--line:#2a3340;--accent:#6aa8ff;--amber:#f0b44c;--rec:#4cc38a;--shot:#0b0f15;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.55;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+.wrap{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+h1{font-family:var(--f-head);font-size:1.5rem;line-height:1.2;margin:0;text-wrap:balance}
+h2{font-family:var(--f-head);font-size:1.12rem;line-height:1.3;margin:0;text-wrap:balance}
+p{margin:0}
+.sub{color:var(--muted)}
+.top{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.top ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:6px}
+.top a{color:var(--accent);text-decoration:none}
+.rec{color:var(--rec);font-weight:600}
+.q{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;scroll-margin-top:12px}
+.when{font-size:.9rem;color:var(--muted)}
+figure{margin:0;display:flex;flex-direction:column;gap:4px}
+figure button{all:unset;cursor:zoom-in;display:block;background:var(--shot);border-radius:8px;padding:8px;max-width:100%;box-sizing:border-box}
+figure button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+figure img{display:block;max-width:100%;height:auto;border-radius:4px}
+figcaption{font-size:.85rem;color:var(--muted)}
+.opts{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none}
+.opts li{border-left:3px solid var(--line);padding:2px 0 2px 10px}
+.opts li.is-rec{border-left-color:var(--rec)}
+q,.w{font-style:normal;background:color-mix(in srgb,var(--amber) 14%,transparent);padding:0 3px;border-radius:3px}
+q::before,q::after{content:""}
+.pics{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.later{font-size:.9rem;color:var(--muted);border-top:1px solid var(--line);padding-top:10px}
+#zoom{position:fixed;inset:0;background:rgba(0,0,0,.86);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:calc(env(safe-area-inset-top,0px) + 16px) max(16px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 16px) max(16px,env(safe-area-inset-left,0px));z-index:20}
+#zoom img{max-width:100%;max-height:80vh;object-fit:contain;background:#0b0f15;border-radius:6px}
+#zoomClose{font:600 15px var(--f-body);padding:10px 22px;border-radius:999px;border:0;background:#fff;color:#111;cursor:pointer}
+@media (prefers-reduced-motion:no-preference){figure button{transition:transform .15s}figure button:hover{transform:translateY(-1px)}}
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Space+Grotesk:wght@600&display=swap">
+
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:6px">
+    <h1>SANS warning lines — round 3 questions</h1>
+    <p class="sub">27 Nov 26 · from checking your round 1–2 answers in the app. Those answers are built and checked; they have left this page. Every picture is the real app, on a desktop. Tap a picture to enlarge it.</p>
+  </header>
+
+  <section class="top" aria-labelledby="now">
+    <h2 id="now">What to look at now</h2>
+    <ol>
+      <li><a href="#q10">A morning or afternoon filer: the warning list still says clock times</a> — <span class="rec">recommend: say "AM only" / "PM only" there too</span></li>
+      <li><a href="#q11">Hours typed as 00:00–12:00 are saved as AM</a> — <span class="rec">recommend: keep it as AM</span></li>
+      <li><a href="#q12">A man on an AMT row renamed BRIEF disappears from the row but is still warned about</a> — <span class="rec">recommend: keep him showing on the row</span></li>
+      <li><a href="#q13">A sim row with an end time but no start says "(no times yet)"</a> — <span class="rec">recommend: leave it</span></li>
+      <li><a href="#q14">Other warning lines still call a sim "Sim"</a> — <span class="rec">recommend: name them OFT or AMT too</span></li>
+    </ol>
+    <p class="sub">To answer: "all as recommended", or a number and your choice.</p>
+  </section>
+
+  <article class="q" id="q10">
+    <h2>1. A morning or afternoon filer: the warning list still says clock times</h2>
+    <p class="when">When it happens: a SANS man files a morning (AM) or an afternoon (PM) only, and a scheduler plans him outside it. Several times a week.</p>
+    <p>You ruled that his reason in the crew list says <q>SANS — available AM only</q>. It now does. But the day's warning list still says the clock times the morning stands for: <q>Zenith — SANS: available 00:00–12:00 only. Planned on OFT EP-9 14:00–15:00</q>. The same fact reads two ways on one screen.</p>
+    <div class="pics">
+      <figure><button type="button" data-zoom><img src="img/q10-reason.png" alt="Crew list: Zenith struck, SANS — available AM only, his letter O with AM under it"></button><figcaption>The crew list: "SANS — available AM only".</figcaption></figure>
+      <figure><button type="button" data-zoom><img src="img/q10-list.png" alt="Warning list: Zenith — SANS: available 00:00–12:00 only. Planned on OFT EP-9 14:00–15:00"></button><figcaption>The warning list: "available 00:00–12:00 only".</figcaption></figure>
+    </div>
+    <ul class="opts">
+      <li class="is-rec"><b>A (recommended): the warning list says it as filed too</b> — <q>SANS: available AM only. Planned on OFT EP-9 14:00–15:00</q>, <q>SANS: available PM only. Planned on VL BFM (T/O 09:00)</q>. Hours he typed stay hours. These words were checked by a fresh Fable.</li>
+      <li><b>B: as A, and say where the morning ends</b> — <q>SANS: available AM only (to 12:00). Planned on …</q>, for a flight close to midday.</li>
+      <li><b>C: leave the clock times.</b></li>
+    </ul>
+  </article>
+
+  <article class="q" id="q11">
+    <h2>2. Hours typed as 00:00–12:00 are saved as AM</h2>
+    <p class="when">When it happens: a SANS man (or a scheduler for him) files availability, picks Custom and types 00:00 to 12:00 — exactly the morning. Rare.</p>
+    <p>The form has always turned hours that are exactly a morning (or exactly an afternoon) into AM (or PM): opened again, it shows AM picked. So his reason reads <q>SANS — available AM only</q>, not <q>available 00:00–12:00 only</q>. You said hours he types stay hours; these hours are the morning itself.</p>
+    <figure><button type="button" data-zoom><img src="img/q11-form.png" alt="The SANS availability form for Kraken reopened: OFT ticked, AM picked, 12:00 am to 12:00 pm"></button><figcaption>Typed as Custom 00:00–12:00, reopened: AM is picked.</figcaption></figure>
+    <ul class="opts">
+      <li class="is-rec"><b>A (recommended): keep it as AM</b> — it is the same stretch of the day, and the form already shows it as AM.</li>
+      <li><b>B: keep typed hours as hours</b> — the form remembers he typed them, and his reason says <q>available 00:00–12:00 only</q>.</li>
+    </ul>
+  </article>
+
+  <article class="q" id="q12">
+    <h2>3. A man on an AMT row renamed BRIEF disappears from the row but is still warned about</h2>
+    <p class="when">When it happens: a scheduler plans men on an AMT row, then renames that row BRIEF or DEBRIEF (the AMT block's brief or debrief row). Rare.</p>
+    <p>A BRIEF or DEBRIEF row shows no people, so Kraken vanishes from the row. But he is still planned there: the warning list says <q>Kraken — SANS: no availability filed for today. Planned on AMT BRIEF 13:00–14:00</q>, and his name in the crew list keeps the amber "A". Renamed back, he shows again. This was the same before your answers (it read "Sim BRIEF").</p>
+    <div class="pics">
+      <figure><button type="button" data-zoom><img src="img/q12-row.png" alt="The AMT row named BRIEF, 13:00 to 14:00, with an empty People column"></button><figcaption>The row renamed BRIEF: no one shows in it.</figcaption></figure>
+      <figure><button type="button" data-zoom><img src="img/q12-list.png" alt="Warning list: Kraken — SANS: no availability filed for today. Planned on AMT BRIEF 13:00–14:00"></button><figcaption>Yet the warning list still names him on it.</figcaption></figure>
+    </div>
+    <ul class="opts">
+      <li class="is-rec"><b>A (recommended): keep him showing on the row</b> — a planned man is never hidden; the scheduler sees him and moves him. Drawn for you first.</li>
+      <li><b>B: renaming a row with men on it to BRIEF or DEBRIEF is refused</b>, saying to move them first. Drawn for you first.</li>
+      <li><b>C: leave it.</b></li>
+    </ul>
+  </article>
+
+  <article class="q" id="q13">
+    <h2>4. A sim row with an end time but no start says "(no times yet)"</h2>
+    <p class="when">When it happens: a scheduler types a sim row's end before its start. Rare, and usually only for a moment.</p>
+    <p>Without a start the app cannot check his hours, so the line reads <q>Planned on this OFT row (no times yet)</q> while the row shows an end. It never makes up a start.</p>
+    <figure><button type="button" data-zoom><img src="img/q13-list.png" alt="Warning list: Jester — SANS: no availability filed for today. Planned on this OFT row (no times yet)"></button><figcaption>End typed, no start: "(no times yet)".</figcaption></figure>
+    <ul class="opts">
+      <li class="is-rec"><b>A (recommended): leave it</b> — it is right that nothing can be checked yet, and typing the start fixes it.</li>
+      <li><b>B: say what is missing</b> — e.g. <q>(no start yet)</q>; the exact words checked by a fresh Fable first.</li>
+    </ul>
+  </article>
+
+  <article class="q" id="q14">
+    <h2>5. Other warning lines still call a sim "Sim"</h2>
+    <p class="when">When it happens: any warning about a sim that is not a SANS line — a man in two seats at once, a missed AMT debrief, a man already on a row. Daily.</p>
+    <p>The SANS lines now say <q>OFT SIM</q> and <q>this OFT row</q>. Right above them, the clash line about the same two rows says <q>Conflict: Sim SIM 10:00–11:00 &amp; Sim 10:00–11:00</q>. Others read the same way: <q>Misses AMT debrief …: Sim BOX …</q> and, in the crew list, <q>already on Sim EP-9 10:00–11:00 · not added twice</q>.</p>
+    <figure><button type="button" data-zoom><img src="img/q14-list.png" alt="Warning list: Conflict: Sim SIM 10:00–11:00 &amp; Sim 10:00–11:00, then the two SANS lines naming OFT SIM and this OFT row"></button><figcaption>One list, two ways of naming the same sim rows.</figcaption></figure>
+    <ul class="opts">
+      <li class="is-rec"><b>A (recommended): name them OFT or AMT too</b>, in every line, the same way — <q>OFT EP-9</q>, <q>this OFT row</q>. A job of its own; the exact words checked by a fresh Fable first.</li>
+      <li><b>B: leave the other lines.</b></li>
+    </ul>
+  </article>
+
+  <p class="later">Still owed: the preview link, once Vercel builds again — it refused every build today (its daily limit). And your own look on your PC at its usual 125% size.</p>
+</div>
+
+<div id="zoom" hidden role="dialog" aria-modal="true" aria-label="Enlarged picture">
+  <img id="zoomImg" alt="">
+  <button type="button" id="zoomClose">Close</button>
+</div>
+<script>
+(function(){
+  var z=document.getElementById('zoom'), zi=document.getElementById('zoomImg'), zc=document.getElementById('zoomClose'), last=null;
+  document.querySelectorAll('[data-zoom]').forEach(function(b){
+    b.addEventListener('click',function(){ var im=b.querySelector('img'); zi.src=im.src; zi.alt=im.alt; last=b; z.hidden=false; zc.focus(); });
+  });
+  function close(){ z.hidden=true; zi.removeAttribute('src'); if(last) last.focus(); }
+  zc.addEventListener('click',close);
+  z.addEventListener('click',function(e){ if(e.target===z) close(); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape' && !z.hidden) close(); });
+})();
+</script>

@@ -1,0 +1,416 @@
+[
+ [
+  "F-S4(1)",
+  "phone-chromium",
+  "Cinch 2026-12-14 → ⋯ Post out → Delete → Post out; quick img/handpass/2026-11-26-msq-s4-walk/wa/sB2/001-phone-chromium-S4-card-at-lift.png",
+  "card \"Delete <name>?\" hangs from the button, wholly on screen; Delete dashed grey as tall as Cancel (D2732 Q4, D332, D1628); sub-line the Delete line (D1105); button not covered",
+  "{\"btn\":{\"x\":25,\"y\":815,\"w\":87,\"h\":32},\"ask\":{\"x\":25,\"y\":672,\"w\":300,\"h\":134,\"b\":806,\"r\":325},\"go\":{\"x\":177,\"y\":749,\"w\":62,\"h\":44,\"b\":793,\"r\":239},\"cancel\":{\"x\":247,\"y\":749,\"w\":65,\"h\":44,\"b\":793,\"r\":312},\"goText\":\"Delete\",\"cancelText\":\"Cancel\",\"goBorder\":\"dashed rgb(138, 150, 163)\",\"goBg\":\"rgb(26, 31, 38)\",\"goColor\":\"rgb(182, 192, 203)\",\"cancelBg\":\"rgb(59, 198, 232)\",\"askText\":\"Delete Cinch? On 14 Dec the app deletes him automatically. Days he flew keep his puck. Delete Cancel\",\"vw\":402,\"vh\":874,\"coversButton\":false}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/002-phone-chromium-S4-card-settled.png"
+ ],
+ [
+  "F-S4(2)",
+  "phone-chromium",
+  "card cancelled; \"Post out\" double-pressed 150ms apart at one point",
+  "the second press must NOT delete: no posting set, the man still there (contract)",
+  "under the 2nd press: po-confirm \"Post out\"; after: {\"bid\":526,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":586,\"confirm\":815,\"leaveGroup\":false,\"card\":749,\"head\":\"Cinch Post out ✕\",\"gone\":0}; gone cells 0",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/004-phone-chromium-S4-double-settled.png"
+ ],
+ [
+  "F-S6 new: card Cancel",
+  "phone-chromium",
+  "new sheet, Delete chosen, card up → card Cancel",
+  "card closes, sheet stays, Delete still chosen; never a delete",
+  " after {\"bid\":526,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":586,\"confirm\":815,\"leaveGroup\":false,\"card\":null,\"head\":\"Cinch Post out ✕\",\"gone\":0} chips [Overseas Sqn,✓ Delete*,SANS] gone 0",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/006-phone-chromium-S6-card_Cancel-settled.png"
+ ],
+ [
+  "F-S6 new: tap on the sheet outside the card (the \"PO FROM\" label area)",
+  "phone-chromium",
+  "new sheet, Delete chosen, card up → tap on the sheet outside the card (the \"PO FROM\" label area)",
+  "RECORD: card closes or stays; sheet stays; nothing posted; never a delete",
+  " after {\"bid\":526,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":586,\"confirm\":815,\"leaveGroup\":false,\"card\":749,\"head\":\"Cinch Post out ✕\",\"gone\":0} chips [Overseas Sqn,✓ Delete*,SANS] gone 0",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/008-phone-chromium-S6-tap_on_the_sheet_o-settled.png"
+ ],
+ [
+  "F-S6 new: tap on the page outside the sheet (the \"VIEW\" label)",
+  "phone-chromium",
+  "new sheet, Delete chosen, card up → tap on the page outside the sheet (the \"VIEW\" label)",
+  "RECORD what closes; nothing posted; never a delete",
+  " after {\"bid\":null,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":null,\"confirm\":null,\"leaveGroup\":false,\"card\":null,\"head\":null,\"gone\":0} chips [] gone 0",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/010-phone-chromium-S6-tap_on_the_page_ou-settled.png"
+ ],
+ [
+  "F-S6 new: the sheet's ✕",
+  "phone-chromium",
+  "new sheet, Delete chosen, card up → the sheet's ✕",
+  "sheet closes, nothing posted; never a delete",
+  " after {\"bid\":null,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":null,\"confirm\":null,\"leaveGroup\":false,\"card\":null,\"head\":null,\"gone\":0} chips [] gone 0",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/012-phone-chromium-S6-the_sheet_s_-settled.png"
+ ],
+ [
+  "F-S6 new: a press on the day",
+  "phone-chromium",
+  "new sheet, Delete chosen, card up → a press on the day",
+  "the posting closes (Q3), nothing posted; never a delete",
+  " after {\"bid\":null,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":null,\"confirm\":null,\"leaveGroup\":false,\"card\":null,\"head\":null,\"gone\":0} chips [] gone 0",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/014-phone-chromium-S6-a_press_on_the_day-settled.png"
+ ],
+ [
+  "F-S6 new: another chip (SANS)",
+  "phone-chromium",
+  "new sheet, Delete chosen, card up → another chip (SANS)",
+  "card taken back, SANS chosen, nothing posted (contract); never a delete",
+  " after {\"bid\":542,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":602,\"confirm\":815,\"leaveGroup\":false,\"card\":null,\"head\":\"Cinch Post out ✕\",\"gone\":0} chips [Overseas Sqn,Delete,✓ SANS*] gone 0",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/016-phone-chromium-S6-another_chip_SANS-settled.png"
+ ],
+ [
+  "F-S6 new: a change of the PO from date (16th)",
+  "phone-chromium",
+  "new sheet, Delete chosen, card up → a change of the PO from date (16th)",
+  "card taken back, date 16 Dec, nothing posted (contract); never a delete",
+  " press refused: press: [data-testid=\"po-date\"] is covered at its centre by askcard-sub after {\"bid\":526,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":586,\"confirm\":815,\"leaveGroup\":false,\"card\":749,\"head\":\"Cinch Post out ✕\",\"gone\":0} chips [Overseas Sqn,✓ Delete*,SANS] gone 0",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/018-phone-chromium-S6-a_change_of_the_PO-settled.png"
+ ],
+ [
+  "F-S6 new: switch to Balances and back to Grid",
+  "phone-chromium",
+  "new sheet, Delete chosen, card up → switch to Balances and back to Grid",
+  "no armed card waiting on return (contract); never a delete",
+  " after {\"bid\":null,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":null,\"confirm\":null,\"leaveGroup\":false,\"card\":null,\"head\":null,\"gone\":0} chips [] gone 0",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/020-phone-chromium-S6-switch_to_Balances-settled.png"
+ ],
+ [
+  "F-S24 new open",
+  "phone-chromium",
+  "new Post out: tap \"PO from\"",
+  "the calendar wholly on screen; the box still visible; no keyboard (as on main for the box itself)",
+  "{\"top\":253,\"bot\":621,\"left\":26,\"right\":376,\"vh\":874,\"vw\":402,\"boxTop\":720,\"boxBot\":756,\"btns\":[\"dcal-title{December 2026 — choose the month and year}\",\"dcal-today{Go to today}\",\"dcal-prev{Previous month}\",\"dcal-next{Next month}\"]}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/022-phone-chromium-S24-new-open-settled.png"
+ ],
+ [
+  "F-S24 new pick",
+  "phone-chromium",
+  "pick 12 Dec",
+  "the calendar closes, the sheet stays, the box and the line name 12 Dec; one tap one thing (lesson 19)",
+  "calendar closed; box \"Sat 12 Dec 26 ▾\"; line \"On 12 Dec: archived.\"; {\"bid\":542,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":602,\"confirm\":815,\"leaveGroup\":false,\"card\":null,\"head\":\"Cinch Post out ✕\",\"gone\":0}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/024-phone-chromium-S24-new-picked.png"
+ ],
+ [
+  "F-S24 tap outside",
+  "phone-chromium",
+  "calendar open; a tap outside it (200,661)",
+  "the calendar closes, the sheet under it stays as it was (lesson 19)",
+  "calendar closed; {\"bid\":542,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":602,\"confirm\":815,\"leaveGroup\":false,\"card\":null,\"head\":\"Cinch Post out ✕\",\"gone\":0}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/026-phone-chromium-S24-outside-settled.png"
+ ],
+ [
+  "F-S24 its close",
+  "phone-chromium",
+  "look for a ✕/Close in the calendar",
+  "RECORD",
+  "no close button in the calendar card on the phone: [\"dcal-title{December 2026 — choose the month and year}\",\"dcal-today{Go to today}\",\"dcal-prev{Previous month}\",\"dcal-next{Next month}\"]",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/027-phone-chromium-S24-no-close.png"
+ ],
+ [
+  "F-S24 existing open",
+  "phone-chromium",
+  "existing posting sheet: tap its \"PO from\"",
+  "calendar wholly on screen",
+  "{\"sheet\":542,\"cal\":{\"top\":253,\"bot\":621,\"left\":26,\"right\":376,\"vh\":874,\"vw\":402,\"boxTop\":720,\"boxBot\":756,\"btns\":[\"dcal-title{December 2026 — choose the month and year}\",\"dcal-today{Go to today}\",\"dcal-prev{Previous month}\",\"dcal-next{Next month}\"]}}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/029-phone-chromium-S24-existing-open-settled.png"
+ ],
+ [
+  "F-S24 existing pick",
+  "phone-chromium",
+  "pick 13 Dec in the existing sheet",
+  "the posting moves at once (commits on the change): hatch from 13 Dec; the line names 13 Dec",
+  "cells 12:in 13:gone 14:gone; line \"On 13 Dec: archived.\"; {\"bid\":null,\"postout\":542,\"postin\":null,\"select\":null,\"poForm\":602,\"confirm\":null,\"leaveGroup\":false,\"card\":null,\"head\":\"Cinch Post out ✕\",\"gone\":19}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/030-phone-chromium-S24-existing-picked.png"
+ ],
+ [
+  "F-S6 existing: card Cancel",
+  "phone-chromium",
+  "existing sheet, Delete chip armed (card {\"x\":77,\"y\":645,\"w\":300,\"h\":134,\"b\":779,\"r\":377} under chip {\"x\":204,\"y\":606,\"w\":173,\"h\":30}) → card Cancel",
+  "card closes; posting unchanged; never a delete",
+  " card gone; chips before [✓ Overseas Sqn*,Delete,SANS] after [✓ Overseas Sqn*,Delete,SANS]; gone cells 19; {\"bid\":null,\"postout\":542,\"postin\":null,\"select\":null,\"poForm\":602,\"confirm\":null,\"leaveGroup\":false,\"card\":null,\"head\":\"Cinch Post out ✕\",\"gone\":19}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/033-phone-chromium-S6e-card_Cancel-settled.png"
+ ],
+ [
+  "F-S6 existing: the armed Delete chip tapped again",
+  "phone-chromium",
+  "existing sheet, Delete chip armed (card {\"x\":77,\"y\":645,\"w\":300,\"h\":134,\"b\":779,\"r\":377} under chip {\"x\":204,\"y\":606,\"w\":173,\"h\":30}) → the armed Delete chip tapped again",
+  "backs out WITHOUT changing the posting to \"nothing else\" (contract); never a delete",
+  " card gone; chips before [✓ Overseas Sqn*,Delete,SANS] after [✓ Overseas Sqn*,Delete,SANS]; gone cells 19; {\"bid\":null,\"postout\":542,\"postin\":null,\"select\":null,\"poForm\":602,\"confirm\":null,\"leaveGroup\":false,\"card\":null,\"head\":\"Cinch Post out ✕\",\"gone\":19}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/036-phone-chromium-S6e-the_armed_Delete-settled.png"
+ ],
+ [
+  "F-S6 existing: the sheet's ✕",
+  "phone-chromium",
+  "existing sheet, Delete chip armed (card {\"x\":77,\"y\":645,\"w\":300,\"h\":134,\"b\":779,\"r\":377} under chip {\"x\":204,\"y\":606,\"w\":173,\"h\":30}) → the sheet's ✕",
+  "sheet closes; posting unchanged; never a delete",
+  " card gone; chips before [✓ Overseas Sqn*,Delete,SANS] after [(sheet closed)]; gone cells 19; {\"bid\":null,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":null,\"confirm\":null,\"leaveGroup\":false,\"card\":null,\"head\":null,\"gone\":19}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/039-phone-chromium-S6e-the_sheet_s_-settled.png"
+ ],
+ [
+  "F-S6 existing: another chip (the first chip, top-left)",
+  "phone-chromium",
+  "existing sheet, Delete chip armed (card {\"x\":77,\"y\":645,\"w\":300,\"h\":134,\"b\":779,\"r\":377} under chip {\"x\":204,\"y\":606,\"w\":173,\"h\":30}) → another chip (the first chip, top-left)",
+  "RECORD: card taken back; the posting takes that chip (the existing sheet commits on each change); never a delete",
+  " card gone; chips before [✓ Overseas Sqn*,Delete,SANS] after [✓ Overseas Sqn*,Delete,SANS]; gone cells 19; {\"bid\":null,\"postout\":542,\"postin\":null,\"select\":null,\"poForm\":602,\"confirm\":null,\"leaveGroup\":false,\"card\":null,\"head\":\"Cinch Post out ✕\",\"gone\":19}",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/042-phone-chromium-S6e-another_chip_th-settled.png"
+ ],
+ [
+  "F-S6 existing: another chip (SANS)",
+  "phone-chromium",
+  "existing sheet, Delete chip armed (card {\"x\":77,\"y\":645,\"w\":300,\"h\":134,\"b\":779,\"r\":377} under chip {\"x\":204,\"y\":606,\"w\":173,\"h\":30}) → another chip (SANS)",
+  "RECORD: card taken back; the posting becomes SANS (the existing sheet commits on each change); never a delete",
+  "press refused: press: [data-testid=\"postout-sheet\"] .pchip:nth-child(3) is covered at its centre by postout-delete-ask card UP; chips before [✓ Overseas Sqn*,Delete,SANS] after [Overseas Sqn,✓ Delete*,SANS]; gone cells 19; {\"bid\":null,\"postout\":526,\"postin\":null,\"select\":null,\"poForm\":586,\"confirm\":null,\"leaveGroup\":false,\"card\":null,\"head\":\"Cinch Post out ✕\",\"gone\":19}",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/045-phone-chromium-S6e-another_chip_SA-settled.png"
+ ],
+ [
+  "F-S4(1)",
+  "phone-webkit",
+  "Cinch 2026-12-14 → ⋯ Post out → Delete → Post out; quick img/handpass/2026-11-26-msq-s4-walk/wa/sB2/046-phone-webkit-S4-card-at-lift.png",
+  "card \"Delete <name>?\" hangs from the button, wholly on screen; Delete dashed grey as tall as Cancel (D2732 Q4, D332, D1628); sub-line the Delete line (D1105); button not covered",
+  "{\"btn\":{\"x\":25,\"y\":817,\"w\":88,\"h\":30},\"ask\":{\"x\":25,\"y\":674,\"w\":300,\"h\":134,\"b\":808,\"r\":325},\"go\":{\"x\":177,\"y\":751,\"w\":62,\"h\":44,\"b\":795,\"r\":239},\"cancel\":{\"x\":247,\"y\":751,\"w\":65,\"h\":44,\"b\":795,\"r\":312},\"goText\":\"Delete\",\"cancelText\":\"Cancel\",\"goBorder\":\"dashed rgb(138, 150, 163)\",\"goBg\":\"rgb(26, 31, 38)\",\"goColor\":\"rgb(182, 192, 203)\",\"cancelBg\":\"rgb(59, 198, 232)\",\"askText\":\"Delete Cinch? On 14 Dec the app deletes him automatically. Days he flew keep his puck. Delete Cancel\",\"vw\":402,\"vh\":874,\"coversButton\":false}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/047-phone-webkit-S4-card-settled.png"
+ ],
+ [
+  "F-S4(2)",
+  "phone-webkit",
+  "card cancelled; \"Post out\" double-pressed 150ms apart at one point",
+  "the second press must NOT delete: no posting set, the man still there (contract)",
+  "under the 2nd press: po-confirm \"Post out\"; after: {\"bid\":536,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":596,\"confirm\":817,\"leaveGroup\":false,\"card\":751,\"head\":\"Cinch Post out ✕\",\"gone\":0}; gone cells 0",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/049-phone-webkit-S4-double-settled.png"
+ ],
+ [
+  "F-S6 new: card Cancel",
+  "phone-webkit",
+  "new sheet, Delete chosen, card up → card Cancel",
+  "card closes, sheet stays, Delete still chosen; never a delete",
+  " after {\"bid\":536,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":596,\"confirm\":817,\"leaveGroup\":false,\"card\":null,\"head\":\"Cinch Post out ✕\",\"gone\":0} chips [Overseas Sqn,✓ Delete*,SANS] gone 0",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/051-phone-webkit-S6-card_Cancel-settled.png"
+ ],
+ [
+  "F-S6 new: tap on the sheet outside the card (the \"PO FROM\" label area)",
+  "phone-webkit",
+  "new sheet, Delete chosen, card up → tap on the sheet outside the card (the \"PO FROM\" label area)",
+  "RECORD: card closes or stays; sheet stays; nothing posted; never a delete",
+  " after {\"bid\":536,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":596,\"confirm\":817,\"leaveGroup\":false,\"card\":751,\"head\":\"Cinch Post out ✕\",\"gone\":0} chips [Overseas Sqn,✓ Delete*,SANS] gone 0",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/053-phone-webkit-S6-tap_on_the_sheet_o-settled.png"
+ ],
+ [
+  "F-S6 new: tap on the page outside the sheet (the \"VIEW\" label)",
+  "phone-webkit",
+  "new sheet, Delete chosen, card up → tap on the page outside the sheet (the \"VIEW\" label)",
+  "RECORD what closes; nothing posted; never a delete",
+  " after {\"bid\":null,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":null,\"confirm\":null,\"leaveGroup\":false,\"card\":null,\"head\":null,\"gone\":0} chips [] gone 0",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/055-phone-webkit-S6-tap_on_the_page_ou-settled.png"
+ ],
+ [
+  "F-S6 new: the sheet's ✕",
+  "phone-webkit",
+  "new sheet, Delete chosen, card up → the sheet's ✕",
+  "sheet closes, nothing posted; never a delete",
+  " after {\"bid\":null,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":null,\"confirm\":null,\"leaveGroup\":false,\"card\":null,\"head\":null,\"gone\":0} chips [] gone 0",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/057-phone-webkit-S6-the_sheet_s_-settled.png"
+ ],
+ [
+  "F-S6 new: a press on the day",
+  "phone-webkit",
+  "new sheet, Delete chosen, card up → a press on the day",
+  "the posting closes (Q3), nothing posted; never a delete",
+  " after {\"bid\":null,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":null,\"confirm\":null,\"leaveGroup\":false,\"card\":null,\"head\":null,\"gone\":0} chips [] gone 0",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/059-phone-webkit-S6-a_press_on_the_day-settled.png"
+ ],
+ [
+  "F-S6 new: another chip (SANS)",
+  "phone-webkit",
+  "new sheet, Delete chosen, card up → another chip (SANS)",
+  "card taken back, SANS chosen, nothing posted (contract); never a delete",
+  " after {\"bid\":552,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":612,\"confirm\":817,\"leaveGroup\":false,\"card\":null,\"head\":\"Cinch Post out ✕\",\"gone\":0} chips [Overseas Sqn,Delete,✓ SANS*] gone 0",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/061-phone-webkit-S6-another_chip_SANS-settled.png"
+ ],
+ [
+  "F-S6 new: a change of the PO from date (16th)",
+  "phone-webkit",
+  "new sheet, Delete chosen, card up → a change of the PO from date (16th)",
+  "card taken back, date 16 Dec, nothing posted (contract); never a delete",
+  " press refused: press: [data-testid=\"po-date\"] is covered at its centre by askcard-sub after {\"bid\":536,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":596,\"confirm\":817,\"leaveGroup\":false,\"card\":751,\"head\":\"Cinch Post out ✕\",\"gone\":0} chips [Overseas Sqn,✓ Delete*,SANS] gone 0",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/063-phone-webkit-S6-a_change_of_the_PO-settled.png"
+ ],
+ [
+  "F-S6 new: switch to Balances and back to Grid",
+  "phone-webkit",
+  "new sheet, Delete chosen, card up → switch to Balances and back to Grid",
+  "no armed card waiting on return (contract); never a delete",
+  " after {\"bid\":null,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":null,\"confirm\":null,\"leaveGroup\":false,\"card\":null,\"head\":null,\"gone\":0} chips [] gone 0",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/065-phone-webkit-S6-switch_to_Balances-settled.png"
+ ],
+ [
+  "F-S24 new open",
+  "phone-webkit",
+  "new Post out: tap \"PO from\"",
+  "the calendar wholly on screen; the box still visible; no keyboard (as on main for the box itself)",
+  "{\"top\":253,\"bot\":621,\"left\":26,\"right\":376,\"vh\":874,\"vw\":402,\"boxTop\":722,\"boxBot\":758,\"btns\":[\"dcal-title{December 2026 — choose the month and year}\",\"dcal-today{Go to today}\",\"dcal-prev{Previous month}\",\"dcal-next{Next month}\"]}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/067-phone-webkit-S24-new-open-settled.png"
+ ],
+ [
+  "F-S24 new pick",
+  "phone-webkit",
+  "pick 12 Dec",
+  "the calendar closes, the sheet stays, the box and the line name 12 Dec; one tap one thing (lesson 19)",
+  "calendar closed; box \"Sat 12 Dec 26 ▾\"; line \"On 12 Dec: archived.\"; {\"bid\":552,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":612,\"confirm\":817,\"leaveGroup\":false,\"card\":null,\"head\":\"Cinch Post out ✕\",\"gone\":0}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/069-phone-webkit-S24-new-picked.png"
+ ],
+ [
+  "F-S24 tap outside",
+  "phone-webkit",
+  "calendar open; a tap outside it (200,661)",
+  "the calendar closes, the sheet under it stays as it was (lesson 19)",
+  "calendar closed; {\"bid\":552,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":612,\"confirm\":817,\"leaveGroup\":false,\"card\":null,\"head\":\"Cinch Post out ✕\",\"gone\":0}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/071-phone-webkit-S24-outside-settled.png"
+ ],
+ [
+  "F-S24 its close",
+  "phone-webkit",
+  "look for a ✕/Close in the calendar",
+  "RECORD",
+  "no close button in the calendar card on the phone: [\"dcal-title{December 2026 — choose the month and year}\",\"dcal-today{Go to today}\",\"dcal-prev{Previous month}\",\"dcal-next{Next month}\"]",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/072-phone-webkit-S24-no-close.png"
+ ],
+ [
+  "F-S24 existing open",
+  "phone-webkit",
+  "existing posting sheet: tap its \"PO from\"",
+  "calendar wholly on screen",
+  "{\"sheet\":552,\"cal\":{\"top\":253,\"bot\":621,\"left\":26,\"right\":376,\"vh\":874,\"vw\":402,\"boxTop\":722,\"boxBot\":758,\"btns\":[\"dcal-title{December 2026 — choose the month and year}\",\"dcal-today{Go to today}\",\"dcal-prev{Previous month}\",\"dcal-next{Next month}\"]}}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/074-phone-webkit-S24-existing-open-settled.png"
+ ],
+ [
+  "F-S24 existing pick",
+  "phone-webkit",
+  "pick 13 Dec in the existing sheet",
+  "the posting moves at once (commits on the change): hatch from 13 Dec; the line names 13 Dec",
+  "cells 12:in 13:gone 14:gone; line \"On 13 Dec: archived.\"; {\"bid\":null,\"postout\":552,\"postin\":null,\"select\":null,\"poForm\":612,\"confirm\":null,\"leaveGroup\":false,\"card\":null,\"head\":\"Cinch Post out ✕\",\"gone\":19}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/075-phone-webkit-S24-existing-picked.png"
+ ],
+ [
+  "F-S6 existing: card Cancel",
+  "phone-webkit",
+  "existing sheet, Delete chip armed (card {\"x\":77,\"y\":651,\"w\":300,\"h\":134,\"b\":785,\"r\":377} under chip {\"x\":204,\"y\":612,\"w\":173,\"h\":30}) → card Cancel",
+  "card closes; posting unchanged; never a delete",
+  " card gone; chips before [✓ Overseas Sqn*,Delete,SANS] after [✓ Overseas Sqn*,Delete,SANS]; gone cells 19; {\"bid\":null,\"postout\":552,\"postin\":null,\"select\":null,\"poForm\":612,\"confirm\":null,\"leaveGroup\":false,\"card\":null,\"head\":\"Cinch Post out ✕\",\"gone\":19}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/078-phone-webkit-S6e-card_Cancel-settled.png"
+ ],
+ [
+  "F-S6 existing: the armed Delete chip tapped again",
+  "phone-webkit",
+  "existing sheet, Delete chip armed (card {\"x\":77,\"y\":651,\"w\":300,\"h\":134,\"b\":785,\"r\":377} under chip {\"x\":204,\"y\":612,\"w\":173,\"h\":30}) → the armed Delete chip tapped again",
+  "backs out WITHOUT changing the posting to \"nothing else\" (contract); never a delete",
+  " card gone; chips before [✓ Overseas Sqn*,Delete,SANS] after [✓ Overseas Sqn*,Delete,SANS]; gone cells 19; {\"bid\":null,\"postout\":552,\"postin\":null,\"select\":null,\"poForm\":612,\"confirm\":null,\"leaveGroup\":false,\"card\":null,\"head\":\"Cinch Post out ✕\",\"gone\":19}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/081-phone-webkit-S6e-the_armed_Delete-settled.png"
+ ],
+ [
+  "F-S6 existing: the sheet's ✕",
+  "phone-webkit",
+  "existing sheet, Delete chip armed (card {\"x\":77,\"y\":651,\"w\":300,\"h\":134,\"b\":785,\"r\":377} under chip {\"x\":204,\"y\":612,\"w\":173,\"h\":30}) → the sheet's ✕",
+  "sheet closes; posting unchanged; never a delete",
+  " card gone; chips before [✓ Overseas Sqn*,Delete,SANS] after [(sheet closed)]; gone cells 19; {\"bid\":null,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":null,\"confirm\":null,\"leaveGroup\":false,\"card\":null,\"head\":null,\"gone\":19}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/084-phone-webkit-S6e-the_sheet_s_-settled.png"
+ ],
+ [
+  "F-S6 existing: another chip (the first chip, top-left)",
+  "phone-webkit",
+  "existing sheet, Delete chip armed (card {\"x\":77,\"y\":651,\"w\":300,\"h\":134,\"b\":785,\"r\":377} under chip {\"x\":204,\"y\":612,\"w\":173,\"h\":30}) → another chip (the first chip, top-left)",
+  "RECORD: card taken back; the posting takes that chip (the existing sheet commits on each change); never a delete",
+  " card gone; chips before [✓ Overseas Sqn*,Delete,SANS] after [✓ Overseas Sqn*,Delete,SANS]; gone cells 19; {\"bid\":null,\"postout\":552,\"postin\":null,\"select\":null,\"poForm\":612,\"confirm\":null,\"leaveGroup\":false,\"card\":null,\"head\":\"Cinch Post out ✕\",\"gone\":19}",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/087-phone-webkit-S6e-another_chip_th-settled.png"
+ ],
+ [
+  "F-S6 existing: another chip (SANS)",
+  "phone-webkit",
+  "existing sheet, Delete chip armed (card {\"x\":77,\"y\":651,\"w\":300,\"h\":134,\"b\":785,\"r\":377} under chip {\"x\":204,\"y\":612,\"w\":173,\"h\":30}) → another chip (SANS)",
+  "RECORD: card taken back; the posting becomes SANS (the existing sheet commits on each change); never a delete",
+  "press refused: press: [data-testid=\"postout-sheet\"] .pchip:nth-child(3) is covered at its centre by postout-delete-ask card UP; chips before [✓ Overseas Sqn*,Delete,SANS] after [Overseas Sqn,✓ Delete*,SANS]; gone cells 19; {\"bid\":null,\"postout\":535,\"postin\":null,\"select\":null,\"poForm\":595,\"confirm\":null,\"leaveGroup\":false,\"card\":null,\"head\":\"Cinch Post out ✕\",\"gone\":19}",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/090-phone-webkit-S6e-another_chip_SA-settled.png"
+ ],
+ [
+  "F-S4(1)",
+  "side-chromium",
+  "CinchIP23.5 2026-12-07 → ⋯ Post out → Delete → Post out; quick img/handpass/2026-11-26-msq-s4-walk/wa/sB2/091-side-chromium-S4-card-at-lift.png",
+  "card \"Delete <name>?\" hangs from the button, wholly on screen; Delete dashed grey as tall as Cancel (D2732 Q4, D332, D1628); sub-line the Delete line (D1105); button not covered",
+  "{\"btn\":{\"x\":170,\"y\":343,\"w\":87,\"h\":32},\"ask\":{\"x\":170,\"y\":208,\"w\":300,\"h\":126,\"b\":334,\"r\":470},\"go\":{\"x\":322,\"y\":285,\"w\":62,\"h\":36,\"b\":321,\"r\":384},\"cancel\":{\"x\":392,\"y\":285,\"w\":65,\"h\":36,\"b\":321,\"r\":457},\"goText\":\"Delete\",\"cancelText\":\"Cancel\",\"goBorder\":\"dashed rgb(138, 150, 163)\",\"goBg\":\"rgb(26, 31, 38)\",\"goColor\":\"rgb(182, 192, 203)\",\"cancelBg\":\"rgb(59, 198, 232)\",\"askText\":\"Delete Cinch? On 7 Dec the app deletes him automatically. Days he flew keep his puck. Delete Cancel\",\"vw\":874,\"vh\":402,\"coversButton\":false}",
+  "FAIL",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/092-side-chromium-S4-card-settled.png"
+ ],
+ [
+  "F-S4(2)",
+  "side-chromium",
+  "card cancelled; \"Post out\" double-pressed 150ms apart at one point",
+  "the second press must NOT delete: no posting set, the man still there (contract)",
+  "under the 2nd press: po-confirm \"Post out\"; after: {\"bid\":106,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":166,\"confirm\":343,\"leaveGroup\":false,\"card\":285,\"head\":\"Cinch Post out ✕\",\"gone\":0}; gone cells 0",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/094-side-chromium-S4-double-settled.png"
+ ],
+ [
+  "F-S4 side",
+  "side-chromium",
+  "sideways phone 874×402: Delete card up",
+  "card and its button inside the screen; ✕ in sight; sheet reachable (F-S23 shape)",
+  "{\"sheet\":{\"x\":157,\"y\":106,\"w\":560,\"h\":282},\"ask\":{\"x\":170,\"y\":208,\"w\":300,\"h\":126,\"b\":334,\"r\":470},\"go\":{\"x\":322,\"y\":285,\"w\":62,\"h\":36,\"b\":321,\"r\":384},\"cancel\":{\"x\":392,\"y\":285,\"w\":65,\"h\":36,\"b\":321,\"r\":457},\"goText\":\"Delete\",\"cancelText\":\"Cancel\",\"goBorder\":\"dashed rgb(138, 150, 163)\",\"goBg\":\"rgb(26, 31, 38)\",\"goColor\":\"rgb(182, 192, 203)\",\"cancelBg\":\"rgb(59, 198, 232)\",\"askText\":\"Delete Cinch? On 7 Dec the app deletes him automatically. Days he flew keep his puck. Delete Cancel\",\"vw\":874,\"vh\":402}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/095-side-chromium-S4-side-card.png"
+ ],
+ [
+  "F-S4 side scroll",
+  "side-chromium",
+  "finger drag over the sheet with the card up",
+  "RECORD: the card follows, stays, or closes",
+  "{\"ask\":{\"x\":170,\"y\":208,\"w\":300,\"h\":126,\"b\":334,\"r\":470},\"go\":{\"x\":322,\"y\":285,\"w\":62,\"h\":36,\"b\":321,\"r\":384},\"cancel\":{\"x\":392,\"y\":285,\"w\":65,\"h\":36,\"b\":321,\"r\":457},\"goText\":\"Delete\",\"cancelText\":\"Cancel\",\"goBorder\":\"dashed rgb(138, 150, 163)\",\"goBg\":\"rgb(26, 31, 38)\",\"goColor\":\"rgb(182, 192, 203)\",\"cancelBg\":\"rgb(59, 198, 232)\",\"askText\":\"Delete Cinch? On 7 Dec the app deletes him automatically. Days he flew keep his puck. Delete Cancel\",\"vw\":874,\"vh\":402}",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sB2/096-side-chromium-S4-side-card-after-sheet-drag.png"
+ ]
+]

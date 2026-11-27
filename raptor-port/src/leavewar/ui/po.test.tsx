@@ -195,13 +195,15 @@ describe('the four posting chips', () => {
     fireEvent.click(screen.getByTestId(`cell-${id}-${day}`))
     fireEvent.click(more('bid-postout'))
   }
-  it('the bid sheet: one line per chip, Transfer not pressable, SANS stored as SANS', () => {
+  /* "Transfer to Sqn" was drawn greyed here until his D2659 (26 Nov 26 — "leave it out for now"): it is left out
+     altogether until the Transfer step builds it — no greyed chip, no line saying why */
+  it('the bid sheet: one line per chip, no Transfer chip (D2659), SANS stored as SANS', () => {
     const id = anId()
     setRole('admin')
     render(<Matrix />)
     open(id, '2026-06-15')
     expect(screen.getByTestId('po-line').textContent).toBe('On 15 Jun: archived.')
-    expect((screen.getByTestId('po-transfer') as HTMLButtonElement).disabled).toBe(true)
+    expect(screen.queryByTestId('po-transfer')).toBeNull()
     fireEvent.click(screen.getByTestId('po-sans'))
     expect(screen.getByTestId('po-sans').getAttribute('aria-pressed')).toBe('true')
     expect(screen.getByTestId('po-overseas').getAttribute('aria-pressed')).toBe('false')

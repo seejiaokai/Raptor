@@ -16,7 +16,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { WarInput } from '../absences'
 import { addDays, codeInWords, displayCell, formatCell, LEAVE_TYPES, parseCell, type BidState, type CounterName, type Half, type Portion, type PostOutcome } from '../engine'
-import { OutcomeChips } from './OutcomeChips'
+import { OutcomeChips, PostAct, PostField, PostLine, PostWarn, UndoPosting, usePostingFocus } from './OutcomeChips'
 import { outcomeLine } from './outcomewords'
 import '../../ui/postout.css'
 import { awardsIn, cellProblem, clearCells, clearRecords, decideRequests, deletableRecords, fileStraight, FILED_STRAIGHT, leaveRunAt, placeApproved, decidableIn, defaultAwardHalf, deletableIn, getState, grantOilDays, heldRunAt, MAX_GIVEN_BY, MAX_REASON, movableRecords, setBidStates, setCell, setCellRange, setRequestWords, type DecideTo, type LeaveRun, type MoveRec } from '../state/store'
@@ -43,6 +43,7 @@ import type { DayWhatIf } from '../engine/whatif'
 import { DayLine } from './DayLine'
 import { dayLineCode } from './daylinecode'
 import { DutyButtons, GrantOilButton, LeaveButtons } from './LeaveButtons'
+import { isPhoneWidth, keepCellAboveSheet } from './cellinsight'
 import { bidHeldWhy, openInputDocs, sayOnWar, dutyFiledNote } from '../sync'
 import { warBand } from '../../state/typing-hold'
 import { PlacedLine } from './PlacedLine'
@@ -751,6 +752,19 @@ export function BidPicker({
     ...(onPostIn ? [{ key: 'pi', testid: 'bid-postin', label: 'Post in', title: 'Post in — their first day in the squadron', onPick: () => setPiOpen(true) }] : []),
   ]
   const panelOpen = oilOpen || poOpen || piOpen
+  /* WAY C (his D2653 a, d; his go D2732): while a posting is open the sheet is the posting's alone — the leave buttons and
+     every other part of the day's leave step aside, the head names the act ("Cinch  Post out"); ✕ closes it, and the day
+     pressed again opens the day's sheet afresh with its leave buttons (Q3: two presses, as every sheet — no change to
+     Sheet.tsx) */
+  const posting: 'Post out' | 'Post in' | null = onPostOut && poOpen ? 'Post out' : onPostIn && piOpen ? 'Post in' : null
+  /* …and on a phone the day stays in sight as the sheet becomes the posting (his D1290, as when the window opened): the
+     posting's sheet is taller than the leave's and rose over the day it was opened from, so a press on that day — his Q3's
+     first press — landed on the sheet (chat 196's find, the browser test's phone case). Once, as it opens. */
+  useLayoutEffect(() => {
+    if (posting && isPhoneWidth()) keepCellAboveSheet(personId, date)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [posting])
+  const poForm = usePostingFocus(posting)
   /* the day's own leave, lit (round 3's change 7, his Q6): its button wears the ring — never on a free half beside leave
      filed on the Inputs page, where the leave named is the other half's */
   /* …and a REFUSED bid's leave wears it too (his D1355): the window says which leave was refused, as an approved leave's
@@ -761,18 +775,24 @@ export function BidPicker({
   const lit = dayLeave?.type ?? (refusedType && LEAVE_TYPES.some(t => t.type === refusedType) ? refusedType : null)
 
   return (
-    <Sheet testid="bid-picker" label="Place a bid" onClose={closeKeeping}>
+    /* its spoken name follows what it is — "Post out" / "Post in" while a posting, as its head says (chat 197, the fresh
+       Opus read's 4) */
+    <Sheet testid="bid-picker" label={posting ?? 'Place a bid'} onClose={closeKeeping}>
       {/* THE TITLE BAR (round 3): the name, the day, the admin's switch and ✕ — "now LL" went (change 7: the lit button
           says which leave the day holds, D1331 its half) */}
       <div className="bidsheet-hd">
         <span className="who">{callsign}</span>
         {/* on "All" the leave's dates, in the drag window's voice ("9–12 Feb" — BidBits compactSpan); else the day (D1461) */}
-        <span className="dt when">{whole ? compactSpan(whole.from, whole.to) : dayLabel(date)}</span>
-        {isAdmin && <ApproveSwitch testid="bid-approve-tick" on={approve} onChange={v => { setApprove(v); confirming.current = null }} />}
+        {/* a posting open: the act in the day's place, the day in its "PO from" box (D2653 f; D1462 narrowed, lesson 105) */}
+        {posting ? <PostAct act={posting} testid="po-title" />
+          : <span className="dt when">{whole ? compactSpan(whole.from, whole.to) : dayLabel(date)}</span>}
+        {/* Auto-approve is the leave's; it steps aside with the leave's parts */}
+        {isAdmin && !posting && <ApproveSwitch testid="bid-approve-tick" on={approve} onChange={v => { setApprove(v); confirming.current = null }} />}
         <button className="x" data-testid="bid-cancel" onClick={closeKeeping} aria-label="Cancel">
           ✕
         </button>
       </div>
+      {!posting && (<>
       <DayLine days={lineDays} />
       {/* who placed the day's entries and who decided them (M4 8.6 — r7-13): one compact line an entry */}
       {!span && <PlacedLine personId={personId} date={date} />}
@@ -1033,6 +1053,7 @@ export function BidPicker({
             onGive={grantOil} />
         </>
       )}
+      </>)}
 
       {/* Post the person OUT (owner, 18 Aug 26; any date + the archive switch
           19 Aug 26). A management action, not a bid — it takes them off the
@@ -1048,19 +1069,24 @@ export function BidPicker({
           decides manning and the grey hatch, and it deliberately does not stop
           leave being dated before it. */}
       {onPostIn && piOpen && (
-        <>
-          <div className="bidsheet-row postout">
-            <span className="lab">PI from</span>
+        <div className="po-form" ref={poForm}>
+          {/* WAY C's Post in (D2653: "the same shape"): "PI from" and its date, the app's own note on the strip, a blue
+              "Post in" */}
+          <PostField label="PI from">
             {/* Unbounded like the post-out's, and for the same reason: a
                 joining date can sit anywhere in real time. The app's own date
                 box (owner D796, D797): its month-and-year lists are what reach
                 a year the arrows would take twelve taps a year to walk to. */}
             <DateBox className="dateinput" testid="pi-date" label={`Post ${callsign} in from`}
               value={piDate} onChange={v => { setPostErr(''); setPiDate(v) }} />
-          </div>
-          <div className="bidsheet-row postout">
+          </PostField>
+          <PostLine>
+            Their first day in the squadron. Days before it are blank and count nobody —
+            leave can still be dated there.
+          </PostLine>
+          <div className="po-foot">
             <button
-              className="dchip po"
+              className="dchip po-main"
               data-testid="pi-confirm"
               disabled={!piDate}
               onClick={() => { flushWords(); const why = onPostIn(piDate); setPostErr(why || '') }}
@@ -1068,18 +1094,18 @@ export function BidPicker({
               {/* D300 (the agent's reading, stated to him): "Post in", the date already in its own box */}
               Post in
             </button>
-            <span className="note">
-              Their first day in the squadron. Days before it are blank and count nobody —
-              leave can still be dated there.
-            </span>
           </div>
-          {postErr && <div className="bidsheet-row postout"><span className="note warn" data-testid="post-err">{postErr}</span></div>}
-        </>
+          {postErr && <PostWarn testid="post-err">{postErr}</PostWarn>}
+        </div>
       )}
       {onPostOut && poOpen && (
-        <>
-          <div className="bidsheet-row postout">
-            <span className="lab">PO from</span>
+        <div className="po-form" ref={poForm}>
+          {/* [POST-OUT-OUTCOMES] (D229, D294, D298, D300): which posting it is — the short chips FIRST (way C, D2653 e: the
+              kind of posting before the date; D300's "each thing once" kept); one line saying what the chosen one does on
+              the date; the button just "Post out". A Delete asks twice (D287 (3)). */}
+          <OutcomeChips value={poOutcome} testid="po" noSans={!!getState().people.find(x => x.id === personId)?.pers}
+            onChange={o => { setPoOutcome(o); setDelArmed(false); setPostErr('') }} />
+          <PostField label="PO from">
             {/* Deliberately unbounded — no min/max. A posting can predate the
                 war (strike their whole history from a past date) or land past
                 its end; the store takes any real date (owner, 19 Aug 26 —
@@ -1090,23 +1116,20 @@ export function BidPicker({
                 to. */}
             <DateBox className="dateinput" testid="po-date" label={`Post ${callsign} out from`}
               value={poDate} onChange={v => { setPostErr(''); setDelArmed(false); setPoDate(v) }} />
-          </div>
-          {/* [POST-OUT-OUTCOMES] (D229, D294, D298, D300): which posting it is — four short chips; one line saying what
-              the chosen one does on the date; the button just "Post out". A Delete asks twice (D287 (3)). */}
-          <OutcomeChips value={poOutcome} testid="po" noSans={!!getState().people.find(x => x.id === personId)?.pers}
-            onChange={o => { setPoOutcome(o); setDelArmed(false); setPostErr('') }} />
+          </PostField>
           {outcomeLine(poOutcome, poDate, !!hasAccount) && (
-            <div className="bidsheet-row postout"><span className="note" data-testid="po-line">{outcomeLine(poOutcome, poDate, !!hasAccount)}</span></div>
+            <PostLine testid="po-line">{outcomeLine(poOutcome, poDate, !!hasAccount)}</PostLine>
           )}
-          {blockedFor && blockedFor(poOutcome) && (
-            <div className="bidsheet-row postout"><span className="note warn" data-testid="po-blocked">{blockedFor(poOutcome)}</span></div>
-          )}
-          <div className="bidsheet-row postout">
+          {/* the last admin's line just above the button, as drawn — said before the confirm (D306) */}
+          {blockedFor && blockedFor(poOutcome) && <PostWarn testid="po-blocked">{blockedFor(poOutcome)}</PostWarn>}
+          <div className="po-foot">
             {/* A DELETE ASKS TWICE (D287 (3)) — its second ask a card hanging from this button (owner D1628, 4 Nov 26), in
-                place of the button's own "Tap again to delete"; pressed again while it is up, the question stays */}
+                place of the button's own "Tap again to delete"; pressed again while it is up, the question stays.
+                THE APP'S BLUE MAIN BUTTON (D2653 b), in the posting button's own size and place: his 18 Aug 26 direction of
+                a muted grey chip was given when it sat among the bid buttons, and is set aside for this sheet. */}
             <button
               ref={poBtn}
-              className="dchip po"
+              className="dchip po-main"
               data-testid="po-confirm"
               disabled={!poDate}
               aria-expanded={delArmed || undefined}
@@ -1122,13 +1145,16 @@ export function BidPicker({
             <AskCard at={poBtn.current} testid="po-delete-ask" label={`Delete ${callsign}?`} question={`Delete ${callsign}?`}
               sub={outcomeLine('delete', poDate, !!hasAccount)}
               onEscape={() => setDelArmed(false)}>
-              <button type="button" className="abtn danger" data-testid="po-delete-go"
+              {/* the Leave War's Delete look, a dashed grey edge, never red (his D2732 Q4, D332) — on the Leave War's
+                  cards only (bidpicker.css .po-del); the app-wide reddish .abtn.danger is left as it is elsewhere */}
+              <button type="button" className="abtn po-del" data-testid="po-delete-go"
                 onClick={() => { flushWords(); const why = onPostOut(poDate, 'delete'); setPostErr(why || ''); setDelArmed(false) }}>Delete</button>
               <button type="button" className="abtn primary" data-testid="po-delete-cancel" autoFocus onClick={() => setDelArmed(false)}>Cancel</button>
             </AskCard>
           )}
-          {postErr && <div className="bidsheet-row postout"><span className="note warn" data-testid="post-err">{postErr}</span></div>}
-        </>
+          {/* a refusal's reason under the button (as drawn, s4-*-error) */}
+          {postErr && <PostWarn testid="post-err">{postErr}</PostWarn>}
+        </div>
       )}
 
       {/* WHAT THE OIL ON THIS DAY SAYS — on ONE click, at the bottom, without
@@ -1144,7 +1170,7 @@ export function BidPicker({
           overwrite anything typed on top.
           An AWARD answers them from what the admin typed, and +OIL above
           reopens exactly those boxes to change them. */}
-      {creditShown && (
+      {creditShown && !posting && (
         <div className="bidsheet-oil-detail" data-testid="oil-detail">
           {/* WHERE IT CAME FROM, ON THE SAME SHEET (owner, 21 Sep 26 — "why
               cant u just show me the 2nd picture window which has the same
@@ -1382,7 +1408,6 @@ export function AwardSheet({
 // eslint-disable-next-line react-doctor/no-high-complexity-react-function -- the posting's date, chips and twice-asked Delete share one question (askDate, delArm); split, the question and what clears it would live apart
 export function PostOutSheet({
   callsign,
-  date,
   poFrom,
   outcome,
   hasAccount,
@@ -1393,10 +1418,10 @@ export function PostOutSheet({
   refusedAt,
   onChange,
   onUndo,
-  onPlace,
   onClose,
 }: {
   callsign: string
+  /** the day tapped — no longer in the head, which names the act (his D2732 Q2); the posting's day is in its box */
   date: string
   /** The person's CURRENT PO date — the first day they are gone. */
   poFrom: string
@@ -1422,9 +1447,6 @@ export function PostOutSheet({
   onChange: (fromDate: string, outcome: PostOutcome) => string | void
   /** a refusal comes back as its sentence (said on the sheet, which stays up) — e.g. his callsign now held on the roster */
   onUndo: () => string | void
-  /** Hand this day to the bid sheet instead (owner, 20 Sep 26 — "we should
-   *  also allow putting inputs when we click on days that were posted out"). */
-  onPlace?: () => void
   onClose: () => void
 }) {
   /* a refused move of the date says why (AB5) — the box snaps back to the date that stands */
@@ -1451,15 +1473,31 @@ export function PostOutSheet({
   const locked = !!lockedWhy
   return (
     <Sheet testid="postout-sheet" label="Posted out" onClose={onClose}>
+      {/* WAY C on an existing posting (his D2732 Q2): the head names the act, "Cinch  Post out" — the day tapped is not
+          the posting's day, and the posting's own day stands in its "PO from" box */}
       <div className="bidsheet-hd">
         <span className="who">{callsign}</span>
-        <span className="dt when">{dayLabel(date)}</span>
+        <PostAct act="Post out" testid="postout-title" />
         <button className="x" data-testid="postout-cancel" onClick={onClose} aria-label="Close">
           ✕
         </button>
       </div>
-      <div className="bidsheet-row postout">
-        <span className="lab">PO from</span>
+      <div className="po-form">
+      {locked && <PostWarn testid="postout-locked">{lockedWhy}</PostWarn>}
+      {/* [POST-OUT-OUTCOMES] (D229, D294, D298, D300): the choices first (D2653 e), committed on the tap as the date is — a
+          Delete arms its second tap instead; ONE line says what happens on the date (the old two notes said it twice) */}
+      {!locked && <OutcomeChips value={delArm ? 'delete' : outcome} testid="postout" noSans={noSans}
+        onChange={o => {
+          setErr('')
+          /* a chip tapped while the date asks is "not that after all": the date goes back to the one that stands */
+          if (askDate !== null) { setAskDate(null); return }
+          if (o === 'delete') { setDelArm(true); return }
+          /* the armed Delete tapped again is "not that after all" — back to the posting as it stands, never a change to
+             "nothing else" (the chips' un-choose would otherwise commit 'none' behind his back) */
+          if (delArm) { setDelArm(false); if (o === 'none') return }
+          setErr(onChange(poFrom, o) || '')
+        }} />}
+      <PostField label="PO from">
         {/* Unbounded like the picker's — a posting moves to any real date. The
             box cannot be emptied (the app's own date box — owner D796: no
             Reset): clearing a PO is the Undo button's job. A date picked is
@@ -1476,26 +1514,10 @@ export function PostOutSheet({
             setAskDate(null)
             if (v !== poFrom) setErr(onChange(v, outcome) || '')
           }} />
-      </div>
-      {locked && <div className="bidsheet-row postout"><span className="note warn" data-testid="postout-locked">{lockedWhy}</span></div>}
-      {/* [POST-OUT-OUTCOMES] (D229, D294, D298, D300): the four chips, committed on the tap as the date is — a Delete
-          arms its second tap instead; ONE line says what happens on the date (the old two notes said it twice) */}
-      {!locked && <><OutcomeChips value={delArm ? 'delete' : outcome} testid="postout" noSans={noSans}
-        onChange={o => {
-          setErr('')
-          /* a chip tapped while the date asks is "not that after all": the date goes back to the one that stands */
-          if (askDate !== null) { setAskDate(null); return }
-          if (o === 'delete') { setDelArm(true); return }
-          /* the armed Delete tapped again is "not that after all" — back to the posting as it stands, never a change to
-             "nothing else" (the chips' un-choose would otherwise commit 'none' behind his back) */
-          if (delArm) { setDelArm(false); if (o === 'none') return }
-          setErr(onChange(poFrom, o) || '')
-        }} />
-      <div className="bidsheet-row postout">
-        <span className="note" data-testid="postout-line">{outcomeLine(delArm ? 'delete' : outcome, shownFrom, !!hasAccount)}</span>
-      </div></>}
+      </PostField>
+      {!locked && <PostLine testid="postout-line">{outcomeLine(delArm ? 'delete' : outcome, shownFrom, !!hasAccount)}</PostLine>}
       {!locked && blockedFor && blockedFor(delArm ? 'delete' : outcome) && (
-        <div className="bidsheet-row postout"><span className="note warn" data-testid="postout-blocked">{blockedFor(delArm ? 'delete' : outcome)}</span></div>
+        <PostWarn testid="postout-blocked">{blockedFor(delArm ? 'delete' : outcome)}</PostWarn>
       )}
       {/* THE SECOND ASK, A CARD AT THE HAND (owner D1627, 4 Nov 26): from the Delete chip "Delete Hex?", from a date that
           deletes him at once "Delete Hex now?" — Delete deletes, Cancel puts the chip or the date back as it was (a chip
@@ -1507,33 +1529,22 @@ export function PostOutSheet({
           question={askDate !== null ? `Delete ${callsign} now?` : `Delete ${callsign}?`}
           sub={outcomeLine('delete', shownFrom, !!hasAccount)}
           onEscape={() => { setDelArm(false); setAskDate(null) }}>
-          <button type="button" className="abtn danger" data-testid="postout-delete-go"
+          {/* both questions — "Delete Cinch?" and the date's "Delete Cinch now?" — wear the Leave War's dashed grey Delete
+              (his D2732 Q4, D332; "now?" too by his D2744, 26 Nov 26); Cancel stays the blue main button */}
+          <button type="button" className="abtn po-del" data-testid="postout-delete-go"
             onClick={() => { const at = shownFrom; setDelArm(false); setAskDate(null); setErr(onChange(at, 'delete') || '') }}>Delete</button>
           <button type="button" className="abtn primary" data-testid="postout-delete-cancel" autoFocus
             onClick={() => { setDelArm(false); setAskDate(null) }}>Cancel</button>
         </AskCard>
       )}
       {/* drawn only with something to say — an empty row left a blank band on the sheet (W3's re-walk, N4) */}
-      {err && <div className="bidsheet-row postout">
-        <span className="note warn" data-testid="postout-err">{err}</span>
+      {err && <PostWarn testid="postout-err">{err}</PostWarn>}
+      {/* "Undo post out" alone at the foot (his D2732 Q1, design A). "Place leave or OIL here instead…" — his 20 Sep 26
+          wish, a way through to the leave buttons on a day outside a man's time — is gone from both posting sheets (his
+          D2727, 26 Nov 26: such a day's input is filed on the Inputs page, which takes any date) */}
+      {!locked && <div className="po-foot">
+        <UndoPosting testid="postout-undo" label="Undo post out" onClick={() => { setDelArm(false); setAskDate(null); const why = onUndo(); if (why) setErr(why) }} />
       </div>}
-      <div className="bidsheet-row postout">
-        {!locked && <button className="dchip po" data-testid="postout-undo" onClick={() => { setDelArm(false); setAskDate(null); const why = onUndo(); if (why) setErr(why) }}>
-          Undo post out (PO)
-        </button>}
-        {/* THE WAY THROUGH TO PLACING LEAVE (owner, 20 Sep 26). An admin's tap
-            on a day outside someone's time in the squadron lands here, which is
-            right — managing the posting is what he means nine times out of ten
-            — but it left him no way to file the clearing leave that made him
-            open the day in the first place. Everyone else could: the man
-            himself taps his own day and gets the bid sheet, and the Inputs page
-            takes any date. One button rather than a second gesture, so the
-            common tap keeps doing the safe thing. */}
-        {onPlace && (
-          <button className="dchip" data-testid="postout-place" onClick={onPlace}>
-            Place leave or OIL here instead…
-          </button>
-        )}
       </div>
     </Sheet>
   )
@@ -1552,16 +1563,15 @@ export function PostOutSheet({
  */
 export function PostInSheet({
   callsign,
-  date,
   piFrom,
   backFrom,
   lockedWhy,
   onChange,
   onUndo,
-  onPlace,
   onClose,
 }: {
   callsign: string
+  /** the day tapped — no longer in the head, which names the act (his D2732 Q2) */
   date: string
   /** The person's CURRENT PI date — the first day they are here. */
   piFrom: string
@@ -1575,9 +1585,6 @@ export function PostInSheet({
    *  the admin watches the grid move behind it. */
   onChange: (date: string) => string | void
   onUndo: () => void
-  /** Hand this day to the bid sheet instead — the mirror of the post-out
-   *  sheet's, and for the same reason (owner, 20 Sep 26). */
-  onPlace?: () => void
   onClose: () => void
 }) {
   /* a refused move of the date says why (AB5) — the box snaps back to the date that stands */
@@ -1585,44 +1592,37 @@ export function PostInSheet({
   const locked = !!lockedWhy
   return (
     <Sheet testid="postin-sheet" label="Posted in" onClose={onClose}>
+      {/* WAY C, the twin of the existing post-out's (his D2732 Q1, Q2): "Cinch  Post in", "PI from" and its date, the app's
+          own note on the strip under it, "Undo post in" alone at the foot */}
       <div className="bidsheet-hd">
         <span className="who">{callsign}</span>
-        <span className="dt when">{dayLabel(date)}</span>
+        <PostAct act="Post in" testid="postin-title" />
         <button className="x" data-testid="postin-cancel" onClick={onClose} aria-label="Close">
           ✕
         </button>
       </div>
-      <div className="bidsheet-row">
-        <span className="note" data-testid="postin-note">
-          {backFrom
-            ? <>Back from a posting on {shortDate(backFrom)} — on the manpower from {shortDate(piFrom)}. The days between count nobody,
-                but leave can still be dated there.</>
-            : <>Posted in on {shortDate(piFrom)} — on the manpower from that day. Days before it count nobody,
-                but leave can still be dated there.</>}
-        </span>
-      </div>
-      <div className="bidsheet-row postout">
-        <span className="lab">PI from</span>
+      <div className="po-form">
+      {locked && <PostWarn testid="postin-locked">{lockedWhy}</PostWarn>}
+      <PostField label="PI from">
         {/* Unbounded, and the box cannot be emptied (the app's own date box —
             owner D796) — clearing a post-in is the Undo button's job. */}
         <DateBox className="dateinput" testid="postin-date" label={`Move ${callsign}'s post-in date`}
           value={piFrom} disabled={locked}
           onChange={v => setErr(onChange(v) || '')} />
-      </div>
-      {locked && <div className="bidsheet-row postout"><span className="note warn" data-testid="postin-locked">{lockedWhy}</span></div>}
+      </PostField>
+      <PostLine testid="postin-note">
+        {backFrom
+          ? <>Back from a posting on {shortDate(backFrom)} — on the manpower from {shortDate(piFrom)}. The days between count nobody,
+              but leave can still be dated there.</>
+          : <>Posted in on {shortDate(piFrom)} — on the manpower from that day. Days before it count nobody,
+              but leave can still be dated there.</>}
+      </PostLine>
       {/* drawn only with something to say — an empty row left a blank band on the sheet (W3's re-walk, N4) */}
-      {err && <div className="bidsheet-row postout">
-        <span className="note warn" data-testid="postin-err">{err}</span>
+      {err && <PostWarn testid="postin-err">{err}</PostWarn>}
+      {/* "Place leave or OIL here instead…" gone (his D2727) — "Undo post in" alone, design A (D2732 Q1) */}
+      {!backFrom && !locked && <div className="po-foot">
+        <UndoPosting testid="postin-undo" label="Undo post in" onClick={onUndo} />
       </div>}
-      <div className="bidsheet-row postout">
-        {!backFrom && !locked && <button className="dchip po" data-testid="postin-undo" onClick={onUndo}>
-          Undo post in (PI)
-        </button>}
-        {onPlace && (
-          <button className="dchip" data-testid="postin-place" onClick={onPlace}>
-            Place leave or OIL here instead…
-          </button>
-        )}
       </div>
     </Sheet>
   )

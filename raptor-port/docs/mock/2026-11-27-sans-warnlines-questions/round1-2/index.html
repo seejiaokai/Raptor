@@ -1,0 +1,161 @@
+<title>SANS Warning Lines Questions</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one reading column; a short answer list on top, then one card per question with its pictures beside it. */
+:root{
+  --bg:#f5f6f8; --card:#ffffff; --fg:#1b2230; --muted:#5b6577; --line:#dde1e8; --accent:#1d6fd8; --amber:#b7791f; --rec:#0f7a4a; --shot:#121821;
+  --f-head:"Space Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif; --f-body:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#11151c;--card:#19202a;--fg:#e7ebf1;--muted:#9aa5b5;--line:#2a3340;--accent:#6aa8ff;--amber:#f0b44c;--rec:#4cc38a;--shot:#0b0f15;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#11151c;--card:#19202a;--fg:#e7ebf1;--muted:#9aa5b5;--line:#2a3340;--accent:#6aa8ff;--amber:#f0b44c;--rec:#4cc38a;--shot:#0b0f15;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.55;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+.wrap{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+h1{font-family:var(--f-head);font-size:1.5rem;line-height:1.2;margin:0;text-wrap:balance}
+h2{font-family:var(--f-head);font-size:1.12rem;line-height:1.3;margin:0;text-wrap:balance}
+p{margin:0}
+.sub{color:var(--muted)}
+.top{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.top ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:6px}
+.top a{color:var(--accent);text-decoration:none}
+.rec{color:var(--rec);font-weight:600}
+.q{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;scroll-margin-top:12px}
+.when{font-size:.9rem;color:var(--muted)}
+.label{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+figure{margin:0;display:flex;flex-direction:column;gap:4px}
+figure button{all:unset;cursor:zoom-in;display:block;background:var(--shot);border-radius:8px;padding:8px;max-width:100%;box-sizing:border-box}
+figure button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+figure img{display:block;max-width:100%;height:auto;border-radius:4px}
+figcaption{font-size:.85rem;color:var(--muted)}
+.opts{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none}
+.opts li{border-left:3px solid var(--line);padding:2px 0 2px 10px}
+.opts li.is-rec{border-left-color:var(--rec)}
+q,.w{font-style:normal;background:color-mix(in srgb,var(--amber) 14%,transparent);padding:0 3px;border-radius:3px}
+q::before,q::after{content:""}
+.pics{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.later{font-size:.9rem;color:var(--muted);border-top:1px solid var(--line);padding-top:10px}
+#zoom{position:fixed;inset:0;background:rgba(0,0,0,.86);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:calc(env(safe-area-inset-top,0px) + 16px) max(16px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 16px) max(16px,env(safe-area-inset-left,0px));z-index:20}
+#zoom img{max-width:100%;max-height:80vh;object-fit:contain;background:#0b0f15;border-radius:6px}
+#zoomClose{font:600 15px var(--f-body);padding:10px 22px;border-radius:999px;border:0;background:#fff;color:#111;cursor:pointer}
+@media (prefers-reduced-motion:no-preference){figure button{transition:transform .15s}figure button:hover{transform:translateY(-1px)}}
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Space+Grotesk:wght@600&display=swap">
+
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:6px">
+    <h1>SANS warning lines — questions from the bug check</h1>
+    <p class="sub">Round 1 · 27 Nov 26 · from the walk of the new amber line ("no availability filed") and the "offered … only" line. Every picture is the real app. Tap a picture to enlarge it.</p>
+  </header>
+
+  <section class="top" aria-labelledby="now">
+    <h2 id="now">What to look at now</h2>
+    <ol>
+      <li><a href="#q1">The pop-up after you plant him: which words?</a> — <span class="rec">recommend: the crew list's short words</span></li>
+      <li><a href="#q2">A sim's line doesn't say OFT or AMT, and invents an end time</a> — <span class="rec">recommend: name the sim, mark an assumed end</span></li>
+      <li><a href="#q5">The order of Fly, OFT, AMT differs between the Inputs page and the lines</a> — <span class="rec">recommend: Fly · OFT · AMT everywhere</span></li>
+      <li><a href="#q3">One man on two flights gets two lines</a> — <span class="rec">recommend: keep, one line a flight</span></li>
+      <li><a href="#q4">On leave and planned with nothing filed: two lines</a> — <span class="rec">recommend: keep both</span></li>
+      <li><a href="#q6">The amber "A" mark's hover words don't mention "nothing filed"</a> — <span class="rec">recommend: the new words below</span></li>
+    </ol>
+    <p class="sub">To answer: "all as recommended", or a number and your choice.</p>
+  </section>
+
+  <article class="q" id="q1">
+    <h2>1. The pop-up after you plant him: which words?</h2>
+    <p class="when">When it happens: a scheduler drops or taps a SANS man who has filed nothing into a seat. A short pop-up appears at the bottom for a few seconds. Several times a week.</p>
+    <p>Today the pop-up repeats the new warning line. But the crew list, and the hint while you hover over the seat, use shorter words. And if his warning line had been hidden earlier, the pop-up already falls back to the short words. So the same fact reads two ways.</p>
+    <div class="pics">
+      <figure><button type="button" data-zoom><img src="img/q1a-note.png" alt="Pop-up reading: Bolt — SANS: no availability filed for today. Planned on PU (T/O 13:00)"></button><figcaption>Today: the warning line's words.</figcaption></figure>
+      <figure><button type="button" data-zoom><img src="img/q1b-note.png" alt="Pop-up reading: Marlin — SANS — no availability filed for today"></button><figcaption>After his line was hidden: the crew list's words.</figcaption></figure>
+    </div>
+    <ul class="opts">
+      <li class="is-rec"><b>A (recommended): always the crew list's words.</b> <q>Marlin — SANS — no availability filed for today</q>. For a man whose SANS posting starts on a later date (Ranger, from Fri 17 Jul): <q>Ranger — SANS from Fri 17 Jul: no availability filed</q>. The same words before and after the drop; the warning list keeps the longer line naming the flight.</li>
+      <li><b>B: always the warning line's words</b>, as today, the hidden case included. Ranger's pop-up then reads <q>Ranger — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)</q> and no longer names his SANS start date.</li>
+    </ul>
+  </article>
+
+  <article class="q" id="q2">
+    <h2>2. A sim's line doesn't say OFT or AMT, and invents an end time</h2>
+    <p class="when">When it happens: a SANS man is planned on a simulator (OFT or AMT) and either filed nothing or filed something else. The line sits in the day's warning list.</p>
+    <p>The line names the sim only by its row's name, <q>Sim EP-9</q>, so it doesn't say whether that is the OFT or the AMT. The old line did (<q>not offering AMT</q>). And when only a start time is typed, the line prints an end the row doesn't show. The app takes the sim as running 90 minutes, so 09:00 becomes <q>09:00–10:30</q>.</p>
+    <div class="pics">
+      <figure><button type="button" data-zoom><img src="img/q2-row.png" alt="OFT row EP-9, start 09:00, end empty, four men in it"></button><figcaption>The OFT row: start 09:00, no end.</figcaption></figure>
+      <figure><button type="button" data-zoom><img src="img/q2-list.png" alt="Warning list lines ending Planned on Sim EP-9 09:00–10:30"></button><figcaption>The warning list: "Sim EP-9 09:00–10:30".</figcaption></figure>
+    </div>
+    <ul class="opts">
+      <li class="is-rec"><b>Recommended words</b> (reviewed by a fresh Fable):
+        timed — <q>… Planned on OFT EP-9 10:00–11:00</q> / <q>… Planned on AMT BOX 13:00–14:00</q>;
+        a start but no end — <q>… Planned on OFT EP-9 09:00–10:30 (end assumed)</q>, like the flying lines' "landing assumed";
+        no times — <q>… Planned on OFT EP-9 (no times yet)</q>;
+        a row with no name — <q>… Planned on this OFT row (no times yet)</q>.
+        The older "available 08:00–12:00 only" line ends the same way, so it changes too.</li>
+      <li><b>Leave as it is.</b></li>
+    </ul>
+  </article>
+
+  <article class="q" id="q5">
+    <h2>3. The order of Fly, OFT, AMT differs between the Inputs page and the lines</h2>
+    <p class="when">When it happens: a SANS man (or a scheduler) files availability on the Inputs page's SANS tab; later a line names what he offered.</p>
+    <p>The SANS tab's tick boxes read <b>Fly · AMT · OFT</b>. His SANS card's letters, the crew list's letters and the new lines read <b>F, O, A</b> — "offered OFT and AMT only". Two places, two orders.</p>
+    <div class="pics">
+      <figure><button type="button" data-zoom><img src="img/q5-pick.png" alt="Tick boxes Fly, AMT, OFT"></button><figcaption>The SANS tab: Fly · AMT · OFT.</figcaption></figure>
+      <figure><button type="button" data-zoom><img src="img/q5-line.png" alt="Bolt — SANS: offered OFT and AMT only today. Planned on VL BFM (T/O 13:00)"></button><figcaption>The line: "OFT and AMT".</figcaption></figure>
+    </div>
+    <ul class="opts">
+      <li class="is-rec"><b>A (recommended): the tick boxes become Fly · OFT · AMT</b>, so every place reads one order.</li>
+      <li><b>B: the lines and letters follow the tick boxes</b> (F, A, O — "offered AMT and OFT only").</li>
+      <li><b>C: leave both.</b></li>
+    </ul>
+  </article>
+
+  <article class="q" id="q3">
+    <h2>4. One man on two flights gets two lines</h2>
+    <p class="when">When it happens: a SANS man with nothing filed is planned on two flights the same day.</p>
+    <p>He gets one line for each flight, and the day's count counts both. Hiding one line with its ✕ hides only that flight's line.</p>
+    <figure><button type="button" data-zoom><img src="img/q3-list.png" alt="Warning list with Bolt twice: Planned on VX ACM, and Planned on VZ DACT"></button><figcaption>Bolt on VX ACM and on VZ DACT: two lines.</figcaption></figure>
+    <ul class="opts">
+      <li class="is-rec"><b>A (recommended): keep one line a flight</b> — each names its flight, and each can be hidden on its own.</li>
+      <li><b>B: one line a man a day</b>, naming both flights.</li>
+    </ul>
+  </article>
+
+  <article class="q" id="q4">
+    <h2>5. On leave and planned, with nothing filed: two lines</h2>
+    <p class="when">When it happens: a SANS man is on leave that day, is planned on a flight anyway, and has filed nothing. Rare.</p>
+    <p>The list shows the leave line and the new SANS line.</p>
+    <figure><button type="button" data-zoom><img src="img/q4-list.png" alt="Warning list including Otter — SANS: no availability filed for today. Planned on RU ACM (T/O 10:35)"></button><figcaption>Otter: on leave and planned on RU ACM, with nothing filed (the leave line sits above this crop).</figcaption></figure>
+    <ul class="opts">
+      <li class="is-rec"><b>A (recommended): keep both</b> — two separate facts, each hidden on its own.</li>
+      <li><b>B: only the leave line</b> while he is on leave.</li>
+    </ul>
+  </article>
+
+  <article class="q" id="q6">
+    <h2>6. The amber "A" mark's hover words</h2>
+    <p class="when">When it happens: on a desktop, a scheduler rests the pointer on the amber "A" on a man's puck.</p>
+    <p>Today it reads <q>Advisory — on shift and also down for a ground event or programme item, or planned outside SANS availability</q>. It doesn't mention a man with nothing filed, who now gets this mark too.</p>
+    <figure><button type="button" data-zoom><img src="img/q6-puck.png" alt="A puck with the amber A mark at its left"></button><figcaption>The amber "A" on Bolt's puck.</figcaption></figure>
+    <ul class="opts">
+      <li class="is-rec"><b>Recommended</b> (reviewed by a fresh Fable): <q>Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it</q>.</li>
+      <li><b>Leave as it is.</b></li>
+    </ul>
+  </article>
+
+  <p class="later">Coming in round 2, after the crew list's walk: whether a SANS man's AM / PM go on the line under his letter as hours do, and whether the longest crew-list reason wraps on your iPhone. Also: whether an AMT row renamed BRIEF or DEBRIEF should still raise the line for the men in it.</p>
+</div>
+
+<div id="zoom" hidden role="dialog" aria-modal="true" aria-label="Enlarged picture">
+  <img id="zoomImg" alt="">
+  <button type="button" id="zoomClose">Close</button>
+</div>
+<script>
+(function(){
+  var z=document.getElementById('zoom'), zi=document.getElementById('zoomImg'), zc=document.getElementById('zoomClose'), last=null;
+  document.querySelectorAll('[data-zoom]').forEach(function(b){
+    b.addEventListener('click',function(){ var im=b.querySelector('img'); zi.src=im.src; zi.alt=im.alt; last=b; z.hidden=false; zc.focus(); });
+  });
+  function close(){ z.hidden=true; zi.removeAttribute('src'); if(last) last.focus(); }
+  zc.addEventListener('click',close);
+  z.addEventListener('click',function(e){ if(e.target===z) close(); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape' && !z.hidden) close(); });
+})();
+</script>

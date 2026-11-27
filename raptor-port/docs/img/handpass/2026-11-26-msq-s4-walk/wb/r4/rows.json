@@ -1,0 +1,110 @@
+[
+ [
+  "F-S5(a)",
+  "desk chromium",
+  "new PO sheet, SANS chosen, date → 21 Dec (On 21 Dec: becomes SANS. | Mon 21 Dec 26 ▾); exit: ✕ [landed on [object Object]]; then tap Cinch 14 Dec; then ⋯ → Post out",
+  "(a)(b)(c): sheet closes, nothing posted, the next tap opens the day afresh (leave buttons), Post out reopens on defaults (D2653 d, D2732 Q3); others RECORD/as main",
+  "after exit: [page=leavewar] gone=[] 14Dec.class=\" act\" | next tap: [bid leaveBtns head=Cinch Mon 14 Dec Auto-approve ✕ page=leavewar] | reopened PO: overseas=✓ Overseas Sqn[on] ; delete=Delete ; sans=SANS ; date=Mon 14 Dec 26 ▾ ; line=On 14 Dec: archived.",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r4/001-desk-chromium-fs5a-before.png , img/handpass/2026-11-26-msq-s4-walk/wb/r4/002-desk-chromium-fs5a-after-exit.png , img/handpass/2026-11-26-msq-s4-walk/wb/r4/003-desk-chromium-fs5a-next-tap.png , img/handpass/2026-11-26-msq-s4-walk/wb/r4/004-desk-chromium-fs5a-reopen-po.png"
+ ],
+ [
+  "F-S5(b)",
+  "desk chromium",
+  "new PO sheet, SANS chosen, date → 21 Dec (On 21 Dec: becomes SANS. | Mon 21 Dec 26 ▾); exit: Escape (focus where it is); then tap Cinch 14 Dec; then ⋯ → Post out",
+  "(a)(b)(c): sheet closes, nothing posted, the next tap opens the day afresh (leave buttons), Post out reopens on defaults (D2653 d, D2732 Q3); others RECORD/as main",
+  "after exit: [page=leavewar] gone=[] 14Dec.class=\"act\" | next tap: [bid leaveBtns head=Cinch Mon 14 Dec Auto-approve ✕ page=leavewar] | reopened PO: overseas=✓ Overseas Sqn[on] ; delete=Delete ; sans=SANS ; date=Mon 14 Dec 26 ▾ ; line=On 14 Dec: archived.",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r4/005-desk-chromium-fs5b-before.png , img/handpass/2026-11-26-msq-s4-walk/wb/r4/006-desk-chromium-fs5b-after-exit.png , img/handpass/2026-11-26-msq-s4-walk/wb/r4/007-desk-chromium-fs5b-next-tap.png , img/handpass/2026-11-26-msq-s4-walk/wb/r4/008-desk-chromium-fs5b-reopen-po.png"
+ ],
+ [
+  "F-S5(c)",
+  "desk chromium",
+  "new PO sheet, SANS chosen, date → 21 Dec (On 21 Dec: becomes SANS. | Mon 21 Dec 26 ▾); exit: a press on the day itself [landed on ERR press: [data-testid=\"cell-snap-2026-12-14\"] is covered at its centre by sheet-scrim]; then tap Cinch 14 Dec; then ⋯ → Post out",
+  "(a)(b)(c): sheet closes, nothing posted, the next tap opens the day afresh (leave buttons), Post out reopens on defaults (D2653 d, D2732 Q3); others RECORD/as main",
+  "after exit: [bid poNew head=Cinch Post out ✕ page=leavewar] gone=[] 14Dec.class=\"act selcell\" | next tap: [] | reopened PO: ",
+  "FAIL",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r4/009-desk-chromium-fs5c-before.png , img/handpass/2026-11-26-msq-s4-walk/wb/r4/010-desk-chromium-fs5c-after-exit.png"
+ ],
+ [
+  "F-S5(d1)",
+  "desk chromium",
+  "new PO sheet, SANS chosen, date → 21 Dec (On 21 Dec: becomes SANS. | Mon 21 Dec 26 ▾); exit: a press on the top bar's blank part [landed on sheet-scrim]; then tap Cinch 14 Dec; then ⋯ → Post out",
+  "(a)(b)(c): sheet closes, nothing posted, the next tap opens the day afresh (leave buttons), Post out reopens on defaults (D2653 d, D2732 Q3); others RECORD/as main",
+  "after exit: [page=leavewar] gone=[] 14Dec.class=\"act\" | next tap: [bid leaveBtns head=Cinch Mon 14 Dec Auto-approve ✕ page=leavewar] | reopened PO: overseas=✓ Overseas Sqn[on] ; delete=Delete ; sans=SANS ; date=Mon 14 Dec 26 ▾ ; line=On 14 Dec: archived.",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r4/011-desk-chromium-fs5d1-before.png , img/handpass/2026-11-26-msq-s4-walk/wb/r4/012-desk-chromium-fs5d1-after-exit.png , img/handpass/2026-11-26-msq-s4-walk/wb/r4/013-desk-chromium-fs5d1-next-tap.png , img/handpass/2026-11-26-msq-s4-walk/wb/r4/014-desk-chromium-fs5d1-reopen-po.png"
+ ],
+ [
+  "F-S5(d2)",
+  "desk chromium",
+  "new PO sheet, SANS chosen, date → 21 Dec (On 21 Dec: becomes SANS. | Mon 21 Dec 26 ▾); exit: a press on the blank grid bar (between Bidding closed and Legend) [landed on sheet-scrim]; then tap Cinch 14 Dec; then ⋯ → Post out",
+  "(a)(b)(c): sheet closes, nothing posted, the next tap opens the day afresh (leave buttons), Post out reopens on defaults (D2653 d, D2732 Q3); others RECORD/as main",
+  "after exit: [page=leavewar] gone=[] 14Dec.class=\"act\" | next tap: [bid leaveBtns head=Cinch Mon 14 Dec Auto-approve ✕ page=leavewar] | reopened PO: overseas=✓ Overseas Sqn[on] ; delete=Delete ; sans=SANS ; date=Mon 14 Dec 26 ▾ ; line=On 14 Dec: archived.",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r4/015-desk-chromium-fs5d2-before.png , img/handpass/2026-11-26-msq-s4-walk/wb/r4/016-desk-chromium-fs5d2-after-exit.png , img/handpass/2026-11-26-msq-s4-walk/wb/r4/017-desk-chromium-fs5d2-next-tap.png , img/handpass/2026-11-26-msq-s4-walk/wb/r4/018-desk-chromium-fs5d2-reopen-po.png"
+ ],
+ [
+  "F-S5(e)",
+  "desk chromium",
+  "new PO sheet, SANS chosen, date → 21 Dec (On 21 Dec: becomes SANS. | Mon 21 Dec 26 ▾); exit: a press on ANOTHER man's day (Anvil, 14 Dec) [landed on sheet-scrim]; then tap Cinch 14 Dec; then ⋯ → Post out",
+  "(a)(b)(c): sheet closes, nothing posted, the next tap opens the day afresh (leave buttons), Post out reopens on defaults (D2653 d, D2732 Q3); others RECORD/as main",
+  "after exit: [page=leavewar] gone=[] 14Dec.class=\"act\" | next tap: [bid leaveBtns head=Cinch Mon 14 Dec Auto-approve ✕ page=leavewar] | reopened PO: overseas=✓ Overseas Sqn[on] ; delete=Delete ; sans=SANS ; date=Mon 14 Dec 26 ▾ ; line=On 14 Dec: archived.",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r4/019-desk-chromium-fs5e-before.png , img/handpass/2026-11-26-msq-s4-walk/wb/r4/020-desk-chromium-fs5e-after-exit.png , img/handpass/2026-11-26-msq-s4-walk/wb/r4/021-desk-chromium-fs5e-next-tap.png , img/handpass/2026-11-26-msq-s4-walk/wb/r4/022-desk-chromium-fs5e-reopen-po.png"
+ ],
+ [
+  "F-S5(f)",
+  "desk chromium",
+  "new PO sheet, SANS chosen, date → 21 Dec (On 21 Dec: becomes SANS. | Mon 21 Dec 26 ▾); exit: a press on another day of Cinch's row (10 Dec) [landed on ERR press: [data-testid=\"cell-snap-2026-12-10\"] is covered at its centre by sheet-scrim]; then tap Cinch 14 Dec; then ⋯ → Post out",
+  "(a)(b)(c): sheet closes, nothing posted, the next tap opens the day afresh (leave buttons), Post out reopens on defaults (D2653 d, D2732 Q3); others RECORD/as main",
+  "after exit: [bid poNew head=Cinch Post out ✕ page=leavewar] gone=[] 14Dec.class=\"act selcell\" | next tap: [] | reopened PO: ",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r4/023-desk-chromium-fs5f-before.png , img/handpass/2026-11-26-msq-s4-walk/wb/r4/024-desk-chromium-fs5f-after-exit.png"
+ ],
+ [
+  "F-S5(d1) main",
+  "desk chromium main",
+  "main: PO rows in the window, SANS, 21 Dec; exit: a press on the top bar's blank part [landed on sheet-scrim]",
+  "the \"before\" for the comparison",
+  "[page=leavewar] gone=[]",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r4/028-desk-chromium-main-main-fs5d1-before.png , img/handpass/2026-11-26-msq-s4-walk/wb/r4/029-desk-chromium-main-main-fs5d1-after.png"
+ ],
+ [
+  "F-S5(d2) main",
+  "desk chromium main",
+  "main: PO rows in the window, SANS, 21 Dec; exit: a press on the blank grid bar (between Bidding closed and Legend) [landed on sheet-scrim]",
+  "the \"before\" for the comparison",
+  "[page=leavewar] gone=[]",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r4/030-desk-chromium-main-main-fs5d2-before.png , img/handpass/2026-11-26-msq-s4-walk/wb/r4/031-desk-chromium-main-main-fs5d2-after.png"
+ ],
+ [
+  "F-S5(e) main",
+  "desk chromium main",
+  "main: PO rows in the window, SANS, 21 Dec; exit: a press on ANOTHER man's day (Anvil, 14 Dec) [landed on sheet-scrim]",
+  "the \"before\" for the comparison",
+  "[page=leavewar] gone=[]",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r4/032-desk-chromium-main-main-fs5e-before.png , img/handpass/2026-11-26-msq-s4-walk/wb/r4/033-desk-chromium-main-main-fs5e-after.png"
+ ],
+ [
+  "F-S5(f) main",
+  "desk chromium main",
+  "main: PO rows in the window, SANS, 21 Dec; exit: a press on another day of Cinch's row (10 Dec) [landed on ERR press: [data-testid=\"cell-snap-2026-12-10\"] is covered at its centre by sheet-scrim]",
+  "the \"before\" for the comparison",
+  "[bid leaveBtns poNew head=Cinch Mon 14 Dec Auto-approve ✕ page=leavewar] gone=[]",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r4/034-desk-chromium-main-main-fs5f-before.png , img/handpass/2026-11-26-msq-s4-walk/wb/r4/035-desk-chromium-main-main-fs5f-after.png"
+ ],
+ [
+  "F-S5(b) main",
+  "desk chromium main",
+  "main: PO rows in the window, SANS, 21 Dec; exit: Escape (focus where it is)",
+  "the \"before\" for the comparison",
+  "[page=leavewar] gone=[]",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r4/036-desk-chromium-main-main-fs5b-before.png , img/handpass/2026-11-26-msq-s4-walk/wb/r4/037-desk-chromium-main-main-fs5b-after.png"
+ ]
+]
