@@ -193,3 +193,21 @@ nothing saved changes; his person window, My leave and Approvals untouched and c
 
 Walk (D2820, D2822): WALK — the host, one script at desktop 1536 and phone 402, admin and member: 28 PASS, 0 FAIL; the gap
 measured before and after at both sizes; checked beside the drawing of A.
+
+## D2823 — "Not typed" nowhere (27 Nov 26, chat 208)
+
+His answer through coordinator 206, built red first on this branch (tier WALK: what a person sees in five places; nothing
+saved changes). A balance never typed now reads the amber "–" beside his name on the grid, on My leave, in Approvals' LVE
+BAL, on the leave buttons' "left" (not dimmed — question 23's item 4 as drawn) and in his window's War bal. No pointing
+hint says "Not typed"; a screen reader still hears it (the agent's reading, put to him). The Balances page keeps D2820's
+outline, its read-only places and War bal included (206 confirmed).
+- **Re-walk** (`scripts/handpass/lw-postin-d2823-walk.mjs`, `docs/img/handpass/2026-11-27-lw-postin-d2823/d2823-walk.json`):
+  desktop 1536 and phone 402, the admin and Pelican himself (added on Admin → Users with a sign-in, nothing typed, one
+  pending LL on Tue 1 Dec) — 40 checks, 40 PASS, no page or console errors.
+- **Found by the walk's pictures, fixed red first:** My leave read "LVE – ·OIL 0" — the edit had lost the space after the
+  dot. A test now reads the whole line; re-walked 40 PASS.
+- Unit: the five changed test files and their neighbours pass (182 + 140 + 107). Code check: no new finding, after the grid
+  box's top line moved into one small helper.
+
+Walk (D2823): WALK — the host, one script at desktop 1536 and phone 402, admin and the never-typed man: 40 PASS, 0 FAIL;
+one fault found by the pictures (My leave's lost space), fixed red first and re-walked.
