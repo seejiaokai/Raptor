@@ -196,6 +196,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [MSQ-S2-U1-READS-LEFT] — what the reads of Admin → Users' step U1 left: two doors' words (one names a sign-in, one tells of a move), the row's ids in the markup, View sent by a short row to a man another admin emptied unseen, and a question for him — may an archived man be moved, or a man with a move be archived.
 - [UNDO-RECEIPT-REPLACED] — his own Undo's "Undid: …" replaced by Admin → Users' "row changed" note on the redraw; words only, one person; maybe app-wide.
 - [ACCT-TOLD-OTHER-LINES] — the save check may let the app's "tell him" pass carry a bell line of another kind it never checks; closed for the new Plan line, the rest unchecked — for the security read.
+- [U2-WORDS-TWO-QUESTIONS] — two optional wording questions from Fable's word review of U2, for the next questions round, each drawn first: "Plan of 149 ended" also for a drop to View; the grey line's short form for a squadron with no admin of its own.
 - [USERS-JUDGE-THREE-COPIES] — Admin → Users' judging of the other open work at a press is written three times; fold into one (a tidiness note).
 
 **Publishing and checks**
@@ -374,6 +375,12 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 **What:** the commit gate checks an `account.told` command (the app's pass that writes a man's own account lines, and the move-day lines) only through `acctLineViolation`, and only where the command carries an `acct` line; the system actor is asked nothing else. So a lone forged line of another kind riding an `account.told` command went through — the U2 Pass B builder showed it on the commit before e042c5d58 for the new squadron-Plan line (`sqplan`), now closed by `planLineViolation`. Whether any other line kind (an admin's line, a posting's, an input's) can ride `account.told` alone has not been checked.
 **To do:** the security reader of U2's code read (or the next security read of the gate) writes a failing test per line kind ridden on a bare `account.told`; any that goes through is refused by name at the gate, red first. Nothing a person can do on screen today makes such a command — it needs a forged write, so it matters at the database step's shared store.
 **Where:** `state/perms.ts` (the commit gate), the bell's lines; People & accounts.
+
+### [U2-WORDS-TWO-QUESTIONS] Two optional wording questions from the word review of Admin → Users' step U2 (27 Nov 26, a fresh Fable word review, D2441; filed by chat 205 on chat 206's word) — OPEN
+**What:** both need his word; neither is a fault as built. Put them in the next questions round, each with a drawing first (D1625), not before.
+(1) The bell line "Plan of 149 ended" goes to 149's admins both when a man drops from Plan to View and when he loses 149 altogether, so the bell does not tell the two apart. Option: "Plan of 149 ended: he can still view" for the drop to View. **Recommended: leave it as built** — the line is true either way and his row shows what he holds.
+(2) The grey line under the Role box reads "Only 151's own admins or a master admin can make an admin of 151." even where 151 has no admin of its own. Option: the short form "Only a master admin can make an admin of 151.", matching his D2816 tail for the last-admin note. **Recommended: the short form** — the long one names admins who do not exist.
+**Where:** People & accounts (Admin → Users; the bell's squadron-Plan lines); the review in chat 205's shared notes, `s2-chat205/u2read/fable-words/report.md`.
 
 ### [GH-PAGES-PREVIEW-DOCS] A preview on GitHub Pages — the documents and the steps (27 Nov 26, chat 206, his D2832) — OPEN
 **What:** his D2832 lets a preview for his look be published on GitHub Pages (public, one site, each preview replacing the last); the live app stays on Vercel. `.github/workflows/deploy.yml`'s head and `raptor-port/docs/gates-and-deploy.md` still say there is no GitHub Pages site (D343).
