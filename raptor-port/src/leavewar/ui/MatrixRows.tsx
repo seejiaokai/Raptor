@@ -306,7 +306,8 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
            hatch stays). Since his D1728 (6 Nov 26) no PO tag: the box wears faint stripes (`bx-gone`, below). */
         const view = views[p.id]?.[d.date]
         /* …and an OIL AWARD dated there too (Astra's final read, 3, 27 Sep 26): one may be given after a man posts out or
-           before he posts in ("Place leave or OIL here instead…", N12), and the day drew a bare PO (or blank) that
+           before he posts in (once by "Place leave or OIL here instead…", N12 — removed by his D2727; still from the OIL
+           tracker, which dates any day, D79), and the day drew a bare PO (or blank) that
            nobody could tap — his own award hidden from him, and from the admin's eye. It shows with the posting hatch,
            like the leave beside it, counts nobody (the hatch stays), and his own tap opens it read only (D261). */
         /* …and WHATEVER ELSE IS FILED there (his D1720, 6 Nov 26 — [LW-PO-DAYS-DRAWING]): an overseas duty, a course, a medical,

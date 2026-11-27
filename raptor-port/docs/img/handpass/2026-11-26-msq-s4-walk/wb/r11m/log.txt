@@ -1,0 +1,9 @@
+msq-s4w-lib v1 who=wb run=r11m port=4754
+wb-r11 v1
+ROW PASS | A16 / F-S31 | desk chromium main | new sheet with the Delete card up; leave: top bar Inputs, wait 2.5 s, top bar Leave War [leavewar→inputs] | saw: card before UP; on return [page=leavewar] card gone; month lit DEC; Cinch gone 0; Piston from 12-21
+ROW PASS | A16 / F-S31 | desk chromium main | drag sheet with the Delete card up; leave: top bar Inputs, wait 2.5 s, top bar Leave War [inputs] | saw: card before UP; on return [leaveBtns sel selPo head=Cinch 15–18 Dec · 4 days Auto-approve ✕ page=leavewar] card gone; month lit DEC; Cinch gone 0; Piston from 12-21
+ROW PASS | A16 / F-S31 | desk chromium main | old sheet with the Delete card up; leave: top bar Inputs, wait 2.5 s, top bar Leave War [leavewar→inputs] | saw: card before UP; on return [page=leavewar] card gone; month lit DEC; Cinch gone 0; Piston from 12-21
+ROW PASS | A16 | desk chromium main | Piston's posting changed to SANS, Delete armed then cancelled; reload; signed in again | saw: line before reload "On 21 Dec: becomes SANS."; after: gone from 12-21; reopened line "On 21 Dec: becomes SANS."
+errors []
+errors []
+DONE 4 PASS 0 FAIL 0 OTHER of 4

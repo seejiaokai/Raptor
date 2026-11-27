@@ -1,0 +1,245 @@
+[
+ [
+  "setup",
+  "desk-chromium-main",
+  "step threw",
+  "",
+  "locator.fill: Timeout 5000ms exceeded.",
+  "NOT REACHED",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r15-main/001-desk-chromium-main-setup-error.png"
+ ],
+ [
+  "F-S10(1) every chip",
+  "desk-chromium-main",
+  "press Delete, SANS, Overseas, Overseas again",
+  "one line each saying what it does; tapping the chosen chip un-chooses it (\"off the manpower, nothing else\")",
+  "delete: On 10 Dec the app deletes him automatically. Days he flew keep his puck. [img/handpass/2026-11-26-msq-s4-walk/wc/r15-main/002-desk-chromium-main-r15-chip-delete.png] | sans: On 10 Dec: becomes SANS. | overseas: On 10 Dec: archived. | overseas tapped again (un-chosen): On 10 Dec: off the manpower, nothing else. aria false",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r15-main/003-desk-chromium-main-r15-chips-none.png"
+ ],
+ [
+  "F-S10(2) the PO from calendar, every way out",
+  "desk-chromium-main",
+  "open the date box; close by a pick, Escape, a press outside it, the box again",
+  "the calendar closes each way; the sheet under it stays (lesson 19)",
+  "pick: opened true, calendar now false, sheet bid-picker, date 2026-12-11 | escape: opened true, calendar now false, sheet bid-picker, date 2026-12-11 | outside: opened true, calendar now false, sheet bid-picker, date 2026-12-11 | box-again: opened true, calendar now false, sheet bid-picker, date 2026-12-11",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r15-main/004-desk-chromium-main-r15-calendar-ways.png"
+ ],
+ [
+  "F-S10 every way out of a new Post out",
+  "desk-chromium-main",
+  "✕, Escape, a press outside, the day under it",
+  "each closes it, nothing posted",
+  "x: window none, 10 Dec act |  | kids: | escape: window none, 10 Dec act |  | kids: | outside: window none, 10 Dec act |  | kids: | day: window none, 10 Dec act |  | kids:",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r15-main/005-desk-chromium-main-r15-ways-out.png"
+ ],
+ [
+  "F-S10(3) Post out",
+  "desk-chromium-main",
+  "Overseas Sqn, PO from 14 Dec, Post out",
+  "posted; hatch from 14 Dec",
+  "line: On 14 Dec: archived. | window none | 14 Dec gone act hasc | PO | kids:c whole",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r15-main/006-desk-chromium-main-r15-posted.png"
+ ],
+ [
+  "F-S10(8) reload after-post",
+  "desk-chromium-main",
+  "reload the page; the war, December",
+  "the same as before the reload",
+  "13 Dec weekend act pofin bx-last | PO | kids:polast | 14 Dec gone act hasc | PO | kids:c whole | 16 Dec gone outlv act hasc bx-gone | LL | kids:c k-ll s-w whole",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r15-main/007-desk-chromium-main-r15-reload-after-post.png"
+ ],
+ [
+  "F-S10(4) grid",
+  "desk-chromium-main",
+  "after the posting: grid",
+  "as each place should show a posting of Overseas Sqn from 14 Dec (hatch, yellow last-day line, \"posting out 14 Dec · Overseas Sqn\" on Approvals and Admin → Users, no bell yet — D1720, D1727, D1728, D1446, D310, D1546); as on main",
+  "12 Dec weekend act |  | kids: | 13 Dec weekend act pofin bx-last | PO | kids:polast | 14 Dec gone act hasc | PO | kids:c whole | 16 Dec gone outlv act hasc bx-gone | LL | kids:c k-ll s-w whole",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r15-main/008-desk-chromium-main-r15-after-grid.png"
+ ],
+ [
+  "F-S10(4) legend",
+  "desk-chromium-main",
+  "after the posting: legend",
+  "as each place should show a posting of Overseas Sqn from 14 Dec (hatch, yellow last-day line, \"posting out 14 Dec · Overseas Sqn\" on Approvals and Admin → Users, no bell yet — D1720, D1727, D1728, D1446, D310, D1546); as on main",
+  "WHAT THE GRID IS TELLING YOU THE COLOUR: WHAT KIND LL Local leave OL Overseas leave OIL OIL taken: time off spent FO OIL given: FO a day, HO half a day; a star, the app credited it CCL Other leave: CCL, FCL, PL, CL, EL CSE Course OD Overseas duty OTH Under Unavailable on the schedule: OTH, ATCH and the rest, out of the manning C Medical: B, C, OML, HL THE FILL: WHERE IT STANDS LL Approved LL Pending a decision LL Refused THE SIZE: HOW MUCH OF THE DAY LL A whole day LL Morning (AM) LL Afternoon (PM) FO OL Two entries on one day THE DATES Open for bidding Not open for bidding THE LEFT EDGE: WHERE IT CAME FROM LL Filed on the Inputs page: change it there, not here LL Moved here from another day",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r15-main/009-desk-chromium-main-r15-after-legend.png"
+ ],
+ [
+  "F-S10(4) approvals",
+  "desk-chromium-main",
+  "after the posting: approvals",
+  "as each place should show a posting of Overseas Sqn from 14 Dec (hatch, yellow last-day line, \"posting out 14 Dec · Overseas Sqn\" on Approvals and Admin → Users, no bell yet — D1720, D1727, D1728, D1446, D310, D1546); as on main",
+  "Cinch IP posting out 14 Dec · Overseas Sqn LL Wed 16 Dec › 1 day 21.5 26 Nov 18:24 · by Saber Approve Refuse",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r15-main/010-desk-chromium-main-r15-after-approvals.png"
+ ],
+ [
+  "F-S10(4) balances",
+  "desk-chromium-main",
+  "after the posting: balances",
+  "as each place should show a posting of Overseas Sqn from 14 Dec (hatch, yellow last-day line, \"posting out 14 Dec · Overseas Sqn\" on Approvals and Admin → Users, no bell yet — D1720, D1727, D1728, D1446, D310, D1546); as on main",
+  "CinchIP21.52LLPOPOPOLLPOPOPOPOPOPOPOPOPOPOPOPOPOPOPO",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r15-main/011-desk-chromium-main-r15-after-balances.png"
+ ],
+ [
+  "F-S10(4) person",
+  "desk-chromium-main",
+  "after the posting: person",
+  "as each place should show a posting of Overseas Sqn from 14 Dec (hatch, yellow last-day line, \"posting out 14 Dec · Overseas Sqn\" on Approvals and Admin → Users, no bell yet — D1720, D1727, D1728, D1446, D310, D1546); as on main",
+  "Cinch ✕ BALANCES LVE 0 taken App bal Pending War bal −1 21.5 incl. carried fwd · till 31 Dec OIL 0 › MED 0 days CCL FCL PL EL CL LEAVE 2026 and ahead LL Mon 7 Dec 1 Approved LL Wed 16 Dec 1 Pending",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r15-main/012-desk-chromium-main-r15-after-person.png"
+ ],
+ [
+  "F-S10(4) period",
+  "desk-chromium-main",
+  "after the posting: period",
+  "as each place should show a posting of Overseas Sqn from 14 Dec (hatch, yellow last-day line, \"posting out 14 Dec · Overseas Sqn\" on Approvals and Admin → Users, no bell yet — D1720, D1727, D1728, D1446, D310, D1546); as on main",
+  "period y2027=JAN - DEC 27: Cinch row absent (first head head-2027-01-01) [img/handpass/2026-11-26-msq-s4-walk/wc/r15-main/013-desk-chromium-main-r15-after-period27.png]",
+  "RECORD",
+  ""
+ ],
+ [
+  "F-S10(4) admin",
+  "desk-chromium-main",
+  "after the posting: admin",
+  "as each place should show a posting of Overseas Sqn from 14 Dec (hatch, yellow last-day line, \"posting out 14 Dec · Overseas Sqn\" on Approvals and Admin → Users, no bell yet — D1720, D1727, D1728, D1446, D310, D1546); as on main",
+  "Cinch no sign-in · Pilot · CAT IP POSTING OUT 14 DEC · OVERSEAS SQN",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r15-main/014-desk-chromium-main-r15-after-admin.png"
+ ],
+ [
+  "F-S10(4) quals",
+  "desk-chromium-main",
+  "after the posting: quals",
+  "as each place should show a posting of Overseas Sqn from 14 Dec (hatch, yellow last-day line, \"posting out 14 Dec · Overseas Sqn\" on Approvals and Admin → Users, no bell yet — D1720, D1727, D1728, D1446, D310, D1546); as on main",
+  "Cinch IPIP ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ IP · instructor pilot",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r15-main/015-desk-chromium-main-r15-after-quals.png"
+ ],
+ [
+  "F-S10(4) bell",
+  "desk-chromium-main",
+  "after the posting: bell",
+  "as each place should show a posting of Overseas Sqn from 14 Dec (hatch, yellow last-day line, \"posting out 14 Dec · Overseas Sqn\" on Approvals and Admin → Users, no bell yet — D1720, D1727, D1728, D1446, D310, D1546); as on main",
+  "Nothing new",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r15-main/017-desk-chromium-main-r15-after-bell.png"
+ ],
+ [
+  "F-S10(5) top-bar Undo / Redo",
+  "desk-chromium-main",
+  "place LL for Anvil 22 Dec; top-bar Undo; Redo",
+  "Undo takes the leave, the posting stays (a posting is no step of Undo — D321); Redo puts it back",
+  "after LL:  act hasc | LL | kids:c k-ll s-a whole | after Undo:  act |  | kids: ; Cinch 14 Dec gone act hasc | PO | kids:c whole | after Redo:  act hasc | LL | kids:c k-ll s-a whole",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r15-main/018-desk-chromium-main-r15-undo-redo.png"
+ ],
+ [
+  "existing sheet: SANS, date, undo",
+  "desk-chromium-main",
+  "step threw",
+  "",
+  "no po-sans on existing sheet",
+  "NOT REACHED",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r15-main/019-desk-chromium-main-existing_sheet_SANS_date_undo-error.png"
+ ],
+ [
+  "F-S10(8) reload after-undo",
+  "desk-chromium-main",
+  "reload the page; the war, December",
+  "the same as before the reload",
+  "13 Dec weekend act pofin bx-last | PO | kids:polast | 14 Dec gone act hasc | PO | kids:c whole | 16 Dec gone outlv act hasc bx-gone | LL | kids:c k-ll s-w whole",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r15-main/020-desk-chromium-main-r15-reload-after-undo.png"
+ ],
+ [
+  "F-S10(7) grid",
+  "desk-chromium-main",
+  "back the posting: grid",
+  "all back as before the posting",
+  "12 Dec weekend act |  | kids: | 13 Dec weekend act pofin bx-last | PO | kids:polast | 14 Dec gone act hasc | PO | kids:c whole | 16 Dec gone outlv act hasc bx-gone | LL | kids:c k-ll s-w whole",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r15-main/021-desk-chromium-main-r15-back-grid.png"
+ ],
+ [
+  "F-S10(7) legend",
+  "desk-chromium-main",
+  "back the posting: legend",
+  "all back as before the posting",
+  "WHAT THE GRID IS TELLING YOU THE COLOUR: WHAT KIND LL Local leave OL Overseas leave OIL OIL taken: time off spent FO OIL given: FO a day, HO half a day; a star, the app credited it CCL Other leave: CCL, FCL, PL, CL, EL CSE Course OD Overseas duty OTH Under Unavailable on the schedule: OTH, ATCH and the rest, out of the manning C Medical: B, C, OML, HL THE FILL: WHERE IT STANDS LL Approved LL Pending a decision LL Refused THE SIZE: HOW MUCH OF THE DAY LL A whole day LL Morning (AM) LL Afternoon (PM) FO OL Two entries on one day THE DATES Open for bidding Not open for bidding THE LEFT EDGE: WHERE IT CAME FROM LL Filed on the Inputs page: change it there, not here LL Moved here from another day",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r15-main/022-desk-chromium-main-r15-back-legend.png"
+ ],
+ [
+  "F-S10(7) approvals",
+  "desk-chromium-main",
+  "back the posting: approvals",
+  "all back as before the posting",
+  "Cinch IP posting out 14 Dec · Overseas Sqn LL Wed 16 Dec › 1 day 21.5 26 Nov 18:24 · by Saber Approve Refuse",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r15-main/023-desk-chromium-main-r15-back-approvals.png"
+ ],
+ [
+  "F-S10(7) balances",
+  "desk-chromium-main",
+  "back the posting: balances",
+  "all back as before the posting",
+  "CinchIP21.52LLPOPOPOLLPOPOPOPOPOPOPOPOPOPOPOPOPOPOPO",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r15-main/024-desk-chromium-main-r15-back-balances.png"
+ ],
+ [
+  "F-S10(7) person",
+  "desk-chromium-main",
+  "back the posting: person",
+  "all back as before the posting",
+  "Cinch ✕ BALANCES LVE 0 taken App bal Pending War bal −1 21.5 incl. carried fwd · till 31 Dec OIL 0 › MED 0 days CCL FCL PL EL CL LEAVE 2026 and ahead LL Mon 7 Dec 1 Approved LL Wed 16 Dec 1 Pending",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r15-main/025-desk-chromium-main-r15-back-person.png"
+ ],
+ [
+  "F-S10(7) period",
+  "desk-chromium-main",
+  "back the posting: period",
+  "all back as before the posting",
+  "period y2027=JAN - DEC 27: Cinch row absent (first head head-2027-01-01) [img/handpass/2026-11-26-msq-s4-walk/wc/r15-main/026-desk-chromium-main-r15-back-period27.png]",
+  "RECORD",
+  ""
+ ],
+ [
+  "F-S10(7) admin",
+  "desk-chromium-main",
+  "back the posting: admin",
+  "all back as before the posting",
+  "Cinch no sign-in · Pilot · CAT IP POSTING OUT 14 DEC · OVERSEAS SQN",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r15-main/027-desk-chromium-main-r15-back-admin.png"
+ ],
+ [
+  "F-S10(7) quals",
+  "desk-chromium-main",
+  "back the posting: quals",
+  "all back as before the posting",
+  "Cinch IPIP ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ IP · instructor pilot",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r15-main/028-desk-chromium-main-r15-back-quals.png"
+ ],
+ [
+  "F-S10(7) bell",
+  "desk-chromium-main",
+  "back the posting: bell",
+  "all back as before the posting",
+  "Nothing new",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r15-main/030-desk-chromium-main-r15-back-bell.png"
+ ]
+]

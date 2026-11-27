@@ -1,0 +1,290 @@
+[
+ [
+  "F-S15(1)",
+  "desk chromium",
+  "Tab ×12 from the grid bar: does focus reach a day cell?",
+  "RECORD — the grid's keyboard reach is older behaviour (A12: no new promise for the whole grid)",
+  "counts-toggle\"▾ Manning\" → open-chip\"Bidding closed\" → legend-open\"Legend\" → month-JAN\"JAN\" → month-FEB\"FEB\" → month-MAR\"MAR\" → month-APR\"APR\" → month-MAY\"MAY\" → month-JUN\"JUN\" → month-JUL\"JUL\" → month-AUG\"AUG\" → month-SEP\"SEP\"",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r8/001-desk-chromium-kbd-grid-tabs.png"
+ ],
+ [
+  "A12 / F-S15(1)",
+  "desk chromium",
+  "day opened by click; Tab to ⋯ (21 Tabs), Enter; to Post out by bid-more\"⋯\" → bid-more\"⋯\" → bid-more\"⋯\" → bid-more\"⋯\" → bid-more\"⋯\" → bid-more\"⋯\" → bid-more\"⋯\" → Tab:bid-file-ATCH\"Attach\" → Tab:bid-file-OTH\"Other\" → Tab:bid-postout\"Post out\"; Enter",
+  "the posting opens and the keys go to its first control when the menu item pressed left the screen (way-C contract); focus visible (design guide §2)",
+  "menu focus bid-more\"⋯\"; reached Post out true; sheet [bid poNew head=Cinch Post out ✕ page=leavewar]; focus now po-overseas\"✓ Overseas Sqn\" ring auto 1px rgb(16, 16, 16) | none",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r8/002-desk-chromium-kbd-menu-open.png , img/handpass/2026-11-26-msq-s4-walk/wb/r8/003-desk-chromium-kbd-po-open.png"
+ ],
+ [
+  "A12 / F-S15(2)",
+  "desk chromium",
+  "Tab ×9 forward then Shift+Tab ×9 on the new Post out sheet",
+  "the order seen — chips → PO from → Post out → ✕ (or ✕ first) — never into a hidden leave control; focus stays inside while the sheet holds the keys (D2653 e; design guide §2)",
+  "fwd: po-delete\"Delete\" → po-sans\"SANS\" → po-date\"Mon 14 Dec 26 ▾\" → po-confirm\"Post out\" → bid-cancel\"✕\" → po-overseas\"✓ Overseas Sqn\" → po-delete\"Delete\" → po-sans\"SANS\" → po-date\"Mon 14 Dec 26 ▾\" || back: po-sans\"SANS\" → po-delete\"Delete\" → po-overseas\"✓ Overseas Sqn\" → bid-cancel\"✕\" → po-confirm\"Post out\" → po-date\"Mon 14 Dec 26 ▾\" → po-sans\"SANS\" → po-delete\"Delete\" → po-overseas\"✓ Overseas Sqn\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r8/004-desk-chromium-kbd-po-tab.png"
+ ],
+ [
+  "F-S15 ring",
+  "desk chromium",
+  "focus on po-overseas by Tab",
+  "focus ring VISIBLE (lesson 22; the app's cyan focus ring — design D1646)",
+  "po-overseas\"✓ Overseas Sqn\" outline/shadow: auto 1px rgb(16, 16, 16) | none",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r8/005-desk-chromium-kbd-ring-po-overseas.png"
+ ],
+ [
+  "F-S15 ring",
+  "desk chromium",
+  "focus on po-date by Tab",
+  "focus ring VISIBLE (lesson 22; the app's cyan focus ring — design D1646)",
+  "po-date\"Mon 14 Dec 26 ▾\" outline/shadow: solid 2px rgb(59, 198, 232) | none",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r8/006-desk-chromium-kbd-ring-po-date.png"
+ ],
+ [
+  "F-S15 ring",
+  "desk chromium",
+  "focus on po-confirm by Tab",
+  "focus ring VISIBLE (lesson 22; the app's cyan focus ring — design D1646)",
+  "po-confirm\"Post out\" outline/shadow: auto 1px rgb(16, 16, 16) | none",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r8/007-desk-chromium-kbd-ring-po-confirm.png"
+ ],
+ [
+  "F-S15 ring",
+  "desk chromium",
+  "focus on bid-cancel by Tab",
+  "focus ring VISIBLE (lesson 22; the app's cyan focus ring — design D1646)",
+  "bid-cancel\"✕\" outline/shadow: auto 1px rgb(16, 16, 16) | none",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r8/008-desk-chromium-kbd-ring-bid-cancel.png"
+ ],
+ [
+  "A12 / F-S15(3)",
+  "desk chromium",
+  "SANS chip: Space, then Enter",
+  "Space chooses (✓ shows), again un-chooses (D303: none chosen = off the manpower only)",
+  "after Space pressed=true line \"On 14 Dec: becomes SANS.\"; after Enter pressed=false line \"On 14 Dec: off the manpower, nothing else.\"; focus po-sans\"SANS\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r8/009-desk-chromium-kbd-chip.png"
+ ],
+ [
+  "A12 / F-S15(4)",
+  "desk chromium",
+  "PO from by keys: Enter opens, → ↓, Enter picks; Enter reopens, Escape",
+  "opens; the arrows move; Enter picks; Escape closes the calendar ONLY, focus back on the date box (design guide §2; D1012)",
+  "open true focus dcal-day-2026-12-14\"14\"; after arrows dcal-day-2026-12-22\"22\"; after Enter cal false date \"Tue 22 Dec 26 ▾\" focus po-date\"Tue 22 Dec 26 ▾\"; reopened true; after Escape [bid poNew head=Cinch Post out ✕ page=leavewar] focus po-date\"Tue 22 Dec 26 ▾\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r8/010-desk-chromium-kbd-cal-open.png"
+ ],
+ [
+  "A12 / F-S15(5)",
+  "desk chromium",
+  "Delete chosen; Enter on Post out → the card; Enter again",
+  "focus on CANCEL (the safe answer), so the second Enter cancels and deletes nothing; focus back on Post out (design guide §2)",
+  "card focus po-delete-cancel\"Cancel\" ring solid 2px rgb(59, 198, 232) | none; after 2nd Enter card gone [bid poNew head=Cinch Post out ✕ page=leavewar] focus po-confirm\"Post out\"; Cinch gone 0",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r8/011-desk-chromium-kbd-card-focus.png"
+ ],
+ [
+  "A12 / F-S15(5b)",
+  "desk chromium",
+  "card up again: Tab, Shift+Tab ×2, Escape",
+  "Tab reaches Delete; the keys stay in the card; Escape closes the card, focus back on Post out (design guide §2)",
+  "Tab → bid-cancel\"✕\" ring auto 1px rgb(16, 16, 16) | none; Shift+Tab×2 → po-delete-go\"Delete\"; Escape → card gone [bid poNew head=Cinch Post out ✕ page=leavewar] focus po-confirm\"Post out\"",
+  "FAIL",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r8/012-desk-chromium-kbd-card-tab.png"
+ ],
+ [
+  "A12 / F-S15(6)",
+  "desk chromium",
+  "Escape on the sheet; then Enter",
+  "the sheet closes, nothing posted; RECORD where focus lands and what the next Enter opens",
+  "after Escape [page=leavewar] focus body\"142 TALON Edit Schedul\"; after Enter [page=leavewar]; Cinch gone 0",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r8/013-desk-chromium-kbd-after-esc-enter.png"
+ ],
+ [
+  "F-S15(7)",
+  "desk chromium",
+  "existing Post out (Piston): focus on open, then Tab ×8",
+  "chips → date → Undo / button, never a hidden leave control; RECORD where Tab goes after the last control (the drag sheet does not hold Tab)",
+  "on open body\"142 TALON Edit Schedul\"; postout-cancel\"✕\" → postout-overseas\"✓ Overseas Sqn\" → postout-delete\"Delete\" → postout-sans\"SANS\" → postout-date\"Mon 21 Dec 26 ▾\" → postout-undo\"↶Undo post out\" → postout-cancel\"✕\" → postout-overseas\"✓ Overseas Sqn\"",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r8/014-desk-chromium-kbd-tab-existing_Pos.png"
+ ],
+ [
+  "F-S15(7)",
+  "desk chromium",
+  "existing Post in (Ridge): focus on open, then Tab ×8",
+  "chips → date → Undo / button, never a hidden leave control; RECORD where Tab goes after the last control (the drag sheet does not hold Tab)",
+  "on open body\"142 TALON Edit Schedul\"; postin-cancel\"✕\" → postin-date\"Mon 14 Dec 26 ▾\" → postin-undo\"↶Undo post in\" → postin-cancel\"✕\" → postin-date\"Mon 14 Dec 26 ▾\" → postin-undo\"↶Undo post in\" → postin-cancel\"✕\" → postin-date\"Mon 14 Dec 26 ▾\"",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r8/015-desk-chromium-kbd-tab-existing_Pos.png"
+ ],
+ [
+  "F-S15(7)",
+  "desk chromium",
+  "drag sheet's Post out (Cinch 15–18): focus on open, then Tab ×8",
+  "chips → date → Undo / button, never a hidden leave control; RECORD where Tab goes after the last control (the drag sheet does not hold Tab)",
+  "on open sel-po-overseas\"✓ Overseas Sqn\"; sel-po-delete\"Delete\" → sel-po-sans\"SANS\" → sel-po-date\"Tue 15 Dec 26 ▾\" → sel-po-confirm\"Post out\" → body\"142 TALON Edit Schedul\" → a\"Edit Schedule\" → a\"View-only Sched\" → a\"Inputs\"",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r8/016-desk-chromium-kbd-tab-drag_sheet_s.png"
+ ],
+ [
+  "F-S15(7)",
+  "desk chromium",
+  "drag sheet's Post in (Cinch 15–18): focus on open, then Tab ×8",
+  "chips → date → Undo / button, never a hidden leave control; RECORD where Tab goes after the last control (the drag sheet does not hold Tab)",
+  "on open sel-pi-date\"Tue 15 Dec 26 ▾\"; sel-pi-confirm\"Post in\" → body\"142 TALON Edit Schedul\" → a\"Edit Schedule\" → a\"View-only Sched\" → a\"Inputs\" → a\"Quals\" → a\"Logic\" → a\"Leave War\"",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r8/017-desk-chromium-kbd-tab-drag_sheet_s.png"
+ ],
+ [
+  "F-S15(8)",
+  "desk chromium",
+  "new Post out open, focus on PO from; Ctrl+Z",
+  "RECORD (a posting is no step of Undo, D321; nothing may vanish silently behind the sheet)",
+  "sheet [bid poNew head=Cinch Post out ✕ page=leavewar]; Piston from 12-21→12-21; Ridge blank to 12-13→12-13",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r8/018-desk-chromium-kbd-ctrlz.png"
+ ],
+ [
+  "F-S42",
+  "desk chromium",
+  "new Post out: the names a screen reader gets",
+  "each control named for what it does; the chosen chip announced as pressed; the window named for the posting (\"Post out\"/\"Post in\" — way-C contract); the Undo arrow hidden from the reader; a sheet named \"Place a bid\" while showing only a posting is RECORDED",
+  "{\"root\":\"dialog name=\\\"Post out\\\"\",\"dialog\":\"dialog name=\\\"Post out\\\" modal=null\",\"groups\":[\"group \\\"Posting\\\"\"],\"controls\":[\"bid-cancel: name=\\\"Cancel\\\" pressed=null title=\\\"\\\"\",\"po-overseas: name=\\\"✓ Overseas Sqn\\\" pressed=true title=\\\"\\\"\",\"po-delete: name=\\\"Delete\\\" pressed=false title=\\\"\\\"\",\"po-sans: name=\\\"SANS\\\" pressed=false title=\\\"\\\"\",\"po-date: name=\\\"Post Cinch out from: Mon 14 Dec 2026\\\" pressed=null title=\\\"\\\" (has aria-hidden part: \\\"▾\\\")\",\"po-confirm: name=\\\"Post out\\\" pressed=null title=\\\"\\\"\"],\"titles\":[]}",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r8/019-desk-chromium-names-new_Post_out.png"
+ ],
+ [
+  "F-S41",
+  "desk chromium",
+  "new Post out: the old words",
+  "none of \"Transfer to Sqn\", \"Comes with the shared database\", \"Place leave or OIL here instead\", \"(PO)\", \"(PI)\", \"Tap again to delete\", nor a day's date in the head (D2659, D2727, D2732 Q1/Q2, D1628)",
+  "none",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r8/019-desk-chromium-names-new_Post_out.png"
+ ],
+ [
+  "F-S42",
+  "desk chromium",
+  "new Post in: the names a screen reader gets",
+  "each control named for what it does; the chosen chip announced as pressed; the window named for the posting (\"Post out\"/\"Post in\" — way-C contract); the Undo arrow hidden from the reader; a sheet named \"Place a bid\" while showing only a posting is RECORDED",
+  "{\"root\":\"dialog name=\\\"Post in\\\"\",\"dialog\":\"dialog name=\\\"Post in\\\" modal=null\",\"groups\":[],\"controls\":[\"bid-cancel: name=\\\"Cancel\\\" pressed=null title=\\\"\\\"\",\"pi-date: name=\\\"Post Cinch in from: Mon 14 Dec 2026\\\" pressed=null title=\\\"\\\" (has aria-hidden part: \\\"▾\\\")\",\"pi-confirm: name=\\\"Post in\\\" pressed=null title=\\\"\\\"\"],\"titles\":[]}",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r8/020-desk-chromium-names-new_Post_in.png"
+ ],
+ [
+  "F-S41",
+  "desk chromium",
+  "new Post in: the old words",
+  "none of \"Transfer to Sqn\", \"Comes with the shared database\", \"Place leave or OIL here instead\", \"(PO)\", \"(PI)\", \"Tap again to delete\", nor a day's date in the head (D2659, D2727, D2732 Q1/Q2, D1628)",
+  "none",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r8/020-desk-chromium-names-new_Post_in.png"
+ ],
+ [
+  "F-S42",
+  "desk chromium",
+  "existing Post out: the names a screen reader gets",
+  "each control named for what it does; the chosen chip announced as pressed; the window named for the posting (\"Post out\"/\"Post in\" — way-C contract); the Undo arrow hidden from the reader; a sheet named \"Place a bid\" while showing only a posting is RECORDED",
+  "{\"root\":\"dialog name=\\\"Posted out\\\"\",\"dialog\":\"dialog name=\\\"Posted out\\\" modal=null\",\"groups\":[\"group \\\"Posting\\\"\"],\"controls\":[\"postout-cancel: name=\\\"Close\\\" pressed=null title=\\\"\\\"\",\"postout-overseas: name=\\\"✓ Overseas Sqn\\\" pressed=true title=\\\"\\\"\",\"postout-delete: name=\\\"Delete\\\" pressed=false title=\\\"\\\"\",\"postout-sans: name=\\\"SANS\\\" pressed=false title=\\\"\\\"\",\"postout-date: name=\\\"Move Piston's post-out date: Mon 21 Dec 2026\\\" pressed=null title=\\\"\\\" (has aria-hidden part: \\\"▾\\\")\",\"postout-undo: name=\\\"↶Undo post out\\\" pressed=null title=\\\"\\\" (has aria-hidden part: \\\"↶\\\")\"],\"titles\":[]}",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r8/021-desk-chromium-names-existing_Post_.png"
+ ],
+ [
+  "F-S41",
+  "desk chromium",
+  "existing Post out: the old words",
+  "none of \"Transfer to Sqn\", \"Comes with the shared database\", \"Place leave or OIL here instead\", \"(PO)\", \"(PI)\", \"Tap again to delete\", nor a day's date in the head (D2659, D2727, D2732 Q1/Q2, D1628)",
+  "none",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r8/021-desk-chromium-names-existing_Post_.png"
+ ],
+ [
+  "F-S42",
+  "desk chromium",
+  "existing Post in: the names a screen reader gets",
+  "each control named for what it does; the chosen chip announced as pressed; the window named for the posting (\"Post out\"/\"Post in\" — way-C contract); the Undo arrow hidden from the reader; a sheet named \"Place a bid\" while showing only a posting is RECORDED",
+  "{\"root\":\"dialog name=\\\"Posted in\\\"\",\"dialog\":\"dialog name=\\\"Posted in\\\" modal=null\",\"groups\":[],\"controls\":[\"postin-cancel: name=\\\"Close\\\" pressed=null title=\\\"\\\"\",\"postin-date: name=\\\"Move Ridge's post-in date: Mon 14 Dec 2026\\\" pressed=null title=\\\"\\\" (has aria-hidden part: \\\"▾\\\")\",\"postin-undo: name=\\\"↶Undo post in\\\" pressed=null title=\\\"\\\" (has aria-hidden part: \\\"↶\\\")\"],\"titles\":[]}",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r8/022-desk-chromium-names-existing_Post_.png"
+ ],
+ [
+  "F-S41",
+  "desk chromium",
+  "existing Post in: the old words",
+  "none of \"Transfer to Sqn\", \"Comes with the shared database\", \"Place leave or OIL here instead\", \"(PO)\", \"(PI)\", \"Tap again to delete\", nor a day's date in the head (D2659, D2727, D2732 Q1/Q2, D1628)",
+  "none",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r8/022-desk-chromium-names-existing_Post_.png"
+ ],
+ [
+  "F-S42",
+  "desk chromium",
+  "drag Post out: the names a screen reader gets",
+  "each control named for what it does; the chosen chip announced as pressed; the window named for the posting (\"Post out\"/\"Post in\" — way-C contract); the Undo arrow hidden from the reader; a sheet named \"Place a bid\" while showing only a posting is RECORDED",
+  "{\"root\":\"dialog name=\\\"Post out\\\"\",\"dialog\":\"dialog name=\\\"Post out\\\" modal=null\",\"groups\":[\"group \\\"Posting\\\"\"],\"controls\":[\"sel-cancel: name=\\\"Cancel\\\" pressed=null title=\\\"\\\"\",\"sel-po-overseas: name=\\\"✓ Overseas Sqn\\\" pressed=true title=\\\"\\\"\",\"sel-po-delete: name=\\\"Delete\\\" pressed=false title=\\\"\\\"\",\"sel-po-sans: name=\\\"SANS\\\" pressed=false title=\\\"\\\"\",\"sel-po-date: name=\\\"Post Cinch out from: Tue 15 Dec 2026\\\" pressed=null title=\\\"\\\" (has aria-hidden part: \\\"▾\\\")\",\"sel-po-confirm: name=\\\"Post out\\\" pressed=null title=\\\"\\\"\"],\"titles\":[]}",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r8/023-desk-chromium-names-drag_Post_out.png"
+ ],
+ [
+  "F-S41",
+  "desk chromium",
+  "drag Post out: the old words",
+  "none of \"Transfer to Sqn\", \"Comes with the shared database\", \"Place leave or OIL here instead\", \"(PO)\", \"(PI)\", \"Tap again to delete\", nor a day's date in the head (D2659, D2727, D2732 Q1/Q2, D1628)",
+  "none",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r8/023-desk-chromium-names-drag_Post_out.png"
+ ],
+ [
+  "F-S42",
+  "desk chromium",
+  "drag Post in: the names a screen reader gets",
+  "each control named for what it does; the chosen chip announced as pressed; the window named for the posting (\"Post out\"/\"Post in\" — way-C contract); the Undo arrow hidden from the reader; a sheet named \"Place a bid\" while showing only a posting is RECORDED",
+  "{\"root\":\"dialog name=\\\"Post in\\\"\",\"dialog\":\"dialog name=\\\"Post in\\\" modal=null\",\"groups\":[],\"controls\":[\"sel-cancel: name=\\\"Cancel\\\" pressed=null title=\\\"\\\"\",\"sel-pi-date: name=\\\"Post Cinch in from: Tue 15 Dec 2026\\\" pressed=null title=\\\"\\\" (has aria-hidden part: \\\"▾\\\")\",\"sel-pi-confirm: name=\\\"Post in\\\" pressed=null title=\\\"\\\"\"],\"titles\":[]}",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r8/024-desk-chromium-names-drag_Post_in.png"
+ ],
+ [
+  "F-S41",
+  "desk chromium",
+  "drag Post in: the old words",
+  "none of \"Transfer to Sqn\", \"Comes with the shared database\", \"Place leave or OIL here instead\", \"(PO)\", \"(PI)\", \"Tap again to delete\", nor a day's date in the head (D2659, D2727, D2732 Q1/Q2, D1628)",
+  "none",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r8/024-desk-chromium-names-drag_Post_in.png"
+ ],
+ [
+  "F-S42",
+  "desk chromium",
+  "new Post out with the Delete card: the names a screen reader gets",
+  "each control named for what it does; the chosen chip announced as pressed; the window named for the posting (\"Post out\"/\"Post in\" — way-C contract); the Undo arrow hidden from the reader; a sheet named \"Place a bid\" while showing only a posting is RECORDED",
+  "{\"root\":\"dialog name=\\\"Post out\\\"\",\"dialog\":\"dialog name=\\\"Post out\\\" modal=null\",\"groups\":[\"group \\\"Posting\\\"\"],\"controls\":[\"bid-cancel: name=\\\"Cancel\\\" pressed=null title=\\\"\\\"\",\"po-overseas: name=\\\"Overseas Sqn\\\" pressed=false title=\\\"\\\"\",\"po-delete: name=\\\"✓ Delete\\\" pressed=true title=\\\"\\\"\",\"po-sans: name=\\\"SANS\\\" pressed=false title=\\\"\\\"\",\"po-date: name=\\\"Post Cinch out from: Mon 14 Dec 2026\\\" pressed=null title=\\\"\\\" (has aria-hidden part: \\\"▾\\\")\",\"po-confirm: name=\\\"Post out\\\" pressed=null title=\\\"\\\"\",\"po-delete-go: name=\\\"Delete\\\" pressed=null title=\\\"\\\"\",\"po-delete-cancel: name=\\\"Cancel\\\" pressed=null title=\\\"\\\"\"],\"titles\":[]}",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r8/025-desk-chromium-names-new_Post_out_w.png"
+ ],
+ [
+  "F-S41",
+  "desk chromium",
+  "new Post out with the Delete card: the old words",
+  "none of \"Transfer to Sqn\", \"Comes with the shared database\", \"Place leave or OIL here instead\", \"(PO)\", \"(PI)\", \"Tap again to delete\", nor a day's date in the head (D2659, D2727, D2732 Q1/Q2, D1628)",
+  "none",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r8/025-desk-chromium-names-new_Post_out_w.png"
+ ],
+ [
+  "F-S41",
+  "desk chromium",
+  "Legend open: the whole page's words",
+  "elsewhere RECORD",
+  "none",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r8/026-desk-chromium-legend.png"
+ ]
+]
