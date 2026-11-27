@@ -42,6 +42,18 @@ const LOOKS = {
     pending: `<button class="dchip dk-b dk-a">${TICK}Approve</button><button class="dchip dk-b dk-r">${CROSS}Refuse</button>` + MOVE + DEL,
     approved: `<button class="dchip dk-b dk-a on">${TICK}Approved</button><button class="dchip dk-b dk-r dk-off">${CROSS}Refuse</button>` + MOVE + DEL,
     refused: `<button class="dchip dk-b dk-a dk-off">${TICK}Approve</button><button class="dchip dk-b dk-r on">${CROSS}Refused</button>` + MOVE + DEL },
+  /* round 3 (his "what about border selected and highlighted", 27 Nov 26): two buttons, the other grey as in round 2.
+     D3 — his words: the picked one ringed in its own colour (a 2px edge) and highlighted with a soft tint of it, its words
+     in that colour; E3 — the window's own "this one is picked" mark: the solid fill plus the cyan ring the lit leave button
+     wears in the same window (bidpicker.css: outline 2px accent, offset 2px). */
+  D3: {
+    pending: `<button class="dchip dk-b dk-a">${TICK}Approve</button><button class="dchip dk-b dk-r">${CROSS}Refuse</button>` + MOVE + DEL,
+    approved: `<button class="dchip dk-b dk-a dk-hl">${TICK}Approved</button><button class="dchip dk-b dk-r dk-off">${CROSS}Refuse</button>` + MOVE + DEL,
+    refused: `<button class="dchip dk-b dk-a dk-off">${TICK}Approve</button><button class="dchip dk-b dk-r dk-hl">${CROSS}Refused</button>` + MOVE + DEL },
+  E3: {
+    pending: `<button class="dchip dk-b dk-a">${TICK}Approve</button><button class="dchip dk-b dk-r">${CROSS}Refuse</button>` + MOVE + DEL,
+    approved: `<button class="dchip dk-b dk-a on dk-ring">${TICK}Approved</button><button class="dchip dk-b dk-r dk-off">${CROSS}Refuse</button>` + MOVE + DEL,
+    refused: `<button class="dchip dk-b dk-a dk-off">${TICK}Approve</button><button class="dchip dk-b dk-r on dk-ring">${CROSS}Refused</button>` + MOVE + DEL },
 }
 const STATE_WORDS = { pending: 'Pending · Whole day', approved: 'Approved · Whole day', refused: 'Refused · Whole day' }
 
@@ -52,7 +64,8 @@ async function setup(p) {
   if (r !== 'ok') throw new Error(r)
   return p.evaluate(() => {
     const [a, r, al, rl] = document.querySelectorAll('.dk-list .dl-acts button'), cs = e => getComputedStyle(e)
-    return { ag: cs(a).color, rg: cs(r).color, abg: cs(al).backgroundColor, rbg: cs(rl).backgroundColor, lw: cs(al).color, rest: cs(a).backgroundColor, edge: cs(a).borderColor }
+    const lv = document.querySelector('[data-testid="bid-LL"].lit')
+    return { ag: cs(a).color, rg: cs(r).color, abg: cs(al).backgroundColor, rbg: cs(rl).backgroundColor, lw: cs(al).color, rest: cs(a).backgroundColor, edge: cs(a).borderColor, ring: lv ? cs(lv).outlineColor : '#3bc6e8' }
   })
 }
 const css = c => `
@@ -75,6 +88,9 @@ const css = c => `
 .dl-acts .dk-track .dchip + .dchip{border-left:none !important}
 .dl-acts .dk-track:not(.dk-done) .dchip{background:${c.rest} !important}
 .dl-acts .dk-track .dchip.on{box-shadow:0 1px 3px rgba(0,0,0,.55)}
+.dl-acts .dk-b.dk-a.dk-hl{border-color:${c.abg} !important;box-shadow:inset 0 0 0 1px ${c.abg};background:color-mix(in srgb, ${c.abg} 22%, ${c.rest}) !important;color:${c.ag} !important}
+.dl-acts .dk-b.dk-r.dk-hl{border-color:${c.rbg} !important;box-shadow:inset 0 0 0 1px ${c.rbg};background:color-mix(in srgb, ${c.rbg} 22%, ${c.rest}) !important;color:${c.rg} !important}
+.dl-acts .dchip.dk-ring{outline:2px solid ${c.ring} !important;outline-offset:2px}
 .dl-acts .dchip.dk-off{color:#7d8794 !important}
 .dl-acts .dk-b.dk-off{border-color:${c.edge} !important}
 .dk-chev{margin-left:auto;align-self:center;font:400 26px/1 system-ui,sans-serif;color:#8b95a7;padding:0 2px 0 8px}
@@ -123,7 +139,7 @@ try {
   await reach(p, CUT, '2026-12-02')
   const c = await setup(p); console.log('app colours', JSON.stringify(c))
   await p.addStyleTag({ content: css(c) })
-  const only = process.argv.includes('--round2') ? ['A2', 'B2'] : Object.keys(LOOKS)
+  const only = process.argv.includes('--round3') ? ['D3', 'E3'] : process.argv.includes('--round2') ? ['A2', 'B2'] : Object.keys(LOOKS)
   for (const [look, states] of Object.entries(LOOKS).filter(([k]) => only.includes(k))) for (const state of Object.keys(states)) {
     const r = await p.evaluate(transform, { state, words: STATE_WORDS[state], acts: states[state] })
     if (r !== 'ok') throw new Error(r)
