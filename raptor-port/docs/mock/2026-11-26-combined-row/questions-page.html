@@ -197,7 +197,8 @@ details.fold summary{cursor:pointer;color:var(--accent);font-weight:600;padding:
 details.fold .pics{margin-top:8px}
 /* The six questions, short (chat 194): his card shape — example, at most two pictures, two one-line choices */
 .short{display:flex;flex-direction:column;gap:14px}
-.sq{background:var(--panel);border:2px solid var(--accent);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.sq#s7{border:2px solid var(--accent)}
+.sq{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0}
 .sq h2{font-size:1.1rem}
 .qn{display:inline-block;margin-right:6px;padding:0 7px;border-radius:5px;background:var(--accent);color:var(--panel);font-size:.9rem;vertical-align:2px}
 .sq .pics.phones{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
@@ -215,12 +216,35 @@ details.fold .pics{margin-top:8px}
 
 <div class="wrap">
 <header style="display:flex;flex-direction:column;gap:6px">
-  <span class="tag">Leave and inputs · 27 Nov · new: the six questions, short</span>
-  <h1>Leave and inputs: six questions</h1>
+  <span class="tag">Leave and inputs · 27 Nov · new: F7, a new look for Approve and Refuse</span>
+  <h1>Leave and inputs: seven questions</h1>
   <p class="muted">Each question is one card: an example, a picture, and two choices. Pick one on each card and copy the answer line at the bottom. Tap a picture to see it bigger. Nothing is built yet. The long version of each question is further down the page.</p>
 </header>
 
-<section class="short new" aria-label="The six questions, short">
+<section class="short new" aria-label="The questions, short">
+
+<article class="sq" id="s7">
+  <h2><span class="qn">F7</span> Your ask: a new look for Approve and Refuse. Which one?</h2>
+  <p><b>Example:</b> Cutter (a member) has a leave bid waiting for Wed 2 Dec. Saber (an admin) taps the day on the Leave War to decide it.</p>
+  <div class="pics phones">
+    <figure><img src="img/f7/pair-A-phone.png" alt="Look A: Approve and Refuse joined in one switch with a tick and a cross; decided, the Approved half is solid green" loading="lazy"><figcaption><b>A:</b> one switch. Top: waiting. Bottom: decided.</figcaption></figure>
+    <figure><img src="img/f7/pair-B-phone.png" alt="Look B: two buttons with a tick and a cross and an edge in their colour; decided, Approved is solid green" loading="lazy"><figcaption><b>B:</b> two buttons. Top: waiting. Bottom: decided.</figcaption></figure>
+    <figure><img src="img/f7/pair-today-phone.png" alt="Today: Approve and Refuse as plain buttons like Move and Delete; decided, Approved is solid green" loading="lazy"><figcaption><b>Today.</b> Top: waiting. Bottom: decided.</figcaption></figure>
+  </div>
+  <fieldset class="pick" data-q="F7">
+    <label><input type="radio" name="F7" value="A"> <span><b>A (recommended):</b> one switch with a tick and a cross. It reads as one choice of two, kept apart from Move and Delete.</span></label>
+    <label><input type="radio" name="F7" value="B"> <span><b>B:</b> two separate buttons, each with a tick or cross and an edge in its colour.</span></label>
+    <label><input type="radio" name="F7" value="C"> <span><b>C:</b> keep today's look.</span></label>
+  </fieldset>
+  <p class="muted">Same size and place as today, and pressing works as now: a second tap on the lit one puts the bid back to waiting. The look you pick would go everywhere you approve or refuse: this window, the day's list and Approvals.</p>
+  <details class="fold"><summary>The same on a desktop</summary>
+    <div class="pics">
+      <figure><img src="img/f7/pair-A-desktop.png" alt="Look A on a desktop" loading="lazy"><figcaption>A</figcaption></figure>
+      <figure><img src="img/f7/pair-B-desktop.png" alt="Look B on a desktop" loading="lazy"><figcaption>B</figcaption></figure>
+      <figure><img src="img/f7/pair-today-desktop.png" alt="Today on a desktop" loading="lazy"><figcaption>Today</figcaption></figure>
+    </div>
+  </details>
+</article>
 
 <article class="sq" id="s6">
   <h2><span class="qn">F6</span> Should every tap on a Leave War day open the same window?</h2>
@@ -906,7 +930,7 @@ details.fold .pics{margin-top:8px}
   window.addEventListener('resize', fit); fit();
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
   // the six short cards build one answer line to paste back
-  var qs = ['F6', 'F1', 'F2', 'F3', 'F4', 'F5'], rline = document.getElementById('rline');
+  var qs = ['F7', 'F6', 'F1', 'F2', 'F3', 'F4', 'F5'], rline = document.getElementById('rline');
   function line() {
     var parts = qs.map(function (q) { var c = document.querySelector('input[name="' + q + '"]:checked'); return c ? q + ' ' + c.value : null; }).filter(Boolean);
     rline.textContent = parts.length ? parts.join(', ') : 'Pick one choice on each card.';
