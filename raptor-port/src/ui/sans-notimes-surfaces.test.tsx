@@ -22,9 +22,10 @@ import { paintSelRings } from './highlights'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 const NONE = 'SANS — no availability filed for today'
-/* the note after planning him repeats the warning the plant raised (state/dropflag.ts, the plant-then-warn rule) — since
-   owner D2579 (25 Nov 26) nothing filed raises one amber line, so the note is that line, no longer the crew list's reason */
-const PLANTED = 'SANS: no availability filed for today. Planned on this line (no times yet)'
+/* the note after planning him: since owner D2753 (27 Nov 26 — Q1 of the SANS warning-lines questions page) it reads the
+   CREW LIST's reason, the same as before the drop, never the longer warning line the plant raised (state/dropflag.ts
+   flagLine — `crewWhy`) */
+const PLANTED = NONE
 const ID = 'ipman'          // a SANS pilot of the seed, nothing filed for Mon 13 Jul
 let host: HTMLDivElement
 let root: Root

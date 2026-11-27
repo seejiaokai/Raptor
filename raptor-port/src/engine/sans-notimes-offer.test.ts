@@ -122,7 +122,7 @@ describe('D2585 — the warning list agrees once he is planned on an untimed sim
   it('nothing filed: one amber line (D2579, a seat with no times too); OFT offered with hours while untimed: silent', () => {
     const row = blankSim('oft')
     DAYS[0].sims.oft[DAYS[0].sims.oft.length - 1].p = ID
-    expect(sansWarns(row).map((w: any) => w.msg), 'nothing filed').toEqual(['SANS: no availability filed for today. Planned on Sim EP-9'])
+    expect(sansWarns(row).map((w: any) => w.msg), 'nothing filed').toEqual(['SANS: no availability filed for today. Planned on OFT EP-9 (no times yet)'])   // D2754
     fileSans({ o: true }, [480, 600])
     expect(sansWarns(row), 'OFT offered 08:00–10:00, no times to hold it against').toHaveLength(0)
   })

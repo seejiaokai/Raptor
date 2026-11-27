@@ -69,10 +69,10 @@ afterEach(async () => {
 })
 
 describe('the SANS calendar’s "+ Commitment" form', () => {
-  it('three ticks — Fly, AMT, OFT — beside the standard span picker and time fields, never a time pair of their own', async () => {
+  it('three ticks — Fly, OFT, AMT (D2755: one order everywhere) — beside the standard span picker and time fields, never a time pair of their own', async () => {
     await openForm()
     const rows = $$('#inpEditSans .sanspick-ck')
-    expect(rows.map(r => r.textContent?.trim())).toEqual(['Fly', 'AMT', 'OFT'])
+    expect(rows.map(r => r.textContent?.trim())).toEqual(['Fly', 'OFT', 'AMT'])
     expect($$('#inpEditSans input[type="time"]').length, 'no per-event time pair inside the picker').toBe(0)
     expect($('#inpEditSpan'), 'the standard span picker is offered too').toBeTruthy()
     expect($('#inpEditStart') && $('#inpEditEnd'), 'and the standard time fields').toBeTruthy()

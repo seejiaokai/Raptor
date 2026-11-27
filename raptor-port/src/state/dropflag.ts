@@ -89,7 +89,10 @@ export function flagLine(w: any, dropDi: any) {
      named too (Astra's blind read, 16 Nov 26: the reworded lines leave the people to the drawer) */
   const ids = [...new Set<string>(w.who || [])]
   const cs = ids.map((id) => (PEOPLE[id] ? PEOPLE[id].cs : id)).filter(Boolean).join(', ')
-  let m = String(w.msg || '')
+  /* a SANS line speaks in the CREW LIST's words (owner D2753, 27 Nov 26 — "all as recommended", the SANS warning-lines
+     questions page, Q1): "Bolt — SANS — offered Fly only, not AMT", the same before and after the drop and whether or not
+     his line was hidden (the fallback, slotBar, says the same); the warning list keeps its longer line naming the event */
+  let m = String(w.crewWhy || w.msg || '')
   if (cs && m.indexOf(cs) !== 0) m = `${cs} — ${m}`
   if (w.di != null && w.di !== dropDi && w.day) m = `${String(w.day).slice(0, 3)} · ${m}`
   return m

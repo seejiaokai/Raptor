@@ -400,7 +400,24 @@ export function sansGate(id:any,dt:any,domain:any,s:any,e:any,iso?:any):any{
   if(rec.allday)return {status:'ok'};
   const w=sansWindow(rec);
   if(w[0]<=s&&w[1]>=e)return {status:'ok'};
-  return {status:'window',off:{s:w[0],e:w[1]}};
+  /* `half`: a morning or an afternoon filing, so its reason reads as filed (owner D2759, sansWindowWhy below) */
+  return {status:'window',off:{s:w[0],e:w[1]},...(rec.half==='am'||rec.half==='pm'?{half:rec.half}:{})};
+}
+/* the crew list's reason for hours that miss the seat (owner D2759, 27 Nov 26 — "all as recommended", the SANS
+   warning-lines questions page, Q9; a fresh Fable's check of the words, chat 208): a morning or an afternoon filing
+   reads as filed, "SANS — available AM only" / "available PM only", as his badge says it — never the clock times
+   "00:00–12:00" / "12:01–23:59" the half stands for; hours he typed stay hours. */
+export function sansWindowWhy(g:any):string{
+  return g&&g.half?`SANS — available ${String(g.half).toUpperCase()} only`:`SANS — available ${hm24(g.off.s)}–${hm24(g.off.e)} only`;}
+/* THE CREW LIST'S WORDS FOR ONE GATE ANSWER — the struck reason, the drag hover and, since owner D2753 (27 Nov 26, Q1 of
+   the same page), the note after the drop, which reads these words and never the warning list's longer line (that keeps
+   the event it names). One body, so the three cannot drift; '' for an answer that strikes nothing. */
+export function sansCrewWhy(g:any,p:any,iso:any,domain:any):string{
+  if(!g)return '';
+  if(g.status==='none')return sansNoneWhy(p,iso);
+  if(g.status==='not-offered')return sansNotOfferedWhy(g,domain);
+  if(g.status==='window')return sansWindowWhy(g);
+  return '';
 }
 /* '' when they may be planned here, otherwise the reason they may not */
 /* `fromKey` (5 Sep 26): the seat the man is being MOVED from, when this is a
@@ -661,9 +678,7 @@ function slotBarNow(id:any,key:any,rules?:any,fromKey?:any){
        slotRules' flying branch); a sim key sets no sansStart and falls back
        to the box's own start — a sim window is read AS FILED, unchanged */
     const g=sansGate(id,DAYS[r.di].dt,domain,r.sansStart!=null?r.sansStart:r.slotStart,r.slotEnd,dayIso(String(CURWEEK),r.di));
-    if(g.status==='none')return sansNoneWhy(p,dayIso(String(CURWEEK),r.di));
-    if(g.status==='not-offered')return sansNotOfferedWhy(g,domain);
-    if(g.status==='window')return `SANS — available ${hm24(g.off.s)}–${hm24(g.off.e)} only`;
+    {const why=sansCrewWhy(g,p,dayIso(String(CURWEEK),r.di),domain); if(why)return why;}
   }
   /* A FLYING SEAT WITH NO TIMES YET, NOTHING FILED (owner D2573, 25 Nov 26 — round A's Q1, "as recommended"): struck with
      the same words as a timed seat, so the crew list agrees with his own reminder, which counts that seat already (D2568,

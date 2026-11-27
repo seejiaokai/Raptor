@@ -36,7 +36,7 @@ describe('a hidden OFT line does not hide the AMT line that replaces it', () => 
     fileFly()
     const oi = sim('oft', 'EP-9', '10:00', '11:00'); validate()
     const [w] = his()
-    expect(w.msg).toBe('SANS: offered Fly only today. Planned on Sim EP-9 10:00–11:00')
+    expect(w.msg).toBe('SANS: offered Fly only today. Planned on OFT EP-9 10:00–11:00')   // D2754: the sim named OFT
     view.WARNOFF.add(hideKey(w)); validate()
     expect(his()[0].off, 'the OFT line is hidden').toBe(true)
     DAYS[0].sims.oft.splice(oi, 1)

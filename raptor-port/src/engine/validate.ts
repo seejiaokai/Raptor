@@ -5,7 +5,7 @@ import { overlap, hm24, lgT, parseHM } from './time'
 import { collectEvents, shiftEvHard, scSeatHits, avSeatHits } from './events'
 import { reportingIssuesForDay,stated } from './reporting'
 import { HOOKS } from './hooks'
-import { sansGate, SANS_LABEL, sansOfferedWords } from './avail'
+import { sansGate, SANS_LABEL, sansOfferedWords, sansCrewWhy } from './avail'
 import { seedRunIn, datedRestSeed, dayHidesIn, nextMondayWorked, nextMondayDay, nextMondayHides, windowDiverges, windowFiling, windowInputs, filingDivergesAt } from './weekctx'
 import { setWorld, setFiling, clearFiling } from './world'
 import { CURWEEK, isStandalone, saExempt, saAnyFlies } from './waves'
@@ -73,7 +73,7 @@ export const chipText=(c:any)=>CHIP_TEXT[c]||c;
    silently freezing the flag. */
 export const RANK:any={LD:0,DT:1,TT:2,A:3,SD:4,SB:5,DB:6,NB:7,CP:8,CR:9,RUN:10,CPH:11,C:12,Q:13};
 export const CHIP_LABEL:any={DT:'Double turn',TT:'Tight turn',C:'Conflict (two events at once)',
-  A:'Advisory — on shift and also down for a ground event or programme item, or planned outside SANS availability',CR:'Crew rest breach (<{crewRest})',Q:'Qual / illegal seat',
+  A:'Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it',CR:'Crew rest breach (<{crewRest})',Q:'Qual / illegal seat',
   NB:'Misses flight brief',DB:'Misses flight debrief',SB:'Misses sim brief',SD:'Misses sim debrief',LD:'Long day (>{longDay})',
   RUN:'Days in a row',
   CP:'Crew pairing — this pairing needs approval',CPH:'Crew pairing — not an authorised pairing'};
@@ -1546,7 +1546,7 @@ function validateCore(){
     /* never a standby line, flying or not (owner D2584 Q4, answering D2576, D2578): `shift` marks an SC / AVALON / BB row */
     day.fly.forEach((e:any)=>!e.shift&&sansChecks.push({id:e.id,domain:'fly',s:Math.min(e.report,e.step),en:e.dekit,to:e.to,label:e.label,key:e.key}));   // `to` names the line ([WARN-WORDS-STANDALONE])
     day.events.forEach((e:any)=>{ const m=/^s:\d+\.(amt|oft)\./.exec(String(e.key||'')); if(!m)return;
-      sansChecks.push({id:e.id,domain:m[1],s:e.s,en:e.e,label:e.label,key:e.key}); });
+      sansChecks.push({id:e.id,domain:m[1],s:e.s,en:e.e,label:e.label,key:e.key,ae:!!e.ae}); });   // `ae`: an end nobody typed (events.ts assumedEnd; D2754)
     /* AN OFT OR AMT WITH NO START YET (owner D2585, 25 Nov 26 — found by the bug check's two blind reads, chat 182): its people
        sit in `blank`, not `events`, so the crew list struck a man whose filing does not offer the sim while this list said
        nothing. Checked with an unknown window (NaN — `noWin` drops a 'window' answer): 'not offering …' and, since owner
@@ -1570,7 +1570,17 @@ function validateCore(){
       /* `sansDomain` (fly / oft / amt) is part of the line's identity — its dedupe, its hide (warnhide.ts hideKey) and the
          drop's note (dropflag.ts warnKey) — since D2584 2a's words no longer name the event: a hidden OFT line must not
          hide an AMT line worded the same (D469; Astra's read, chat 207 — sans-hide-event.test.ts) */
-      add('adv','SANS_AVAIL',[c.id],`SANS: ${reason}. Planned on ${c.domain==='fly'?flightTag(c.label,c.to):whatAt(rowName({label:c.label,kind:'sim'}),c.s,c.en)}`,c.key,{sansDomain:c.domain});
+      /* A SIM NAMED AS OFT OR AMT (owner D2754, 27 Nov 26 — "all as recommended", the SANS warning-lines questions page,
+         Q2; Fable's words, chat 207): "OFT EP-9 10:00–11:00", "AMT BOX 13:00–14:00" — the row's own name after the sim's
+         kind, never the bare "Sim EP-9" that left OFT and AMT apart unsaid; an end nobody typed is marked "(end
+         assumed)", as the flying lines say "landing assumed"; no times, "(no times yet)"; a row with no name, "this OFT
+         row". The flying lines keep their words. */
+      const simWhat=()=>{ const nm=String(c.label==null?'':c.label).replace(/^Sim\b\s*/,'').trim();
+        const head=nm&&nm.toLowerCase()!=='sim'?`${SANS_LABEL[c.domain]} ${nm}`:`this ${SANS_LABEL[c.domain]} row`;
+        return noWin(c.s,c.en)?`${head} (no times yet)`:`${head} ${rng(c.s,c.en)}${c.ae?' (end assumed)':''}`; };
+      /* `crewWhy`: the crew list's words for the same answer, which the note after the drop reads (owner D2753 —
+         dropflag.ts flagLine); the line itself keeps the event it names */
+      add('adv','SANS_AVAIL',[c.id],`SANS: ${reason}. Planned on ${c.domain==='fly'?flightTag(c.label,c.to):simWhat()}`,c.key,{sansDomain:c.domain,crewWhy:sansCrewWhy(g,p,sansIso,c.domain)});
     });
     /* Q (sims) — the sim box guards its FRONT seat like the jet (ground crew,
        a WSO, an IW-in-FCP record — none may occupy it). The REAR seat has no

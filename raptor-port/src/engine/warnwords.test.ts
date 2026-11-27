@@ -343,7 +343,7 @@ describe('the seed week, every line (the parity test\'s positive half)', () => {
       '2 SANS_AVAIL | SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)',
       '2 SANS_AVAIL | SANS: no availability filed for today. Planned on RU BFM (T/O 13:00)',
       '2 SANS_AVAIL | SANS: no availability filed for today. Planned on RU BFM (T/O 13:00)',
-      '2 SANS_AVAIL | SANS: no availability filed for today. Planned on Sim EP-4 09:00–10:30',
+      '2 SANS_AVAIL | SANS: no availability filed for today. Planned on OFT EP-4 09:00–10:30',   // D2754
       '3 DOUBLE_BOOK | Conflict: HQ ENGAGEMENT 08:45–16:30 & RU AD (T/O 12:45, landing 14:10)',
       '3 INPUT_FLY | Conflict: RU BFM (T/O 16:45, landing 18:10) & Appointment 17:00–18:30. Reason: Medical / PHA',
       '3 NO_BRIEF | Misses RU AD brief 10:25–12:45: HQ ENGAGEMENT 08:45–16:30',

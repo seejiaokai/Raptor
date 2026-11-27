@@ -59,7 +59,7 @@ describe('Q3 (D2579) — nothing filed: one amber line, stating the fact', () =>
     sim('oft', 'EP-9', '10:00', '11:00')
     const w = his()
     expect(w).toHaveLength(1)
-    expect(w[0].msg).toMatch(/^SANS: no availability filed for today\. Planned on Sim EP-9 10:00–11:00$/)
+    expect(w[0].msg).toMatch(/^SANS: no availability filed for today\. Planned on OFT EP-9 10:00–11:00$/)   // D2754: the sim named OFT
   })
   it('a flight with no times yet: warned too, as the crew list strikes him', () => {
     line('SSFU')
@@ -86,9 +86,9 @@ describe('Q3 (D2579) — nothing filed: one amber line, stating the fact', () =>
 })
 
 describe('2a — the mismatch line says what he offered', () => {
-  it('"Fly only" on an OFT: "SANS: offered Fly only today. Planned on Sim EP-9 10:00–11:00"', () => {
+  it('"Fly only" on an OFT: "SANS: offered Fly only today. Planned on OFT EP-9 10:00–11:00"', () => {
     sim('oft', 'EP-9', '10:00', '11:00'); fileSans({ f: true })
-    expect(his().map((w: any) => w.msg)).toEqual(['SANS: offered Fly only today. Planned on Sim EP-9 10:00–11:00'])
+    expect(his().map((w: any) => w.msg)).toEqual(['SANS: offered Fly only today. Planned on OFT EP-9 10:00–11:00'])
   })
   it('"OFT and AMT" on a flight: "SANS: offered OFT and AMT only today."', () => {
     line('VL BFM', '13:00', '14:00'); fileSans({ o: true, a: true })
@@ -96,7 +96,7 @@ describe('2a — the mismatch line says what he offered', () => {
   })
   it('an untimed AMT, "OFT only": the same words', () => {
     sim('amt', 'EP-9'); fileSans({ o: true })
-    expect(his()[0].msg).toMatch(/^SANS: offered OFT only today\. Planned on Sim EP-9/)
+    expect(his()[0].msg).toMatch(/^SANS: offered OFT only today\. Planned on AMT EP-9 \(no times yet\)$/)   // D2754
   })
   it('wrong hours keep their words: "SANS: available 08:00–10:00 only"', () => {
     line('VL BFM', '13:00', '14:00'); fileSans({ f: true }, [480, 600])
