@@ -717,7 +717,10 @@ describe('§15 — pins: the short row sends one line, and the door still decide
     expect(HOOKS.toast, 'nothing said').not.toHaveBeenCalled()
     expect(p.noEditor(), 'closed').toBe(true)
   })
-  it('pin: a pick the line no longer allows — Kestrel picks View for Mako; a master admin gives Mako Plan of 149; Kestrel\'s Save is refused by the door in its own words: Mako keeps Plan, the row stays open', async () => {
+  /* (RE-POINTED AT U2 — his D2626: Plan of 149 is ended and lowered by 149's own admins too, so Kestrel's Save of View
+     over the Plan a master admin gave since now goes through as one call, 149's line alone; it was refused while Plan was
+     a master admin's alone) */
+  it('pin: a pick made before the line changed — Kestrel picks View for Mako; a master admin gives Mako Plan of 149; Kestrel\'s Save lowers it to View (D2626): one call, saved', async () => {
     signInAs('kestrel')
     const p = panel()
     await p.find('Mako')
@@ -731,9 +734,8 @@ describe('§15 — pins: the short row sends one line, and the door still decide
     vi.mocked(HOOKS.toast).mockClear()
     await p.press('#accEdSave')
     expect(spy.calls, 'one call: 149\'s line alone').toEqual([[ACCT.mako, { grants: { u149: 'view' } }]])
-    expect(level(ACCT.mako, 'u149'), 'the door refused: he still plans 149').toBe('admin')
-    expect(vi.mocked(HOOKS.toast).mock.calls[0]?.[1], 'said as a refusal').toBe('warn')
-    expect(p.$('.acc-edit[data-short="1"]'), 'the row stays open').not.toBeNull()
+    expect(level(ACCT.mako, 'u149'), 'saved: View of 149').toBe('view')
+    expect(vi.mocked(HOOKS.toast).mock.calls.some(c => c[1] === 'warn'), 'no refusal said').toBe(false)
     expect(anyRowNote(), 'not the row-changed note').toBe(0)
   })
   it('pin: a sign-in given under an open "No sign-in" short row — the row follows: the one line with Save; View picked and saved is one call, 149\'s line alone, on his new account', async () => {

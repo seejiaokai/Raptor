@@ -44,7 +44,9 @@ describe('the words table', () => {
     expect(updateAccount(ACCT.ranger, { role: 'admin' })).toBeNull()
     signInAs('ranger')
     expect(levelIn(ACCT.ranger, unitRows().units.find(u => u.num === '150')!.id, rosterToday()), 'Ranger is no admin of 150').toBeNull()
-    expect(updateAccount(ACCT.hunter, { on: false })).toBe("Hunter is 150's last admin. Only a master admin or an admin of 150 can make another.")
+    /* (RE-POINTED AT U2 — his D2816: 150 has no admin of its own, only Hunter's Plan, so only a master admin can make
+       another; the words were "Only a master admin or an admin of 150 can make another.") */
+    expect(updateAccount(ACCT.hunter, { on: false })).toBe("Hunter is 150's last admin. Only a master admin can make another.")
     expect(ACCOUNTS_LIST.find(a => a.id === ACCT.hunter)!.on, 'nothing saved').toBe(true)
   })
 })

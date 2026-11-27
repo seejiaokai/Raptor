@@ -332,7 +332,8 @@ describe('fault D — a right that changes hands through the account row is a ri
     const r1 = updateAccount('acad2', { pid: spare! })
     const r2 = updateAccount('acus9', { pid: 'prowler' })
     accountsLoad(); unitsLoad()
-    expect({ r1, r2, back: shown('prowler', l.id) }).toEqual({ r1: null, r2: 'This sign-in holds a right in 142. Only a master admin can link it to another person.', back: false })
+    /* (RE-POINTED AT U2 — his D2730 Q12: the words name who can, 142's own admins or a master admin) */
+    expect({ r1, r2, back: shown('prowler', l.id) }).toEqual({ r1: null, r2: 'This sign-in holds a right in 142. Only 142\'s own admins or a master admin can link it to another person.', back: false })
     expect(hunterAcct().pidFrom, 'the re-link dated today').toBe('2026-07-18')
   })
   it('(F10-4) Saber re-links Kestrel\'s account (Plan of 142 from 15 Jul) to Hunter on 18 Jul: allowed, dated 18 Jul, the retired line stays off — and through its Undo and Redo', () => {

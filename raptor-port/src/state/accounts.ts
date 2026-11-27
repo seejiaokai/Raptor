@@ -76,7 +76,7 @@ import {
   postInProblem, newHomeProblem, type NewPerson,
 } from './roster-add'
 import { HOOKS } from '../engine/hooks'
-import { putNewHome, dropGrantsOfAccount, dropGrantRows, levelOfAccount, levelBefore, homeBefore, todayIso, homeOn, units, unitById, unitRows, grantOfOn, grantRowHolds, lockBreach, rowsDraft, putGrantLine, PLAN_MASTER_ONLY } from './units'
+import { putNewHome, dropGrantsOfAccount, dropGrantRows, levelOfAccount, levelBefore, homeBefore, todayIso, homeOn, units, unitById, unitRows, grantOfOn, grantRowHolds, lockBreach, rowsDraft, putGrantLine, mayGivePlanOn } from './units'
 import { moveFrom, type UnitRows, type Grant, type GrantLevel } from './units-model'
 import type { LockBreach } from './lastadmin'
 import { noticeDay } from './notices'
@@ -495,6 +495,46 @@ export const levelIn = (accountId: any, unit: string, iso: string): UnitLevel | 
 }
 const canSignInAsAdmin = (a: Account) => isAdminAccount(a) && a.on && personOk(a.pid)
 
+/* MAY THE SIGNED-IN PERSON GIVE OR END PLAN OF THIS SQUADRON — AND SO MAKE A MAN ITS ADMIN (his D2626; D2730 Q8, D2806;
+   D2730 Q10 — the brief docs/superpowers/briefs/2026-11-27-msq-s2-u2-brief.md R1): the doors' and the screen's reader of
+   the one body (units-model.ts mayGivePlanAt, through units.ts mayGivePlanOn). The signed-in account, the role in force
+   (roleOf — an admin's only where the account's role is an admin's too, so a master admin in the member view gives
+   nothing), the live rows, his person and today. FAILS CLOSED: nobody signed in, or a session with no account behind it
+   (a probe's, a hand-made test's), answers no — the door no longer leaves a Plan to the gate (the security check's F7).
+   It lives here, not in units.ts, because units.ts already imports from this file; an installed hook there would answer
+   "no" in every test that never loads perms.ts. */
+export function mayGivePlanNow(unit: string): boolean {
+  const mine = signedInAccount()
+  if (!mine) return false
+  const role = roleOf() === 'admin' && mine.role === 'admin' ? 'admin' : 'main'
+  return mayGivePlanOn({ ...levelAcct(mine, role), on: mine.on }, (PEOPLE as any)[mine.pid], unit, todayIso(), unitRows())
+}
+/* THE WORDS OF WHO MAY (each his, exactly — the brief's §4): a squadron's number, else its id */
+const numOfUnit = (unit: string | null | undefined): string => (unit ? String(unitById(unit)?.num ?? unit) : '')
+/* the line's sentence — the greyed Plan's, and every Plan door's refusal (D2626, final on the section page, D2730) */
+export const planWords = (unit: string): string => {
+  const n = numOfUnit(unit)
+  return `Only ${n}'s own admins or a master admin can give or end Plan of ${n}.`
+}
+/* the Role box's grey line, and every door's refusal of making a man an admin (D2806; the door's use is the agent's
+   reading B6, named in the U2 report) */
+export const makeAdminWords = (unit: string): string => {
+  const n = numOfUnit(unit)
+  return `Only ${n}'s own admins or a master admin can make an admin of ${n}.`
+}
+/* the refused Undo (his D2807 — the curly apostrophe, as the app's other Undo words: the planning read's B4) */
+export const makeAdminUndoWords = (unit: string): string => {
+  const n = numOfUnit(unit)
+  return `Only ${n}'s own admins or a master admin can make an admin of ${n}, so this can’t be undone.`
+}
+/* Q8 AT A DOOR (his D2730 Q8, D2806): a man left an admin in force of `unit` who was not one is refused for one who may not
+   give Plan of it — `unit` his home that day (or, for a man the door makes, where his home will be); no home known (a
+   shared store before its rows) fails closed, as the reader does */
+function makeAdminProblem(unit: string | null | undefined): string | null {
+  if (!unit) return 'This change could not be saved.'
+  return mayGivePlanNow(unit) ? null : makeAdminWords(unit)
+}
+
 /* NEVER A SQUADRON LEFT WITH NO ADMIN OF ITS OWN (D2184 Q10 — "and so is any later step that would cause it, such as
    removing another admin"; the full check's reads, 18 Nov 26: the lock counted every squadron's admins as one, so 142's
    admin could switch 149's only admin off). `list` — the accounts a step would leave; a squadron that has an admin at
@@ -524,8 +564,9 @@ export function lockProblemFor(d: { list?: readonly any[]; person?: (pid: string
 /* THE LOCK'S ONE WORDS TABLE (the reshape plan §5.2): today — "Kestrel is 149's last admin. Make another admin of 149
    first." (D2184 Q10); a later date — the approved drawing's "Kestrel is 149's last admin from Fri 27 Nov, when Osprey
    moves to 142. Make another admin of 149 first." (D2217 Q15, picture 9b); and to one who cannot make an admin of that
-   squadron — neither a master admin nor its admin at home or by Plan — "… Only a master admin or an admin of 150 can make
-   another." (his D2246). The whole app's: ADMIN_LOCK. */
+   squadron — "… Only 149's own admins or a master admin can make another." (his D2806, which replaced D2246's words), or,
+   where the squadron has no admin of its own, "… Only a master admin can make another." (his D2816). The whole app's:
+   ADMIN_LOCK. */
 export function lockWords(b: LockBreach, rows?: UnitRows): string {
   if (b === 'app') return ADMIN_LOCK
   const numOf = (u: string | null) => (u ? String(unitById(u)?.num ?? (rows ? rows.units.find(x => x.id === u)?.num : undefined) ?? u) : '')
@@ -533,9 +574,14 @@ export function lockWords(b: LockBreach, rows?: UnitRows): string {
   const goneAcct = b.gone ? accountById(b.gone) : undefined
   const cs = goneAcct ? accountCallsign(goneAcct) : ''
   if (!cs) return `At least one admin of ${num} must keep access`
+  /* WHO CAN MAKE ANOTHER (his D2806, D2816 — U2's R5): the reader who may make an admin of the squadron (its own admin, a
+     master admin — mayGivePlanNow) reads the approved words (D2184 Q10); anyone else is told who can — its own admins or
+     a master admin where the squadron had an admin of its own on that date, a master admin alone where it had none. No
+     Plan holder of the squadron counts any longer as one who can make another. Nobody signed in (no account behind the
+     session): the approved words, as before. In the dated form too. */
   const mine = signedInAccount()
-  const can = !mine || mine.master === true || levelOfAccount(levelAcct(mine, 'admin'), b.unit, todayIso()) === 'admin'
-  const tail = can ? `Make another admin of ${num} first.` : `Only a master admin or an admin of ${num} can make another.`
+  const tail = !mine || mayGivePlanNow(b.unit) ? `Make another admin of ${num} first.`
+    : b.own ? `Only ${num}'s own admins or a master admin can make another.` : 'Only a master admin can make another.'
   const mover = b.cause && b.date > todayIso() ? (PEOPLE as any)[b.cause.pid]?.cs : ''
   if (mover && b.cause!.to) return `${cs} is ${num}'s last admin from ${noticeDay(b.date)}, when ${mover} moves to ${numOf(b.cause!.to)}. ${tail}`
   return `${cs} is ${num}'s last admin. ${tail}`
@@ -555,11 +601,12 @@ function otherSquadronProblem(pid: string): string | null {
 }
 /* WHO MAY LINK A SIGN-IN TO ANOTHER PERSON (fix read 10, fault D; the reshape plan §4.3 guardrail 1, refined by the Plan
    audit's PA3 — D2199, D2201, D2241). The re-link drops every right of the sign-in in its own command (updateAccount), so
-   the line guards the drop: a sign-in holding a Plan that HOLDS today is re-linked only by a master admin (taking Plan is
-   a master admin's alone — D2199); one holding a View that holds today, by an admin of that squadron — at home or by Plan
-   — or a master admin. Ended rows decide nothing: a right that holds nothing gives nothing, so dropping one is no act for
-   its squadron (§14 item 6). The gate holds the same (perms.ts G4). A master's own account is a master's alone already
-   (masterChangeProblem). The words: a View's, D2241's; a Plan's, the master admin's alone (PH1). */
+   the line guards the drop: a sign-in holding a Plan that HOLDS today is re-linked only by one who may end that Plan —
+   that squadron's own admins or a master admin (his D2626; the rule asked, mayGivePlanNow); one holding a View that holds
+   today, by an admin of that squadron — at home or by Plan — or a master admin. Ended rows decide nothing: a right that
+   holds nothing gives nothing, so dropping one is no act for its squadron (§14 item 6). The gate holds the same (perms.ts
+   G4). A master's own account is a master's alone already (masterChangeProblem). The words: a View's, D2241's, as built;
+   a Plan's, his D2730 Q12. */
 function relinkRightsProblem(a: Account): string | null {
   const mine = SESSION ? accountById(SESSION.user) : undefined
   if (mine?.master) return null
@@ -568,7 +615,10 @@ function relinkRightsProblem(a: Account): string | null {
     const g = grantOfOn(levelAcct(a), u, today)
     if (!g) continue
     const num = unitById(u)?.num ?? u
-    if (g.level === 'admin') return `This sign-in holds a right in ${num}. Only a master admin can link it to another person.`
+    if (g.level === 'admin') {
+      if (mayGivePlanNow(u)) continue
+      return `This sign-in holds a right in ${num}. Only ${num}'s own admins or a master admin can link it to another person.`
+    }
     if (mine && levelOfAccount(levelAcct(mine, 'admin'), u, todayIso()) === 'admin') continue
     return `This sign-in holds a right in ${num}. Only a master admin or an admin of ${num} can link it to another person.`
   }
@@ -698,6 +748,8 @@ export function addAccount(nameIn: any, pid: string, role: AccountRole): string 
   if (!mayManageAccounts()) return 'Only an admin can add an account'
   const name = normName(nameIn)
   const bad = requestNotHis(requestByName(name)) || nameProblem(name) || pidProblem(pid) || otherSquadronProblem(pid) || (isAccountRole(role) ? null : 'Pick member or admin')
+    /* (Q8 — D2730, D2806: an admin's account is given only by one who may make an admin of his squadron) */
+    || (role === 'admin' ? makeAdminProblem(homeOn(pid, todayIso())) : null)
   if (bad) return bad
   return commitIntent('account.add', null, () => {
     writeAccounts([...ACCOUNTS_LIST, adminRecFor({ id: newAccountId(), name, role, pid, on: true, ...newAccountStamp() })])
@@ -748,6 +800,13 @@ export function updateAccount(id: string, patch: { name?: any; role?: AccountRol
   }
   if (patch.on !== undefined) { next.on = !!patch.on; delete next.offBy }   // a hand Suspend / Enable is the admin's own
   const next0 = next.role !== 'admin' || patch.role === 'admin' || next.pid !== a.pid ? adminRecFor(next) : next
+  /* Q8 (his D2730 Q8, D2806): a role change to admin, or a re-link that leaves a man an admin of his squadron who was not
+     one, only by one who may make an admin of that squadron — its own admins or a master admin, never a Plan holder of it;
+     the re-link's refusal in the same sentence (the agent's reading, B6 — named in the U2 report) */
+  if (next0.role === 'admin' && (patch.role === 'admin' || next0.pid !== a.pid) && !(next0.pid === a.pid && adminNow(a)) && adminNow(next0)) {
+    const q = makeAdminProblem(homeOn(next0.pid, todayIso()))
+    if (q) return q
+  }
   /* A RE-LINK CARRIES NO RIGHT (the reshape plan §4.3, guardrail 1): every right of the sign-in, holding or ended, goes in
      the re-link's own command, whoever re-links (who may, relinkRightsProblem above); the man now on the sign-in is given
      what he needs anew. MAKING A PLAN HOLDER A MEMBER (the Plan audit's PA2; his D2250, replacing R7's D2248): any admin
@@ -816,8 +875,8 @@ export function setMaster(id: string, on: boolean): { ok: boolean; message?: str
      master admin's account only by a master admin, the mark a master admin's alone to set or clear, the role an admin's
      of his own squadron (otherSquadronProblem); a row where only another squadron's line changed asks none of these
      (Kestrel giving Hunter View of 149 — R-O3b);
-   - each squadron's line → setGrant / removeGrant's for that squadron: Plan given, changed or taken only by a master admin
-     (PA1); View given or taken by an admin of that squadron (R5 — D2336's words); Plan only on an admin's account, judged
+   - each squadron's line → setGrant / removeGrant's for that squadron: Plan given, changed or taken only by that squadron's
+     own admins or a master admin (his D2626 — mayGivePlanNow); View given or taken by an admin of that squadron (R5 — D2336's words); Plan only on an admin's account, judged
      on the role AFTER the Save (Member → Admin with Plan in one Save passes — R-O3c); never his own squadron; never one
      given between a move saved and its day; never on a master admin's account (R4: "Full access", no buttons);
    - the last-admin and last-master locks once, over the whole state the Save leaves.
@@ -867,6 +926,9 @@ export function saveAccess(id: string, want: AccessSave): string | null {
     if (masterOnly) return masterOnly
     if (masterCh && !actorMaster) return MASTER_ONLY_WORDS
     if (roleCh || nameCh) { const other = otherSquadronProblem(a.pid); if (other) return other }
+    /* Q8 (his D2730 Q8, D2806): Admin picked — a member made one, or a moved admin re-made (`remade`) — only by one who may
+       make an admin of his squadron that day; said before anything of the Save is written, the rename and the lines with it */
+    if (roleCh && roleAfter === 'admin') { const q = makeAdminProblem(homeOn(a.pid, today)); if (q) return q }
   }
   /* (a rename onto a waiting request's name answers it — only an admin of its squadron, §15 D12; as updateAccount) */
   if (nameCh) { const bad = requestNotHis(requestByName(nameAfter)) || nameProblem(nameAfter, a.id); if (bad) return bad }
@@ -882,7 +944,8 @@ export function saveAccess(id: string, want: AccessSave): string | null {
     if (homeOn(a.pid, today) === ln.unit) return 'That is his own squadron — his role there is set on his account'
     if (masterAfter && ln.to) return 'This change could not be saved.'
     const plan = ln.to === 'admin' || ln.had?.level === 'admin'
-    if (plan && !actorMaster) return PLAN_MASTER_ONLY
+    /* (Plan of that squadron given, raised, lowered or ended only by its own admins or a master admin — his D2626) */
+    if (plan && !mayGivePlanNow(ln.unit)) return planWords(ln.unit)
     if (!plan && !(mine && levelOfAccount(levelAcct(mine, 'admin'), ln.unit, today) === 'admin')) return `Only an admin of ${u.num} can give access to ${u.num}.`
     if (ln.to === 'admin' && roleAfter !== 'admin') return 'Plan is for admins only.'
     if (ln.to === 'admin' && !adminNow(next0)) return 'This change could not be saved.'
@@ -922,6 +985,8 @@ export function approveRequest(reqId: string, pid: string, role: AccountRole): s
   const h = homeOn(pid, todayIso())
   if (h && h !== rq.unit) return 'That did not save'
   const bad = nameProblem(rq.name) || pidProblem(pid) || otherSquadronProblem(pid) || (isAccountRole(role) ? null : 'Pick member or admin')
+    /* (Q8 — D2730, D2806: approved as an admin only by one who may make an admin of the squadron he asked to join) */
+    || (role === 'admin' ? makeAdminProblem(rq.unit) : null)
   if (bad) return bad
   /* linked to a man already on the roster, he keeps the squadron he has — no home is written here: a new home row moved
      the man linked into the approving admin's squadron from today (the full check, 18 Nov 26). A NEW man's home is
@@ -1260,6 +1325,9 @@ export function addPersonAndAccount(nameIn: any, np: NewPerson, role: AccountRol
   if (!mayManageAccounts() || !mayManageRoster()) return 'Only an admin can add a person'
   const bad = newHomeProblem(unit, 'Only an admin can add a person') || requestNotHis(requestByName(name)) || nameProblem(name) || newPersonProblem(np) || (isAccountRole(role) ? null : 'Pick member or admin')
     || (postIn !== undefined ? postInProblem(postIn) : null)
+    /* (Q8 — D2730, D2806: added as an admin only by one who may make an admin of the squadron his home will be — the one
+       named, else the page's, as putNewHome writes it) */
+    || (role === 'admin' ? makeAdminProblem(unit ?? pageUnit('own')) : null)
   if (bad) return bad
   return saidOf(commitPeopleSettingsIntent('account.addNew', null, txn => {
     const pid = putNewPerson(np)
@@ -1283,6 +1351,8 @@ export function approveRequestNew(reqId: string, np: NewPerson, role: AccountRol
   const unit = rq.unit
   const bad = nameProblem(rq.name) || newPersonProblem(np) || (isAccountRole(role) ? null : 'Pick member or admin')
     || (postIn !== undefined ? postInProblem(postIn) : null)
+    /* (Q8 — D2730, D2806: as approveRequest — the squadron he asked to join) */
+    || (role === 'admin' ? makeAdminProblem(unit) : null)
   if (bad) return bad
   return saidOf(commitPeopleSettingsIntent('access.approveNew', null, txn => {
     const pid = putNewPerson(np)

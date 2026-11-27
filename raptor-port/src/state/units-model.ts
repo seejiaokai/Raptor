@@ -370,6 +370,54 @@ export function levelFrom(acct: LevelAccount | null | undefined, unit: string, i
   return g.level
 }
 
+/* WHO MAY GIVE OR END PLAN OF A SQUADRON — AND SO WHO MAY MAKE ITS ADMINS: THE ONE BODY (his D2626: "given and taken away
+   by that squadron's own admins or a master admin, never by a Plan holder"; D2730 Q8, D2806: whoever may give Plan of a
+   squadron is the only one who may make a man its admin; D2730 Q10: only admins who can still sign in; the plan
+   docs/superpowers/plans/2026-11-25-msq-pick-guard-build1.md §19.2's definition — the security reader's S1 fix, F3, F7,
+   note 1). True only for:
+   1. a master admin whose role (the role the caller reads — the role in force) is an admin's: a master admin in the member
+      view gives nothing (K1, D2253);
+   2. an account whose home that day is `unit` and whose level there is admin — read through levelFrom's home branch,
+      adminRoleHolds unchanged, its `first` path with it (a new squadron's named first admin, once moved in, is its own
+      admin and gives Plan of it — D2191, D2247). Never his level by a grant (a Plan holder of `unit` gives nothing of it),
+      and never a stored role read beside a home (Viper, 142's admin moved to 149, joins as a member though his account
+      still stores "admin" — K3, D2160).
+   FAILS CLOSED: false for no account, an account switched off, a man archived, deleted or a placeholder, a home that cannot
+   be read, rows not handed in. `acct.role` is the role the caller reads: the doors and the gate hand an admin's role only
+   where both the account and the role in force are an admin's. Pure: the doors' reader (accounts.ts mayGivePlanNow) and
+   the gate's (perms.ts mayGivePlanOf) are thin wrappers over this, so the screen, the doors and the gate give one answer. */
+export function mayGivePlanAt(acct: (LevelAccount & { on?: boolean }) | null | undefined, person: any, unit: string, iso: string, r: UnitRows | null | undefined, fallback: string | null): boolean {
+  if (!acct || !r || acct.on === false) return false
+  if (!person || person.special || person.deleted || person.archived) return false
+  if (acct.master) return acct.role === 'admin'
+  const home = homeUnitOn(r, acct.pid, iso, fallback)
+  if (home == null || home !== unit) return false
+  return levelFrom(acct, unit, iso, r, fallback) === 'admin'
+}
+
+/* WHO A COMMAND MADE AN ADMIN, AND OF WHICH SQUADRON (his D2730 Q8, D2806, D2807 — the brief
+   docs/superpowers/briefs/2026-11-27-msq-s2-u2-brief.md R2): every man who, after the command, is an admin in force of the
+   squadron he is at home in today and was not one before it — keyed by the MAN (a re-link puts an admin's sign-in on a
+   man who had none), judged today, over the accounts and rows before and after. ONE pure helper: the commit gate
+   (perms.ts madeAdminViolation) and the Undo's own check (state/undo-wire.ts makeAdminStuck) ask it, so the two never
+   disagree. A home row alone makes nobody an admin today (a move counts from tomorrow, D2119): the first admin of a new
+   squadron moving in is never caught here. A master admin made one is a master admin's act, judged by its own rules. */
+export interface MadeAdmin { account: string; pid: string; unit: string }
+export function madeAdminsIn(w: {
+  acctB: readonly LevelAccount[]; acctA: readonly LevelAccount[]; rowsB: UnitRows; rowsA: UnitRows; today: string; fallback: string | null
+}): MadeAdmin[] {
+  const out: MadeAdmin[] = []
+  for (const y of w.acctA) {
+    if (y.role !== 'admin' || y.pid == null || y.pid === '') continue
+    const u = homeUnitOn(w.rowsA, String(y.pid), w.today, w.fallback)
+    if (u == null || levelFrom(y, u, w.today, w.rowsA, w.fallback) !== 'admin') continue
+    const x = w.acctB.find(z => String(z.pid) === String(y.pid))
+    if (x && levelFrom(x, u, w.today, w.rowsB, w.fallback) === 'admin') continue
+    out.push({ account: y.id, pid: String(y.pid), unit: u })
+  }
+  return out
+}
+
 /* the date a move counts from: the next day's start (D2119) — a move typed today never rewrites today */
 export const moveFrom = (today: string): string => addDays(today, 1)
 

@@ -35,7 +35,7 @@ import { voidedOil } from '../engine/oil'
 /* the seeded accounts, read only by the posting pass's first-write rule below (accounts.ts imports this file; the call is
    made only when a command is judged, never as the module loads) */
 import { seedAccounts, ACCOUNTS_LIST, isMasterAccount, accountBefore, levelAcct, readAccounts, adminLineAudience, type Account } from './accounts'
-import { unitRowsBefore, unitRowsAfter, levelBefore, homeBefore, homeChangesBefore, todayIso, homeOn, levelOfAccount, setNewHomeUnit, grantBefore, grantRowHolds, datedBreach, lockBreach, everOfBefore, units as storeUnits, unitById as storeUnitById } from './units'
+import { unitRowsBefore, unitRowsAfter, levelBefore, homeBefore, homeChangesBefore, todayIso, homeOn, levelOfAccount, setNewHomeUnit, grantBefore, grantRowHolds, datedBreach, lockBreach, everOfBefore, units as storeUnits, unitById as storeUnitById, mayGivePlanOn, madeAdminsNow } from './units'
 import { PEOPLE, sansStart, sansStop } from '../engine/people'
 import { UNIT, BOOT_UNIT } from '../engine/unitview'
 import { unitOf, isUnitId, split } from '../storage/unitid'
@@ -2403,18 +2403,21 @@ function accountMadeMember(env: CommitEnvelope, id: string): boolean {
       as it stood at the step. A move is on a day already begun and never changes, so the answer never changes either, in
       any order of Undo and Redo;
    3. it never removes a grant row not stored;
-   4. a Plan row (level `admin`) is put back only by a master admin's restore (`master` — the restore's maker, asked by the
-      gate and the timeline's hook; not asked, as before): only a master admin gives Plan (D2199, PA1), and a step of
-      anyone else's drops one only beside making its account a member (his D2250), so that step's Undo gives back the
-      role only (chat 129, the agent's reading — told him).
+   4. a Plan row (level `admin`) is put back only where the restore's maker may give Plan of that row's squadron as he
+      stands today (`mayPlan` — asked by the gate and the timeline's hook, for that row's squadron: its own admins or a
+      master admin, his D2626 — U2, replacing "only a master admin's restore"). It FAILS CLOSED: not handed in reads as
+      "may not". The one put-back this leaves out rather than refuses (the plan §19.2's replay rule (c); the security
+      check's F1): the Plan row in the Undo of a "made a member", where the presser may make the man an admin again but may
+      not give that Plan — the role comes back, the Plan does not (his D2250; chat 129's reading, told him). Every other
+      Plan put-back by one who may not is refused whole before it reaches here (state/undo-wire.ts planRestoreStuck).
    Not a grant row: never left out here. `stored` — whether the row is stored now (the caller's; read from the store when
    not handed in). */
-export interface RestoreGrantCtx { relink: boolean; holder?: GrantHolder; stood?: unknown; stored?: boolean; master?: boolean }
+export interface RestoreGrantCtx { relink: boolean; holder?: GrantHolder; stood?: unknown; stored?: boolean; mayPlan?: boolean }
 export function restoreLeavesOut(c: Change, ctx: RestoreGrantCtx, rows: UnitRows = unitRowsBefore([]), today: string = todayIso()): boolean {
   if (c.collection !== 'settings' || !String(c.id).startsWith(GRANT_PFX)) return false
   if (!(c.op === 'put' && c.after != null)) return !(ctx.stored ?? store.get(String(c.id), null) != null)
   if (ctx.relink) return true
-  if (ctx.master === false && (c.after as any).level === 'admin') return true
+  if (ctx.mayPlan !== true && (c.after as any).level === 'admin') return true
   const n: any = c.after
   const s: any = stoodGrant(ctx.stood, n) ?? n
   const now: any = accountImagesNow().find(y => y && y.id === String(n.account))
@@ -2598,6 +2601,9 @@ function accountShapeAndMasterViolation(env: CommitEnvelope): string | null {
      on the rows before decide; a sign-in holding a Plan is re-linked only by a master admin (the drop takes it, and taking
      Plan is a master admin's alone); one holding a View, by an admin of that squadron — at home or by Plan — or a master
      admin. accounts.ts relinkRightsProblem says the same at the door. */
+  /* (U2 — his D2626, D2730 Q12): the re-link drops the Plan, and ending Plan of a squadron is its own admins' or a master
+     admin's — so a sign-in holding a Plan is re-linked by one who may give that Plan (the one rule, mayGivePlanOf, as the
+     actor stood before the command), no longer a master admin alone. The View case is unchanged. */
   if (!actorMaster) {
     for (const c of env.changes) {
       if (c.collection !== 'settings' || !String(c.id).startsWith(ACCOUNT_ROW) || c.after == null) continue
@@ -2609,7 +2615,7 @@ function accountShapeAndMasterViolation(env: CommitEnvelope): string | null {
       const holder = accountHolder(env, id, 'b')
       for (const g of w.rowsB.grants) {
         if (g.account !== id || !grantRowHolds(holder, g, today, w.rowsB)) continue
-        if (g.level === 'admin' || levelInForce(a, g.unit, today, w.rowsB) !== 'admin') return `a sign-in holding a right in another squadron re-linked by one who is not a master (${c.id})`
+        if (g.level === 'admin' ? !mayGivePlanOf(g.unit, planActorOf(env), w.rowsB, today) : levelInForce(a, g.unit, today, w.rowsB) !== 'admin') return `a sign-in holding a right in another squadron re-linked by one who may not end it (${c.id})`
       }
     }
   }
@@ -2687,6 +2693,37 @@ function lastAdminViolation(env: CommitEnvelope): string | null {
   return `a squadron (${b.unit}) left with no admin of its own who can sign in (on ${b.date})`
 }
 
+/* WHO MAY GIVE OR END PLAN OF A SQUADRON, AND MAKE ITS ADMINS — THE GATE'S READER (his D2626; D2730 Q8, Q10; D2806 — the
+   brief docs/superpowers/briefs/2026-11-27-msq-s2-u2-brief.md R1; the plan §19.2's point 4): the one body (units-model.ts
+   mayGivePlanAt, through units.ts mayGivePlanOn), over the actor's account AS IT STOOD BEFORE THE COMMAND — the row this
+   command changed, put back; else the live list — as unitRowViolation builds its own `acct`, with his person before the
+   command and the rows before it (unitRowsBefore(env.changes)): so one command can never make its own actor an admin of a
+   squadron and give Plan of it. Never `worldsOf`, which is null for a command of rights only (every setGrant). An admin's
+   role only where the role in force and the account's are both an admin's. Fails closed: the app's own actor, an actor with
+   no account (a hand-made session), an account switched off, a man archived, deleted or a placeholder — no. */
+export interface PlanActor { acct: (LevelAccount & { on?: boolean }) | null; person: any }
+const PLAN_ACTOR = new WeakMap<CommitEnvelope, PlanActor>()
+function planActorOf(env: CommitEnvelope): PlanActor {
+  const got = PLAN_ACTOR.get(env)
+  if (got) return got
+  const a = env.actor
+  let out: PlanActor = { acct: null, person: null }
+  if (a && a.role !== 'system') {
+    const mine = env.changes.find(c => c.collection === 'settings' && c.id === ACCOUNT_ROW + a.id)
+    const was: any = mine ? accountBefore(a.id, mine.before) : ACCOUNTS_LIST.find(x => x.id === a.id)
+    if (was && was.pid != null) {
+      const role = a.role === 'admin' && String(was.role) === 'admin' ? 'admin' : 'main'
+      const pc = env.changes.find(c => c.collection === 'people' && String(c.id) === String(was.pid))
+      out = { acct: { ...levelAcct(was, role), on: was.on !== false }, person: pc ? pc.before : (PEOPLE as any)[String(was.pid)] }
+    }
+  }
+  PLAN_ACTOR.set(env, out)
+  return out
+}
+export function mayGivePlanOf(unit: string, actor: PlanActor, rows: UnitRows, today: string): boolean {
+  return mayGivePlanOn(actor.acct, actor.person, unit, today, rows)
+}
+
 function unitRowViolation(env: CommitEnvelope): string | null {
   const a = env.actor
   const unitCh = env.changes.filter(c => c.collection === 'settings' && isUnitRow(String(c.id)))
@@ -2751,6 +2788,16 @@ function unitRowViolation(env: CommitEnvelope): string | null {
         if (after.grants.filter(g => g.account === n.account && g.unit === n.unit && grantRowHolds(hA, g, today, after)).length > 1) return `two rights holding for one account in one unit (${id})`
         /* PLAN IS AN ADMIN'S (the Plan audit's PA2 — D2201, D785): never on an account whose role is not admin */
         if (n.level === 'admin' && String(who.role) !== 'admin') return `Plan on an account that is not an admin's (${id})`
+        /* …READ BY THE ROLE IN FORCE, AFTER THE COMMAND (U2 — the plan §19.2 "Who may hold it", the security check's F6): once
+           every squadron's own admins write Plan rows, a forged give to a moved "admin" — a member where he stands, his
+           account still storing "admin" (K3, D2160) — would make him an admin of that squadron. A Plan that holds is on an
+           account that is an admin in force of the squadron he is at home in that day (a master admin's is refused below;
+           no home at all — a shared store before its rows — by his role alone, as accounts.ts adminNow reads it). Saber's one
+           Save "make Ranger an admin and give him Plan of 149" passes: the receiver is read after it. */
+        if (n.level === 'admin' && grantRowHolds(holderA(String(n.account)), n, today, after) && who.master !== true) {
+          const hW = homeBefore(String(who.pid), today, after)
+          if (hW != null && levelBefore(levelAcct(who, 'admin'), hW, today, after) !== 'admin') return `Plan on an account that is not an admin's (${id})`
+        }
         /* NO RIGHT GIVEN ON A MASTER ADMIN'S ACCOUNT (batch 1's second half, plan §15 D14 — R2-O14): he acts in every
            squadron, his row reads "Full access" with no buttons (R4), so a row given him would be hidden and come back when
            the mark comes off. Units.ts setGrant and accounts.ts saveAccess refuse it at the door. A restore too (the fix
@@ -2835,13 +2882,38 @@ function unitRowViolation(env: CommitEnvelope): string | null {
          endRightsOfArchived) — a removal that passes where the command's own records archive that account's man, made by
          an admin of his own squadron (personArchivedHere); a forged removal beside an unrelated archive stays refused */
       if (id.startsWith(GRANT_PFX) && b && n == null && personArchivedHere(env, accountPidBefore(env, String(b.account)), adminOf, before)) continue
-      /* PLAN IS A MASTER ADMIN'S TO GIVE, RAISE, LOWER OR TAKE (the Plan audit's PA1 — D2199, D2211): a grant row whose
-         level is `admin` on either side — and that holds there (a row holding nothing is no Plan a person can use) — needs a
-         master admin; a person delete's drop (above) and a verified replay excepted */
-      if (id.startsWith(GRANT_PFX) && !master && !(env.origin === 'restore' && REPLAY && REPLAY(env)?.(c))) {
+      /* PLAN IS GIVEN, RAISED, LOWERED AND TAKEN BY THAT SQUADRON'S OWN ADMINS OR A MASTER ADMIN (his D2626, replacing the
+         Plan audit's PA1 — a master admin's alone; D2730 Q10): a grant row whose level is `admin` on either side — and that
+         holds there (a row holding nothing is no Plan a person can use) — needs one who may give Plan of THAT ROW'S
+         squadron (mayGivePlanOf, over his account and the rows before the command). The removal exceptions above (a
+         delete's, a re-link's dropping a right that holds nothing, the member's drop, an archive's) stay removal-only. A
+         verified replay is NOT excepted any more (U2 — the plan §19.2's replay rule (a); Astra 1, Fable 3, security S4 of the
+         third read): an Undo or Redo is asked of its maker as he stands today, in every direction — a put-back, a removal and
+         a lowering alike, D2730 Q11 */
+      if (id.startsWith(GRANT_PFX)) {
+        const pa = planActorOf(env)
         const planB = !!b && b.level === 'admin' && grantRowHolds(holderB(String(b.account)), b, today, before)
         const planA = !!n && n.level === 'admin' && grantRowHolds(holderA(String(n.account)), n, today, after)
-        if (planB || planA) return `Plan given, changed or taken by one who is not a master admin (${id})`
+        if ((planB && !mayGivePlanOf(String(b.unit), pa, before, today)) || (planA && !mayGivePlanOf(String(n.unit), pa, before, today))) return `Plan given, changed or taken by one who may not give it (${id})`
+      }
+      /* THE FIRST ADMIN'S MARK IS A MASTER ADMIN'S "+ NEW SQUADRON" ALONE (U2 — the plan §19.2 "The `first` mark"; the
+         security check's F3): `first` makes its holder the squadron's own admin the day he moves in (units-model.ts
+         adminRoleHolds), so a Plan row carrying it written anywhere else — Kestrel's forged give to Hunter, or Saber's give
+         by the row — would make an admin of 149 at none of the places that make one (K3, K4). A grant row whose after-image
+         carries `first` passes only where it carried `first` before (same account, same squadron, still Plan), or where it
+         is a master admin's `unit.add` making that very squadron in this command — or that command's verified replay (the
+         Redo of "+ New squadron") */
+      if (id.startsWith(GRANT_PFX) && n && n.first === true) {
+        const keptFirst = !!b && b.first === true && String(b.account) === String(n.account) && String(b.unit) === String(n.unit) && b.level === 'admin' && n.level === 'admin'
+        const madeHere = env.changes.some(x => x.collection === 'settings' && String(x.id) === UNIT_PFX + String(n.unit) && x.before == null && x.after != null)
+        const byAdd = master && madeHere && env.type === 'unit.add'
+        /* (an Undo or Redo the timeline vouches for, record by record, puts back the very row a step recorded — the Undo of
+           the first admin's Plan taken away, the Redo of "+ New squadron": "the row carried `first` before". Who may put
+           that Plan back at all is the who-check's above, asked of the presser as he stands today — the agent's reading of
+           the plan §19.2, named in the U2 report) */
+        const byReplay = env.origin === 'restore' && !!REPLAY && !!REPLAY(env)?.(c)
+        const firsts = env.changes.filter(x => x.collection === 'settings' && String(x.id).startsWith(GRANT_PFX) && (x.after as any)?.first === true && String((x.after as any)?.unit) === String(n.unit))
+        if (!keptFirst && !byReplay && !(byAdd && firsts.length === 1)) return `a squadron's first-admin mark written outside "+ New squadron" (${id})`
       }
       /* A PLAN'S MOMENT IS THE MOMENT IT BECAME PLAN (batch 1's second half, plan §16 D1′ — his D2310, D2218): the bell
          shows a squadron's admin line only where the right began no later than the line (notices.ts rightStart), so a
@@ -2912,7 +2984,10 @@ function unitRowViolation(env: CommitEnvelope): string | null {
     const replayed = REPLAY(env)
     for (const c of unitCh) {
       if (!String(c.id).startsWith(GRANT_PFX) || !replayed?.(c)) continue
-      if (restoreLeavesOut(c, { ...restoreGrantCtx(env, c), master: sys ? undefined : master }, after, today)) return `a right put back that its man's move or a re-link has ended, or a Plan only a master admin gives (${c.id})`
+      /* (`mayPlan` — the restore's maker, as he stands today, for that row's squadron: U2, replacing "is he a master admin";
+         the app's own actor hands nothing in, which reads as "may not") */
+      const gu = String((c.after as any)?.unit ?? (c.before as any)?.unit ?? '')
+      if (restoreLeavesOut(c, { ...restoreGrantCtx(env, c), mayPlan: sys ? undefined : mayGivePlanOf(gu, planActorOf(env), before, today) }, after, today)) return `a right put back that its man's move or a re-link has ended, or a Plan put back by one who may not give it (${c.id})`
     }
   }
 
@@ -3036,6 +3111,29 @@ function homeUnitViolation(env: CommitEnvelope): string | null {
      check for homes and places, units-model.ts datedRowsBreach, called by section 6 (unitRowViolation) — the reshape plan
      §4.3, Piece B. Its rules there: never a day already begun (a man with no squadron yet placed from today), only by an
      admin of the squadron he leaves, nobody moving himself (R1). */
+  return null
+}
+
+/* WHO MAKES AN ADMIN OF A SQUADRON (his D2626, D2730 Q8, D2806 — "an admin of a squadron is made only by its own admins or
+   a master admin"; the brief docs/superpowers/briefs/2026-11-27-msq-s2-u2-brief.md R2): for every man the command makes an
+   admin in force of the squadron he is at home in today (units-model.ts madeAdminsIn — the one helper the Undo's own check
+   asks too, state/undo-wire.ts makeAdminStuck), the actor must be one who may give that squadron's Plan, as he stood
+   before the command (mayGivePlanOf — the same rule as Plan's). Before this, a Plan holder of 142 passed the account-row
+   check by his Plan and could make a 142 man 142's admin. Asked only of a command that changes an account or makes a
+   person — never of a home row alone (a move counts from tomorrow, D2119), nor of the app's own pass or the seed. An Undo
+   or Redo is judged here too: the Undo of "made a member" is the same act (his D2807). */
+function madeAdminViolation(env: CommitEnvelope): string | null {
+  const a = env.actor
+  if (!a || a.role === 'system' || env.origin === 'seed') return null
+  const accts = env.changes.some(c => c.collection === 'settings' && String(c.id).startsWith(ACCOUNT_ROW))
+  const madePerson = env.changes.some(c => c.collection === 'people' && c.before == null && c.op !== 'delete' && c.after != null)
+  if (!accts && !madePerson) return null
+  const w = worldsOf(env) ?? buildWorlds(env)
+  const today = todayIso()
+  const made = madeAdminsNow({ acctB: w.acctB.map(x => levelAcct(x)), acctA: w.acctA.map(x => levelAcct(x)), rowsB: w.rowsB, rowsA: w.rowsA, today })
+  for (const m of made) {
+    if (!mayGivePlanOf(m.unit, planActorOf(env), w.rowsB, today)) return `a man made an admin of ${m.unit} by one who may not give its Plan (${ACCOUNT_ROW}${m.account})`
+  }
   return null
 }
 
@@ -4018,6 +4116,9 @@ function ownershipChecks(env: CommitEnvelope): string | null {
   if (dayBad) return dayBad
   const homeBad = homeUnitViolation(env)
   if (homeBad) return homeBad
+  /* (who makes an admin of a squadron — U2's Q8, beside the account-row check above) */
+  const madeBad = madeAdminViolation(env)
+  if (madeBad) return madeBad
   const reqBad = requestRowViolation(env)
   if (reqBad) return reqBad
   const inputBad = inputUnitViolation(env)

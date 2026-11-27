@@ -181,9 +181,10 @@ describe('2. View given and ended by an admin of the squadron (D2336, D2306)', (
 })
 
 describe('3. the last-admin refusals, word for word (D2246, D2247)', () => {
-  it('pin: a Plan holder never counts as 149\'s last admin while 149 has one of its own — Hunter making Kestrel a member is refused', () => {
+  /* (RE-POINTED AT U2 — his D2806: a Plan holder can no longer make another admin of 149, so he is told who can) */
+  it('pin: a Plan holder never counts as 149\'s last admin while 149 has one of its own — Hunter making Kestrel a member is refused, told who can (D2806)', () => {
     signInAs('hunter')
-    expect(saveAccess(ACCT.kestrel, { role: 'main' })).toBe('Kestrel is 149\'s last admin. Make another admin of 149 first.')
+    expect(saveAccess(ACCT.kestrel, { role: 'main' })).toBe('Kestrel is 149\'s last admin. Only 149\'s own admins or a master admin can make another.')
     expect(level(ACCT.kestrel, 'u149')).toBe('admin')
   })
   it('pin: with no admin of its own a Plan holder counts — "+ New squadron" 151, Hunter its first admin: Saber making Hunter a member is refused', () => {
@@ -194,7 +195,8 @@ describe('3. the last-admin refusals, word for word (D2246, D2247)', () => {
     expect(saveAccess(ACCT.hunter, { role: 'main' })).toBe('Hunter is 151\'s last admin. Make another admin of 151 first.')
     expect(accountById(ACCT.hunter)!.role).toBe('admin')
   })
-  it('pin: said to one who cannot make an admin of that squadron — "…Only a master admin or an admin of 151 can make another." (D2246)', () => {
+  /* (RE-POINTED AT U2 — his D2816: 151 has no admin of its own, so only a master admin can make another) */
+  it('pin: said to one who cannot make an admin of that squadron — "…Only a master admin can make another." where it has none of its own (D2246, D2816)', () => {
     /* setup: 149 gets a second own admin (so 149's own lock does not answer first), and 151 is made with Kestrel its first
        and only admin (his Plan of 151); Hunter, an admin of 149 by Plan and nothing in 151, makes Kestrel a member */
     signInAs('kestrel')
@@ -203,7 +205,7 @@ describe('3. the last-admin refusals, word for word (D2246, D2247)', () => {
     expect(addUnit('151', 'p1', ACCT.kestrel), 'setup: 151 made, Kestrel its first admin').toMatchObject({ ok: true })
     reload()
     signInAs('hunter')
-    expect(saveAccess(ACCT.kestrel, { role: 'main' })).toBe('Kestrel is 151\'s last admin. Only a master admin or an admin of 151 can make another.')
+    expect(saveAccess(ACCT.kestrel, { role: 'main' })).toBe('Kestrel is 151\'s last admin. Only a master admin can make another.')
     expect(accountById(ACCT.kestrel)!.role).toBe('admin')
   })
 })

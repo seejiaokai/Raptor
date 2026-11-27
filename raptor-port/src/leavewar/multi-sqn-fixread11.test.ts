@@ -451,7 +451,8 @@ describe('fault E — a right goes with its account, and a new account row under
     const { p1, p2, id } = planned()
     on(18)
     signInAs('ad9', 'a9')
-    expect(updateAccount(id, { pid: p2 }), 'the door refuses the re-link (fix read 10, fault D)').toMatch(/Only a master admin/)
+    /* (RE-POINTED AT U2 — his D2730 Q12: the refusal names who can, 142's own admins or a master admin) */
+    expect(updateAccount(id, { pid: p2 }), 'the door refuses the re-link (fix read 10, fault D)').toBe('This sign-in holds a right in 142. Only 142\'s own admins or a master admin can link it to another person.')
     deletePerson(p1)
     accountsLoad(); unitsLoad()
     const row = { id, name: 'spare2@mail', role: 'main', pid: p2, on: true }
@@ -487,7 +488,8 @@ describe('fault E — a right goes with its account, and a new account row under
     const row = { id, name: 'spare2@mail', role: 'main', pid: p2, on: true }
     const e = (after: any): any => ({ type: 'account.add', origin: 'user', actor: deriveActor(), changes: [{ collection: 'settings', id: 'account:' + id, op: 'put', before: null, after }] })
     signInAs('ad9', 'a9')
-    expect(ownershipViolation(e({ ...row, pidFrom: '2026-07-18' })) ?? 'allowed', 'Kestrel, even dated today').toMatch(/re-linked by one who is not a master/)
+    /* (RE-POINTED AT U2 — G4's words: re-linked by one who may not end the Plan it holds, his D2626, D2730 Q12) */
+    expect(ownershipViolation(e({ ...row, pidFrom: '2026-07-18' })) ?? 'allowed', 'Kestrel, even dated today').toMatch(/re-linked by one who may not end it/)
     signInAs('ad', 'a')
     expect(ownershipViolation(e(row)) ?? 'allowed', 'Saber, undated').toMatch(/link to its person not dated today/)
     /* (§4.5 of the reshape plan, rewrite 14 — guardrail 1: a sign-in linked to another person carries no right; Saber's
@@ -569,10 +571,11 @@ describe('fault H — a person delete is never refused for a right he holds in a
       { collection: 'settings', id: 'account:' + id, op: 'put', before: a, after: null }] })
     /* (refused; since the Plan audit's PA1 — D2199 — a Plan taken by one who is not a master admin is refused first, in
        its own words: §9.3 of the reshape plan, rewritten to the ruling's outcome) */
-    expect(ownershipViolation(e('account.update')) ?? 'allowed').toMatch(/not an admin of u142|Plan given, changed or taken by one who is not a master admin/)
+    /* (RE-POINTED AT U2 — the who-check's words since his D2626: "by one who may not give it") */
+    expect(ownershipViolation(e('account.update')) ?? 'allowed').toMatch(/not an admin of u142|Plan given, changed or taken by one who may not give it/)
     /* and a person delete whose command removes the grant but keeps the account row: refused the same */
     const kept: any = { type: 'person.delete', origin: 'user', actor: deriveActor(), changes: [{ collection: 'settings', id: 'grant:' + g.id, op: 'put', before: gb, after: null }] }
-    expect(ownershipViolation(kept) ?? 'allowed').toMatch(/not an admin of u142|Plan given, changed or taken by one who is not a master admin/)
+    expect(ownershipViolation(kept) ?? 'allowed').toMatch(/not an admin of u142|Plan given, changed or taken by one who may not give it/)
   })
   it('(control) Saber (master, 142 admin) deletes a 149 man holding Plan of 142: still works, the grant gone with him', () => {
     const { p1, id } = planned()

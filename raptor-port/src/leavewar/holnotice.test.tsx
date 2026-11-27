@@ -22,8 +22,8 @@ import { HOOKS } from '../engine/hooks'
 import { INPUTS, idsOf } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { initStore as raptorInitStore, notify, switchRoleView } from '../state/store'
-import { setSession, setMe, DEFAULT_ME } from '../state/auth'
-import { ACCOUNTS_LIST, addAccount, updateAccount } from '../state/accounts'
+import { setSession, setMe, DEFAULT_ME, SESSION } from '../state/auth'
+import { ACCOUNTS_LIST, addAccount, updateAccount, signIn, sessionFor } from '../state/accounts'
 import { stashClear, stashPut } from '../engine/weekstash'
 import { weekBundle } from '../engine/weeks-data'
 import { NOTICES, noticesFor, noticeWords, noticeRun } from '../state/notices'
@@ -67,7 +67,13 @@ beforeEach(() => {
   setRole('admin')
   pops.setOilList(null); pops.setBellList(false); pops.setInpEdit(null); pops.setOilAsk(null)
   /* a second scheduler: Warden, who filed none of what follows */
+  /* (U2 — his D2730 Q8, D2806: an admin is made only by one who may give that squadron's Plan, and the door fails closed
+     for a session with no account behind it — the hand-made one above names a sign-in, not an account. So the setup makes
+     Warden as Saber really signed in, then puts the file's own session back: setup only) */
+  const hand = SESSION
+  setSession(sessionFor(signIn('ad', 'a')))
   expect(addAccount('wd', 'nact', 'admin'), 'a second admin account').toBeNull()
+  setSession(hand)
 })
 afterEach(() => { HOOKS.toast = toast; _resetTimeline(); setSession(null); setMe(DEFAULT_ME); document.body.innerHTML = '' })
 

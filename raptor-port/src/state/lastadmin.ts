@@ -28,7 +28,10 @@ export interface LockWorld {
 }
 /* the squadron left with none, the first date it is, the account the step took from it (an id — the account the step
    found), and, on a later date, the man whose saved move makes that the day (never the one taken) */
-export interface LockHit { unit: string; date: string; gone: string | null; cause: { pid: string; to: string | null } | null }
+/* `own` (his D2816, 27 Nov 26 — U2's R5): whether the squadron had an admin of its own on that date before the step (the
+   at-home list was not empty). The words name who can make another: its own admins or a master admin where it had one,
+   a master admin alone where it had none (accounts.ts lockWords) */
+export interface LockHit { unit: string; date: string; gone: string | null; cause: { pid: string; to: string | null } | null; own: boolean }
 export type LockBreach = 'app' | LockHit
 
 const onRoster = (p: any): boolean => !!p && !p.special && !p.deleted && !p.archived
@@ -80,7 +83,7 @@ export function lastAdminBreach(w: LockWorld): LockBreach | null {
           && homeChangesIn(w.rowsA, String(y.pid), prev, d, w.fallback).at(-1) === d)   // (its days come sorted: a change on `d` is the last)
         if (mover) cause = { pid: String(mover.pid), to: homeUnitOn(w.rowsA, String(mover.pid), d, w.fallback) }
       }
-      return { unit: u.id, date: d, gone: gone ? gone.id : null, cause }
+      return { unit: u.id, date: d, gone: gone ? gone.id : null, cause, own: homeB.length > 0 }
     }
   }
   return null

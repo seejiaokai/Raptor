@@ -173,10 +173,13 @@ describe('fault G — the gate checks a grant’s day and the master mark’s da
     const was = { id: 'gfr8h', account: 'acad2', unit: 'u142', level: 'view', from: '2026-07-17' }
     mem['sqn142_' + GRANT_PFX + 'gfr8h'] = JSON.stringify(was); unitsLoad()
     expect(ownershipViolation(grantPut({ ...was, from: '2026-01-01' }, was)) ?? 'allowed').toMatch(/not dated today/)
-    expect(ownershipViolation(grantPut({ ...was, level: 'admin' }, was)) ?? 'allowed').toMatch(/not dated today/)
-    /* (§9.3 of the reshape plan — rewritten to the ruling's outcome: raised to Plan, even dated today, a plain admin is now
-       refused — Plan is a master admin's to give, D2199, D2211, the Plan audit's PA1) */
-    expect(ownershipViolation(grantPut({ ...was, level: 'admin', from: '2026-07-18' }, was))).toMatch(/Plan given, changed or taken by one who is not a master admin/)
+    /* (RE-POINTED AT U2: raised to Plan, Hunter — moved to 149, a member there in force (K3, D2160) — is now refused first
+       as a Plan on a member's account, the gate's receiver check reading the role in force after the command; the "not
+       dated today" rule stays pinned by the re-dated View above and the new rows of the two tests before) */
+    expect(ownershipViolation(grantPut({ ...was, level: 'admin' }, was)) ?? 'allowed').toMatch(/Plan on an account that is not an admin's/)
+    /* (§9.3 of the reshape plan — rewritten to the ruling's outcome: raised to Plan, even dated today, refused — since U2
+       first as the same receiver's) */
+    expect(ownershipViolation(grantPut({ ...was, level: 'admin', from: '2026-07-18' }, was))).toMatch(/Plan on an account that is not an admin's/)
   })
   it('(Fable 1 step 2) a master’s master mark back-dated is refused', () => {
     hunterMovesOn16(); on(18)

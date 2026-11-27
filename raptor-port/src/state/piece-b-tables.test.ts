@@ -123,23 +123,27 @@ describe('in the shared world', () => {
     it('1. a step that changed an account\'s man puts back no right', () => {
       expect(restoreLeavesOut(grantChange(plan), { relink: true, holder: hunter })).toBe(true)
     })
+    /* (RE-POINTED AT U2: these two read rule 2 on a Plan row, so each now says the presser may give it — `mayPlan: true` —
+       since rule 4 fails closed when not asked; what they pin, the man and his move, is unchanged) */
     it('2. put back for the man it named, no move since its start: kept; another man now on the sign-in: left out', () => {
-      expect(restoreLeavesOut(grantChange(plan), { relink: false, holder: hunter })).toBe(false)
-      expect(restoreLeavesOut(grantChange(plan), { relink: false, holder: { ...hunter, pid: PID.ranger } })).toBe(true)
+      expect(restoreLeavesOut(grantChange(plan), { relink: false, holder: hunter, mayPlan: true })).toBe(false)
+      expect(restoreLeavesOut(grantChange(plan), { relink: false, holder: { ...hunter, pid: PID.ranger }, mayPlan: true })).toBe(true)
     })
     it('2. his move since its start: left out — judged as it stood when taken off, not as an earlier restore re-dated it', () => {
       expect(moveMan(PID.hunter, 'u149')).toMatchObject({ ok: true })   // saved 15 Jul, from 16 Jul
       at('2026-07-17'); unitsLoad()
-      expect(restoreLeavesOut(grantChange(plan), { relink: false, holder: hunter })).toBe(true)
-      expect(restoreLeavesOut(grantChange(plan), { relink: false, holder: hunter, stood: { ...plan, from: '2026-07-17' } }), 'a row dated after his move').toBe(false)
+      expect(restoreLeavesOut(grantChange(plan), { relink: false, holder: hunter, mayPlan: true })).toBe(true)
+      expect(restoreLeavesOut(grantChange(plan), { relink: false, holder: hunter, stood: { ...plan, from: '2026-07-17' }, mayPlan: true }), 'a row dated after his move').toBe(false)
     })
-    /* (his D2250 — chat 129): only a master admin gives Plan (D2199, PA1), so a restore made by one who is not a master
-       admin never puts a Plan row back — the Undo of an admin's making a Plan holder a member gives back the role only */
-    it('4. a Plan row put back by one who is not a master admin: left out; by a master admin, or a View row: as before', () => {
-      expect(restoreLeavesOut(grantChange(plan), { relink: false, holder: hunter, master: false }), 'not a master').toBe(true)
-      expect(restoreLeavesOut(grantChange(plan), { relink: false, holder: hunter, master: true }), 'a master').toBe(false)
-      expect(restoreLeavesOut(grantChange({ ...plan, level: 'view' }), { relink: false, holder: hunter, master: false }), 'a View').toBe(false)
-      expect(restoreLeavesOut(grantChange(plan), { relink: false, holder: hunter }), 'not asked: as before').toBe(false)
+    /* (his D2250 — chat 129): a restore made by one who may not give Plan never puts a Plan row back — the Undo of an
+       admin's making a Plan holder a member gives back the role only. RE-POINTED AT U2 (the brief §8): "is he a master
+       admin" became "may he give Plan of that row's squadron" (`mayPlan` — his D2626), and it fails closed: not asked is
+       left out, no longer "as before" */
+    it('4. a Plan row put back by one who may not give it: left out; by one who may, or a View row: as before; not asked: left out', () => {
+      expect(restoreLeavesOut(grantChange(plan), { relink: false, holder: hunter, mayPlan: false }), 'may not').toBe(true)
+      expect(restoreLeavesOut(grantChange(plan), { relink: false, holder: hunter, mayPlan: true }), 'may').toBe(false)
+      expect(restoreLeavesOut(grantChange({ ...plan, level: 'view' }), { relink: false, holder: hunter, mayPlan: false }), 'a View').toBe(false)
+      expect(restoreLeavesOut(grantChange(plan), { relink: false, holder: hunter }), 'not asked: left out').toBe(true)
     })
   })
 

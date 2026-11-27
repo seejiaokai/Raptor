@@ -98,15 +98,17 @@ const KINDS: Array<Kind & { own: string[]; other: string[]; war: Record<Where, s
   /* a master admin: every page of every squadron (D2191, D2197); the only giver of Plan and maker of a master admin */
   { name: 'MA — a master admin', home: 'u142', setup: () => signInAs('saber'),
     own: [...ADMIN_OWN, 'givePlan', 'makeMaster'], other: [...ADMIN_OWN, 'givePlan', 'makeMaster'], war: { own: 'u142', other: 'u149' } },
-  /* a squadron's admin: his own squadron whole; nothing of the other (D2192) — its pick does not stand, so he is home again */
+  /* a squadron's admin: his own squadron whole — Plan of it too, since U2 (his D2626: Plan of a squadron is given by its
+     own admins or a master admin; RE-POINTED from "never Plan"); nothing of the other (D2192) — its pick does not stand */
   { name: 'AD — a squadron\'s admin', home: 'u142', setup: () => signInAs('hunter'),
-    own: ADMIN_OWN, other: ADMIN_STAYS_HOME, war: { own: 'u142', other: 'u142' } },
-  /* Plan of 149: everything its own admins have (D2201, D2211, D2241) — never Plan itself, never a master admin (D2199, D2205) */
+    own: [...ADMIN_OWN, 'givePlan'], other: ADMIN_STAYS_HOME, war: { own: 'u142', other: 'u142' } },
+  /* Plan of 149: everything its own admins have (D2201, D2211, D2241) — never Plan OF 149, never a master admin (D2626,
+     D2205); at home he is 142's own admin, so gives Plan of 142 (U2, as above) */
   { name: 'PL — an admin holding Plan of 149', home: 'u142', setup: () => { give('hunter', 'admin'); signInAs('hunter') },
-    own: ADMIN_OWN, other: ADMIN_OWN, war: { own: 'u142', other: 'u149' } },
-  /* View of 149: its schedule and Logic read only; View writes nothing (D2191, D2252) */
+    own: [...ADMIN_OWN, 'givePlan'], other: ADMIN_OWN, war: { own: 'u142', other: 'u149' } },
+  /* View of 149: its schedule and Logic read only; View writes nothing (D2191, D2252); at home, as AD */
   { name: 'VA — an admin holding View of 149', home: 'u142', setup: () => { give('hunter', 'view'); signInAs('hunter') },
-    own: ADMIN_OWN, other: ADMIN_STAYS_HOME, war: { own: 'u142', other: 'u142' } },
+    own: [...ADMIN_OWN, 'givePlan'], other: ADMIN_STAYS_HOME, war: { own: 'u142', other: 'u142' } },
   { name: 'ME — a member', home: 'u142', setup: () => signInAs('ranger'),
     own: MEMBER_OWN, other: SELF_ONLY, war: { own: 'u142', other: 'u142' } },
   { name: 'VM — a member holding View of 149', home: 'u142', setup: () => { give('ranger', 'view'); signInAs('ranger') },

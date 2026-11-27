@@ -20,14 +20,14 @@ import { setSchedTickAt } from '../engine/publish'
 import { PEOPLE } from '../engine/people'
 import { DEMO_149_PEOPLE } from './demoseed'
 /* the last-admin lock's words for a step's draft (accounts.ts imports this file; the call is at run time, never at load) */
-import { lockProblemFor, accountById, masterChangeProblem, signedInAccount, otherSquadronPersonProblem, adminNow, levelAcct, MASTER_ONLY_WORDS } from './accounts'
+import { lockProblemFor, accountById, masterChangeProblem, signedInAccount, otherSquadronPersonProblem, adminNow, levelAcct, MASTER_ONLY_WORDS, mayGivePlanNow, planWords } from './accounts'
 import { lastAdminBreach, type LockWorld, type LockBreach } from './lastadmin'
 import {
   UNIT_PFX, PLACE_PFX, UNITPLACE_PFX, GRANT_PFX, HOME_PFX, UNIT_ROW_PREFIXES,
-  rowsFrom, placeIdOn, homeUnitOn, homeChangesIn, stintsIn, grantOn, grantHolds, datedRowsBreach, unitIn, placeIn, levelFrom, moveFrom, schedTickHolds,
+  rowsFrom, placeIdOn, homeUnitOn, homeChangesIn, stintsIn, grantOn, grantHolds, datedRowsBreach, unitIn, placeIn, levelFrom, moveFrom, schedTickHolds, mayGivePlanAt, madeAdminsIn,
   validUnitNum, validTz, MAX_PLACE_NAME, unitsAtPlace,
   type UnitRows, type Unit, type Place, type Grant, type GrantLevel, type GrantHolder, type UnitLevel, type LevelAccount, type Stint,
-  type DatedBreach,
+  type DatedBreach, type MadeAdmin,
 } from './units-model'
 
 export interface UnitSave { ok: boolean; message?: string; id?: string; pending?: Promise<UnitSave> }
@@ -139,6 +139,15 @@ export const levelOfAccount = (acct: LevelAccount | null | undefined, unit: stri
 export const levelBefore = (acct: LevelAccount | null | undefined, unit: string, iso: string, rows: UnitRows): UnitLevel | null =>
   levelFrom(acct, unit, iso, rows, fallbackHome())
 export const homeBefore = (pid: string, iso: string, rows: UnitRows): string | null => homeUnitOn(rows, pid, iso, fallbackHome())
+/* WHO MAY GIVE OR END PLAN OF A SQUADRON, AND MAKE ITS ADMINS (his D2626, D2730 Q8, D2806 — units-model.ts mayGivePlanAt,
+   the one body), with this store's fallback home, over the rows handed in: the live rows at a door (accounts.ts
+   mayGivePlanNow), the rows before a command at the gate (perms.ts mayGivePlanOf) */
+export const mayGivePlanOn = (acct: (LevelAccount & { on?: boolean }) | null | undefined, person: any, unit: string, iso: string, rows: UnitRows | null | undefined): boolean =>
+  mayGivePlanAt(acct, person, unit, iso, rows, fallbackHome())
+/* WHO A COMMAND MADE AN ADMIN, AND OF WHICH SQUADRON (his D2730 Q8, D2806, D2807 — units-model.ts madeAdminsIn, the one
+   helper), with this store's fallback home: the gate (perms.ts madeAdminViolation) and the Undo's check (state/undo-wire.ts
+   makeAdminStuck) ask it */
+export const madeAdminsNow = (w: Omit<Parameters<typeof madeAdminsIn>[0], 'fallback'>): MadeAdmin[] => madeAdminsIn({ ...w, fallback: fallbackHome() })
 /* THE RIGHT THAT HOLDS (units-model.ts grantOn — the reading rule, the reshape plan §4.3): an account's right in a unit on a
    date, live, or over the rows a command was judged by */
 export const grantOfOn = (acct: GrantHolder, unit: string, iso: string = todayIso()): Grant | undefined => grantOn(unitRows(), acct, unit, iso, fallbackHome())
@@ -165,11 +174,9 @@ export function rowsDraft(r: UnitRows, d: { units?: Unit[]; unitplaces?: UnitRow
 /* an account by its id as the reading rule takes it (its man and its link day); a right naming an account that is gone
    has no man — it holds for nobody a person can use */
 const holderOf = (account: string): GrantHolder => { const a = accountById(account); return { id: account, pid: a ? String(a.pid) : '', pidFrom: a?.pidFrom } }
-/* PLAN IS A MASTER ADMIN'S TO GIVE, RAISE, LOWER OR TAKE (the Plan audit's PA1 — D2199, D2211): the approved drawing's
-   words (picture 1b of 19 Nov, D2217) */
-export const PLAN_MASTER_ONLY = 'Only a master admin gives Plan or makes a master admin.'
-/* (a signed-in account that is not a master's; no account behind the session — a probe's or a test's — the gate judges) */
-const notMaster = (): boolean => { const me = signedInAccount(); return !!me && me.master !== true }
+/* (PLAN_MASTER_ONLY — the Plan audit's PA1 words, Plan kept to a master admin alone — went with his D2626:
+   Plan of a squadron is given, raised, lowered and taken by its own admins or a master admin. The doors now ask
+   accounts.ts mayGivePlanNow and say accounts.ts planWords — U2) */
 
 /* ---- the writes ---- */
 /* (a refusal raised inside a command keeps its own words; the gate's reason never reaches the screen — the generic words
@@ -357,9 +364,10 @@ export function setGrant(account: string, unit: string, level: GrantLevel, accou
   const acct = accountById(account)
   const had = grantOn(unitRows(), { id: account, pid: accountPid, pidFrom: acct?.pidFrom }, unit, todayIso(), fallbackHome())
   if (had && had.level === level) return no('He already has that')
-  /* PLAN — given, raised or lowered — only by a master admin (PA1); and only to an admin (PA2 — D2201, D785: an admin is
-     given Plan; its words wait for the first screen that gives a right, drawn then — §14 of the plan) */
-  if ((level === 'admin' || had?.level === 'admin') && notMaster()) return no(PLAN_MASTER_ONLY)
+  /* PLAN — given, raised or lowered — only by that squadron's own admins or a master admin (his D2626; D2730 Q10: one who
+     can still sign in), failing closed with nobody signed in (the door no longer leaves it to the gate — U2, the security
+     check's F7); and only to an admin (PA2 — D2201, D785) */
+  if ((level === 'admin' || had?.level === 'admin') && !mayGivePlanNow(unit)) return no(planWords(unit))
   if (level === 'admin' && acct && !adminNow(acct)) return no('This change could not be saved.')
   /* NO RIGHT ON A MASTER ADMIN'S ACCOUNT (batch 1's second half, plan §15 D14 — R2-O14): he acts in every squadron, his row
      reads "Full access" with no buttons (R4), so a row given him would be hidden and come back when the mark comes off.
@@ -384,11 +392,11 @@ export function setGrant(account: string, unit: string, level: GrantLevel, accou
     return id
   })
 }
-/* grant.remove — the right that holds today; Plan only by a master admin (PA1) */
+/* grant.remove — the right that holds today; Plan only by that squadron's own admins or a master admin (D2626) */
 export function removeGrant(account: string, unit: string): UnitSave {
   const had = grantOn(unitRows(), holderOf(account), unit, todayIso(), fallbackHome())
   if (!had) return no('He has no right there to take away')
-  if (had.level === 'admin' && notMaster()) return no(PLAN_MASTER_ONLY)
+  if (had.level === 'admin' && !mayGivePlanNow(unit)) return no(planWords(unit))
   /* a squadron's only Plan taken away leaves it no admin (B6 — the one last-admin rule, state/lastadmin.ts) */
   if (had.level === 'admin') {
     const lock = lockProblemFor({ rows: rowsDraft(unitRows(), { dropGrants: x => x.id === had.id }) })

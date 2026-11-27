@@ -6,7 +6,7 @@
 import { describe, it, expect } from 'vitest'
 import { useMsqWorld, signInAs, PID, ACCT } from '../test-support/msq-world'
 import { saveAccess, accountById, setMaster } from './accounts'
-import { addUnit, setGrant, grantOfOn, unitsLoad, units, PLAN_MASTER_ONLY } from './units'
+import { addUnit, setGrant, grantOfOn, unitsLoad, units } from './units'
 import { levelAcct } from './accounts'
 import { commitSettingsIntent } from './people-settings-commit'
 import { store } from '../engine/hooks'
@@ -101,9 +101,12 @@ describe('saveAccess — one Save', () => {
     expect(saveAccess(ACCT.ranger, { grants: { u149: 'view' } })).toBe('Only an admin of 149 can give access to 149.')
     expect(level(ACCT.ranger, 'u149')).toBe('none')
   })
-  it('Plan is a master admin\'s to give (PA1): Kestrel giving Hunter Plan of 149', () => {
+  /* (RE-POINTED AT U2 — his D2626 replaces PA1's "a master admin's to give": Plan of 149 is given by 149's own admins or a
+     master admin, so Kestrel's Save goes through; one who may not is refused in the line's sentence) */
+  it('Plan of 149 is given by 149\'s own admins (D2626): Kestrel giving Hunter Plan of 149 saved', () => {
     signInAs('kestrel')
-    expect(saveAccess(ACCT.hunter, { grants: { u149: 'plan' } })).toBe(PLAN_MASTER_ONLY)
+    expect(saveAccess(ACCT.hunter, { grants: { u149: 'plan' } })).toBeNull()
+    expect(level(ACCT.hunter, 'u149')).toBe('admin')
   })
   it('a master admin\'s account has no squadron lines to give (R4) — refused at the door; setGrant too (R2-O14)', () => {
     signInAs('saber')

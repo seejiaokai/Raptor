@@ -19,8 +19,8 @@ import { roleStore, invalidateRoleTargets } from './mission-roles'
 import { decodeRoleId } from '../engine/mission-role'
 import { peopleStore, settingsStore } from './people-settings-commit'
 import { rosterRestoreProblem } from './roster-restore'
-import { seedAccounts, levelIn, accountById, isMasterAccount, ACCOUNT_PFX, signedInAccount, adminNow, masterRightLeft, accountsAfter, ACCOUNTS_LIST } from './accounts'
-import { unitRows, homeOn, unitRowsBefore, unitRowsAfter, unitById } from './units'
+import { seedAccounts, levelIn, accountById, ACCOUNT_PFX, signedInAccount, adminNow, masterRightLeft, accountsAfter, ACCOUNTS_LIST, mayGivePlanNow, makeAdminUndoWords, readAccounts, levelAcct } from './accounts'
+import { unitRows, homeOn, unitRowsBefore, unitRowsAfter, unitById, madeAdminsNow, grantRowHolds } from './units'
 import { setDescribeUnits } from '../undo/describe'
 import { store } from '../engine/hooks'
 import { deletedRestoreProblem, postingRestoreProblem } from './person-delete'
@@ -456,11 +456,10 @@ function holdersOf(changes: Change[]): Record<string, { id: string; pid: string;
   }
   return out
 }
-/* is the person pressing Undo or Redo a master admin (rule 4 — his D2250: a Plan is put back only by a master admin's
-   restore); the gate reads its own actor the same way */
-const pressedByMaster = (): boolean => isAdmin() && !!SESSION && isMasterAccount(SESSION.user)
 /* what the one body is asked about one grant row of a restore: whether the restore re-links its account, the man the step
-   recorded, the row as it stood before the restore the other way took it, and who presses */
+   recorded, the row as it stood before the restore the other way took it, and whether the presser may give Plan of that
+   row's squadron as he stands today (`mayPlan` — U2, his D2626, replacing "is he a master admin": accounts.ts
+   mayGivePlanNow, the one rule; the gate asks its own actor the same, perms.ts mayGivePlanOf) */
 function grantCtx(c: Change, dir: 'undo' | 'redo', entry: UndoEntry, changes: Change[], stored?: boolean): RestoreGrantCtx | null {
   if (!isGrantRow(c)) return null
   const acc = String(((c.after ?? c.before) as any)?.account ?? '')
@@ -471,7 +470,7 @@ function grantCtx(c: Change, dir: 'undo' | 'redo', entry: UndoEntry, changes: Ch
     ...(holder ? { holder } : {}),
     ...(stood !== undefined ? { stood } : {}),
     ...(stored !== undefined ? { stored } : {}),
-    master: pressedByMaster(),
+    mayPlan: mayGivePlanNow(String(((c.after ?? c.before) as any)?.unit ?? '')),
   }
 }
 function grantLeftOut(c: Change, dir: 'undo' | 'redo', entry: UndoEntry, changes: Change[]): boolean {
@@ -671,6 +670,86 @@ function masterRightRefusal(changes: readonly Change[]): string | null {
   return outOfBandWords(`settings/${acctRow}`, setsMark)
 }
 
+/* ---- WHO MAY PUT PLAN BACK, OR TAKE IT AGAIN, BY UNDO OR REDO (U2 — his D2626, D2730 Q10, Q11; the brief
+   docs/superpowers/briefs/2026-11-27-msq-s2-u2-brief.md R3, R4) -------------------------------------------------------
+   An Undo or Redo of Plan is a give or an end of Plan like any other: the one pressing must be one who may give Plan of
+   that row's squadron AS HE STANDS TODAY (accounts.ts mayGivePlanNow — its own admins or a master admin). Before U2 the
+   gate let a verified replay through, so Kestrel, made a member since his step, still put Plan back by Undo. The gate now
+   asks the replay too (perms.ts unitRowViolation); these two make the same answer a step the timeline blocks for good,
+   in words, before anything is written — never a refusal on every press. Read over the step's FULL images
+   (entry.inverse / entry.forward), never the list the leave-outs have thinned, so a Plan row left out never turns a
+   refused step into a half one. The app's own actor (nobody signed in — a headless test, the boot) is the gate's to pass,
+   as it does; a session with no account fails closed, as the gate's reader does. */
+const restoreOf = (entry: UndoEntry, dir: 'undo' | 'redo'): Change[] => (dir === 'undo' ? entry.inverse : entry.forward)
+/* the account rows as stored now (none stored: the seeded list), as accounts.ts accountsAfter reads the other side */
+const accountRowsNow = (): any[] => {
+  const out: any[] = []
+  for (const k of store.keys(ACCOUNT_PFX)) { const v = store.get(k, null); if (v != null) out.push(v) }
+  return out.length ? out : seedAccounts()
+}
+const byTheApp = (): boolean => deriveActor().role === 'system'
+const holderNow = (acc: string, list: readonly any[]) => {
+  const a = list.find(x => x && x.id === acc)
+  return a ? { id: acc, pid: String(a.pid), pidFrom: a.pidFrom } : null
+}
+/* R3 (b): a grant row that is a Plan holding on either side — before the restore (the rows as they stand) or after it —
+   where the presser may not give that squadron's Plan, refuses the step whole. Not asked of: a row the guardrails leave
+   out for another reason (a move since, a re-link — restoreLeavesOut asked as though he might); the make-member pair,
+   R3 (c): the Undo of "made a member" puts the role back and leaves the Plan out (rule 4 of restoreLeavesOut, the gate's
+   backstop the same), and its Redo drops the Plan under the member's drop (perms.ts, "THE MEMBER'S DROP") */
+function planRestoreStuck(entry: UndoEntry, dir: 'undo' | 'redo'): boolean {
+  if (byTheApp()) return false
+  const changes = restoreOf(entry, dir)
+  if (!changes.some(isGrantRow)) return false
+  const today = todayIso()
+  /* (both sides from the stored rows, as makeAdminStuck below reads them) */
+  const rowsB = unitRowsAfter([]), rowsA = unitRowsAfter(changes as any)
+  const acctB = readAccounts(accountRowsNow()), acctA = readAccounts(accountsAfter(changes) ?? accountRowsNow())
+  const roleSwap = (acc: string, from: string, to: string): boolean => changes.some(x => {
+    if (!isAccountRow(x) || String(x.id) !== ACCOUNT_PFX + acc) return false
+    const was = accountImage(acc, x.before), is = x.op === 'delete' ? null : accountImage(acc, x.after)
+    return !!was && !!is && String(was.pid) === String(is.pid) && was.role === from && is.role === to
+  })
+  for (const c of changes) {
+    if (!isGrantRow(c)) continue
+    const ctx = grantCtx(c, dir, entry, changes)
+    if (ctx && restoreLeavesOut(c, { ...ctx, mayPlan: true })) continue
+    const b: any = store.get(String(c.id), null)
+    const n: any = c.op === 'delete' ? null : c.after
+    const acc = String((n ?? b)?.account ?? '')
+    if (n && n.level === 'admin' && roleSwap(acc, 'main', 'admin')) continue
+    if (b && b.level === 'admin' && !n && roleSwap(acc, 'admin', 'main')) continue
+    const hB = holderNow(String(b?.account ?? ''), acctB), hA = holderNow(String(n?.account ?? ''), acctA)
+    const planB = !!b && b.level === 'admin' && !!hB && grantRowHolds(hB, b, today, rowsB)
+    const planA = !!n && n.level === 'admin' && !!hA && grantRowHolds(hA, n, today, rowsA)
+    if ((planB && !mayGivePlanNow(String(b.unit))) || (planA && !mayGivePlanNow(String(n.unit)))) return true
+  }
+  return false
+}
+/* R4 (his D2807): a restore that makes a man an admin of his squadron (units.ts madeAdminsNow — the one helper the gate's
+   Q8 asks too, perms.ts madeAdminViolation), pressed by one who may not give that squadron's Plan, is blocked for good:
+   an Undo in D2807's own sentence, a Redo in today's out-of-band words, a stand-in until the Redo's words are ruled */
+function makeAdminStuck(entry: UndoEntry, dir: 'undo' | 'redo'): string | boolean {
+  if (byTheApp()) return false
+  const changes = restoreOf(entry, dir)
+  const after = accountsAfter(changes)
+  if (!after) return false
+  /* both sides read the same way, from the stored rows — the accounts as the loader reads them, the squadron rows as stored
+     — so a list held in memory that lags the store never reads as a man made an admin (the gate reads its two worlds the
+     same way, perms.ts buildWorlds) */
+  const made = madeAdminsNow({
+    acctB: readAccounts(accountRowsNow()).map(x => levelAcct(x)), acctA: readAccounts(after).map(x => levelAcct(x)),
+    rowsB: unitRowsAfter([]), rowsA: unitRowsAfter(changes as any), today: todayIso(),
+  })
+  for (const m of made) {
+    if (!mayGivePlanNow(m.unit)) return dir === 'undo' ? makeAdminUndoWords(m.unit) : true
+  }
+  return false
+}
+/** tests only — the timeline's three stuck checks without U2's two Plan checks, so a test can see the gate refuse alone */
+let PLAN_CHECKS = true
+export const _planChecks = (on: boolean): void => { PLAN_CHECKS = on }
+
 export function installGlobalUndo(): void {
   installUndo()
   /* A-v — the stamp and the one record key, in the command layer's revision counter */
@@ -717,6 +796,8 @@ export function installGlobalUndo(): void {
     /* …and A1 / A4 (the fix reads): no right left on a master admin's account, refused naming who made him one (D148) */
     restoreRefusal: (changes, dir, entry) => restoreBlocker(changes as any, dir, restoreAbsencesOf(changes as any)) || rosterRestoreProblem(changes as any, dir)
       || masterRightRefusal(changes as any)
+      /* …and U2's R3 (b): a Plan given or ended by one who may not, asked here too so the gate path agrees */
+      || (PLAN_CHECKS && entry && planRestoreStuck(entry, dir) ? outOfBandWords('', () => false) : null)
       || postingRestoreProblem(changes as any, dir, entry?.scope?.module) || warDayRefusal(changes as any),
     /* [POST-OUT-OUTCOMES]: a step that would put a deleted man back is passed over, never taken (person-delete.ts) */
     /* the direction and the step's module: a war step's Redo is judged by the leave it adds (person-delete.ts) */
@@ -762,7 +843,10 @@ export function installGlobalUndo(): void {
     ownPageRecord,
     canReach,
     /* fix read 2: a step he can no longer reach is blocked for good, never refused on every press */
-    stuck: (changes, _dir, entry) => stepStuck(changes, entry),
+    /* …then U2's two (his D2807; the brief R3, R4), in this order: a man made an admin by one who may not (D2807's
+       sentence on an Undo), then a Plan given or ended by one who may not (today's out-of-band words) */
+    stuck: (changes, dir, entry) => stepStuck(changes, entry)
+      || (PLAN_CHECKS && (makeAdminStuck(entry, dir) || planRestoreStuck(entry, dir))),
     /* …and an input's step out of his reach, asked after the answers a press already gives (Astra's read of round 2, F1) */
     stuckLate: (changes, _dir, entry) => inputStuck(changes, entry),
     /* the planning record's per-record store (the reshape plan §3.2 A-ii, "Through Undo, in both directions"): a note or

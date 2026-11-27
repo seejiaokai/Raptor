@@ -150,8 +150,10 @@ export interface UndoHooks {
      through for the person pressing — a man's or an account's row of a squadron he is no longer an admin of, a right of
      one, an admin's step once his account gives no admin role, a squadron that can never be taken away again
      (state/undo-wire.ts stepStuck). Asked first of every press: blocked for good in today's words, the next press named,
-     never refused on every press with his older steps out of reach. None installed: never. */
-  stuck?(changes: Change[], dir: 'undo' | 'redo', entry: UndoEntry): boolean
+     never refused on every press with his older steps out of reach. None installed: never.
+     (U2 — his D2807): a sentence means stuck, said in that sentence; `true` means stuck in today's words (OUT_OF_BAND);
+     `false` or empty, not stuck. */
+  stuck?(changes: Change[], dir: 'undo' | 'redo', entry: UndoEntry): boolean | string
   /* …AND AN INPUT'S STEP OUT OF HIS REACH (Astra's read of round 2, F1 — state/undo-wire.ts inputStuck): an input of
      squadrons he is no longer an admin of. Asked AFTER the answers a press already gives — the view he is in, a later
      change to the same thing, a right standing on a re-linked sign-in, a step the leave-out empties — so each of those
@@ -1171,7 +1173,8 @@ export function globalUndo(): UndoResult {
   const passedInelig = LAST_INELIG && LAST_INELIG.seq > entry.seq ? LAST_INELIG : null
   /* a step he can no longer reach (fix read 2): blocked for good, before any other answer — "switch back to the admin
      view" is no answer to a man whose account gives none */
-  if (hooks.stuck && hooks.stuck(keptOf(entry, entry.inverse, 'undo'), 'undo', entry)) return { ok: false, reason: sayBlocked(entry, 'undo', OUT_OF_BAND) }
+  const stU = hooks.stuck ? hooks.stuck(keptOf(entry, entry.inverse, 'undo'), 'undo', entry) : false
+  if (stU) return { ok: false, reason: sayBlocked(entry, 'undo', typeof stU === 'string' ? stU : OUT_OF_BAND) }
   if (!mayReverse(entry, currentActor())) return { ok: false, reason: reverseRefusal(entry, 'undo') }
   const conflict = undoConflictOf(entry)
   if (conflict) return { ok: false, reason: conflict.sticky ? sayBlocked(entry, 'undo', conflict.text) : conflict.text }
@@ -1206,7 +1209,8 @@ export function globalUndo(): UndoResult {
 export function globalRedo(): UndoResult {
   const entry = mostRecentlyUndone()
   if (!entry) return { ok: false, reason: LAST_BLOCKED || LAST_DEAD || 'Nothing to redo.' }
-  if (hooks.stuck && hooks.stuck(keptOf(entry, entry.forward, 'redo'), 'redo', entry)) return { ok: false, reason: sayBlocked(entry, 'redo', OUT_OF_BAND) }
+  const stR = hooks.stuck ? hooks.stuck(keptOf(entry, entry.forward, 'redo'), 'redo', entry) : false
+  if (stR) return { ok: false, reason: sayBlocked(entry, 'redo', typeof stR === 'string' ? stR : OUT_OF_BAND) }
   if (!mayReverse(entry, currentActor())) return { ok: false, reason: reverseRefusal(entry, 'redo') }
   const conflict = redoConflictOf(entry)
   if (conflict) return { ok: false, reason: conflict.sticky ? sayBlocked(entry, 'redo', conflict.text) : conflict.text }

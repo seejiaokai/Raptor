@@ -225,7 +225,10 @@ describe('fault C — a right that changes hands keeps no old day (SEC9-1)', () 
     expect(v, 'a right re-pointed must be dated today').toMatch(/not dated today/)
     /* (control) …dated today, a plain admin is now refused all the same: Plan is a master admin's to give or pass on
        (D2199, D2211 — the Plan audit's PA1; §9.3 of the reshape plan, rewritten to the ruling's outcome) */
-    expect(ownershipViolation(asOutlaw([{ collection: 'settings', id: GRANT_PFX + g.id, op: 'put', before: g, after: { ...after, from: '2026-07-18' } }], 'grant.set'))).toMatch(/Plan given, changed or taken by one who is not a master admin/)
+    /* (RE-POINTED AT U2: still refused, now first as a Plan on a member's account — Hunter, moved to 149, is a member there
+       in force (K3, D2160), and the gate's receiver check reads the role in force after the command; the who-check's
+       words changed with D2626 too) */
+    expect(ownershipViolation(asOutlaw([{ collection: 'settings', id: GRANT_PFX + g.id, op: 'put', before: g, after: { ...after, from: '2026-07-18' } }], 'grant.set'))).toMatch(/Plan on an account that is not an admin's/)
   })
   it('(SEC9-1, end to end) Outlaw, signed in, re-points it through a real command: refused, the line stays off', () => {
     const l = hunterLine(); const g = kestrelPlan()

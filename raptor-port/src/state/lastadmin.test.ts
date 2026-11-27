@@ -36,7 +36,8 @@ describe('admins at home — today', () => {
     expect(lastAdminBreach(world(SEEDED, { accts: off(ACCTS, 'acad2') }))).toBeNull()
   })
   it("149's only admin at home switched off: 149 on today, Kestrel the one taken", () => {
-    expect(lastAdminBreach(world(SEEDED, { accts: off(ACCTS, 'acad9') }))).toEqual({ unit: 'u149', date: TODAY, gone: 'acad9', cause: null })
+    /* (`own` — U2's R5, his D2816: 149 had an admin of its own that day) */
+    expect(lastAdminBreach(world(SEEDED, { accts: off(ACCTS, 'acad9') }))).toEqual({ unit: 'u149', date: TODAY, gone: 'acad9', cause: null, own: true })
   })
   it('demoted counts as taken (the role is no longer admin)', () => {
     const accts = ACCTS.map(x => (x.id === 'acad9' ? { ...x, role: 'main' } : x))
@@ -63,7 +64,7 @@ describe('the dates — every home row and right from today on, either side', ()
   const before = { rows: rows(['u142', 'u149'], [...HOMES, h('osp9', 'u142', '2026-07-16')]), accts }
   it('Kestrel switched off: 149 has Osprey today, none from Thu 16 Jul — locked on the 16th, Osprey the one whose move makes it', () => {
     expect(lastAdminBreach(world(before, { accts: off(accts, 'acad9') })))
-      .toEqual({ unit: 'u149', date: '2026-07-16', gone: 'acad9', cause: { pid: 'osp9', to: 'u142' } })
+      .toEqual({ unit: 'u149', date: '2026-07-16', gone: 'acad9', cause: { pid: 'osp9', to: 'u142' }, own: true })
   })
   it('(control) with no move saved, Kestrel off leaves Osprey: no lock', () => {
     const b = { rows: rows(['u142', 'u149'], HOMES), accts }
@@ -71,14 +72,15 @@ describe('the dates — every home row and right from today on, either side', ()
   })
   it("Kestrel's own move away is the step: the date is the move's, the cause none (the plain words)", () => {
     const after = rows(['u142', 'u149'], [...HOMES, h('kes9', 'u142', '2026-07-16')])
-    expect(lastAdminBreach(world(SEEDED, { rows: after }))).toEqual({ unit: 'u149', date: '2026-07-16', gone: 'acad9', cause: null })
+    expect(lastAdminBreach(world(SEEDED, { rows: after }))).toEqual({ unit: 'u149', date: '2026-07-16', gone: 'acad9', cause: null, own: true })
   })
 })
 
 describe('a Plan-only squadron — 150 has no admin at home, Hunter holds its Plan', () => {
   const before = { rows: rows(['u142', 'u149', 'u150'], HOMES, [g('acad2', 'u150')]), accts: ACCTS }
   it('his Plan taken away: 150 locked today, Hunter the one taken', () => {
-    expect(lastAdminBreach(world(before, { rows: rows(['u142', 'u149', 'u150'], HOMES) }))).toEqual({ unit: 'u150', date: TODAY, gone: 'acad2', cause: null })
+    /* (`own` — U2's R5, his D2816: 150 had no admin of its own, only Hunter's Plan) */
+    expect(lastAdminBreach(world(before, { rows: rows(['u142', 'u149', 'u150'], HOMES) }))).toEqual({ unit: 'u150', date: TODAY, gone: 'acad2', cause: null, own: false })
   })
   it('his Plan lowered to View: locked (View is no admin)', () => {
     expect(lastAdminBreach(world(before, { rows: rows(['u142', 'u149', 'u150'], HOMES, [g('acad2', 'u150', 'view')]) }))).toMatchObject({ unit: 'u150', gone: 'acad2' })
@@ -115,7 +117,7 @@ describe('a Plan-only squadron — 150 has no admin at home, Hunter holds its Pl
   it('an admin who moved squadron is not counted at home in the one he joined: Kestrel, 149\'s only admin, may not be switched off once Hunter has arrived', () => {
     const homes = [...HOMES, h('prowler', 'u149', '2026-07-10')]
     const b = { rows: rows(['u142', 'u149'], homes), accts: ACCTS }
-    expect(lastAdminBreach(world(b, { accts: off(ACCTS, 'acad9') }))).toEqual({ unit: 'u149', date: TODAY, gone: 'acad9', cause: null })
+    expect(lastAdminBreach(world(b, { accts: off(ACCTS, 'acad9') }))).toEqual({ unit: 'u149', date: TODAY, gone: 'acad9', cause: null, own: true })
     /* …and made an admin of 149 (the record written anew — `adminOf`, `adminFrom`), Hunter counts there */
     const made = ACCTS.map(x => (x.id === 'acad2' ? { ...x, adminOf: 'u149', adminFrom: '2026-07-12' } : x))
     expect(lastAdminBreach(world({ rows: b.rows, accts: made }, { accts: off(made, 'acad9') }))).toBeNull()
@@ -129,7 +131,8 @@ describe('a Plan-only squadron — 150 has no admin at home, Hunter holds its Pl
 
 describe('a squadron new in this step — needs one on every judged date', () => {
   it('"+ New squadron" with no first admin: 150 locked today, nobody taken', () => {
-    expect(lastAdminBreach(world(SEEDED, { rows: rows(['u142', 'u149', 'u150'], HOMES) }))).toEqual({ unit: 'u150', date: TODAY, gone: null, cause: null })
+    /* (`own` — U2's R5: a squadron new in this step had none of its own) */
+    expect(lastAdminBreach(world(SEEDED, { rows: rows(['u142', 'u149', 'u150'], HOMES) }))).toEqual({ unit: 'u150', date: TODAY, gone: null, cause: null, own: false })
   })
   it('with Hunter as its first admin (Plan from today): no lock', () => {
     expect(lastAdminBreach(world(SEEDED, { rows: rows(['u142', 'u149', 'u150'], HOMES, [g('acad2', 'u150', 'admin', TODAY)]) }))).toBeNull()

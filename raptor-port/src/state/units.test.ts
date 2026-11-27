@@ -15,7 +15,7 @@ import { globalUndo } from '../undo'
 import { setSession } from './auth'
 import {
   units, unitById, places, placeOfOn, homeOn, grantsOf, unitsLoad, setUnitSeeds, addUnit, moveUnit, setPlace, setGrant,
-  removeGrant, setHome, todayIso, PLAN_MASTER_ONLY,
+  removeGrant, setHome, todayIso,
 } from './units'
 import { gmtLabel, validTz, moveFrom } from './units-model'
 import { rosterToday } from '../engine/roster'
@@ -218,8 +218,10 @@ describe('a right in a unit is given only by an admin OF that unit (read from th
     expect(setGrant('acus9', 'u142', 'view', 'osp9').ok).toBe(true)
     expect(levelIn('acus9', 'u142', rosterToday())).toBe('view')
     /* (§9.3 of the reshape plan — rewritten to the ruling: Plan is a master admin's to give, D2199, D2211 — the Plan
-       audit's PA1; this pinned a plain admin giving it, written a day before D2199) */
-    expect(setGrant('acus9', 'u142', 'admin', 'osp9')).toMatchObject({ ok: false, message: PLAN_MASTER_ONLY })
+       audit's PA1; this pinned a plain admin giving it, written a day before D2199. RE-POINTED AT U2 — his D2626: 142's
+       own admin (Pike) may give Plan of 142 now, so the refusal here is the other rule, Plan is for an admin (PA2 —
+       D2201, D785): Osprey is a member, in the generic words, as before for a member) */
+    expect(setGrant('acus9', 'u142', 'admin', 'osp9')).toMatchObject({ ok: false, message: 'This change could not be saved.' })
     expect(levelIn('acus9', 'u142', rosterToday())).toBe('view')
     expect(removeGrant('acus9', 'u142').ok).toBe(true)
     expect(levelIn('acus9', 'u142', rosterToday())).toBe(null)
