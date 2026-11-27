@@ -40,8 +40,8 @@ scheduler chooses away or attending, or rejects it.
 2. What you may do follows who you are and what the entry is, never the page.
    **His D2885 (28 Nov 26, F5):** the Leave War's ⋯ keeps only Attach, Other, Post out and Post in — no other input
    type is added to the war; a tap on the war opens the war's window (a day may hold several entries), where an entry
-   filed on the Inputs page offers a button to it there and a way back to the same place on the war. Whether such an
-   entry also keeps Move and Delete on the war (D1724) is put to him.
+   filed on the Inputs page offers a button to it there and a way back to the same place on the war. Such an entry keeps
+   its Move and Delete on the war beside that button (his D2886, D1724 standing).
 3. **A bid becomes leave by changing state — the same entry before and after**, charged once, its request and
    decision kept; a decision may cover only part of a bid's dates, as today.
 4. **NOT TAKEN — his D2882 (28 Nov 26, F2 "no"): on a date open for bidding a member may bid OR file leave that
