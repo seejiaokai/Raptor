@@ -38,6 +38,15 @@ const WIDE_CHARS = 4
  *  clears the class after it whether or not the animation ever ran. */
 const FLASH_MS = 700
 
+/** The box's top line: its words and their look. A total keeps the box's own rounding, red; a balance is written as every
+ *  surface writes it (its true minus — figWords), red below zero; a balance never typed (D2746) is the amber "–", never a
+ *  number counted from 0, never red, no words (his D2823). Outside the component so the box's own body stays plain. */
+function topLine(figure: Figure, lines: FigureLines): { topText: string; topCls: string } {
+  if (figure.kind === 'tot') return { topText: show(lines.top), topCls: ' red' }
+  if (lines.nt) return { topText: '–', topCls: ' nt' }
+  return { topText: figWords(lines.top), topCls: lines.top < 0 ? ' neg' : '' }
+}
+
 export const FigureCell = memo(function FigureCell({
   figure, lines, personId, testid, title, onClick, extraClass, dataFig, dataPerson,
 }: {
@@ -78,12 +87,8 @@ export const FigureCell = memo(function FigureCell({
     const t = setTimeout(() => setFlash(false), FLASH_MS)
     return () => clearTimeout(t)
   }, [flash])
-  /* a balance never typed (D2746): the amber "–", never a number counted from 0 and never red, and no words (his D2823) */
-  const nt = !!lines.nt && figure.kind !== 'tot'
-  const neg = !nt && lines.top < 0
+  const { topText, topCls } = topLine(figure, lines)
   const shownUsed = lines.used.filter(u => u.value !== 0)
-  /* a balance written as every surface writes it (its true minus — figWords); a total keeps the box's own rounding */
-  const topText = nt ? '–' : figure.kind === 'tot' ? show(lines.top) : figWords(lines.top)
   // The used line is measured as ONE run because that is how it is drawn — LL
   // and OL sit side by side on it, so `12` and `10` together are what has to
   // fit, not either of them alone.
@@ -100,7 +105,7 @@ export const FigureCell = memo(function FigureCell({
       onClick={onClick}
       onAnimationEnd={() => setFlash(false)}
     >
-      <span className={`fb${figure.kind === 'tot' ? ' red' : nt ? ' nt' : neg ? ' neg' : ''}`}>{topText}</span>
+      <span className={`fb${topCls}`}>{topText}</span>
       {shownUsed.length > 0 && (
         <span className="fu">
           {shownUsed.map(u => <b key={u.label} className={u.tone}>{show(u.value)}</b>)}
