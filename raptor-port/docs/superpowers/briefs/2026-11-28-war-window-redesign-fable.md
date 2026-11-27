@@ -2,6 +2,9 @@ Model: Fable 5.2 (claude-fable-5-2), a fresh helper, blind to how F6 was drawn.
 
 # A better design for the Leave War's day window — Fable's read (chat 195, 28 Nov 26)
 
+**His answer (28 Nov 26, D2887): A2** — round 2 below, after his D2884 on round 1's A. The group card adds Move and
+Delete (D2886).
+
 Brief: `2026-11-28-war-window-redesign-fable-brief.md`. Judged: F6's window as drawn in
 `../../mock/2026-11-27-war-window-states/img/` (s00–s10), his picture being `s01-inputs-ll-phone.png`. Nothing under
 `raptor-port/src` changed; nothing committed or pushed.

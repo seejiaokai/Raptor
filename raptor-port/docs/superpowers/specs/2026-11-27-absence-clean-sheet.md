@@ -37,6 +37,8 @@ scheduler chooses away or attending, or rejects it.
 
 ## The rules (agreed)
 1. A tap opens the entry's own window, the same everywhere, closing back to where you were.
+   **His D2887 (28 Nov 26, F8):** the Leave War's day window takes Fable's A2 — a card per entry, a leave's card
+   holding its own leave buttons; drawing of record `raptor-port/docs/mock/2026-11-28-war-window-redesign/img/A2-*`.
 2. What you may do follows who you are and what the entry is, never the page.
    **His D2885 (28 Nov 26, F5):** the Leave War's ⋯ keeps only Attach, Other, Post out and Post in — no other input
    type is added to the war; a tap on the war opens the war's window (a day may hold several entries), where an entry
