@@ -32,7 +32,7 @@ import { toast } from './toast'
 import { HIST } from '../state/history'
 import { useVersion, useUndoVersion } from './useStore'
 import { ViewWeek } from './ViewWeek'
-import { legendHTML } from './html'
+import { legendHTML, timeLegendHTML } from './html'
 import { routeClick, routeOpenKey, routeMenuKey } from './interactions'
 import { routeFocusOut, routeFocusIn, routeKeyDown, routeReportingInput, enteredOnAnother } from './textedit'
 import { SCHED_MOVE_WORDS } from '../state/typing-hold'
@@ -209,7 +209,9 @@ export function Shell() {
       /* THE WRITE IS ui/oilsign.ts's (moved there whole, 22 Nov 26): on a day with an input whose OIL question nobody has
          answered, a name picked here is HELD and the day's OIL list opens first (his D2294, D2299) — the box goes back
          to what is written, and the list's Save or Later writes the name by that same path */
-      if (signPick(di, sel.dataset.sign!, sel.value) === 'held') { sel.value = signNow(di, sel.dataset.sign!); notify() }
+      /* …and a name refused because an item is missing a time ([END-TIME-GUARD], D2612) goes back the same way: nothing
+         was written */
+      if (signPick(di, sel.dataset.sign!, sel.value) !== 'signed') { sel.value = signNow(di, sel.dataset.sign!); notify() }
       HOOKS.reflow()   // histPush is INSIDE the sched.sign command (ui/oilsign.ts writeSign)
     }
     /* right-click a filled slot in edit mode → clear it (reference verbatim,
@@ -640,7 +642,7 @@ export function Shell() {
           <ALPanel />
           <details className="legendbox" id="eLegendBox">
             <summary className="legend-sum">Legend — colours &amp; flags</summary>
-            <div className="legend" id="eLegend" dangerouslySetInnerHTML={{ __html: legendHTML() }} />
+            <div className="legend" id="eLegend" dangerouslySetInnerHTML={{ __html: legendHTML() + timeLegendHTML() }} />
           </details>
           <div className="edit-board">
             <EditWeek />
