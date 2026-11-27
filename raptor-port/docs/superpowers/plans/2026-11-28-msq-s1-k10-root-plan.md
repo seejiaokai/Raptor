@@ -26,8 +26,9 @@ plan and the build plan's §5 or the K10 brief differ, this plan wins for K10, a
    future "as of" day), **its window opens read only**: a new root-only answer, `letReadOnly`, beside `letOpenOn`. It
    never opens born held, and never writable from the wrong squadron. Its look is put to him first (**Q1**, §9).
 4. **The Person list offers only men who keep the record on the squadron it stands on** (both reads' first finding).
-   A change of dates or a turn into a group input that would move it is refused at the save door, with words drafted
-   and drawn first (K10-f).
+   **A change of dates that moves the record is allowed, and the record moves** (D2847, D2261: one input, never cut,
+   changed by him, the new squadron's admins or a master admin): who may make it is today's save check, with D2240's
+   approved refusal; no new refusal and no new words (§7.4, round 2b).
 5. **A window whose record moves under it** (its man moves at midnight while it is open) **is held**, from the live
    record, at every draw and again inside the save door (Astra 2).
 6. **The bell line (D2835)** enters the record's squadron where his pages may be it, else the line's own squadron as
@@ -35,7 +36,7 @@ plan and the build plan's §5 or the K10 brief differ, this plan wins for K10, a
 7. **Who may write is not changed by K10.** `inputSqn` does not feed the save gate. The new squadron's admins changing
    carried records (D2847, D2834), a backdated certificate filed by 149, and the bell lines' squadron stamp are
    `[XFER]`'s, with the security reader (D1411).
-8. **One question for him** (§9, Q1), which holds only K10-d. **Size: about 19 hours over five sub-steps**; K10-a is
+8. **One question for him** (§9, Q1), which holds only K10-d. **Size: about 17.5 hours over four sub-steps**; K10-a is
    buildable now.
 
 ---
@@ -261,8 +262,8 @@ KR closes the Input window at every door (D2825). The root still matters for a w
 squadron's List (D2834, D2846, D2847), a record moving under an open window (Astra 2), Undo or Redo across squadrons,
 and F4's belt.
 
-**Order (changed in round 2 only by K10-f):** **K10-a now** (`state/inputsqn.ts`, `ui/MedicalView.tsx`, tests) → U2 →
-**KR-1 to KR-4** → **K10-c** → **K10-d** (after Q1) → KR-5 to KR-8 → **K10-f** (after its words are drawn) → K12.
+**Order (as round 1; round 2's K10-f folded into K10-d as tests, round 2b):** **K10-a now** (`state/inputsqn.ts`,
+`ui/MedicalView.tsx`, tests) → U2 → **KR-1 to KR-4** → **K10-c** → **K10-d** (after Q1) → KR-5 to KR-8 → K12.
 K10-c and K10-d come after KR-4 because KR-4 converts this door's order and re-points `msq-guard-input-sqn`; built after,
 the root's tests are written once, against the final doors. **K10-c owns the bell's `u` line (§3.2).** Each re-runs the
 other: K10-a runs `msq-guard-input-sqn`, `msq-guard-rollcall` and the census before it lands; KR-4's builder runs
@@ -321,10 +322,65 @@ pressed in mounted windows:
 without the lock; at K10-d the census in the background to a file, then the full unit suite and `npm run build` under
 the checks lock (held: NOT RUN, never a wait in a loop); `npm run lint:changed` each step.
 
-### 7.4 K10-f — the save door
+### 7.4 A change that moves a record's holder — allowed, the record moves (round 2b: K10-f re-planned, folded into K10-d)
 
-From 142's page, Saber changes a carried OML's dates into 149's days, or adds a 149 man to it: refused with the drawn
-words, nothing written; the same that keeps its squadron: saved. Seen failing: yes — today it saves.
+**Round 2's K10-f (a refusal at Save, its way out "end it by Wed 15 Jul, file Thu 16 – Sat 18 Jul as new leave on
+149's page") is withdrawn, and its drafted words dropped.** The fresh Fable's words review
+(`../briefs/2026-11-28-msq-s1-words-fable-review.md` §2) found it clashes with his rulings, and the rows confirm it:
+- **D2847:** leave across his move is "one input, never cut, changed or taken off by him, the new squadron's admins or
+  a master admin". Its way out cut one leave into two.
+- **D2261:** "lets go with the single leave input and let the user or admin of both sqns amend it". It was his answer
+  to exactly this confusion (cutting at the move).
+- **D2240:** the approved refusal for someone who may not change such leave already exists and is said today
+  (`ui/inputedit.tsx whoDoorRefusal → acrossMoveWords`: "Blocked: Ranger is 149's from Thu 16 Jul. Only Ranger or an
+  admin of both 142 and 149 can change leave that runs across his move.", D1667's "Blocked:").
+
+**The rule now:** a change of a record's **dates** that moves its holder (stretched across his move, moved wholly
+after it, or cut back to before it) **is a change to that one input, allowed to whoever the save check allows, and the
+record goes where its days and `holderOf` now say.** No new refusal, no new words. Checked against the code:
+- **The save check already decides it:** `state/perms.ts inputWhoProblem` (7c) judges every (man, squadron) the record
+  touches before and after, by its days.
+  - Ranger (member) himself passes: his own input, before and after.
+  - Saber (master admin) passes, and so does an admin of both 142 and 149.
+  - An admin of 142 only is refused, with D2240's words (`acrossMoveWords` also judges the change itself, "the earlier
+    first day to the later last one", so moving a Tue 14 leave to Thu 16 is caught too).
+  - Kestrel (149's admin only) is refused today. D2847 says the new squadron's admins may, so this is the gate's
+    widening, `[XFER]`'s (§5), unchanged by this round.
+- **The window is never held or made read only mid-edit.** `holderOf`, `drift` and the read-only answers read the
+  **live, saved record** (`INPUTS` by id), never the draft. Typing new dates moves nothing. The save door's drift check
+  reads the record as saved before this write, which is unchanged. A successful Save **closes the window**
+  (`ui/InputWindow.tsx`: `saidSaved(…, 'Input updated'); close()`), so no window stands over the moved record.
+- **After the save:**
+  - On 149's page the record is 149's, live.
+  - On 142's List it still stands on its 142 days and opens read only (§4.3 case 4, Q1's look).
+  - The just-saved row pinned on 142's List is one of 142's own rows, so F17's rule draws it there, read only on its
+    next open.
+  - Where the Leave War decides its new days (D2847: unapproved leave after the move goes to the new squadron's war;
+    "today it is stranded") stays `[XFER]`'s, named.
+- **The mirror** (a carried leave cut back on 149's page to Tue 14 – Wed 15) is allowed the same way. The record is then
+  wholly before the move and so 142's (D2847: "leave wholly taken before the move stays in the old squadron's
+  records"). Variant (b) of the words review needs no words.
+- **Other kinds** (a commitment's dates across the move) follow the same rule (R6); their refusal is the gate's own, as
+  today.
+- **People are different, and K10-d's Person-list rule stands.** Swapping the man changes whose record it is, not when
+  it falls. A record for another squadron's man is filed on that squadron's page (D2628 C2, "+ Input" offers that
+  squadron's men alone), so the list offers only men who keep the record's own squadron. Adding a man keeps it touching
+  its own squadron, so it stands on both (F8); the words review found no road that adds ALL or ALL AVAIL to such a
+  record (its variant d).
+- **R14 (the planner's reading):** the save says only today's "Input updated". No note tells him the leave is now
+  149's. Nothing new is drawn (D1625), and reopening it on 142 shows it read only, Q1's look.
+
+**Tests, in K10-d (mounted windows, real Save):**
+
+| Case | Expected | Seen failing? |
+|---|---|---|
+| Ranger (member) on his 149 page stretches his old Tue 14 – Wed 15 Jul leave to Sat 18 Jul | saved; one input; `holderOf` 149; on 149's List, live; on 142's List, read only | pin of the save, yes for the read only (K10-d) |
+| Saber (master admin) does the same from 142's List | saved; the window closed; reopened on 142, read only | as above |
+| An admin of 142 only does it | refused with D2240's words, nothing written | pin |
+| Kestrel (149's admin only) does it from 149 | refused with D2240's words, today; named "`[XFER]` widens this" | pin |
+| Saber moves a Tue 14 one-day leave to Thu 16, from 142 | saved, 149's | pin |
+| Saber cuts a carried 14–18 Jul leave back to 14–15 on 149 | saved, 142's again; on 142, live | pin |
+| No window is held while new dates are typed, before Save | `held` false through the typing; drift false | pin |
 
 ---
 
@@ -334,22 +390,25 @@ words, nothing written; the same that keeps its squadron: saved. Seen failing: y
 |---|---|---|---|---|
 | **K10-a** | `holderOf` (settle days, the episode's own upchit, filing days); `inputSqn` holder-first; `lifeOf`; `letOpenOn` case 2 narrowed; `letReadOnly` 3 and 4 with the shared `foreign` predicate; `INPUT_DOORS` `why`s (`docview`, a `medtab` row); the Upchit Complete filter by filing day; the head comment and §2.4's rule; H1–H7, M1, M2, FIND-1, FIND-2 | `state/inputsqn.ts`, `ui/MedicalView.tsx`, `ui/InputWindow.tsx` (the `foreign` test exported, unchanged — or copied by name, the builder's), the two test files | — | 7 h |
 | **K10-c** | the bell's `u`; the two owed-drawing cases pressed first from 142 and 149; B-1 to B-7 | `ui/topstate.ts` (one line, its comment), test files | **U2; KR-4** | 2.5 h |
-| **K10-d** | the root on: the patch's window hunks, then §4.2's five additions; §7.3's tests; full suite and build under the lock | `ui/InputWindow.tsx`, `ui/inputedit.tsx` (the offer filter, if `offersFor` is where it lives), test files | K10-c; **Q1** | 6 h |
+| **K10-d** | the root on: the patch's window hunks, then §4.2's five additions; §7.3's tests and §7.4's (a date change that moves the holder — allowed, pins); full suite and build under the lock | `ui/InputWindow.tsx`, `ui/inputedit.tsx` (the offer filter, if `offersFor` is where it lives), test files | K10-c; **Q1** | 7 h |
 | **K10-e** | the records: the build plan's §21.1 gains a "K10 under D2834" block winning over §5.2's one-case `letOpenOn`, §5.5's two finding rows and §16 finding 2's wording, each with a pointer (D201); `docs/file-map.md`; `docs/feature-impact.md` (a one-man record's squadron follows a move while open); `OUTSTANDING.md` `[XFER]` gains §12; `HANDOFF.md`; `npm run docsize` | docs | K10-d | 1 h |
-| **K10-f** | the save door: a change of dates, or a man or placeholder added, that would move the record off the squadron it stands on is refused; its words drafted by Opus, adjusted by a fresh Fable (D2441), drawn on the real app and shown to him (D1625) | `ui/InputWindow.tsx` or its save door in `ui/inputedit.tsx`, a test file | its words seen | 2.5 h |
+~~**K10-f**~~ — withdrawn in round 2b (§7.4): a date change that moves the holder is allowed by D2847 and D2261; its
+pins are K10-d's.
 
-**Total: about 19 hours** (round 1: 12.5), plus the reads. The rise is the read's work: settle days and the episode's
-own upchit (+2 h), read only on the old page and the life of a record (+0.5 h), the Person list, drift and their tests
-(+2 h), the save door (+2.5 h). **Before U2 lands only K10-a**; it touches none of the U2 hold list (it only reads
-`homeOn` / `homeChangesOn` from `state/units.ts`). **K10-f is a gap that exists today** (a date change can move a record
-off the page with or without the root), so the root does not wait for it.
+**Total: about 17.5 hours** (round 1: 12.5; round 2: 19), plus the reads. Round 2's rise was the read's work:
+- settle days and the episode's own upchit, +2 h;
+- read only on the old page and the life of a record, +0.5 h;
+- the Person list, drift and their tests, +2 h.
+
+Round 2b's fall: the refusal and its words go, −2.5 h, and their pins come into K10-d, +1 h. **Before U2 lands only
+K10-a**; it touches none of the U2 hold list (it only reads `homeOn` / `homeChangesOn` from `state/units.ts`).
 
 **Reads:** this round 2 — read by the coordinator; a second round only on his word (one round, as asked). After K10-d:
 Astra, a fresh, blind Opus and the security reader (D1411; the batch-end read). A fresh, blind Fable beside them is the
 coordinator's call (high-risk work, D2255, D2440), else on the reads-owed list. The walk's scenarios: Astra and a fresh,
-blind Fable (D2443). K10-f's words: a fresh Fable (D2441).
+blind Fable (D2443).
 
-**No new words on screen** except K10-f's (drawn first). Q1's picture comes before K10-d.
+**No new words on screen in any sub-step.** Q1's picture comes before K10-d.
 
 ---
 
@@ -390,7 +449,8 @@ or a future "as of" day.
 ## 10. Risks (brief item 10)
 
 1. **A record saved into the wrong squadron.** The gate judges by days (§5). The Person list offers only men who keep
-   the record's squadron (§4.2 item 2). The save door refuses a date or a group change that would move it (K10-f).
+   the record's squadron (§4.2 item 2). A date change that moves it is a change to the one input, allowed by the save
+   check's who-rule (D2847, D2261, D2240's refusal), and the record then stands where its days say (§7.4).
    Drift holds a window whose record moved under it (§4.2 item 3). A carried record on a page not its holder is read
    only. The tests read the saved person, the record's squadron and the bar.
 2. **A record vanishing from both tabs.** M2's loop over every tab, section and as-of day, moved, moved twice and moved
@@ -419,7 +479,8 @@ episode (bounded by the next separate one) · R4 approval does not change which 
 commitment wholly before the move stays, its OIL answer answered where he is · R6 a commitment across the move is carried,
 as leave · R7 SANS availability the same · R8 an input of several people is never carried · R9 only a Transfer carries ·
 R10 the Upchit Complete change needs no drawing · R11 a record moved under an open window holds it with the existing band
-· R12 D2835's View-only presser keeps today's read-only look until his drawing · R13 "149's admin closes it" read as the
+· R12 D2835's View-only presser keeps today's read-only look until his drawing · R14 a date change that moves a record
+says only "Input updated", no note that it is now the other squadron's · R13 "149's admin closes it" read as the
 Upchit · **the technical calls:** today's date, never the tab's as-of; a record's holder fixed by the earlier of today
 and its settle day; `holderOf` beside `inputSqn`, not in the engine; `letReadOnly` a second export; the viewer's Upchit
 seed date left as it is; K10-c and K10-d after KR-4; K10-c owns the bell's `u`.
@@ -459,7 +520,7 @@ accepted 2, rejected 0.**
 
 | # | Finding | Verdict | Checked in the code | Fixed in |
 |---|---|---|---|---|
-| A1 | the Person list lets a 149 record be saved under 142's bar | accepted | `PeoplePick unit={pickUnit}`, `lockOne={!isNew && !canEditOwn()}`: an admin may change the person; the round-1 `pickUnit` followed the holder whatever the page | §4.2 item 2 (the record's own squadron and a keep-its-squadron offer filter); dates and group changes in K10-f; §7.3, §7.4 |
+| A1 | the Person list lets a 149 record be saved under 142's bar | accepted | `PeoplePick unit={pickUnit}`, `lockOne={!isNew && !canEditOwn()}`: an admin may change the person; the round-1 `pickUnit` followed the holder whatever the page | §4.2 item 2 (the record's own squadron and a keep-its-squadron offer filter); date changes: allowed, the record moving (§7.4, round 2b — K10-f withdrawn); §7.3, §7.4 |
 | A2 | a window stays writable after its subject moves at midnight | accepted | the note is taken once; `held` compared it with an unchanged page | §4.2 item 3 (drift from the live record, at every draw and in the save door); §7.3 |
 | A3 | a past Medical card on the middle squadron opens held | accepted | `mine` reads the roster on the as-of day; `inputSqn` gave 150 and no let covered 149 | §2.2 the record's life; §4.3 case 4 (read only); M2 |
 | A4 | finished carried leave returns to 142 after a later move | accepted | round 1 read his home today, which the leave does not touch after the second move | §2.1 (`d = min(today, S)`, S = its last day); H1, B-2 |
@@ -475,4 +536,5 @@ accepted 2, rejected 0.**
 | O7 | who builds D2835's bell door — KR-4 or K10-c | accepted | KR plan §12 head: "D2835 is the bell door's, KR-4" | §3.2, §6: K10-c owns `u`; KR-4 converts the order only |
 | O8 | `letOpenOn`'s new return breaks the patch and F0 | accepted | the patch reads `let ?? unit` | §4.1: `letOpenOn` unchanged; `letReadOnly` a second export |
 | O9 | H4 stated per man, `holderOf` per record | accepted | row 1c: listed by a newer record, the old one not carried | §7.1 H4 per record |
+| F-2b | (round 2b, the fresh Fable's words review §2) K10-f's refusal cuts one leave in two, against D2847; stretching a leave across his move may simply be allowed | accepted | D2847's and D2261's full rows ("one input, never cut"); `whoDoorRefusal`/`acrossMoveWords` already refuse, in D2240's approved words, whoever may not; `inputWhoProblem` lets the man, a master admin and an admin of both; Save closes the window | §7.4 (allowed, the record moves; K10-f withdrawn, its words dropped); §0, §8, §10 |
 | O10 | Q1's wording; the demo's fixed "today" missing from the walk notes | accepted | `MedicalView` reads `keyToIso(TODAY)`; moves the clock | §9 (Q1 restated, every person with his role); §10 risk 9; §13 |
