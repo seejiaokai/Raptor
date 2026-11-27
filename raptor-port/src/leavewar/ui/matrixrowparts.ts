@@ -149,7 +149,7 @@ export function cellOpenable(states: States, role: Role, viewer: string | null, 
    figures could have moved, and a row drawn again for any other reason reads both for nothing. Exported: the phone's
    frozen copy of the names (Matrix's band) must read the same two numbers. */
 const USED_IN = new WeakMap<PersonFigures, Map<string, number>>()
-export function nameFigures(pid: string, from: string, to: string): { war: number; used: number } {
+export function nameFigures(pid: string, from: string, to: string): { war: number; used: number; nt: boolean } {
   const f = leaveFiguresOf(pid)
   let byRange = USED_IN.get(f)
   if (!byRange) { byRange = new Map(); USED_IN.set(f, byRange) }
@@ -160,12 +160,13 @@ export function nameFigures(pid: string, from: string, to: string): { war: numbe
     used = annualUsedIn(world, pid, days, from, to)
     byRange.set(k, used)
   }
-  return { war: f.kinds.LVE.war, used }
+  return { war: f.kinds.LVE.war, used, nt: f.kinds.LVE.notTyped }
 }
-/** The two lines as the box beside a name draws them — one reader for the row and the phone's frozen copy. */
+/** The two lines as the box beside a name draws them — one reader for the row and the phone's frozen copy. A balance never
+ *  typed carries `nt`, and the box reads the amber "–" (D2746, his D2823: "Not typed" nowhere). */
 export function nameLines(pid: string, period: Pick<Period, 'start' | 'end'>): FigureLines {
   const nf = nameFigures(pid, period.start, period.end)
-  return { top: nf.war, used: [{ label: 'LL OL', tone: 'amber', value: nf.used }] }
+  return { top: nf.war, used: [{ label: 'LL OL', tone: 'amber', value: nf.used }], ...(nf.nt ? { nt: true as const } : {}) }
 }
 
 /** Which half of the cell a record's box takes (D1160, D1164): an HO its half — the admin's pick for an award, the half

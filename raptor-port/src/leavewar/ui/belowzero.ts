@@ -13,12 +13,13 @@ export type BelowZero = { callsign: string; counter: CounterName; after: number 
 
 /** What a fill does to one balance — the store's `balanceAfterFill`: since M5a his War bal of the kind the code spends,
  *  through the one engine (OIL the tracker's ledger), before and with the fill. */
-export type BalanceAfter = { counter: CounterName; before: number; after: number }
+export type BalanceAfter = { counter: CounterName; before: number; after: number; notTyped?: true }
 
 /** Does this fill take the balance below zero? Only when it ends below zero AND lower than it started: a fill that
  *  spends nothing (a weekend, the same leave again) never asks, even of a man already in the red (Astra's final read,
- *  F4, 29 Sep 26 — it asked "takes him to -2" of a Saturday that left him at -2). */
-export const goesBelow = (r: BalanceAfter | null | undefined): r is BalanceAfter => !!r && r.after < 0 && r.after < r.before
+ *  F4, 29 Sep 26 — it asked "takes him to -2" of a Saturday that left him at -2). Never of a balance not yet typed: it
+ *  reads "Not typed", and the question waits for a figure (D2746, question 11 A). */
+export const goesBelow = (r: BalanceAfter | null | undefined): r is BalanceAfter => !!r && !r.notTyped && r.after < 0 && r.after < r.before
 
 /** A counter's balance by the kind's own name, as every screen names it: "LVE" (LL and OL both spend it), "OIL", "CCL"… */
 export const balanceLabel = (counter: CounterName): string =>

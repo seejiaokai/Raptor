@@ -1,0 +1,130 @@
+[
+ {
+  "id": "s8.1 Balances (admin): \"Only leave after post-in is deducted.\" once, above the rows",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"n\":1,\"text\":\"Only leave after post-in is deducted.\",\"lineBottom\":221.84375,\"firstRowTop\":329.84375,\"official\":[\"OFFICIAL BAL\"],\"appBal\":false,\"fs\":\"13px\",\"col\":\"rgb(154, 164, 178)\"}",
+  "pics": [
+   "s8-01-balances-admin"
+  ]
+ },
+ {
+  "id": "s8.2 the heading reads OFFICIAL BAL; \"App bal\" nowhere on the page",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "headings with OFFICIAL: [\"OFFICIAL BAL\"]; \"App bal\" in page text=false",
+  "pics": []
+ },
+ {
+  "id": "s8.3 Days taken view: no line",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "lines shown 0",
+  "pics": [
+   "s8-03-days-taken"
+  ]
+ },
+ {
+  "id": "s8.4 never typed — his window: label \"Official bal\", boxes empty, War bal \"Not typed\" in amber inside the tile, the one line under the LVE box",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"off\":\"\",\"cf\":\"\",\"pend\":\"–\",\"war\":\"Not typed\",\"taken\":\"0 taken\",\"line\":\"Only leave after post-in is deducted.\",\"labels\":\"Official bal|Pending|War bal\"} look {\"color\":\"rgb(242, 200, 121)\",\"nowrap\":false,\"tileRight\":1298.1875,\"warRight\":1216.421875,\"boxEdge\":\"dashed rgba(242, 200, 121, 0.8)\"}",
+  "pics": [
+   "s8-05-lark-window"
+  ]
+ },
+ {
+  "id": "s8.5 never typed — his Balances row: empty dashed boxes, \"Not typed\"",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"off\":\"\",\"cf\":\"\",\"pend\":\"–\",\"war\":\"Not typed\",\"offNt\":true}",
+  "pics": [
+   "s8-04-lark-row"
+  ]
+ },
+ {
+  "id": "s8.5b never typed — the Balances page's boxes (LVE, CCL) wear the dashed amber edge",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"LVE\":\"dashed rgba(242, 200, 121, 0.8) value=\\\"\\\"\",\"CCL\":\"dashed rgba(242, 200, 121, 0.8) value=\\\"\\\"\",\"controlTypedRangerLVE\":\"solid rgb(102, 113, 127) value=\\\"15\\\"\"}",
+  "pics": [
+   "s8-04-lark-row"
+  ]
+ },
+ {
+  "id": "s8.5c never typed — his window's boxes (LVE, CCL) wear the dashed amber edge",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"LVE\":\"dashed rgba(242, 200, 121, 0.8) value=\\\"\\\"\",\"CCL\":\"dashed rgba(242, 200, 121, 0.8) value=\\\"\\\"\"}",
+  "pics": [
+   "s8-05-lark-window",
+   "s8-05b-lark-window-ccl"
+  ]
+ },
+ {
+  "id": "s8.6 deliberately unchanged: the grid figure beside a never-typed name",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "grid \"0\" (the admin's My leave reads \"My leaveLVE 17.5 · OIL 0 · 0 pending›\")",
+  "pics": [
+   "s8-06-grid-never"
+  ]
+ },
+ {
+  "id": "s8.7 member, unlocked: the line once on the Balances page (his own row has boxes)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"n\":1,\"app\":false}",
+  "pics": [
+   "s8-07-member-balances-unlocked"
+  ]
+ },
+ {
+  "id": "s8.8 member, unlocked, his own window: the line under the LVE box; \"Official bal\"",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"off\":\"15\",\"cf\":\"2\",\"pend\":\"−2.5\",\"war\":\"12.5\",\"taken\":\"5 taken\",\"line\":\"Only leave after post-in is deducted.\",\"labels\":\"Official bal|Pending|War bal\"}",
+  "pics": [
+   "s8-08-member-own-window"
+  ]
+ },
+ {
+  "id": "s8.9 member, another man never typed: his window has no line, War bal \"Not typed\"; his Balances box an amber \"–\" read only, named \"Not typed\"",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "window {\"off\":\"–\",\"cf\":\"–\",\"pend\":\"–\",\"war\":\"Not typed\",\"taken\":\"0 taken\",\"line\":null,\"labels\":\"Official bal|Pending|War bal\"}; Balances {\"tag\":\"SPAN\",\"text\":\"–\",\"title\":\"Not typed\",\"nt\":true,\"color\":\"rgb(242, 200, 121)\",\"dashes\":7,\"inputs\":0}",
+  "pics": [
+   "s8-09-member-other-never",
+   "s8-10-member-sees-never-row"
+  ]
+ },
+ {
+  "id": "s8.10 admin with the lock on: still the line (an admin always has boxes)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "lock pressed=true, lines 1",
+  "pics": [
+   "s8-11-admin-locked"
+  ]
+ },
+ {
+  "id": "s8.11 member, locked: no line on the page, none in his own window",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "page lines 0; window {\"off\":\"15\",\"cf\":\"2\",\"pend\":\"−2.5\",\"war\":\"12.5\",\"taken\":\"5 taken\",\"line\":null,\"labels\":\"Official bal|Pending|War bal\"}",
+  "pics": [
+   "s8-12-member-locked",
+   "s8-13-member-own-locked"
+  ]
+ },
+ {
+  "id": "s9.0 the drawing's world rebuilt and pictured (the comparing follows)",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "window measures {\"line\":{\"x\":30,\"y\":207,\"w\":291,\"h\":16,\"fs\":\"11px\",\"col\":\"rgb(138, 150, 163)\"},\"cf\":{\"x\":55,\"y\":178,\"w\":36,\"h\":18,\"fs\":\"11.5px\",\"col\":\"rgb(125, 136, 148)\"},\"box\":{\"x\":30,\"y\":146,\"w\":53,\"h\":28,\"fs\":\"16px\",\"col\":\"rgb(241, 244, 247)\"},\"tile\":{\"x\":21,\"y\":93,\"w\":309,\"h\":138,\"fs\":\"13px\",\"col\":\"rgb(241, 244, 247)\"}}",
+  "pics": [
+   "s9-build-desk-pw",
+   "s9-build-desk-bal"
+  ]
+ }
+]

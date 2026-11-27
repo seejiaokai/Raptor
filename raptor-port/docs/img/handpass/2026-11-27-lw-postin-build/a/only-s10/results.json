@@ -1,0 +1,42 @@
+[
+ {
+  "id": "s10.0 calibration: Ibis, nothing typed — his CCL box dashed amber on the Balances page and in his window",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"bal\":\"\\\"\\\" dashed rgba(242, 200, 121, 0.8) class=mth-in bp-bx sm nt\",\"pw\":\"\\\"\\\" dashed rgba(242, 200, 121, 0.8) class=mth-in bp-bx nt r17-box focused=false\"}",
+  "pics": [
+   "s10-2-ibis-nothing-typed-ccl-window",
+   "s10-balances-jay-ibis"
+  ]
+ },
+ {
+  "id": "s10.1 Jay, LVE typed, CCL never typed — his CCL box dashed amber in BOTH places (D2746 every kind; two surfaces agree)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"bal\":\"\\\"\\\" dashed rgba(242, 200, 121, 0.8) class=mth-in bp-bx sm nt\",\"pw\":\"\\\"\\\" dashed rgba(242, 200, 121, 0.8) class=mth-in bp-bx nt r17-box focused=false\"}",
+  "pics": [
+   "s10-1-jay-lve-typed-ccl-window",
+   "s10-balances-jay-ibis"
+  ]
+ },
+ {
+  "id": "s10.2 Jay (LVE typed) with an approved LL: CCL still dashed amber in BOTH places",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"bal\":\"\\\"\\\" dashed rgba(242, 200, 121, 0.8) class=mth-in bp-bx sm nt\",\"pw\":\"\\\"\\\" dashed rgba(242, 200, 121, 0.8) class=mth-in bp-bx nt r17-box focused=false\"}",
+  "pics": [
+   "s10-3-jay-lve-typed-ccl-window",
+   "s10-balances-after-leave"
+  ]
+ },
+ {
+  "id": "s10.3 Ibis (nothing typed) with an approved LL: CCL still dashed amber in BOTH places",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"bal\":\"\\\"\\\" dashed rgba(242, 200, 121, 0.8) class=mth-in bp-bx sm nt\",\"pw\":\"\\\"\\\" dashed rgba(242, 200, 121, 0.8) class=mth-in bp-bx nt r17-box focused=false\"}",
+  "pics": [
+   "s10-4-ibis-nothing-typed-ccl-window",
+   "s10-balances-after-leave"
+  ]
+ }
+]

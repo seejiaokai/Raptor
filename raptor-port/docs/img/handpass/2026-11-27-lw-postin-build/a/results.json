@@ -1,0 +1,616 @@
+[
+ {
+  "id": "s1.0 the Post in sheet opens on a day before his post-in and hands the day to the leave window",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Post in sheet shown=true, leave placed=true",
+  "pics": [
+   "s1-01-lynx-postin-sheet"
+  ]
+ },
+ {
+  "id": "s1.1 Lynx: leave 2 Dec (before post-in) THEN 24 typed — nothing deducted",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "expected Official 24 / War 24 on both surfaces; saw Balances off=24 cf=0 pend=– war=24 | window off=24 pend=– war=24 taken=\"0 taken\"",
+  "pics": [
+   "s1-02-lynx-24-bal",
+   "s1-02-lynx-24-pw"
+  ]
+ },
+ {
+  "id": "s1.2 Pelican: 24 typed THEN leave 2 Dec (before post-in) — nothing deducted",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "expected Official 24 / War 24 on both surfaces; saw Balances off=24 cf=0 pend=– war=24 | window off=24 pend=– war=24 taken=\"0 taken\"",
+  "pics": [
+   "s1-03-pelican-24-bal",
+   "s1-03-pelican-24-pw"
+  ]
+ },
+ {
+  "id": "s1.3 the 2 Dec leave still drawn on the grid for both",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Lynx 2 Dec cell \"LL\", Pelican \"LL\"",
+  "pics": [
+   "s1-04-grid-2dec"
+  ]
+ },
+ {
+  "id": "s1.4 Lynx: LL on the post-in day Mon 7 Dec is deducted",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "expected Official 23 / War 23 on both surfaces; saw Balances off=23 cf=0 pend=– war=23 | window off=23 pend=– war=23 taken=\"0 taken\"",
+  "pics": [
+   "s1-05-lynx-7dec-bal",
+   "s1-05-lynx-7dec-pw"
+  ]
+ },
+ {
+  "id": "s1.5 Pelican: LL on the post-in day Mon 7 Dec is deducted",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "expected Official 23 / War 23 on both surfaces; saw Balances off=23 cf=0 pend=– war=23 | window off=23 pend=– war=23 taken=\"0 taken\"",
+  "pics": [
+   "s1-06-pelican-7dec-bal",
+   "s1-06-pelican-7dec-pw"
+  ]
+ },
+ {
+  "id": "s1.6 the grid figure beside the name agrees (its top line)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "grid: Lynx \"23 / 2\", Pelican \"23 / 2\" (top / second line)",
+  "pics": []
+ },
+ {
+  "id": "s1.6r the grid's second line (leave used) counts the 2 Dec leave before post-in? — RECORD",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "grid: Lynx \"23 / 2\", Pelican \"23 / 2\" — each has LL 2 Dec (before post-in) and LL 7 Dec",
+  "pics": []
+ },
+ {
+  "id": "s1.7 the Post in sheet moved both post-in dates to Mon 30 Nov",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Lynx moved=true Pelican moved=true",
+  "pics": [
+   "s1-07-lynx-postin-30nov",
+   "s1-08-pelican-postin-30nov"
+  ]
+ },
+ {
+  "id": "s1.8 Lynx after the move to 30 Nov: 2 Dec was in the figure typed, so it does not come off again",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "expected Official 23 / War 23 on both surfaces; saw Balances off=23 cf=0 pend=– war=23 | window off=23 pend=– war=23 taken=\"0 taken\"",
+  "pics": [
+   "s1-09-lynx-30nov-bal",
+   "s1-09-lynx-30nov-pw"
+  ]
+ },
+ {
+  "id": "s1.9 Pelican after the move to 30 Nov: 2 Dec now after his post-in, placed after typing — deducted",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "expected Official 22 / War 22 on both surfaces; saw Balances off=22 cf=0 pend=– war=22 | window off=22 pend=– war=22 taken=\"0 taken\"",
+  "pics": [
+   "s1-10-pelican-30nov-bal",
+   "s1-10-pelican-30nov-pw"
+  ]
+ },
+ {
+  "id": "s1.10 Undo (top bar) puts Pelican's post-in back to 7 Dec: 23 again, without a reload",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "expected Official 23 / War 23 on both surfaces; saw Balances off=23 cf=0 pend=– war=23 | window off=23 pend=– war=23 taken=\"0 taken\"",
+  "pics": [
+   "s1-11-pelican-undo-bal",
+   "s1-11-pelican-undo-pw"
+  ]
+ },
+ {
+  "id": "s1.11 Redo: 22 again",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "expected Official 22 / War 22 on both surfaces; saw Balances off=22 cf=0 pend=– war=22 | window off=22 pend=– war=22 taken=\"0 taken\"",
+  "pics": [
+   "s1-12-pelican-redo-bal",
+   "s1-12-pelican-redo-pw"
+  ]
+ },
+ {
+  "id": "s1.12 Lynx post-in moved to Thu 10 Dec: the 7 Dec leave (placed after typing) now before post-in — not deducted",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "expected Official 24 / War 24 on both surfaces; saw Balances off=24 cf=0 pend=– war=24 | window off=24 pend=– war=24 taken=\"0 taken\"",
+  "pics": [
+   "s1-13-lynx-10dec-bal",
+   "s1-13-lynx-10dec-pw"
+  ]
+ },
+ {
+  "id": "s1.13 Pelican post-in Thu 10 Dec: neither leave deducted",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "expected Official 24 / War 24 on both surfaces; saw Balances off=24 cf=0 pend=– war=24 | window off=24 pend=– war=24 taken=\"0 taken\"",
+  "pics": [
+   "s1-14-pelican-10dec-bal",
+   "s1-14-pelican-10dec-pw"
+  ]
+ },
+ {
+  "id": "s2.0 a drag across Thu 3 – Wed 9 Dec opens the drag window and places one LL",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "window \"3–9 Dec · 7 days\", placed=true",
+  "pics": [
+   "s2-01-drag-window"
+  ]
+ },
+ {
+  "id": "s2.1 LL 3–9 Dec across a 7 Dec post-in: only 7, 8, 9 Dec deducted",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "expected Official 21 / War 21 on both surfaces; saw Balances off=21 cf=0 pend=– war=21 | window off=21 pend=– war=21 taken=\"0 taken\"",
+  "pics": [
+   "s2-02-kite-across-bal",
+   "s2-02-kite-across-pw"
+  ]
+ },
+ {
+  "id": "s2.2 the days before post-in still drawn on the grid as part of the leave",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "cells 03:LL 04:LL 07:LL 08:LL 09:LL (a joined bar writes its code once)",
+  "pics": [
+   "s2-03-grid-across"
+  ]
+ },
+ {
+  "id": "s2.3 LL AM Fri 4 Dec (before post-in): nothing deducted",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "expected Official 24 / War 24 on both surfaces; saw Balances off=24 cf=0 pend=– war=24 | window off=24 pend=– war=24 taken=\"0 taken\"",
+  "pics": [
+   "s2-04-plover-am-4dec-bal",
+   "s2-04-plover-am-4dec-pw"
+  ]
+ },
+ {
+  "id": "s2.4 LL PM Mon 7 Dec (the post-in day): half a day deducted",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "expected Official 23.5 / War 23.5 on both surfaces; saw Balances off=23.5 cf=0 pend=– war=23.5 | window off=23.5 pend=– war=23.5 taken=\"0 taken\"",
+  "pics": [
+   "s2-05-plover-pm-7dec-bal",
+   "s2-05-plover-pm-7dec-pw"
+  ]
+ },
+ {
+  "id": "s3.0 Hawk, here since 5 Jan, 24 typed, LL Mon 13 Apr approved: deducted",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "expected Official 23 / War 23 on both surfaces; saw Balances off=23 cf=0 pend=– war=23 | window off=23 pend=– war=23 taken=\"1 taken\"",
+  "pics": [
+   "s3-01-typed-13apr-bal",
+   "s3-01-typed-13apr-pw"
+  ]
+ },
+ {
+  "id": "s3.1 posted out Overseas Sqn from Wed 1 Apr (the bid window's ⋯ → Post out)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "ok",
+  "pics": [
+   "s3-02-postout-1apr"
+  ]
+ },
+ {
+  "id": "s3.2 Restore on Admin → Users with post-in Mon 1 Jun",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "ok",
+  "pics": [
+   "s3-03-restore-1jun"
+  ]
+ },
+ {
+  "id": "s3.3 back once: 13 Apr was a day away — not deducted",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "expected Official 24 / War 24 on both surfaces; saw Balances off=24 cf=0 pend=– war=24 | window off=24 pend=– war=24 taken=\"0 taken\"",
+  "pics": [
+   "s3-04-back-once-bal",
+   "s3-04-back-once-pw"
+  ]
+ },
+ {
+  "id": "s3.4 posted out again Overseas Sqn from Tue 1 Sep",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "ok",
+  "pics": [
+   "s3-05-postout-1sep"
+  ]
+ },
+ {
+  "id": "s3.5 Restore again with post-in Mon 2 Nov",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "ok",
+  "pics": [
+   "s3-06-restore-2nov"
+  ]
+ },
+ {
+  "id": "s3.6 back twice: 13 Apr (the FIRST gap) still not deducted",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "expected Official 24 / War 24 on both surfaces; saw Balances off=24 cf=0 pend=– war=24 | window off=24 pend=– war=24 taken=\"0 taken\"",
+  "pics": [
+   "s3-07-back-twice-bal",
+   "s3-07-back-twice-pw"
+  ]
+ },
+ {
+  "id": "s3.7 after a reload: the same",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "expected Official 24 / War 24 on both surfaces; saw Balances off=24 cf=0 pend=– war=24 | window off=24 pend=– war=24 taken=\"0 taken\"",
+  "pics": [
+   "s3-08-after-reload-bal",
+   "s3-08-after-reload-pw"
+  ]
+ },
+ {
+  "id": "s4.0 Gull on the war: Official 24, Pending 1 (15 Dec), War 23 — 2 Dec never deducted",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Balances off=24 cf=0 pend=1 war=23 | window off=24 pend=−1 war=23 taken=\"0 taken\"",
+  "pics": [
+   "s4-01-shown-bal",
+   "s4-01-shown-pw"
+  ]
+ },
+ {
+  "id": "s4.1 SANS ticked, \"+ SANS\" off: Gull has no row on the grid (the premise)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "SANS group shown=false, his rows=0, his record {\"san\":true,\"sanFrom\":\"2026-11-27\"}",
+  "pics": [
+   "s4-02-quals-sans",
+   "s4-03-sans-off"
+  ]
+ },
+ {
+  "id": "s4.2 hidden: Approvals' LVE BAL on his 15 Dec line reads 23 (2 Dec still not deducted)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "LVE BAL \"23\"",
+  "pics": [
+   "s4-04-approvals-hidden"
+  ]
+ },
+ {
+  "id": "s4.3 hidden, signed in as Gull: no My leave on his top row (a SANS man with no row on the war) — RECORD; his Balances row",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "My leave drawn=false; his Balances row not on the page",
+  "pics": [
+   "s4-05-gull-signed-in-hidden",
+   "s4-06-gull-balances-hidden"
+  ]
+ },
+ {
+  "id": "s4.4 \"+ SANS\" on again: Official 24, War 23 — the switch changes no figure",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "group shown=true; Balances off=24 cf=0 pend=1 war=23 | window off=24 pend=−1 war=23 taken=\"0 taken\"",
+  "pics": [
+   "s4-08-shown-again-bal",
+   "s4-08-shown-again-pw"
+  ]
+ },
+ {
+  "id": "s5.1 Swift posted out from 7 Dec (Overseas Sqn), LL Tue 8 Dec approved: still deducted (D1541)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "expected Official 23 / War 23 on both surfaces (post out: ok; placed=true); saw Balances off=23 cf=0 pend=– war=23 | window off=23 pend=– war=23 taken=\"0 taken\"",
+  "pics": [
+   "s5-02-swift-after-po-bal",
+   "s5-02-swift-after-po-pw"
+  ]
+ },
+ {
+  "id": "s5.2 Tern, bids 2 Dec (before post-in) and 8 Dec: Pending 1 (only 8 Dec), War 23",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Balances off=24 cf=0 pend=1 war=23 | window off=24 pend=−1 war=23 taken=\"0 taken\"",
+  "pics": [
+   "s5-03-tern-bids-bal",
+   "s5-03-tern-bids-pw"
+  ]
+ },
+ {
+  "id": "s5.3 Approvals: Tern's two lines, LVE BAL 23 on both",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "[{\"text\":\"Tern O posting in 7 Dec LL Wed 2 Dec › 1 day 23 27 Nov 02:34 · by Saber Approve Refuse\",\"bal\":\"23\"},{\"text\":\"Tern O posting in 7 Dec LL Tue 8 Dec › 1 day 23 P 28 27 Nov 02:34 · by Saber Approve Refuse\",\"bal\":\"23\"}]",
+  "pics": [
+   "s5-04-approvals-tern"
+  ]
+ },
+ {
+  "id": "s5.4 both approved on Approvals: Official 23, nothing pending, War 23 (2 Dec's approval deducts nothing)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Balances off=23 cf=0 pend=– war=23 | window off=23 pend=– war=23 taken=\"0 taken\"",
+  "pics": [
+   "s5-05-approvals-approved",
+   "s5-06-tern-approved-bal",
+   "s5-06-tern-approved-pw"
+  ]
+ },
+ {
+  "id": "s6.0 a 0 typed saves as a typed figure (Finch: Official 0, War 0, no \"Not typed\")",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"off\":\"0\",\"cf\":\"0\",\"pend\":\"–\",\"war\":\"0\",\"offNt\":false}",
+  "pics": [
+   "s6-00-finch-0"
+  ]
+ },
+ {
+  "id": "s6.1 one-day window, never-typed Wren, LL Wed 9 Dec: placed at the first tap, no below-zero question",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "placed=true note=null",
+  "pics": [
+   "s6-01-wren-day-after-first-tap"
+  ]
+ },
+ {
+  "id": "s6.1r the leave buttons' \"left\" for never-typed Wren (deliberately unchanged)",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "LL button read \"−1\" before the tap",
+  "pics": []
+ },
+ {
+  "id": "s6.2 one-day window, Finch at a typed 0: the below-zero question shows and the leave waits",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "placed=false note=\"That takes Finch to −1 LVE. Tap the same leave again to go ahead.\"",
+  "pics": [
+   "s6-02-finch-day-after-first-tap"
+  ]
+ },
+ {
+  "id": "s6.3 drag window, Wren 14–16 Dec: placed at the first tap, no question",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "opened=true placed=true note=null",
+  "pics": [
+   "s6-03-wren-drag"
+  ]
+ },
+ {
+  "id": "s6.4 drag window, Finch 14–16 Dec: the question shows",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "opened=true placed=false note=\"That takes Finch to −3 LVE. Tap the same leave again to go ahead.\"",
+  "pics": [
+   "s6-04-finch-drag"
+  ]
+ },
+ {
+  "id": "s6.5 one drag over both rows: the question names Finch only",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "window \"5 people\", note=\"That takes Finch to −2 LVE. Tap the same leave again to go ahead.\"",
+  "pics": [
+   "s6-05-both-drag"
+  ]
+ },
+ {
+  "id": "s7.0 never typed: both LVE boxes empty with the dashed amber edge, War bal \"Not typed\"",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"off\":\"\",\"cf\":\"\",\"pend\":\"–\",\"war\":\"Not typed\",\"offNt\":true}",
+  "pics": [
+   "s7-00-never"
+  ]
+ },
+ {
+  "id": "s7.1 carried fwd typed first: refused at its box — RECORD its words and look",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "refusal shown \"Type the Official bal first (shown true, colour rgb(255, 179, 185), fill rgb(42, 18, 21))\"; row after: {\"off\":\"\",\"cf\":\"\",\"pend\":\"–\",\"war\":\"Not typed\",\"offNt\":true}",
+  "pics": [
+   "s7-01-cf-first"
+  ]
+ },
+ {
+  "id": "s7.1b the refusal saved nothing (still \"Not typed\")",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"off\":\"\",\"cf\":\"\",\"pend\":\"–\",\"war\":\"Not typed\",\"offNt\":true}",
+  "pics": []
+ },
+ {
+  "id": "s7.2 Official bal 0 typed: saved, War bal 0, the amber edge gone",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"off\":\"0\",\"cf\":\"0\",\"pend\":\"–\",\"war\":\"0\",\"offNt\":false}",
+  "pics": [
+   "s7-02-zero"
+  ]
+ },
+ {
+  "id": "s7.3 Undo (top bar): back to never typed — empty dashed boxes, \"Not typed\"",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"off\":\"\",\"cf\":\"\",\"pend\":\"–\",\"war\":\"Not typed\",\"offNt\":true}",
+  "pics": [
+   "s7-03-undo"
+  ]
+ },
+ {
+  "id": "s7.4 Redo: 0 again",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"off\":\"0\",\"cf\":\"0\",\"pend\":\"–\",\"war\":\"0\",\"offNt\":false}",
+  "pics": [
+   "s7-04-redo"
+  ]
+ },
+ {
+  "id": "s7.5 24 typed, then carried 2: Official 24, carried 2, War 24",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"off\":\"24\",\"cf\":\"2\",\"pend\":\"–\",\"war\":\"24\",\"offNt\":false}",
+  "pics": [
+   "s7-05-24"
+  ]
+ },
+ {
+  "id": "s7 STOPPED",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "page.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#weekNext')\u001b[22m\n\u001b[2m    - locator resolved to <button id=\"weekNext\" class=\"week-nav next near\" aria-label=\"Scroll days right\">›</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div class=\"win-body cw-body\">…</div> from <div role=\"dialog\" class=\"chgwin front\" aria-label=\"Changes · week of 13/7\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div class=\"win-body cw-body\">…</div> from <div role=\"dialog\" class=\"chgwin front\" aria-label=\"Changes · week of 13/7\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    55 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <div class=\"win-body cw-body\">…</div> from <div role=\"dialog\" class=\"chgwin front\" aria-label=\"Changes · week of 13/7\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n",
+  "pics": [
+   "s7-zz-stopped"
+  ]
+ },
+ {
+  "id": "s8.1 Balances (admin): \"Only leave after post-in is deducted.\" once, above the rows",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"n\":1,\"text\":\"Only leave after post-in is deducted.\",\"lineBottom\":221.84375,\"firstRowTop\":329.84375,\"official\":[\"OFFICIAL BAL\"],\"appBal\":false,\"fs\":\"13px\",\"col\":\"rgb(154, 164, 178)\"}",
+  "pics": [
+   "s8-01-balances-admin"
+  ]
+ },
+ {
+  "id": "s8.2 the heading reads OFFICIAL BAL; \"App bal\" nowhere on the page",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "headings with OFFICIAL: [\"OFFICIAL BAL\"]; \"App bal\" in page text=false",
+  "pics": []
+ },
+ {
+  "id": "s8.3 Days taken view: no line",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "lines shown 0",
+  "pics": [
+   "s8-03-days-taken"
+  ]
+ },
+ {
+  "id": "s8.4 never typed — his window: label \"Official bal\", boxes empty, War bal \"Not typed\" in amber inside the tile, the one line under the LVE box",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"off\":\"\",\"cf\":\"\",\"pend\":\"–\",\"war\":\"Not typed\",\"taken\":\"0 taken\",\"line\":\"Only leave after post-in is deducted.\",\"labels\":\"Official bal|Pending|War bal\"} look {\"color\":\"rgb(242, 200, 121)\",\"nowrap\":false,\"tileRight\":1298.1875,\"warRight\":1216.421875,\"boxEdge\":\"dashed rgba(242, 200, 121, 0.8)\"}",
+  "pics": [
+   "s8-05-lark-window"
+  ]
+ },
+ {
+  "id": "s8.5 never typed — his Balances row: empty dashed boxes, \"Not typed\"",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"off\":\"\",\"cf\":\"\",\"pend\":\"–\",\"war\":\"Not typed\",\"offNt\":true}",
+  "pics": [
+   "s8-04-lark-row"
+  ]
+ },
+ {
+  "id": "s8.5b never typed — the Balances page's boxes (LVE, CCL) wear the dashed amber edge",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"LVE\":\"dashed rgba(242, 200, 121, 0.8) value=\\\"\\\"\",\"CCL\":\"dashed rgba(242, 200, 121, 0.8) value=\\\"\\\"\",\"controlTypedRangerLVE\":\"solid rgb(102, 113, 127) value=\\\"15\\\"\"}",
+  "pics": [
+   "s8-04-lark-row"
+  ]
+ },
+ {
+  "id": "s8.5c never typed — his window's boxes (LVE, CCL) wear the dashed amber edge",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"LVE\":\"dashed rgba(242, 200, 121, 0.8) value=\\\"\\\"\",\"CCL\":\"dashed rgba(242, 200, 121, 0.8) value=\\\"\\\"\"}",
+  "pics": [
+   "s8-05-lark-window",
+   "s8-05b-lark-window-ccl"
+  ]
+ },
+ {
+  "id": "s8.6 deliberately unchanged: the grid figure beside a never-typed name",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "grid \"0\" (the admin's My leave reads \"My leaveLVE 17.5 · OIL 0 · 0 pending›\")",
+  "pics": [
+   "s8-06-grid-never"
+  ]
+ },
+ {
+  "id": "s8.7 member, unlocked: the line once on the Balances page (his own row has boxes)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"n\":1,\"app\":false}",
+  "pics": [
+   "s8-07-member-balances-unlocked"
+  ]
+ },
+ {
+  "id": "s8.8 member, unlocked, his own window: the line under the LVE box; \"Official bal\"",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"off\":\"15\",\"cf\":\"2\",\"pend\":\"−2.5\",\"war\":\"12.5\",\"taken\":\"5 taken\",\"line\":\"Only leave after post-in is deducted.\",\"labels\":\"Official bal|Pending|War bal\"}",
+  "pics": [
+   "s8-08-member-own-window"
+  ]
+ },
+ {
+  "id": "s8.9 member, another man never typed: his window has no line, War bal \"Not typed\"; his Balances box an amber \"–\" read only, named \"Not typed\"",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "window {\"off\":\"–\",\"cf\":\"–\",\"pend\":\"–\",\"war\":\"Not typed\",\"taken\":\"0 taken\",\"line\":null,\"labels\":\"Official bal|Pending|War bal\"}; Balances null",
+  "pics": [
+   "s8-09-member-other-never",
+   "s8-10-member-sees-never-row"
+  ]
+ },
+ {
+  "id": "s8.10 admin with the lock on: still the line (an admin always has boxes)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "lock pressed=true, lines 1",
+  "pics": [
+   "s8-11-admin-locked"
+  ]
+ },
+ {
+  "id": "s8.11 member, locked: no line on the page, none in his own window",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "page lines 0; window {\"off\":\"15\",\"cf\":\"2\",\"pend\":\"−2.5\",\"war\":\"12.5\",\"taken\":\"5 taken\",\"line\":null,\"labels\":\"Official bal|Pending|War bal\"}",
+  "pics": [
+   "s8-12-member-locked",
+   "s8-13-member-own-locked"
+  ]
+ },
+ {
+  "id": "s9.0 the drawing's world rebuilt and pictured (the comparing follows)",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "window measures {\"line\":{\"x\":30,\"y\":205,\"w\":291,\"h\":16,\"fs\":\"11px\",\"col\":\"rgb(138, 150, 163)\"},\"cf\":{\"x\":55,\"y\":178,\"w\":36,\"h\":18,\"fs\":\"11.5px\",\"col\":\"rgb(125, 136, 148)\"},\"box\":{\"x\":30,\"y\":146,\"w\":53,\"h\":28,\"fs\":\"16px\",\"col\":\"rgb(241, 244, 247)\"},\"tile\":{\"x\":21,\"y\":93,\"w\":309,\"h\":136,\"fs\":\"13px\",\"col\":\"rgb(241, 244, 247)\"}}",
+  "pics": [
+   "s9-build-desk-pw",
+   "s9-build-desk-bal"
+  ]
+ }
+]

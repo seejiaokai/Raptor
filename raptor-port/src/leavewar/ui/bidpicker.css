@@ -1824,6 +1824,8 @@
 .bidsheet .tchip.lv .lv-fig { font-weight: 500; font-variant-numeric: tabular-nums; opacity: .9; }
 .bidsheet .tchip.lv .lv-neg { color: var(--hard); opacity: 1; }
 .bidsheet .tchip.lv.lv-dim { opacity: .55; }
+/* a kind never typed: the amber "–" for what is left, the button not dimmed (D2823 — question 23's item 4 as drawn) */
+.bidsheet .tchip.lv .lv-nt { color: #F2C879; font-weight: 600; opacity: 1; }
 
 /* "APPROVE WHAT I ENTER" (D1147, D1187 — in the title bar, at its right end before ✕; M3 5.5): a quiet tick, the
    title bar's small words; it pushes itself and the ✕ to the right together. */
