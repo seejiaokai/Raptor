@@ -1,0 +1,137 @@
+[
+ {
+  "id": "s1.0 the Post in sheet opens on a day before his post-in and hands the day to the leave window",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Post in sheet shown=true, leave placed=true",
+  "pics": [
+   "s1-01-lynx-postin-sheet"
+  ]
+ },
+ {
+  "id": "s1.1 Lynx: leave 2 Dec (before post-in) THEN 24 typed — nothing deducted",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "expected Official 24 / War 24 on both surfaces; saw Balances off=24 cf=0 pend=– war=24 | window off=24 pend=– war=24 taken=\"0 taken\"",
+  "pics": [
+   "s1-02-lynx-24-bal",
+   "s1-02-lynx-24-pw"
+  ]
+ },
+ {
+  "id": "s1.2 Pelican: 24 typed THEN leave 2 Dec (before post-in) — nothing deducted",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "expected Official 24 / War 24 on both surfaces; saw Balances off=24 cf=0 pend=– war=24 | window off=24 pend=– war=24 taken=\"0 taken\"",
+  "pics": [
+   "s1-03-pelican-24-bal",
+   "s1-03-pelican-24-pw"
+  ]
+ },
+ {
+  "id": "s1.3 the 2 Dec leave still drawn on the grid for both",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Lynx 2 Dec cell \"LL\", Pelican \"LL\"",
+  "pics": [
+   "s1-04-grid-2dec"
+  ]
+ },
+ {
+  "id": "s1.4 Lynx: LL on the post-in day Mon 7 Dec is deducted",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "expected Official 23 / War 23 on both surfaces; saw Balances off=23 cf=0 pend=– war=23 | window off=23 pend=– war=23 taken=\"0 taken\"",
+  "pics": [
+   "s1-05-lynx-7dec-bal",
+   "s1-05-lynx-7dec-pw"
+  ]
+ },
+ {
+  "id": "s1.5 Pelican: LL on the post-in day Mon 7 Dec is deducted",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "expected Official 23 / War 23 on both surfaces; saw Balances off=23 cf=0 pend=– war=23 | window off=23 pend=– war=23 taken=\"0 taken\"",
+  "pics": [
+   "s1-06-pelican-7dec-bal",
+   "s1-06-pelican-7dec-pw"
+  ]
+ },
+ {
+  "id": "s1.6 the grid figure beside the name agrees",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "grid: Lynx \"232\", Pelican \"232\"",
+  "pics": []
+ },
+ {
+  "id": "s1.7 the Post in sheet moved both post-in dates to Mon 30 Nov",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Lynx moved=true Pelican moved=true",
+  "pics": [
+   "s1-07-lynx-postin-30nov",
+   "s1-08-pelican-postin-30nov"
+  ]
+ },
+ {
+  "id": "s1.8 Lynx after the move to 30 Nov: 2 Dec was in the figure typed, so it does not come off again",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "expected Official 23 / War 23 on both surfaces; saw Balances off=23 cf=0 pend=– war=23 | window off=23 pend=– war=23 taken=\"0 taken\"",
+  "pics": [
+   "s1-09-lynx-30nov-bal",
+   "s1-09-lynx-30nov-pw"
+  ]
+ },
+ {
+  "id": "s1.9 Pelican after the move to 30 Nov: 2 Dec now after his post-in, placed after typing — deducted",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "expected Official 22 / War 22 on both surfaces; saw Balances off=22 cf=0 pend=– war=22 | window off=22 pend=– war=22 taken=\"0 taken\"",
+  "pics": [
+   "s1-10-pelican-30nov-bal",
+   "s1-10-pelican-30nov-pw"
+  ]
+ },
+ {
+  "id": "s1.10 Undo (top bar) puts Pelican's post-in back to 7 Dec: 23 again, without a reload",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "expected Official 23 / War 23 on both surfaces; saw Balances off=23 cf=0 pend=– war=23 | window off=23 pend=– war=23 taken=\"0 taken\"",
+  "pics": [
+   "s1-11-pelican-undo-bal",
+   "s1-11-pelican-undo-pw"
+  ]
+ },
+ {
+  "id": "s1.11 Redo: 22 again",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "expected Official 22 / War 22 on both surfaces; saw Balances off=22 cf=0 pend=– war=22 | window off=22 pend=– war=22 taken=\"0 taken\"",
+  "pics": [
+   "s1-12-pelican-redo-bal",
+   "s1-12-pelican-redo-pw"
+  ]
+ },
+ {
+  "id": "s1.12 Lynx post-in moved to Thu 10 Dec: the 7 Dec leave (placed after typing) now before post-in — not deducted",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "expected Official 24 / War 24 on both surfaces; saw Balances off=24 cf=0 pend=– war=24 | window off=24 pend=– war=24 taken=\"0 taken\"",
+  "pics": [
+   "s1-13-lynx-10dec-bal",
+   "s1-13-lynx-10dec-pw"
+  ]
+ },
+ {
+  "id": "s1.13 Pelican post-in Thu 10 Dec: neither leave deducted",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "expected Official 24 / War 24 on both surfaces; saw Balances off=24 cf=0 pend=– war=24 | window off=24 pend=– war=24 taken=\"0 taken\"",
+  "pics": [
+   "s1-14-pelican-10dec-bal",
+   "s1-14-pelican-10dec-pw"
+  ]
+ }
+]
