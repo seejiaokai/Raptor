@@ -2043,3 +2043,16 @@ Met again 26 Nov 26: section chat S2 (chat 205) — started by the coordinator f
 **Issue:** The step added two calls of a role question to a store file. A test elsewhere counts, per file, how often each role question is asked, and fails on a count it does not list. Neither the builder's batches ("the touched and census files") nor the orchestrator's own re-run of the touched files included that test, because it lives in no file the step touched. It went red on the shared batch branch and another section found it.
 **Suggested improvement:** In a builder's brief template, beside "the touched files", name the repo's census tests — the ones that read the source and count call sites or callers of a guarded function (here: the role-question readers, the settings readers, the roll-call) — as a standing batch of every step that adds or moves such a call. In the orchestrator's review, grep the diff for the guarded function names and run each census test that lists them.
 **Principle:** A test that reads the source to count call sites belongs to the functions it counts, not to the file it sits in; choose re-runs by what the diff calls, not only by which files it touched.
+
+### Observation 1098: A failing-first run must list which new tests PASSED on the old code, not just the count
+
+**Status:** OPEN
+**Date:** 2026-11-27
+**Session context:** Guard rail step K6 (bell and page door) — new tests seen failing first by the patch-file method
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** "Verify RED" — watching the new tests fail before the code
+
+**Issue:** The red run on the old code reported "66 failed, 72 passed". The default reporter names only the failing tests, so the 72 looked like the older tests in the same files. Comparing against a verbose green run showed 22 new tests had passed on the old code. Nine were named pins or controls, but 13 were not named so: they proved behaviour the old code already had. They would have been reported as "seen failing first".
+**Suggested improvement:** In "Verify RED", add: run the red pass with a reporter that names every test (or diff the red failures against a verbose green list), and for each new test that passed on the old code either name it a pin/control in its title or rewrite it until it fails for the missing behaviour.
+**Principle:** A red count is not evidence per test; only a per-test list shows which new tests actually guard the change.

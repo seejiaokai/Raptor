@@ -10,8 +10,10 @@ import { PEOPLE } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { me, roleOf } from '../state/perms'
 import { markBackSeen } from '../state/accounts'
-import { focusQualsRow, setPage } from '../state/view'
-import { notify } from '../state/store'
+import { focusQualsRow } from '../state/view'
+import { notify, setPage } from '../state/store'
+import { UNIT } from '../engine/unitview'
+import { homeOn, todayIso } from '../state/units'
 import './postout.css'
 
 export function WelcomeBack() {
@@ -20,6 +22,11 @@ export function WelcomeBack() {
   if (!id || (who !== 'admin' && who !== 'member')) return null
   const p = (PEOPLE as any)[id]
   if (!p || !p.back || p.archived || p.deleted) return null
+  /* ONLY ON HIS OWN SQUADRON (D2628 C4, D2627 A18 — the guard rail's plan §18.5, step K6): with another squadron in view
+     the card waits, his `back` mark kept — so "Check my quals" never brings his own squadron back without a word (a View
+     holder) nor opens another squadron's Quals where his row is not (a Plan holder); it is drawn again once his own
+     squadron is in view. The page door below is its belt (§4.1 row 12). */
+  if (UNIT !== homeOn(id, todayIso())) return null
   const seen = (then?: () => void) => {
     const bad = markBackSeen()
     if (bad) { HOOKS.toast(bad, 'warn'); return }

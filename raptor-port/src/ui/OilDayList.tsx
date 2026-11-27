@@ -21,7 +21,8 @@ import { useEffect, useState } from 'react'
 import { INPUTS } from '../engine/inputs'
 import { me, pageUnit } from '../state/perms'
 import { NOTICES, noticeRun, noticeSpan, noticeLive, holidayLineAny } from '../state/notices'
-import { notify, setPage } from '../state/store'
+import { notify } from '../state/store'
+import { openInputOnPage } from './topstate'
 import { todayIso } from '../state/units'
 import { oilOpenOn, useWarFacts } from '../leavewar/sync'
 import { FloatWin } from './FloatWindow'
@@ -30,7 +31,7 @@ import { cardOf, cardWhen } from './inputcard-model'
 import { monthItems } from './inputscal-model'
 import { adminOfList, saveOilDay, type OilPick } from './oilday'
 import { holdLater, holdSave, holdSaid, holdStands, type SignHold } from './oilsign'
-import { OILLIST, setInpEdit, setOilList } from './pops'
+import { OILLIST, setOilList } from './pops'
 import { useVersion } from './useStore'
 
 /* THE SQUADRON THE LIST IS FOR (the Plan audit's PB4, the blind read's R3 — the reshape plan §19, §19b): as it was opened
@@ -122,7 +123,12 @@ function Body({ from, to, unit, name, fresh, plain, hold }: { from: string; to: 
      on its own day and plan, the box is shown again. */
   const held = hold && rows.length && holdStands(hold, from, unit) ? holdSaid(hold) : null
   /* the input's own window, where everything else about it is (the day's cards open it the same way) */
-  const openInput = (r: any) => { setInpEdit(r); setPage('inputs'); notify() }
+  /* …THROUGH THE PAGE DOOR, ITS PAGE FIRST (step K6 — the guard rail's plan §4.1 row 10, §5.3; security F1): the window
+     opens only once Inputs is the page shown (ui/topstate.ts openInputOnPage, the door's `then`), never before it — so
+     never behind a refusal. Its door is the card's own ('card'), and it leaves out the list it sits in (`skip`), the whole
+     way: the page door, the landing's second ask. Part F's own line ahead of it — `enterForLine(inputSqn(…), …, 'card',
+     { skip: ['oilday'] })`, the input's squadron brought into view first — is step K9's (§10 step 7), not built here. */
+  const openInput = (r: any) => { openInputOnPage(r.iid, undefined, undefined, { door: 'card', skip: ['oilday'] }) }
   return (
     <FloatWin id="oilday" title={`OIL — ${noticeRun(from, to)}`} sub={plain ? undefined : name ? `Public holiday · ${name}` : 'Public holiday'}
       testid="win-oilday" className="oildaywin" onClose={close}>

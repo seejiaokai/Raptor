@@ -120,8 +120,11 @@ async function tidy() {
 
 describe('a bell line pressed over unsaved chart edits, the right behind it ended while the question was up (F3)', () => {
   /* he was told as the filer of Osprey's 149 input — a line that stays only while a right in 149 holds (D2223, D2310) */
+  /* (its kind 'rmk' — "its remark changed", a kind an input's line is written with: until step K6 this line carried 'chg',
+     which no notice is written with, and the tap took any kind it did not know for an input's; it now only reads such a
+     line — the guard rail's plan §4.5, Opus F-g — so the line is given a real kind, every assertion as it was) */
   const filerLine = (row: any): Notice => ({ id: 'f3-' + row.iid, to: PID.hunter, by: PID.osprey, at: Date.now(), iid: row.iid, name: '', day: '2026-07-15',
-    what: [{ k: 'chg' }], fu: ['u149'], u: 'u149' } as unknown as Notice)
+    what: [{ k: 'rmk' }], fu: ['u149'], u: 'u149' } as unknown as Notice)
 
   it('Plan of 149 taken while "Save them before switching to 149?" is up: Discard opens nothing of 149\'s', async () => {
     await chartEdit('F3-ENDED')

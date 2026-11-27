@@ -36,9 +36,9 @@ import { setRecordKeyHook } from '../command/commit'
 import { weekOf, dayKeyOf, recordKeyIn, stampOf } from '../undo/derive'
 import { todayIso } from './units'
 import { schedStore, schedPostRestore } from './sched-commit'
-import { weekstashStore, loadWeek } from './store'
+import { weekstashStore, loadWeek, setPage } from './store'
 import { HIST } from './history'
-import { armDrop, prunePreviews, SBDAY, CURPAGE, setPage, setBoardDay, focusQualsRow, requestAdminUsers, requestAdminSquadrons, setSecDefOffer, setInpView, setInpMode, setCalMonth, INPVIEW, CALMONTH, clearInpReveal, requestInpReveal, requestPlanReveal } from './view'
+import { armDrop, prunePreviews, SBDAY, CURPAGE, setBoardDay, focusQualsRow, requestAdminUsers, requestAdminSquadrons, setSecDefOffer, setInpView, setInpMode, setCalMonth, INPVIEW, CALMONTH, clearInpReveal, requestInpReveal, requestPlanReveal } from './view'
 import { canEditSched, SESSION } from './auth'
 import { bringDayIntoView } from '../ui/highlights'
 import { boardTab } from '../ui/board'
@@ -285,7 +285,11 @@ function snapView(entry: UndoEntry, dir: 'undo' | 'redo'): void {
   const boardWas = BOARD_WAS; BOARD_WAS = null
   const land = landingOf(entry,dir)
   /* not when the change already shows on the page you are on (an input filed on Inputs, undone there) */
-  if (land && land.primary && CURPAGE !== land.primary && !land.also.includes(CURPAGE)) setPage(land.primary)
+  /* …THROUGH THE PAGE DOOR, ON ITS ANSWER (step K6 — the guard rail's plan §4.1 row 13, §4.5): no button reaches a landing
+     on one of his own pages while a squadron he only views is picked, so the door is the belt; where it does not go (a
+     refusal, or the Tracker's question), the landing's own `then` and the rest of the view-snap are not run — only on
+     'went' */
+  if (land && land.primary && CURPAGE !== land.primary && !land.also.includes(CURPAGE) && setPage(land.primary) !== 'went') return
   if (land && land.then) land.then()
   if (land && land.primary === 'leavewar') {
     const date = lwDateOf(entry) ?? flyDateOf(entry)

@@ -111,22 +111,37 @@ function landOnOfferedPage(): void {
    unsaved chart edits (the member view), entering would drop them, so it asks first, the pick's own question over the page
    he is on (his D2318, D2637; the night of 24 Nov 26, Opus F1, Fable F1). He stays where he was until he answers: Save or
    Discard opens the page he tapped; Stay, or a Save the gate refuses, leaves him there with the draft. */
+/* THROUGH THE PAGE DOOR (step K6 — the guard rail's plan §4.2 steps 5 and 6, §4.5 steps 3 and 5): a landing a door's press
+   made (`kept` — the door and its opts, handed over by setPage below) ends the windows that only show things and the two
+   edit modes in the run that enters his own squadron, never earlier: after the Tracker's question, so a Stay closed
+   nothing; and after that question is answered Save or Discard it asks the guard again with the door it kept — a window
+   or a failed save may have arrived while the question stood — and waits again for a save still going. Refused: nothing is
+   entered, the page stays as it was, and the press's `then` never runs. A landing no door made (a test's raw page change)
+   is as before. `want` — the page he opened; null for a press that opens no page (ownSquadronFirst). */
 function landOnOwnPage(): void {
+  const asked = landOwn(view.CURPAGE, KEPT)
+  if (asked) LANDASK = asked
+}
+function landOwn(want: string | null, kept: KeptDoor | null): Promise<boolean> | null {
   const home = myUnit(todayIso())
   const trk = trkUnitNow()
   const asked = storageHeld() && trk && trk !== home ? trackerSwitchAsk(String(unitById(home)?.num ?? home)) : null
-  if (!asked) { enterSquadron(home, holdNow() === 'war', true); return }
-  const want = view.CURPAGE
-  view.setPage(pageOffered(LANDED.page) ? LANDED.page : 'viewsched')
+  if (!asked) { if (kept) closeShown(); enterSquadron(home, holdNow() === 'war', true); return null }
+  if (want != null) view.setPage(pageOffered(LANDED.page) ? LANDED.page : 'viewsched')
   const done: Promise<boolean> = asked.then(go => {
     if (LANDASK === done) LANDASK = null
-    if (!go) return false
-    enterSquadron(home, holdNow() === 'war', true)
-    view.setPage(want)
-    notify()
-    return true
+    return go ? landAfterAsk(want, kept, home) : false
   })
-  LANDASK = done
+  return done
+}
+function landAfterAsk(want: string | null, kept: KeptDoor | null, home: string): boolean | Promise<boolean> {
+  if (kept && refuse(kept.door, home, kept.opts)) return false
+  if (kept && saveGoing()) return waitForSave().then(r => r === 'go' && landAfterAsk(want, kept, home))
+  if (kept) closeShown()
+  enterSquadron(home, holdNow() === 'war', true)
+  if (want != null) view.setPage(want)
+  notify()
+  return true
 }
 /* …AND A TAP THAT OPENS A WINDOW ON THAT PAGE WAITS WITH IT (the night of 24 Nov 26, the re-walk's B1 — a bell line's
    input): while the question above is up this is its answer still to come — true once Save or Discard has opened the page
@@ -134,6 +149,107 @@ function landOnOwnPage(): void {
    stood under the question, noted as opened on the squadron he was leaving (ui/topstate.ts openInputOnPage). */
 let LANDASK: Promise<boolean> | null = null
 export const landingAsk = (): Promise<boolean> | null => LANDASK
+
+/* ---- THE PAGE DOOR (step K6 — the guard rail's plan §4.1 rows 7–13 and 22, §4.2, §4.5; his D2403, D2590, D2627 A8, A9,
+   A11, A19, D2621, D2729 Q7) ----
+   A press that opens one of his own pages while a squadron he only views is picked brings his own squadron back (the
+   landing above, landOnOwnPage). Before this step nothing was asked: the bar went to 142 with a window open, a row
+   changed or a save failed, and whatever the press opened after its page — an input's window, its OIL question, its
+   toast — opened all the same, a window standing live beside the "Blocked:" note when only the page was refused. So
+   every page change by a press comes through setPage below, the door, which asks the guard where the page is one the
+   squadron in view does not offer — exactly what the landing itself acts on (pageOffered) — and RUNS WHAT THE PRESS
+   OPENS AFTER ITS PAGE (`then`), so nothing can open behind a refusal: `then` runs in one state only, the page asked for
+   is the page shown. Its three answers: 'went' (the page is there, `then` has run), 'asked' (the Tracker's question, or a
+   save still going: `then` runs once that is answered and the page is there), 'refused' (the note said, nothing changed,
+   `then` dropped). ownSquadronFirst is the same door for a press that opens a window and no page (the holiday's line);
+   ownPageRefused and ownSquadronRefused are its test alone, for a caller that sets something before the page (a line
+   read, an intent, a tab and month) and so must ask first.
+   The two rules for a caller (§4.5): what it sets before the page, it asks about first; what it opens after the page, it
+   hands to the door as `then`. Inside this file the landings, the entry and the session reset keep calling view.setPage:
+   the app's own moves, never a press (§4.1 row 20). */
+export type PageGo = 'went' | 'asked' | 'refused'
+/** a door's opts at the page door: which door the press came by (its note's ending and place — 'line', 'bell', 'card'; a
+ *  plain page change 'page') with the guard's own opts (the pressed line, the rows it leaves out) */
+export type PageOpts = GuardOpts & { door?: string }
+type KeptDoor = { door: string; opts: GuardOpts }
+/* the door and opts a passing press is going through, kept for the landing's second ask (§4.5 step 3) */
+let KEPT: KeptDoor | null = null
+/* THE PRESS THIS TURN WENT THROUGH (the kept door's source when a caller names none): a caller that asks first with its own
+   door — a bell line ('line', its line), the bell ('bell') — then reaches a function of its own that asks again and
+   changes the page with no door named (openAdminUsers, openWarAt). The second ask passes in the same turn; this keeps
+   the first ask's door, so a refusal after the Tracker's question still says the line's or the bell's own ending, at its
+   own control, never the page door's silence. Good for the synchronous turn it was set in. */
+let PRESSED: KeptDoor | null = null
+function pressDoor(door: string | undefined, opts: GuardOpts | undefined): KeptDoor {
+  if (door === undefined && PRESSED) return PRESSED
+  const k: KeptDoor = { door: door ?? 'page', opts: opts ?? {} }
+  if (!PRESSED) { PRESSED = k; queueMicrotask(() => { PRESSED = null }) }
+  return k
+}
+const doorOf = (o: PageOpts): { door: string | undefined; opts: GuardOpts | undefined } => {
+  if (!o || Object.keys(o).length === 0) return { door: undefined, opts: undefined }
+  const { door, ...g } = o
+  return { door, opts: g }
+}
+/* the squadron in view is not his own pages' (a squadron he only views, or the member view's schedule of another) */
+const awayFromOwn = (): boolean => UNIT !== pageUnit('own')
+/* the door's ask, its note, and — where `again` is handed over — the wait for a save still going, the press run again
+   once the saver has answered (§4.2 step 3; state/doorwait.ts, the doors' one wait) */
+function ownRefused(k: KeptDoor, again?: () => void): boolean {
+  if (refuse(k.door, myUnit(todayIso()), k.opts)) return true
+  if (again && saveGoing()) { void waitForSave().then(r => { if (r === 'go') again() }); return true }
+  return false
+}
+/** would the page door refuse `p` — asking, saying the note, changing nothing; a caller that sets something before the
+ *  page calls it as its first statement and returns on true. `again` (the press run again) lets it wait for a save */
+export function ownPageRefused(p: string, door?: string, opts?: GuardOpts, again?: () => void): boolean {
+  if (p === view.CURPAGE || pageOffered(p)) return false
+  return ownRefused(pressDoor(door, opts), again)
+}
+/** the same test for a press that brings his own squadron back without a page (the holiday's line) */
+export function ownSquadronRefused(door?: string, opts?: GuardOpts, again?: () => void): boolean {
+  if (!awayFromOwn()) return false
+  return ownRefused(pressDoor(door, opts), again)
+}
+/** THE PAGE DOOR — every page change by a press */
+export function setPage(p: string, o: PageOpts = {}, then?: (waited: boolean) => void): PageGo {
+  if (p === view.CURPAGE || pageOffered(p)) {
+    view.setPage(p)
+    if (then) { notify(); then(false) }
+    return 'went'
+  }
+  const { door, opts } = doorOf(o)
+  return ownFirst(p, pressDoor(door, opts), () => { setPage(p, o, then) }, then)
+}
+/** THE SAME DOOR FOR A PRESS THAT OPENS A WINDOW AND NO PAGE (the holiday's bell line, D2627 A19): on his own pages'
+ *  squadron `then` runs at once; on another, his own squadron comes back first — the guard, the wait, the Tracker's
+ *  question and the second ask — and `then` only once it is in view */
+export function ownSquadronFirst(o: PageOpts, then: (waited: boolean) => void): PageGo {
+  if (!awayFromOwn()) { then(false); return 'went' }
+  const { door, opts } = doorOf(o)
+  return ownFirst(null, pressDoor(door, opts), () => { ownSquadronFirst(o, then) }, then)
+}
+/* one body for both (§4.5: the page door is ownSquadronFirst plus view.setPage, so the two can never differ) */
+function ownFirst(p: string | null, k: KeptDoor, again: () => void, then?: (waited: boolean) => void): PageGo {
+  if (refuse(k.door, myUnit(todayIso()), k.opts)) return 'refused'
+  if (saveGoing()) { void waitForSave().then(r => { if (r === 'go') again() }); return 'asked' }
+  const was = LANDASK
+  let asked: Promise<boolean> | null
+  if (p != null) {
+    KEPT = k
+    try { view.setPage(p); notify() } finally { KEPT = null }
+    asked = LANDASK !== was ? LANDASK : null
+  } else {
+    asked = landOwn(null, k)
+    if (asked) LANDASK = asked
+    else notify()
+  }
+  if (asked) { void asked.then(go => { if (go) then?.(true) }); return 'asked' }
+  /* (the page asked for is the page shown — or, with no page, his own squadron is in view — before `then` runs) */
+  if (p != null ? view.CURPAGE !== p : awayFromOwn()) return 'refused'
+  then?.(false)
+  return 'went'
+}
 /* THE LANDING IS A STANDING CHECK (the second-half plan §2 item 3, §15 D8; D2253): wherever the page is Edit Schedule and
    he is not an admin of the squadron in view (perms.ts maySchedEditPage) — a pick of a squadron he holds View of, R6's
    re-entry, a Plan lowered while he is on the page — he lands on View-only Sched. Run after every enterSquadron and on
@@ -1544,5 +1660,6 @@ export {
 export { protectedDates }
 export { inputProtected, stashProtected } from '../engine/quarantine'
 export { undo, redo, histInit, histApply, HIST } from './history'
-export { armSlot, disarmSlot, armedKey, placeArmed, selectPerson, selKeep, selRestore, selClear, selDrop, setBoardDay, setPage, afterSchedMutate } from './view'
+export { armSlot, disarmSlot, armedKey, placeArmed, selectPerson, selKeep, selRestore, selClear, selDrop, setBoardDay, afterSchedMutate } from './view'
+/* (setPage is no longer view.ts's re-exported here: it is the page door above, step K6) */
 export { setSession, canEditSched, LGEDIT, setLgEdit } from './auth'
