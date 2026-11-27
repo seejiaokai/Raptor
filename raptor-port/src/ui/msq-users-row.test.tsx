@@ -103,13 +103,16 @@ describe('R5 — a line not his to give', () => {
     expect(roleOptions(p.$('#accEdRole') as HTMLSelectElement)).toEqual(['Member', 'Admin', 'Master admin(off)'])
     expect(p.lines()[1]).toEqual({ n: '149', what: 'None*(off) View(off) Plan(off)', note: 'Only an admin of 149 can give access to 149.' })
   })
-  it('a plain admin of 149 opening a 142 admin: View his to give, Plan "Only a master admin gives Plan."', async () => {
+  it('149\'s own admin opening a 142 admin: View and Plan both his to give (D2626)', async () => {
     signInAs('kestrel')
     const p = panel()
     await p.find('hunter')
     await p.open(PID.hunter)
-    /* (re-pointed at U1: on 149's page a 142 man's row opens to 149's line alone — D2625, D2655 D5; the line as before) */
-    expect(p.lines()).toEqual([{ n: '149', what: 'None* View Plan(off)', note: 'Only a master admin gives Plan.' }])
+    /* (re-pointed at U1: on 149's page a 142 man's row opens to 149's line alone — D2625, D2655 D5; the line as before)
+       (re-pointed at U2's Pass C: Plan of 149 is given and ended by 149's own admins or a master admin — his D2626 — so
+       Kestrel, 149's own admin, gives it; the old master-only sentence is gone. Who may not give it, and
+       its new sentence: msq-s2-u2-row.test.tsx) */
+    expect(p.lines()).toEqual([{ n: '149', what: 'None* View Plan', note: null }])
   })
 })
 

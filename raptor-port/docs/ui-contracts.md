@@ -7213,8 +7213,19 @@ line per squadron, the signed-in person's home first then by number (D2730 Q1), 
 every other "149 None · View · Plan" (the editor's segmented buttons); Master admin held or picked, "Full access" with no
 buttons. A line not his to change is greyed with one grey line under it: no sign-in, "Give him a sign-in first to give
 access."; not an admin of that squadron, "Only an admin of 149 can give access to 149."; Plan on a member (or Member
-picked), "Plan is for admins only."; Plan for anyone but a master admin, "Only a master admin gives Plan." (a Plan held
-today, the whole line). Plan picked says what it gives: "Full access to 149, every page: its schedule and publishing, its
+picked), "Plan is for admins only."; Plan for anyone but that squadron's own admins or a master admin, "Only 149's own
+admins or a master admin can give or end Plan of 149." (his D2626 — U2, 27 Nov 26; a Plan held today, the whole line,
+before the Member note, so picking Member never unlocks it — one reason at a time, `ui/useraccess-model.ts lineState`
+asking `state/accounts.ts mayGivePlanNow`). **"Admin" greyed in the Role box** (his D2730 Q8, D2806 — U2), with one grey
+line under the box, "Only 149's own admins or a master admin can make an admin of 149.", for one who may not make an
+admin of that squadron — on a man's opened row (`#accEdRole`, `#accGiveRole`: his home that day, judged on the row's copy
+of his role, so never on a man already an admin or a master admin, and Member picked on an admin's row can be put back;
+none where the whole box is greyed — `ui/UsersPanel.tsx rowLocks`, `ui/UserAccess.tsx RoleBox`, `RoleNote`), in "+ Add
+a person" (`#accAddRole`, the page's squadron) and in Give access (`#apvRole`, both modes, the request's squadron —
+`RoleSelect`), read afresh on every draw, never held by the form; the line in the Role column, 6px under the box, a pair
+holding it lined up at its head so the Sign-in box beside it does not move (`ui/postout.css`; the drawings
+`docs/mock/2026-11-25-msq-pick-guard-q3/drawn/q13-d-rec`, `q13-p-rec` — the other three places undrawn, the agent's
+reading of D2806). Pinned by `ui/msq-s2-u2-row.test.tsx`. Plan picked says what it gives: "Full access to 149, every page: its schedule and publishing, its
 settings, its people and their sign-ins." A man of another squadron on the list (found by search, or a Plan holder of
 it) wears his squadron's grey number by his name, and the rest of his row — sign-in, role, Suspend, Archive, Delete —
 is greyed unless the admin is an admin of his own squadron (D2191). A Plan holder's grey line ends "· also plans 149",
@@ -7230,7 +7241,8 @@ fix job, 23 Nov 26 — `e2e/users-fit.spec.ts`). Inside: "View and Plan
 give access to another squadron."; (its View column to change with D2381, 23 Nov 26 — View-only Sched and Help alone; backlog item MULTI-SQN-VIEW-ONLY-TABS) the grid — Edit Schedule, View-only Sched, Logic, Inputs, Quals, Leave War, Tracker,
 Admin down the side; Member, Admin, View, Plan, Master admin across; ✓, "read" or —, notes 1–4 on Member's Inputs, Quals,
 Leave War and Tracker ticks and 5 on Admin's and Plan's Admin ticks; "✓ can change · read: can see, not change · —
-cannot open"; the five notes, as drawn. The cells and words are ONE table, `ui/rolestable.ts`; `ui/rolestable.test.tsx`
+cannot open"; the five notes, as drawn — note 5 since U2 (27 Nov 26) in his D2817's words, "Only a master admin makes
+squadrons or master admins. Only a squadron's own admins or a master admin can give Plan of it or make its admins.". The cells and words are ONE table, `ui/rolestable.ts`; `ui/rolestable.test.tsx`
 signs in a person of each role (View, Plan and Master admin with 149 picked) and asks the app's own readers whether each
 page opens on that squadron and offers its controls — a drawn cell the app answers otherwise is listed there (KNOWN) and
 put to him, never changed to pass. On his iPhone the grid fits the row (`e2e/users-fit.spec.ts`).

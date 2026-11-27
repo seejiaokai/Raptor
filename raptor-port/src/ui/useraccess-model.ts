@@ -1,7 +1,9 @@
 /* ADMIN → USERS — A PERSON'S ACCESS, THE READS BEHIND HIS OPENED ROW (pure reads, no screen; ui/UserAccess.tsx draws them —
    his D2303 design B, D2306, D2320, D2336, D2211; pictures rB1–rB4, p2a, p2b). Kept apart from the screen file so it
    hands out screen parts alone (the code check's only-export-components). */
-import { ACCOUNTS_LIST, levelAcct, isAdminAccount, type Account, type AccountRole, type AccessLine } from '../state/accounts'
+import {
+  ACCOUNTS_LIST, levelAcct, isAdminAccount, mayGivePlanNow, planWords, type Account, type AccountRole, type AccessLine,
+} from '../state/accounts'
 import { units, unitById, grantOfOn, homeOn, todayIso } from '../state/units'
 import { adminOfUnit } from '../state/perms'
 import { SESSION } from '../state/auth'
@@ -72,11 +74,15 @@ export function lineState(p: { hasSignIn: boolean; unit: string; now: AccessLine
   const n = numOf(p.unit)
   if (!p.hasSignIn) return { locked: true, planOff: true, note: 'Give him a sign-in first to give access.' }
   if (!adminOfUnit(p.unit)) return { locked: true, planOff: true, note: `Only an admin of ${n} can give access to ${n}.` }
-  const master = actorIsMaster()
-  /* Plan is a master admin's to give, change or take (PA1): held today, a plain admin cannot move the line at all */
-  if (!master && p.now === 'plan') return { locked: true, planOff: true, note: 'Only a master admin gives Plan.' }
+  /* Plan of a squadron is given, changed and ended by its own admins or a master admin, never by a Plan holder (his
+     D2626; the words final on the section page, D2730) — the signed-in person's right, read afresh (state/accounts.ts
+     mayGivePlanNow, the doors' own reader). In today's order, so one reason shows at a time: a Plan held today is locked
+     whole for one who may not end it, BEFORE the Member note — so picking Member never unlocks a held Plan line (the U2
+     brief's §5, "Pass C") */
+  const may = mayGivePlanNow(p.unit)
+  if (!may && p.now === 'plan') return { locked: true, planOff: true, note: planWords(p.unit) }
   if (p.rolePick === 'main') return { locked: false, planOff: true, note: 'Plan is for admins only.' }
-  if (!master) return { locked: false, planOff: true, note: 'Only a master admin gives Plan.' }
+  if (!may) return { locked: false, planOff: true, note: planWords(p.unit) }
   if (p.pick === 'plan') return { locked: false, planOff: false, note: `Full access to ${n}, every page: its schedule and publishing, its settings, its people and their sign-ins.` }
   return { locked: false, planOff: false, note: null }
 }

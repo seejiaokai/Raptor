@@ -2105,9 +2105,17 @@ Chat 204, 27 Nov 26 (the guard rail — GitHub's unit share 3 ran past its 20 mi
 - `src/ui/msq-guard-drawn-landing.test.tsx` (A10 for "the page changed by a landing").
 - `src/ui/msq-guard-drawn-board.test.tsx` (A10 for "the board closed under its dialog").
 
-Chat 205, 27 Nov 26 (multi-squadron section 2, Admin → Users — step U2, Passes A and B: who may give Plan of a squadron
-and make its admins, and the squadron's Plan lines; his D2626, D2730 Q8, D2806, D2807, D2816, D2654 E6, E9l; the brief
-`docs/superpowers/briefs/2026-11-27-msq-s2-u2-brief.md`, the report beside it). **Changed (Pass B):**
+Chat 205, 27 Nov 26 (multi-squadron section 2, Admin → Users — step U2, Passes A, B and C: who may give Plan of a
+squadron and make its admins, the squadron's Plan lines, and the screen; his D2626, D2730 Q8, D2806, D2807, D2816, D2817,
+D2654 E6, E9l; the brief `docs/superpowers/briefs/2026-11-27-msq-s2-u2-brief.md`, the report beside it).
+**Changed (Pass C):** `src/ui/useraccess-model.ts` (`lineState` asks `mayGivePlanNow` for that squadron, its note the
+Plan doors' sentence `planWords`, in today's order), `src/ui/UserAccess.tsx` (`RoleBox` gains `adminOff`; new
+`RoleNote` — the one grey line under a Role box whose "Admin" is greyed), `src/ui/UsersPanel.tsx` (`rowLocks(pid, role)`
+judged on the copy's role, returning `adminOff`; `RoleSelect` greys "Admin" with the line for "+ Add a person" and Give
+access, read afresh on every draw), `src/ui/postout.css` (the line's place under the box), `src/ui/rolestable.ts`
+(note 5, D2817's words). **New (test, Pass C):** `src/ui/msq-s2-u2-row.test.tsx` (the row's Plan line for one who may
+and may not give it, the greyed "Admin" in its four places, the guard closing a row whose Plan or role changed under
+it, D2821's pin, note 5). **Changed (Pass B):**
 `src/state/notices.ts` (a new line kind, `sqplan` — a man's Plan of a squadron given or ended, to that squadron's admins
 — with its words, its writer `noticePlanLine`, `isPlanLine`; an admin-kind line for the rights rule and the bell's
 switch, hidden in the member view as a posting's is), `src/state/acctlines.ts` (`planLinesOf` — which change owes which

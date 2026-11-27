@@ -562,10 +562,18 @@ const ARCH_PROPS = ['pid', 'on', 's', 'typed', 'onTyped', 'onClose', 'onStale', 
    SIGNED-IN admin's own rights, read afresh.
    SquadronLines — the lines as drawn: the squadrons and their order, his home that day (it marks his "Home squadron"
    line), each line's state (lineState), its own row part and words.
-   lineState — a line's state from what it is handed and the SIGNED-IN admin's own rights. */
-const LOCKS_MAY_USE = ['homeOn', 'todayIso', 'adminOfUnit', 'actorIsMaster'].sort()
+   lineState — a line's state from what it is handed and the SIGNED-IN admin's own rights.
+   (Re-pointed by name at U2's Pass C — the brief docs/superpowers/briefs/2026-11-27-msq-s2-u2-brief.md §6, his D2626,
+   D2730 Q8, D2806: rowLocks gains `mayGivePlanNow` — may the SIGNED-IN admin make an admin of the man's home that day
+   (the greyed "Admin" and its line), his own right read afresh, never a fact of the man; its `RolePick` is the type of the
+   copy's role it is now handed in place of "is he a master admin" (`s.role`, the copy's — still nothing read of him).
+   lineState swaps `actorIsMaster` for `mayGivePlanNow` — may the signed-in admin give or end Plan of that squadron
+   (D2626) — and gains `planWords`, the one home of that refusal's sentence, shared with the Plan doors: fixed words of a
+   squadron's number, nothing of the man. lineState no longer asks `actorIsMaster`, so it leaves that list; rowLocks still
+   does, for a master admin's row.) */
+const LOCKS_MAY_USE = ['homeOn', 'todayIso', 'adminOfUnit', 'actorIsMaster', 'mayGivePlanNow', 'RolePick'].sort()
 const LINES_MAY_USE = ['AccessLine', 'RolePick', 'units', 'homeOn', 'todayIso', 'inSquadronOrder', 'numOf', 'lineState', 'SqLine', 'WORD'].sort()
-const LINESTATE_MAY_USE = ['AccessLine', 'RolePick', 'numOf', 'adminOfUnit', 'actorIsMaster'].sort()
+const LINESTATE_MAY_USE = ['AccessLine', 'RolePick', 'numOf', 'adminOfUnit', 'mayGivePlanNow', 'planWords'].sort()
 
 describe('§20 — a field left out of the copy is caught', () => {
   it('(a) the whole row\'s editor reads the man only through the copy: it uses no name of the file beyond its doors, its checks and its parts', () => {

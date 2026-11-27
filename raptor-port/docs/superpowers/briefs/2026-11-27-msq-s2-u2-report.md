@@ -233,3 +233,115 @@ answers (D2730 Q10–Q12), so no clause is left out for them.
 8. Two new test files (30 tests) were seen red against the old code and are green; every listed file passes unchanged.
 9. Found: the app's own "account.told" door let a lone non-account line through; closed for this kind, the rest owed a look.
 10. Owed: the data-schema and data-model §11 rows for the new kind, with the step's closing records.
+
+## Pass C — the screen
+
+**Status: READY FOR INDEPENDENT REVIEW (Pass C; with it, U2's three passes built).** Nothing committed, staged or
+pushed; no build, no checks lock, no full suite.
+
+### Changes, file by file
+- `ui/useraccess-model.ts` — `lineState` asks `mayGivePlanNow(p.unit)` in place of "is he a master admin", its note the
+  Plan doors' own sentence (`planWords`), in today's order: no sign-in; not an admin of it; may not give Plan and the line
+  holds Plan now (locked whole); Member picked ("Plan is for admins only."); may not give Plan (Plan off); Plan picked;
+  none. A held Plan is never unlocked by picking Member.
+- `ui/UserAccess.tsx` — `RoleBox` gains `adminOff` (the squadron whose admin he may not make, or null): "Admin" greyed
+  and the one grey line under the box; new `RoleNote` draws that line (D2806's words, from `accounts.ts makeAdminWords`),
+  named by the box for a screen reader.
+- `ui/UsersPanel.tsx` — `rowLocks(pid, role)` takes the copy's role (`s.role`) and returns `adminOff`: his home that day
+  where the copy's role is neither admin nor master admin, the box is not greyed whole, and the signed-in person may not
+  give that squadron's Plan. `PersonEditor` hands it to `RoleBox` (both ids). `RoleSelect` takes `unit` and works out
+  the same afresh on every draw: "+ Add a person" for the page's squadron, Give access for the request's. No field added
+  to `Shown`, `Typed`, `GiveOn`, `GiveTyped` or `StartedOn`; the judge untouched.
+- `ui/postout.css` — the line 6px under the box (the drawing's), and a pair holding it lined up at its head so the
+  Sign-in box beside it does not drop (`:has`, scoped to `#page-admin`; `.adm-2col` itself untouched).
+- `ui/rolestable.ts` — note 5 in D2817's words.
+- Records: `docs/data-model.md` (§UnitGrant's prose; §11's `UnitGrant` row — who gives Plan, the `first` rule, the
+  restore and its left-out case; the `User` row — who makes an admin, the re-link's Plan words; the `Notice` row — the
+  squadron's Plan line and its gate rule, as D200 pairs with `perms.ts`; the last-admin words' new tails),
+  `docs/data-schema.md` (the `sqplan` notice kind), `docs/ui-contracts.md` (the row's Plan line, the greyed "Admin" in
+  four places, note 5), `docs/file-map.md` (Pass C's files and its test). `§Edit rights by squadron` unchanged: no
+  counted reader changed (`edit-rights-readers` 4/4 unchanged).
+
+### Files touched that are not on §21.2's list
+- None beyond §5's Pass C list, its records and the tests below.
+
+### New test — seen failing first
+- `ui/msq-s2-u2-row.test.tsx` (20): against the code before Pass C, 13 failed, 7 passed — the 7 named "pin:" (a member's
+  "Plan is for admins only."; an admin's row and a master admin's never greyed; never greyed for Kestrel, Saber, Hunter
+  on 142; a Plan given by another admin under the open row, and the presser losing his standing, each closing it — the
+  judge already did both; D2821's pin). Now 20/20. Covers V8/V9, one reason at a time (a held Plan with Member picked
+  stays locked for Hunter), the greyed "Admin" in `#accEdRole`, `#accGiveRole`, `#accAddRole`, `#apvRole` in both modes,
+  Member then Admin back on Kestrel's row, a typed sign-in surviving a redraw and a rename alone saving, the guard (a Plan
+  given by Mako, a Plan ended by Hunter's own Undo, a role changed by Kestrel — each closes the row with the Q13 note,
+  nothing written), D2821's pin, note 5, and a source sweep finding the old master-only Plan sentence nowhere under
+  `src/`.
+
+### Pins re-pointed, by name, and why
+- `ui/msq-s2-rejudge4.test.tsx` §20 — `LOCKS_MAY_USE` gains `mayGivePlanNow` (the signed-in admin's own right, read
+  afresh) and `RolePick` (the type of the copy's role it is now handed); `LINESTATE_MAY_USE` swaps `actorIsMaster` for
+  `mayGivePlanNow` and gains `planWords` (fixed words of a squadron's number, the doors' one home of that sentence);
+  `WHOLE_MAY_USE` unchanged. Reasons in the comment beside them.
+- `ui/msq-users-row.test.tsx` — "a plain admin of 149 opening a 142 admin" → "149's own admin opening a 142 admin: View
+  and Plan both his to give (D2626)": Kestrel's Plan button is live, no note.
+- `ui/rolestable.test.tsx` — passed unchanged (it reads `ROLES_NOTES` itself).
+
+### Every file run, one at a time (final counts, all passed)
+- New: msq-s2-u2-row 20. Passes A/B: u2-doors 40 · u2-gate 18 · u2-replay 43 · u2-lines 26 · u2-tap 4.
+- msq-s2-*: order 14 · plan 4 · asis 24 · lists 14 · row 15 · rejudge 23 · rejudge2 52 · rejudge3 39 · rejudge4 110 ·
+  rejudge5 83 · rejudge6 21 · rejudge7 14 · rejudge8 32 · rejudge9 15 · rejudge10 21 · rejudge11 11.
+- Guard: asis 29 (+4 todo) · doors 125 (+1) · doors-bell 79 · doors-switch 104 · doors-undo 22 (+1) · g 33 · note 65 ·
+  rollcall 49 · input-sqn 42 (+1) · drawn-role 30 · drawn-rights 31 · drawn-landing 30 · drawn-board 30 ·
+  drawn-midnight 30 · guard-open with `-t "userrow|archrow|giveaccess|addperson"` 12 (178 skipped by the filter).
+- The screen's: rolestable 12 · userslist-model 7 · msq-users-row 7 · edit-rights-readers 4 · onedoor-users 22 ·
+  accounts-ui 21 · accounts-newperson 26 · admin 5 · msq-users-filter 24 · msq-fix3-users-one-save 3.
+- Security pins, each copied into `src/ui/`, run, removed (no `zz-` file left): fixread9 proof-1 8/8, proof-2 7/7;
+  fixread11 proof-1 5/5, proof-2 2/2; fixread10 proof-1 5/6 — **S3 fails by design under D2626** ("Kestrel picks None
+  on Mako; Saber makes it Plan; Save — the Plan stays": Kestrel, 149's own admin, may now end it), untouched, as Passes A
+  and B; it is to be re-pointed or retired outside this step.
+
+### Type check, code check, document check
+- `npx tsc -p tsconfig.app.json --noEmit`: exit 0.
+- `npm run lint:changed -- --base HEAD --include-untracked`: "no new finding (34 changed files read against HEAD)".
+- `npm run docsize`: OK, every record accounted for (HANDOFF.md and OUTSTANDING.md over their tripwires as before —
+  deferred, D29; not this pass's).
+
+### The old master-only Plan sentence
+- Gone from `src/` (the test's sweep) and from the live reference docs (`data-model.md`, `ui-contracts.md`,
+  `data-schema.md`). Still in dated records, left unreworded (D138): `HANDOFF.md`; evidence sheets
+  (`docs/handpass/2026-11-20-msq-plan-audit.md`, `2026-11-23-msq-b1-second-half.md`); drawing scripts
+  (`docs/mock/2026-11-19-multi-sqn-pieces/draw.mjs`, `docs/mock/2026-11-22-msq-b1-screens/draw-row.mjs`,
+  `redraw-pieces.mjs`, `scripts/handpass/n176/draw-r5b-users.mjs`); plans and briefs, this brief and this report's
+  Pass A section among them; and the stale built bundles in `dist/` and `.tmp/` (not tracked). The orchestrator decides
+  whether any of these must change.
+
+### Readings built (for the report's §10 list)
+- The three undrawn places for the greyed "Admin" (Give sign-in, "+ Add a person", Give access): D2806 names them; only
+  where the line sits was never drawn — built as the opened row's, in the Role column under the box.
+- `adminOff` carries the squadron (its line names it), not a yes/no; a man with no home known is not greyed (no squadron
+  to name — the door refuses his press in its own words).
+- The line pair's alignment at its head (the coordinator's word of 26 Nov on the drawing).
+
+### Left out (by the brief)
+D2808's four lines; Q4's folds; the coloured numbers; the Redo's words; the re-link line; browser tests and the drawing
+check (U8). Readings 22–24 are his answers (D2730 Q10–Q12), so no clause is left out for them.
+
+### What a person will see differently (Pass C)
+- On Admin → Users, a squadron's own admin (Kestrel) can now press Plan on another squadron's admin's line for his
+  squadron. A Plan holder (Hunter) sees that Plan greyed with "Only 149's own admins or a master admin can give or end
+  Plan of 149." (a Plan held today greyed whole, Member picked or not).
+- For Hunter, "Admin" is greyed in the Role box, with "Only 149's own admins or a master admin can make an admin of
+  149." under it, on a 149 man's opened row, his "Give sign-in", "+ Add a person" on 149 and Give access to 149 — never
+  on a man already an admin or a master admin.
+- Note 5 of "What each role allows" reads D2817's words.
+
+### Ten-line summary
+1. The row's Plan line now follows the one rule: a squadron's own admins or a master admin give and end its Plan.
+2. Anyone else sees Plan greyed in the ruled sentence; a Plan held today stays locked whole, Member picked or not.
+3. "Admin" is greyed in the Role box, with D2806's line under it, for one who may not make that squadron's admin.
+4. It shows in all four places D2806 names; three of them were never drawn and are named at his look.
+5. It is judged on the row's copy of his role, so an admin's row is never greyed and Member can be put back to Admin.
+6. Nothing is held by the forms: each draw asks the signed-in person's right afresh, and the doors judge every press.
+7. The one judge needed no change; a new test proves a Plan or role changed under an open row closes it with the note.
+8. Note 5 of the roles table reads D2817's words; the data model, data schema, screen contracts and file map are true.
+9. One new test file (20 tests) was seen red against the old code (13, the other 7 named pins); every listed file passes.
+10. The outside security pin S3 still fails by design under D2626, as in Passes A and B.

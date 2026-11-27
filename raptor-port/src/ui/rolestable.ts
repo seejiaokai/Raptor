@@ -49,5 +49,8 @@ export const ROLES_NOTES = [
   'Own row only: not the callsign, Management or Scheduler tick.',
   'Bids for own leave. Sees everyone\'s leave.',
   'Everything but the flex settings.',
-  'Only a master admin makes squadrons, gives Plan or makes a master admin.',
+  /* his D2817 (27 Nov 26), these words exactly: Plan of a squadron and its admins are its own admins' or a master
+     admin's (D2626, D2730 Q8, D2806) — the drawn note of 22 Nov (scripts/handpass/n176/words.mjs rolesNote) stays as that
+     drawing's record */
+  'Only a master admin makes squadrons or master admins. Only a squadron\'s own admins or a master admin can give Plan of it or make its admins.',
 ]

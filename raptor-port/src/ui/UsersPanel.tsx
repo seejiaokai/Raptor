@@ -31,10 +31,10 @@ import { elogWhen } from '../engine/editlog'
 import {
   accountOfPid, linkablePeople, addAccount, updateAccount, waitingHere, unseenRequests,
   approveRequest, approveRequestNew, addPersonAndAccount, declineRequest, saveAccess,
-  requestSummary, accessAlert, markRequestsSeen, MAX_SIGNIN, isAdminAccount, signedInAccount, levelIn, sessionLapsed,
+  requestSummary, accessAlert, markRequestsSeen, MAX_SIGNIN, isAdminAccount, signedInAccount, levelIn, sessionLapsed, mayGivePlanNow,
   type Account, type AccountRole, type AccessRequest, type AccessSave, type AccessLine,
 } from '../state/accounts'
-import { RoleBox, SquadronLines, RolesFold } from './UserAccess'
+import { RoleBox, RoleNote, SquadronLines, RolesFold } from './UserAccess'
 import {
   accessLinesOf, alsoPlansOf, rolePickOf, actorIsMaster, shortRoleOf, holdsHereOf, noSignInWords, changedWhileOpenWords,
   type RolePick,
@@ -72,14 +72,22 @@ function PuckSelect(p: { id: string; value: string; keep?: string; unit?: string
     </select>
   )
 }
-/* the Role box of a new person's sign-in (the add form, a request's approval): Member or Admin, the short words of D2305 */
-function RoleSelect(p: { id: string; value: AccountRole; onChange: (v: AccountRole) => void }) {
-  return (
-    <select id={p.id} value={p.value} aria-label="Member or admin" onChange={e => p.onChange(e.target.value as AccountRole)}>
+/* the Role box of a new person's sign-in (the add form, a request's approval): Member or Admin, the short words of D2305.
+   `unit` — the squadron the man will be an admin of: "+ Add a person"'s the page's (pageUnit('own') — where the door puts
+   his home), Give access's the request's own. "Admin" is greyed, with the one grey line under the box, where the signed-in
+   person may not make an admin of it (his D2730 Q8, D2806) — read afresh from his right on every draw
+   (state/accounts.ts mayGivePlanNow), never held by the form: no field of the open work's record carries it (the U2
+   brief's §6), and the door judges the press again whatever the box showed. */
+function RoleSelect(p: { id: string; value: AccountRole; unit: string; onChange: (v: AccountRole) => void }) {
+  const adminOff = mayGivePlanNow(p.unit) ? null : p.unit
+  return <>
+    <select id={p.id} value={p.value} aria-label="Member or admin" aria-describedby={adminOff ? `${p.id}Note` : undefined}
+      onChange={e => p.onChange(e.target.value as AccountRole)}>
       <option value="main">Member</option>
-      <option value="admin">Admin</option>
+      <option value="admin" disabled={!!adminOff}>Admin</option>
     </select>
-  )
+    {adminOff && <RoleNote id={`${p.id}Note`} unit={adminOff} />}
+  </>
 }
 const done = (bad: string | null, ok: string) => { if (bad) HOOKS.toast(bad, 'warn'); else HOOKS.toast(ok); notify(); return !bad }
 /* the post-in date box (D308): opens on today; the account works at once, the Leave War counts him from the date.
@@ -321,7 +329,7 @@ function GiveForm(p: {
         {a.mode === 'new' && <PostInField id="apvPostIn" value={day} onChange={() => {}}
           onSelect={v => p.onTyped({ ...a, postIn: v, set: { ...a.set, postIn: true } })} />}
         <div className="mfield"><label htmlFor="apvRole">Role</label>
-          <RoleSelect id="apvRole" value={a.role} onChange={v => p.onTyped({ ...a, role: v, set: { ...a.set, role: true } })} /></div>
+          <RoleSelect id="apvRole" value={a.role} unit={r.unit} onChange={v => p.onTyped({ ...a, role: v, set: { ...a.set, role: true } })} /></div>
       </div>
       <div className="acc-acts">
         <button className="abtn primary" id="apvGo" onClick={go}>{a.mode === 'new' ? 'Add person and give access' : 'Give access'}</button>
@@ -814,11 +822,20 @@ function accessWant(role: RolePick, pickNow: RolePick, lines: Record<string, Acc
    Delete are an admin of his own squadron's (a man found by search, or a Plan holder from another squadron, shows only the
    lines of squadrons the admin may give access to live); a master admin's role a master admin's alone (setMaster).
    These are the SIGNED-IN admin's rights, read afresh on every draw and judged again by the doors at every write — never
-   a fact of the man, so no part of the copy (`master` — the man holds the master mark, as the copy's role says). */
-function rowLocks(pid: string, master: boolean): { rest: boolean; roleLocked: boolean } {
+   a fact of the man, so no part of the copy (`role` — his role as the COPY holds it, the master mark first: `s.role`).
+   `adminOff` (U2, his D2730 Q8, D2806): his home that day — the squadron whose admin he would be — where "Admin" is
+   greyed in his Role box, with its one grey line, because the signed-in person may not make an admin of it
+   (state/accounts.ts mayGivePlanNow, the doors' own reader); else null. Judged on the copy's role, never on what is
+   picked: a man already an admin ('admin' or 'master') is never greyed, so Member picked on an admin's row can be put
+   back to Admin before Save. Not asked where the whole box is greyed (roleLocked) — one reason at a time — nor for a man
+   with no home known: there is no squadron to name, and the door refuses that press in its own words. His home is one
+   of the four judged facts of the open row (OpenedOn's `home`), so while the row stands this is that very squadron. */
+function rowLocks(pid: string, role: RolePick): { rest: boolean; roleLocked: boolean; adminOff: string | null } {
   const home = homeOn(pid, todayIso())
   const rest = !home || adminOfUnit(home)
-  return { rest, roleLocked: !rest || (master && !actorIsMaster()) }
+  const roleLocked = !rest || (role === 'master' && !actorIsMaster())
+  const adminOff = !roleLocked && home && role !== 'admin' && role !== 'master' && !mayGivePlanNow(home) ? home : null
+  return { rest, roleLocked, adminOff }
 }
 
 /* ONE ROW PER PERSON ON THE ROSTER (D309, D310). Tap it for his sign-in, his role and his state's buttons — never your
@@ -936,7 +953,7 @@ function PersonEditor(p: {
      open work it closes is named after this press's own receipt, never in its place (the tenth round) */
   const stale = useJudgedOnDraw(p.pid, p.on, p.onStale)
   const stillHis = (): boolean => askAgain(p.pid, p.on, p.onClose, p.listed)
-  const { rest, roleLocked } = rowLocks(p.pid, s.role === 'master')
+  const { rest, roleLocked, adminOff } = rowLocks(p.pid, s.role)
   /* the delete's first tap arms it; Cancel, closing the editor or another row disarms it (the editor unmounts — a
      regrouping disarms it too: a delete is never left armed across a redraw of the list) */
   const [armDel, setArmDel] = useState(false)
@@ -986,8 +1003,10 @@ function PersonEditor(p: {
             onChange={e => p.onTyped({ ...typed, name: e.target.value, set: { ...typed.set, name: true } })} /></div>
         <div className="mfield"><label htmlFor={has ? 'accEdRole' : 'accGiveRole'}>Role</label>
           {/* (no sign-in yet: Member or Admin — the mark is given on an account, D2320) */}
+          {/* ("Admin" greyed with its one line under the box where he may not make an admin of the man's squadron — D2806,
+              the drawings q13-d-rec, q13-p-rec; rowLocks hands none to a box greyed whole) */}
           <RoleBox id={has ? 'accEdRole' : 'accGiveRole'} value={role} disabled={roleLocked} masterOff={!has || !actorIsMaster()}
-            onChange={v => p.onTyped({ ...typed, role: v, set: { ...typed.set, role: true } })} /></div>
+            adminOff={adminOff} onChange={v => p.onTyped({ ...typed, role: v, set: { ...typed.set, role: true } })} /></div>
       </div>
       {/* every other squadron's line, as it stands (the copy's) and as picked (ui/UserAccess.tsx) */}
       <SquadronLines pid={p.pid} hasSignIn={has} rolePick={role} now={s.lines} pick={lines}
@@ -1779,7 +1798,7 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
             </div>
             {/* no account without a sign-in, so no role */}
             {hasName && <div className="mfield"><label htmlFor="accAddRole">Role</label>
-              <RoleSelect id="accAddRole" value={role} onChange={setRole} /></div>}
+              <RoleSelect id="accAddRole" value={role} unit={unit} onChange={setRole} /></div>}
             {/* the note above the pair, as drawn (s1-add2-a); its words his (D2655 D1) */}
             <p className="adm-note acc-note" id="accAddNote">Makes his Quals row, and his sign-in if you give one. The Leave War counts him from the post-in date.</p>
             {/* ONE PAIR (D2644, lesson 103): the same row of buttons and the same two buttons as an opened row's Save and
