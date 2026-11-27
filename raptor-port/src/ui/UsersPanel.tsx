@@ -245,6 +245,8 @@ function giveAsked(g: GiveWork, day: string | undefined, onClose: (found?: true)
 function Waiting(p: {
   give: GiveWork | null; onTyped: (t: GiveTyped) => void; onOpen: (r: AccessRequest) => void; onClose: (found?: true) => void
   afterWrite: (write: () => void) => void
+  /* (Refuse's write, with both pieces of open work judged in its batch — the page's addWrite, the eleventh round) */
+  addWrite: (write: () => void) => void
 }) {
   /* the page's squadron's requests only, those he is an admin of (§5 — accounts.ts waitingHere) */
   const reqs = waitingHere()
@@ -264,7 +266,7 @@ function Waiting(p: {
               ? <div className="acc-acts">
                   {/* D309 / D310: "Give access · Refuse" (were Approve · Decline) */}
                   <button className="abtn primary" data-approve={r.id} onClick={() => p.onOpen(r)}>Give access</button>
-                  <button className="abtn" data-decline={r.id} onClick={() => done(declineRequest(r.id), `Refused ${r.name}`)}>Refuse</button>
+                  <button className="abtn" data-decline={r.id} onClick={() => p.addWrite(() => { done(declineRequest(r.id), `Refused ${r.name}`) })}>Refuse</button>
                 </div>
               : <GiveForm r={r} g={g} onTyped={p.onTyped} onClose={p.onClose} afterWrite={p.afterWrite} />}
           </div>
@@ -1460,7 +1462,15 @@ function closedAtPress(w: OpenWork, pressed: 'row' | 'give', x: PressAt): { row:
    receipt, or the door's own words, and its own close), then the OTHER piece of open work judged at once as the next draw
    would judge it (otherAtPress — the draw's `left` and `lost` too), let go where it is not ok and its note said in the
    same batch where the one rule owes it — receipt first, then the note, one line. The draw that follows finds it already
-   closed and says nothing. */
+   closed and says nothing.
+   …AND A WRITING PRESS THAT IS NO PIECE OF OPEN WORK KEEPS ITS RECEIPT TOO (`addWrite` — the eleventh round, opus1 F1/F2,
+   opus2 F1 and Astra F1 of the tenth read): "+ Add a person" and Refuse on the waiting list. Hunter had Give access open
+   and changed on Newface's request and added a person with the sign-in newface@mail: the add answered the request, the
+   redraw closed the form and said its note in a batch of its own, and "… can sign in now" was replaced; an add under an
+   archived man's callsign did the same to his open row, and Refuse past midnight to a row whose man's move had landed
+   unseen. The add form and the waiting list are in neither slot, so here BOTH pieces are the other: each present one
+   judged at once after the write (otherAtPress), every one that closes let go in one write, the callsigns owed a note
+   said after the receipt — the row's first, then the form's — in the same one batch. */
 type SetOf<T> = (v: T | ((cur: T) => T)) => void
 function pressPaths(work: OpenWork, setWork: SetOf<OpenWork>, setSeen: SetOf<SeenAt | null>, x: PressAt) {
   const dropWork = (c: { row: boolean; give: boolean }) => {
@@ -1476,9 +1486,17 @@ function pressPaths(work: OpenWork, setWork: SetOf<OpenWork>, setSeen: SetOf<See
     dropWork(c)
     if (c.said.length) sayChanged(c.said)
   }
-  const afterWrite = (pressed: 'row' | 'give', write: () => void): void => {
+  const afterWrite = (pressed: 'row' | 'give' | 'add', write: () => void): void => {
     HOOKS.toastBatch(() => {
       write()
+      if (pressed === 'add') {
+        const r = work.row ? otherAtPress({ kind: 'row', ...work.row }, x) : KEEP
+        const g = work.give ? otherAtPress({ kind: 'give', ...work.give }, x) : KEEP
+        if (r.close || g.close) dropWork({ row: r.close, give: g.close })
+        const said = [...(work.row && r.named ? [cs(work.row.pid)] : []), ...(work.give && g.named ? [work.give.callsign] : [])]
+        if (said.length) sayChanged(said)
+        return
+      }
       const other: Entry | null = pressed === 'row'
         ? (work.give ? { kind: 'give', ...work.give } : null)
         : (work.row ? { kind: 'row', ...work.row } : null)
@@ -1500,6 +1518,7 @@ function pressPaths(work: OpenWork, setWork: SetOf<OpenWork>, setSeen: SetOf<See
     },
     rowWrite: (write: () => void) => afterWrite('row', write),
     giveWrite: (write: () => void) => afterWrite('give', write),
+    addWrite: (write: () => void) => afterWrite('add', write),
   }
 }
 
@@ -1644,7 +1663,7 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
     const ok = hasName ? `${who} added — ${nm} can sign in now` : `${who} added to the roster — set flight and quals on the Quals page`
     /* no home named: the door makes him the page's own squadron's — his home row and his first stint (accounts.ts
        addPersonAndAccount, PD1) — the squadron in view, always (D2729 Q1). Today's call otherwise, argument for argument. */
-    if (done(addPersonAndAccount(name, np, role, postIn), ok)) resetAddForm()
+    addWrite(() => { if (done(addPersonAndAccount(name, np, role, postIn), ok)) resetAddForm() })
   }
   /* Cancel, and Escape as it leaves an opened row ((p), his D2396): the form emptied and folded, the opener back with the
      keys on it (the design guide §2 — the keys go back to the button that opened it) */
@@ -1693,7 +1712,7 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
   useOpenWorkJudged(work, setWork, setSeen, { closedNow, seen, now: { drawn, shown, q, filt, arch: archOpen, wrote, still }, shown })
   useNoteAsPageGoes(work, drawn)
   /* closing a piece of open work, and running a press's write — pressPaths, above (the page at this press: PressAt) */
-  const { closeRow, closeGive, rowWrite, giveWrite } = pressPaths(work, setWork, setSeen, {
+  const { closeRow, closeGive, rowWrite, giveWrite, addWrite } = pressPaths(work, setWork, setSeen, {
     rowOnScreen: drawn, listed: listedNow, still: pid => stillListed(pid, seen, pageUnit('own'), todayIso(), actorIsMaster()),
   })
   /* THE OPEN ROW'S REPORT TO THE LEAVE-GUARD (D2595, D2598; ui/guard.ts's `userrow` and `archrow` rows) — from what the
@@ -1770,7 +1789,7 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
         </>
       )}
       <h4 className="adm-sub">Waiting for access</h4>
-      <Waiting give={work.give} onTyped={setGiveTyped} onOpen={openGive} onClose={closeGive} afterWrite={giveWrite} />
+      <Waiting give={work.give} onTyped={setGiveTyped} onOpen={openGive} onClose={closeGive} afterWrite={giveWrite} addWrite={addWrite} />
       <hr className="adm-sep" />
       <div className="od-head">
         <h4 className="adm-sub">People · {view.people}</h4>
