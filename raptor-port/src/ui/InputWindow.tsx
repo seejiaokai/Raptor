@@ -111,7 +111,10 @@ function viewDocFile(row: any, ids: readonly string[], id: string): void {
   setDocView({ row: { ...row, docId: undefined, docIds: [...ids] }, readOnly: true, docId: id })
   notify()
 }
-export function DocField({ ids, onIds, viewRow }: { ids: string[], onIds: (ids: string[]) => void, viewRow: () => any }) {
+/* A DOCUMENT CHOSEN LATE (the guard rail's plan §5.4 — the one write that did not stop on `held`): `locked` — the window is
+   held (his move at midnight, a right ended) — so a file chosen in a chooser opened before is not stored and changes no
+   list; the file box is cleared as before. */
+export function DocField({ ids, onIds, viewRow, locked }: { ids: string[], onIds: (ids: string[]) => void, viewRow: () => any, locked?: boolean }) {
   const ref = useRef<HTMLInputElement>(null)
   const have = ids || []
   return <span className="docfield">
@@ -119,7 +122,7 @@ export function DocField({ ids, onIds, viewRow }: { ids: string[], onIds: (ids: 
       onChange={e => {
         const fs = e.target.files ? [...e.target.files] : []
         e.target.value = ''
-        if (!fs.length) return
+        if (locked || !fs.length) return
         const fresh: string[] = []
         fs.forEach(f => {
           const { id, why } = docAdd(f)
@@ -385,7 +388,8 @@ export function InputEditor() {
     setClash([]); setSwap(null); setEscAsk(false)   // the unsaved question goes with the record it asked about (the code read of 3 Nov 26, F-A4)
     setDraft(r ? draftOf(r) : null); setUpConf(null); setMedConf(null); setOilConf(null); setDocConf(null)
     /* who it is for: a saved input's own list; a new one's seed names its one person */
-    const p0 = !r ? [] : r._new ? [String(r.person ?? '')] : idsOf(r).map(String)
+    /* (…naming nobody where its seed names nobody — another squadron's page, §18.6: the list starts on "Pick…") */
+    const p0 = !r ? [] : r._new ? (r.person == null || r.person === '' ? [] : [String(r.person)]) : idsOf(r).map(String)
     setPpl(p0); setSeveral(p0.length > 1); basePpl.current = p0; entryIds.current = r && !r._new ? [r.iid] : []
     setDelAll(false); setTakeOut(false); setMidPick(false); setDatesPicked(false); setCalKey(k => k + 1)
     if (r && !r._new && OILASK && r.iid === OILASK) {
@@ -743,6 +747,10 @@ export function InputEditor() {
        question and every sheet ([INPUT-ALL-AVAIL]) */
     if (draft && placeholderRefused(several && picker ? { ...draft, person: ppl.find(p => isSpecial(p)) ?? draft.person } : draft)) return
     if (picker && draft) {
+      /* A NEW INPUT NAMING NOBODY — opened on another squadron's page, where its Person box starts on "Pick…" (the guard
+         rail's plan §18.6) — is refused in the app's own words for an empty choice (ui/inputedit.ts commitInput, the
+         "Several people" save's), never filed for whoever the window would fall back on */
+      if (isNew && !ppl.some(p => !!p)) { HOOKS.toast('Pick at least one person', 'warn'); return }
       /* nothing is substituted for what he picked: people he may not file this kind for refuse the save, in the
          picker's own sentence */
       const pb = pickProblem(ppl, several, draft.type, phWhy)
@@ -1210,7 +1218,7 @@ export function InputEditor() {
             <span className="inped-k">Document</span>
             {/* a chip opens its file (D1292, D1159 — the one Document button everywhere): the page the window's own fields
                 name now, a file not yet saved included; who placed it, from the saved entry */}
-            <DocField ids={draft.docIds} onIds={ids => setDraft({ ...draft, docIds: ids })}
+            <DocField ids={draft.docIds} onIds={ids => setDraft({ ...draft, docIds: ids })} locked={held}
               viewRow={() => ({
                 person: draft.person, type: draft.type, allday: draft.allday, date: fmt(draft.start),
                 ...(draft.end && fmt(draft.end) !== fmt(draft.start) ? { endDate: fmt(draft.end) } : {}),

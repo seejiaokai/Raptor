@@ -853,6 +853,10 @@ const DOOR_CALLERS: { file: string; fn: DoorFn; line: string; why: string }[] = 
   { file: 'ui/Drawer.tsx', fn: 'pickSquadron', line: "void pickSquadron(u, { from: 'drawer' })", why: 'the ☰ menu\'s list (row 2)' },
   { file: 'state/belltap.ts', fn: 'enterForLine', line: "const w = enterForLine(rq.unit, again, 'bell')", why: 'openBellRequest — the bell itself (row 8)' },
   { file: 'ui/topstate.ts', fn: 'enterForLine', line: "const where = isAcctNotice(n) ? 'here' : enterForLine(u, again, 'line', o)", why: 'openNotice — a bell line (rows 6, 7, 9b, 11, 15)' },
+  /* step K9 (§10 step 7, §5.3 — his D2403, D2621): the two doors into an input's window that bring the input's own
+     squadron into view first (state/inputsqn.ts INPUT_DOORS 'belloil', 'oilcard') */
+  { file: 'ui/topstate.ts', fn: 'enterForLine', line: "const w = enterForLine(inputSqn(row, pageUnit('own')), () => bellTap(from), 'bell')", why: 'bellTap — the bell\'s own OIL tap, the input\'s squadron first (row 9, §5.3)' },
+  { file: 'ui/OilDayList.tsx', fn: 'enterForLine', line: "const w = enterForLine(inputSqn(r, pageUnit('own')), again, 'card', o)", why: 'openInput — a card of the OIL list, the input\'s squadron first (row 10, §5.3)' },
 ]
 function callerProblems(files: Record<string, string>): string[] {
   const want = DOOR_CALLERS.map(c => `${c.file}: ${c.fn}: ${c.line}`)

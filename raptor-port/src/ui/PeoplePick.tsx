@@ -219,7 +219,10 @@ export function PeoplePick({ people, several, type, sansOnly, lockOne, readOnly,
           {!several && (others
             ? <select id="inpEditPerson" aria-label="Person" value={first ?? ''} onChange={e => onChange([e.target.value], false)}>
               {/* a man no longer on the list (archived since) still reads as himself, never as the first name on it */}
-              {first != null && !roster.includes(first) && !isSpecial(first) && (more ? !!moreIds && !moreIds.includes(first) : true) && <option value={first}>{cs(first)}</option>}
+              {/* nobody picked yet — a new input on another squadron's page (the guard rail's plan §18.6): "Pick…", the
+                  app's own word for an empty choice, as drawn (D2729, the section page's group 3) */}
+              {(first == null || first === '') && <option value="">Pick…</option>}
+              {first != null && first !== '' && !roster.includes(first) && !isSpecial(first) && (more ? !!moreIds && !moreIds.includes(first) : true) && <option value={first}>{cs(first)}</option>}
               {offerPh && <PlaceholderGroup type={type} current={first} />}
               {roster.map(id => <option key={id} value={id}>{cs(id)}</option>)}
               {more}

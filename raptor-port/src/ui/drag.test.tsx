@@ -777,15 +777,36 @@ describe('the puck ghosts wear the lift, and the seat it lands on flashes', () =
     const realNow = Date.now
     const frozen = realNow()
     Date.now = () => frozen
+    /* THE VEIL IS READ AS IT IS PUT ON (27 Nov 26). `lift-land` comes off by its own timer 640ms after it is painted
+       (lift.ts landOn) — a real-time timer the frozen clock above does not reach. A worker held up longer than that
+       between the paint and this act handing back (a GC pause, a runner short of CPU: GitHub run 45921789895, raptor
+       5/6, the swap test) let the timer run first, and the class was gone before it was read — reproduced on demand by
+       holding the worker 700ms just after the paint (600ms passes). So every node the drop lights is recorded as it is
+       lit, and the tests ask whether the node standing at the address NOW is one of them. How long the flash lasts
+       keeps its own pin in lift.test.ts, on a fake clock. */
+    const recs: MutationRecord[] = []
+    const mo = new MutationObserver(r => { recs.push(...r) })
+    mo.observe(document.body, { subtree: true, attributes: true, attributeFilter: ['class'], attributeOldValue: true })
     try {
       await act(async () => {
         from.dispatchEvent(mk('dragstart')); to.dispatchEvent(mk('dragover')); to.dispatchEvent(mk('drop'))
         mark = pendingLand()
         from.dispatchEvent(mk('dragend'))
       })
-    } finally { Date.now = realNow }
+    } finally { Date.now = realNow; recs.push(...mo.takeRecords()); mo.disconnect() }
+    /* each record holds the class BEFORE its change: the class after it is the next record's, or the node's own now */
+    const seq = new Map<Element, (string | null)[]>()
+    for (const r of recs) { const el = r.target as Element; seq.set(el, [...(seq.get(el) ?? []), r.oldValue]) }
+    lit = new Set()
+    for (const [el, olds] of seq) if ([...olds.slice(1), el.getAttribute('class')].some(v => /(^|\s)lift-land(\s|$)/.test(v ?? ''))) lit.add(el)
     return mark as { sel: string } | null
   }
+  /* the nodes the last dropAndPeek lit */
+  let lit = new Set<Element>()
+  const flashed = (sel: string) => { const el = $(sel); return !!el && lit.has(el) }
+  /* a "did not": neither lit by this drop nor wearing the flash now — the read the test made before is kept beside the
+     record, so a "did not" is never looser than it was */
+  const wore = (sel: string) => flashed(sel) || !!$(sel)?.classList.contains('lift-land')
   /* jsdom lays nothing out, so what is "under the pointer" is told by hand */
   let under: Element | null = null
   const efp = (document as any).elementFromPoint
@@ -863,7 +884,7 @@ describe('the puck ghosts wear the lift, and the seat it lands on flashes', () =
     const mark = await dropAndPeek(puck, $(`#eWeek .seat[data-slot="${key}"]`))
     expect(slotVal(key), 'sanity: the drop wrote').toBe(puck.dataset.person)
     expect(mark!.sel).toBe(`#eWeek [data-slot="${key}"],#eWeek [data-fill="${key}"]`)
-    expect($(`#eWeek [data-slot="${key}"]`).classList.contains('lift-land'), 'the seat flashed').toBe(true)
+    expect(flashed(`#eWeek [data-slot="${key}"]`), 'the seat flashed').toBe(true)
     setSlotVal(key, before); await act(async () => { afterSchedMutate(); notify() })
   })
 
@@ -878,8 +899,8 @@ describe('the puck ghosts wear the lift, and the seat it lands on flashes', () =
     const mark = await dropAndPeek(fly, duty)
     expect(slotVal(dk), 'sanity: they swapped').toBe(a)
     expect(mark!.sel).toBe(`#eWeek [data-slot="${dk}"],#eWeek [data-fill="${dk}"]`)
-    expect($(`#eWeek [data-slot="${dk}"]`).classList.contains('lift-land'), 'the seat he dropped on flashed').toBe(true)
-    expect($(`#eWeek [data-slot="${fk}"]`).classList.contains('lift-land'), 'the seat he came from did not').toBe(false)
+    expect(flashed(`#eWeek [data-slot="${dk}"]`), 'the seat he dropped on flashed').toBe(true)
+    expect(wore(`#eWeek [data-slot="${fk}"]`), 'the seat he came from did not').toBe(false)
     setSlotVal(fk, a); setSlotVal(dk, b); await act(async () => { afterSchedMutate(); notify() })
   })
 
@@ -897,8 +918,8 @@ describe('the puck ghosts wear the lift, and the seat it lands on flashes', () =
       const puck = $$('#sbRoster [data-person][data-drag]').find(x => x.dataset.person !== before)!
       const mark = await dropAndPeek(puck, $(`#sbBoard .seat[data-slot="${key}"]`))
       expect(mark!.sel).toBe(`#sbBoard [data-slot="${key}"],#sbBoard [data-fill="${key}"]`)
-      expect($(`#sbBoard [data-slot="${key}"]`).classList.contains('lift-land'), 'the board flashed').toBe(true)
-      expect($(`#eWeek [data-slot="${key}"]`).classList.contains('lift-land'), 'the hidden week did not').toBe(false)
+      expect(flashed(`#sbBoard [data-slot="${key}"]`), 'the board flashed').toBe(true)
+      expect(wore(`#eWeek [data-slot="${key}"]`), 'the hidden week did not').toBe(false)
       setSlotVal(key, before)
     } finally { await act(async () => { closeScheduler(); notify() }) }
   })

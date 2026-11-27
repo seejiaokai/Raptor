@@ -43,6 +43,7 @@ import { keyToIso, mondayOf } from './weeknav'
 import { canEditOwn, canEditSched } from '../state/auth'
 import { me, isMe, mayEditInput, mayDeleteInput, mayFileInputFor, membersFileOn, memberFilesForOthers, filerSwitchedOff, filedWhole, byAfterLeaving, mayMovePlace, pageUnit, inputWhoProblemNow } from '../state/perms'
 import { unitById, homeOn, homeChangesOn } from '../state/units'
+import { pageIsHome } from '../state/inputsqn'
 import { noticeDay, noticeRun, sansDaysWords } from '../state/notices'
 import { isUnitId } from '../storage/unitid'
 import { INPEDIT, setInpEdit, setOilAsk, setMedMove } from './pops'
@@ -1041,11 +1042,15 @@ export const firstPersonalType = () => INPUT_TYPES.find((t: any) => isPersonal(t
    ITS KIND IS OL (owner D917, 15 Oct 26 — "the default type to be OL since that's the most common leave taken"), not
    the first "Duty & other commitments" kind it opened on until then; OL takes no title (D716). Only these doors: a
    board panel's + Add keeps `firstPersonalType`, SANS "+ Commitment" its own kind, a saved input its own. A squadron
-   whose kinds carry no OL falls back to the old start. */
+   whose kinds carry no OL falls back to the old start.
+   ON ANOTHER SQUADRON'S PAGE IT NAMES NOBODY (the guard rail's plan §18.6, his D2628 C2, D2655 D12): where his Inputs page
+   stands on a squadron that is not his home that day (a master admin's or a Plan holder's, following his pick), the
+   window opens with its Person box empty — "Pick…" — and its list that squadron's men alone; he files his own on his own
+   squadron. Filed for himself from there, it would leave the list he filed it on (§5.1). */
 export const newInputSeed = (from?: string, until?: string) => {
   const [iso, end] = from && until && until < from ? [until, from] : [from, until]
   const t = INPUT_TYPES.includes('OL') ? 'OL' : firstPersonalType()
-  return { _new: true, _calendar: true, _ctx: 'i', person: me(), type: t, date: iso ? fmt(iso) : undefined,
+  return { _new: true, _calendar: true, _ctx: 'i', person: pageIsHome() ? me() : '', type: t, date: iso ? fmt(iso) : undefined,
     endDate: iso && end && end !== iso ? fmt(end) : undefined, allday: defaultAllday(t), s: 360, e: 1080 }
 }
 export const firstUnavailType = () => INPUT_TYPES.find((t: any) => isUnavail(t) && !isSansAvail(t)) || INPUT_TYPES[0]
