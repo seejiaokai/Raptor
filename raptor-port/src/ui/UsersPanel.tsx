@@ -210,18 +210,22 @@ function giveFrom(r: AccessRequest): { on: GiveOn; typed: GiveTyped; callsign: s
   const mode0: Mode = rosterMatch(r) ? 'roster' : 'new'
   return {
     on: { unit: pageUnit('own'), view: pageUnit('schedule'), actor: actorNow(), req: reqKey(r), mode0 },
-    typed: { mode: mode0, np: { cs: r.cs, ini: r.ini, seat: r.seat, cat: r.cat }, pid: '', role: 'main', postIn: '', set: {} },
+    typed: { mode: mode0, np: { cs: r.cs, ini: r.ini, seat: r.seat, cat: r.cat }, pid: '', role: GIVE_ROLE0, postIn: '', set: {} },
     callsign: r.cs,
   }
 }
 /* DOES THE FORM HOLD A CHANGE — the guard's count (ui/guard.ts, D2598) and the note's: a field he SET whose value is not
    the one it opened on; the mode against the one it opened on (`mode0`), the New person fields against the request's
    own; a date he picked always (the plan's §1.2). A Role put back to Member, a callsign typed back, is not counted. */
+/* (the Role the form opens on — one home for the value giveFrom starts the form with and giveDiffers compares against:
+   a typed choice set back to where it opened is no change. It decides nothing about who may give access — that is the
+   doors' and state/perms.ts's — so it is no authority read, D200's scan) */
+const GIVE_ROLE0: AccountRole = 'main'
 function giveDiffers(g: GiveWork): boolean {
   const t = g.typed, s = t.set
   if (s.mode && t.mode !== g.on.mode0) return true
   if (s.pid && t.pid !== '') return true
-  if (s.role && t.role !== 'main') return true
+  if (s.role && t.role !== GIVE_ROLE0) return true
   if (s.postIn) return true
   if (!s.np) return false
   const r = JSON.parse(g.on.req) as AccessRequest
