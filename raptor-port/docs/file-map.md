@@ -2104,3 +2104,22 @@ Chat 204, 27 Nov 26 (the guard rail — GitHub's unit share 3 ran past its 20 mi
 - `src/ui/msq-guard-drawn-role.test.tsx` (A10 for "the role in force changed").
 - `src/ui/msq-guard-drawn-landing.test.tsx` (A10 for "the page changed by a landing").
 - `src/ui/msq-guard-drawn-board.test.tsx` (A10 for "the board closed under its dialog").
+
+Chat 205, 27 Nov 26 (multi-squadron section 2, Admin → Users — step U2, Passes A and B: who may give Plan of a squadron
+and make its admins, and the squadron's Plan lines; his D2626, D2730 Q8, D2806, D2807, D2816, D2654 E6, E9l; the brief
+`docs/superpowers/briefs/2026-11-27-msq-s2-u2-brief.md`, the report beside it). **Changed (Pass B):**
+`src/state/notices.ts` (a new line kind, `sqplan` — a man's Plan of a squadron given or ended, to that squadron's admins
+— with its words, its writer `noticePlanLine`, `isPlanLine`; an admin-kind line for the rights rule and the bell's
+switch, hidden in the member view as a posting's is), `src/state/acctlines.ts` (`planLinesOf` — which change owes which
+line, for the writer and the gate; `planMovesOwed`, `planMovedLineId`; `tellAccess` and `writeMoveLines` write them),
+`src/state/perms.ts` (`planLineViolation`, `planLineChange` — the line only as its change owes it; the own-man door and
+the `account.told` section pass it over to it), `src/state/undo-wire.ts` (`acctLineLeftOut` widened to the new kind),
+`src/ui/topstate.ts` (the kind keyed in `LINE_KINDS`; a tap opens that squadron's Admin → Users at the man's row).
+**New (tests):**
+- `src/state/msq-s2-u2-doors.test.ts` (Pass A: who gives and ends Plan, Q8 and the last-admin words, at every door).
+- `src/state/msq-s2-u2-gate.test.ts` (Pass A: the same, forged as commands, refused by name at the commit gate).
+- `src/state/msq-s2-u2-replay.test.ts` (Pass A: Undo and Redo of Plan by one who has lost the right, and D2807's refused
+  Undo).
+- `src/state/msq-s2-u2-lines.test.ts` (Pass B: the four lines to the right readers, an Undo and a Redo, D2808's endings
+  pinned silent, forged lines refused).
+- `src/ui/msq-s2-u2-tap.test.tsx` (Pass B: a tap on the line, through the bell, on the posting line's road).

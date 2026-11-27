@@ -19,7 +19,7 @@ import { roleStore, invalidateRoleTargets } from './mission-roles'
 import { decodeRoleId } from '../engine/mission-role'
 import { peopleStore, settingsStore } from './people-settings-commit'
 import { rosterRestoreProblem } from './roster-restore'
-import { seedAccounts, levelIn, accountById, ACCOUNT_PFX, signedInAccount, adminNow, masterRightLeft, accountsAfter, ACCOUNTS_LIST, mayGivePlanNow, makeAdminUndoWords, readAccounts, levelAcct } from './accounts'
+import { seedAccounts, levelIn, accountById, ACCOUNT_PFX, signedInAccount, adminNow, masterRightLeft, accountsAfter, ACCOUNTS_LIST, mayGivePlanNow, makeAdminUndoWords, readAccounts, levelAcct, adminLineAudience } from './accounts'
 import { unitRows, homeOn, unitRowsBefore, unitRowsAfter, unitById, madeAdminsNow, grantRowHolds } from './units'
 import { setDescribeUnits } from '../undo/describe'
 import { store } from '../engine/hooks'
@@ -53,7 +53,7 @@ import { restoreAbsencesOf, warNoticesReversed, acctNoticesReversed, warDayRefus
 import { warCounts } from '../leavewar/absences'
 import { DATES, inputCoversDate, isSansAvail } from '../engine/inputs'
 import { UNIT_ROW_PREFIXES, GRANT_PFX, UNIT_PFX, UNITPLACE_PFX, PLACE_PFX } from './units-model'
-import { noticeLeftBell, isAcctNotice, type Notice } from './notices'
+import { noticeLeftBell, isAcctNotice, isPlanLine, type Notice } from './notices'
 import { UNIT } from '../engine/unitview'
 import { split, localOf, qualify } from '../storage/unitid'
 import { storedPlan } from './plan-foreign'
@@ -484,13 +484,20 @@ function grantLeftOut(c: Change, dir: 'undo' | 'redo', entry: UndoEntry, changes
    came back, or ended again, when nothing of it changed — and a step the guardrails empty would not be empty, so the
    Undo went through taking only the line, and was never blocked in today's words. A line with no squadron (the master
    mark, his role at home, his sign-in) rides with its account row, which no guardrail leaves out. */
+/* …AND SO DOES A SQUADRON'S PLAN LINE (U2 — the brief §5, the plan §19.2 (c)): its squadron is its stamp and its man the
+   part's `who`, so "Plan of 149 ended: made a member" stands while the Undo of that make-member, pressed by one who may not
+   give Plan of 149, leaves the Plan out (perms.ts restoreLeavesOut, rule 4). And a line a Redo would put back on a reader
+   no longer among that squadron's admins today (accounts.ts adminLineAudience) is left out too: it is no line of his now
+   (notices.ts rightHolds hides it), and the gate owes it only to the audience (perms.ts planLineViolation). */
 function acctLineLeftOut(c: Change, dir: 'undo' | 'redo', entry: UndoEntry, changes: Change[]): boolean {
   if (c.collection !== 'notices') return false
   const n: any = c.op === 'delete' ? c.before : (c.after ?? c.before)
-  if (!isAcctNotice(n)) return false
-  const u = n.what?.[0]?.u
+  const plan = isPlanLine(n)
+  if (!isAcctNotice(n) && !plan) return false
+  if (plan && c.op === 'put' && c.after && !adminLineAudience(String(n.u ?? ''), todayIso()).includes(String(n.to))) return true
+  const u = plan ? n.u : n.what?.[0]?.u
   if (!u) return false
-  const to = String(n.to)
+  const to = plan ? String(n.what?.[0]?.who ?? '') : String(n.to)
   const pidOf = (acc: string) => String(entry.holders?.[acc]?.pid ?? accountById(acc)?.pid ?? '')
   const rows = changes.filter(x => {
     if (!isGrantRow(x)) return false

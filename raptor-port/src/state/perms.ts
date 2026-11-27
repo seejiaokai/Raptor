@@ -48,8 +48,8 @@ import { oilPlanOf } from './inputgate-hook'
 import type { Actor, Change, CommitEnvelope } from '../command/types'
 import { deepEqual } from '../command/util'
 /* (notices.ts reads this module too — mayEditSched; each side calls the other only at run time, never at load) */
-import { noticeAboutHim, noticeLeftBell, filerTold, filerVia, foldedInto, joinFilerImgs, dayOfAt, changeFiler, APP_ACTS, passMade, warMade, holMade, shareMade, AT_SLACK_MS, NOTICES, isAcctNotice, poFailedLineId } from './notices'
-import { accessIn, accessParts, movedParts, acctByApp, movedLineId, MOVES_TOLD_DAYS, type AcctPart } from './acctlines'
+import { noticeAboutHim, noticeLeftBell, filerTold, filerVia, foldedInto, joinFilerImgs, dayOfAt, changeFiler, APP_ACTS, passMade, warMade, holMade, shareMade, AT_SLACK_MS, NOTICES, isAcctNotice, isPlanLine, poFailedLineId } from './notices'
+import { accessIn, accessParts, movedParts, acctByApp, movedLineId, MOVES_TOLD_DAYS, planLinesOf, planMovedLineId, type AcctPart } from './acctlines'
 import { addDays } from './flyplan-model'
 
 export type Act = 'C' | 'R' | 'U' | 'D'
@@ -3499,6 +3499,10 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
     if (c.collection === 'notices') {
       /* (his own account's line — judged whole, first, by acctLineViolation: §16 D6′) */
       if (acctChange(c)) continue
+      /* (…and a squadron's Plan line — judged whole, first, by planLineViolation: U2. Its reader is another squadron's
+         admin as often as not, so the own-man door below would refuse every honest one; loosened here instead, any admin
+         could put any words on another squadron's admins' bells — the plan §19.2's security S2) */
+      if (planLineChange(c)) continue
       /* (fault M: no line already written is rewritten — before every door below) */
       if (c.op === 'put') {
         if (replayed === undefined) replayed = env.origin === 'restore' && REPLAY ? REPLAY(env) : null
@@ -4008,7 +4012,8 @@ function acctLineViolation(env: CommitEnvelope): string | null {
     && n.u === undefined && n.fu === undefined && typeof n.to === 'string' && Number.isFinite(n.at) && Math.abs(n.at - now) <= AT_SLACK_MS
     && String(n.name) === String((PEOPLE as any)[String(n.to)]?.cs ?? n.to)
   if (env.type === 'account.told') {
-    if (!a || a.role !== 'system' || env.changes.some(c => !acctChange(c))) return 'an account line the app did not owe (account.told)'
+    /* (…the squadrons' admins' lines a move owes ride beside his own — judged by planLineViolation, U2) */
+    if (!a || a.role !== 'system' || env.changes.some(c => !acctChange(c) && !planLineChange(c))) return 'an account line the app did not owe (account.told)'
     const rows = unitRowsAfter(env.changes)
     for (const c of ch) {
       const n: any = c.op === 'delete' ? null : c.after
@@ -4054,6 +4059,101 @@ function acctLineViolation(env: CommitEnvelope): string | null {
     const i = list.findIndex(x => !!x && deepEqual(x.p, n.what[0]) && (n.by ?? null) === (x.app ? null : self))
     if (i < 0) return `an account line no change of his access owes (${where})`
     list[i] = null
+  }
+  return null
+}
+/* A SQUADRON'S PLAN LINE ONLY AS ITS CHANGE OWES IT (Admin → Users across squadrons, step U2 — his D2626, D2654 E6, E9l;
+   the plan §19.2 "The gate's rule for these lines", security S2; docs/data-model.md §11, the Notice row — together, D200).
+   A line of the `sqplan` kind goes to another squadron's admins as often as not, so the own-man door (adminOwnerViolation
+   below) would refuse every honest one, and loosened there any admin could put any words on any squadron's admins' bells.
+   So it is judged whole, here, before that door, for every actor:
+   - a person's command: an admin's only; each line NEW, to one reader, owed by this command's own change — the very parts
+     his own account's lines are owed from (accessParts over the command's rows before and after, by the one body
+     acctlines.ts planLinesOf: that man's Plan of that squadron given, ended, or ended as he was made a member), to a reader
+     of that squadron's admin audience on the rows BEFORE the command (accounts.ts adminLineAudience), never the man nor the
+     actor, one line a reader; signed by the actor; dated today, now; about no input, no filer's mark, stamped with that
+     squadron, named by the man's callsign;
+   - an Undo or Redo (the timeline's verified replay, undo/timeline.ts verifiedReplay): the step's own line taken away only
+     where the restore changes that man's Plan of that squadron too (a row the guardrails leave out keeps its line — the
+     replay rule's (c)), put back only where the restore owes it again, as above, its time and day its own;
+   - the app's own writer (`account.told`, the system actor): a move's line alone ("…: he moved to 150"), unsigned, on the
+     day his squadron changed, for a Plan he held the day before and not that day (movedParts), to an admin of that
+     squadron on that day, its fixed id (acctlines.ts planMovedLineId) — the same body the writer asks (planMovesOwed);
+   - nothing else: no rewrite, no removal outside a restore, no line from any other command of the app's. */
+export const planLineChange = (c: Change): boolean =>
+  c.collection === 'notices' && (isPlanLine(c.before) || (c.op !== 'delete' && isPlanLine(c.after)))
+function planLineViolation(env: CommitEnvelope): string | null {
+  const ch = env.changes.filter(planLineChange)
+  if (!ch.length) return null
+  const a = env.actor
+  const today = todayIso(), now = Date.now()
+  const shape = (n: any, day: string): boolean => !lineMalformed(n) && n.what.length === 1 && n.what[0].k === 'sqplan'
+    && n.iid === '' && n.fu === undefined && typeof n.to === 'string' && typeof n.u === 'string' && !!n.u
+    && Number.isFinite(n.at) && Math.abs(n.at - now) <= AT_SLACK_MS && String(n.day) === day && dayOfAt(n.at) <= today
+    && typeof n.what[0].who === 'string' && String(n.name) === String((PEOPLE as any)[n.what[0].who]?.cs ?? n.what[0].who)
+  if (env.type === 'account.told') {
+    if (!a || a.role !== 'system') return 'a squadron\'s Plan line only the app writes for a move (account.told)'
+    const rows = unitRowsAfter(env.changes)
+    for (const c of ch) {
+      const where = `${c.collection}/${c.id}`
+      const n: any = c.op === 'delete' ? null : c.after
+      if (c.before != null || !n || n.by != null || String(n.id) !== String(c.id) || !shape(n, String(n.day))) return `a squadron's Plan line only the app writes for a move (${where})`
+      const p: any = n.what[0], d = String(n.day), pid = String(p.who)
+      const acct = ACCOUNTS_LIST.find(x => String(x.pid) === pid)
+      if (!acct || p.c !== 'moved' || !(d <= today && d > addDays(today, -MOVES_TOLD_DAYS)) || planMovedLineId(acct.id, d, n.u, String(n.to)) !== String(n.id)
+        || String(n.to) === pid
+        // eslint-disable-next-line react-doctor/js-set-map-lookups -- one look in a list worked out afresh for this line's own man and day, never the same list twice
+        || !homeChangesBefore(pid, addDays(d, -1), d, rows).includes(d)
+        || !planLinesOf(pid, movedParts(accessIn(acct, rows, addDays(d, -1)), accessIn(acct, rows, d))).some(l => l.u === n.u && deepEqual(l.part, p))
+        // eslint-disable-next-line react-doctor/js-set-map-lookups -- one look in the audience of this line's own squadron and day, worked out afresh for it
+        || !adminLineAudience(n.u, d, rows).includes(String(n.to))) return `a squadron's Plan line only the app writes for a move (${where})`
+    }
+    return null
+  }
+  if (!a || a.role !== 'admin') return `a squadron's Plan line no change of its Plan owes (${ch[0]!.collection}/${ch[0]!.id})`
+  const self = a.personId == null ? null : String(a.personId)
+  /* what this command's own change owes, reader by reader — each once; and the men whose Plan of a squadron it changes */
+  const w = buildWorlds(env)
+  const owed = new Map<string, { part: any; used: boolean }>()
+  const changed = new Set<string>()
+  const byId = (rows: typeof w.acctB): Map<string, (typeof w.acctB)[number]> => {
+    const m = new Map<string, (typeof w.acctB)[number]>()
+    for (const x of rows) if (!m.has(x.id)) m.set(x.id, x)
+    return m
+  }
+  const acctB = byId(w.acctB), acctA = byId(w.acctA)
+  const audience = new Map<string, string[]>()
+  for (const id of new Set([...acctB.keys(), ...acctA.keys()])) {
+    const b = acctB.get(id), f = acctA.get(id)
+    if (!b || !f) continue
+    const pid = String(f.pid)
+    const why = w.personB(pid)?.archived !== true && w.personA(pid)?.archived === true ? 'archived' as const : undefined
+    for (const l of planLinesOf(pid, accessParts(accessIn(b, w.rowsB, today), accessIn(f, w.rowsA, today), why))) {
+      changed.add(`${pid}|${l.u}`)
+      let aud = audience.get(l.u)
+      if (!aud) { aud = adminLineAudience(l.u, today, w.rowsB); audience.set(l.u, aud) }
+      for (const to of aud) if (to !== pid && to !== self) owed.set(`${to}|${pid}|${l.u}`, { part: l.part, used: false })
+    }
+  }
+  let replayed: ((c: Change) => boolean) | null | undefined
+  for (const c of ch) {
+    const where = `${c.collection}/${c.id}`
+    if (replayed === undefined) replayed = env.origin === 'restore' && REPLAY ? REPLAY(env) : null
+    const isReplay = !!replayed && replayed(c)
+    const b: any = c.before, n: any = c.op === 'delete' ? null : c.after
+    /* (an Undo taking the step's line away: only with the change of the Plan it tells of) */
+    if (!n) {
+      const p: any = b && Array.isArray(b.what) ? b.what[0] : null
+      if (isReplay && p && p.k === 'sqplan' && changed.has(`${String(p.who)}|${String(b.u)}`)) continue
+      return `a squadron's Plan line taken away by no Undo of its change (${where})`
+    }
+    if (b != null && !isReplay) return `a squadron's Plan line not as its writer writes it (${where})`
+    if (!isReplay && (!shape(n, today) || self == null || String(n.by ?? '') !== self)) return `a squadron's Plan line not as its writer writes it (${where})`
+    if (isReplay && (lineMalformed(n) || n.what.length !== 1 || n.what[0].k !== 'sqplan')) return `a squadron's Plan line not as its writer writes it (${where})`
+    const p: any = n.what[0]
+    const o = owed.get(`${String(n.to)}|${String(p.who)}|${String(n.u)}`)
+    if (!o || o.used || !deepEqual(o.part, p)) return `a squadron's Plan line no change of its Plan owes (${where})`
+    o.used = true
   }
   return null
 }
@@ -4171,6 +4271,9 @@ function ownershipChecks(env: CommitEnvelope): string | null {
      check of the rows themselves, so a command refused for its own change keeps that refusal's words */
   const acctBad = acctLineViolation(env)
   if (acctBad) return acctBad
+  /* …AND A SQUADRON'S PLAN LINES (U2): beside his own, before ownsLine, for every actor (above) */
+  const planBad = planLineViolation(env)
+  if (planBad) return planBad
   /* 7e. an admin's bell lines and read records only for his own squadron's people (below) */
   const ownerBad = adminOwnerViolation(env)
   if (ownerBad) return ownerBad

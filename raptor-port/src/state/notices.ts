@@ -131,6 +131,23 @@ export type NoticePart =
      writer and the gate alike (state/acctlines.ts accessParts); the line carries no squadron stamp of its own (D5), so
      neither the bell's switch, the grey mark nor the rights rule touches it, and a move keeps it. */
   | { k: 'acct'; c: AcctChange; u?: string; num?: string; why?: 'moved' | 'archived' | 'master'; mv?: string }
+  /* A MAN'S PLAN OF A SQUADRON GIVEN OR ENDED, TOLD TO THAT SQUADRON'S ADMINS (Admin → Users across squadrons, step U2 —
+     his D2626: "its admins told on the bell"; D2654 E6: to everyone who already gets that squadron's admin lines, never the
+     one who pressed, the man himself only his own account's line; E9l: an ending the app makes is told, the line saying
+     why; drawn s2-33, s2-34). Not the man's own `acct` line: that kind is judged as his own (perms.ts acctLineViolation)
+     and goes only to him. About no input (`iid` is ''): `name` the man's callsign, `day` the day it took effect; stamped
+     with the squadron (`u` on the notice — the bell's switch, its number and its tap read it). `who` — the man; `c` — what
+     happened: `given` (a Plan given, or a View raised to Plan — the agent's reading), `ended` (taken, or lowered to View),
+     `member` (made a member by his own squadron's admin, his Plan dropping with it — D2250), `moved` (his move ended it,
+     told by the app with no one's name, `mv` the squadron he moved to). `num` — the squadron's number as it was written
+     (a line outlives its squadron's undoing, as an `acct` line does). Its words carry no other number: his home's is the
+     bell's to draw (the plan §21.3's contract). One body says which change owes which line, for the writer and the gate
+     alike (state/acctlines.ts planLinesOf). D2808's four endings (an archive, an overseas posting, a delete, made a master
+     admin) are the next step's (U2L) and write none today. */
+  | { k: 'sqplan'; who: string; c: PlanLineChange; num: string; mv?: string }
+
+/** what a squadron's Plan line says happened (above) */
+export type PlanLineChange = 'given' | 'ended' | 'member' | 'moved'
 
 /** what changed on his account: made an admin of his squadron or a member, suspended or enabled, given or losing View or
  *  Plan of another squadron, made or unmade a master admin */
@@ -827,8 +844,10 @@ export function noticeLeftBell(n: Pick<Notice, 'to' | 'at' | 'iid' | 'what' | 'f
   const acct = accountOfPid(to)
   return moves.some(d => !(acct && adminThen(acct, u, d)))
 }
-/* the squadron of an admin-kind line — a posting's, its take-back's, a holiday's (§16 D1′) — stamped with it; else null */
-const ADMIN_KINDS = new Set(['po', 'poback', 'pofail', 'oilhol'])
+/* the squadron of an admin-kind line — a posting's, its take-back's, a holiday's (§16 D1′), a man's Plan of it given or
+   ended (U2, D2626: its admins' line, so it leaves with the right that brought it, as these do) — stamped with it; else
+   null */
+const ADMIN_KINDS = new Set(['po', 'poback', 'pofail', 'oilhol', 'sqplan'])
 function adminLineSquadron(n: Pick<Notice, 'iid' | 'what'> & { u?: string }): string | null {
   const p: any = (n.what || [])[0]
   return !n.iid && p && ADMIN_KINDS.has(p.k) && typeof n.u === 'string' && n.u ? n.u : null
@@ -926,7 +945,9 @@ export function noticeLive(n: Notice): boolean {
   /* A POSTING'S LINE IS A SCHEDULER'S, as a holiday's is (below): it is addressed to an admin and its tap opens Admin →
      Users, so with his member view on (D292) it is neither listed nor counted, and is there again, read or unread as he
      left it, when he switches back */
-  if (w && (w.k === 'po' || w.k === 'poback' || w.k === 'pofail')) return mayEditSched()
+  /* …AND SO IS A SQUADRON'S PLAN LINE (U2 — D2626): its tap opens Admin → Users too (ui/topstate.ts), so the member view
+     hides it the same way (the agent's reading, named in U2's report) */
+  if (w && (w.k === 'po' || w.k === 'poback' || w.k === 'pofail' || w.k === 'sqplan')) return mayEditSched()
   const h = holOf(n)
   if (!h) return true
   /* A SCHEDULER'S LINE, AND ONLY WHILE HE IS ONE (the check's walk, E8 — 13 Oct 26; owner D785, with the reading told to
@@ -1054,6 +1075,27 @@ export function noticeAccount(to: string, by: string | null, part: Extract<Notic
 }
 /** is this one of his own account's lines (§7 item 6)? */
 export const isAcctNotice = (n: any): boolean => !!n && Array.isArray(n.what) && n.what.some((p: any) => p && p.k === 'acct')
+/** A MAN'S PLAN OF A SQUADRON GIVEN OR ENDED, TO ITS ADMINS (U2 — D2626, D2654 E6, E9l; NoticePart `sqplan`, above): one
+ *  line to each of `to` — the squadron's admin audience as the caller read it (accounts.ts adminLineAudience over the rows
+ *  BEFORE the change, the gate's own reading) — never to the one who made the change (`by`), never to the man himself (he
+ *  has his own account's line), never to a man no longer here. Pushed INSIDE the command that changed the right
+ *  (state/acctlines.ts tellAccess), so its Undo takes it back as any line; or by the app's own writer on a move's day
+ *  (`idOf` — a fixed id a reader, so a second load writes nothing). Answers how many were made. */
+export function noticePlanLine(to: readonly string[], by: string | null, part: Extract<NoticePart, { k: 'sqplan' }>, u: string, day: string,
+  at: number = Date.now(), idOf?: (reader: string) => string): number {
+  const x: any = PEOPLE[part.who]
+  let made = 0
+  for (const t of new Set(to.map(String))) {
+    if (!here(t) || (by != null && t === String(by)) || t === String(part.who)) continue
+    const id = idOf ? idOf(t) : mint(at)
+    if (NOTICES.some(n => n.id === id)) continue
+    NOTICES.push({ id, to: t, by, at, iid: '', name: x && x.cs ? String(x.cs) : part.who, day, what: [part], u })
+    made++
+  }
+  return made
+}
+/** is this a squadron's Plan line (U2)? */
+export const isPlanLine = (n: any): boolean => !!n && Array.isArray(n.what) && n.what.some((p: any) => p && p.k === 'sqplan')
 /** HIS SANS POSTING OR TICK CHANGED (D2391, with D1693, D1710): one line to him, pushed INSIDE the change's own command
  *  (leavewar/sansunfiled.ts sansTakeBack), by the admin who did it — never to him. `day` — the posting's date, or the day
  *  of the untick; `said` — what changed (`how`, the new date `to`, `back` for an untick's "taken back"). */
@@ -1276,6 +1318,9 @@ function partWords(p: NoticePart): string {
     case 'lwback': return 'taken back'
     case 'poback': return 'taken back'
     case 'acct': return acctWords(p)
+    /* (U2's four, his D2626, D2654 E6, E9l — the brief's §4, as drawn s2-33) */
+    case 'sqplan': return p.c === 'given' ? `Given Plan of ${p.num}` : p.c === 'member' ? `Plan of ${p.num} ended: made a member`
+      : p.c === 'moved' ? `Plan of ${p.num} ended: he moved to ${p.mv ?? ''}` : `Plan of ${p.num} ended`
     /* (only an untick line's "taken back" reads so — D1693; every other SANS line has its own words: sansBackWords) */
     case 'sansback': return 'taken back'
     /* (his own words, D2340, D2390 — the old "Planned, no availability filed" was not clear, D2342) */
@@ -1421,6 +1466,12 @@ export function noticeWords(n: Notice): { name: string; day: string; what: strin
      plain sentence, "You're SANS from Fri 17 Jul. / You're planned on Sat 18, Mon 20 Jul with nothing filed. Tap to file
      for availability."; a man with no SANS date ahead, "Your SANS availability is needed." over the same (D2394 2b);
      nobody named — the app worked it out */
+  /* A SQUADRON'S PLAN LINE (U2 — drawn s2-33): the man in bold, by his callsign of today, the day it took effect; what
+     happened, signed by who did it — the move's by nobody (the app ended it) */
+  if (w && w.k === 'sqplan') {
+    const p: any = PEOPLE[String(w.who)]
+    return { name: p && p.cs ? String(p.cs) : n.name, day: noticeDay(n.day), what: partWords(w), who: n.by ? cs(n.by) : '' }
+  }
   if (w && w.k === 'sansdue') {
     const from = typeof w.from === 'string' && ISO_DAY.test(w.from) ? w.from : ''
     return { name: from ? `You're SANS from ${noticeDay(from)}.` : 'Your SANS availability is needed.', day: '', what: partWords(w), who: '' }

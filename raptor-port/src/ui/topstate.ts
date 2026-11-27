@@ -126,6 +126,13 @@ const postLine: Opens = (n, where) => {
 }
 const warLine: Opens = (_n, where) => (where === 'no' ? null : 'leavewar')
 const sansLine: Opens = n => (sansDueOf(n) ? 'inputs' : null)
+/* A SQUADRON'S PLAN LINE (U2 — the plan §21.2 Q4, on the posting line's road; agreed with chat 204, this file's owner):
+   that squadron's Admin → Users at the man's row; a man with no row there (archived, deleted) opens nothing (D1691) */
+const planLine: Opens = (n, where) => {
+  if (where === 'no') return null
+  const p: any = (PEOPLE as any)[String(((n.what || [])[0] as any)?.who ?? '')]
+  return !p || p.deleted || p.archived || p.special ? null : 'admin'
+}
 export const LINE_KINDS: Record<string, Opens> = {
   /* an input's line, whatever its first part says (state/notices.ts noticeParts) */
   del: inputLine, in: inputLine, out: inputLine, cx: inputLine, uncx: inputLine, off: inputLine, on: inputLine,
@@ -136,6 +143,7 @@ export const LINE_KINDS: Record<string, Opens> = {
   po: postLine, poback: postLine, pofail: postLine,
   sansdue: sansLine, sansback: sansLine,
   acct: () => null,
+  sqplan: planLine,
 }
 const kindOf = (n: Notice): string => String(((n.what || [])[0] as any)?.k ?? '')
 /** the page a tap on `n` will open, or null (none, or a kind the table does not know) */
@@ -197,6 +205,18 @@ export function openNotice(n: Notice): void {
     if (!p || p.deleted || p.special) { notify(); return }
     setBellList(false)
     openAdminUsers({ person: po.who })
+    return
+  }
+  /* A SQUADRON'S PLAN LINE (U2 — the plan §21.2 Q4, as far as today's page allows, on the posting line's road above): its
+     squadron entered through the guard (enterForLine, above), then that squadron's Admin → Users at the man's row, ringed.
+     A man with no row there — archived, deleted — opens nothing: the line is only read, and stays as the record (D1691);
+     so is a line of a squadron his pages may never be. Q4's folds ("From other squadrons", "View only", the other
+     squadron's heading) are U3's and U5's, each added with its own step. */
+  if (kindOf(n) === 'sqplan') {
+    markNoticeRead(n.id)
+    if (!page) { notify(); return }
+    setBellList(false)
+    openAdminUsers({ person: String(((n.what || [])[0] as any).who) })
     return
   }
   /* HIS SANS DAYS WITH NOTHING FILED (owner D2338 — "a tap opening the SANS calendar"): the Inputs page's SANS tab, at the

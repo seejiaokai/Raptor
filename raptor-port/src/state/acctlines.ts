@@ -14,9 +14,9 @@ import { HOOKS, store } from '../engine/hooks'
 import { activeEnvelope } from '../command'
 import { PEOPLE } from '../engine/people'
 import { addDays } from './flyplan-model'
-import { ACCOUNTS_LIST, ACCOUNT_PFX, levelAcct, readAccounts, seedAccounts, type Account } from './accounts'
+import { ACCOUNTS_LIST, ACCOUNT_PFX, levelAcct, readAccounts, seedAccounts, adminLineAudience, type Account } from './accounts'
 import { me } from './perms'
-import { NOTICES, noticeAccount, type NoticePart, type AcctChange } from './notices'
+import { NOTICES, noticeAccount, noticePlanLine, type NoticePart, type AcctChange } from './notices'
 import { unitRows, unitRowsBefore, unitRowsAfter, todayIso, homeBefore, levelBefore, grantBefore, homeChangesOn } from './units'
 import type { UnitRows, GrantLevel } from './units-model'
 
@@ -104,6 +104,30 @@ export function movedParts(b: AccessNow | null, a: AccessNow | null): AcctPart[]
   for (const u of ids) out.push({ k: 'acct', c: b.lv.get(u) === 'admin' ? 'planEnd' : 'viewEnd', u, num: num(u), why: 'moved', mv })
   return out
 }
+/* ---- the squadron's own line, beside his (U2 — his D2626: "its admins told on the bell"; D2654 E6, E9l) ---- */
+export type PlanPart = Extract<NoticePart, { k: 'sqplan' }>
+/** WHICH OF HIS CHANGES OWE HIS SQUADRONS' ADMINS A LINE, from the very parts his own lines are written from — so the
+ *  writer and the gate (state/perms.ts planLineViolation) cannot disagree: a Plan given (a View raised to Plan too — the
+ *  agent's reading) "given"; a Plan ended or lowered to View "ended"; ended while the same change made him a member of his
+ *  own squadron (D2250) "member"; ended by his move "moved", with the squadron he moved to. D2808's four endings — an
+ *  archive's or an overseas posting's (`why: 'archived'`), being made a master admin (`why: 'master'`), a delete (no
+ *  account after: no parts) — are the next step's (U2L) and owe none today. Each `{ u, part }`: the squadron and its line. */
+export function planLinesOf(pid: string, parts: readonly AcctPart[]): Array<{ u: string; part: PlanPart }> {
+  const member = parts.some(p => p.c === 'member' && !p.why)
+  const out: Array<{ u: string; part: PlanPart }> = []
+  for (const p of parts) {
+    if (!p.u || (p.c !== 'plan' && p.c !== 'planEnd')) continue
+    const num = p.num ?? ''
+    if (p.c === 'plan') { out.push({ u: p.u, part: { k: 'sqplan', who: pid, c: 'given', num } }); continue }
+    if (p.why === 'moved') { out.push({ u: p.u, part: { k: 'sqplan', who: pid, c: 'moved', num, mv: p.mv ?? '' } }); continue }
+    if (p.why) continue
+    out.push({ u: p.u, part: { k: 'sqplan', who: pid, c: member ? 'member' : 'ended', num } })
+  }
+  return out
+}
+/** the fixed id of a move's line to one reader (D11): a second load, or a second browser, finds it and writes nothing */
+export const planMovedLineId = (accountId: string, day: string, u: string, reader: string): string => `sqplan:mv:${accountId}:${day}:${u}:${reader}`
+
 /** WHO SIGNS IT: the person who made the change — but the app, with no name, where the app did it: a right an archive
  *  ended, a move's, and a suspension an Overseas posting made (D2319: "Suspended" with no name). A right the mark ended is
  *  the person's who made him a master admin (D2396 (n): "… · Saber"). */
@@ -122,9 +146,15 @@ function storedAccounts(): Account[] {
   const rows = store.keys(ACCOUNT_PFX).map(k => store.get(k, null)).filter(Boolean)
   return rows.length ? readAccounts(rows) : seedAccounts()
 }
+/* (the squadron rows as the door found them, kept with what it took: a squadron's Plan line goes to that squadron's admins
+   as they stood BEFORE the change — the gate reads the same, perms.ts planLineViolation — so a change can never widen the
+   audience it writes to) */
+const WAS_ROWS = new WeakMap<object, UnitRows>()
 export function accessWas(): AccessWas {
   const rows = unitRows(), today = todayIso()
-  return new Map(storedAccounts().map(a => [a.id, { now: accessIn(a, rows, today), archived: !!(PEOPLE as any)[String(a.pid)]?.archived }]))
+  const was = new Map(storedAccounts().map(a => [a.id, { now: accessIn(a, rows, today), archived: !!(PEOPLE as any)[String(a.pid)]?.archived }]))
+  WAS_ROWS.set(was, rows)
+  return was
 }
 const TOLD = new WeakMap<object, Set<string>>()
 /** the lines the step owes, written INSIDE its command, after its writes: one a change, to the account's man, signed by
@@ -149,6 +179,16 @@ export function tellAccess(txn: any, was: AccessWas): number {
       const key = `${pid}|${JSON.stringify(p)}`
       if (told?.has(key)) continue
       if (noticeAccount(pid, acctByApp(p, a) ? null : by, p, today, at)) { wrote++; told?.add(key) }
+    }
+    /* …AND THE SQUADRON'S ADMINS, WHERE HIS PLAN OF IT WAS GIVEN OR ENDED (U2 — D2626, D2654 E6): one line each, to the
+       squadron's admin audience as it stood before the change, signed by whoever made it — never to him, nor to the one
+       who pressed (notices.ts noticePlanLine) */
+    for (const l of planLinesOf(pid, parts)) {
+      const key = `sq|${pid}|${l.u}|${l.part.c}`
+      if (told?.has(key)) continue
+      const audience = adminLineAudience(l.u, today, WAS_ROWS.get(was) ?? rows)
+      wrote += noticePlanLine(audience, by != null ? String(by) : null, l.part, l.u, today, at)
+      told?.add(key)
     }
   }
   if (enlisted) HOOKS.bellEnd()
@@ -209,16 +249,41 @@ export function movesOwed(today: string = todayIso()): Array<{ to: string; part:
   }
   return out
 }
+/** …AND THE SQUADRONS' ADMINS OWED A MOVE'S LINE (U2 — D2654 E9l: "Plan of 149 ended: he moved to 150"): for each Plan a
+ *  move ended in the same stretch movesOwed reads, a line to each of that squadron's admins on the move's day (its
+ *  audience then, over the rows as they stand — the man himself out of it), each its fixed id. The gate asks this one body
+ *  (state/perms.ts planLineViolation, `account.told`). */
+export function planMovesOwed(today: string = todayIso()): Array<{ to: string; u: string; part: PlanPart; day: string; id: string }> {
+  const rows = unitRows(), out: Array<{ to: string; u: string; part: PlanPart; day: string; id: string }> = []
+  const have = new Set(NOTICES.map(n => n.id))
+  for (const a of ACCOUNTS_LIST) {
+    const pid = String(a.pid)
+    const x: any = (PEOPLE as any)[pid]
+    if (!x || x.deleted || x.special) continue
+    for (const d of homeChangesOn(pid, addDays(today, -MOVES_TOLD_DAYS), today)) {
+      for (const l of planLinesOf(pid, movedParts(accessIn(a, rows, addDays(d, -1)), accessIn(a, rows, d)))) {
+        for (const to of adminLineAudience(l.u, d, rows)) {
+          const id = planMovedLineId(a.id, d, l.u, to)
+          if (to !== pid && !have.has(id)) out.push({ to, u: l.u, part: l.part, day: d, id })
+        }
+      }
+    }
+  }
+  return out
+}
 /** the app's own writer: the owed moves told, in a command of its own out of band (`account.told` — never part of the
  *  step of whoever's load woke it, undo/timeline.ts); installed by leavewar/sync.ts, which runs it at sign-in and at the
  *  midnight wake beside the posting pass. Writes nothing where nothing is owed. */
 export function writeMoveLines(commit: (type: string, apply: (txn: any) => void) => unknown, now: number = Date.now()): number {
   const owed = movesOwed()
-  if (!owed.length) return 0
+  /* (…and the squadrons' admins told of a Plan his move ended — U2, unsigned: the app ended it) */
+  const sq = planMovesOwed()
+  if (!owed.length && !sq.length) return 0
   let wrote = 0
   commit('account.told', (txn: any) => {
     HOOKS.bellEnlist(txn)
     for (const o of owed) if (noticeAccount(o.to, null, o.part, o.day, now, o.id)) wrote++
+    for (const o of sq) wrote += noticePlanLine([o.to], null, o.part, o.u, o.day, now, () => o.id)
     HOOKS.bellEnd()
   })
   return wrote
