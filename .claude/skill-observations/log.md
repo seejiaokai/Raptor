@@ -2129,3 +2129,16 @@ recheck every standing resource (locks, loops, write rights) after a restart, be
 **Issue:** a long "how it will look" card — today-versus-later pairs, who-may-edit detail, the agent's readings — lost the owner completely; he restated the whole point in three lines himself. Cut to one example, what each screen shows, one decision and one-line choices, every card was answered within minutes, and he asked for that shape every time.
 **Suggested improvement:** a short skill or checklist for question pages: title = the question; one named example with roles in brackets; what he sees (at most two pictures); A (recommended) and B, one line each; internals only when they ARE the choice; a self-test "could he say it back in three lines?" before publishing; a writer helper's brief carries the shape.
 **Principle:** a decision-maker answers what he can restate; detail that is not the choice belongs in the record, not the question.
+
+### Observation 1109: Drafting the words of a planned refusal exposed that the refusal itself broke a ruling
+
+**Status:** OPEN
+**Date:** 28 Nov 26
+**Session context:** multi-squadron build, section 1 (chat A211) — a plan (already read blind by two reviewers) added a refusal at Save; an Opus drafted its on-screen words and a fresh Fable reviewing them found the refusal's way out cut one record in two, against a ruling the plan cited; the refusal was withdrawn (numbered past 1108 on another branch)
+**Skill:** writing-plans
+**Type:** open-source
+**Phase/Area:** review of a plan that adds a refusal, a warning or any new message
+
+**Issue:** Two blind plan reviews passed a new refusal because each read the mechanism, not the sentence the user would read. Only when its words were written — "do X, then Y" — did a reviewer see that the remedy the words had to offer was forbidden by a standing rule.
+**Suggested improvement:** when a plan adds a refusal or warning, draft its words (with the way out it offers) inside the plan before the plan's reads, so the readers judge the remedy against the rules too.
+**Principle:** a refusal is only as sound as the way out it tells the user to take; write that sentence before reviewing the design.
