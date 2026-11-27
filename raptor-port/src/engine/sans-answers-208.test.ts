@@ -13,8 +13,11 @@ import { DAYS } from './data'
 import { INPUTS, inpId } from './inputs'
 import { validate, CHIP_LABEL } from './validate'
 import { slotBar } from './avail'
-import { SCHED } from './publish'
+import { SCHED, signOf, setDayApproved, notYetSigned } from './publish'
 import { flagLine } from '../state/dropflag'
+import { PEOPLE, setSansAhead, sansStart } from './people'
+import { CURWEEK } from './waves'
+import { dayIso } from './verid'
 
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)
@@ -64,6 +67,18 @@ describe('D2754 (Q2) — a sim is named OFT or AMT, and an end nobody typed says
   it('a row with no name and no times: "this OFT row (no times yet)"', () => {
     sim('oft', '')
     expect(one().msg).toBe('SANS: no availability filed for today. Planned on this OFT row (no times yet)')
+  })
+  it('a row its scheduler named "SIM" or "Sim" keeps its name (Astra\'s read, chat 208)', () => {
+    sim('oft', 'SIM', '10:00', '11:00')
+    expect(one().msg).toBe('SANS: no availability filed for today. Planned on OFT SIM 10:00–11:00')
+    DAYS[0].sims.oft[DAYS[0].sims.oft.length - 1].label = 'Sim'
+    expect(one().msg).toBe('SANS: no availability filed for today. Planned on OFT Sim 10:00–11:00')
+  })
+  it('a row named "SIM" and a blank row at the same times are two lines', () => {
+    sim('oft', 'SIM', '10:00', '11:00'); sim('oft', '', '10:00', '11:00')
+    expect(his().map((w: any) => w.msg).sort()).toEqual([
+      'SANS: no availability filed for today. Planned on OFT SIM 10:00–11:00',
+      'SANS: no availability filed for today. Planned on this OFT row 10:00–11:00'])
   })
   it('the "available … only" line ends the same way', () => {
     fileSans({ a: true }, { allday: false, s: 8 * 60, e: 12 * 60 })
@@ -121,6 +136,37 @@ describe('D2759 (Q9) — a morning or afternoon filing reads as filed', () => {
     fileSans({ f: true }, { allday: false, half: 'pm' })
     line('VL BFM', '08:00', '09:00')
     expect(flagLine(one(), 0)).toMatch(/ — SANS — available PM only$/)
+  })
+})
+
+/* THE NOTE'S WORDS ARE NEVER PART OF THE PUBLISHED RECORD (the fresh Opus read of chat 208, finding 1): the crew list's
+   words ride on the SANS line only for the note after a drop (D2753). They name a SANS posting's start while it has not
+   run ("SANS from Mon 13 Jul: …"), and the line itself does not — so, saved with a published day and compared, the posting
+   running on its date would turn that day "Not yet signed" with nothing on it changed and nothing to show why. */
+describe('D2753 — the note\'s words never change a published day', () => {
+  it('a published day stays signed when a SANS posting on it runs', () => {
+    const rid = Object.keys(PEOPLE).find((id) => { const p = PEOPLE[id]; return !p.san && !p.pers && !p.special && !p.archived && p.q === 'IP' })!
+    const keep = JSON.stringify(PEOPLE[rid])
+    const iso = dayIso(String(CURWEEK), 0)
+    try {
+      setSansAhead((p: any) => (p === PEOPLE[rid] ? iso : null))
+      const cs = DAYS[0].waves.length
+      DAYS[0].waves.push({ label: 'ZB', night: false, intimes: [], traffic: [], formations: [{ cs: 'VL', msn: 'BFM', to: '13:00', ld: '14:00', aircraft: [{ p: rid, w: '', area: '', rmks: '', opts: {} }] }] })
+      void cs
+      const before = validate().all.filter((w: any) => w.code === 'SANS_AVAIL' && (w.who || []).includes(rid))
+      expect(before.length, 'his posting has not run: he has SANS lines (the seed may plan him elsewhere that day too)').toBeGreaterThan(0)
+      expect(flagLine(before[0], 0), 'the note names his posting\'s start').toMatch(/ — SANS from .*: no availability filed$/)
+      const g = signOf(0); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'; setDayApproved(0, true)
+      validate()
+      expect(notYetSigned(0), 'clean at publish').toBe(false)
+      /* the posting runs on its date (leavewar/sync.ts runPoOutcomes: sansStart(…, apart) — and it is no longer ahead) */
+      sansStart(PEOPLE[rid], iso, true); setSansAhead(() => null)
+      validate()
+      expect(notYetSigned(0), 'nothing on the day changed').toBe(false)
+    } finally {
+      setSansAhead(null); setDayApproved(0, false)
+      Object.keys(PEOPLE[rid]).forEach((k) => delete PEOPLE[rid][k]); Object.assign(PEOPLE[rid], JSON.parse(keep))
+    }
   })
 })
 

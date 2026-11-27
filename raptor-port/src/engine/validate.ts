@@ -1575,11 +1575,18 @@ function validateCore(){
          kind, never the bare "Sim EP-9" that left OFT and AMT apart unsaid; an end nobody typed is marked "(end
          assumed)", as the flying lines say "landing assumed"; no times, "(no times yet)"; a row with no name, "this OFT
          row". The flying lines keep their words. */
-      const simWhat=()=>{ const nm=String(c.label==null?'':c.label).replace(/^Sim\b\s*/,'').trim();
-        const head=nm&&nm.toLowerCase()!=='sim'?`${SANS_LABEL[c.domain]} ${nm}`:`this ${SANS_LABEL[c.domain]} row`;
+      /* the row's own name is what follows the "Sim " the day's events put in front (events.ts) — a row its scheduler
+         named "SIM" or "Sim" keeps that name (Astra's read, chat 208: "this OFT row" is for a row with NO name, and two
+         rows at once, one named so and one blank, read as one line) */
+      const simWhat=()=>{ const nm=String(c.label==null?'':c.label).replace(/^Sim /,'').trim();
+        const head=nm?`${SANS_LABEL[c.domain]} ${nm}`:`this ${SANS_LABEL[c.domain]} row`;
         return noWin(c.s,c.en)?`${head} (no times yet)`:`${head} ${rng(c.s,c.en)}${c.ae?' (end assumed)':''}`; };
       /* `crewWhy`: the crew list's words for the same answer, which the note after the drop reads (owner D2753 —
-         dropflag.ts flagLine); the line itself keeps the event it names */
+         dropflag.ts flagLine); the line itself keeps the event it names. NEVER PART OF THE PUBLISHED RECORD: the words
+         name a SANS posting's start while it has not run, and the line does not, so the posting running on its date
+         would turn a published day "Not yet signed" with nothing to show (both blind reads of chat 208) — it is left
+         out where a day's warnings are saved at issue (HOOKS.issuedWarn, below) and where they are compared
+         (publish.ts warnSliceKey). */
       add('adv','SANS_AVAIL',[c.id],`SANS: ${reason}. Planned on ${c.domain==='fly'?flightTag(c.label,c.to):simWhat()}`,c.key,{sansDomain:c.domain,crewWhy:sansCrewWhy(g,p,sansIso,c.domain)});
     });
     /* Q (sims) — the sim box guards its FRONT seat like the jet (ground crew,
@@ -1973,7 +1980,8 @@ HOOKS.issuedWarn=(di:number)=>{ validate(); const s=warnSliceOf(OFFICIAL,di), g=
   const wo=warns.filter((x:any)=>x.off).map((x:any)=>hideKey(x));
   const out:any={...s,face};
   if(wo.length){ out.wo=wo; const f=sh.fz||{}; out.shown={sev:(f.sev||{})[+di]||null,chip:(f.chip||{})[+di]||null,dash:(f.dash||{})[+di]||null}; }
-  return JSON.parse(JSON.stringify(out)); };
+  /* a SANS line's note words (`crewWhy`, owner D2753) are the live drop note's only — never saved with the version */
+  return JSON.parse(JSON.stringify(out,(k:string,v:any)=>k==='crewWhy'?undefined:v)); };
 /* THE HIDE STATE OF A PUBLISHED DAY, FOR ITS PENDING COMPARISON (publish.ts hideDelta — D471): every warning of today's
    judgement of the ISSUED day that the WORKING copy also raises (a warning only the issued day has is the content
    comparison's business; one only the working copy has goes out with the edit that raised it — Fable F3), with whether

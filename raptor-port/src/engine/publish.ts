@@ -868,7 +868,9 @@ export function warnMsgKey(msg:any,cs:any):string{let m=String(msg||'');
 export function warnSliceKey(w:any,cs?:any):string{
   if(!w)return '';
   const names=cs||w.cs||warnCallsigns(w);
-  const warns=((w.byDay&&w.byDay.warns)||[]).map((x:any)=>stableJson({...x,msg:warnMsgKey(x.msg,names)})).sort();
+  /* a SANS line's note words (`crewWhy`, owner D2753) are never compared: they name a posting's start while it has not
+     run and the line does not, so a posting running would read as "warnings on this day changed" (chat 208's reads) */
+  const warns=((w.byDay&&w.byDay.warns)||[]).map((x:any)=>{ const {crewWhy,...r}=x; void crewWhy; return stableJson({...r,msg:warnMsgKey(r.msg,names)}); }).sort();
   /* the next-day crew-rest / run mark is not compared — it stays live (owner, D183) */
   return stableJson({warns,sev:w.sev||{},chip:w.chip||{},dash:w.dash||{}});}
 const WKEY=new WeakMap<any,string>();
