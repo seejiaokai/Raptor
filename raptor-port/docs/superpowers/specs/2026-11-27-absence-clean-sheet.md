@@ -79,7 +79,8 @@ scheduler chooses away or attending, or rejects it.
    together. High risk.
 4. **A bid and its leave one record.** Changes no page a member knows. High risk (balances, OIL).
 5. **Availability**: Mine, Squadron, Approvals beside manning; the Leave War and Inputs tabs fold in. High risk.
-6. **The schedule's To review** in place of Personal Inputs; Reject on the item's own row.
+6. **The schedule's To review** in place of Personal Inputs (his D2883: yes, named "To review", holding what is not
+   placed — rejected inputs, each acceptable again); Reject on the item's own row.
 Each step drawn first and given a full check with a walk.
 
 **Stopping points:** after step 3 (the consistency design — one window, one set of rights, a group one thing) the
