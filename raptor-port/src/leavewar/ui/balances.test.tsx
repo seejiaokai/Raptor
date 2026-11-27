@@ -15,8 +15,9 @@ import { NOTICES } from '../../state/notices'
 import { noticeSeenLoad } from '../../state/noticeseen'
 import {
   balancesLocked, getState, gradeOf, gradeDaysNow, gradeHolders, initStore as lwInitStore, leaveFiguresOf, liveGrades,
-  lwHistInit, setBalanceLock, setPeople, setPersonGrade,
+  lwHistInit, setBalanceLock, setPeople, setPersonGrade, setTypedBalance,
 } from '../state/store'
+import { BAL_KINDS } from '../engine/leaveyear'
 import { memoryBackend } from '../state/storage'
 import { setMemberTodayForTests } from '../engine'
 import { projectPeople } from '../state/raptorRoster'
@@ -72,6 +73,11 @@ beforeEach(() => {
   HOOKS.toast = () => {}
   setApprMode('off'); setBalancesUp(false); takeLwAsk()
   saber()
+  /* Ranger's figures typed as 0, every kind, before each test, so the boxes these tests type in show the 0 they were written
+     against — a balance never typed stands empty and reads "Not typed" (D2746), tested on Saber's row, never typed, in
+     '[LW-POSTIN-BALANCE]' below. Typed outside the test's own Undo list. */
+  for (const k of BAL_KINDS) setTypedBalance('bane', k, 0, k === 'LVE' ? 0 : undefined)
+  _resetTimeline(); lwHistInit(); installGlobalUndo()
 })
 afterEach(() => { HOOKS.toast = toast; _resetTimeline(); resetSession(null); setMemberTodayForTests('2000-01-01'); setBalancesUp(false); setApprMode('off') })
 
@@ -911,5 +917,100 @@ describe('the grade list stays under its box when the keys have slid the page (h
       fireEvent.click(screen.getByTestId('bal-grade-bane'))
       expect(parseFloat(screen.getByTestId('bal-grade-list').style.top)).toBe(334)
     } finally { spy.mockRestore() }
+  })
+})
+
+/* THE POSTED-IN MAN'S BALANCE ([LW-POSTIN-BALANCE]) on the Balances page: "OFFICIAL BAL" (D2810); the one line once above
+   the rows where a balance can be typed (D2749, D2812); "Not typed" until a figure is (D2746) — Saber (`stiff`) is never
+   typed here. Drawn: docs/img/handpass/2026-11-26-lw-postin-balance/marked/q16-final-*.png, q11-balances.png. */
+describe('[LW-POSTIN-BALANCE] the Balances page', () => {
+  const POSTIN = 'Only leave after post-in is deducted.'
+  it('D2810: the heading reads OFFICIAL BAL, never APP BAL; the box is named so for a screen reader', () => {
+    const { container } = render(<BalancesPage />)
+    expect(container.textContent).toContain('OFFICIAL BAL')
+    expect(container.textContent).not.toMatch(/APP BAL/i)
+    expect(box('bal-LVE-bane').getAttribute('aria-label')).toMatch(/LVE Official bal$/)
+  })
+  it('D2810: on a phone the heading stands on two lines, OFFICIAL over BAL (the drawing: one line runs into CARRIED)', () => {
+    const undo = asPhone()
+    try {
+      const { container } = render(<BalancesPage />)
+      const h = [...container.querySelectorAll('.bp-cols span')].find(s => s.textContent === 'OFFICIALBAL')
+      expect(h, 'the heading, its two lines').toBeTruthy()
+      expect(h!.querySelector('br')).toBeTruthy()
+    } finally { undo() }
+  })
+  /* D2822 (27 Nov 26): on a desktop the line sits close above the headings with the phone's small gap — in the heading
+     block's empty top-left corner, over NAME and GRADE, so it stays with the headings and leaves no tall gap; a phone keeps
+     it above its one heading row */
+  it('D2749, D2822: an admin sees the one line once, in the Balances view only — on a desktop in the headings\' top-left corner', () => {
+    render(<BalancesPage />)
+    const lines = screen.getAllByTestId('bal-postin')
+    expect(lines).toHaveLength(1)
+    expect(lines[0]!.textContent).toBe(POSTIN)
+    const corner = lines[0]!.closest('th')
+    expect(corner, 'inside the heading block').toBeTruthy()
+    expect(corner!.closest('tr')!.className).toBe('h1')
+    expect(corner!.getAttribute('colspan')).toBe('2')
+    expect(corner!.closest('tr')!.firstElementChild).toBe(corner)
+    act(() => { setBalanceLock(true) })
+    expect(screen.getByTestId('bal-postin').textContent).toBe(POSTIN)
+    fireEvent.click(screen.getByTestId('bal-view-taken'))
+    expect(screen.queryByTestId('bal-postin')).toBeNull()
+  })
+  it('D2749, D2822: on a phone the one line stands above the heading row, outside the list', () => {
+    const undo = asPhone()
+    try {
+      render(<BalancesPage />)
+      const lines = screen.getAllByTestId('bal-postin')
+      expect(lines).toHaveLength(1)
+      const scroll = screen.getByTestId('bal-scroll')
+      expect(lines[0]!.compareDocumentPosition(scroll) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+      expect(scroll.contains(lines[0]!)).toBe(false)
+    } finally { undo() }
+  })
+  it('D2749: a member sees it while unlocked (his own row takes a figure), never once locked', () => {
+    ranger()
+    render(<BalancesPage />)
+    expect(screen.getByTestId('bal-postin').textContent).toBe(POSTIN)
+    act(() => { saber(); setBalanceLock(true); ranger() })
+    expect(screen.queryByTestId('bal-postin')).toBeNull()
+  })
+  /* D2820 (27 Nov 26, his answer "a" to question 28 — narrows D2746 for this page only): no words here — the empty boxes keep
+     the amber dashed edge, War bal's place an empty amber dashed outline, named "Not typed" on hover and to a screen reader;
+     his person window, My leave and Approvals keep the words (personwindow.test.tsx) */
+  it('D2746, D2820: a row never typed — its boxes empty with the amber dashed edge, War bal an empty amber outline, never 0 and no words', () => {
+    render(<BalancesPage />)
+    expect(lve('stiff').notTyped).toBe(true)
+    expect(box('bal-LVE-stiff').value).toBe('')
+    expect(box('bal-LVE-stiff').className).toContain('nt')
+    expect(box('bal-cf-stiff').value).toBe('')
+    expect(screen.getByTestId('bal-war-stiff').textContent).toBe('')
+    expect(screen.getByTestId('bal-war-stiff').querySelector('.bp-nto')?.getAttribute('aria-label')).toBe('Not typed')
+    expect(screen.getByTestId('bal-war-stiff').querySelector('.bp-nto')?.getAttribute('title')).toBeNull()   // D2823: no pointing hint
+    expect(screen.getByTestId('bal-row-stiff').textContent).not.toContain('Not typed')
+    expect(screen.getByTestId('bal-war-stiff').className).not.toContain('neg')
+    for (const k of ['CCL', 'FCL', 'PL', 'EL', 'CL']) expect(box(`bal-${k}-stiff`).value).toBe('')
+    /* a row typed is untouched */
+    expect(box('bal-LVE-bane').value).toBe('0')
+    expect(box('bal-LVE-bane').className).not.toContain('nt')
+  })
+  it('D2746: a figure typed in the empty box saves and the row reads it', () => {
+    render(<BalancesPage />)
+    fireEvent.keyDown(typeIn('bal-LVE-stiff', '24'), { key: 'Enter' })
+    expect([lve('stiff').notTyped, lve('stiff').app]).toEqual([false, 24])
+    expect(box('bal-LVE-stiff').value).toBe('24')
+    expect(screen.getByTestId('bal-war-stiff').textContent).toBe('24')
+  })
+  it('D2746, D2820: a member reads another man’s figure never typed as an empty amber outline, his War bal the same, no words', () => {
+    ranger()
+    render(<BalancesPage />)
+    const row = screen.getByTestId('bal-row-stiff')
+    expect(row.querySelector('.bp-ro.nt')?.textContent).toBe('')
+    expect(row.querySelector('.bp-ro.nt')?.getAttribute('aria-label')).toBe('Not typed')   // the words review, D2441
+    expect(row.querySelector('.bp-ro.nt')?.getAttribute('title')).toBeNull()   // D2823: no pointing hint
+    expect(screen.getByTestId('bal-war-stiff').textContent).toBe('')
+    expect(screen.getByTestId('bal-war-stiff').querySelector('.bp-nto')?.getAttribute('aria-label')).toBe('Not typed')
+    expect(row.textContent).not.toContain('Not typed')
   })
 })

@@ -12650,13 +12650,22 @@ superseded sections above). Code: `leavewar/ui/BalancesPage.tsx` (the page, `Fig
   whose stints miss the period, are not listed. Each name is the schedule's own puck (D1476, D1482 — `sync.ts puckHtml`, the one
   Approvals draws, not `NamePuck`); a tap on a name opens his person window (D1148; reading 23 — not drawn).
 - **The Balances view's columns (D1482, D1486, D1487):** GRADE · AUTO + LVE ON 1 JAN (a box with the grade and its "+36", its list
-  of grades with their days and "No grade" in amber dashed; a member sees his grade as words with its "+36"); LVE: APP BAL (box —
-  to read OFFICIAL BAL here and "Official bal" in the person window, with the one line "Only leave after post-in is
-  deducted." where a balance can be typed: D2810, D2749, filed as [LW-POSTIN-BALANCE]),
+  of grades with their days and "No grade" in amber dashed; a member sees his grade as words with its "+36"); LVE: OFFICIAL BAL
+  (box — "App bal" until D2810; on a phone its heading two lines, OFFICIAL over BAL, as drawn — one line ran into CARRIED),
   INCL. CARRIED FWD (box), PENDING (amber), WAR BAL (bold); OIL read only, "0 ›" opening his OIL tracker on his row (D1255 —
   the `lwnav` ask `{ kind: 'oil', id }`); OTHER LEAVE: CCL, FCL, PL, EL, CL — a box each, the pending figure in amber after it,
   every box keeping its column. Every figure is the store's one engine (`leaveFiguresOf`), so this page, the person window, the
   grid, My leave and Approvals cannot disagree (`docs/feature-impact.md` §One balance engine).
+- **The posted-in man's balance ([LW-POSTIN-BALANCE], built 27 Nov 26 — D2746, D2749, D2810, D2812):** in the Balances view,
+  whenever a box is drawn on any row (an admin always; a member while unlocked), ONE grey line stands once above the rows,
+  "Only leave after post-in is deducted." (`bal-postin`; 13px, as drawn `docs/img/handpass/2026-11-26-lw-postin-balance/
+  marked/q16-final-*.png`) — no other instruction, no fold, and no line naming where or when a figure was typed (D2812). A kind
+  never typed (`KindFigures.notTyped` — no typed row and no old opening) stands EMPTY in its box with "No grade"'s dashed amber
+  edge (`.bp-bx.nt`; any figure typed there saves, a 0 too), read only it is an amber "–", and War bal reads "Not typed" in
+  amber (`.bp-nt`), never 0 or a figure below it (D2746, drawn `marked/q11-balances.png`); carried forward typed before any
+  Official bal is refused at its box, "Type the Official bal first" (`balancefigs.ts CF_FIRST`); the below-zero question waits
+  for a figure (`belowzero.ts goesBelow`). The grid's figure beside the name, My leave, Approvals' LVE BAL and the leave
+  buttons' "left" still show the figure counted from 0 — to be drawn first (D1625), filed under the item.
 - **A BOX ONLY WHERE THE VIEWER MAY TYPE — `balanceProblem` is the ONE rule** (`state/store.ts`): an admin any row; a member his own
   row while unlocked (D1242, D1487). The page asks it only to decide whether to draw a box; the store asks it again when the box
   SAVES (§Lock for members). A box saves on **Enter or on leaving it, never on each key**; **Escape puts the old figure back** and
@@ -12664,7 +12673,7 @@ superseded sections above). Code: `leavewar/ui/BalancesPage.tsx` (the page, `Fig
   the person, kind and shown figure are taken when the box takes the keyboard, so typing in one man's box and then pressing
   another name, Days taken, Lock, Grades… or the top bar's Undo / Redo still saves to the first man (the scenario designer's
   ★17); a box taken off the screen with figures in it (Days taken redraws the row) saves them as it goes, and a refusal there
-  is said in a passing note ("Ranger LVE App bal not saved: Locked by admin" — D850). **`inputMode="text"`**, as the war's
+  is said in a passing note ("Blocked: Ranger LVE Official bal. Locked by admin." — D850, D1667, D2810). **`inputMode="text"`**, as the war's
   Required and Available point boxes (★20): an iPhone's decimal keypad has no minus key and a figure below zero may be typed;
   "-2", "−2", "2.5" and "+3" are read, anything else shows `balanceProblem`'s words at the box. A save of either LVE box writes
   the whole row afresh (the spec §1.1); the door is `saveTypedFigure`, shared with the person window. Whether his iPhone shows a
@@ -12733,7 +12742,7 @@ superseded sections above). Code: `leavewar/ui/BalancesPage.tsx` (the page, `Fig
 
 **On a phone the carried line's date stands on its own line (D1520, 29 Oct 26 — his "a"):** under "incl. [n] carried fwd", in the
 same grey, so it never runs past the LVE tile (his iPhone picture: it ran into OIL); a desktop keeps the one line "incl. [n]
-carried fwd · till <date>". On a phone App bal · Pending · War bal spread across the tile, War bal ending at its right edge (the
+carried fwd · till <date>". On a phone Official bal · Pending · War bal spread across the tile, War bal ending at its right edge (the
 agent's fault fix with D1519's job — "17.5" and "−12.5" had run under OIL). `PersonWindow.tsx` (`r17-till`), `personwindow.css`;
 pinned in `e2e/leavewar.spec.ts`.
 
@@ -12743,8 +12752,11 @@ Built to `docs/mock/lw-overhaul/full-m5a-person.mjs` (round 20d's tiles: `m5a-p2
 `ui/gridfigures.test.tsx`. It REPLACES the old figures sheet (`PersonFiguresSheet`) and the breakdown sheet
 (`FigureBreakdownSheet`) — `CounterSheet.tsx` is deleted.
 - **The tiles:** the heading — his name, ✕; then BALANCES with the padlock and "Locked for members" (admin) or "Locked by admin"
-  (member) while locked. LVE (its box, "3 taken"; App bal · Pending · War bal on one line, the pending figure amber; "incl. [2]
-  carried fwd · till 31 Dec" under App bal); OIL ("0 ›", opening his OIL tracker — D1209, D1008; never a box); MED (days this year
+  (member) while locked. LVE (its box, "3 taken"; Official bal · Pending · War bal on one line, the pending figure amber — "App
+  bal" until D2810; "incl. [2] carried fwd · till 31 Dec" under Official bal; where a box is drawn, the one line "Only leave
+  after post-in is deducted." last in the tile, its own row — D2749, D2812, `pw-postin`; a kind never typed: the box empty
+  with the dashed amber edge, an amber "–" read only, War bal "Not typed" in amber, a small tile's "War bal" line "–" —
+  D2746, [LW-POSTIN-BALANCE]); OIL ("0 ›", opening his OIL tracker — D1209, D1008; never a box); MED (days this year
   up to today); then CCL, FCL, PL, EL, CL each a box and, only while its Pending is not 0, "Pending −1 / War bal 2" as a little
   list (D1253). **Every kind shows, whatever `figureHidden` says.** The boxes are the Balances page's `FigBox`, the same rules
   (`balanceProblem`, Enter or leaving, Escape, the man taken at focus, `inputMode="text"`), saved through `saveTypedFigure`; an

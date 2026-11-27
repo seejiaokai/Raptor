@@ -1,0 +1,125 @@
+[
+ {
+  "id": "F0 fixture: three men on the Balances page",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Buzzard=pmwxvtdiao50ahq Lynx=pmwxvtg1xcvda41 Pelican=pmwxvticsp1bun7",
+  "pics": []
+ },
+ {
+  "id": "F1 fixture: Pelican 24 typed",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "War bal 24",
+  "pics": []
+ },
+ {
+  "id": "B1a heading OFFICIAL over BAL",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "heading \"OFFICIAL / BAL\" [137,232.1 40x22]; next heading \"CARRIED\" from x=196; all: NAME · GRADE | OFFICIAL / BAL | CARRIED | PENDING / APPROVAL | WAR BAL | OIL | CCL | FCL | PL | EL | CL",
+  "pics": [
+   "01-bal-admin-402"
+  ]
+ },
+ {
+  "id": "B1b \"App bal\" nowhere",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "shown: []; names: []",
+  "pics": [
+   "01-bal-admin-402"
+  ]
+ },
+ {
+  "id": "B1c the one line above the rows",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "1 line(s) \"Only leave after post-in is deducted.\" 13px rgb(154, 164, 178) [16,203.3 370x18.8]; view switch foot y=183.8; headings top y=230.1 (one expected)",
+  "pics": [
+   "01-bal-admin-402"
+  ]
+ },
+ {
+  "id": "B1d rows with five empty amber boxes",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "53 rows drawn; 36 show all five of CCL·FCL·PL·EL·CL never typed (empty dashed boxes); 17 do not (AnvilIP, CinchIP, RangerIP, DrifterA, RidgeC, BasherIW, CometIP, AceA, TorchC, DieselD, RelayIW, StaticIW, CinderB, RuneB, FableC, VectorC, WispC); LVE never typed: PistonIP, ForgeIP, LedgerIW, GhostC, BuzzardO, LynxO, TalismanO, Cotter",
+  "pics": [
+   "01-bal-admin-402"
+  ]
+ },
+ {
+  "id": "B1e \"Not typed\" fits the WAR BAL column",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "WAR BAL column x 314–369; 0 of 8 spill: PistonIP: words x 331.8–364, OIL figure from x=376, 12px rgb(242, 200, 121) · ForgeIP: words x 331.8–364, OIL figure from x=376, 12px rgb(242, 200, 121) · LedgerIW: words x 331.8–364, OIL figure from x=376, 12px rgb(242, 200, 121)",
+  "pics": [
+   "01-bal-admin-402",
+   "01-bal-admin-402-nt-zoom"
+  ]
+ },
+ {
+  "id": "B1g nothing shows through the pinned headings",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "list scrolled bp-hs 0→360; rows found under the headings/line: none; line-to-headings gap 8px",
+  "pics": [
+   "01b-bal-admin-402-scrolled"
+  ]
+ },
+ {
+  "id": "B2a \"Not typed\" in the LVE tile",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "War bal reads \"Not typed\" 16px 800 colour rgb(242, 200, 121); words [145.3,346.8 79x21] inside tile [31,290.8 202.4x152.9]; OIL tile starts x=237.4; cut=false",
+  "pics": [
+   "02-pw-buzzard-402"
+  ]
+ },
+ {
+  "id": "B2b label \"Official bal\"",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "labels in the LVE tile: [\"Official bal\",\"Pending\",\"War bal\"]",
+  "pics": [
+   "02-pw-buzzard-402"
+  ]
+ },
+ {
+  "id": "B2c both LVE boxes empty, dashed amber",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Official bal box \"\" edge dashed rgba(242, 200, 121, 0.8); carried box \"\" edge dashed rgba(242, 200, 121, 0.8)",
+  "pics": [
+   "02-pw-buzzard-402"
+  ]
+ },
+ {
+  "id": "B2d the one line under the LVE box",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "1 line(s): \"Only leave after post-in is deducted.\" 11px rgb(138, 150, 163), words [40,419.8 172.8x15], tile [31,290.8 202.4x152.9], carried box foot y=393.8",
+  "pics": [
+   "02-pw-buzzard-402"
+  ]
+ },
+ {
+  "id": "B2e the small tiles' boxes never typed (CCL FCL PL EL CL)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "CCL \"\" dashed inTile=true · FCL \"\" dashed inTile=true · PL \"\" dashed inTile=true · EL \"\" dashed inTile=true · CL \"\" dashed inTile=true",
+  "pics": [
+   "02-pw-buzzard-402"
+  ]
+ },
+ {
+  "id": "B2f the window inside the screen",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "window [10,198.3 382x477.4] on a 402-wide screen",
+  "pics": [
+   "02-pw-buzzard-402"
+  ]
+ }
+]
