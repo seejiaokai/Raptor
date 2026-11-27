@@ -940,17 +940,34 @@ describe('[LW-POSTIN-BALANCE] the Balances page', () => {
       expect(h!.querySelector('br')).toBeTruthy()
     } finally { undo() }
   })
-  it('D2749: an admin sees the one line once, above the rows, in the Balances view only', () => {
+  /* D2822 (27 Nov 26): on a desktop the line sits close above the headings with the phone's small gap — in the heading
+     block's empty top-left corner, over NAME and GRADE, so it stays with the headings and leaves no tall gap; a phone keeps
+     it above its one heading row */
+  it('D2749, D2822: an admin sees the one line once, in the Balances view only — on a desktop in the headings\' top-left corner', () => {
     render(<BalancesPage />)
     const lines = screen.getAllByTestId('bal-postin')
     expect(lines).toHaveLength(1)
     expect(lines[0]!.textContent).toBe(POSTIN)
-    const scroll = screen.getByTestId('bal-scroll')
-    expect(lines[0]!.compareDocumentPosition(scroll) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    const corner = lines[0]!.closest('th')
+    expect(corner, 'inside the heading block').toBeTruthy()
+    expect(corner!.closest('tr')!.className).toBe('h1')
+    expect(corner!.getAttribute('colspan')).toBe('2')
+    expect(corner!.closest('tr')!.firstElementChild).toBe(corner)
     act(() => { setBalanceLock(true) })
     expect(screen.getByTestId('bal-postin').textContent).toBe(POSTIN)
     fireEvent.click(screen.getByTestId('bal-view-taken'))
     expect(screen.queryByTestId('bal-postin')).toBeNull()
+  })
+  it('D2749, D2822: on a phone the one line stands above the heading row, outside the list', () => {
+    const undo = asPhone()
+    try {
+      render(<BalancesPage />)
+      const lines = screen.getAllByTestId('bal-postin')
+      expect(lines).toHaveLength(1)
+      const scroll = screen.getByTestId('bal-scroll')
+      expect(lines[0]!.compareDocumentPosition(scroll) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+      expect(scroll.contains(lines[0]!)).toBe(false)
+    } finally { undo() }
   })
   it('D2749: a member sees it while unlocked (his own row takes a figure), never once locked', () => {
     ranger()

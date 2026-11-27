@@ -169,3 +169,27 @@ Both readers' negatives: the post-in rule in every order, the figure cache's key
 | My leave prints "-1" with a hyphen | walker b | filed — outside this change |
 
 Walk: FULL — two Opus walkers on one frozen build, desktop 1536 at 1.25 (70 checks: 62 PASS, 0 FAIL of the app, 7 RECORD, 1 NOT WALKED, held by a test) and phone 402 / 375 (73 lines: 49 PASS, 9 FAIL from 2 faults, 15 RECORD); 4 faults (2 on the phone, 2 drawing differences) fixed and re-walked PASS; after the code reads' one fix, the first-figure steps re-walked on the rebuilt app at both sizes, 15 PASS; pictures `docs/img/handpass/2026-11-27-lw-postin-build/` (a, b and their re-walk folders).
+
+## After his look began — D2820 and D2822 (27 Nov 26, chat 208)
+
+Two answers of his, through coordinator chat 206, built red first on this branch (tier WALK: one screen, the Balances page;
+nothing saved changes; his person window, My leave and Approvals untouched and checked).
+- **D2820 (question 28, "a"):** on the Balances page a balance never typed shows no words and no "–" — a read-only figure's
+  place and War bal's place an empty amber dashed outline the size of the box in that column (War bal 40 × 28 on a desktop,
+  44 × 30 on a phone, where 44 widened its column), named "Not typed" on hover and to a screen reader. Drawn first:
+  `docs/img/handpass/2026-11-27-lw-postin-q28/{desk,phone}-{today,A}-{admin,member}.png` (`scripts/handpass/lw-postin-q28-draw.mjs`).
+- **D2822:** on a desktop "Only leave after post-in is deducted." sat about 60px above NAME and GRADE, the two heading rows
+  between; it now stands in the heading block's empty top-left corner, its foot 19px above NAME's words (the phone: 20px
+  above NAME · GRADE), set at NAME's left, the list 33px higher. Measured before and after:
+  `docs/img/handpass/2026-11-27-lw-postin-gap/{desk,phone}-{before,after}.png` (`scripts/handpass/lw-postin-gap-measure.mjs`).
+  The first build cut the line's letter tails under the second heading row; fixed (the corner drawn above it), re-measured.
+- **Re-walk** (`scripts/handpass/lw-postin-q28-walk.mjs`, `q28-walk.json`): desktop and phone, an admin and a member looking at
+  Pelican's row (added on Admin → Users, nothing typed) — 28 checks, 28 PASS, no page or console errors: no "Not typed" on the
+  page, each outline as drawn, each read-only outline the width of the admin's box in its column, the row's height unchanged,
+  his person window still "Not typed". Beside the drawing: the phone pictures pixel-identical to A; the desktop rows the same
+  by eye, the pictures 3px taller by the moved line (`{desk,phone}-build-*.png` beside `*-A-*.png`).
+- Unit: the Balances page's 76 tests pass (three rewritten for D2820 and D2822, one added for the phone's line — each failed
+  first). Code check: no new finding.
+
+Walk (D2820, D2822): WALK — the host, one script at desktop 1536 and phone 402, admin and member: 28 PASS, 0 FAIL; the gap
+measured before and after at both sizes; checked beside the drawing of A.

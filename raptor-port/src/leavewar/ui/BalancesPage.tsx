@@ -768,6 +768,14 @@ export function BalancesPage() {
     </div>
   )
 
+  /* THE ONE LINE WHERE A BALANCE CAN BE TYPED (D2749, D2748, settled by D2812): once above the rows, phone and desktop,
+     in the Balances view, whenever a box is drawn on any row — an admin always, a member while unlocked (his own row);
+     no other instruction and no fold. Drawn: docs/img/handpass/2026-11-26-lw-postin-balance/marked/q16-final-*.png.
+     ON A DESKTOP (his D2822, 27 Nov 26 — "the desktop gap is big, the phone's is right"): it sits close above the
+     headings with the phone's small gap, in the heading block's empty top-left corner over NAME and GRADE — above the
+     table it stood ~60px over those two, the block's two heading rows between; a phone keeps it above its one row */
+  const postin = view === 'bal' && groups.length > 0 && [...rows.values()].some(r => r.boxes)
+    ? <div className="bp-pi" data-testid="bal-postin">Only leave after post-in is deducted.</div> : null
   const span = view === 'bal' ? 13 : DAYS_TAKEN_COLS.length + 3
   const takenHead = `DAYS TAKEN IN ${period.name}`
   const body = phone ? (
@@ -793,7 +801,7 @@ export function BalancesPage() {
         <thead>
           {view === 'bal' ? (
             <>
-              <tr className="h1"><th className="l" colSpan={2} /><th className="span sep" colSpan={4}>LVE</th><th className="sep" /><th className="span sep" colSpan={5}>OTHER LEAVE</th><th /></tr>
+              <tr className="h1"><th className="l pic" colSpan={2}>{postin}</th><th className="span sep" colSpan={4}>LVE</th><th className="sep" /><th className="span sep" colSpan={5}>OTHER LEAVE</th><th /></tr>
               <tr className="h2">
                 <th className="l">NAME</th><th className="l">GRADE · AUTO + LVE ON 1 JAN</th>
                 <th className="sep w-app">OFFICIAL BAL</th><th className="w-cf">INCL. CARRIED FWD</th><th className="w-pd">PENDING APPROVAL</th><th className="w-war">WAR BAL</th><th className="sep w-oil">OIL</th>
@@ -828,10 +836,8 @@ export function BalancesPage() {
         {bar}
         {phone && lockedWords}
         {phone && (searching || q) && <div className="bp-srchline">{searchBox}</div>}
-        {/* THE ONE LINE WHERE A BALANCE CAN BE TYPED (D2749, D2748, settled by D2812): once above the rows, phone and desktop,
-            in the Balances view, whenever a box is drawn on any row — an admin always, a member while unlocked (his own row);
-            no other instruction and no fold. Drawn: docs/img/handpass/2026-11-26-lw-postin-balance/marked/q16-final-*.png */}
-        {view === 'bal' && groups.length > 0 && [...rows.values()].some(r => r.boxes) && <div className="bp-pi" data-testid="bal-postin">Only leave after post-in is deducted.</div>}
+        {/* the one line (D2749 — `postin` above); on a desktop it stands in the headings' corner (D2822) */}
+        {phone && postin}
         {groups.length === 0 ? <div className="bp-empty" role="status">{q.trim() ? 'No one by that name on the Leave War' : 'No one on the Leave War in this period'}</div> : body}
         <div className="bp-cutf" aria-hidden="true" />
       </div>
