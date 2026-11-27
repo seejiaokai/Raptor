@@ -9,15 +9,18 @@
 import { describe, it, expect, afterEach, vi } from 'vitest'
 import { act, cleanup, render, fireEvent } from '@testing-library/react'
 import { withThird, third, signInAs, PID, ACCT, at, pastMidnight, moveMan } from '../test-support/msq-world'
-import { commitNewInput } from './inputedit'
+import { commitNewInput, askOilIfPending } from './inputedit'
 import { inputsPageRows } from './InputsPage'
 import { InputEditor } from './InputWindow'
-import { INPEDIT, OILASK, OILLIST, setInpEdit, setOilList } from './pops'
+import { INPEDIT, OILASK, OILLIST, setInpEdit, setOilList, setOilAsk } from './pops'
 import { INPUTS, inputSquadrons, idsOf } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { UNIT } from '../engine/unitview'
 import { notify, writeInputsBatch } from '../state/store'
-import { pageUnit, ownPageMayBe, myUnit } from '../state/perms'
+import { pageUnit, ownPageMayBe, myUnit, me } from '../state/perms'
+import { inputSqn, letOpenOn } from '../state/inputsqn'
+import { globalUndo, globalRedo } from '../undo/timeline'
+import { fileStraight } from '../leavewar/state/store'
 import { enterForLine } from '../state/belltap'
 import { saveAccess } from '../state/accounts'
 import { setHome, unitsLoad, homeOn, todayIso } from '../state/units'
@@ -30,7 +33,7 @@ import { docBackend } from '../state/docs'
 import { HOOKS } from '../engine/hooks'
 import { guardWords, whatIsOpen } from './guard'
 import { rawEnter } from '../test-support/raw-entry'
-import { MM, OPEN, app, doing, press, settle, tap, topPick, goTracker, chartEdit, guardTeardown, note, nothingHeld, tid } from '../test-support/msq-guard-testkit'
+import { MM, OPEN, app, doing, press, settle, tap, topPick, goTracker, goLeaveWar, chartEdit, guardTeardown, note, nothingHeld, tid } from '../test-support/msq-guard-testkit'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 withThird()
@@ -222,7 +225,45 @@ describe('F0 — the input\'s own squadron has no clause for who is named (§5.2
     expect(inputSqn({ _new: true, person: PID.hunter }, 'u149')).toBe('u149')
     expect(inputSqn(own, third.u150), 'never "his" squadron: the input\'s own').toBe('u142')
   })
-  it.todo('F0\'s letOpenOn half (null for all three; the moved man\'s old 142 input on his 149 page → 149) — step K10\'s: letOpenOn is the root\'s alone (§5.2) and is built with it')
+  it('letOpenOn (step K10 — the root\'s alone): null for all three; the moved man\'s old 142 input on his 149 page → 149; an input he only filed for others → null', async () => {
+    const { letOpenOn } = await import('../state/inputsqn')
+    signInAs('hunter')
+    const own = file({ person: PID.hunter, type: 'OL', start: '2026-07-20', end: '2026-07-20' })
+    const both = file({ person: PID.hunter, type: 'Training', start: '2026-07-21', end: '2026-07-21', title: 'Shared' })
+    expect(writeInputsBatch(() => { (INPUTS.find((x: any) => x.iid === both.iid) as any).people.push({ p: PID.osprey, by: PID.hunter, at: Date.now() }) })).toBe(true)
+    const forOsprey = file({ person: PID.osprey, type: 'Training', start: '2026-07-22', end: '2026-07-22', title: 'Filed by Hunter' })
+    expect(letOpenOn(own, 'u149', PID.hunter), 'his own 142 input on 149: his pages can be 142\'s, and 149 is not his home').toBeNull()
+    expect(letOpenOn(own, third.u150, PID.hunter), '…nor on 150, which he only views').toBeNull()
+    expect(letOpenOn(INPUTS.find((x: any) => x.iid === both.iid), 'u149', PID.hunter), 'an input naming men of both, on 149: 149\'s own already').toBeNull()
+    expect(letOpenOn({ _new: true, person: PID.hunter }, 'u149', PID.hunter), 'a new input: its page\'s').toBeNull()
+    expect(letOpenOn(forOsprey, 'u142', PID.hunter), 'an input he only filed for others is never let (it does not name him)').toBeNull()
+    /* Ranger, moved 142 → 149 with no right in 142: his old 142 duty, live where he is (D2621) */
+    signInAs('ranger')
+    const duty = file({ person: PID.ranger, type: 'Duty', start: '2026-07-15', end: '2026-07-15', title: 'Duty officer' })
+    signInAs('saber')
+    expect(moveMan(PID.ranger, 'u149').ok).toBe(true)
+    await act(async () => { pastMidnight() })
+    signInAs('ranger')
+    expect(inputSquadrons(duty), 'the premise: 142\'s').toEqual(['u142'])
+    expect(ownPageMayBe('u142'), 'the premise: his pages may never be 142\'s').toBe(false)
+    expect(letOpenOn(duty, 'u149', PID.ranger), 'the moved man\'s old input, on his 149 page').toBe('u149')
+    /* (asked of another page it names that page — so it is asked ONCE, when the window's note is taken: F12) */
+    expect(letOpenOn(duty, third.u150, PID.ranger)).toBe(third.u150)
+    expect(letOpenOn(duty, 'u142', PID.ranger), 'on 142\'s page it is 142\'s own').toBeNull()
+  })
+  it('letOpenOn — K0\'s settlement of §5.5\'s home-page row: his own input of the squadron he moves to, on his own home page that day → that page; on its own squadron\'s page → null (its own already)', async () => {
+    const { letOpenOn, inputSqn } = await import('../state/inputsqn')
+    at('2026-11-30')
+    unitsLoad()
+    expect(moveMan(PID.hunter, 'u149').ok, 'his move saved by Saber, counting from Tue 1 Dec').toBe(true)
+    signInAs('hunter')
+    const lv = file({ person: PID.hunter, type: 'LL', start: '2026-12-05', end: '2026-12-05' })
+    expect(inputSqn(lv, 'u142'), 'the premise: 149\'s on its day').toBe('u149')
+    expect(myUnit(todayIso()), 'the premise: 142 is his home today').toBe('u142')
+    expect(letOpenOn(lv, 'u142', PID.hunter), 'his own, on his home page today').toBe('u142')
+    expect(letOpenOn(lv, 'u149', PID.hunter), 'on 149\'s page it is 149\'s own').toBeNull()
+    expect(letOpenOn(lv, third.u150, PID.hunter), 'never on a page that is not his home').toBeNull()
+  })
 })
 
 describe('F1 — the bell\'s OIL tap brings the input\'s squadron into view (D2621)', () => {
@@ -603,5 +644,266 @@ describe('INPUT_DOORS — every door into an input\'s window says whether it bri
     const asking = files.filter(p => /enterForLine\(inputSqn\(/.test(src(p))).sort()
     expect(asking, 'the files that bring an input\'s own squadron first').toEqual(['ui/OilDayList.tsx', 'ui/topstate.ts'])
     for (const p of asking) expect(INPUT_DOORS.some(x => x.home && x.where === p), `${p} is a "home" door of INPUT_DOORS`).toBe(true)
+  })
+})
+
+/* ======================= STEP K10 (§10 step 8) — part F's root: the window records the input's own squadron =======================
+   The plan §5.2 (the note takes `inputSqn` and `letOpenOn`, once), §5.5 (every door into the window, its last column
+   settled by a press before the root is switched on), §5.6 (F4, F8, F10, F12). THE DOORS ARE PRESSED ON THE REAL CONTROLS
+   (the app drawn whole — the testkit's app()); what each press opened is judged by the root's own two answers, the very
+   ones the window's note takes (`bornHeld`), so the answer stands whether or not the root is switched on. */
+/** the page the window stands on, as the window works it out (ui/InputWindow.tsx `pageSqn`: a saved input's window on the
+ *  Inputs page stands on his own pages' squadron, anywhere else on the schedule in view's) */
+const windowPage = (): string => (CURPAGE === 'inputs' ? pageUnit('own') : UNIT)
+/** the root's verdict on the window a press just opened: '' — its note would let it stand live on the page; else what it
+ *  is ("u142's input on u149's page" — a window born held) */
+function bornHeld(): string {
+  const r = INPEDIT, p = windowPage()
+  if (!r || r._new) return ''
+  const own = inputSqn(r, p)
+  return own === p || letOpenOn(r, p, me()) === p ? '' : `${own}'s input on ${p}'s page`
+}
+const shut = async () => { await doing(() => { setInpEdit(null); setOilAsk(null) }) }
+const rowIds = (): string[] => [...document.querySelectorAll('#inBody tr[data-iid]')].map(e => (e as HTMLElement).dataset.iid!)
+const theList = async () => { await doing(() => { setPage('inputs'); setInpView('table'); setInpMode('member') }) }
+
+describe('§5.5 — the doors into the Input window, each pressed (step K10): what each opens', () => {
+  it('a row of the Inputs List — Hunter (Plan of 149) on 149\'s List: every row drawn, pressed, opens a window its note lets stand live', async () => {
+    await app('hunter')
+    await topPick('u149')
+    await theList()
+    const ids = rowIds()
+    expect(ids.length, 'the premise: 149\'s List draws rows').toBeGreaterThan(0)
+    for (const iid of ids) {
+      await press($(`#inBody tr[data-iid="${iid}"]`), `the row ${iid}`)
+      expect(String(INPEDIT?.iid), `the row ${iid} opened its window`).toBe(iid)
+      expect(bornHeld(), `the row ${iid}`).toBe('')
+      await shut()
+    }
+  })
+  it('…a moved man\'s calendar — Ranger moved 142 → 149, no right in 142: his old 142 duty\'s card, on his 149 calendar\'s Wed 15 Jul, opens where he is, let open there (D2621)', async () => {
+    signInAs('ranger')
+    const duty = file({ person: PID.ranger, type: 'Duty', start: '2026-07-15', end: '2026-07-15', title: 'Duty officer' })
+    signInAs('saber')
+    expect(moveMan(PID.ranger, 'u149').ok).toBe(true)
+    await act(async () => { pastMidnight() })
+    await app('ranger')
+    await doing(() => { setPage('inputs'); setInpView('cal'); setInpMode('member'); setCalMonth({ y: 2026, m: 7 }) })
+    expect(pageUnit('own'), 'the premise: his own pages are 149\'s').toBe('u149')
+    await tap($('[data-icday="2026-07-15"]'), 'Wed 15 Jul on his 149 calendar')
+    await press(document.querySelector(`[data-testid="win-inputsday"] [data-popiid="${duty.iid}"] [data-testid="idy-open"]`), 'his old duty\'s card')
+    expect(String(INPEDIT?.iid)).toBe(String(duty.iid))
+    expect(inputSqn(duty, 'u149'), 'the old duty is 142\'s — the let case, not the page\'s own').toBe('u142')
+    expect(bornHeld()).toBe('')
+  })
+  it('…his home page with a move saved ahead (K0\'s settlement): Hunter, a move to 149 saved for 1 Dec, his leave for 5 Dec on his 142 List — let open there', async () => {
+    at('2026-11-30')
+    unitsLoad()
+    expect(moveMan(PID.hunter, 'u149').ok).toBe(true)
+    signInAs('hunter')
+    const lv = file({ person: PID.hunter, type: 'LL', start: '2026-12-05', end: '2026-12-05' })
+    await app('hunter')
+    await theList()
+    expect(pageUnit('own'), 'the premise: his home page').toBe('u142')
+    await press($(`#inBody tr[data-iid="${lv.iid}"]`), 'his leave\'s row')
+    expect(String(INPEDIT?.iid)).toBe(String(lv.iid))
+    expect(inputSqn(lv, 'u142'), 'the premise: 149\'s on its day').toBe('u149')
+    expect(bornHeld(), 'let open on his own home page').toBe('')
+  })
+  it('a card of the Inputs calendar\'s day — Hunter on 149\'s calendar, Tue 14 and Fri 17 Jul: every card pressed', async () => {
+    await app('hunter')
+    await topPick('u149')
+    await doing(() => { setPage('inputs'); setInpView('cal'); setInpMode('member'); setCalMonth({ y: 2026, m: 7 }) })
+    let n = 0
+    for (const iso of ['2026-07-14', '2026-07-17']) {
+      await tap($(`[data-icday="${iso}"]`), `${iso} on 149's calendar`)
+      expect(tid('win-inputsday'), `the premise: ${iso} is open`).not.toBeNull()
+      const ids = [...document.querySelectorAll('[data-testid="win-inputsday"] .icard[data-popiid]')].map(e => (e as HTMLElement).dataset.popiid!)
+      for (const iid of ids) {
+        await press(document.querySelector(`[data-testid="win-inputsday"] [data-popiid="${iid}"] [data-testid="idy-open"]`), `the card ${iid}`)
+        expect(String(INPEDIT?.iid), `the card ${iid} opened its window`).toBe(iid)
+        n++; expect(bornHeld(), `the card ${iid}`).toBe('')
+        await shut()
+      }
+      await press(tid('win-inputsday-x'), 'the day\'s ✕')
+    }
+    expect(n, 'the premise: cards were pressed and opened').toBeGreaterThan(0)
+  })
+  it('a line of a SANS day — Hunter on 142\'s SANS calendar, Wed 15 Jul: every line pressed (the day lists its own squadron\'s lines)', async () => {
+    await app('hunter')
+    await doing(() => { setPage('inputs'); setInpView('cal'); setInpMode('sans'); setCalMonth({ y: 2026, m: 7 }) })
+    await tap($('[data-icday="2026-07-15"]'), 'Wed 15 Jul on 142\'s SANS calendar')
+    const n = document.querySelectorAll('[data-testid="sd-open"]').length
+    expect(n, 'the premise: the day lists SANS lines').toBeGreaterThan(0)
+    for (let i = 0; i < n; i++) {
+      await press(document.querySelectorAll('[data-testid="sd-open"]')[i]!, `the line ${i}`)
+      expect(INPEDIT, `the line ${i} opened its window`).toBeTruthy()
+      expect(bornHeld(), `the line ${i}`).toBe('')
+      await shut()
+    }
+  })
+  it('a bell line where his pages may never be the line\'s squadron — Ranger moved 142 → 149: a line about his old 142 duty opens it where he is, let open there', async () => {
+    signInAs('ranger')
+    const duty = file({ person: PID.ranger, type: 'Duty', start: '2026-07-15', end: '2026-07-15', title: 'Duty officer' })
+    signInAs('saber')
+    expect(moveMan(PID.ranger, 'u149').ok).toBe(true)
+    await act(async () => { pastMidnight() })
+    const n: any = { id: 'k10l1', to: PID.ranger, by: null, at: Date.now(), iid: String(duty.iid), name: 'Duty', day: '2026-07-15', what: [{ k: 'in' }], u: 'u142' }
+    NOTICES.push(n)
+    await app('ranger')
+    await press($('#notifyBell'), 'the bell')
+    await press(tid(`bell-line-${n.id}`), 'the line')
+    expect([UNIT, CURPAGE, String(INPEDIT?.iid)], 'the premise: his 149 page, the window').toEqual(['u149', 'inputs', String(duty.iid)])
+    expect(bornHeld()).toBe('')
+  })
+  it('the bell\'s own OIL tap — Hunter, 149 picked, his 142 weekend duty: 142 brought into view first, its window its own (F1\'s road)', async () => {
+    await app('hunter')
+    const d = await ownWeekendDuty()
+    await topPick('u149')
+    await press($('#notifyBell'), 'the bell')
+    expect([UNIT, String(INPEDIT?.iid)]).toEqual(['u142', String(d.iid)])
+    expect(bornHeld()).toBe('')
+  })
+  it('a card of the OIL list — Hunter on 142, its list of Sat 18 Jul: the card opens his duty, its own (F5 holds the road over another squadron)', async () => {
+    await app('hunter')
+    const d = await ownWeekendDuty()
+    await doing(() => setOilList({ from: '2026-07-18', to: '2026-07-18', name: 'Holiday', unit: 'u142' }))
+    await press(tid(`odl-row-${d.iid}`)?.querySelector('.icard-who') ?? tid(`odl-row-${d.iid}`), 'the card')
+    expect([UNIT, CURPAGE, String(INPEDIT?.iid)]).toEqual(['u142', 'inputs', String(d.iid)])
+    expect(bornHeld()).toBe('')
+  })
+  it('the OIL question raised after a change on the schedule — its opener (ui/inputedit.tsx askOilIfPending), asked of every input 149\'s week draws: each window its note lets stand live', async () => {
+    /* (its callers — the row door's and oilFirst's "should the two ever disagree" paths, and a time typed on a row by
+       someone who may not edit the schedule — are reached by no ordinary press; each hands the opener an input of the
+       schedule in view found again by its id, so the opener is asked of every input 149's week draws) */
+    signInAs('hunter')
+    const sat = file({ person: PID.osprey, type: 'Duty', start: '2026-07-18', end: '2026-07-18', title: 'Weekend duty' })
+    await app('hunter')
+    await topPick('u149')
+    await doing(() => setPage('editsched'))
+    const { inputsOn } = await import('../engine/inputs')
+    const { DAYS } = await import('../engine/data')
+    const seen = new Set<string>()
+    for (const d of DAYS as any[]) if (d) for (const r of inputsOn(d.dt) as any[]) seen.add(String(r.iid))
+    expect([...seen], 'the premise: 149\'s Saturday duty is on the week').toContain(String(sat.iid))
+    let asked = 0
+    for (const iid of seen) {
+      const r = INPUTS.find((x: any) => String(x.iid) === iid)
+      await doing(() => { if (askOilIfPending(r)) asked++ })
+      if (INPEDIT) expect(bornHeld(), `the input ${iid}`).toBe('')
+      await shut()
+    }
+    expect(asked, 'the premise: the Saturday duty asks').toBeGreaterThan(0)
+  })
+  it('a label on the week — Hunter, 149 picked, Edit Schedule: every input label the week draws, pressed', async () => {
+    await app('hunter')
+    await topPick('u149')
+    await doing(() => setPage('editsched'))
+    const ids = [...new Set([...document.querySelectorAll('[data-inpedit]')].map(e => (e as HTMLElement).dataset.inpedit!))]
+    expect(ids.length, 'the premise: the week draws input labels').toBeGreaterThan(0)
+    for (const k of ids) {
+      await press([...document.querySelectorAll('[data-inpedit]')].find(e => (e as HTMLElement).dataset.inpedit === k) ?? null, `the label ${k}`)
+      expect(INPEDIT, `the label ${k} opened its window`).toBeTruthy()
+      expect(bornHeld(), `the label ${k}`).toBe('')
+      await shut()
+    }
+  })
+  it('the OIL question of what was just filed from the Leave War — Hunter, 149 picked, an OD for a 149 man on Sat 18 Jul filed on 149\'s war: its window its own', async () => {
+    await app('hunter')
+    await topPick('u149')
+    await goLeaveWar()
+    const before = new Set(INPUTS.map((r: any) => r.iid))
+    await doing(() => { expect(fileStraight([{ personId: PID.osprey, date: '2026-07-18' }], 'OD').done, 'filed on the war').toBe(1) })
+    await settle()
+    const x = INPUTS.find((r: any) => !before.has(r.iid)) as any
+    expect(x, 'the premise: the OD saved').toBeTruthy()
+    expect(String(INPEDIT?.iid), 'the premise: its OIL question\'s window').toBe(String(x.iid))
+    expect(bornHeld()).toBe('')
+  })
+})
+
+describe('§5.5 — two doors that DO open a window its note would hold (step K10\'s finding, put to him): the root is not switched on while they stand', () => {
+  it('FINDING — "Edit input" in the document viewer, from the Medical tab: Saber (a master admin), 149 picked, a man moved 142 → 149 — his 142 medical\'s card on 149\'s Medical tab opens 142\'s record on 149\'s page, with no case to let it', async () => {
+    /* Nasty's OML of 6–9 Jul (seeded, 142's), no upchit: moved to 149 by Saber, counting from Thu 16 Jul */
+    const oml = INPUTS.find((r: any) => r.person === 'nasty' && r.type === 'OML') as any
+    expect(oml && inputSquadrons(oml), 'the premise: his OML is 142\'s').toEqual(['u142'])
+    signInAs('saber')
+    expect(moveMan('nasty', 'u149').ok).toBe(true)
+    await act(async () => { pastMidnight() })
+    await app('saber')
+    await topPick('u149')
+    await doing(() => { setPage('inputs'); setInpView('med') })
+    /* (the tab opens "as of" the app's own today, the demo week's Mon 13 Jul — 142's for him then; its "as of" moved to
+       Thu 16 Jul, his first day as 149's, by its own calendar) */
+    await press($('#medCalBtn'), 'the tab\'s "as of"')
+    await press($('[data-medday="2026-07-16"]'), 'Thu 16 Jul')
+    const card = $(`.medcard[data-medcard="${oml.iid}"]`)
+    expect(card, 'his 142 OML\'s card stands on 149\'s Medical tab (the tab lists the men on its roster on the day)').not.toBeNull()
+    await press(card, 'the card')
+    await press($('#docViewEdit'), '"Edit input"')
+    expect([UNIT, CURPAGE, String(INPEDIT?.iid)], 'the window of his 142 OML, on 149\'s page').toEqual(['u149', 'inputs', String(oml.iid)])
+    expect(bornHeld(), 'born held: neither of letOpenOn\'s cases covers it (today it opens live, and its Save writes 142\'s record under 149)').toBe('u142\'s input on u149\'s page')  })
+  it('FINDING — a bell line whose squadron is no longer the input\'s: Hunter (Plan of 149) filed a Training for Osprey; Osprey moved to 150 before its day; the line enters 149 and opens a 150 record there, with no case to let it', async () => {
+    signInAs('hunter')
+    const row = file({ person: PID.osprey, type: 'Training', start: '2026-07-27', end: '2026-07-27', title: 'Sim refresher' })
+    signInAs('kestrel')
+    expect(writeInputsBatch(() => { (INPUTS.find((x: any) => x.iid === row.iid) as any).remarks = 'Kestrel changed it' })).toBe(true)
+    const line = NOTICES.find(n => n.to === PID.hunter && n.iid === row.iid) as any
+    expect(line, 'the premise: Hunter, its filer, told').toBeTruthy()
+    signInAs('saber')
+    expect(moveMan(PID.osprey, third.u150).ok, 'Osprey moved to 150, counting from Thu 16 Jul').toBe(true)
+    await act(async () => { pastMidnight() })
+    expect(inputSquadrons(INPUTS.find((x: any) => x.iid === row.iid)), 'the premise: the Training is 150\'s now').toEqual([third.u150])
+    await app('hunter')
+    expect(noticesFor(PID.hunter).some(x => x.id === line.id), 'the premise: the line is still on his bell').toBe(true)
+    await press($('#notifyBell'), 'the bell')
+    await press(tid(`bell-line-${line.id}`), 'the line')
+    expect([UNIT, CURPAGE, String(INPEDIT?.iid)], 'the line\'s own squadron, 149, its Inputs page, the window').toEqual(['u149', 'inputs', String(row.iid)])
+    expect(bornHeld(), 'born held: the line entered the squadron it was written for, not the input\'s').toBe(`${third.u150}'s input on u149's page`)  })
+})
+
+describe('F8 (pin) — an input naming men of both squadrons is live and listed on both pages', () => {
+  it('pin: Hunter\'s Training shared with Osprey: listed on 142\'s page and on 149\'s; its window live on both', async () => {
+    signInAs('hunter')
+    const both = file({ person: PID.hunter, type: 'Training', start: '2026-07-21', end: '2026-07-21', title: 'Shared' })
+    expect(writeInputsBatch(() => { (INPUTS.find((x: any) => x.iid === both.iid) as any).people.push({ p: PID.osprey, by: PID.hunter, at: Date.now() }) })).toBe(true)
+    await app('hunter')
+    await theList()
+    expect(listed(both.iid), 'listed on 142\'s page').toBe(true)
+    await doing(() => setInpEdit(INPUTS.find((x: any) => x.iid === both.iid)))
+    live(); expect(bornHeld()).toBe('')
+    await shut()
+    await topPick('u149')
+    expect(listed(both.iid), 'listed on 149\'s page').toBe(true)
+    await doing(() => setInpEdit(INPUTS.find((x: any) => x.iid === both.iid)))
+    live(); expect(bornHeld()).toBe('')
+  })
+})
+
+describe('K0\'s settlement (§5.5\'s home-page row) — his own input of the squadron he moves to, on his own home page, is that page\'s', () => {
+  it('Saber, home 142, a move to 149 saved for 1 Dec: his leave for 5 Dec opened on his 142 home page — live, saved there; then on 149\'s page, where it touches 149 — live (F18\'s window half)', async () => {
+    at('2026-11-30')
+    unitsLoad()
+    signInAs('saber')
+    expect(saveAccess(ACCT.kestrel, { master: true }), 'Kestrel made a master admin').toBeNull()
+    signInAs('kestrel')
+    expect(setHome(PID.saber, 'u149').ok).toBe(true)
+    unitsLoad()
+    signInAs('saber')
+    const lv = file({ person: PID.saber, type: 'LL', start: '2026-12-05', end: '2026-12-05' })
+    expect(inputSqn(lv, 'u142'), 'the premise: 149\'s on its day').toBe('u149')
+    await app('saber')
+    await theList()
+    expect(pageUnit('own'), 'the premise: his 142 home page').toBe('u142')
+    await doing(() => setInpEdit(INPUTS.find((x: any) => x.iid === lv.iid)))
+    live(); expect(bornHeld()).toBe('')
+    await act(async () => { fireEvent.change($('#inpEditRmk')!, { target: { value: 'K0 kept' } }) })
+    await press($('#inpEditSave'), 'Save')
+    expect((INPUTS.find((x: any) => x.iid === lv.iid) as any).remarks, 'saved there').toBe('K0 kept')
+    await shut()
+    await topPick('u149')
+    expect(pageUnit('own')).toBe('u149')
+    await doing(() => setInpEdit(INPUTS.find((x: any) => x.iid === lv.iid)))
+    live(); expect(bornHeld()).toBe('')
   })
 })

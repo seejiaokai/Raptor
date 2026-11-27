@@ -1,12 +1,12 @@
 /* AN INPUT'S OWN SQUADRON — part F of the guard rail (the plan docs/superpowers/plans/2026-11-25-msq-pick-guard-build1.md
    §5; his D2621: "a squadron's inputs are seen and changed only on that squadron"; D2729 Q8). Step K9 (§10 step 7) builds
    what is here: the doors' one answer (`inputSqn`), the table of the doors into an input's window (`INPUT_DOORS`), and the
-   Inputs page's list rule (`listReach`, `pageIsHome`). The root's own answer — `letOpenOn`, the one squadron a window may
-   stand live on that is not the input's — is step K10's (§5.2), not built here.
+   Inputs page's list rule (`listReach`, `pageIsHome`). Step K10 (§10 step 8) adds the root's own answer — `letOpenOn`, the
+   one squadron a window may stand live on that is not the input's (§5.2) — which no door asks, ever (§11 risk 19).
 
    THE DOORS AND THE ROOT NEVER SHARE AN ANSWER (§16, finding 2): a door asks `inputSqn`, which has NO clause for who is
    named in the input, and never gains one. */
-import { inputSquadrons, inputUnitOf, inputSpanIso } from '../engine/inputs'
+import { inputSquadrons, inputUnitOf, inputSpanIso, holds } from '../engine/inputs'
 import { me, pageUnit, myUnit, ownPageMayBe } from './perms'
 import { todayIso, homeOn, homeChangesOn } from './units'
 
@@ -19,6 +19,32 @@ export function inputSqn(r: any, pageSqn: string): string {
   if (!r || r._new) return pageSqn
   if (inputSquadrons(r).includes(pageSqn)) return pageSqn
   return inputUnitOf(r) ?? pageSqn
+}
+
+/** THE ROOT'S ALONE (§5.2 — step K10): the squadron the Input window may stand live on although it is not the input's own
+ *  (`inputSqn`), worked out ONCE, when the window's note is taken (ui/InputWindow.tsx) — never on a later draw, or his own
+ *  move at midnight would read the new page and bring a held window back live (§15, finding 13; F12). Null for every
+ *  other window, which is then held from the moment it opens wherever the page is not the input's own.
+ *  NO DOOR ASKS THIS, EVER (§11 risk 19; §16 finding 2): a door asks `inputSqn`, which has no clause for who is named.
+ *  Two cases, each named, each needing the input to name him (`holds`) — an input he only filed for others is never let:
+ *  - HIS PAGES MAY NEVER BE THE INPUT'S SQUADRON (his D2621, [ruled]): the moved man's old input, live where he is, so that
+ *    he can answer it — Ranger moved 142 → 149 with no right in 142, his old 142 duty on his 149 page;
+ *  - THE PAGE IS HIS OWN HOME ON THE DAY THE WINDOW OPENS (K0's settlement of §5.5's home-page row — the orchestrator's
+ *    call; nothing he sees changes: F18): Saber, home 142 with a move to 149 saved for 1 Dec, opens on his 142 page the
+ *    leave he filed there for 5 Dec — 149's on its day, and his own; live there as it always was. This is K9's
+ *    `pageIsHome` asked of the page the window stands on (on his own pages the same question; the schedule's page is the
+ *    squadron in view). Never wider: not an input that only touches his home, not a page that is his home on another day.
+ *  (An input he filed for others in a squadron he has since lost his right in — N9 — needs no case: no bell line can
+ *  open it, state/notices.ts rightHolds; F19.) */
+export function letOpenOn(r: any, pageSqn: string, pid: string | null): string | null {
+  if (!r || r._new || !pageSqn || !pid || !holds(r, pid)) return null
+  const own = inputSqn(r, pageSqn)
+  if (own === pageSqn) return null                                     // the page's own: nothing to let
+  const neverMine = !ownPageMayBe(own)
+  if (neverMine) return pageSqn
+  const homeToday = pageSqn === myUnit(todayIso())
+  if (homeToday) return pageSqn
+  return null
 }
 
 /** EVERY DOOR INTO AN INPUT'S WINDOW THAT OPENS A SAVED INPUT (§5.5), and whether it brings the input's own squadron into
