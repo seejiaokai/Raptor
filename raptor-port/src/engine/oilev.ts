@@ -995,11 +995,24 @@ export function oilMovedInputsOnly(now: OilEvidence | null | undefined, nowDay: 
  *  So the two projections are not a tidy-up: the key a signature binds to used to
  *  carry membership, which meant an availability-only change took down a
  *  signature the owner said it must not. Everything else about the block still
- *  invalidates — a changed OIL decision, a changed answer, a claim that stopped
- *  earning — because those ARE changes of mind about what was approved. */
+ *  invalidates — a changed OIL decision, a claim that stopped earning — because
+ *  those ARE changes of mind about what was approved.
+ *
+ *  …EXCEPT AN INPUT'S OIL ANSWER (his D2800, D2801 — 26 Nov 26: "Later = 'not my
+ *  call'. Each next sign-off asks again until someone answers. An OIL answer doesn't
+ *  clear names already signed"; "Yes, any OIL answer"). A scheduler without the
+ *  authority to decide OIL signs by Later, and management, signing a later box,
+ *  answers — so the names already given must stand through the answer, wherever it
+ *  is given (the list, the input's own "OIL?" sign, a bell line: all write the
+ *  input's `oil`). The answer is read here as unanswered, so the key is the one an
+ *  unanswered day has always had. Only the signature's key: the publication
+ *  comparison (oilEvidenceKey) keeps the answer, so on a PUBLISHED day an answer is a
+ *  change waiting and the pending axis of the binding (engine/publish.ts pendingKey)
+ *  still takes the four down — D2801 is of a day not yet published (D103). Whether the
+ *  day earns at all is the day's own fact (HOOKS.oilEarningDay), never an answer's. */
 export function oilSignKey(ev: OilEvidence | null | undefined, day?: any): string {
   if (!ev || !ev.earns) return ''
-  return oilKeyNoMem(oilEvidenceKey(ev, day))
+  return oilKeyNoMem(oilEvidenceKey({ ...ev, inputs: ev.inputs.map(i => (i.ans == null ? i : { ...i, ans: null })) }, day))
 }
 
 /** DOES THIS ISSUED DAY PREDATE THE RECORD OF WHO IS BEHIND ITS PUCKS, AND WOULD

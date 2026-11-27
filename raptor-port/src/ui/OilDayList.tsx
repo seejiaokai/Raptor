@@ -29,7 +29,7 @@ import { InputCard } from './InputCard'
 import { cardOf, cardWhen } from './inputcard-model'
 import { monthItems } from './inputscal-model'
 import { adminOfList, saveOilDay, type OilPick } from './oilday'
-import { holdLater, holdSave, holdSaid, holdStands, type SignHold } from './oilsign'
+import { holdCanSign, holdIsLast, holdLater, holdSave, holdSaid, holdStands, type SignHold } from './oilsign'
 import { OILLIST, setInpEdit, setOilList } from './pops'
 import { useVersion } from './useStore'
 
@@ -82,9 +82,17 @@ function FootButtons({ empty, done, onClose, onLater, onSave }: { empty: boolean
     </>
   )
 }
-/* the foot's quiet words: what Later does while a sign-off is held (`signer` — his callsign), else the bells' line */
-const footSaid = (signer: string, rows: number, belled: boolean): string =>
-  !rows ? '' : signer ? `Later: ${signer} signs, but nobody on ${rows > 1 ? 'them' : 'it'} earns OIL.` : belled ? 'What is left goes to the schedulers’ bells' : ''
+/* THE FOOT'S QUIET WORDS while a sign-off is held (his D2859 — Opus drafted, a fresh Fable adjusted, approved 27 Nov 26):
+   nothing picked, what Later does; some picked, what Save leaves; every row picked, nothing to say. On the LAST of the four
+   boxes no box is left to ask after it (`last`): Later's own line says the question stays open; with some picked there is
+   no line (the agent's reading, put to him — "the next sign-off asks the rest" would be untrue there). No sign-off held:
+   the bells' line, where it is true. */
+function footSaid(held: { cs: string; last: boolean } | null, rows: number, done: number, belled: boolean): string {
+  if (!rows) return ''
+  if (!held) return belled ? 'What is left goes to the schedulers’ bells' : ''
+  if (!done) return held.last ? `Later: ${held.cs} signs, and OIL stays unanswered for now` : `Later: ${held.cs} signs, and the next sign-off asks again`
+  return done < rows && !held.last ? 'Save: the next sign-off asks the rest' : ''
+}
 
 function Body({ from, to, unit, name, fresh, plain, hold }: { from: string; to: string; unit: string; name: string; fresh: boolean; plain: boolean; hold?: SignHold }) {
   useWarFacts()                                        // a holiday taken away, a period changed: the list is read again
@@ -111,9 +119,9 @@ function Body({ from, to, unit, name, fresh, plain, hold }: { from: string; to: 
   const close = () => { setOilList(null); notify() }
   const pick = (iid: string, v: OilPick) => setPicks(p => ({ ...p, [iid]: p[iid] === v ? undefined : v }))
   const all = (v: OilPick) => setPicks(Object.fromEntries(rows.map(x => [x.o.iid, v])))
-  /* OPENED BY A SIGN-OFF BOX (his D2294, D2299 — ui/oilsign.ts): the name picked there is held, not written. Save writes
-     the answers and then the name; Later writes the name with no answer, and that day asks no more; ✕ and Escape close
-     the list as ever, and the hold goes with it — nothing is signed, and the next press asks again. */
+  /* OPENED BY A SIGN-OFF BOX (his D2294, D2299, D2800 — ui/oilsign.ts): the name picked there is held, not written. Save
+     writes the answers and then the name; Later writes the name with no answer, and the next press asks again; ✕ and
+     Escape close the list as ever, and the hold goes with it — nothing is signed, and the next press asks again. */
   const save = () => { if (hold ? holdSave(hold, from, unit, picks) : saveOilDay(from, to, picks, unit) >= 0) close() }
   const later = () => { if (hold) holdLater(hold, from, unit); close() }
   /* SHOWN ONLY WHILE IT WOULD BE WRITTEN (walker w3's finding 1, 22 Nov 26): the list stays up while the page behind it
@@ -155,9 +163,9 @@ function Body({ from, to, unit, name, fresh, plain, hold }: { from: string; to: 
           })}
         </>}
       <div className="odl-foot">
-        {/* with a sign-off held the foot says what Later does (his D2312, D2299: "Later: Ace signs, but nobody on it earns
-            OIL."; "them" where the list holds several — the agent's wording for that case) */}
-        <span className="upconf-need" data-testid="odl-left">{footSaid(held ? held.cs : '', rows.length, belled && done < rows.length)}</span>
+        {/* with a sign-off held the foot says what Later, or Save, leaves (his D2859 — footSaid above) */}
+        {/* (a name that would be refused for a missing time is promised by no line — Astra's red-team read, 2) */}
+        <span className="upconf-need" data-testid="odl-left">{held && !holdCanSign(hold!) ? '' : footSaid(held ? { cs: held.cs, last: holdIsLast(hold!) } : null, rows.length, done, belled && done < rows.length)}</span>
         <FootButtons empty={rows.length === 0} done={done} onClose={close} onLater={later} onSave={save} />
       </div>
     </FloatWin>

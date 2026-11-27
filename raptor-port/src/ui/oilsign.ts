@@ -4,34 +4,35 @@
    publish").
 
    His rulings: D2294 — "how about B but u ask when any sign off is selected": the day's open OIL list opens at the first
-   press of any of the day's four sign-off boxes, BEFORE the name is recorded (an OIL answer given after signing changes
-   the day and clears the sign-offs already given, so asking afterwards would undo the signing); Later asks no more that
-   day. D2312, D2297, D2299 — the list as drawn (docs/mock/2026-11-22-oil-unanswered-publish/draw-f3.mjs, round 6): the
-   pressed box itself at its top, the name held in it; the list's close button or Escape signs nothing, and the next press
-   on any of the four boxes asks again. The publish note's half is leavewar/sync.ts publishFlagsBids.
+   press of any of the day's four sign-off boxes, BEFORE the name is recorded. D2312, D2297, D2299 — the list as drawn
+   (docs/mock/2026-11-22-oil-unanswered-publish/draw-f3.mjs, round 6): the pressed box itself at its top, the name held in
+   it; the list's close button or Escape signs nothing, and the next press on any of the four boxes asks again. The
+   publish note's half is leavewar/sync.ts publishFlagsBids.
+
+   LATER IS "NOT MY CALL" (his D2800, 26 Nov 26 — narrowing D2294's "Later asks no more that day"): a scheduler without
+   the authority to decide OIL signs by Later, and management, signing a later box (usually APPROVED BY), sees the
+   question and answers it. So nothing remembers a Later: every press of any of the four boxes asks while an input on the
+   day stands unanswered, and a Save that leaves rows unpicked leaves them to the next press the same way. An answer given
+   after a name no longer clears it on a day not yet published, wherever it is given (his D2801 — engine/oilev.ts
+   oilSignKey leaves the answer out of what a signature is bound to).
 
    ONE DOOR: the sign-off boxes of the Scheduler Board and of Edit Schedule's week are one delegated handler
    (ui/Shell.tsx), which calls signPick. The list (ui/OilDayList.tsx) calls holdSave / holdLater; its close throws the
-   hold away with the list (ui/pops.ts OILLIST.hold), so nothing is signed.
-
-   "LATER ASKS NO MORE THAT DAY" IS KEPT BY WHICH INPUTS WERE LEFT (the agent's reading, told to him): the day remembers
-   the inputs that stood unanswered when Later was pressed, for as long as he is signed in (ui/pops.ts OILSIGN_LATER,
-   cleared with the session). The other three boxes then sign at once. An input filed on the day AFTERWARDS has never been
-   put to anyone, so the next press asks once more, the list showing what is open. */
+   hold away with the list (ui/pops.ts OILLIST.hold), so nothing is signed. */
 import { DAYS } from '../engine/data'
 import { curDraftId } from '../engine/drafts'
 import { logAction } from '../engine/editlog'
 import { HOOKS } from '../engine/hooks'
 import { PEOPLE } from '../engine/people'
-import { setSign, signShown, daySigned, dayApproved, dayHasChanges, SIGN_ROLES, protectedWeek } from '../engine/publish'
+import { setSign, signShown, signRoleOk, currentBind, daySigned, dayApproved, dayHasChanges, SIGN_ROLES, protectedWeek } from '../engine/publish'
 import { UNIT } from '../engine/unitview'
 import { dayIso } from '../engine/verid'
 import { CURWEEK } from '../engine/waves'
 import { schedWrite, SCHED_TYPES } from '../state/sched-commit'
-import { refuseForTime } from '../state/timeguard'
+import { refuseForTime, timeRefusal } from '../state/timeguard'
 import { oilOpenOn, unitDayFacts, holidayOwnNameOf } from '../leavewar/sync'
 import { adminOfList, saveOilDay, type OilPick } from './oilday'
-import { OILSIGN_LATER, setOilList } from './pops'
+import { setOilList } from './pops'
 
 export type SignHold = { di: number; role: string; who: string; plan?: string }
 
@@ -83,61 +84,59 @@ export function signPick(di: number, role: string, who: string): 'held' | 'signe
   return 'held'
 }
 
-const laterKey = (unit: string, iso: string) => `${unit}|${iso}`
-/** MUST THIS DAY'S SIGN-OFF ASK FIRST? — the day in view's date and squadron where it must, else null. It asks where the
- *  day's list would list anything he has not already left for Later (above), and only of someone the list is for: the
- *  list's own gate (ui/oilday.ts adminOfList) would otherwise close it at once and the press would do nothing at all. */
+/** MUST THIS DAY'S SIGN-OFF ASK FIRST? — the day in view's date and squadron where it must, else null. It asks wherever the
+ *  day's list would list anything (his D2800: every press, until someone answers), and only of someone the list is for:
+ *  the list's own gate (ui/oilday.ts adminOfList) would otherwise close it at once and the press would do nothing at all. */
 function signAsks(di: number): { iso: string; unit: string } | null {
   if (!DAYS[di]) return null
   const iso = dayIso(String(CURWEEK), di), unit = UNIT
   if (!iso || !adminOfList(unit)) return null
-  const left = OILSIGN_LATER.get(laterKey(unit, iso))
-  return oilOpenOn(iso, iso, unit).some(o => !left || !left.has(o.iid)) ? { iso, unit } : null
+  return oilOpenOn(iso, iso, unit).length ? { iso, unit } : null
 }
 
 /** IS THE HELD SIGN-OFF STILL THE DAY'S? — the list stays up while he works behind it (D641), so the week or the squadron
  *  in view can change under it: a hold whose day is no longer the list's date and squadron is not written anywhere. */
 /*  …NOR IS ONE WHOSE SAVED PLAN IS NO LONGER THE DAY'S LIVE ONE (Astra's scenario read, F01 — 22 Nov 26): each plan of a
  *  day owns its own four signatures (engine/drafts.ts), so a name picked on plan A and written after a switch to plan B
- *  would sign content nobody picked it for. Such a hold is dropped as the list's close drops it: nothing is signed,
- *  Later marks nothing asked, and the next press on the plan now live asks again. */
+ *  would sign content nobody picked it for. Such a hold is dropped as the list's close drops it: nothing is signed, and
+ *  the next press on the plan now live asks again. */
 const planOf = (di: number): string => String(curDraftId(di) ?? '')
 export const holdStands = (hold: SignHold, iso: string, unit: string): boolean =>
   unit === UNIT && !!DAYS[hold.di] && dayIso(String(CURWEEK), hold.di) === iso && (hold.plan ?? '') === planOf(hold.di)
 
-/** LATER, with a sign-off held: the name is written, with no answer — nobody on those inputs earns OIL, and the publish
- *  note says so (leavewar/sync.ts publishFlagsBids) — and the day asks no more of what stood open. */
-/* what stands unanswered on the day now is marked as left: no later box asks about it again */
-function leaveOpen(iso: string, unit: string): void {
-  const key = laterKey(unit, iso), left = OILSIGN_LATER.get(key) || new Set<string>()
-  for (const o of oilOpenOn(iso, iso, unit)) left.add(o.iid)
-  OILSIGN_LATER.set(key, left)
-}
-/* THE HELD NAME WRITTEN, AND ONLY THEN THE DAY MARKED ASKED (Astra's blind read, claim 3 — 22 Nov 26): the command layer
-   can refuse the write (it says why itself — state/sched-commit.ts toastFail); a refused name must not use up the
-   question, or the next pick would sign with nobody asked. "Written" is read off the record the box draws. */
-function writeHeld(hold: SignHold, iso: string, unit: string): void {
-  writeSign(hold.di, hold.role, hold.who)
-  if (signNow(hold.di, hold.role) === hold.who) leaveOpen(iso, unit)
-}
+/** LATER, with a sign-off held: the name is written, with no answer, and the next press of any box asks again (his
+ *  D2800). An input still unanswered when the day is published earns nobody on it OIL, and the publish note says so
+ *  (leavewar/sync.ts publishFlagsBids). A name the command layer refuses (it says why itself — state/sched-commit.ts
+ *  toastFail) is simply not written; nothing is remembered either way. */
 export function holdLater(hold: SignHold, iso: string, unit: string): void {
   if (!holdStands(hold, iso, unit)) return
-  writeHeld(hold, iso, unit)
+  writeSign(hold.di, hold.role, hold.who)
   HOOKS.reflow()      // the box is drawn by the schedule's own builders: it reads the name on their next draw
 }
 
-/** SAVE, with a sign-off held: THE ANSWERS FIRST, THEN THE NAME (D2294) — an answer changes the day the signatures are
- *  bound to, so a name written before it would be cleared by it. Two steps of Undo, the name's first (the agent's reading,
- *  told to him: the answer is a change to the inputs, the name a change to the schedule's own record). False where the
- *  answers were refused: nothing is signed, and the list stays up. */
+/** SAVE, with a sign-off held: THE ANSWERS FIRST, THEN THE NAME (D2294). Since his D2800 an answer no longer clears a name
+ *  on a day not yet published, so the order matters only to Undo: two steps, the name's first (the agent's reading, told
+ *  to him: the answer is a change to the inputs, the name a change to the schedule's own record). What this Save leaves
+ *  unpicked is left as Later leaves it: the next press asks the rest (his D2800). False where the answers were refused:
+ *  nothing is signed, and the list stays up. */
 export function holdSave(hold: SignHold, iso: string, unit: string, picks: Readonly<Record<string, OilPick | undefined>>): boolean {
   if (saveOilDay(iso, iso, picks, unit) < 0) return false
-  /* WHAT THIS SAVE LEFT UNPICKED IS LEFT AS LATER LEAVES IT (the fresh Opus read of the finished code, finding 1 — 22 Nov
-     26): with two inputs listed and one answered, the next box asked again for the other, and that answer changed what
-     the name just written was bound to and cleared it — the list's own path to the thing D2294 asks first to avoid. He
-     saw the row and left it: no later box asks, and the publish note names it (the agent's reading, told to him). */
-  if (holdStands(hold, iso, unit)) { writeHeld(hold, iso, unit); HOOKS.reflow() }
+  if (holdStands(hold, iso, unit)) { writeSign(hold.di, hold.role, hold.who); HOOKS.reflow() }
   return true
+}
+
+/** WOULD THE HELD NAME BE WRITTEN NOW? — false while an item on the day is missing a time (Astra's red-team read of the
+ *  plan, finding 2 — 27 Nov 26: a time emptied behind the open list left the foot promising "Later: Ace signs" while
+ *  Later refused). Read only — the refusal's own note and red outlines come from the press (writeSign's backstop). */
+export function holdCanSign(hold: SignHold): boolean {
+  return !hold.who || protectedWeek() || !timeRefusal(hold.di, 'sign')
+}
+
+/** IS THE HELD BOX THE LAST TO SIGN? — every other of the day's four boxes signed and standing, so no box is left to ask
+ *  after it (the foot's words for that case — his D2859). Read on the held plan's own day, as the boxes draw it. */
+export function holdIsLast(hold: SignHold): boolean {
+  const cur = DAYS[hold.di] ? currentBind(hold.di) : undefined
+  return SIGN_ROLES.every((r: any) => r[0] === hold.role || signRoleOk(hold.di, r[0], cur))
 }
 
 /** the held box's own words, as the board's box reads them: its role ("CUR CK"), whether it is an appointed scheduler's
@@ -152,6 +151,3 @@ export function holdSaid(hold: SignHold): { label: string; sch: boolean; cs: str
  *  outside any command that the next unrelated command and its Undo step would carry off (engine/publish.ts signAt, R2-01 —
  *  the fresh Opus read, finding 2); and signShown is what the box itself draws, a name the content has moved under included. */
 export const signNow = (di: number, role: string): string => String(signShown(di)[role] || '')
-
-/** the tests' reset (the session's own is ui/pops.ts POPS_RESET) */
-export function resetOilSign(): void { OILSIGN_LATER.clear() }

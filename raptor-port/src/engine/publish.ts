@@ -1588,8 +1588,10 @@ function currentBindNow(di:any){ const d=DAYS[di];
   /* the OIL evidence is part of what a signature promises ([OIL-AUTO-REMOVE]
      §9.3 point 2): the preview, the amendment comparison, the signature binding
      and publication all call the SAME body, so they cannot disagree about what
-     is being signed. Without it an answer-only change would be publishable on a
-     signature given before the answer moved. */
+     is being signed. ONE PART OF IT IS LEFT OUT OF THE SIGNATURE ON PURPOSE: an
+     input's OIL answer (his D2800, D2801 — the names already signed stand through
+     an answer given after them; engine/oilev.ts oilSignKey). On a published day the
+     answer is still a change waiting, and `pd` below still takes the four down. */
   /* THE SIGNATURE'S PROJECTION, NOT THE COMPARISON'S (D45, step 9b) — the OIL key
      below still leaves membership out, and everything else about the block still
      binds through it. BUT D45's signature half was REPLACED on 25 Sep 26 by D103

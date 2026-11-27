@@ -3443,6 +3443,12 @@ line (`docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md`).**
   edited request's times, a Quals or posting change, a filing — takes the four down; putting it back restores them
   (AM11). This REPLACES D45's signature half (the OIL key still omits membership; `pd` carries it). A draft day's
   `pd` is ''.
+- **An input's OIL answer is left out of the signature's OIL key (D2800, D2801 — 27 Nov 26, `[OIL-LATER-PASSES-ON]`).**
+  `oilev.ts oilSignKey` reads every answer as unanswered, so on a day not yet published an answer — from the sign-off
+  list, the input's own "OIL?" sign or a bell line — leaves the names already signed; every other part of an input
+  (who, type, filing, standing, window) still binds. The comparison key keeps the answer, so on a published day an
+  answer is a change waiting and `pd` still takes the four down. A Logic value changed since signing can still take
+  them down once an answer makes someone earn (`orv`, D592 (4)) — that is the Logic change, not the answer.
 - **The ground programme is bound as shown (`[AMEND-SMALL-SEEN]` 9, 28 Sep 26).** The ground rows are SHOWN in time
   order whatever order they are stored in (`order.ts groundOrder`), and the change count reads that shown order — but
   the signature's digest keyed them by STORED position, so "Sort" on a published day (it re-orders the array only) took
