@@ -2116,3 +2116,16 @@ recheck every standing resource (locks, loops, write rights) after a restart, be
 **Issue:** a long "how it will look" card — today-versus-later pairs, who-may-edit detail, the agent's readings — lost the owner completely; he restated the whole point in three lines himself. Cut to one example, what each screen shows, one decision and one-line choices, every card was answered within minutes, and he asked for that shape every time.
 **Suggested improvement:** a short skill or checklist for question pages: title = the question; one named example with roles in brackets; what he sees (at most two pictures); A (recommended) and B, one line each; internals only when they ARE the choice; a self-test "could he say it back in three lines?" before publishing; a writer helper's brief carries the shape.
 **Principle:** a decision-maker answers what he can restate; detail that is not the choice belongs in the record, not the question.
+
+### Observation 1107: An orchestrator's "reading" that narrows a ruling is caught only by the plan's red team
+
+**Status:** OPEN
+**Date:** 28 Nov 26
+**Session context:** chat A212 (S2), writing the decisions on a planner's open points at the head of three builder's briefs; numbered past 1105–1106 on other open branches.
+**Skill:** brainstorming (plan review) / New skill candidate: orchestrator-decisions
+**Type:** open-source
+**Phase/Area:** deciding a planner's open points before a build
+
+**Issue:** two of the orchestrator's own decisions (keep a form open in a case the ruling says closes; stay silent where the ruling says a note shows) were labelled "the agent's reading" and would have been built; both blind red-team readers flagged them independently as narrowing the owner's ruling. A third decision broke the save gate's own day check (a blocker) and was caught the same way.
+**Suggested improvement:** before writing any decision on an open point, read the ruling's full row and test each decision against its literal words: an exception the ruling does not name is either built as ruled or put to the owner — never decided and labelled a reading; and a decision that changes what a saved record carries is checked against the gate's own checks before it is written.
+**Principle:** a label ("reading") does not make a departure from a rule safe; decisions on open points get the same blind read as the plan itself, and a decision's cheapest check is the rule's literal text.
