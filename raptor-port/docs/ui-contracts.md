@@ -12254,7 +12254,9 @@ Its open day is its own listener set — opening, stepping, or a bid placed with
   grey (`.dchip.dec`), their words green and red; the entry's state is solid — #57C97A / #F0555F, words #0b1116 — and reads
   "Approved" or "Refused"; a second tap on either sends the bid back to waiting. A refused bid's leave button wears the
   window's ring beside the lit Refuse (an admin's window; a member's own refused bid lights nothing). Over a picked range or
-  a drag nothing is lit. Pinned by `leavewar/ui/litdecide.test.tsx`.
+  a drag nothing is lit. Pinned by `leavewar/ui/litdecide.test.tsx`. **To change (D2881, 28 Nov 26, not built — filed as
+  [LW-DECIDE-LOOK]):** the decided one also wears the window's picked-leave cyan ring and the other turns grey, still
+  pressable; at rest a drawn tick or cross and a faint edge of its own colour; size, place and words unchanged.
 - **The manning bubble (D1358, D1360, D1364):** one note, always at the foot of the screen (`.mn-foot`, testid
   `manning-bubble`), in the colour of the worst level it names; its words "This bid: Available P 27 → 26 · IP 16 → 15",
   each pair in its colour, a filing named ("This overseas duty", "This course", "This Other", "This Attach"); "Show ›"
@@ -12330,6 +12332,7 @@ Built on `claude/leave-war-m4-planning-d18224` from `docs/superpowers/plans/2026
 - **Deciding (D1361, D1330, D1421):** Approve and Refuse rest grey, their words green and red; a tap decides that line at
   once (one command, one Undo — `store.ts decideRequests`) and its button lights ("Approved" / "Refused"); the line stays
   where it is until he leaves Approvals or changes the dates, and a second tap on the lit button sends it back to pending.
+  To change by D2881 (not built): the lit one wears the cyan ring and the other turns grey, as in the bid windows.
   A line the rules refuse says why, in red, under its dates; one drawn from a state since changed says what happened
   ("Already refused by Hex", "Moved to Thu 29 Jan", "No longer there" — B8). Approve all approves exactly what the list
   shows: one tap arms it ("Approve 13 — tap again"), anything that changes what the list shows disarms it.
