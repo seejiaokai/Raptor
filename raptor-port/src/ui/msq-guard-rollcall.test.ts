@@ -283,6 +283,7 @@ const FRAMES: Record<string, string[]> = {
   'leavewar/ui/Matrix.tsx': ['no a comment', 'no a selector — what counts as a window over the page', 'no an event\'s peek — a press outside closes it (§3.2 (f))'],
   'leavewar/ui/OilTracker.tsx': ['row lwsheet', 'row lwsheet'],
   'leavewar/ui/OpenDatesSheet.tsx': ['row lwsheet'],
+  'leavewar/ui/OutcomeChips.tsx': ['no a selector — the window the posting already stands in, so its keys stay inside it (usePostingFocus; the posting sheet, pull request 852)'],
   'leavewar/ui/PersonWindow.tsx': ['row lwsheet'],
   'leavewar/ui/RemarksSheet.tsx': ['row lwsheet'],
   'leavewar/ui/ReqNameForm.tsx': ['row lwsheet'],
