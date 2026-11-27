@@ -46,7 +46,7 @@ admin · Mako 150's admin · Ranger a 142 member · Osprey a 149 member (moves t
 ## What to read
 
 The change is on branch `claude/msq-s2-users-685735`: Pass A `git show b7c49ac3d -- raptor-port/src`; Pass B
-`git show <PASS-B> -- raptor-port/src`; Pass C `git show <PASS-C> -- raptor-port/src`. **In an exported copy with no
+`git show e042c5d58 -- raptor-port/src`; Pass C `git show 9871b5028 -- raptor-port/src`. **In an exported copy with no
 history the same diffs are `READ-U2A.patch`, `READ-U2B.patch` and `READ-U2C.patch` at the copy's root.** The files whole
 where the diffs touch them, and their callers: `state/units-model.ts` (`mayGivePlanAt`, `levelFrom`,
 `adminRoleHolds`), `state/accounts.ts` (`mayGivePlanNow`, `lockWords`, `relinkRightsProblem`, `updateAccount`,
