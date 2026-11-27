@@ -195,6 +195,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 **People, accounts and Quals**
 - [MSQ-S2-U1-READS-LEFT] — what the reads of Admin → Users' step U1 left: two doors' words (one names a sign-in, one tells of a move), the row's ids in the markup, View sent by a short row to a man another admin emptied unseen, and a question for him — may an archived man be moved, or a man with a move be archived.
 - [UNDO-RECEIPT-REPLACED] — his own Undo's "Undid: …" replaced by Admin → Users' "row changed" note on the redraw; words only, one person; maybe app-wide.
+- [ACCT-TOLD-OTHER-LINES] — the save check may let the app's "tell him" pass carry a bell line of another kind it never checks; closed for the new Plan line, the rest unchecked — for the security read.
 - [USERS-JUDGE-THREE-COPIES] — Admin → Users' judging of the other open work at a press is written three times; fold into one (a tidiness note).
 
 **Publishing and checks**
@@ -368,6 +369,11 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 **Cause:** `state/undo-wire.ts` `installGlobalUndo`'s `showBubble` toasts the receipt at once; `ui/UsersPanel.tsx useOpenWorkJudged` says its note after the redraw. The same may hold for any page whose redraw raises a note after an Undo — an app-wide shape, not this page's alone.
 **To do:** a note raised since the last draw and still showing is joined by the draw's own note on one line (the reader's fix: `ui/toast.ts` records the last unbatched note — `lastShown()` — and `useOpenWorkJudged` joins it when it says its note); check the other pages that say a note on a redraw; red first.
 **Where:** the passing note (`ui/toast.ts`), Undo / Redo, Admin → Users; a note's words — filed under the coordinator's limit, not held for the database step.
+
+### [ACCT-TOLD-OTHER-LINES] The app's "tell him" pass may carry an unchecked bell line past the save check (27 Nov 26, found building Admin → Users' step U2 Pass B; filed by chat 205 on chat 206's word) — OPEN
+**What:** the commit gate checks an `account.told` command (the app's pass that writes a man's own account lines, and the move-day lines) only through `acctLineViolation`, and only where the command carries an `acct` line; the system actor is asked nothing else. So a lone forged line of another kind riding an `account.told` command went through — the U2 Pass B builder showed it on the commit before e042c5d58 for the new squadron-Plan line (`sqplan`), now closed by `planLineViolation`. Whether any other line kind (an admin's line, a posting's, an input's) can ride `account.told` alone has not been checked.
+**To do:** the security reader of U2's code read (or the next security read of the gate) writes a failing test per line kind ridden on a bare `account.told`; any that goes through is refused by name at the gate, red first. Nothing a person can do on screen today makes such a command — it needs a forged write, so it matters at the database step's shared store.
+**Where:** `state/perms.ts` (the commit gate), the bell's lines; People & accounts.
 
 ### [GH-PAGES-PREVIEW-DOCS] A preview on GitHub Pages — the documents and the steps (27 Nov 26, chat 206, his D2832) — OPEN
 **What:** his D2832 lets a preview for his look be published on GitHub Pages (public, one site, each preview replacing the last); the live app stays on Vercel. `.github/workflows/deploy.yml`'s head and `raptor-port/docs/gates-and-deploy.md` still say there is no GitHub Pages site (D343).
