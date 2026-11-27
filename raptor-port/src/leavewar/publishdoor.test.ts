@@ -154,9 +154,21 @@ describe('publishing weekend work FLAGS a clashing leave bid (owner, 20 Sep 26)'
    published, and no OIL. The desk had no start and no end, so it measured
    nothing and minted nothing — correct, and completely silent. A man's leave
    balance short with no screen admitting it. */
+/* [END-TIME-GUARD] (his D2612, D2852 — 27 Nov 26): a day can no longer be published while a desk with someone on it has
+   no times — that publish is refused (the first case below). Every case here that published a BLANK desk now types one
+   whose times measure nothing (08:00–08:00): it still publishes and still earns nobody, so the note this file pins — "no
+   usable times, so nobody on it earns OIL" — is pinned exactly as before, on the case that can still happen. */
 describe('publishing a weekend nobody earns OIL for', () => {
-  const blankTheSaturdayDesks = () => {
+  it('a desk with a man on it and no times is refused at publish — nothing published, no OIL note (D2612)', () => {
+    setRole('admin')
     for (const dw of (DAYS[5] as any).dutywaves ?? []) for (const r of dw.rows ?? []) { r.str = ''; r.end = '' }
+    publish(5)
+    expect(SCHED.dayOK[5], 'not published').toBeFalsy()
+    expect(said).toEqual(['Blocked: 1 item is missing a time, outlined in red. Saturday was not published.'])
+  })
+
+  const blankTheSaturdayDesks = () => {
+    for (const dw of (DAYS[5] as any).dutywaves ?? []) for (const r of dw.rows ?? []) { r.str = '0800'; r.end = '0800' }
   }
 
   it('says the day earned nobody anything, and names the desk (AM48d)', () => {
@@ -178,7 +190,7 @@ describe('publishing a weekend nobody earns OIL for', () => {
 
   it('says nothing on a WEEKDAY: a blank desk on a Monday is ordinary', () => {
     setRole('admin')
-    for (const dw of (DAYS[0] as any).dutywaves ?? []) for (const r of dw.rows ?? []) { r.str = ''; r.end = '' }
+    for (const dw of (DAYS[0] as any).dutywaves ?? []) for (const r of dw.rows ?? []) { r.str = '0800'; r.end = '0800' }
     publish(0)
     expect(said.some(m => m.includes('earns OIL') || m.includes('earned nobody'))).toBe(false)
   })
@@ -192,7 +204,7 @@ describe('publishing a weekend nobody earns OIL for', () => {
     setRole('admin')
     const wave = ((DAYS[5] as any).dutywaves ?? [])[0]
     wave.rows.push({ role: 'SXO', id: 'plasma', str: '0800', end: '1800' })   // someone still earns
-    wave.rows[0].str = ''; wave.rows[0].end = ''                              // and a desk is blank
+    wave.rows[0].str = '0800'; wave.rows[0].end = '0800'                              // and a desk measures nothing
     expect(setCell('plasma', SAT, 'LL')).toBe(true)                           // …on a live bid
     publish(5)
     const spoke = said.find(m => m.includes('no usable times'))
@@ -206,7 +218,7 @@ describe('publishing a weekend nobody earns OIL for', () => {
     // a second desk properly timed beside the blank one.
     const wave = ((DAYS[5] as any).dutywaves ?? [])[0]
     wave.rows.push({ role: 'SXO', id: 'dj', str: '0800', end: '1800' })
-    wave.rows[0].str = ''; wave.rows[0].end = ''
+    wave.rows[0].str = '0800'; wave.rows[0].end = '0800'
     publish(5)
     const spoke = said.find(m => m.includes('earns OIL'))
     expect(spoke).toBeTruthy()
@@ -248,14 +260,14 @@ describe('the note on the screen after a publish (N1)', () => {
   it('with the same day\'s OIL line: the day once, with its date, and two sentences', () => {
     setRole('admin')
     satDesks().rows.push({ role: 'SXO', id: 'dj', str: '0800', end: '1800' })   // someone still earns
-    satDesks().rows[0].str = ''; satDesks().rows[0].end = ''                    // and the SDO desk is blank
+    satDesks().rows[0].str = '0800'; satDesks().rows[0].end = '0800'                    // and the SDO desk measures nothing
     publish(5)
     expect(text()).toBe('Saturday 18 Jul published and approved. The SDO desk has no usable times, so nobody on it earns OIL.')
   })
 
   it('the Common Programme wears its heading\'s capitals in that sentence, as his wording has it', () => {
     setRole('admin')
-    ;(DAYS[5] as any).allhands = [{ prog: 'OPS BRIEF', str: '', end: '', who: ['bane'] }]   // named, no times; the SDO desk earns
+    ;(DAYS[5] as any).allhands = [{ prog: 'OPS BRIEF', str: '0900', end: '0900', who: ['bane'] }]   // named, times that measure nothing; the SDO desk earns
     publish(5)
     expect(text()).toBe('Saturday 18 Jul published and approved. The Common Programme has no usable times, so nobody on it earns OIL.')
   })
@@ -308,7 +320,7 @@ describe('the note on the screen after a publish (N1)', () => {
   it('it follows the blank-desk line, each its own sentence', () => {
     setRole('admin')
     satDesks().rows.push({ role: 'SXO', id: 'dj', str: '0800', end: '1800' })
-    satDesks().rows[0].str = ''; satDesks().rows[0].end = ''
+    satDesks().rows[0].str = '0800'; satDesks().rows[0].end = '0800'
     INPUTS.push(training('fx-train', 'bane') as any)
     publish(5)
     expect(text()).toBe(`Saturday 18 Jul published and approved. The SDO desk has no usable times, so nobody on it earns OIL. ${csOf('bane')}’s Training has no OIL answer, so nobody on it earns OIL.`)
@@ -317,7 +329,7 @@ describe('the note on the screen after a publish (N1)', () => {
   it('the bid line rides behind the pair, its own words and its dot unchanged', () => {
     setRole('admin')
     satDesks().rows.push({ role: 'SXO', id: 'plasma', str: '0800', end: '1800' })
-    satDesks().rows[0].str = ''; satDesks().rows[0].end = ''
+    satDesks().rows[0].str = '0800'; satDesks().rows[0].end = '0800'
     expect(setCell('plasma', SAT, 'LL')).toBe(true)
     publish(5)
     expect(text()).toBe(`Saturday 18 Jul published and approved. The SDO desk has no usable times, so nobody on it earns OIL. · ${BID}`)
@@ -332,7 +344,7 @@ describe('the note on the screen after a publish (N1)', () => {
 
   it('NOT CHANGED — the OIL line\'s other form: its own day, its dash and the dot, word for word', () => {
     setRole('admin')
-    for (const dw of (DAYS[5] as any).dutywaves ?? []) for (const r of dw.rows ?? []) { r.str = ''; r.end = '' }
+    for (const dw of (DAYS[5] as any).dutywaves ?? []) for (const r of dw.rows ?? []) { r.str = '0800'; r.end = '0800' }
     publish(5)
     expect(text()).toBe('Saturday published and approved · Saturday 18 Jul earned nobody any OIL — the SDO desk has no usable times')
   })
@@ -342,7 +354,7 @@ describe('the note on the screen after a publish (N1)', () => {
     publish(5)
     expect(text(), 'the seed Saturday earns: the publish note alone').toBe('Saturday published and approved')
     satDesks().rows.push({ role: 'SXO', id: 'dj', str: '0800', end: '1800' })
-    satDesks().rows[0].str = ''; satDesks().rows[0].end = ''
+    satDesks().rows[0].str = '0800'; satDesks().rows[0].end = '0800'
     const g = signOf(5); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
     commitPublishALDay(5)
     expect(text()).toMatch(/^Published AL1 · .+ · Saturday 18 Jul: the SDO desk has no usable times, so nobody on it earns OIL$/)

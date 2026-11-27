@@ -85,14 +85,16 @@ export function recs(w: any) {
    reference's own DAYS by index (only the first REFN days are compared). Copies
    the exact fields the scrub touched — allhands/ground `prog`, ground/sim `who`,
    sim `label`/`rmks` — leaving times, ids and structure untouched (they were
-   already identical, which is why parity passed before). */
+   already identical, which is why parity passed before).
+   …AND THE ENDS THE DEMO WEEK WAS GIVEN ([END-TIME-GUARD], his D2616: the demo is remade to fit the rules — engine/data.ts
+   names the seven rows): a programme or ground row's `end` is copied too, so both engines read the same remade week. */
 export function reground(w: any) {
   const refn = w.eval('DAYS.length')
   DAYS.slice(0, refn).forEach((d: any, i: number) => {
     const p = JSON.stringify({ allhands: d.allhands || [], ground: d.ground || [], sims: d.sims || { amt: [], oft: [] } })
     w.eval(`(function(p){const D=DAYS[${i}];`
-      + `if(D.allhands)D.allhands.forEach((r,j)=>{if(p.allhands[j]!=null)r.prog=p.allhands[j].prog;});`
-      + `if(D.ground)D.ground.forEach((r,j)=>{if(p.ground[j]!=null){r.prog=p.ground[j].prog;r.who=p.ground[j].who;}});`
+      + `if(D.allhands)D.allhands.forEach((r,j)=>{if(p.allhands[j]!=null){r.prog=p.allhands[j].prog;r.end=p.allhands[j].end;}});`
+      + `if(D.ground)D.ground.forEach((r,j)=>{if(p.ground[j]!=null){r.prog=p.ground[j].prog;r.who=p.ground[j].who;r.end=p.ground[j].end;}});`
       + `['amt','oft'].forEach(k=>{if(D.sims&&D.sims[k])D.sims[k].forEach((r,j)=>{const s=(p.sims[k]||[])[j];if(s!=null){r.label=s.label;if('who' in s)r.who=s.who;if('rmks' in s)r.rmks=s.rmks;}});});`
       + `})(${p})`)
   })
