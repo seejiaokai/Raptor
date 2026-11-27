@@ -39,7 +39,10 @@ const boxes = p => p.evaluate(roles => {
   }
   const pub = document.querySelector('#schedBoard [data-alpub="5"], #schedBoard [data-beak="5"]')
   out.pub = pub ? `${pub.textContent.trim()}${pub.classList.contains('locked') ? ' [locked]' : ''}` : '(none)'
-  out.pending = window.dayHasChanges ? window.dayHasChanges(5) : 'n/a'
+  /* the day's own count chip beside the plan selector, as drawn ("1 change", "9 changes", or none) */
+  const chip = [...document.querySelectorAll('#schedBoard button, #schedBoard span')].find(e => /^\d+ (changes?|pending)$/.test((e.textContent || '').trim().replace(/\s*▾$/, '')))
+  out.count = chip ? chip.textContent.trim() : '(no count)'
+  out.pending = /AL\d/.test(out.pub)
   return out
 }, ROLES)
 const foot = p => p.evaluate(() => { const f = document.querySelector('[data-testid="odl-left"]'); return f ? f.textContent : null })
@@ -71,6 +74,8 @@ async function answerAtWindow(p, sz, iid, how) {
 async function answerAtRow(p, sz, iid, how) {
   await L.go(p, 'inputs')
   await L.press(p, sz, '#inListBtn'); await p.waitForTimeout(400)
+  /* the list opens on the coming fortnight: widen it, as a person would, by the dates button's "All dates" */
+  await L.press(p, sz, '#inRangeBtn'); await L.press(p, sz, '#inRangeAll'); await p.waitForTimeout(400)
   const row = p.locator(`tr:has([data-oilask])`).filter({ hasText: 'Training' })
   const n = await row.count()
   await L.press(p, sz, '[data-oilask]')
@@ -118,7 +123,8 @@ S.B = async sz => {
   await L.openBoard(p)
   const bx = await boxes(p); await shot(p, sz, 'B1-changed-answer')
   res('B', sz, 'changed at the window: APPROVED BY falls, three stand', eq(named(bx), ['cur', 'sked', 'plan']), `${JSON.stringify(d)} ${JSON.stringify(bx)}`)
-  await L.press(p, sz, '#undoBtn'); await p.waitForTimeout(500)
+  /* the board covers the page: its own Undo, beside "Sort all" */
+  await L.press(p, sz, '#sbUndo'); await p.waitForTimeout(500)
   const bx2 = await boxes(p); await shot(p, sz, 'B2-undo')
   res('B', sz, 'Undo: the answer and the name back', named(bx2).length === 4, `${await answerOf(p, 'ol-t1')} ${JSON.stringify(bx2)}`)
   await L.done(b)
@@ -173,7 +179,7 @@ S.E = async sz => {
   res('E', sz, 'four stand over the answer; the change still waits; Publish AL free', named(bx).length === 4 && bx.pending === true && !/locked/.test(bx.pub) && /AL/.test(bx.pub), JSON.stringify(bx))
   await L.press(p, sz, '#schedBoard [data-alpub="5"]'); await p.waitForTimeout(600)
   const t = await L.toastText(p), bx2 = await boxes(p); await shot(p, sz, 'E2-amendment-out')
-  res('E', sz, 'the amendment goes out', bx2.pending === false, `${t && t.text} ${JSON.stringify(bx2)}`)
+  res('E', sz, 'the amendment goes out; the boxes start afresh for the next', /Published AL1/.test((t && t.text) || '') && named(bx2).length === 0, `${t && t.text} ${JSON.stringify(bx2)}`)
   await L.done(b)
 }
 /* F — the Inputs page's row door: two Later names, answered at the row → both stand */
@@ -223,7 +229,40 @@ S.H = async sz => {
   await L.done(b)
 }
 
-const PLAN = { desktop: ['B', 'C', 'D', 'E', 'F', 'G'], phone: ['A', 'H'] }
+/* P — the plain-user round (§7.0a): every way the list closes pressed (✕, Escape, Later, Save), then the day published
+   and every other place that shows the result looked at — the publish note, View-only Sched, the Leave War's cell */
+S.P = async sz => {
+  const { b, p } = await world(sz, 1)
+  await L.openBoard(p)
+  await pickOn(p, sz, 'board', 'cur', 0)
+  const xSel = (await p.locator(`${LIST} [data-testid="win-oilday-x"]`).count()) ? `${LIST} [data-testid="win-oilday-x"]` : `${LIST} .win-x`
+  await L.press(p, sz, xSel); await p.waitForTimeout(300)
+  res('P', sz, '✕ signs nothing', !(await listUp(p)) && named(await boxes(p)).length === 0, JSON.stringify(await boxes(p)))
+  await pickOn(p, sz, 'board', 'cur', 0)
+  if (!sz.tap) { await p.keyboard.press('Escape'); await p.waitForTimeout(300)
+    res('P', sz, 'Escape signs nothing', !(await listUp(p)) && named(await boxes(p)).length === 0, JSON.stringify(await boxes(p)))
+    await pickOn(p, sz, 'board', 'cur', 0) }
+  await later(p, sz)
+  for (const [i, r] of [['sked', 1], ['plan', 2]].map(([r, i]) => [i, r])) { await pickOn(p, sz, 'board', r, i); await later(p, sz) }
+  await pickOn(p, sz, 'board', 'appr', 3)
+  await L.press(p, sz, `${LIST} [data-testid="odl-yes-ol-t1"]`); await L.press(p, sz, `${LIST} [data-testid="odl-save"]`); await p.waitForTimeout(400)
+  await L.press(p, sz, '#schedBoard [data-beak="5"]'); await p.waitForTimeout(700)
+  const t = await L.toastText(p); await shot(p, sz, 'P1-published')
+  res('P', sz, 'published; the note does not call the Training unanswered', !!t && /published/i.test(t.text) && !/no OIL answer/.test(t.text), t && t.text)
+  await L.press(p, sz, '#schedBoard [data-testid="sb-done"], #schedBoard .sb-done, #sbDone').catch(() => {})
+  await L.go(p, 'viewsched'); await p.waitForTimeout(500); await shot(p, sz, 'P2-view-only')
+  const signed = await p.evaluate(() => (document.body.innerText.match(/APPROVED[^\n]{0,40}/) || [''])[0])
+  res('P', sz, 'View-only Sched — RECORD what it shows of the sign-off', null, signed)
+  await L.go(p, 'leavewar'); await p.waitForTimeout(900)
+  const jul = p.locator('[data-testid="month-JUL"]').first(); if (await jul.count()) { await jul.click().catch(() => {}); await p.waitForTimeout(700) }
+  const cell = p.locator(`[data-testid="cell-bane-${L.SAT}"]`).first()
+  let txt = 'no cell'; if (await cell.count()) { await cell.scrollIntoViewIfNeeded().catch(() => {}); txt = (await cell.innerText()).trim() }
+  await shot(p, sz, 'P3-leave-war')
+  res('P', sz, 'the Leave War credits Bane his Saturday (Yes · FO)', /\bFO\b/.test(txt), txt)
+  await L.done(b)
+}
+
+const PLAN = { desktop: ['B', 'C', 'D', 'E', 'F', 'G', 'P'], phone: ['A', 'H', 'P'] }
 for (const key of Object.keys(PLAN)) {
   const sz = L.SIZES[key]
   for (const sc of PLAN[key]) {

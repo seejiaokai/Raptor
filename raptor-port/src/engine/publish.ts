@@ -1663,6 +1663,7 @@ function pendingKeyAtSign(di:any,oa:any):string|null{di=+di;
   if(!oa)return null;
   /* once per repaint for the same open questions (passMemo — the roles signed together share one answer) */
   const open=Object.keys(oa).filter((k:string)=>oa[k]==null).sort().join('␟');
+  if(!open)return null;   // no question was open at signing: nothing to read back, no evidence built (Fable's read, F4)
   return passMemo('pka'+open+'␞',di,()=>pendingKeyAtSignNow(di,oa));}
 function pendingKeyAtSignNow(di:number,oa:any):string|null{
   const ev=oilEvidence(di), at=oilAnsAtSign(ev,oa);

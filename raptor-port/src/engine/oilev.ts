@@ -1027,7 +1027,9 @@ export function oilSignKey(ev: OilEvidence | null | undefined, day?: any): strin
  *  signed over and that has since changed (kept a number: it clears them — D2869). */
 export function oilAnsKept(ev: OilEvidence | null | undefined): Record<string, number | null> {
   const out: Record<string, number | null> = {}
-  for (const i of (ev && ev.inputs) || []) out[i.iid] = i.ans == null ? null : i.ans
+  /* only the inputs the key and the comparison read (keyedInputs): a request taken off the programme counts for nothing
+     on the day, so a change of its answer must not clear the names (the fresh Fable code read, F2, 28 Nov 26) */
+  for (const i of ev ? keyedInputs(ev) : []) out[i.iid] = i.ans == null ? null : i.ans
   return out
 }
 /** THE EVIDENCE AS A SIGNATURE SAW IT, ANSWERS ONLY: each input whose question stood open when the binding was made

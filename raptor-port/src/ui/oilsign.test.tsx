@@ -338,6 +338,17 @@ describe('a sign-off pressed on a day with an unanswered OIL question (D2294, D2
     expect(signShown(SAT), 'the remark is a change of its own (D103)').toMatchObject({ cur: '', sked: '' })
   })
 
+  /* the fresh Fable code read, F2 (28 Nov 26): a request taken off the programme counts for nothing on the day — its
+     answer is in neither the signature's key nor the comparison — so a change of its answer must not clear the names */
+  it('the answer of a request taken off the programme, changed after signing, leaves the names', () => {
+    const r: any = INPUTS.find((x: any) => x.iid === 'fx-train')
+    expect(writeInputsBatch(() => { r.oil = { [SAT_ISO]: 1 }; r.acc = 'r' })).toBe(true); view.afterSchedMutate()
+    setSign(SAT, 'cur', 'ignite'); setSign(SAT, 'sked', 'bane')
+    expect(signShown(SAT), 'setup: two signed').toMatchObject({ cur: 'ignite', sked: 'bane' })
+    expect(writeInputsBatch(() => { r.oil = { [SAT_ISO]: 0 } })).toBe(true); view.afterSchedMutate()
+    expect(signShown(SAT)).toMatchObject({ cur: 'ignite', sked: 'bane' })
+  })
+
   /* Astra's red-team read of the plan, finding 2 (27 Nov 26): a time emptied behind the open list — the foot must not
      promise a name that Later will be refused */
   it('a time emptied behind the list: no line promises the name; Later signs nothing; the next press asks again', async () => {
