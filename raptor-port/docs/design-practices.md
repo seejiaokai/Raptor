@@ -648,6 +648,8 @@ first, as a chat does for ruling numbers, and names it in its handoff block; whe
 the merge renumbers only the branch's own side, by script, and the closing report tells him the old and new numbers
 (D1417).*
 
+**Lesson 170 (28 Nov 26, D2884 — "it doesnt seem intuitive to click on the LL to change the leave").** On the Leave War's day window, a leave's kind is not changed only by tapping the leave's own line or its ›: the way to change it is a control the person can see, standing with the leave it changes. (Lesson numbers 152–169 are held by other branches; this branch takes 170.)
+
 **Lesson 151 (27 Nov 26, D2784 — "like the word change then 2 buttons that show 3 pax and another button shows the name of that person").** On the Leave War window's line for a group's leave, the verb is said once and the two choices are short buttons naming only the scope ("Change" · [3 pax] · [Cutter]), never two long buttons each repeating the verb. *(The agent's reading: the same holds wherever one action is offered for two scopes; and the choices sit on one line, side by side, so they read as a pair.)*
 
 **Lesson 101 (24 Nov 26, D2431 — "perhaps he could be remove via drag and dropped on an empty space or right click? Instead of this cross").** A man is taken out of an ALL AVAIL (or ALL) crowd the way a puck already comes off a seat — dragged onto empty space or right-clicked — not by a new ✕ drawn beside him; he doubted the window had room for one. *(The agent's reading: a new way to remove something is checked first against how the app already removes the same kind of thing.)*
