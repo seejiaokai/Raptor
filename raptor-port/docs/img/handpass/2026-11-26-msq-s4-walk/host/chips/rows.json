@@ -1,0 +1,56 @@
+[
+ [
+  "W-D FAIL 2 re-walk",
+  "phone-webkit",
+  "po-overseas chosen",
+  "all three chips one height",
+  "28, 28, 28",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/host/chips/001-phone-webkit-chips-po-overseas.png"
+ ],
+ [
+  "W-D FAIL 2 re-walk",
+  "phone-webkit",
+  "po-delete chosen",
+  "all three chips one height",
+  "30, 30, 30",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/host/chips/002-phone-webkit-chips-po-delete.png"
+ ],
+ [
+  "W-D FAIL 2 re-walk",
+  "phone-webkit",
+  "po-sans chosen",
+  "all three chips one height",
+  "30, 30, 30",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/host/chips/003-phone-webkit-chips-po-sans.png"
+ ],
+ [
+  "W-D FAIL 2 re-walk",
+  "phone-chromium",
+  "po-overseas chosen",
+  "all three chips one height",
+  "30, 30, 30",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/host/chips/004-phone-chromium-chips-po-overseas.png"
+ ],
+ [
+  "W-D FAIL 2 re-walk",
+  "phone-chromium",
+  "po-delete chosen",
+  "all three chips one height",
+  "30, 30, 30",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/host/chips/005-phone-chromium-chips-po-delete.png"
+ ],
+ [
+  "W-D FAIL 2 re-walk",
+  "phone-chromium",
+  "po-sans chosen",
+  "all three chips one height",
+  "30, 30, 30",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/host/chips/006-phone-chromium-chips-po-sans.png"
+ ]
+]

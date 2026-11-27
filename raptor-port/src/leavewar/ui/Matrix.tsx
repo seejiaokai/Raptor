@@ -59,6 +59,7 @@ import { warInputs, type WarInput } from '../absences'
 import { ReorderIcon } from '../../ui/icons'
 import { landingScroll, leftTheLanding, reanchorPlan } from './reanchor'
 import { warBand } from '../../state/typing-hold'
+import { keepCellAboveSheet } from './cellinsight'
 import './matrix.css'
 
 /* THE BID WINDOW HELD UNDER THE MIDNIGHT BAND (his D2243 Q7: "His typed words stay visible"; the reshape plan §3.2 A-iv).
@@ -247,7 +248,7 @@ export function Matrix() {
      Read at the tap, from the day as it stood; unset for every other sheet, which follows the day live (a PO placed
      from the bid sheet closes that sheet — the next tap on the greyed day opens the Post out sheet). */
   const [open, setOpen] = useState<{ id: string; callsign: string; date: string; posting?: 'po' | 'pi' } | null>(null)
-  const close = () => { setOpen(null); setPlaceAt(null) }
+  const close = () => { setOpen(null) }
   // The DRAG-SELECTION (owner, 27 Aug 26): the rectangle the last drag left,
   // and the sheet it opens. `moveSel` is the selection currently being MOVED
   // (Task E) — sheet closed, waiting for a drop. Both cleared on a stage/war
@@ -286,22 +287,16 @@ export function Matrix() {
   // (owner, 20 Sep 26). For an ADMIN this opens the post-in sheet, exactly as
   // a posted-out day opens the post-out one; for a member it falls through to
   // the bid picker, which is answer C's "filed or bid" on a pre-joining day.
-  const openNotYetArrived = open?.posting
+  /* …and a day before his post-in that HOLDS an entry opens that entry's own window too, as after a post-out — an empty
+     such day still opens the Post in sheet (his D2743, 26 Nov 26, through the coordinator; the code reads' F1 / A) */
+  const openNotYetArrived = openGoneHolds ? false : open?.posting
     ? open.posting === 'pi' && !!openPerson && openPerson.from !== null
     : !!open && !!openPerson && postingSheetFor(openPerson, open.date) === 'pi'   // D320: by stint
-  /* "Place leave or OIL here instead" (owner, 20 Sep 26 — "we should also allow
-     putting inputs when we click on days that were posted out"). An admin's tap
-     on a day outside someone's time in the squadron opens the POSTING sheet,
-     which is right for the common case but left him no way to file the clearing
-     leave that made him open the day. Everyone else could already: the man
-     himself taps his own day and gets the bid sheet, and the Inputs page takes
-     any date. This remembers the ONE cell he asked to place on, so the posting
-     sheet stands aside for the bid sheet — for that cell only, until it closes.
-     Keyed by CELL rather than a boolean, so opening a different day never
-     arrives already switched. */
-  const [placeAt, setPlaceAt] = useState<string | null>(null)
+  /* "Place leave or OIL here instead" (his 20 Sep 26 wish) is GONE (his D2727, 26 Nov 26 — "ok remove it"): an admin's
+     tap on a day outside a man's time in the squadron opens the posting sheet only, and an input for such a day is filed
+     from the Inputs page, which takes any date. The man's own tap on his own such day still opens the bid sheet, as
+     before — D2727 speaks of the posting sheets, which are the admin's (D328). The cell it remembered went with it. */
   const openKey = open ? `${open.id}|${open.date}` : ''
-  const placing = !!open && placeAt === openKey
   /* WHAT THE ONE-DAY WINDOW WAS SAYING WHEN THE DAY'S LIST TOOK ITS PLACE (the fixes' round 3b — the rounds 2–3 walk's G3):
      leave placed with "Approve what I enter" on a day from a man's posting-out date is kept pending — and the day, now
      holding leave outside his time in the squadron, opens the day's list in the window's place, so the reason ("He posts
@@ -661,7 +656,7 @@ export function Matrix() {
      its controls still wrote to the day it was opened on — in the war no longer on screen. The Sheet now holds the
      keyboard too, so the switch cannot be reached from inside one; this is the second guard, for any other road to a
      switch (an undo that snaps the war, a reload of the picker). */
-  useEffect(() => { setOpen(null); setPlaceAt(null); setEventEdit(null); setEvPeek(null) }, [period.id])   // the event sheet too (Fable F4)
+  useEffect(() => { setOpen(null); setEventEdit(null); setEvPeek(null) }, [period.id])   // the event sheet too (Fable F4)
   // MOVE MODE is wired further down, after the `phone` breakpoint state it
   // reads to choose commit-on-click (desktop) vs preview-then-Confirm (phone).
   // The frozen-column overlay's own anchors (see the .mxband block below and
@@ -2359,15 +2354,11 @@ export function Matrix() {
   useLayoutEffect(() => { if (hbar) syncHbar() }, [hbar])
   /* ON A PHONE THE TAPPED CELL STAYS IN SIGHT (red-team fix A5, the phone half — M3 5.7): a bid window opening over the
      cell tapped first scrolls the page so the cell sits just above the window's top edge. Only as it opens (Undo leaves
-     the grid where it is — D672); a cell already clear of it does not move; the desktop's window blocks nothing (D641). */
+     the grid where it is — D672); a cell already clear of it does not move; the desktop's window blocks nothing (D641).
+     The body is `cellinsight.ts`, shared with the posting's opening (BidPicker). */
   useLayoutEffect(() => {
     if (!open || !phone) return
-    const cell = document.querySelector<HTMLElement>(`#page-leavewar [data-testid="cell-${open.id}-${open.date}"]`)
-    const sheet = document.querySelector<HTMLElement>('[data-testid="bid-picker"]')
-    if (!cell || !sheet) return
-    const c = cell.getBoundingClientRect(), w = sheet.getBoundingClientRect()
-    if (!c.height || !w.height || c.bottom <= w.top - 4) return
-    window.scrollBy(0, c.bottom - w.top + 8)
+    keepCellAboveSheet(open.id, open.date)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open?.id, open?.date])
 
@@ -3707,8 +3698,9 @@ export function Matrix() {
   /* A DAY FILLED FROM THE INPUTS PAGE (his D1548, D1552, D1553 — [LW-HELD-DAY-ADD]; D1395's course day widened): held whole
      by entries filed there — leave, a medical, an overseas duty, a course, a commitment under Unavailable, or a morning and an
      afternoon — a tap opens the bid window so more can still be added (Grant OIL first), one line on top for each entry. Only
-     where the bid window itself opens: an admin's tap on a posted-out or not-yet-arrived day shows what it always did, unless
-     he chose to place leave or OIL there (the narrow read's N3 — the bid window's own condition, below). It comes before the
+     where the bid window itself opens: an admin's tap on a posted-out or not-yet-arrived day shows what it always did — a
+     gone day holding anything opens as any other day (D1722), and "Place leave or OIL here instead" is gone (D2727; the
+     narrow read's N3 — the bid window's own condition, below). It comes before the
      day's list, the member's remarks window and the read-only note, each of which it replaces on such a day — but never on a
      day outside his time in the squadron, where the day's list shows every record on its own line (owner answer C, below). */
   /* A BID OF THIS WAR'S OWN ON A DAY NOW ANOTHER SQUADRON'S (the reshape walk's W2-F3 — MatrixRows.tsx awayBid): the day's
@@ -3717,8 +3709,8 @@ export function Matrix() {
   /* …and once that bid is gone — its Delete pressed — the day opens nothing again, as every other day of the stripe: the
      window closes with it, never turning into a bid window on another squadron's day */
   const openAwayDone = !!open && !!openPerson && !warBand() && awayFromHome(openPerson, open.date) && !openAwayBid
-  useEffect(() => { if (openAwayDone) { setOpen(null); setPlaceAt(null) } }, [openAwayDone])
-  const openHeld = open && openView && !openAwayBid && (placing || !(role === 'admin' && (openPostedOut || openNotYetArrived))) && bidOpenOn(open.id, open.date)
+  useEffect(() => { if (openAwayDone) { setOpen(null) } }, [openAwayDone])
+  const openHeld = open && openView && !openAwayBid && !(role === 'admin' && (openPostedOut || openNotYetArrived)) && bidOpenOn(open.id, open.date)
     /* (only LEAVE there — the day's list's own rule, `listOpen` below: a course, a medical or an OD outside his time still opens
        the window, as a course's day did before — the fresh code read's F3) */
     && !(role !== 'admin' && openPerson && !inSquadron(openPerson, open.date) && !!openView.main && codeOf(openView.main.code)?.spends != null)
@@ -4572,7 +4564,7 @@ export function Matrix() {
       {/* A posted-out cell an admin tapped: the ONE control it offers is Undo,
           and it short-circuits every bid/decision sheet below (owner, 18 Aug
           26). */}
-      {open && !listOpen && !canRemark && openPostedOut && role === 'admin' && !placing && !openPerson?.gone && (
+      {open && !listOpen && !canRemark && openPostedOut && role === 'admin' && !openPerson?.gone && (
         <PostOutSheet
           callsign={open.callsign}
           date={open.date}
@@ -4594,7 +4586,6 @@ export function Matrix() {
           /* the archive the Post out made goes too (W5-F1); refused, with where to go, when a man on the roster now holds
              his callsign (D286 (1) — Fable's scenario 2: it closed and did nothing) */
           onUndo={() => { const why = undoPostOutProblem(open.id); if (why) return why; undoPostOut(open.id); close() }}
-          onPlace={() => setPlaceAt(openKey)}
           onClose={close}
         />
       )}
@@ -4603,7 +4594,7 @@ export function Matrix() {
           and it short-circuits the bid picker below exactly as that one does
           (owner, 20 Sep 26). A MEMBER tapping their own pre-joining day falls
           through to the picker instead, which is answer C's "filed or bid". */}
-      {open && !listOpen && !canRemark && openNotYetArrived && role === 'admin' && !placing && !openPerson?.gone && (
+      {open && !listOpen && !canRemark && openNotYetArrived && role === 'admin' && !openPerson?.gone && (
         <PostInSheet
           callsign={open.callsign}
           date={open.date}
@@ -4617,7 +4608,6 @@ export function Matrix() {
           lockedWhy={postingLocked(open.id)}
           onChange={from => postInOr(open.id, from)}
           onUndo={() => { setPostIn(open.id, null); close() }}
-          onPlace={() => setPlaceAt(openKey)}
           onClose={close}
         />
       )}
@@ -4798,7 +4788,7 @@ export function Matrix() {
       )}
       {/* a member may bid CLEARING leave after their own posting-out (owner
           answer C, 20 Sep 26) — the admin's tap there stays the PO sheet */}
-      {open && !listOpen && !canRemark && (placing || ((!openPostedOut || role !== 'admin') && (!openNotYetArrived || role !== 'admin'))) && (!lockedOnWar(openView) || !!openFreeHalf || openWorkOnly || !!openHeld)
+      {open && !listOpen && !canRemark && (!openPostedOut || role !== 'admin') && (!openNotYetArrived || role !== 'admin') &&(!lockedOnWar(openView) || !!openFreeHalf || openWorkOnly || !!openHeld)
         && bidOpenOn(open.id, open.date) && (
         <BidPicker
           key={`${open.id}-${open.date}`}

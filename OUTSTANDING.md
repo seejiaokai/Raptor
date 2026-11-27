@@ -132,6 +132,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LW-BALANCES-COMPACT] — his D2815: the Balances page takes too much height; made compact (heading block and rows), drawn first for his look, then built with [LW-POSTIN-BALANCE].
 - [LW-POSTIN-BALANCE] — a posted-in man's leave balance (chat 200, 26 Nov 26): leave before his post-in date never deducted (D2747), one line "Only leave after post-in is deducted." where a balance is typed (D2749), no line naming where the figure came from (D2812), "App bal" relabelled "Official bal" (D2810); "Not typed" until a figure is typed (D2746); today's order kept (D2745); every question answered; built on his word.
 - [SANS-CHIP-ON-SANS] — the Post out sheet offers the "SANS" chip to a man already SANS; D2163: not offered for him (small fix, no answer needed; the next Leave War batch).
+- [MSQ-S4-WALK-OLDER] — what the posting sheet's walk (26 Nov 26, chat 201) met that is the same on `main`: the choices and buttons move when a line grows or a warning comes, a master admin offered "Delete Saber?", one tap outside closing the card and the sheet, mixed focus rings, and smaller ones — the move answered (A, room kept for the longest line — D2809, on the batch branch), built on the next Leave War batch, the rest small fixes.
 - [LW-FOUR-ITEMS-LEFTOVERS] — what the four Leave War items (pull request 801, live 17 Nov 26) left for him: five like-for-like suggestions and three departures from the drawings — questions kept until he says (D994), pictures first.
 - [MSQ-FIXREAD4-OPEN] — fix read 4's claims 1–4 done (19 Nov 26, chat 111: `ebbd4aea6`, `5b8357f92`; his question answered by D2218); claim 5, the month landing on a desktop, done in its own session (chat 112, `claude/lw-monthjump-click` to `44426c5c0`, merged in); a fresh read of the claims 1–4 fixes and of claim 5's last commit still owed, before pull request 806 merges.
 - [LW-APPROVALS-PHONE-FLAKE] — a Leave War phone browser test ("the grid shown again after Approvals…") fails about 2 runs in 6 under load, alone 4/4, the same before and after the month-jump fix — a test to steady (19 Nov 26, chat 109).
@@ -195,6 +196,9 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [MSQ-S2-U1-READS-LEFT] — what the reads of Admin → Users' step U1 left: two doors' words (one names a sign-in, one tells of a move), the row's ids in the markup, View sent by a short row to a man another admin emptied unseen, and a question for him — may an archived man be moved, or a man with a move be archived.
 - [UNDO-RECEIPT-REPLACED] — his own Undo's "Undid: …" replaced by Admin → Users' "row changed" note on the redraw; words only, one person; maybe app-wide.
 - [USERS-JUDGE-THREE-COPIES] — Admin → Users' judging of the other open work at a press is written three times; fold into one (a tidiness note).
+
+**Publishing and checks**
+- [GH-PAGES-PREVIEW-DOCS] — his D2832: a preview for his look may go on GitHub Pages; the documents still saying "no GitHub Pages site" (deploy.yml's head, gates-and-deploy.md) are corrected, and how a preview is published there is written down.
 - [LAPSED-SESSION-DOORS] — the account doors and the commit gate accept a write from a signed-in person whose own sign-in was just switched off, archived, deleted or made a member, until his screen next redraws; cannot happen in one browser today — closed before the database step.
 - [ROW-NOTE-OPEN-AGAIN] — a question for him, kept until the database or Transfer step: Admin → Users' "…row changed while it was open, so nothing was saved. Open it again." where he can no longer open that row (his own right lowered, or he was made a member) — recommended: end it at "…so nothing was saved." there.
 - [ADD-FORM-MIDNIGHT-HOLD] — "Add a person" open with a name typed, his own move to another squadron lands at midnight, Add puts the man into the new squadron with no word; the guard rail's step K5b, drawn first (27 Nov 26).
@@ -364,6 +368,11 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 **Cause:** `state/undo-wire.ts` `installGlobalUndo`'s `showBubble` toasts the receipt at once; `ui/UsersPanel.tsx useOpenWorkJudged` says its note after the redraw. The same may hold for any page whose redraw raises a note after an Undo — an app-wide shape, not this page's alone.
 **To do:** a note raised since the last draw and still showing is joined by the draw's own note on one line (the reader's fix: `ui/toast.ts` records the last unbatched note — `lastShown()` — and `useOpenWorkJudged` joins it when it says its note); check the other pages that say a note on a redraw; red first.
 **Where:** the passing note (`ui/toast.ts`), Undo / Redo, Admin → Users; a note's words — filed under the coordinator's limit, not held for the database step.
+
+### [GH-PAGES-PREVIEW-DOCS] A preview on GitHub Pages — the documents and the steps (27 Nov 26, chat 206, his D2832) — OPEN
+**What:** his D2832 lets a preview for his look be published on GitHub Pages (public, one site, each preview replacing the last); the live app stays on Vercel. `.github/workflows/deploy.yml`'s head and `raptor-port/docs/gates-and-deploy.md` still say there is no GitHub Pages site (D343).
+**To do:** correct both, and write in gates-and-deploy.md how a preview is published there (built with the site's sub-path, pushed to the `gh-pages` branch, Pages set to serve it) as first done for pull request 857.
+**Where:** `.github/workflows/deploy.yml` (merges only on his "merge live"), `raptor-port/docs/gates-and-deploy.md`.
 
 ### [USERS-JUDGE-THREE-COPIES] Admin → Users' "judge the rest" written three times — a tidiness note (27 Nov 26, the eleventh read; filed by chat 205) — OPEN
 **What:** the page's judging of the other open work at a press is written three times — `closedAtPress`, the 'row' / 'give' arms of `pressPaths.afterWrite`, and its 'add' arm (the same as `closedAtPress` with nothing pressed). Today the three agree; a later change to one (the order of the notes, a new list check) could miss the others. Also: the 'add' arm assumes its write never closes a slot itself (true for Add and Refuse today) — worth a comment line.
@@ -3473,3 +3482,42 @@ skills. Opened through the Skill tool since install: nine never, `test-driven-de
 `brainstorming/mockups-on-the-real-app.md` was read, in 3 chats — the one file the project guide's map names. The
 question for the review: move those lessons into the guides chats do read (the project guide's map, the bug-check
 order, `raptor-port/docs/walk-scripts.md`), or make each skill open when its work starts.
+
+### [MSQ-S4-WALK-OLDER] What the posting sheet's walk met that is the same on `main` (filed 26 Nov 26, chat 201)
+
+**Where it came from:** the walk of the multi-squadron build's section 4 (the Leave War's posting sheet in way C, pull
+request 852; evidence sheet `raptor-port/docs/handpass/2026-11-26-msq-s4-posting.md`, the walkers' reports in the
+group's notes folder `s4-chat201/`). Each was reproduced on `main`'s build beside this one and is older than the
+change; none harms a saved record. In order of what a person meets most:
+
+**(a) The choices and the main button move under the finger when the sheet grows.** The posting sheet is pinned at its
+foot, so a longer line or a warning makes it grow upward: on a phone choosing Delete wraps its line and the three
+choices rise 16.6 px; on a desktop the last-admin or master-admin amber line lifts them 26.6 px (43.3 at 520 wide), and
+a refusal's reason appearing under "Post out" lifts the button 43 px. Lesson 27 and his rule of 2 Sep 26 (a control
+tapped again and again must not move). `main`: 16.6 / 31.6 / 48 px. A fix changes how the sheet sits (its top held
+still, or room kept for the longest line) — drawn for him first, a question with pictures (D994, D1625). **His answer
+(26 Nov 26, question 17): A — the sheet keeps room for its longest line, so nothing moves; D2809 (recorded on the batch
+branch) — build on the next Leave War batch.** Not built in pull request 852.
+
+**(b) A master admin is offered "Delete Saber?"** On Saber's own day, Post out with Delete chosen says "Saber is a
+master admin, so he can't be deleted", yet "Post out" still raises the card; its Delete then refuses, "You can't delete
+yourself — ask another admin", and nothing changes. A small fix: no card where the sheet already says it cannot happen.
+
+**(c) One tap outside the sheet with the "Delete Cinch?" card up closes the card and the sheet together** (lesson 19:
+one tap, one thing); nothing is posted. On the drag window the card stays up instead (no backdrop there). A small fix,
+or his word to leave it.
+
+**(d) The focus ring is mixed on the posting sheets:** the date box and the card's Cancel wear the app's cyan ring, the
+choices, "Post out" and ✕ the browser's own (D1646, D1771). Tab from the card's Cancel goes to ✕, Delete reached only by
+Shift+Tab; Escape drops the keys onto the page, not the day; the existing sheets take no focus as they open. Small fixes.
+
+**(e) Smaller:** the ✕ is named "Cancel" to a screen reader on the new sheets and "Close" on the existing ones; on the
+last rows of the grid on a phone (and from 701 wide, where the backdrop covers it) the tapped day stays under the sheet
+— D1290's lift cannot scroll further (W-A F2; a look for his iPhone); a stale "Delete Cinch?" card in a second tab can
+write a Delete posting after the first tab undid it (two devices that never sync — the database step's); right after
+midnight a gone day drew a plain "PO" for one frame before its hatch; Approvals' amber "posting out … · auto delete"
+words run into the LL box; on a phone in WebKit the one-day window stops about 35 px above the screen's foot, the row
+under it showing below.
+
+**Not a fault, recorded for him:** the drag window turned posting has no way back to the range's leave buttons — ✕
+loses the range (no ruling names one; D2653 d named the one-day sheet's). His word if he wants one.

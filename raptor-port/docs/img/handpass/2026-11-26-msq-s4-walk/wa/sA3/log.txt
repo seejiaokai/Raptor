@@ -1,0 +1,32 @@
+msq-s4w-lib v1 who=wa run=sA3 port=4753
+wa-lib v1
+wa-sA v3
+ROW PASS | A4 clear day | phone-webkit | Cinch 11 Dec (high) → day window → ⋯ Post out | saw: scrollY 0→0→0; cell 371-388 sheetTop 552 hit=true
+ROW PASS | F-S27(a) | phone-webkit | new posting open; two slow presses on the day (700ms apart) | saw: after1 bid=null poForm=null; after2 bid=605 leave=true poForm=null head=Cinch Fri 11 Dec Auto-approve ✕
+ROW PASS | F-S27(b) | phone-webkit | posting open (yes); quick double tap on the day (150ms) | saw: {"bid":605,"postout":null,"postin":null,"select":null,"poForm":null,"confirm":null,"leaveGroup":true,"card":null,"head":"Cinch Fri 11 Dec Auto-approve ✕","gone":0}
+ROW PASS | F-S27(c) | phone-webkit | posting open; three quick taps (140ms) | saw: {"bid":null,"postout":null,"postin":null,"select":null,"poForm":null,"confirm":null,"leaveGroup":false,"card":null,"head":null,"gone":0}
+ROW PASS | F-S27(d) | phone-webkit | posting open; press, press again 40ms later; frame mid-way img/handpass/2026-11-26-msq-s4-walk/wa/sA3/011-phone-webkit-S27d-midway.png | saw: {"bid":605,"postout":null,"postin":null,"select":null,"poForm":null,"confirm":null,"leaveGroup":true,"card":null,"head":"Cinch Fri 11 Dec Auto-approve ✕","gone":0}
+ROW NOT REACHED | F-S27(e) | phone-webkit | drift press and long press | saw: WebKit in Playwright has no held or drifting finger — walked in Chromium only
+phone-webkit toTop 0 -> 0
+ROW PASS | A4 own row | phone-webkit | Saber's own row 9 Dec → ⋯ Post out | saw: cell 424-442 sheetTop 552 hit=true at=cell-stiff-2026-12-09; sheet: Saber Post out ✕ POSTING ✓ Overseas Sqn Delete SANS PO FROM Wed 9 Dec 26 ▾ On 9 
+ROW RECORD | A4 other date | phone-webkit | Saber's posting open; press 4 Dec on his row | saw: {"bid":null,"postout":null,"postin":null,"select":null,"poForm":null,"confirm":null,"leaveGroup":false,"card":null,"head":null,"gone":0} | 
+ROW RECORD | A4 other man | phone-webkit | Saber's posting open; press Piston's 9 Dec | saw: {"bid":null,"postout":null,"postin":null,"select":null,"poForm":null,"confirm":null,"leaveGroup":false,"card":null,"head":null,"gone":0} | 
+phone-webkit toTop 0 -> 0
+ROW PASS | A4 low day (bid window) | phone-webkit | Outlaw 8 Dec, low on screen → day window | saw: scrollY 0→234; cell 579-598 sheetTop 605 hit=true
+ROW PASS | A4 low day (posting) | phone-webkit | ⋯ → Post out (taller sheet) | saw: scrollY 234→287; cell 526-545 sheetTop 552 hit=true
+phone-webkit fixture: Outlaw gone days 8–14 = 7
+phone-webkit toTop 287 -> 0
+phone-webkit gone day at {"x":289,"y":813,"w":21,"h":18}
+ROW PASS | F-S1(1) | phone-webkit | Outlaw's gone day 10 Dec at y≈813 (lower third) tapped | saw: scrollY 0→287; cell 526-545 sheetTop 552 hit=true at=c whole; sheet: Outlaw Post out ✕ POSTING ✓ Overseas Sqn Delete SANS PO FROM Tue 8 Dec 26 ▾ On 8 Dec: arch
+ROW PASS | F-S1(2) | phone-webkit | the same day pressed again | saw: {"bid":null,"postout":null,"postin":null,"select":null,"poForm":null,"confirm":null,"leaveGroup":false,"card":null,"head":null,"gone":24}
+ROW PASS | F-S1(3) | phone-webkit | pressed a third time | saw: {"bid":null,"postout":552,"postin":null,"select":null,"poForm":612,"confirm":null,"leaveGroup":false,"card":null,"head":"Outlaw Post out ✕","gone":24} | Outlaw Post out ✕ POSTING ✓ Overseas Sqn Delete SANS PO FROM
+phone-webkit existing sheet head button postout-cancel
+phone-webkit toTop 287 -> 0
+phone-webkit post in sheet: Diesel Post in ✕ PI FROM Sat 12 Dec 26 ▾ Their first day in the squadron. Days before it are blank and count nobody — leave can still be dated there. Post in
+phone-webkit fantom 9 Dec class after post-in gone act
+phone-webkit toTop 252 -> 0
+ROW PASS | F-S1 post-in (1) | phone-webkit | Diesel posted in from 12 Dec; blank 9 Dec at y≈832 tapped | saw: cell 604-621 sheetTop 628 hit=true at=cell-fantom-2026-12-09; state {"bid":null,"postout":null,"postin":628,"select":null,"poForm":688,"confirm":null,"leaveGroup":false,"card":null,"head":"Diesel Post in ✕","gone":188}; sheet: Diesel Post in ✕ PI FROM Sat 12 Dec 26 ▾ Posted in on 12 Dec 26 — on the manpower from tha
+ROW PASS | F-S1 post-in (2) | phone-webkit | same day again | saw: {"bid":null,"postout":null,"postin":null,"select":null,"poForm":null,"confirm":null,"leaveGroup":false,"card":null,"head":null,"gone":188}
+ROW PASS | F-S1 post-in (3) | phone-webkit | third press | saw: {"bid":null,"postout":null,"postin":628,"select":null,"poForm":688,"confirm":null,"leaveGroup":false,"card":null,"head":"Diesel Post in ✕","gone":188}
+phone-webkit errors []
+wa-sA done

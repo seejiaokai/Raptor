@@ -1,0 +1,119 @@
+[
+ [
+  "A5/F-S33 drag 4 days → ⋯ → Post out",
+  "desk-chromium",
+  "drag Cinch 14→17 Dec (mouse), ⋯ → Post out",
+  "head \"Cinch  Post out\"; the leave parts gone; PO from = the range's first day (D2732 Q2, D2653)",
+  "before: select-sheet: Cinch 10–14 Dec · 5 days Auto-approve ✕ No manning row turns amber or red till 14 Dec Document Whole day AM PM LL 20.5 OL 20.5 OIL −3 CC | after: select-sheet: Cinch Post out ✕ POSTING ✓ Overseas Sqn Delete SANS PO FROM Thu 10 Dec 26 ▾ On 10 Dec: archived. Post out | leave parts 0 | PO from 2026-12-10",
+  "FAIL",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r17/001-desk-chromium-r17-drag4.png ; img/handpass/2026-11-26-msq-s4-walk/wc/r17/002-desk-chromium-r17-drag-postout.png"
+ ],
+ [
+  "F-S33 ways back from the drag window's posting",
+  "desk-chromium",
+  "✕, Escape, a press on a day of the range, a press outside",
+  "RECORD (no ruled way back — whether the leave buttons for the same range come back in ≤2 presses)",
+  "x: now none | leave parts 0 | selected cells 0 | more 0 || escape: now none | leave parts 0 | selected cells 0 | more 0 || day-in-range: now bid-picker | leave parts 0 | selected cells 1 | more 0 || outside: now select-sheet | leave parts 0 | selected cells 0 | more 0",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r17/003-desk-chromium-r17-ways-back.png"
+ ],
+ [
+  "A5/F-S33 drag backwards, quickly",
+  "desk-chromium",
+  "drag Cinch 17→14 Dec, 2 mouse steps",
+  "PO from = the range's first day BY DATE (14 Dec)",
+  "select-sheet: Cinch 14–17 Dec · 4 days Auto-approve ✕ No manning row turns amber or red till 17 Dec Document Whole day A | PO from 2026-12-14",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r17/004-desk-chromium-r17-backward.png"
+ ],
+ [
+  "A5 slow drag",
+  "desk-chromium",
+  "drag Cinch 14→16 Dec, 40 mouse steps",
+  "the drag window over 3 days (a gesture that scrolls is recorded as such)",
+  "select-sheet: Cinch 14–16 Dec · 3 days Auto-approve ✕ No manning row turns amber or red till 16 Dec Document Whole day AM PM LL 20.5 OL 20.5 OIL −3 CC",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r17/005-desk-chromium-r17-slow.png"
+ ],
+ [
+  "A5/F-S33 two people",
+  "desk-chromium",
+  "drag Cinch 14 Dec → Piston 15 Dec, ⋯",
+  "no Post out / Post in for several people (one man only)",
+  "select-sheet: Cinch, Piston 14–15 Dec · 2 days Auto-approve ✕ Cinch No manning row turns amber or red Whole day AM PM LL OL OIL CCL FCL PL EL CL CSE OD Grant OIL ⋯ | ⋯ sel-file-CSE=CSE;sel-file-OD=OD;sel-more-menu=Attach Other;sel-file-ATCH=Attach;sel-file-OTH=Other",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r17/006-desk-chromium-r17-two-people.png"
+ ],
+ [
+  "A5 across the month edge, the date moved",
+  "desk-chromium",
+  "drag Cinch 29 Nov → 2 Dec; ⋯ → Post out; PO from changed to 1 Dec; Post out",
+  "opens on 29 Nov; the posting uses the date chosen: 30 Nov his last day, 1 Dec gone",
+  "opened on 2026-11-29 | line On 1 Dec: archived. | 30 Nov  act pofin bx-last | PO | kids:polast | 1 Dec gone act hasc | PO | kids:c whole",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r17/007-desk-chromium-r17-edge-posted.png"
+ ],
+ [
+  "A5 ground crew from a drag",
+  "desk-chromium",
+  "drag Cotter 14–15 Dec → ⋯ → Post out",
+  "Overseas and Delete only — no SANS, no Transfer (D1709, D2659)",
+  "sel-po-overseas=✓ Overseas Sqn ; sel-po-delete=Delete",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r17/008-desk-chromium-r17-ground.png"
+ ],
+ [
+  "A15 setup",
+  "desk-chromium",
+  "Piston: approved LL 10 Dec, pending LL 16 Dec, then Post out Delete from 14 Dec",
+  "landed",
+  "10  act hasc | LL | kids:c k-ll s-a whole | 16 gone outlv act hasc bx-gone | LL | kids:c k-ll s-w whole | 14 gone act hasc | PO | kids:c whole",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r17/009-desk-chromium-r17-a15-setup.png"
+ ],
+ [
+  "A15 Approve in the gone day's window (Delete)",
+  "desk-chromium",
+  "Piston 16 Dec (gone, pending LL) → Approve",
+  "Delete refuses new approval from the date, with the reason (D1541, D1545)",
+  "notes [\"shift-problem: He posts out on 14 Dec: refuse or delete it\"] | cell gone outlv act hasc bx-gone selcell | LL | kids:c k-ll s-w whole | toast ",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r17/010-desk-chromium-r17-a15-approve.png"
+ ],
+ [
+  "A15 drag wholly after a Delete date, Auto-approve on",
+  "desk-chromium",
+  "drag Piston 21–22 Dec, LL",
+  "kept pending, the reason said once (D1541)",
+  "notes [\"sel-note: 2 days kept pending — He posts out on 14 Dec: refuse or delete it.\"] | 21 gone outlv act hasc bx-gone | LL | kids:c k-ll s-w whole jr | 22 gone outlv act hasc bx-gone | LL | kids:c k-ll s-w whole jl",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r17/011-desk-chromium-r17-a15-drag-after.png"
+ ],
+ [
+  "A15 Move approved leave across a Delete date",
+  "desk-chromium",
+  "Piston's approved LL 10 Dec → Move → 17 Dec (gone)",
+  "allowed; moving is not a fresh approval (D1555)",
+  "banner Tap a day to move 1 entry Cancel | 10  act |  | kids: | 17 gone outlv act hasc bx-gone | LL | kids:c k-ll s-a whole moved | toast ",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r17/012-desk-chromium-r17-a15-moved.png"
+ ],
+ [
+  "A15 top-bar Undo / Redo of the move",
+  "desk-chromium",
+  "top-bar Undo, then Redo",
+  "Undo puts the leave back on 10 Dec and leaves the posting; Redo moves it again (D321)",
+  "undo: 10  act hasc | LL | kids:c k-ll s-a whole | 17 gone act hasc | PO | kids:c whole | 14 gone act hasc | PO | kids:c whole || redo: 17 gone outlv act hasc bx-gone | LL | kids:c k-ll s-a whole moved",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r17/013-desk-chromium-r17-a15-undo-redo.png"
+ ],
+ [
+  "A15 Undo post out",
+  "desk-chromium",
+  "Piston's gone day → Undo post out",
+  "the posting goes; his leave stays as it was",
+  "14  act |  | kids: | 16  act hasc | LL | kids:c k-ll s-w whole | 17  act hasc | LL | kids:c k-ll s-a whole moved | 21  act hasc | LL | kids:c k-ll s-w whole jr",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r17/014-desk-chromium-r17-a15-undone.png"
+ ]
+]

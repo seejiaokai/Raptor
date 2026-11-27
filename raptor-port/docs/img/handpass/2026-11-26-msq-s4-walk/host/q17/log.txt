@@ -1,0 +1,5 @@
+msq-s4w-lib v1 who=host run=q17 port=4753
+host-q17 v1
+today: chips top 622 → 606 moved 16.0
+recommended: chips top 606 → 606 moved 0.0
+errors []

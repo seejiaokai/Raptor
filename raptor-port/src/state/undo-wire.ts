@@ -29,7 +29,7 @@ import {
 } from '../undo'
 import { verifiedReplay, verifiedWarRestore, restoreOffAt, restoreDir, applyingRestore, outOfBandWords } from '../undo/timeline'
 import { filedForOther, ownPart, setInputReplayCheck, lwClosedKeys, setLwRestoreCheck, restoreRedated, restoreStood, setRestoreOffAt, setRestoreDir, lwUnitNow, trkUnitNow, pageUnit, isAdmin, restoreLeavesOut, setRestoreGrantCtx, madeAsAdmin, inputWhoProblem, pageOffered, myUnit, type RestoreGrantCtx } from './perms'
-import { refuse, saidNote, UNSAID } from './guard'
+import { refuse, saidNote, UNSAID, closeShown } from './guard'
 import type { RecordCtx, UndoEntry } from '../undo/types'
 import type { Change } from '../command'
 import { deriveActor } from '../command'
@@ -632,6 +632,16 @@ export const _snapView = (e: UndoEntry, d: 'undo' | 'redo'): void => snapView(e,
    so the engine that pressed it says nothing more (ui/topstate.ts). The squadron it would enter: his own, today. With this
    ask ahead of the step, stepPage's own refusal is no longer reached from an Undo or Redo (the state cannot change between
    the two asks but by the view-snap's own week load); it stays the landing's door, a belt. */
+/* LET THROUGH ON ROW 21, IT CLOSES WHAT THE GUARD CLOSES — HERE, BEFORE THE STEP'S WRITES (step K8c; question 27's words
+   check, P1; his D2596, D2597, D2627 A4). Row 21's squadron change comes later, by the store's own re-entry
+   (store.ts maybeReenter, on the step's notify), which closes nothing — the same road as his own move at midnight, which
+   must close nothing (A14, A15) — so the closing step cannot live there; it runs here, the one place that knows his press
+   is changing the squadron. Here, not after the writes: Logic's mode ends by writing a value still waiting its beat
+   (LogicPage.tsx flushRuleApply), and only while 151 is in view does that write go to 151, as its own step; the step this
+   Undo takes is already chosen ("+ New squadron"), so the value's step is never the one taken back. Left out, the value
+   landed on 142's rules a beat after the Undo. Row 13 closes nothing here: its landing enters his own squadron through the
+   page door's landing, which closes the windows itself after the Tracker's question (store.ts landOwn), so a Stay there
+   still closes nothing. */
 function squadronRefusal(entry: UndoEntry, dir: 'undo' | 'redo'): string | null {
   const changes = dir === 'undo' ? entry.inverse : entry.forward
   const row = UNIT_PFX + UNIT
@@ -640,8 +650,9 @@ function squadronRefusal(entry: UndoEntry, dir: 'undo' | 'redo'): string | null 
   const land = takesUnit ? null : landingOf(entry, dir)
   const awayToLand = !!land && !!land.primary && CURPAGE !== land.primary && !land.also.includes(CURPAGE) && !pageOffered(land.primary)
   if (!takesUnit && !awayToLand) return null
-  if (!refuse(dir, myUnit(todayIso()), { from: 'bar' })) return null
-  return saidNote() ?? UNSAID
+  if (refuse(dir, myUnit(todayIso()), { from: 'bar' })) return saidNote() ?? UNSAID
+  if (takesUnit) closeShown()
+  return null
 }
 /** tests only — the hook, asked of a made-up step */
 export const _squadronRefusal = (e: UndoEntry, d: 'undo' | 'redo'): string | null => squadronRefusal(e, d)

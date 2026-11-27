@@ -76,6 +76,16 @@ describe('[PO-MOVE-DATE-DELETE-ASK] a Delete posting\'s date moved to today asks
     expect(P('rocky').deleted, 'the second tap deletes him').toBe(true)
     expect(P('rocky').deletedFrom).toBe(TODAY)
   })
+  /* his D2744 (26 Nov 26, through the coordinator): "Delete Hex now?" wears the same dashed grey Delete as "Delete Hex?"
+     (D2732 Q4, D332) — never the red one; Cancel stays the blue main button */
+  it('"Delete Hex now?": its Delete the dashed grey Delete, Cancel blue (D2744)', () => {
+    openSheet()
+    pickDate(screen.getByTestId('postout-date'), TODAY)
+    const go = screen.getByTestId('postout-delete-go')
+    expect(go.className).toMatch(/\bpo-del\b/)
+    expect(go.className).not.toMatch(/\bdanger\b/)
+    expect(screen.getByTestId('postout-delete-cancel').className).toMatch(/\bprimary\b/)
+  })
   it('an earlier day asks the same', () => {
     openSheet()
     pickDate(screen.getByTestId('postout-date'), '2026-07-10')

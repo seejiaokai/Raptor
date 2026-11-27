@@ -1,0 +1,21 @@
+msq-s4w-lib v1 who=wd run=r7pd port=4756
+wd-lib v1
+wd-pixels v1 desk
+ROW PASS | F-S22 the ✓ on the chosen chip; heights per choice | desk-chromium | overseas chosen | saw: chips [["✓ Overseas Sqn",174,30,684.3],["Delete",174,30,684.3],["SANS",174,30,684.3]]; chosen chip's brightest-colour pixel {"best":[59,198,232],"sat":173}
+ROW PASS | F-S22 the ✓ on the chosen chip; heights per choice | desk-chromium | delete chosen | saw: chips [["Overseas Sqn",174,30,684.3],["✓ Delete",174,30,684.3],["SANS",174,30,684.3]]; chosen chip's brightest-colour pixel {"best":[59,198,232],"sat":173}
+ROW PASS | F-S22 the ✓ on the chosen chip; heights per choice | desk-chromium | sans chosen | saw: chips [["Overseas Sqn",174,30,684.3],["Delete",174,30,684.3],["✓ SANS",174,30,684.3]]; chosen chip's brightest-colour pixel {"best":[58,197,231],"sat":173}
+ROW RECORD | F-S22 the blue of Post out | desk-chromium | pixels of the button | saw: [["56,200,232",2341],["8,40,56",111],["24,24,32",60]]
+ROW PASS | F-S22 the card's Delete: dashed on all four sides | desk-chromium | picture of the card's Delete at 1× | saw: {"w":63,"h":37,"top":{"transitions":20,"lit":31,"of":51,"inset":0},"bottom":{"transitions":20,"lit":31,"of":51,"inset":1},"left":{"transitions":10,"lit":19,"of":25,"inset":1},"right":{"transitions":9,"lit":15,"of":25,"inset":0}}
+desk-chromium focus now po-delete-cancel
+ROW PASS | F-S22 the focus ring on the dashed Delete | desk-chromium | Tab to the card's Delete | saw: {"focused":true,"outline":"solid 2px rgb(59, 198, 232)","shadow":"none"}
+desk-chromium after Escape: card 0 sheet 1
+ROW PASS | F-S22 the focus ring on the blue Post out | desk-chromium | keys onto Post out | saw: {"focused":true,"outline":"auto 1px rgb(16, 16, 16)","shadow":"none"}
+ROW RECORD | F-S22 hover on Post out | desk-chromium | mouse over Post out | saw: background rgb(59, 198, 232) → rgb(59, 198, 232)
+bringIn [data-testid="cell-stiff-2026-12-21"] 0 {"x":1320,"y":552,"w":27,"h":22} scroll 0 185
+desk-chromium LL placed for Saber 21 Dec; top bar Undo disabled now: false
+ROW FAIL | F-S22 the teal arrow on Undo post out vs the top bar's Undo arrow | desk-chromium | pixels of both arrows (top bar Undo live after the posting) | saw: css {"arrow":"rgb(59, 198, 232)","undoBtn":"rgb(241, 244, 247)","undoSvgStroke":"none","undoDisabled":false}; drawn: chip arrow {"best":[59,198,232],"sat":173}, top bar arrow {"best":[26,164,214],"sat":188}
+ROW PASS | F-S22 the existing sheet's card Delete: dashed on all four sides | desk-chromium | its Delete chip → the card | saw: {"w":63,"h":37,"top":{"transitions":20,"lit":31,"of":51,"inset":0},"bottom":{"transitions":20,"lit":31,"of":51,"inset":1},"left":{"transitions":10,"lit":19,"of":25,"inset":1},"right":{"transitions":9,"lit":15,"of":25,"inset":0}}
+ROW NOT REACHED | F-S22 a disabled Post in | desk-chromium | Post in → its date box: look for a way to empty it | saw: ways to empty the box in its calendar: []; Post in disabled now: false
+desk-chromium errors []
+errors []
+DONE 7 PASS 1 FAIL 3 OTHER of 11
