@@ -1,0 +1,190 @@
+<title>Missing-Time Rule Morning</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one reading column; each question a block with its picture beside (desktop) or under (phone). */
+:root{
+  --bg:#f4f6f8; --panel:#ffffff; --fg:#17212b; --muted:#5a6876; --line:#d8dee5;
+  --accent:#0f7c9c; --red:#c93a3a; --amber:#a86a00; --chip:#e7f3f7;
+  --sans:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --head:"Space Grotesk","Inter",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11171d; --panel:#18212a; --fg:#e6edf3; --muted:#9aa8b6; --line:#2a3642;
+  --accent:#4cc3e0; --red:#ff6b6b; --amber:#f0b84a; --chip:#16313b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11171d; --panel:#18212a; --fg:#e6edf3; --muted:#9aa8b6; --line:#2a3642;
+  --accent:#4cc3e0; --red:#ff6b6b; --amber:#f0b84a; --chip:#16313b; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+.wrap{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1{font-family:var(--head);font-size:1.7rem;margin:0;text-wrap:balance}
+h2{font-family:var(--head);font-size:1.25rem;margin:0 0 8px;text-wrap:balance}
+h3{font-size:1.02rem;margin:0}
+p{margin:0}
+.sub{color:var(--muted)}
+.now{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.now ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:6px}
+.now a{color:var(--accent)}
+.rec{color:var(--accent);font-weight:600}
+section{display:flex;flex-direction:column;gap:14px}
+.q{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;scroll-margin-top:12px}
+.q > div{min-width:0;display:flex;flex-direction:column;gap:8px}
+.q.single{grid-template-columns:minmax(0,1fr)}
+.when{color:var(--muted);font-size:.95rem}
+.opt{border-left:3px solid var(--line);padding-left:10px}
+.opt.r{border-left-color:var(--accent)}
+.say{font-family:ui-monospace,Consolas,monospace;font-size:.9rem;background:var(--chip);padding:1px 5px;border-radius:4px}
+figure{margin:0;display:flex;flex-direction:column;gap:6px}
+figure img{width:100%;height:auto;border-radius:6px;border:1px solid var(--line);cursor:zoom-in;display:block}
+.pics{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px}
+figcaption{font-size:.86rem;color:var(--muted)}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:10px}
+.fact{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.fact b{display:block;font-size:1.05rem}
+.fact span{color:var(--muted);font-size:.88rem}
+.later{color:var(--muted);font-size:.95rem}
+#zoom{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;flex-direction:column;z-index:20;
+  padding:calc(env(safe-area-inset-top,0px) + 10px) max(10px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 10px) max(10px,env(safe-area-inset-left,0px))}
+#zoom .bar{display:flex;justify-content:space-between;align-items:center;gap:10px;color:#fff}
+#zoom button{font:inherit;font-weight:600;background:#fff;color:#111;border:0;border-radius:8px;padding:8px 16px;cursor:pointer}
+#zoom .imgbox{flex:1;overflow:auto;margin-top:10px;-webkit-overflow-scrolling:touch}
+#zoom img{width:100%;max-width:none;height:auto;display:block}
+button:focus-visible,a:focus-visible,img:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+@media (max-width:700px){.q{grid-template-columns:minmax(0,1fr)}}
+</style>
+
+<div class="wrap">
+<header>
+  <h1>The missing-time rule: built overnight</h1>
+  <p class="sub">Friday 27 Nov, morning. A day can no longer be signed off or published while an item on it is missing a time. It is built and checked, and it waits for your look and your "merge live".</p>
+</header>
+
+<div class="now" id="top">
+  <h2>Look at these now (round 1, six questions)</h2>
+  <ol>
+    <li><a href="#q1">The new Legend line, as drawn.</a> <span class="rec">Recommended: approve as drawn.</span></li>
+    <li><a href="#q2">The OIL list's line under Later and Save.</a> <span class="rec">Recommended: the first wording each time; Later still saves nothing.</span></li>
+    <li><a href="#q3">A time emptied after a refused press: grey or red?</a> <span class="rec">Recommended: red at once.</span></li>
+    <li><a href="#q4">A row with only its end time typed and nobody on it.</a> <span class="rec">Recommended: counted, its start outlined.</span></li>
+    <li><a href="#q5">The Publish refusal's last sentence.</a> <span class="rec">Recommended: keep as built.</span></li>
+    <li><a href="#q6">When it goes live, and who reads it after.</a> <span class="rec">Recommended: I build your round-1 answers, you look, then "merge live"; Fable reads after Monday.</span></li>
+  </ol>
+  <p class="later">Reply with "all as recommended", or the number and your answer. Smaller questions (sixteen) and the amendment-colours plan (seven) come in later rounds.</p>
+</div>
+
+<section>
+  <h2>What it does now</h2>
+  <div class="pics">
+    <figure><img src="img/RW3-OWNER-D-a.png" alt="Edit Schedule on a desktop, Thursday: HQ ENGAGEMENT's end box empty with a grey outline; the sign-off line reads 1 item missing a time, 4 to sign"><figcaption>While drafting: the empty end box is outlined grey, and the sign-off line says "1 item missing a time · 4 to sign". A tap on that line goes to each empty box in turn.</figcaption></figure>
+    <figure><img src="img/RW3-OWNER-D-b.png" alt="The same day after CUR CK was picked: the box turns red and a grey note at the foot reads Blocked: 1 item is missing a time, outlined in red. Type the missing time, then sign."><figcaption>A sign-off pick is refused: the box turns red, and the note says why. Nothing is signed.</figcaption></figure>
+    <figure><img src="img/RW3-OWNER-D-c.png" alt="Thursday published as ORIG, an end emptied: Publish AL1 refused with Blocked: 1 item is missing a time, outlined in red. AL1 was not published."><figcaption>On a published day: an end time emptied, and Publish AL1 is refused the same way.</figcaption></figure>
+  </div>
+  <div class="pics">
+    <figure><img src="img/RW3-OWNER-P-a.png" alt="The same on a phone: the grey box under 08:45, the line 1 item missing a time, 4 to sign"><figcaption>Phone, drafting.</figcaption></figure>
+    <figure><img src="img/RW3-OWNER-P-b.png" alt="Phone: sign-off refused, the box red, the Blocked note across the foot"><figcaption>Phone, sign-off refused.</figcaption></figure>
+    <figure><img src="img/RW3-OWNER-P-c.png" alt="Phone: published day, Publish AL1 refused, the Blocked note at the foot"><figcaption>Phone, Publish AL1 refused.</figcaption></figure>
+  </div>
+  <div class="facts">
+    <div class="fact"><b>Which items count</b><span>Every item with someone on it needs a start and an end. A row with a start needs its end. Left out: rows from an All day input, cancelled or information-only items, the AMT brief and debrief with nobody on them, and blank rows.</span></div>
+    <div class="fact"><b>Checked</b><span>82 cases walked on a desktop and an iPhone-sized screen, then three re-walks; three independent code reads; every fault found was fixed and checked again. GitHub's full checks: all passed.</span></div>
+    <div class="fact"><b>No preview link yet</b><span>Vercel refused to build a preview: it allows only so many builds a day. It said to retry within 24 hours of 07:45 this morning. I'll send the link once a preview is ready.</span></div>
+  </div>
+</section>
+
+<section>
+  <h2>Round 1</h2>
+
+  <div class="q" id="q1">
+    <div>
+      <h3>1. The new Legend line</h3>
+      <p class="when">When: a scheduler opens Edit Schedule's Legend to see what a mark means, usually the first few times he meets the outline.</p>
+      <p>You chose the words "Time missing, fill it". Drawn at the Legend's foot: an empty box outlined grey, one outlined red, then your words. It is not built yet; I build it once you approve the look.</p>
+      <p class="rec">Recommended: approve as drawn.</p>
+    </div>
+    <div class="pics" id="legend-pics">
+      <figure><img src="img/legend-P-crop.png" alt="Phone: Edit Schedule's Legend open; at its foot, inside a dashed blue mark, a grey-outlined box, a red-outlined box and the words Time missing, fill it"><figcaption>Phone: the new line, marked with a dashed edge (the mark is for this picture only).</figcaption></figure>
+      <figure><img src="img/legend-D-crop.png" alt="Desktop: the same Legend with the new line at its foot"><figcaption>Desktop.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="q" id="q2">
+    <div>
+      <h3>2. The OIL list's line under Later and Save</h3>
+      <p class="when">When: on a weekend or holiday day with an input that has no OIL answer, a scheduler picks his name in a sign-off box, and the day's OIL list opens first. This happens a few times a month.</p>
+      <p>Your rule: Later means "not my call", and the next sign-off asks again. Today's line, "Later: Ace signs, but nobody on it earns OIL.", is no longer true. A fresh Fable adjusted the new words:</p>
+      <div class="opt r"><b>(a)</b> No answer picked: <span class="say">Later: Ace signs, and the next sign-off asks again</span></div>
+      <div class="opt r"><b>(b)</b> Some answers picked, some not: <span class="say">Save: the next sign-off asks the rest</span> (shown in place of (a), never beside it).</div>
+      <div class="opt"><b>(c)</b> The last of the four boxes, so nobody is left to ask. Two wordings:<br>
+        <span class="rec">(c1, recommended)</span> <span class="say">Later: Ace signs, and OIL stays unanswered for now</span><br>
+        (c2) <span class="say">Later: Ace signs, and the bell asks after publishing</span>. This adds a promise about the bell, which I would check first.</div>
+      <div class="opt"><b>(d)</b> Answers picked, then Later pressed: today Later throws the picks away and saves nothing. <span class="rec">Recommended: keep that.</span> Save is the button that keeps some answers and passes the rest on.</div>
+    </div>
+    <div class="pics" id="oil-pics">
+      <figure><img src="img/oil-today-P.png" alt="Phone: the OIL list for Fri 17 Jul, a public holiday, waiting on CUR CK Ace; two questions; the foot reads Later: Ace signs, but nobody on them earns OIL."><figcaption>Today, for comparison: "Later: Ace signs, but nobody on them earns OIL."</figcaption></figure>
+      <figure><img src="img/oil-A-P.png" alt="The same list, foot: Later: Ace signs, and the next sign-off asks again"><figcaption>(a) Nothing picked.</figcaption></figure>
+      <figure><img src="img/oil-B-P.png" alt="Nomad's row answered Yes FO, Saber's open; foot: Save: the next sign-off asks the rest"><figcaption>(b) One answered, one open.</figcaption></figure>
+      <figure><img src="img/oil-C1-P.png" alt="APPROVED BY Bolt waiting, the other three signed; foot: Later: Bolt signs, and OIL stays unanswered for now"><figcaption>(c1) The last box, recommended.</figcaption></figure>
+      <figure><img src="img/oil-C2-P.png" alt="The same moment; foot: Later: Bolt signs, and the bell asks after publishing"><figcaption>(c2) The last box, the other wording.</figcaption></figure>
+      <figure><img src="img/oil-C1-D.png" alt="Desktop: Friday's sign-off shows CUR CK Ace, SKED CK Anvil, PLANNED BY Basher signed, 1 to sign; the OIL list waits on APPROVED BY Bolt with foot Later: Bolt signs, and OIL stays unanswered for now"><figcaption>(c1) on a desktop: three names already signed, "1 to sign".</figcaption></figure>
+    </div>
+    <p class="later" style="grid-column:1/-1">To draw this, Friday 17 Jul was made a public holiday in the demo ("Founders Day"), and Saber filed a three-hour duty on it.</p>
+  </div>
+
+  <div class="q" id="q3">
+    <div>
+      <h3>3. A time emptied after a refused press: grey or red?</h3>
+      <p class="when">When: Thursday, Saber picks CUR CK and is refused, so three boxes turn red. He types one of them, then by mistake empties the SXO end on the second wave.</p>
+      <p>Built: the newly emptied box shows <b>grey</b> until the next refused press, while the other two stay red. The sign-off line still counts it, and every press is still refused.</p>
+      <p class="rec">Recommended: red at once while the day already has a red box. He has already been told, and two colours for the same fault on one day is confusing. Once every time is typed, the day goes back to grey for next time.</p>
+    </div>
+    <figure><img src="img/C54-P-e.png" alt="Phone: after a refusal, the SXO end on the second wave emptied anew shows a grey outline while the note says 3 items are missing a time"><figcaption>Phone: the SXO end, emptied after the refusal, is grey. The note above it counts three.</figcaption></figure>
+  </div>
+
+  <div class="q" id="q4">
+    <div>
+      <h3>4. A row with only its end time typed and nobody on it</h3>
+      <p class="when">When: a scheduler types only an end time on a Common Programme row, for example SODB "— 08:00", and leaves it. This is rare.</p>
+      <p>Built (as today): not counted, so the day can be published with that row's start empty. A row with only its <b>start</b> typed is counted (SQN PT, outlined in the picture).</p>
+      <p class="rec">Recommended: count it too and outline its start. One rule: any time typed asks for the other.</p>
+    </div>
+    <figure><img src="img/C68-D.png" alt="Friday's Common Programme: SODB has only 08:00 as its end and no outline; SQN PT has 15:00 start and its empty end outlined; the line reads 1 item missing a time"><figcaption>Friday: SODB (end only) is not counted. SQN PT (start only) is outlined and counted, so the line says "1 item".</figcaption></figure>
+  </div>
+
+  <div class="q" id="q5">
+    <div>
+      <h3>5. The Publish refusal's last sentence</h3>
+      <p class="when">When: a scheduler presses Publish day or Publish AL with a time missing.</p>
+      <p>You ruled the sign-off note: "… Type the missing times, then sign." For Publish, the note ends "… Thursday was not published." (or "AL1 was not published."). I built it with that sentence <b>in place of</b> "Type the missing times, then sign.", because at Publish all four names may already be signed. Fable read it and agreed.</p>
+      <p class="rec">Recommended: keep as built (third picture above).</p>
+      <p class="later">Also built without your reading: once all four names show (an older saved week) and a time is missing, the line reads "2 items missing a time" alone. Recommended: keep.</p>
+    </div>
+    <figure><img src="img/RW3-OWNER-P-c.png" alt="Phone: Blocked: 1 item is missing a time, outlined in red. AL1 was not published."><figcaption>Phone: the Publish AL1 refusal.</figcaption></figure>
+  </div>
+
+  <div class="q single" id="q6">
+    <div>
+      <h3>6. When it goes live, and who reads it after</h3>
+      <p>This is high-risk work: it can stop a day being published. Opus built it, as you asked for this week. Fable's own read of the finished code waits for Monday's allowance reset. Until then, two fresh Opus readers and Astra read it.</p>
+      <p class="rec">Recommended: I build your round-1 answers and the Legend line on the same branch and check them. You look at the preview once Vercel builds again, then say "merge live". Fable reads it after Monday; anything it finds is fixed as a follow-up.</p>
+    </div>
+  </div>
+</section>
+
+<p class="later">Later rounds, not for now: which rows count in rare cases (cancelled flights, a sim's EXT SQN label, a kept all-day row), how long red lasts, the Amendments panel's Publish AL, the board's count line tap, the hover words, the Logic page's words, and the amendment-colours plan (it needs revising first).</p>
+</div>
+
+<div id="zoom" hidden role="dialog" aria-modal="true" aria-label="Picture, zoomed">
+  <div class="bar"><span id="zcap"></span><button type="button" id="zclose">Close</button></div>
+  <div class="imgbox"><img id="zimg" alt=""></div>
+</div>
+<script>
+(function(){
+  var z=document.getElementById('zoom'), zi=document.getElementById('zimg'), zc=document.getElementById('zcap');
+  function open(img){ zi.src=img.src; zi.alt=img.alt; var f=img.closest('figure'); zc.textContent=f&&f.querySelector('figcaption')?f.querySelector('figcaption').textContent:''; z.hidden=false; document.getElementById('zclose').focus(); }
+  function close(){ z.hidden=true; zi.removeAttribute('src'); }
+  document.addEventListener('click',function(e){ var t=e.target; if(t.tagName==='IMG'&&t.closest('figure')&&!t.closest('#zoom')) open(t); });
+  document.getElementById('zclose').addEventListener('click',close);
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!z.hidden) close(); });
+  document.querySelectorAll('figure img').forEach(function(i){ i.tabIndex=0; i.addEventListener('keydown',function(e){ if(e.key==='Enter') open(i); }); });
+})();
+</script>

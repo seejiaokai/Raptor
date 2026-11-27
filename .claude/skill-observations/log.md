@@ -1456,3 +1456,16 @@ sides.
 **Issue:** Taking over a questions page another chat wrote, the agent summarised it for him and changed one recommendation (H) to match a try-out's default without saying the page recommended otherwise, and passed the try-out builder's defaults off as recommendations. Then it answered three follow-ups from one area file and a code grep each, never searching the rulings on main and the open branches (this branch was 97 commits behind main; two other branches held about 120 newer rulings). He noticed: "seems like u are making errors", and asked for an Opus and a Fable check.
 **Suggested improvement:** Before re-presenting a page someone else wrote, or answering any follow-up that recommends something: (1) search every rulings source by subject, including main and every open branch of that area; (2) never change a page's recommendation in a summary without naming the change and why; (3) mark a builder's default as the builder's, not as a recommendation; (4) when the branch is far behind main, bring main in (or read main's rulings) before answering.
 **Principle:** A chat reply that recommends something is "put to him" as much as a page is, and needs the same check; a summary must not quietly change what the source it summarises says.
+
+### Observation 1099: An overnight run of pushes used up the day's preview builds
+
+**Status:** OPEN
+**Date:** 27 Nov 26
+**Session context:** chat 202's /overnight run — one build job ([END-TIME-GUARD]) through a FULL check, with three fix rounds and re-walks, each pushed as it landed
+**Skill:** overnight
+**Type:** open-source
+**Phase/Area:** Part 2, "At every commit" (the branch pushed at each commit)
+
+**Issue:** The build branch was pushed about ten times in the night (build, reads, walk, three fixes, three re-walks, records). Every push of a code branch starts a preview build. With the other chats' pushes, the preview host refused the morning's build ("Deployment rate limited — retry in 24 hours"), so the morning report had no preview link for his look, the one thing the night was for. Numbered after 1097–1098 on other branches.
+**Suggested improvement:** In Part 2, push a code branch only when a pushed state is needed (the pull request opened for its checks, a fix ready for its re-walk is not one — walkers work from the local checkout), and batch evidence and pictures into one push at the end; before the last push, check the preview host's remaining builds for the day, so the final state is the one that gets a preview.
+**Principle:** When a scarce daily allowance (preview builds, API calls) is spent by every intermediate save, the final deliverable can be the one that gets refused; batch intermediate saves locally and spend the allowance on the state someone will look at.
