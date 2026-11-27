@@ -16,7 +16,7 @@ import * as FMT from './fileFormat.js';
 import * as FS from './fileStore.js';
 import { normalizeImport as normalizeFile, STUDENT_GUARD_MSG, STUDENT_CHART_MSG, sameDef, remapStudentsSyl } from './fileTransfer.js';
 import { findEvents } from './eventOrder.js';
-import { onTrackerSessionEnd, onBeforeTrackerLogout, onBeforeTrackerSwitch, trackerIsAdmin, onTrackerWindows, onTrackerAsking, onTrackerCloseShown, onTrackerCloseOpen } from '../role.js';
+import { onTrackerSessionEnd, onBeforeTrackerLogout, onBeforeTrackerSwitch, trackerIsAdmin, onTrackerWindows, onTrackerAsking, onTrackerCloseShown, onTrackerCloseOpen, onTrackerStay } from '../role.js';
 /* Raptor's one edge feel (D899) */
 import { edgePan } from '../../ui/edgescroll';
 import { getPeople, onPeople, whoami, whoamiId, getGonePeople, onGonePeople, getMedInputs, onMedInputs } from '../people.js';
@@ -236,6 +236,12 @@ onTrackerCloseOpen(id => {
   if (want('lullPick') && lullPick) closeLullPicker();
   if (want('lullCopy') && lullCopy) closeLullCopy();
 });
+/* THE QUESTION STANDING ANSWERED STAY (step KR-2 — the plan docs/superpowers/plans/2026-11-27-msq-s1-kr-no-blocks-plan.md
+   §5 step 4): a door pressed while the unsaved-edits question is up (by the keys — its shade covers the bar) answers it as
+   its own Stay does, the box closed with the cancelled answer, so the door that asked it does nothing; the new door then
+   waits for it to settle whole and asks its own (role.js trackerSwitchAskAtDoor). While the question is up the box shown
+   is that question, or the "not saved" alert its Save raised, which the same answer closes. Only that box: nothing queued. */
+onTrackerStay(() => { if (switchAsking && dlg) dlgClose(_dlgCancelled(dlg)); });
 function endSession() {
   sessionSerial++;
   cancelGestures();

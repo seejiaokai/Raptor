@@ -28,7 +28,7 @@
 import { useEffect, useLayoutEffect, useRef } from 'react'
 // eslint-disable-next-line react-doctor/no-flush-sync -- a Leave War sheet a door closes must be off the page, its unmount savers run into its own squadron's war, before the next sheet is closed and the war swaps (the plan's §5 6c): committed at once on purpose, and no View Transition runs over a sheet closing
 import { flushSync } from 'react-dom'
-import { setGuardAsk, setGuardClose, warSheetOpen, warShowOpen, closeWarShown, closeWarAll, type GuardOpts, type GuardRefusal } from '../state/guard'
+import { setGuardAsk, setGuardClose, setGuardCloseOpen, whileClosingForDoor, warSheetOpen, warShowOpen, closeWarShown, closeWarAll, type GuardOpts, type GuardRefusal } from '../state/guard'
 import { CURPAGE, SBDAY, OILDAY, ARM, RESTARM, UNPUBARM, SECDEFOFFER, OILBAR, setOilWait } from '../state/view'
 import { LGEDIT, setLgEdit } from '../state/auth'
 import { pageOffered } from '../state/perms'
@@ -335,6 +335,47 @@ export function closeShown(): void {
   }
 }
 
+/* EVERYTHING OPEN CLOSED AT A DOOR THAT GOES THROUGH (step KR-2 — his D2825: "what is open closes and anything half-typed
+   is dropped, with no note"; D2838: a box with no Save button is saved into its OWN squadron first; the plan
+   docs/superpowers/plans/2026-11-27-msq-s1-kr-no-blocks-plan.md §5 step 6). Called by a door at the same last step where
+   closeShown() runs today — once nothing can still stop its change: never at a refusal, a Stay or a change he did not make.
+   Inside one call, with closingForDoor() true throughout (so a box that refuses its value drops it silently, and the
+   event presets do not hold their sheet open for a sentence no one will read):
+   (a) the focused box is left while the squadron still in view is the old one, so a box that saves as it is left saves
+       into its own squadron (in Safari a pressed button takes no focus, so the press itself has not left it);
+   (b) every open row closed by its own close, in GUARD_ORDER — the question sheets first, the windows under them after —
+       the `skip` rows left out; the windows that only show things close too, as closeShown() closes them, and the two edit
+       modes end (Logic's writing its waiting value to the squadron it was typed for). Each close is committed at once
+       (React's flushSync), so the next row is read as it now is and a window's own unmount (its report, a sheet's saver)
+       has run before the next. The change not saved is no row to close (it refuses — the guard's ask, D2594), and the
+       Tracker's own question (`trkask`) is settled before this step, never here;
+   (c) the Leave War's sheets, one at a time (state/guard.ts closeWarAll): a sheet that does not leave the list stops it —
+       a fault, never a wait — and the door must not enter (false);
+   (d) committed before the entry: straight after, nothing is open (whatIsOpen() null — or only a skipped row) and the war
+       holds nothing (state/typing-hold.ts holdNow() 'none'), so no save, no unmount and no swap lands after the entry. */
+const TYPED_BOX = 'input, textarea, select, [contenteditable]:not([contenteditable="false"])'
+function leaveFocusedBox(): void {
+  if (typeof document === 'undefined') return
+  const el = document.activeElement as HTMLElement | null
+  if (el && el !== document.body && typeof el.blur === 'function' && el.matches?.(TYPED_BOX)) el.blur()
+}
+export function closeOpen(skip: readonly string[] = []): boolean {
+  return whileClosingForDoor(() => {
+    flushSync(leaveFocusedBox)
+    for (const id of GUARD_ORDER) {
+      if (skip.includes(id) || id === 'lwsheet') continue
+      const row = BY_ID.get(id)!
+      if (row.counts === 'no') { if (row.end && row.open()) flushSync(() => row.end!()); continue }
+      if (row.counts === 'unsaved' || !row.close) continue
+      /* (a close a component hands over is held for as long as its work is open, changed or not — 205's answer: an opened,
+         unchanged row closes at a door too — while its open() still counts only what it refused for: useGuardOpen's
+         `counts`, until KR-5) */
+      if (row.open() || (row.handed && CLOSERS.has(id))) flushSync(() => row.close!())
+    }
+    return skip.includes('lwsheet') ? true : closeWarAll(flushSync)
+  })
+}
+
 /* TYPED WORK THAT LIVES INSIDE A COMPONENT (Admin's rows and forms — no module flag exists; K1b's reports): the id counts
    while `on`, and React's own unmount is the leave, so no way out can miss it.
    …AND WHAT THE NOTE MUST SAY OF IT (K3 — the third argument, `say`): a short value the reporting component hands over with
@@ -608,11 +649,25 @@ export function guardWords(_reason: GuardRefusal['reason'], row: GuardRow, door:
 /** a row of the table by its id (the note's way from the seam's refusal back to the row) */
 export const guardRow = (id: string): GuardRow | undefined => BY_ID.get(id as GuardRowId)
 
-/* INSTALLED INTO THE SEAM AS THIS FILE LOADS — the doors' one way to ask (no door asks yet: K4–K6) */
-export const guardAsk = (_door: string, _to: string, opts: GuardOpts): GuardRefusal | null => {
+/* THE DOORS CONVERTED TO HIS D2825 (step KR — the plan §2, §11): a door named here refuses for one row only, the change not
+   saved (D2594 — the Retry note); what else is open it closes itself (closeOpen, above) and goes through. Each door joins
+   as it is converted — the pick and the view switch (KR-3), the bell, the page door, the card, the Undo and Redo (KR-4) —
+   and the set goes once every door is in it, so no door is ever half converted. EMPTY in KR-2: nothing he sees changes.
+   The test set-ups' entry checker reads it too (src/testing/entry-checker.ts): for such a door the old work must be closed
+   before the entry, not merely unrefused. */
+export const NO_BLOCK_DOORS = new Set<string>()
+const UNSAVED_ROW = BY_ID.get('unsaved')!
+
+/* INSTALLED INTO THE SEAM AS THIS FILE LOADS — the doors' one way to ask */
+export const guardAsk = (door: string, _to: string, opts: GuardOpts): GuardRefusal | null => {
+  if (NO_BLOCK_DOORS.has(door)) {
+    return !opts.skip?.includes('unsaved') && UNSAVED_ROW.open() ? { reason: 'unsaved', id: 'unsaved', where: UNSAVED_ROW.where } : null
+  }
   const w = whatIsOpen(opts.skip)
   return w ? { reason: w.reason, id: w.row.id, where: w.row.where } : null
 }
 export const guardCloseShown = (): void => closeShown()
+export const guardCloseOpen = (skip: readonly string[]): boolean => closeOpen(skip)
 setGuardAsk(guardAsk)
 setGuardClose(guardCloseShown)
+setGuardCloseOpen(guardCloseOpen)

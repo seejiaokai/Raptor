@@ -12,6 +12,10 @@
       own window left out, a second window still fails them, a raw entry with anything open fails, and a raw entry with
       nothing open passes as before. A press that waited is covered without more code: the Tracker's `again` re-runs the
       whole tap, and the landing asks the guard again with the door it kept — each ask is the leave for the entry after it.
+      RE-POINTED FOR A DOOR CONVERTED TO HIS D2825 (step KR-2; the plan docs/superpowers/plans/
+      2026-11-27-msq-s1-kr-no-blocks-plan.md §7): such a door (ui/guard.ts NO_BLOCK_DOORS) refuses only for a change not
+      saved and closes the rest itself, so for it the check asks the guard's whatIsOpen(skip) instead of its refusal — the
+      old work must be CLOSED before the entry. The allow-list below stays.
    2. NOTHING OPENS BEHIND A REFUSAL. At each refuse() that refuses the checker notes which counted rows are open (every
       row of ui/guard.ts GUARD_ROWS but the 'no' ones); at the end of that turn (a microtask) a counted row that is open
       and was not fails the test by name.
@@ -50,6 +54,12 @@ export type CheckerDeps = {
   openRows: () => string[]
   /** true where the test running made this state raw on purpose by name (the installed checker reads RAW_BY_NAME) */
   rawByName?: () => boolean
+  /** step KR-2: the door is one converted to his D2825 (ui/guard.ts NO_BLOCK_DOORS) — it refuses only for a change not
+   *  saved, closing the rest itself; for it the first check asks `open` instead of the guard's refusal */
+  noBlock?: (door: string) => boolean
+  /** step KR-2: the first row still open in the guard's order, the door's `skip` left out (ui/guard.ts whatIsOpen) — null
+   *  when nothing is */
+  open?: (skip: readonly string[]) => string | null
 }
 export type Checker = { hooks: EntryChecker; failures: string[]; reset: () => void }
 
@@ -83,10 +93,19 @@ export function makeEntryChecker(deps: CheckerDeps): Checker {
     entry(what, to) {
       if (raw || deps.rawByName?.()) return
       const skip = leave?.opts.skip ?? []
-      const r = deps.ask(leave?.door ?? 'entry', to, { skip: [...skip] })
-      if (!r) return
       const how = what === 'enter' ? `a squadron entered by press (${to})` : `the view switched (to ${to})`
       const door = leave ? `the door '${leave.door}' gave the leave${skip.length ? `, leaving out ${skip.join(', ')}` : ''}` : 'no door gave a leave in this turn'
+      /* A DOOR CONVERTED TO HIS D2825 (step KR-2 — the plan §7): its refusal is only for a change not saved, so "not
+         refused" proves nothing about open work; what must hold is that the old work was closed before the entry. A window
+         the press opens AFTER the entry (a bell line's Input window, a holiday line's OIL list) is not yet open here, so it
+         is never counted, and no family of windows is let off */
+      if (leave && deps.noBlock?.(leave.door) && deps.open) {
+        const still = deps.open([...skip])
+        if (still) fail(`[entry-checker] ${how} with "${still}" still open — ${door}, and a door that goes through must close it before its entry (D2825)`)
+        return
+      }
+      const r = deps.ask(leave?.door ?? 'entry', to, { skip: [...skip] })
+      if (!r) return
       fail(`[entry-checker] ${how} with "${r.id}" open (${r.reason}) — ${door}`)
     },
     raw() {
@@ -107,7 +126,11 @@ const rawByName = (): boolean => {
   const file = srcPath(s.testPath), test = s.currentTestName ?? ''
   return RAW_BY_NAME.some(e => e.file === file && e.test === test)
 }
-export const INSTALLED: Checker = makeEntryChecker({ ask: refusalAt, openRows: countedOpen, rawByName })
+export const INSTALLED: Checker = makeEntryChecker({
+  ask: refusalAt, openRows: countedOpen, rawByName,
+  noBlock: door => !!G?.NO_BLOCK_DOORS.has(door),
+  open: skip => (G ? G.whatIsOpen(skip)?.row.id ?? null : null),
+})
 setEntryChecker(INSTALLED.hooks)
 
 /* ONLY WHERE A DOOR CAN BE REACHED. Every door lives in, or imports, state/store.ts, so a test file that has not loaded it

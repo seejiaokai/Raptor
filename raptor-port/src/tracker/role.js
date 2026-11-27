@@ -49,7 +49,20 @@ let beforeLogout = null
 export function onBeforeTrackerLogout(f) { beforeLogout = f }
 export async function trackerMayLogOut(show) {
   if (!beforeLogout) return true
-  try { return (await beforeLogout(show)) !== false } catch (_) { return true }
+  try { return (await standing(Promise.resolve(beforeLogout(show)))) !== false } catch (_) { return true }
+}
+/* THE QUESTION STANDING (step KR-2 — the plan docs/superpowers/plans/2026-11-27-msq-s1-kr-no-blocks-plan.md §5 step 4): the
+   sign-out's or a door's unsaved-edits question while it is asked, kept until it has settled WHOLE — its own clean-up after
+   the answer included (core.js clears `switchAsking` in a `finally`) — so a door pressed while it stands can wait for it to
+   be gone before asking its own (trackerSwitchAskAtDoor, below). Only kept: nothing that asks changes. */
+/** @type {Promise<unknown> | null} */
+let asked = null
+/** @template T @param {Promise<T>} p @returns {Promise<T>} */
+function standing(p) {
+  asked = p
+  const gone = () => { if (asked === p) asked = null }
+  p.then(gone, gone)
+  return p
 }
 
 /* ASK BEFORE A PICK TAKES THE TRACKER AWAY (multi-squadron batch 1's second half §16 D2′; his D2318, kept by D2395 — the
@@ -75,8 +88,36 @@ export function trackerSwitchAsk(to, back = false) {
   if (!beforeSwitch) return null
   try {
     if (!beforeSwitch.needs()) return null
-    return Promise.resolve(beforeSwitch.ask(String(to), !!back)).then(v => v !== false, () => true)
+    return standing(Promise.resolve(beforeSwitch.ask(String(to), !!back)).then(v => v !== false, () => true))
   } catch (_) { return null }
+}
+/* …AS A DOOR THAT GOES THROUGH ASKS IT (step KR-2 — his D2825, which keeps this question and drops every refusal for open
+   work; the plan docs/superpowers/plans/2026-11-27-msq-s1-kr-no-blocks-plan.md §5 steps 3b and 4). Two things can stand in
+   the way of drawing the question, and each is open work the press goes through:
+   - (3b) a box another of the Tracker's jobs asked (a name, a choice: core.js `dlg`) — its shade covers the bar, so the
+     press came by the keys. Today the question is then silently not asked (core.js ask's `if (dlg) return false`). Here
+     the job is ENDED and its box and every one queued behind it answered cancelled first (trackerCloseOpen('dlg') — the
+     same closer a door's closing step calls), so an import does not take the cancelled answer as "Skip this one" and ask
+     the next; then the question is asked over the page he is on. The box is gone even if he then answers Stay (the plan's
+     reading R4);
+   - (4) the question itself, already standing (a door pressed by the keys while it is up): that one is answered Stay —
+     its own door then does nothing — and this press waits until it has settled whole, its clean-up included, before
+     asking its own; so the flag that says the question is up is never cleared under the new question (the plan's
+     reading R5).
+   Resolves as trackerSwitchAsk does: null — nothing to ask; else a promise, true to go on. No door calls it until KR-3. */
+let stayFn = null
+export function onTrackerStay(f) { stayFn = typeof f === 'function' ? f : null }
+/** @param {string} to @param {boolean} [back] @returns {Promise<boolean> | null} */
+export function trackerSwitchAskAtDoor(to, back = false) {
+  if (!beforeSwitch) return null
+  if (asked) {
+    const old = asked
+    if (stayFn) { try { stayFn() } catch (_) { /* never stops a door */ } }
+    return old.then(() => { const p = trackerSwitchAskAtDoor(to, back); return p === null ? true : p })
+  }
+  if (!trackerSwitchNeeds()) return null
+  trackerCloseOpen('dlg')
+  return trackerSwitchAsk(to, back)
 }
 
 /* THE GUARD RAIL'S VIEW OF THE TRACKER'S WINDOWS (the guard rail's plan, docs/superpowers/plans/

@@ -77,6 +77,15 @@ export const saidByGuard = (reason: string): boolean => reason === UNSAID || (SA
    never at a refusal, a Stay or a change he did not make */
 export function setGuardClose(fn: (() => void) | null): void { closer = fn }
 export function closeShown(): void { closer?.() }
+/* …AND EVERYTHING OPEN CLOSED (step KR-2 — his D2825; the plan docs/superpowers/plans/2026-11-27-msq-s1-kr-no-blocks-plan.md
+   §5 step 6): a door that goes through closes what is open, each by its own way out, at the same last step where
+   closeShown() runs today — never at a refusal, a Stay or a change he did not make. `skip` — the rows the door leaves out
+   (the window it was pressed in). True once all is closed; false where the Leave War's sheets could not all be closed (a
+   fault, never a wait): the door then does not enter. ui/guard.ts installs the answer; with nothing installed nothing is
+   open, so it is true. Until KR-3 / KR-4 convert the doors, no door calls it. */
+let closerAll: ((skip: readonly string[]) => boolean) | null = null
+export function setGuardCloseOpen(fn: ((skip: readonly string[]) => boolean) | null): void { closerAll = fn }
+export function closeOpen(skip: readonly string[] = []): boolean { return closerAll ? closerAll(skip) : true }
 /* tests only (§3.4): the checker that runs under every test — installed by the test set-ups (step K7) */
 export function setEntryChecker(c: EntryChecker | null): void { installed.checker = c }
 /** an entry by press or the role switch is about to go through: the checker's first check (a no-op in the app) */
@@ -93,7 +102,12 @@ export function rawOnPurpose(): void { installed.checker?.raw() }
    the sheet it closed has left the list) */
 export type WarSheet = { showOnly: boolean; close: () => void; key?: object }
 let warSheets: () => readonly WarSheet[] = () => []
-export function setWarSheetsProbe(fn: (() => readonly WarSheet[]) | null): void { warSheets = fn || (() => []) }
+/* (hands back the probe it replaced — a test that plants a sheet puts the war's own probe back after it) */
+export function setWarSheetsProbe(fn: (() => readonly WarSheet[]) | null): () => readonly WarSheet[] {
+  const was = warSheets
+  warSheets = fn || (() => [])
+  return was
+}
 const sheetsNow = (): readonly WarSheet[] => { try { return warSheets() } catch { return [] } }
 /** a Leave War sheet is open that is not marked show-only — the `lwsheet` row */
 export const warSheetOpen = (): boolean => sheetsNow().some(s => !s.showOnly)
@@ -128,7 +142,7 @@ export function closeWarAll(commit: (fn: () => void) => void = fn => fn()): bool
    Opus 1b). A box that saves as it is left and refuses a value (a plan's name, an event preset's name) says why and, the
    presets, holds its sheet open so the sentence is read. At a door that is going through there is no one to read it: the
    value is dropped silently, and the sheet is not held. Those boxes ask this; true only while a door's closing runs
-   (whileClosingForDoor — KR-2's closing step, and the tests). */
+   (whileClosingForDoor — ui/guard.ts closeOpen, the closing step, and the tests). */
 let closingDoor = false
 export const closingForDoor = (): boolean => closingDoor
 /** runs `fn` with closingForDoor() true, and puts it back after, whatever `fn` does */

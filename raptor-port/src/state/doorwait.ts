@@ -13,6 +13,7 @@
 
    Imports nothing from ui/: the doors live in state/, and the saver's state is storage/savewait.ts's. */
 import { saveSettling, saveRefused, onSaveStatus, flushSaves } from '../storage/savewait'
+import { closeOpen } from './guard'
 
 export type DoorWait = 'go' | 'dropped'
 
@@ -51,4 +52,25 @@ export function waitForSave(): Promise<DoorWait> {
     void flushSaves()
     if (!saveGoing()) finish('go')
   })
+}
+
+/* THE DOOR'S LAST TWO STEPS: WHAT IS OPEN CLOSED, THEN THE ENTRY — AFTER ANY SAVE THE CLOSING STARTED (step KR-2 — his
+   D2825, D2838; the plan docs/superpowers/plans/2026-11-27-msq-s1-kr-no-blocks-plan.md §5 steps 6–8). A door that goes
+   through closes what is open (state/guard.ts closeOpen — the focused box left first, so a box that saves as it is left
+   saves into the squadron still in view). That closing can start a save of its own: a box left, a window whose close keeps
+   its words, Logic's value waiting its beat. Such a save is waited for with the doors' one wait above (his D2627 A9 — never
+   a second wait, never a timer): landed, the door makes its entry; "Not saved", the door's own check refuses it with the
+   Retry note, the squadron unchanged, what was closed staying closed (D2838 — the words are kept in the save Retry re-sends,
+   D2594); a press meanwhile drops it, as every waiting press is dropped — nothing entered, nothing said.
+   - `skip` — the rows the door leaves out (the window it was pressed in);
+   - `stop` — the door's own first two checks made again (the press no longer a change; the guard's refusal, which says the
+     Retry note): true stops the door;
+   - `enter` — the entry, as the door makes it.
+   Where the Leave War's sheets could not all be closed (closeOpen's false — a fault, never a wait) the door does not enter.
+   With nothing saving the entry is made at once, in the same synchronous run as the closing. No door calls it until KR-3. */
+export function closeThenEnter(skip: readonly string[] | undefined, stop: () => boolean, enter: () => void): void | Promise<void> {
+  if (!closeOpen(skip ?? [])) return
+  const go = (): void => { if (!stop()) enter() }
+  if (!saveGoing()) { go(); return }
+  return waitForSave().then(r => { if (r === 'go') go() })
 }
