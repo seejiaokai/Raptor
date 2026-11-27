@@ -474,11 +474,12 @@ describe('§47 — no work outlives a change of the squadron in view', () => {
   })
 })
 
-/* ---- §48 PINS — HIS QUESTION C, AS BUILT UNTIL HE ANSWERS (opus1-7 proof 4) ----
-   One press on another request's Give access, or another man's row, replaces what the slot holds without a word. Whether
-   it should be refused while the open one holds a change is his question (C); these change only on his answer. */
-describe('§48 — pins: one press on another form or row, as built until his answer on C', () => {
-  it('pin (as built until his answer on C): Give access pressed for another request replaces the open one, nothing said', async () => {
+/* ---- §48 PINS — HIS QUESTION C (question 26), ANSWERED B: KEEP TODAY'S (his D2821, 27 Nov 26; opus1-7 proof 4) ----
+   One press on another request's Give access, or another man's row, replaces what the slot holds without a word. Within
+   one squadron nothing on Admin → Users is refused over unsaved typing: the second opens and the first one's typing is
+   dropped with no note — his ruling, not a gap (a same-squadron bell line the same: rejudge4 §22). */
+describe('§48 — pins: one press on another form or row replaces the open one, nothing said (his D2821)', () => {
+  it('pin (his D2821): Give access pressed for another request replaces the open one, nothing said', async () => {
     ask('newface@mail', 'Newface', 'u149')
     ask('other@mail', 'Otherguy', 'u149')
     signInAs('kestrel')
@@ -491,7 +492,7 @@ describe('§48 — pins: one press on another form or row, as built until his an
     expect({ secondOpen: !!p.$('[data-approving]'), roleNow: (p.$('#apvRole') as HTMLSelectElement).value, said: said().length })
       .toEqual({ secondOpen: true, roleNow: 'main', said: 0 })
   })
-  it('pin (as built until his answer on C): a press on another man\'s row replaces the open row, nothing said', async () => {
+  it('pin (his D2821): a press on another man\'s row replaces the open row, nothing said', async () => {
     signInAs('kestrel')
     const p = panel()
     await p.open(PID.osprey)

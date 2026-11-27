@@ -798,7 +798,9 @@ describe('§21 — a regrouping of the list never drops what the admin picked or
    A landing clears the search and moves the Archived fold while drawing. The third round took that for the admin's own
    putting-away, so an open row found by the search was held out of sight, its pick lost without a word, and came back
    open with no press. A bell tap is his own act, as his pick is: a landing for another man closes the open row in that
-   draw, with no note, before the search and the fold change. */
+   draw, with no note, before the search and the fold change. On his own squadron this is his ruling, not a gap: within
+   one squadron nothing on Admin → Users is refused over unsaved typing, a same-squadron bell line included (question 26
+   answered B, his D2821, 27 Nov 26). */
 describe('§22 — a bell line\'s landing for another man closes the open row, with no note', () => {
   it('the fresh Opus 2: Kestrel opens Ranger (142\'s, found by the search) and picks a line; a bell line for Osprey lands — the search is cleared, and Ranger\'s row is closed: found again it is closed, nothing said, nothing sent', async () => {
     signInAs('kestrel')

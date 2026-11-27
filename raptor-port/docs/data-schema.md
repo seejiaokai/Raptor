@@ -200,6 +200,7 @@ the press and compared later — an open row closes at any judging where it is "
 repaint, so it ends or remakes his session at once). Still no edit question: it only closes a row or leaves one shut,
 and the scan of `src/state/edit-rights-readers.test.ts` counts neither `sessionLapsed` nor `levelIn`. Tests:
 `src/ui/msq-s2-rejudge5.test.tsx` §27.
+**Since U1's eighth round it is asked by the one judge of the page's one record of open work** — the open row and the open "Give access" form, each with what it was started on (`ui/UsersPanel.tsx openWork`, `judge`), Give access by its own check at its press (`giveAsked`) — beside `toggle`; since the tenth round a press also asks whether the man is still on the page's list (`listedNow`). Still no edit question: each only closes work or leaves it shut. Tests: `src/ui/msq-s2-rejudge8.test.tsx`, `-rejudge10.test.tsx`.
 
 **The landing (D8):** wherever the page is Edit Schedule, the role in force an admin's and `maySchedEditPage()` false — a
 pick of a squadron he holds View of, R6's re-entry, a Plan lowered while he is there — he lands on View-only Sched
