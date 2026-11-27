@@ -146,7 +146,7 @@ export function BidPicker({
   /** What the balance would read after this write, or `null` for leave that
    *  spends nothing. Supplied by the matrix, where the wars, openings and
    *  ledger already are. */
-  wouldLeave?: (code: string, dates: readonly string[]) => { counter: CounterName; before: number; after: number } | null
+  wouldLeave?: (code: string, dates: readonly string[]) => { counter: CounterName; before: number; after: number; notTyped?: true } | null
   /** What the bid would do to manning on these days (D1144, D1213 — the day line at the window's top): the store's answer,
    *  supplied by the matrix as `wouldLeave` is (`sync.ts bidDayLine`). */
   dayLine?: (dates: readonly string[], code: string) => DayWhatIf[]
@@ -970,7 +970,7 @@ export function BidPicker({
             same line in the same place) */}
         {note && noteAt === 'leave' && <span className="note warn" data-testid="span-note">{note}</span>}
         <LeaveButtons portion={portion} onPick={write} filled={approving} lit={lit}
-          figure={wouldLeave ? (() => { const ds = selCells().map(c => c.date); return (code: string) => wouldLeave(code, ds)?.after ?? null })() : undefined} />
+          figure={wouldLeave ? (() => { const ds = selCells().map(c => c.date); return (code: string) => { const r = wouldLeave(code, ds); return r ? (r.notTyped ? 'nt' : r.after) : null } })() : undefined} />
       </div>}
 
       {/* Medical is MEMBER-FILED ONLY (owner, 13 Sep 26, reversing the 17 Aug

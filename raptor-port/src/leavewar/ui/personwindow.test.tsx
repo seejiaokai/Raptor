@@ -414,10 +414,10 @@ describe('the ways in (§5)', () => {
     render(<Matrix />)
     act(() => { askLw({ kind: 'person', id: hidden! }) })
     expect(win()).toBeTruthy()
-    /* his figure never typed: the box empty and War bal "Not typed" (D2746) */
+    /* his figure never typed: the box empty and War bal the amber "–" (D2746, D2823 — no words anywhere) */
     expect(leaveFiguresOf(hidden!).kinds.LVE.notTyped).toBe(true)
     expect(box('pw-LVE').value).toBe('')
-    expect(screen.getByTestId('pw-LVE-war').textContent).toBe('Not typed')
+    expect(screen.getByTestId('pw-LVE-war').textContent).toBe('–')
     expect(win().querySelectorAll('.ll-go')).toHaveLength(0)
   })
 
@@ -745,7 +745,9 @@ describe('[LW-POSTIN-BALANCE] the person window', () => {
     open(RANGER)
     expect(win().textContent).not.toMatch(/official leave app|typed on|from official/i)
   })
-  it('D2746: never typed — the boxes stand empty with the amber dashed edge, War bal reads "Not typed" in amber, never 0', () => {
+  /* D2823 (27 Nov 26, his "No Not typed anywhere"): the words go — a box he can type in keeps the amber dashed edge, a
+     figure that only stands reads the amber "–", and no pointing hint says "Not typed" either */
+  it('D2746, D2823: never typed — the boxes stand empty with the amber dashed edge, War bal the amber "–", never 0, no words', () => {
     render(<Matrix />)
     open(RANGER)
     expect(leaveFiguresOf(RANGER).kinds.LVE.notTyped).toBe(true)
@@ -753,8 +755,10 @@ describe('[LW-POSTIN-BALANCE] the person window', () => {
     expect(box('pw-LVE').className).toContain('nt')
     expect(box('pw-LVE-cf').value).toBe('')
     const war = screen.getByTestId('pw-LVE-war')
-    expect(war.textContent).toBe('Not typed')
+    expect(war.textContent).toBe('–')
     expect(war.className).toContain('nt')
+    expect(win().textContent).not.toContain('Not typed')
+    expect(win().querySelector('[title*="Not typed"]')).toBeNull()
     for (const k of ['CCL', 'FCL', 'PL', 'EL', 'CL'] as const) expect(box(`pw-${k}`).value).toBe('')
   })
   it('D2746: a 0 typed in the empty box is a figure — it saves, and the box then reads 0', () => {
@@ -773,12 +777,30 @@ describe('[LW-POSTIN-BALANCE] the person window', () => {
     expect(leaveFiguresOf(RANGER).kinds.LVE.notTyped).toBe(true)
     expect(screen.getByTestId('pw-LVE-cf-err').textContent).toBe('Type the Official bal first')
   })
-  it('D2746: another man’s figure never typed, read only for a member — the amber dash, War bal "Not typed"', () => {
+  it('D2746, D2823: another man’s figure never typed, read only for a member — the amber dash, War bal the same, no words', () => {
     ranger()
     render(<Matrix />)
     open('stiff')
     expect(screen.getByTestId('pw-LVE').textContent).toBe('–')
     expect(screen.getByTestId('pw-LVE').className).toContain('nt')
-    expect(screen.getByTestId('pw-LVE-war').textContent).toBe('Not typed')
+    expect(screen.getByTestId('pw-LVE').getAttribute('title')).toBeNull()
+    expect(screen.getByTestId('pw-LVE-war').textContent).toBe('–')
+    expect(win().textContent).not.toContain('Not typed')
+    expect(win().querySelector('[title*="Not typed"]')).toBeNull()
+  })
+  it('D2823: the grid beside his name and My leave read the amber "–" for a balance never typed, no words, no hint', () => {
+    ranger()
+    render(<><Topbar /><Matrix /></>)
+    expect(leaveFiguresOf(RANGER).kinds.LVE.notTyped).toBe(true)
+    const cell = screen.getByTestId(`bal-${RANGER}`)
+    expect(cell.querySelector('.fb')!.textContent).toBe('–')
+    expect(cell.querySelector('.fb')!.className).toContain('nt')
+    expect(cell.getAttribute('title') ?? '').not.toContain('Not typed')
+    expect(cell.getAttribute('title') ?? '').not.toMatch(/LVE\s+–/)
+    const lve = screen.getByTestId('my-leave-lve')
+    expect(lve.textContent).toBe('LVE –')
+    expect(lve.querySelector('.nt')!.textContent).toBe('–')
+    expect(document.body.textContent).not.toContain('Not typed')
+    expect(document.querySelector('[title*="Not typed"]')).toBeNull()
   })
 })

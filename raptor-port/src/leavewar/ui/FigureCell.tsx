@@ -78,10 +78,12 @@ export const FigureCell = memo(function FigureCell({
     const t = setTimeout(() => setFlash(false), FLASH_MS)
     return () => clearTimeout(t)
   }, [flash])
-  const neg = lines.top < 0
+  /* a balance never typed (D2746): the amber "–", never a number counted from 0 and never red, and no words (his D2823) */
+  const nt = !!lines.nt && figure.kind !== 'tot'
+  const neg = !nt && lines.top < 0
   const shownUsed = lines.used.filter(u => u.value !== 0)
   /* a balance written as every surface writes it (its true minus — figWords); a total keeps the box's own rounding */
-  const topText = figure.kind === 'tot' ? show(lines.top) : figWords(lines.top)
+  const topText = nt ? '–' : figure.kind === 'tot' ? show(lines.top) : figWords(lines.top)
   // The used line is measured as ONE run because that is how it is drawn — LL
   // and OL sit side by side on it, so `12` and `10` together are what has to
   // fit, not either of them alone.
@@ -98,7 +100,7 @@ export const FigureCell = memo(function FigureCell({
       onClick={onClick}
       onAnimationEnd={() => setFlash(false)}
     >
-      <span className={`fb${figure.kind === 'tot' ? ' red' : neg ? ' neg' : ''}`}>{topText}</span>
+      <span className={`fb${figure.kind === 'tot' ? ' red' : nt ? ' nt' : neg ? ' neg' : ''}`}>{topText}</span>
       {shownUsed.length > 0 && (
         <span className="fu">
           {shownUsed.map(u => <b key={u.label} className={u.tone}>{show(u.value)}</b>)}

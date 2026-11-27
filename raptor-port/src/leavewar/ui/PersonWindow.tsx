@@ -73,10 +73,10 @@ function Clip() {
 
 /** a figure read only (round 20d's `r17-box ro`) */
 function Ro({ v, sm, testid, nt }: { v: number; sm?: boolean; testid?: string; nt?: boolean }) {
-  /* a figure never typed, read only (D2746): the amber dash (the Balances page draws an empty amber outline there since
-     D2820, 27 Nov 26 — this window keeps the dash and the words) — "Not typed" itself stands in War
-     bal's place */
-  if (nt) return <span className={`r17-box ro nt${sm ? ' sm' : ''}`} data-testid={testid} title="Not typed" aria-label="Not typed">–</span>
+  /* a figure never typed, read only (D2746): the amber dash, and no words anywhere — no pointing hint either (his D2823,
+     27 Nov 26: "No Not typed anywhere"); a screen reader still hears "Not typed", so the dash never reads as a minus (the
+     agent's reading, put to him) */
+  if (nt) return <span className={`r17-box ro nt${sm ? ' sm' : ''}`} data-testid={testid} aria-label="Not typed">–</span>
   return <span className={`r17-box ro${sm ? ' sm' : ''}${v === 0 ? ' z' : ''}`} data-testid={testid}>{figWords(v)}</span>
 }
 
@@ -255,8 +255,9 @@ export function PersonWindow({ person, since, hasRow, onClose, onOil, onGo }: {
               <span className="h" style={{ gridColumn: 3 }}>War bal</span>
               <span className="v" style={{ gridColumn: 1 }}>{app}</span>
               <span className={`v${L.pending ? ' pd' : ''}`} style={{ gridColumn: 2 }} data-testid="pw-LVE-pend">{pend(L.pending)}</span>
-              {/* a balance never typed reads "Not typed" in amber where War bal stands (D2746 — drawn marked/q11-person-window.png) */}
-              <span className={`v war${L.notTyped ? ' nt' : ''}`} ref={warRef} style={{ gridColumn: 3 }} data-testid="pw-LVE-war">{L.notTyped ? 'Not typed' : figWords(L.war)}</span>
+              {/* a balance never typed reads the amber "–" where War bal stands, no words (D2746, his D2823 — "Not typed" was
+                  drawn here first, marked/q11-person-window.png) */}
+              <span className={`v war${L.notTyped ? ' nt' : ''}`} ref={warRef} style={{ gridColumn: 3 }} data-testid="pw-LVE-war" aria-label={L.notTyped ? 'Not typed' : undefined}>{L.notTyped ? '–' : figWords(L.war)}</span>
             </div>
             {/* THE DATE ON A LINE OF ITS OWN ON A PHONE (his "a", D1520 — his picture: "till 31 Dec" ran into the OIL tile): the
                 desktop keeps the approved one line, its " · till …" inside the carried line; a phone shows the line below it
@@ -296,7 +297,7 @@ export function PersonWindow({ person, since, hasRow, onClose, onOil, onGo }: {
                 </span>
                 {K.pending !== 0 && <>
                   <span className="ln a"><span>Pending</span><b className="pd" data-testid={`pw-${k}-pend`}>−{figWords(K.pending)}</b></span>
-                  <span className="ln b"><span>War bal</span><b className={K.notTyped ? 'nt' : undefined} title={K.notTyped ? 'Not typed' : undefined} data-testid={`pw-${k}-war`}>{K.notTyped ? '–' : figWords(K.war)}</b></span>
+                  <span className="ln b"><span>War bal</span><b className={K.notTyped ? 'nt' : undefined} aria-label={K.notTyped ? 'Not typed' : undefined} data-testid={`pw-${k}-war`}>{K.notTyped ? '–' : figWords(K.war)}</b></span>
                 </>}
               </div>
             )

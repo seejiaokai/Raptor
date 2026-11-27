@@ -21,6 +21,8 @@ import { linesOfWar, ownDays } from '../approvals'
 
 export interface MyLeave {
   lve: number
+  /** his LVE was never typed — the strip reads the amber "–" (D2746, D2823) */
+  lveNt: boolean
   oil: number
   /** days pending a decision (a half day .5) */
   pending: number
@@ -58,6 +60,8 @@ export function nextLeaveOf(wars: ReadonlyArray<Pick<War, 'views'>>, personId: s
 export function myLeaveOf(wars: ReadonlyArray<War>, personId: string, today: string): MyLeave {
   return {
     lve: leaveFiguresOf(personId).kinds.LVE.war,
+    /* his LVE never typed (D2746): the strip reads the amber "–", no words (his D2823) */
+    lveNt: leaveFiguresOf(personId).kinds.LVE.notTyped,
     oil: oilLedgerOf(figureCtxOf(), personId).balance,
     pending: pendingDaysOf(wars, personId),
     next: nextLeaveOf(wars, personId, today),

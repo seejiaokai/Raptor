@@ -328,9 +328,9 @@ function Ro({ v, sm, nt }: { v: number; sm?: boolean; nt?: boolean }) {
   /* a figure never typed, read only (D2746, narrowed for this page by D2820 — his answer "a" to question 28, 27 Nov 26:
      "not typed seems abit excessive"): no words and no dash here — an empty outline the size of the box a typeable row
      shows in this column, in the empty box's own amber dashed edge, so one look means "never typed" on the whole page */
-  /* …named "Not typed" on hover and to a screen reader, so the outline never reads as a nothing (the words review, a fresh
-     Fable, 27 Nov 26 — D2441) */
-  if (nt) return <span className={`bp-ro nt${sm ? ' sm' : ''}`} role="img" title="Not typed" aria-label="Not typed" />
+  /* …named "Not typed" to a screen reader, so the outline never reads as a nothing (the words review, a fresh Fable, 27 Nov
+     26 — D2441); no pointing hint (his D2823: "No Not typed anywhere") */
+  if (nt) return <span className={`bp-ro nt${sm ? ' sm' : ''}`} role="img" aria-label="Not typed" />
   return <span className={`bp-ro${sm ? ' sm' : ''}${v === 0 ? ' z' : ''}`}>{figWords(v)}</span>
 }
 /* A PENDING FIGURE (his D2154, D2156 — option B, 17 Nov 26): never a minus, which some read as days taken this year; the
@@ -383,8 +383,8 @@ const Row = memo(function Row({ p, puck, me, boxes, admin, phone, view, d, api }
     : <Ro v={v} sm={sm} nt={nt} />
   /* WAR BAL OF A BALANCE NEVER TYPED: on this page no words — an empty amber dashed outline where its figure stands, the
      LVE box's size (D2820, question 28 A, 27 Nov 26, narrowing D2746 here only — his person window, My leave and Approvals
-     keep "Not typed"); named "Not typed" on hover and to a screen reader */
-  const war = d.nt ? <span className="bp-nto" role="img" title="Not typed" aria-label="Not typed" /> : figWords(d.war)
+     then kept "Not typed", gone too since D2823); named "Not typed" to a screen reader only — no pointing hint (D2823) */
+  const war = d.nt ? <span className="bp-nto" role="img" aria-label="Not typed" /> : figWords(d.war)
   const oil = (
     <button type="button" className="bp-oil" data-testid={`bal-oil-${pid}`} aria-label={`${p.callsign} OIL ${figWords(d.oil)}: open his OIL`} onClick={() => api.oil(pid)}>
       {d.oil ? figWords(d.oil) : <span className="z">0</span>}<span className="ch" aria-hidden="true">›</span>

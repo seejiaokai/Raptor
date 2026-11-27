@@ -93,6 +93,23 @@ describe('one world, every reader agrees (the build spec §1.6)', () => {
     expect(balanceAfterFill('bane', [], 'LL')).toEqual({ counter: 'annual', before: war, after: war })
   })
 
+  /* D2823 (27 Nov 26, his "No Not typed anywhere"): a balance never typed is said by every reader without words — each hands
+     its screen the fact, and the screen draws an amber "–" where the figure would stand */
+  it('D2823: a balance never typed — the grid\'s figure, My leave, Approvals\' LVE BAL and a leave button\'s "left" each know it', () => {
+    expect(leaveFiguresOf('bane').kinds.LVE.notTyped).toBe(true)
+    expect(setCell('bane', '2026-06-03', 'LL')).toBe(true)
+    const period = getState().period
+    expect(nameLines('bane', period).nt).toBe(true)
+    expect(myLeaveOf(getState().wars, 'bane', TODAY).lveNt).toBe(true)
+    expect(figuresOf(lineOf('bane'), undefined).bal).toMatchObject({ counter: 'annual', nt: true })
+    expect(balanceAfterFill('bane', ['2026-06-04'], 'LL')?.notTyped).toBe(true)
+    /* once typed, none of them says so */
+    expect(setTypedBalance('bane', 'LVE', 20, 0)).toBe(true)
+    expect(nameLines('bane', period).nt).toBeFalsy()
+    expect(myLeaveOf(getState().wars, 'bane', TODAY).lveNt).toBe(false)
+    expect(figuresOf(lineOf('bane'), undefined).bal?.nt).toBeFalsy()
+  })
+
   it('§1.5 row 10 (reading 24): the tile\'s Pending reads 11, while My leave and Approvals\' DAYS count the bid alone, 5', () => {
     row10()
     const f = leaveFiguresOf('bane').kinds.LVE

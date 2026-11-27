@@ -560,8 +560,9 @@ function Line({ r, phone, fresh, ringed, onPress, onDates }: { r: Row; phone: bo
      puck's own class for a rear seat, so a WSO's name stood at the right of its puck */
   const days = <span className="appr-days">{f ? daysWords(f.days) : ''}</span>
   const bal = (
-    <span className={`appr-bal${f?.bal && f.bal.value < 0 ? ' neg' : ''}`}>
-      {f?.bal ? <>{f.bal.label && <small>{f.bal.label} </small>}{fig(f.bal.value)}</> : ''}
+    /* a balance never typed: the amber "–", never a figure counted from 0, never red, no words (D2746, his D2823) */
+    <span className={`appr-bal${f?.bal && !f.bal.nt && f.bal.value < 0 ? ' neg' : ''}`}>
+      {f?.bal ? <>{f.bal.label && <small>{f.bal.label} </small>}{f.bal.nt ? <span className="nt">–</span> : fig(f.bal.value)}</> : ''}
     </span>
   )
   const avail = (

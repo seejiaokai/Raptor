@@ -987,7 +987,7 @@ describe('[LW-POSTIN-BALANCE] the Balances page', () => {
     expect(box('bal-cf-stiff').value).toBe('')
     expect(screen.getByTestId('bal-war-stiff').textContent).toBe('')
     expect(screen.getByTestId('bal-war-stiff').querySelector('.bp-nto')?.getAttribute('aria-label')).toBe('Not typed')
-    expect(screen.getByTestId('bal-war-stiff').querySelector('.bp-nto')?.getAttribute('title')).toBe('Not typed')
+    expect(screen.getByTestId('bal-war-stiff').querySelector('.bp-nto')?.getAttribute('title')).toBeNull()   // D2823: no pointing hint
     expect(screen.getByTestId('bal-row-stiff').textContent).not.toContain('Not typed')
     expect(screen.getByTestId('bal-war-stiff').className).not.toContain('neg')
     for (const k of ['CCL', 'FCL', 'PL', 'EL', 'CL']) expect(box(`bal-${k}-stiff`).value).toBe('')
@@ -1008,7 +1008,7 @@ describe('[LW-POSTIN-BALANCE] the Balances page', () => {
     const row = screen.getByTestId('bal-row-stiff')
     expect(row.querySelector('.bp-ro.nt')?.textContent).toBe('')
     expect(row.querySelector('.bp-ro.nt')?.getAttribute('aria-label')).toBe('Not typed')   // the words review, D2441
-    expect(row.querySelector('.bp-ro.nt')?.getAttribute('title')).toBe('Not typed')
+    expect(row.querySelector('.bp-ro.nt')?.getAttribute('title')).toBeNull()   // D2823: no pointing hint
     expect(screen.getByTestId('bal-war-stiff').textContent).toBe('')
     expect(screen.getByTestId('bal-war-stiff').querySelector('.bp-nto')?.getAttribute('aria-label')).toBe('Not typed')
     expect(row.textContent).not.toContain('Not typed')
