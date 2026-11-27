@@ -2950,7 +2950,7 @@ leave moves the figure now). Grants dated on or after the day typed still count 
   App bal = *CF + AN − Σ net(y) for y after this year*; this year's "incl. N carried fwd" is untouched, since those days
   use next year's carried forward (D1218, D1473). A later-year day already approved when he typed is in the snapshot, so
   it is inside the typed figure and never comes off again.
-- **Never typed** reads as typed 0 (cf 0) on **1 Jan of the year of the war's earliest period** (reading 4; this year when
+- **Never typed** reads as typed 0 (cf 0) on **1 Jan of the year of the war's earliest period** *(the screens to read "Not typed" and the below-zero question to wait for a figure — D2746, filed as [LW-POSTIN-BALANCE]; a leave before his post-in date never to be deducted — D2747)* (reading 4; this year when
   no period exists) with an empty snapshot — it moves if an earlier period is created later; each 1 Jan since adds his
   grade's days and his approved leave since comes off. An old `opening:` row of these kinds (demo data, D56) is read the
   same way, its number as the figure — never skipped, and never a loop from the year 1970 (the years run from the start year
