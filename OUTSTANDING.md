@@ -2595,6 +2595,7 @@ design short form, each whole. Then options for which of them stop loading there
 
 | The job | Who did read it | What it went without |
 |---|---|---|
+| The posting sheet's walk fix (chat 201, 26 Nov 26), pull request 852, merged 27 Nov on his "merge live": one line of `leavewar/ui/bidpicker.css` (`grid-auto-rows: 1fr`, every line of chips as tall as the tallest), red-first by a browser test | none — re-walked in both browser engines instead; the rest of the change had Astra's, a fresh Opus's and a fresh Fable's code reads (chats 196–197) | any code read of that one line; his iPhone look, skipped on his word ("no need for my preview") |
 | Fix read 11 of multi-squadron batch 1 (chat 118, 20 Nov 26) on `claude/multi-sqn-b1-107` (pull request 806): fix read 10's five fixes (`3242f3b3b..eb51fa689`) | the fresh, blind Opus reader, Fable (D2224) and the security reader (D1411) — all whole; Astra (GPT-6 Astra) ran on the unchanged brief and was stopped twice by its service as a "cybersecurity risk", the fourth round running — no claim; its last lead (a delete and its Undo under fault C) checked by the host, green (`…/briefs/2026-11-20-multi-sqn-b1-fixread11-astra.md`) | Astra's full read — owed to fix read 12 |
 | Fix read 13 of multi-squadron batch 1 (chat 118, 20 Nov 26) on `claude/multi-sqn-b1-107` (pull request 806): fix read 12's five fixes (`cd8231767..3d9743036`) | the fresh, blind Opus reader, Fable (D2224) and the security reader (D1411) — all whole; Astra (GPT-6 Astra) stopped by its service as a "cybersecurity risk", the fifth time — no report; its last line named two older leads (a command bringing back a deleted person; the Leave War's dragged-selection remark editor not telling a filer), for the host to reproduce (`…/briefs/2026-11-20-multi-sqn-b1-fixread13-astra.md`) | Astra's full read — owed to fix read 14, on a brief of its own worded as a rules check, its findings written as it goes |
 | Fix read 10 of multi-squadron batch 1 (chat 118, 20 Nov 26) on `claude/multi-sqn-b1-107` (pull request 806): fix read 9's six fixes (`ae1af3806..0613720a7`) | the fresh, blind Opus reader, Fable (D2224) and the security reader (D1411) — all whole; Astra (GPT-6 Astra) ran on the unchanged brief and was stopped twice by its service as a "cybersecurity risk", its progress claims kept (`…/briefs/2026-11-20-multi-sqn-b1-fixread10-astra.md`) | Astra's full read — owed to fix read 11 |
@@ -3374,6 +3375,10 @@ write a Delete posting after the first tab undid it (two devices that never sync
 midnight a gone day drew a plain "PO" for one frame before its hatch; Approvals' amber "posting out … · auto delete"
 words run into the LL box; on a phone in WebKit the one-day window stops about 35 px above the screen's foot, the row
 under it showing below.
+
+**(f) Tidiness, filed not fixed (D489 — chat 197's code reads):** Post out's and Post in's sheets take a `date` they
+never use; two dead rules at the top of `ui/postout.css`; the old walk scripts that press `postout-place` /
+`postin-place` (rw-w3-03, rw-w5-05, rw-w5-05e), gone since D2727.
 
 **Not a fault, recorded for him:** the drag window turned posting has no way back to the range's leave buttons — ✕
 loses the range (no ruling names one; D2653 d named the one-day sheet's). His word if he wants one.
