@@ -549,9 +549,14 @@ const ARCH_MAY_USE = [
 /* WHAT EACH EDITOR IS HANDED — exactly: whose row (`pid`, an id — never a reading of him), the judgement held from the
    press (`on`), the copy (`s`), what the admin has typed (`typed`, with `onTyped`), and what it tells the page: close
    (`onClose`), judge again (`onStale`), and — the archived row's Save name — "this write was the row's own" (`onWrote`).
-   A new prop is listed here with its reason, or its value goes through the copy. */
-const WHOLE_PROPS = ['pid', 'on', 's', 'typed', 'onTyped', 'onClose', 'onStale'].sort()
-const ARCH_PROPS = ['pid', 'on', 's', 'typed', 'onTyped', 'onClose', 'onStale', 'onWrote'].sort()
+   A new prop is listed here with its reason, or its value goes through the copy.
+   (U1's tenth round added two to both, by name — each a FUNCTION OF THE PAGE, never a value of the man: `listed` — is he
+   still on the page's list at a press, the page's search, ticks and fold against the store as it is then (UsersPanel's
+   listedNow; the security reader's F1 of the ninth read); `afterWrite` — run a write with the other piece of open work
+   judged in the same note batch, so its note follows this press's receipt (UsersPanel's afterWrite; opus1 F2/F3).
+   Neither hands the editor anything of him to draw or write.) */
+const WHOLE_PROPS = ['pid', 'on', 's', 'typed', 'onTyped', 'onClose', 'onStale', 'listed', 'afterWrite'].sort()
+const ARCH_PROPS = ['pid', 'on', 's', 'typed', 'onTyped', 'onClose', 'onStale', 'onWrote', 'listed', 'afterWrite'].sort()
 /* WHAT THE THREE PARTS HANDED HIS ID OR HIS LINES MAY USE.
    rowLocks — whose admin may change the rest of his row: his home that day (one of the four judged facts) and the
    SIGNED-IN admin's own rights, read afresh.

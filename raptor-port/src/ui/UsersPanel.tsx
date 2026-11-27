@@ -244,6 +244,7 @@ function giveAsked(g: GiveWork, day: string | undefined, onClose: (found?: true)
    as it goes (useNoteAsPageGoes); its report to the guard is the page's too. */
 function Waiting(p: {
   give: GiveWork | null; onTyped: (t: GiveTyped) => void; onOpen: (r: AccessRequest) => void; onClose: (found?: true) => void
+  afterWrite: (write: () => void) => void
 }) {
   /* the page's squadron's requests only, those he is an admin of (§5 — accounts.ts waitingHere) */
   const reqs = waitingHere()
@@ -265,7 +266,7 @@ function Waiting(p: {
                   <button className="abtn primary" data-approve={r.id} onClick={() => p.onOpen(r)}>Give access</button>
                   <button className="abtn" data-decline={r.id} onClick={() => done(declineRequest(r.id), `Refused ${r.name}`)}>Refuse</button>
                 </div>
-              : <GiveForm r={r} g={g} onTyped={p.onTyped} onClose={p.onClose} />}
+              : <GiveForm r={r} g={g} onTyped={p.onTyped} onClose={p.onClose} afterWrite={p.afterWrite} />}
           </div>
         )
       })}
@@ -274,19 +275,26 @@ function Waiting(p: {
 }
 /* ONE REQUEST'S OPEN GIVE ACCESS FORM. Every change sets its field's mark, inline. The New person Post in box shows the
    date he picked, or today live, worked out in this very draw (`day`); that day is the box's value AND the date "Add
-   person and give access" sends. */
-function GiveForm(p: { r: AccessRequest; g: GiveWork; onTyped: (t: GiveTyped) => void; onClose: (found?: true) => void }) {
+   person and give access" sends.
+   Its press's write runs through the page's afterWrite (the tenth round — opus1 F2/F3, opus2 F3 of the ninth read): the
+   receipt, or the door's own words, then the note of the open row where this write left it no longer as it was opened —
+   one batch, one line, so the row's note never replaces what this press said. */
+function GiveForm(p: {
+  r: AccessRequest; g: GiveWork; onTyped: (t: GiveTyped) => void; onClose: (found?: true) => void; afterWrite: (write: () => void) => void
+}) {
   const { r, g } = p
   const a = g.typed
   const match = rosterMatch(r)
   const day = a.set.postIn ? a.postIn : effectiveToday()
   const go = () => {
     if (!giveAsked(g, a.mode === 'new' ? day : undefined, p.onClose)) return
-    const bad = a.mode === 'new' ? approveRequestNew(r.id, a.np, a.role, day) : approveRequest(r.id, a.pid, a.role)
-    const who = a.mode === 'new' ? `${a.np.cs.trim()} added — ${r.name} can sign in now` : `${r.name} can sign in now`
-    /* a request already gone (answered meanwhile, nothing redrawn): the door's own words stand, said by done, and the
-       form goes with this press — it is drawn inside its request's row, so it cannot stay once the request is gone */
-    if (done(bad, who) || !waitingHere().some(x => x.id === r.id)) p.onClose()
+    p.afterWrite(() => {
+      const bad = a.mode === 'new' ? approveRequestNew(r.id, a.np, a.role, day) : approveRequest(r.id, a.pid, a.role)
+      const who = a.mode === 'new' ? `${a.np.cs.trim()} added — ${r.name} can sign in now` : `${r.name} can sign in now`
+      /* a request already gone (answered meanwhile, nothing redrawn): the door's own words stand, said by done, and the
+         form goes with this press — it is drawn inside its request's row, so it cannot stay once the request is gone */
+      if (done(bad, who) || !waitingHere().some(x => x.id === r.id)) p.onClose()
+    })
   }
   return (
     <div className="acc-edit" data-approving={r.id}>
@@ -632,9 +640,16 @@ const typedFrom = (s: Shown | null): Typed => ({
    open work's note — one element, so the second replaced the first. `onClose(true)` — "closed, found changed" — hands it
    to the page, which closes every piece of open work no longer as it was started and says all their notes in one batch,
    this row's first (UsersPanel's closeFound). A deleted man's row pressed still says its note (the judge's `gone` is
-   silent only on a draw and as the page goes). */
-function askAgain(pid: string, on: OpenedOn, onClose: (found?: true) => void, t?: Typed, day?: string): boolean {
-  if (judgeRow(pid, on, t ?? null, day) === 'ok') return true
+   silent only on a draw and as the page goes).
+   `listed` — IS HE STILL ON THE PAGE'S LIST, as the page stands at this press: his search, his ticks and his fold as they
+   were drawn, the store as it is now (the tenth round — the security reader's F1 = Astra 1 of the ninth read). The draw
+   closes a row whose man left the list by no act of his (useOpenWorkJudged's `left`), but the judge never asked it, so
+   with nothing redrawn a press still wrote: Saber, on 149, had picked View on Hunter's short row (listed only for his
+   Plan of 149) and Kestrel took the Plan — Save gave Hunter View; a Role or CAT tick no longer keeping the man let a
+   whole row's Save write the same way. A page function, never a value of the man (UsersPanel's listedNow): an editor
+   only asks it. Not listed → nothing is sent, the row closes, the note, as the draw would. */
+function askAgain(pid: string, on: OpenedOn, onClose: (found?: true) => void, listed: (pid: string) => boolean, t?: Typed, day?: string): boolean {
+  if (judgeRow(pid, on, t ?? null, day) === 'ok' && listed(pid)) return true
   onClose(true)
   return false
 }
@@ -718,6 +733,7 @@ function ShortSub(p: { pid: string; a: Account | undefined; person: any; unit: s
    (useOpenWorkJudged), as the press here lets go a pick put back by hand. */
 function ForeignEditor(p: {
   pid: string; on: OpenedOn; typed: Typed; onTyped: (t: Typed) => void; onClose: (found?: true) => void; onStale: () => void
+  listed: (pid: string) => boolean; afterWrite: (write: () => void) => void
 }) {
   const stale = useJudgedOnDraw(p.pid, p.on, p.onStale, p.typed)
   const unit = p.on.unit
@@ -727,12 +743,14 @@ function ForeignEditor(p: {
   const line = picked ?? lineNow
   const unsaved = shortUnsaved({ a, rolePick, picked, line: lineNow })
   const save = () => {
-    if (!askAgain(p.pid, p.on, p.onClose, p.typed)) return
+    if (!askAgain(p.pid, p.on, p.onClose, p.listed, p.typed)) return
     const held = shortHeld(p.pid, unit, p.typed)
     /* (a pick made that is no longer on the sign-in he holds: his row changed while it was open) */
     if (p.typed.pick && held.picked === null) return p.onClose(true)
     if (!held.a || held.rolePick === 'master' || held.picked === null || held.picked === held.line) return p.onClose()
-    if (done(saveAccess(held.a.id, { grants: { [unit]: held.picked } }), 'Saved')) p.onClose()
+    const to = held.a.id, line = held.picked
+    /* (the write and the other piece of open work judged with it, its note after this receipt — the page's afterWrite) */
+    p.afterWrite(() => { if (done(saveAccess(to, { grants: { [unit]: line } }), 'Saved')) p.onClose() })
   }
   if (stale) return null
   return (
@@ -753,10 +771,16 @@ function ForeignEditor(p: {
                  sign-in was put on another man and he was given a new one with nothing redrawn, a press made on the old
                  screen must land on neither (the sixth read's security pin S1) — the pick made on a sign-in no longer
                  his closes the row with the note on the draw this press causes (pickCannotGo). (A pick the store has
-                 since made equal is still let go on the next draw — pickNowHeld.) */
-              if (rowChanged(p.pid, p.on, p.typed)) { p.onStale(); return }
+                 since made equal is still let go on the next draw — pickNowHeld.)
+                 STILL LISTED, AND NEVER A MASTER ADMIN'S PUT-BACK (the tenth round): a man who left the page's list
+                 by another admin's change, nothing redrawn, is not picked for — the page is asked to draw again, and
+                 its judging closes the row with the note (`left` — the security reader's F1); and a man made a master
+                 admin unseen holds no line, yet the store reads 'none' for him, so a press of None was taken for a
+                 put-back and let go without a word (opus2 F2 of the ninth read): his pick is held, and the draw it
+                 causes closes the row with the note (pickCannotGo). */
+              if (rowChanged(p.pid, p.on, p.typed) || !p.listed(p.pid)) { p.onStale(); return }
               const fresh = shortHeld(p.pid, unit, p.typed)
-              const putBack = !!fresh.a && fresh.a.id === a.id && v === fresh.line
+              const putBack = !!fresh.a && fresh.a.id === a.id && fresh.rolePick !== 'master' && v === fresh.line
               p.onTyped({ ...p.typed, pick: putBack ? null : { acct: a.id, line: v } })
             }} />
         : <p className="adm-note acc-note" id="accEdNoSignIn">{noSignInWords(otherSqnOf(p.pid) ?? '')}</p>}
@@ -793,9 +817,12 @@ function rowLocks(pid: string, master: boolean): { rest: boolean; roleLocked: bo
 
 /* ONE ROW PER PERSON ON THE ROSTER (D309, D310). Tap it for his sign-in, his role and his state's buttons — never your
    own row (another admin changes it). A row with an account keeps `data-acct` (the account's id) beside `data-person`. */
+/* (`listed`, `afterWrite` — the page's own two functions, handed on to the editor: is he still on the page's list at a
+   press (askAgain), and run a write with the other piece of open work judged in its batch (UsersPanel's afterWrite)) */
 function PersonRow(p: {
   pid: string; open: boolean; openOn?: OpenedOn | null; typed?: Typed | null; onTyped: (t: Typed) => void
   ringed?: boolean; onToggle: () => void; onClose: (found?: true) => void; onStale: () => void
+  listed: (pid: string) => boolean; afterWrite: (write: () => void) => void
 }) {
   const person = P(p.pid)
   const a = accountOfPid(p.pid)
@@ -831,9 +858,10 @@ function PersonRow(p: {
           before it is drawn again, the second term holds it for this row's own draw, and the editor judges itself on a
           draw of its own, which neither the page nor this row sees) */}
       {p.open && !own && openOn && p.typed && (openOn.short
-        ? <ForeignEditor pid={p.pid} on={openOn} typed={p.typed} onTyped={p.onTyped} onClose={p.onClose} onStale={p.onStale} />
+        ? <ForeignEditor pid={p.pid} on={openOn} typed={p.typed} onTyped={p.onTyped} onClose={p.onClose} onStale={p.onStale}
+            listed={p.listed} afterWrite={p.afterWrite} />
         : !foreignHere(p.pid) && openOn.shown && <PersonEditor pid={p.pid} on={openOn} s={openOn.shown} typed={p.typed} onTyped={p.onTyped}
-            onClose={p.onClose} onStale={p.onStale} />)}
+            onClose={p.onClose} onStale={p.onStale} listed={p.listed} afterWrite={p.afterWrite} />)}
     </div>
   )
 }
@@ -891,14 +919,17 @@ function useRowReports(pid: string | null, on: OpenedOn | null, t: Typed | null)
 }
 function PersonEditor(p: {
   pid: string; on: OpenedOn; s: Shown; typed: Typed; onTyped: (t: Typed) => void; onClose: (found?: true) => void; onStale: () => void
+  listed: (pid: string) => boolean; afterWrite: (write: () => void) => void
 }) {
   const { s, typed } = p
   const { name, role, lines } = typed
   const has = s.acct !== null
   /* judged again on every draw of its own (useJudgedOnDraw), and at the head of every action this row takes — Save,
-     Suspend / Enable, Give sign-in, Archive, Delete — by the judgement the page holds, whole (askAgain, the one belt) */
+     Suspend / Enable, Give sign-in, Archive, Delete — by the judgement the page holds, whole, and whether he is still on
+     the page's list (askAgain, the one belt); every write then runs through the page's afterWrite, so the other piece of
+     open work it closes is named after this press's own receipt, never in its place (the tenth round) */
   const stale = useJudgedOnDraw(p.pid, p.on, p.onStale)
-  const stillHis = (): boolean => askAgain(p.pid, p.on, p.onClose)
+  const stillHis = (): boolean => askAgain(p.pid, p.on, p.onClose, p.listed)
   const { rest, roleLocked } = rowLocks(p.pid, s.role === 'master')
   /* the delete's first tap arms it; Cancel, closing the editor or another row disarms it (the editor unmounts — a
      regrouping disarms it too: a delete is never left armed across a redraw of the list) */
@@ -911,27 +942,34 @@ function PersonEditor(p: {
     const want = accessWant(role, s.role, lines, s.lines)
     const renamed = name !== s.name
     if (!want && !renamed) return p.onClose()
-    const bad = want ? saveAccess(s.acct, renamed ? { ...want, name } : want) : updateAccount(s.acct, { name })
-    if (done(bad, 'Saved')) p.onClose()
+    const acct = s.acct
+    p.afterWrite(() => {
+      const bad = want ? saveAccess(acct, renamed ? { ...want, name } : want) : updateAccount(acct, { name })
+      if (done(bad, 'Saved')) p.onClose()
+    })
   }
   const onOff = () => {
     if (!s.acct || !stillHis()) return
-    const enabling = !s.on
-    if (done(updateAccount(s.acct, { on: enabling }), s.on ? `${s.cs} suspended` : `${s.cs} can sign in again`)) {
-      /* D284, D307: enabling his account is one of the "he's back" acts — the Quals prompt to check his quals */
-      if (enabling) { markBack(p.pid); notify() }
-      p.onClose()
-    }
+    const acct = s.acct, enabling = !s.on
+    p.afterWrite(() => {
+      if (done(updateAccount(acct, { on: enabling }), s.on ? `${s.cs} suspended` : `${s.cs} can sign in again`)) {
+        /* D284, D307: enabling his account is one of the "he's back" acts — the Quals prompt to check his quals */
+        if (enabling) { markBack(p.pid); notify() }
+        p.onClose()
+      }
+    })
   }
   const archive = () => {
     if (!stillHis()) return
-    const r = archivePerson(p.pid)
-    if (done(r.bad, r.said)) p.onClose()
+    p.afterWrite(() => {
+      const r = archivePerson(p.pid)
+      if (done(r.bad, r.said)) p.onClose()
+    })
   }
   const del = () => {
     if (!stillHis()) return
     if (!armDel) { setArmDel(true); return }
-    if (done(deletePerson(p.pid), `${s.cs} deleted`)) p.onClose()
+    p.afterWrite(() => { if (done(deletePerson(p.pid), `${s.cs} deleted`)) p.onClose() })
   }
   if (stale) return null
   return (
@@ -959,7 +997,7 @@ function PersonEditor(p: {
             </>
           : <button className="abtn primary" id="accGive" onClick={() => {
               if (!stillHis()) return
-              if (done(addAccount(name, p.pid, role === 'master' ? 'admin' : role), `${s.cs} can sign in now`)) p.onClose()
+              p.afterWrite(() => { if (done(addAccount(name, p.pid, role === 'master' ? 'admin' : role), `${s.cs} can sign in now`)) p.onClose() })
             }}>Give sign-in</button>}
         {/* D310, D322, D323: Archive — one tap; it also suspends his sign-in; on the war "posted out from today" */}
         <button className="abtn" id="accEdArchive" disabled={!rest} onClick={archive}>Archive</button>
@@ -984,6 +1022,7 @@ function PersonEditor(p: {
 function ArchivedRow(p: {
   pid: string; open: boolean; openOn?: OpenedOn | null; typed?: Typed | null; onTyped: (t: Typed) => void
   ringed?: boolean; onToggle: () => void; onClose: (found?: true) => void; onStale: () => void; onWrote: () => void
+  listed: (pid: string) => boolean; afterWrite: (write: () => void) => void
 }) {
   const person = P(p.pid)
   const a = accountOfPid(p.pid)
@@ -999,7 +1038,8 @@ function ArchivedRow(p: {
       <Dots pid={p.pid} a={a} archived />
       <span className="od-rc">{a && <span className={'ub ' + a.role}>{isAdminAccount(a) ? 'Admin' : 'Member'}</span>}</span>
       {p.open && p.openOn && p.openOn.shown && p.typed && <ArchivedEditor pid={p.pid} on={p.openOn} s={p.openOn.shown}
-        typed={p.typed} onTyped={p.onTyped} onClose={p.onClose} onStale={p.onStale} onWrote={p.onWrote} />}
+        typed={p.typed} onTyped={p.onTyped} onClose={p.onClose} onStale={p.onStale} onWrote={p.onWrote}
+        listed={p.listed} afterWrite={p.afterWrite} />}
     </div>
   )
 }
@@ -1031,7 +1071,7 @@ function ArchivedRow(p: {
    now the saved name, and THE POST-IN DATE HE PICKED, which the next Restore still uses. */
 function ArchivedEditor(p: {
   pid: string; on: OpenedOn; s: Shown; typed: Typed; onTyped: (t: Typed) => void; onClose: (found?: true) => void; onStale: () => void
-  onWrote: () => void
+  onWrote: () => void; listed: (pid: string) => boolean; afterWrite: (write: () => void) => void
 }) {
   const { s, typed } = p
   const { box } = typed
@@ -1039,7 +1079,8 @@ function ArchivedEditor(p: {
   /* the day the post-in box shows in this draw — his, or today live (above) — and so the day its presses send */
   const day = typed.set.postIn ? typed.postIn : effectiveToday()
   const stale = useJudgedOnDraw(p.pid, p.on, p.onStale, typed)
-  const stillHis = (): boolean => askAgain(p.pid, p.on, p.onClose, typed, day)
+  /* (still on the page's list too, and every write through the page's afterWrite — as the whole row's, the tenth round) */
+  const stillHis = (): boolean => askAgain(p.pid, p.on, p.onClose, p.listed, typed, day)
   const callsign = s.cs
   const taken = s.taken
   const [err, setErr] = useState('')
@@ -1048,24 +1089,28 @@ function ArchivedEditor(p: {
   const renamed = want !== callsign
   const restore = () => {
     if (!stillHis()) return
-    const bad = renamed
-      ? restoreArchivedAs(p.pid, want, day)
-      : restoreProblem(p.pid, day) || callsignProblem(callsign, p.pid) || (restoreArchivedPerson(p.pid, day) ? null : 'That did not save')
-    if (bad) { setErr(bad); return }
-    HOOKS.toast(`${want} restored — ${has ? 'he can sign in, and ' : ''}he'll be asked to check his quals and CAT`); notify(); p.onClose()
+    p.afterWrite(() => {
+      const bad = renamed
+        ? restoreArchivedAs(p.pid, want, day)
+        : restoreProblem(p.pid, day) || callsignProblem(callsign, p.pid) || (restoreArchivedPerson(p.pid, day) ? null : 'That did not save')
+      if (bad) { setErr(bad); return }
+      HOOKS.toast(`${want} restored — ${has ? 'he can sign in, and ' : ''}he'll be asked to check his quals and CAT`); notify(); p.onClose()
+    })
   }
   const saveName = () => {
     if (!stillHis()) return
-    const bad = callsignProblem(want, p.pid)
-    if (bad) { setErr(bad); return }
-    const r = updatePersonField(p.pid, { callsign: want })
-    if (r && r !== 'unchanged') { setErr(r); return }
-    HOOKS.toast(`Renamed ${want}`); p.onWrote(); notify()
+    p.afterWrite(() => {
+      const bad = callsignProblem(want, p.pid)
+      if (bad) { setErr(bad); return }
+      const r = updatePersonField(p.pid, { callsign: want })
+      if (r && r !== 'unchanged') { setErr(r); return }
+      HOOKS.toast(`Renamed ${want}`); p.onWrote(); notify()
+    })
   }
   const del = () => {
     if (!stillHis()) return
     if (!armDel) { setArmDel(true); return }
-    if (done(deletePerson(p.pid), `${callsign} deleted`)) p.onClose()
+    p.afterWrite(() => { if (done(deletePerson(p.pid), `${callsign} deleted`)) p.onClose() })
   }
   if (stale) return null
   return (
@@ -1359,24 +1404,103 @@ function useNoteAsPageGoes(work: OpenWork, rowOnScreen: boolean): void {
      it is named where the one rule says so (noteOwed — changed, on his screen at the last draw: a piece he had put out of
      sight, or an unchanged Give access, goes without a word).
    The page closes both in one write and says the names in one batch (sayChanged). `rowOnScreen` — the open row on his
-   screen at the last draw; Give access holds its own. */
-function closedAtPress(w: OpenWork, pressed: 'row' | 'give', rowOnScreen: boolean): { row: boolean; give: boolean; said: string[] } {
+   screen at the last draw; Give access holds its own.
+   THE OTHER PIECE IS JUDGED AS THE DRAW JUDGES IT, ALL OF IT (the tenth round — opus2 F1 = Astra 2 of the ninth read): the
+   one judge, and then, for a row the judge keeps, the draw's two checks of the list around it — `left` (it was on his
+   screen at the last draw and is no longer on the list, by no act of his: closed, the note) and `lost` (a row he had put
+   out of sight whose man is off the list as it stood then: closed, silently). Without them a refused Give access beside
+   a short row whose man had lost his Plan unseen said the form's note, and the draw after said the row's in a batch of
+   its own, replacing it. (`x` — the page at this press: the row on his screen at the last draw, is he listed now, would
+   he be on the list as it stood when last on the page — UsersPanel's pressAt.) */
+type PressAt = { rowOnScreen: boolean; listed: (pid: string) => boolean; still: (pid: string) => boolean }
+const KEEP = { close: false, named: false }
+function otherAtPress(e: Entry, x: PressAt): { close: boolean; named: boolean } {
+  const why = judge(e, 'draw')
+  if (e.kind === 'give') return why === 'ok' ? KEEP : { close: true, named: noteOwed(e, why, e.drawn.onScreen) }
+  if (why !== 'ok') return { close: true, named: noteOwed(e, why, x.rowOnScreen) }
+  if (x.rowOnScreen && !x.listed(e.pid)) return { close: true, named: true }
+  return x.still(e.pid) ? KEEP : { close: true, named: false }
+}
+function closedAtPress(w: OpenWork, pressed: 'row' | 'give', x: PressAt): { row: boolean; give: boolean; said: string[] } {
   const said: string[] = []
   let row = false, give = false
   if (w.row) {
-    const e: Entry = { kind: 'row', ...w.row }, why = pressed === 'row' ? 'changed' : judge(e, 'draw')
-    if (why !== 'ok') { row = true; if (pressed === 'row' || noteOwed(e, why, rowOnScreen)) said.push(cs(w.row.pid)) }
+    const o = pressed === 'row' ? { close: true, named: true } : otherAtPress({ kind: 'row', ...w.row }, x)
+    row = o.close
+    if (o.named) said.push(cs(w.row.pid))
   }
   if (w.give) {
-    const e: Entry = { kind: 'give', ...w.give }, why = pressed === 'give' ? 'changed' : judge(e, 'draw')
-    if (why !== 'ok') {
-      give = true
-      const named = pressed === 'give' || noteOwed(e, why, w.give.drawn.onScreen)
-      if (named && pressed === 'give') said.unshift(w.give.callsign)
-      else if (named) said.push(w.give.callsign)
-    }
+    const o = pressed === 'give' ? { close: true, named: true } : otherAtPress({ kind: 'give', ...w.give }, x)
+    give = o.close
+    if (o.named && pressed === 'give') said.unshift(w.give.callsign)
+    else if (o.named) said.push(w.give.callsign)
   }
   return { row, give, said }
+}
+/* THE PAGE'S PRESS PATHS — a plain function of the page's record and setters, out of UsersPanel so the component stays
+   within the code check's size (the tenth round; as addFormDiffers and useOpenRequest are).
+   `x` — THE PAGE AT THIS PRESS (PressAt): the open row on his screen at the last draw (`rowOnScreen`); IS THIS MAN ON THE
+   PAGE'S LIST NOW (`listed` — UsersPanel's listedNow: the list worked out again from the store as it is at the press,
+   with his search, his ticks and his fold as the draw holds them — what the draw's `left` asks, asked at the press too:
+   askAgain, the short row's line press, and the other piece of open work — otherAtPress; only a row drawn at the last
+   draw can be pressed, so "not listed" means he left the list after that draw, by no act of the admin's — the security
+   reader's F1 of the ninth read); and would he be on the list as it stood when his row was last on the page (`still`).
+   CLOSING A PIECE OF OPEN WORK — Cancel, his own finishing press, Escape (`found` absent) — or, `found` true, a press that
+   found it changed (askAgain, giveAsked, the short row's Save): then every piece of open work no longer as it was started
+   closes at that one moment and their notes are said together, the pressed one's first (closedAtPress — the ninth
+   round). The record is the one of the draw whose press this is, which is the one on his screen; the slots are let go by
+   a write that reads the record as React holds it (`setWork(w => …)`), each only where it still holds the very work of
+   that draw.
+   A PRESS THAT WRITES KEEPS ITS OWN RECEIPT (`afterWrite` — the tenth round, opus1 F2/F3 = opus2 F3 of the ninth read).
+   Hunter typed a sign-in on Drifter's row, then gave Newface access On the roster as Drifter: the write said "newface@mail
+   can sign in now", and the redraw then found Drifter's row changed (he has a sign-in now) and said its note in a batch
+   of its own — the passing note is one element, so the receipt was replaced by "nothing was saved", about his own act a
+   moment ago; the same for the door's own words ("That request is gone") beside a row another admin had changed. Now
+   every writing press of an open piece of work runs its write here, inside the app's one note batch: the write (its
+   receipt, or the door's own words, and its own close), then the OTHER piece of open work judged at once as the next draw
+   would judge it (otherAtPress — the draw's `left` and `lost` too), let go where it is not ok and its note said in the
+   same batch where the one rule owes it — receipt first, then the note, one line. The draw that follows finds it already
+   closed and says nothing. */
+type SetOf<T> = (v: T | ((cur: T) => T)) => void
+function pressPaths(work: OpenWork, setWork: SetOf<OpenWork>, setSeen: SetOf<SeenAt | null>, x: PressAt) {
+  const dropWork = (c: { row: boolean; give: boolean }) => {
+    const rowPid = work.row?.pid, giveId = work.give?.id
+    setWork(cur => ({
+      row: c.row && cur.row && cur.row.pid === rowPid ? null : cur.row,
+      give: c.give && cur.give && cur.give.id === giveId ? null : cur.give,
+    }))
+    if (c.row) setSeen(null)
+  }
+  const closeFound = (pressed: 'row' | 'give') => {
+    const c = closedAtPress(work, pressed, x)
+    dropWork(c)
+    if (c.said.length) sayChanged(c.said)
+  }
+  const afterWrite = (pressed: 'row' | 'give', write: () => void): void => {
+    HOOKS.toastBatch(() => {
+      write()
+      const other: Entry | null = pressed === 'row'
+        ? (work.give ? { kind: 'give', ...work.give } : null)
+        : (work.row ? { kind: 'row', ...work.row } : null)
+      if (!other) return
+      const o = otherAtPress(other, x)
+      if (!o.close) return
+      dropWork({ row: other.kind === 'row', give: other.kind === 'give' })
+      if (o.named) sayChanged([other.kind === 'row' ? cs(other.pid) : other.callsign])
+    })
+  }
+  return {
+    closeRow: (found?: true) => {
+      if (found === true) { closeFound('row'); return }
+      setWork(w => (w.row ? { ...w, row: null } : w)); setSeen(null)
+    },
+    closeGive: (found?: true) => {
+      if (found === true) { closeFound('give'); return }
+      setWork(w => (w.give ? { ...w, give: null } : w))
+    },
+    rowWrite: (write: () => void) => afterWrite('row', write),
+    giveWrite: (write: () => void) => afterWrite('give', write),
+  }
 }
 
 /* THE FORM'S REPORT TO THE GUARD (D2598, §18.3; ui/guard.ts's `addperson` row): counted while the form is open and
@@ -1553,6 +1677,9 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
   const view = usersView(unit, today, q, filt, master)
   const archShown = view.archived
   const archOpenNow = archOpen ?? (!!q && archShown.length > 0)
+  /* is this man on the page's list at a press — PressAt's `listed`, above (the tenth round) */
+  const listedNow = (pid: string): boolean =>
+    rowInView(usersView(pageUnit('own'), todayIso(), q, filt, actorIsMaster()), pid, archOpenNow)
   /* ALL OPEN WORK IS JUDGED AGAIN ON THIS DRAW (useOpenWorkJudged) — here, once the list is worked out, because the
      judging asks whether the row is on it: by what each entry was started on, and the row by the page around it as it
      stood at the last draw. And once more as the page goes (useNoteAsPageGoes). */
@@ -1565,29 +1692,10 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
   const still = stillListed(editing, seen, unit, today, master)
   useOpenWorkJudged(work, setWork, setSeen, { closedNow, seen, now: { drawn, shown, q, filt, arch: archOpen, wrote, still }, shown })
   useNoteAsPageGoes(work, drawn)
-  /* CLOSING A PIECE OF OPEN WORK — Cancel, his own finishing press, Escape (`found` absent) — or, `found` true, a press
-     that found it changed (askAgain, giveAsked, the short row's Save): then every piece of open work no longer as it was
-     started closes at that one moment and their notes are said together, the pressed one's first (closedAtPress, below
-     the page's hooks — the ninth round). The record is the one of the draw whose press this is, which is the one on his
-     screen; the slots are let go by a write that reads the record as React holds it (`setWork(w => …)`). */
-  const closeFound = (pressed: 'row' | 'give') => {
-    const c = closedAtPress(work, pressed, drawn)
-    const rowPid = work.row?.pid, giveId = work.give?.id
-    setWork(w => ({
-      row: c.row && w.row && w.row.pid === rowPid ? null : w.row,
-      give: c.give && w.give && w.give.id === giveId ? null : w.give,
-    }))
-    if (c.row) setSeen(null)
-    if (c.said.length) sayChanged(c.said)
-  }
-  const closeRow = (found?: true) => {
-    if (found === true) { closeFound('row'); return }
-    setWork(w => (w.row ? { ...w, row: null } : w)); setSeen(null)
-  }
-  const closeGive = (found?: true) => {
-    if (found === true) { closeFound('give'); return }
-    setWork(w => (w.give ? { ...w, give: null } : w))
-  }
+  /* closing a piece of open work, and running a press's write — pressPaths, above (the page at this press: PressAt) */
+  const { closeRow, closeGive, rowWrite, giveWrite } = pressPaths(work, setWork, setSeen, {
+    rowOnScreen: drawn, listed: listedNow, still: pid => stillListed(pid, seen, pageUnit('own'), todayIso(), actorIsMaster()),
+  })
   /* THE OPEN ROW'S REPORT TO THE LEAVE-GUARD (D2595, D2598; ui/guard.ts's `userrow` and `archrow` rows) — from what the
      page holds, so a row out of sight still counts (useRowReports and rowWork, above) */
   useRowReports(openPid, openOn, typed)
@@ -1614,7 +1722,7 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
     closeRow, FILTER_ESC)
   const row = (pid: string) => <PersonRow key={pid + (editing === pid ? ':e' : '')} pid={pid} open={editing === pid}
     openOn={editing === pid ? editOn : null} typed={editing === pid ? typed : null} onTyped={setRowTyped} ringed={ringPid === pid}
-    onToggle={() => toggle(pid)} onClose={closeRow} onStale={judgeAgain} />
+    onToggle={() => toggle(pid)} onClose={closeRow} onStale={judgeAgain} listed={listedNow} afterWrite={rowWrite} />
   const nobody = !view.groups.some(g => g.rows.length)
   return (
     <>
@@ -1662,7 +1770,7 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
         </>
       )}
       <h4 className="adm-sub">Waiting for access</h4>
-      <Waiting give={work.give} onTyped={setGiveTyped} onOpen={openGive} onClose={closeGive} />
+      <Waiting give={work.give} onTyped={setGiveTyped} onOpen={openGive} onClose={closeGive} afterWrite={giveWrite} />
       <hr className="adm-sep" />
       <div className="od-head">
         <h4 className="adm-sub">People · {view.people}</h4>
@@ -1691,7 +1799,8 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
               <Cols />
               {archShown.map(pid => <ArchivedRow key={pid + (editing === pid ? ':e' : '')} pid={pid} open={editing === pid}
                 openOn={editing === pid ? editOn : null} typed={editing === pid ? typed : null} onTyped={setRowTyped} ringed={ringPid === pid}
-                onToggle={() => toggle(pid)} onClose={closeRow} onStale={judgeAgain} onWrote={() => ownWrite(pid)} />)}
+                onToggle={() => toggle(pid)} onClose={closeRow} onStale={judgeAgain} onWrote={() => ownWrite(pid)}
+                listed={listedNow} afterWrite={rowWrite} />)}
             </div>
           )}
         </div>
