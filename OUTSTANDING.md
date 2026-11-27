@@ -383,7 +383,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 ### [GH-PAGES-PREVIEW-DOCS] A preview on GitHub Pages — the documents and the steps (27 Nov 26, chat 206, his D2832) — OPEN
 **What:** his D2832 lets a preview for his look be published on GitHub Pages (public, one site, each preview replacing the last); the live app stays on Vercel. `.github/workflows/deploy.yml`'s head and `raptor-port/docs/gates-and-deploy.md` still say there is no GitHub Pages site (D343).
-**To do:** correct both, and write in gates-and-deploy.md how a preview is published there (built with the site's sub-path, pushed to the `gh-pages` branch, Pages set to serve it) as first done for pull request 857.
+**To do:** correct both, and write in gates-and-deploy.md how a preview is published there (built with the site's sub-path, pushed to the `gh-pages` branch, Pages set to serve it) as first done for pull request 857; his D2839 makes it the usual preview link, so `.claude/rules/shipping.md`'s link steps change too (a rule file — his "merge live").
 **Where:** `.github/workflows/deploy.yml` (merges only on his "merge live"), `raptor-port/docs/gates-and-deploy.md`.
 
 ### [USERS-JUDGE-THREE-COPIES] Admin → Users' "judge the rest" written three times — a tidiness note (27 Nov 26, the eleventh read; filed by chat 205) — OPEN
