@@ -196,6 +196,9 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [MSQ-S2-U1-READS-LEFT] — what the reads of Admin → Users' step U1 left: two doors' words (one names a sign-in, one tells of a move), the row's ids in the markup, View sent by a short row to a man another admin emptied unseen, and a question for him — may an archived man be moved, or a man with a move be archived.
 - [UNDO-RECEIPT-REPLACED] — his own Undo's "Undid: …" replaced by Admin → Users' "row changed" note on the redraw; words only, one person; maybe app-wide.
 - [USERS-JUDGE-THREE-COPIES] — Admin → Users' judging of the other open work at a press is written three times; fold into one (a tidiness note).
+
+**Publishing and checks**
+- [GH-PAGES-PREVIEW-DOCS] — his D2832: a preview for his look may go on GitHub Pages; the documents still saying "no GitHub Pages site" (deploy.yml's head, gates-and-deploy.md) are corrected, and how a preview is published there is written down.
 - [LAPSED-SESSION-DOORS] — the account doors and the commit gate accept a write from a signed-in person whose own sign-in was just switched off, archived, deleted or made a member, until his screen next redraws; cannot happen in one browser today — closed before the database step.
 - [ROW-NOTE-OPEN-AGAIN] — a question for him, kept until the database or Transfer step: Admin → Users' "…row changed while it was open, so nothing was saved. Open it again." where he can no longer open that row (his own right lowered, or he was made a member) — recommended: end it at "…so nothing was saved." there.
 - [ADD-FORM-MIDNIGHT-HOLD] — "Add a person" open with a name typed, his own move to another squadron lands at midnight, Add puts the man into the new squadron with no word; the guard rail's step K5b, drawn first (27 Nov 26).
@@ -365,6 +368,11 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 **Cause:** `state/undo-wire.ts` `installGlobalUndo`'s `showBubble` toasts the receipt at once; `ui/UsersPanel.tsx useOpenWorkJudged` says its note after the redraw. The same may hold for any page whose redraw raises a note after an Undo — an app-wide shape, not this page's alone.
 **To do:** a note raised since the last draw and still showing is joined by the draw's own note on one line (the reader's fix: `ui/toast.ts` records the last unbatched note — `lastShown()` — and `useOpenWorkJudged` joins it when it says its note); check the other pages that say a note on a redraw; red first.
 **Where:** the passing note (`ui/toast.ts`), Undo / Redo, Admin → Users; a note's words — filed under the coordinator's limit, not held for the database step.
+
+### [GH-PAGES-PREVIEW-DOCS] A preview on GitHub Pages — the documents and the steps (27 Nov 26, chat 206, his D2832) — OPEN
+**What:** his D2832 lets a preview for his look be published on GitHub Pages (public, one site, each preview replacing the last); the live app stays on Vercel. `.github/workflows/deploy.yml`'s head and `raptor-port/docs/gates-and-deploy.md` still say there is no GitHub Pages site (D343).
+**To do:** correct both, and write in gates-and-deploy.md how a preview is published there (built with the site's sub-path, pushed to the `gh-pages` branch, Pages set to serve it) as first done for pull request 857.
+**Where:** `.github/workflows/deploy.yml` (merges only on his "merge live"), `raptor-port/docs/gates-and-deploy.md`.
 
 ### [USERS-JUDGE-THREE-COPIES] Admin → Users' "judge the rest" written three times — a tidiness note (27 Nov 26, the eleventh read; filed by chat 205) — OPEN
 **What:** the page's judging of the other open work at a press is written three times — `closedAtPress`, the 'row' / 'give' arms of `pressPaths.afterWrite`, and its 'add' arm (the same as `closedAtPress` with nothing pressed). Today the three agree; a later change to one (the order of the notes, a new list check) could miss the others. Also: the 'add' arm assumes its write never closes a slot itself (true for Add and Refuse today) — worth a comment line.
