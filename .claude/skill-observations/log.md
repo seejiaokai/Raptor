@@ -1586,3 +1586,16 @@ sides.
 **Principle:** Two readers converge faster and more honestly when they start from one shared set of checked facts and round 2 names each disagreement explicitly; a disagreement that survives is shown to the decision-maker, not resolved by the host.
 
 Met again 27 Nov 26 (chat 192, the clean sheet for the same question): the method held — round 2 settled nine of eleven points, and the two left had each crossed to the other's first view again. One addition: before a split point goes to the owner, the host checks whether the app already does it; here both readers asked for (or against) a new "what changed" mark while the changes window's New to you already lists every change, so the split dissolved into one line. Suggested step: the round-2 brief asks each reader "is any of this already built?" against the fact map.
+
+### Observation 1100: A button pressed by its words matches inside another button's words
+
+**Status:** OPEN
+**Date:** 27 Nov 26
+**Session context:** chat 193 — a roll-call script setting up every state of the Leave War's window on the real app (numbered past 1099, the highest on any open branch)
+**Skill:** New skill candidate: walk-script writing (`raptor-port/docs/walk-scripts.md`)
+**Type:** open-source
+**Phase/Area:** setting up a state by pressing the app's own buttons
+
+**Issue:** The script pressed the leave button with Playwright's `button:has-text("OL")`. That selector matches any button whose words merely contain "ol", ignoring case, so it pressed "Whole day" first — the two-day leave was never placed, and the roll-call's first run silently recorded the wrong state. Only reading the window's parts back (the leave figure had not moved) showed it.
+**Suggested improvement:** walk-scripts.md gains a line: press a control by its test name, or by its words anchored whole (`/^OL\b/`), never by `has-text` of a short word; and every setup step reads back the state it meant to make before the picture is taken.
+**Principle:** A text match is a substring match unless anchored; short labels collide with longer ones. Verify a set-up state, not only the press.

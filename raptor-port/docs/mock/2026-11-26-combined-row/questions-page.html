@@ -186,25 +186,35 @@ dialog .dlg-body{max-width:96vw;max-height:86vh;overflow:auto;background:#0d0e12
 .dk-back{padding:30px 0 40px;background:repeating-linear-gradient(0deg,#121318 0 26px,#17181e 26px 27px)}
 .win.wide{width:600px;margin:0 auto}
 .win.wide .w-r{grid-template-columns:84px 1fr}
+/* F6 (chat 193): the roll-call table, scrolling inside its own box on a narrow phone, never the page */
+.tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px}
+table.rc{border-collapse:collapse;width:100%;min-width:520px;font-size:.88rem}
+table.rc th,table.rc td{text-align:left;vertical-align:top;padding:6px 8px;border-top:1px solid var(--line)}
+table.rc th{border-top:none;color:var(--muted);font-weight:600}
+table.rc tr.grp td{background:var(--accent-soft);color:var(--accent);font-weight:700}
+table.rc tr.odd td{background:var(--warn-soft)}
+details.fold summary{cursor:pointer;color:var(--accent);font-weight:600;padding:4px 0}
+details.fold .pics{margin-top:8px}
 .g-open{margin-top:4px;color:#7fe0a3;font-weight:600;font-size:11px;border-top:2px solid #2c7a4a;display:inline-block;padding-top:2px}
 </style>
 
 <div class="wrap">
 <header style="display:flex;flex-direction:column;gap:6px">
-  <span class="tag">Leave and inputs · 27 Nov · new: your clean sheet</span>
+  <span class="tag">Leave and inputs · 27 Nov · new: one Leave War window for every day (F6)</span>
   <h1>Leave and inputs: your look</h1>
   <p class="muted">Everything here is drawn on the real app with throwaway data: the "today" pictures are the app as it is, the "proposed" ones have the new parts drawn in. Tap a picture to see it full size. Nothing is built yet.</p>
 </header>
 
 <section class="now">
   <h2>What to look at now</h2>
-  <p><span class="tag">New</span> <b>Your clean sheet: how we would design leave and inputs from scratch.</b> Fable and Astra each answered on their own, then read each other's answer and agreed. Four questions:</p>
+  <p><span class="tag">New</span> <a href="#f6"><b>F6</b> Your question: the Leave War's window, made one standard</a>. Today a tap on a day opens one of six different windows, or nothing, and the same leave gets different buttons depending on where it was filed. Proposed: one window every time, a line for each thing on the day with the buttons you may use, the adding part below. <b>Recommended: yes, as step 1 of F1.</b></p>
+  <p><b>Your clean sheet: how we would design leave and inputs from scratch.</b> Fable and Astra each answered on their own, then read each other's answer and agreed. Four questions:</p>
   <ol type="1" class="fq">
     <li><a href="#f1"><b>F1</b> How far to go</a>: the whole new design, one home called Availability, built in steps? <b>Recommended: yes, the whole design.</b></li>
     <li><a href="#f2"><b>F2</b> On dates open for bidding, leave is always a bid</a>, and leave approved by word of mouth there is entered by an admin? <b>Recommended: yes.</b></li>
     <li><a href="#f3"><b>F3</b> "To review" on the schedule</a>, in place of the Personal Inputs list? <b>Recommended: yes.</b></li>
     <li><a href="#f4"><b>F4</b> Deciding bids</a>: one man at a time, or everyone asking for the same days together? <b>Recommended: both, in one list.</b></li>
-    <li value="5"><span class="tag">New</span> <a href="#f5"><b>F5</b> Adding LL, OL, CSE from the Leave War</a>, your brainstorm: the war keeps its buttons, ⋯ reaches every type, and a course's own window opens right there (the Type dropdown kept, as you said)? <b>Recommended: yes, as drawn.</b></li>
+    <li value="5"><a href="#f5"><b>F5</b> Adding LL, OL, CSE from the Leave War</a>, your brainstorm: the war keeps its buttons, ⋯ reaches every type, and a course's own window opens right there (the Type dropdown kept, as you said)? <b>Recommended: yes, as drawn.</b></li>
   </ol>
   <p class="muted" style="margin-top:4px">The earlier questions: A (the direction) is now F1. B to E and 1, 2, 5, 7 still stand whichever you pick, since the first steps are the same. Question 3 (the shared mark): both readers now recommend B, no mark in the box.</p>
   
@@ -230,7 +240,110 @@ dialog .dlg-body{max-width:96vw;max-height:86vh;overflow:auto;background:#0d0e12
   <p class="muted">Answer by letter and number, for example "F1–F4 as recommended", or tell me which to change.</p>
 </section>
 
-<section class="q new" id="f1">
+<section class="q new" id="f6">
+  <span class="tag">New · your question</span>
+  <h2>F6 · One Leave War window, whatever is on the day</h2>
+  <p class="when">When: every tap on a day of the Leave War. Saber deciding a bid, granting OIL or checking a man's course; a member looking at his own day or a colleague's leave. Many times a day.</p>
+  <p>You asked: some windows show the leave buttons and CSE · OD · Grant OIL · ⋯, some none. Are we standardising, so things entered on the Inputs page can be changed here too? <b>Yes.</b> First, every kind of day tapped on the real app today, as Saber and as Ranger:</p>
+  <div class="tblwrap"><table class="rc">
+    <thead><tr><th>The day tapped</th><th>What opens today</th><th>What it shows</th></tr></thead>
+    <tbody>
+      <tr class="grp"><td colspan="3">Saber, an admin, on Cutter's row</td></tr>
+      <tr><td>Empty: open for bidding, not open, or before today</td><td>The leave window</td><td>Leave buttons, Duration, Remarks, CSE · OD · Grant OIL · ⋯</td></tr>
+      <tr><td>His leave placed on the Leave War, pending or approved</td><td>The leave window</td><td>All of the above, plus Approve · Refuse · Move · Delete</td></tr>
+      <tr class="odd"><td>His leave filed on the Inputs page</td><td>The leave window</td><td>"LL · Whole day · change it on the Inputs page". <b>No leave buttons, no Approve, Move or Delete</b></td></tr>
+      <tr><td>A medical</td><td>The leave window</td><td>"change it on the Inputs page", no leave buttons</td></tr>
+      <tr><td>An overseas duty, a course or an Other</td><td>The leave window</td><td>"change it on the Inputs page", leave buttons kept</td></tr>
+      <tr><td>Morning leave from the Inputs page</td><td>The leave window</td><td>The afternoon only</td></tr>
+      <tr class="odd"><td>An OIL award</td><td>The leave window</td><td>Grant OIL becomes "FO · a day", its reason and who gave it at the foot</td></tr>
+      <tr class="odd"><td>Two things on the day</td><td><b>Another window</b>, the day's list</td><td>A card each with its buttons. No leave buttons, no CSE · OD · ⋯</td></tr>
+      <tr><td>A group leave from the Inputs page</td><td>The leave window</td><td>As his own leave from the Inputs page</td></tr>
+      <tr class="odd"><td>A day after a posting out</td><td><b>Another window</b>, the posting</td><td>Its date, where he went, Undo post out, "Place leave or OIL here instead…"</td></tr>
+      <tr class="grp"><td colspan="3">Ranger, a member</td></tr>
+      <tr><td>His own empty day, open for bidding</td><td>The leave window</td><td>Leave buttons, CSE · OD · ⋯ (no Grant OIL)</td></tr>
+      <tr class="odd"><td>His own day not open, or before today</td><td><b>Another window</b>, "Bidding is closed"</td><td>CSE · OD · ⋯ and "Open the Inputs page". No leave buttons</td></tr>
+      <tr><td>His own pending bid</td><td>The leave window</td><td>Move · Delete</td></tr>
+      <tr class="odd"><td>His own approved leave</td><td><b>Another window</b></td><td>Remarks and Document only</td></tr>
+      <tr><td>His own leave filed on the Inputs page</td><td>The leave window</td><td>"change it on the Inputs page", no leave buttons</td></tr>
+      <tr class="odd"><td>Another man's empty day or his leave</td><td><b>Nothing</b></td><td></td></tr>
+      <tr class="odd"><td>Another man's overseas duty</td><td><b>Another window</b></td><td>"Change it on the Inputs page, not here."</td></tr>
+    </tbody>
+  </table></div>
+  <p class="muted">So today: six different windows, nothing at all on two kinds of day, and the same leave gets Approve, Move and Delete or none, depending only on where it was first filed. The shaded rows are the odd ones out.</p>
+  <p><b>The standard, in five rules</b> (the clean sheet's "what you may do follows who you are and the thing, never the page"):</p>
+  <ol class="tight">
+    <li><b>One window, every time you tap a day.</b></li>
+    <li><b>At its top, a line for each thing on the day</b>, whatever page it was filed on, with the buttons you may use on it: Approve · Refuse on leave (an admin), Move, Delete. Its <b>›</b> opens the thing's own window, with its dates, people and papers: the same window as on the Inputs page and the schedule. "Change it on the Inputs page" goes everywhere.</li>
+    <li><b>Below, the adding part</b>, as today: Remarks, Duration, the leave buttons, CSE · OD · Grant OIL · ⋯. On the day's own leave its button is lit, and a tap on another changes its type. No leave buttons over a medical.</li>
+    <li><b>Who you are decides, not the page.</b> A member has no Approve, Refuse or Grant OIL, and moves or deletes only his own. On another man's row he sees the lines only, read only, with nothing to add.</li>
+    <li><b>No special windows.</b> A member's day not open for bidding gets the same window, his leave there recorded as approved (your F2). A day after a posting out shows the posting as a line, with leave and OIL below.</li>
+  </ol>
+  <p class="muted">Each pair below: today on the left, the standard on the right, on your iPhone's size. The dashed yellow outline marks what is new. The desktop pictures are in the fold under them.</p>
+  <h3>Saber, an admin</h3>
+  <div class="pics phones">
+    <figure><img src="img/w6/a03-pending-phone.png" alt="Today: a pending bid" loading="lazy"><figcaption><b>Today, a pending bid.</b> The bid's buttons sit in a row of their own, with no box saying what the bid is.</figcaption></figure>
+    <figure><img src="img/w6/s00-pending-phone.png" alt="Standard: the bid as a line with its buttons" loading="lazy"><figcaption><b>Standard.</b> <span class="n">1</span> The bid is a line: its box, "Pending", who placed it, and its buttons. The commonest case barely changes.</figcaption></figure>
+  </div>
+  <div class="pics phones">
+    <figure><img src="img/w6/a06-inputs-ll-phone.png" alt="Today: leave filed on the Inputs page" loading="lazy"><figcaption><b>Today, leave filed on the Inputs page.</b> "Change it on the Inputs page", and the leave buttons are gone.</figcaption></figure>
+    <figure><img src="img/w6/s01-inputs-ll-phone.png" alt="Standard: the same buttons as leave placed on the war" loading="lazy"><figcaption><b>Standard.</b> <span class="n">1</span> Exactly what leave placed on the Leave War gets: Approved · Refuse · Move · Delete, and LL lit. This is your question's answer.</figcaption></figure>
+  </div>
+  <div class="pics phones">
+    <figure><img src="img/w6/a07-medical-phone.png" alt="Today: a medical" loading="lazy"><figcaption><b>Today, a medical.</b></figcaption></figure>
+    <figure><img src="img/w6/s02-medical-phone.png" alt="Standard: the medical as a line" loading="lazy"><figcaption><b>Standard.</b> <span class="n">1</span> The medical as a line; › opens it. No leave buttons, since leave can't go over a medical. A medical stays the man's own to file.</figcaption></figure>
+  </div>
+  <div class="pics phones">
+    <figure><img src="img/w6/a08-od-phone.png" alt="Today: an overseas duty" loading="lazy"><figcaption><b>Today, an overseas duty.</b></figcaption></figure>
+    <figure><img src="img/w6/s03-od-phone.png" alt="Standard: the overseas duty with Move and Delete" loading="lazy"><figcaption><b>Standard.</b> <span class="n">1</span> Move and Delete on the line. A course and an Other look the same.</figcaption></figure>
+  </div>
+  <div class="pics phones">
+    <figure><img src="img/w6/a12-oil-phone.png" alt="Today: an OIL award" loading="lazy"><figcaption><b>Today, an OIL award.</b> Grant OIL turns into "FO · a day", and the award's details sit at the foot.</figcaption></figure>
+    <figure><img src="img/w6/s06-oil-phone.png" alt="Standard: the award as a line" loading="lazy"><figcaption><b>Standard.</b> <span class="n">1</span> The award is a line with Edit… and Delete, as the day's list has it. Grant OIL stays Grant OIL.</figcaption></figure>
+  </div>
+  <div class="pics phones">
+    <figure><img src="img/w6/a13-two-phone.png" alt="Today: two things on a day open the day's list" loading="lazy"><figcaption><b>Today, two things on the day.</b> A different window: no leave buttons, no CSE · OD · ⋯.</figcaption></figure>
+    <figure><img src="img/w6/s05-two-phone.png" alt="Standard: two lines and the adding part" loading="lazy"><figcaption><b>Standard.</b> <span class="n">1</span> Two lines in the same window, the adding part below.</figcaption></figure>
+  </div>
+  <div class="pics phones">
+    <figure><img src="img/w6/a14-group-phone.png" alt="Today: a group leave" loading="lazy"><figcaption><b>Today, a group leave.</b></figcaption></figure>
+    <figure><img src="img/w6/s07-group-phone.png" alt="Standard: the group leave with Change, 3 pax, Cutter" loading="lazy"><figcaption><b>Standard.</b> <span class="n">1</span> Everyone named on the line, and your "Change · 3 pax · Cutter".</figcaption></figure>
+  </div>
+  <div class="pics phones">
+    <figure><img src="img/w6/a15-postedout-phone.png" alt="Today: a day after a posting out opens the posting" loading="lazy"><figcaption><b>Today, a day after Diesel posts out.</b> The posting opens; leave or OIL is one more tap away.</figcaption></figure>
+    <figure><img src="img/w6/s04-postedout-phone.png" alt="Standard: the posting as a line, leave and OIL below" loading="lazy"><figcaption><b>Standard.</b> <span class="n">1</span> The posting is a line; › opens it (its date, where he went, Undo post out). Leave and OIL are right below.</figcaption></figure>
+  </div>
+  <h3>Ranger, a member</h3>
+  <div class="pics phones">
+    <figure><img src="img/w6/m02-closed-phone.png" alt="Today: his day not open for bidding" loading="lazy"><figcaption><b>Today, his day not open for bidding.</b> A note and "Open the Inputs page".</figcaption></figure>
+    <figure><img src="img/w6/s08-member-closed-phone.png" alt="Standard: the same window, leave recorded as approved" loading="lazy"><figcaption><b>Standard.</b> <span class="n">1</span> The same window as any day. His leave here is recorded as approved, so the buttons are solid, not a bid's dashed look (your F2).</figcaption></figure>
+  </div>
+  <div class="pics phones">
+    <figure><img src="img/w6/m05-approved-phone.png" alt="Today: his own approved leave" loading="lazy"><figcaption><b>Today, his own approved leave.</b> Remarks and Document only.</figcaption></figure>
+    <figure><img src="img/w6/s09-member-own-approved-phone.png" alt="Standard: his approved leave as a line" loading="lazy"><figcaption><b>Standard.</b> <span class="n">1</span> His leave as a line, no Approve or Refuse. › opens it to change it, as he can on the Inputs page today.</figcaption></figure>
+  </div>
+  <div class="pics phones">
+    <figure><img src="img/w6/m08-other-leave-phone.png" alt="Today: another man's leave opens nothing" loading="lazy"><figcaption><b>Today, Cutter's leave, tapped by Ranger.</b> Nothing opens.</figcaption></figure>
+    <figure><img src="img/w6/s10-member-other-phone.png" alt="Standard: another man's leave, read only" loading="lazy"><figcaption><b>Standard.</b> <span class="n">1</span> The line, read only, nothing to add. Another man's overseas duty the same, in place of "Change it on the Inputs page, not here."</figcaption></figure>
+  </div>
+  <details class="fold"><summary>The same on a desktop</summary>
+    <div class="pics">
+      <figure><img src="img/w6/a06-inputs-ll-desktop.png" alt="Today on a desktop: leave from the Inputs page" loading="lazy"><figcaption>Today: leave filed on the Inputs page.</figcaption></figure>
+      <figure><img src="img/w6/s01-inputs-ll-desktop.png" alt="Standard on a desktop" loading="lazy"><figcaption>Standard.</figcaption></figure>
+      <figure><img src="img/w6/a13-two-desktop.png" alt="Today on a desktop: two things on a day" loading="lazy"><figcaption>Today: two things on the day.</figcaption></figure>
+      <figure><img src="img/w6/s05-two-desktop.png" alt="Standard on a desktop: two lines" loading="lazy"><figcaption>Standard.</figcaption></figure>
+      <figure><img src="img/w6/a15-postedout-desktop.png" alt="Today on a desktop: after a posting out" loading="lazy"><figcaption>Today: a day after a posting out.</figcaption></figure>
+      <figure><img src="img/w6/s04-postedout-desktop.png" alt="Standard on a desktop: the posting as a line" loading="lazy"><figcaption>Standard.</figcaption></figure>
+      <figure><img src="img/w6/m02-closed-desktop.png" alt="Today on a desktop: a member's closed day" loading="lazy"><figcaption>Today: a member's day not open.</figcaption></figure>
+      <figure><img src="img/w6/s08-member-closed-desktop.png" alt="Standard on a desktop: a member's closed day" loading="lazy"><figcaption>Standard.</figcaption></figure>
+      <figure><img src="img/w6/s07-group-desktop.png" alt="Standard on a desktop: a group leave" loading="lazy"><figcaption>Standard: a group leave.</figcaption></figure>
+      <figure><img src="img/w6/s10-member-other-desktop.png" alt="Standard on a desktop: another man's leave" loading="lazy"><figcaption>Standard: another man's leave, read only.</figcaption></figure>
+    </div>
+  </details>
+  <p class="note">What it changes from your rulings: leave filed on the Inputs page lost its leave buttons on the Leave War (31 Oct), and now gets them back with Approve, Move and Delete; a member's own approved leave opened only its remarks; a member's day not open showed the "Bidding is closed" note; a day after a posting out opened the posting first; another man's leave opened nothing. Leave of several days keeps its "All 2 days · Mon 7" choice as today. The words on the lines are drafts: a fresh reader checks them before anything is built.</p>
+  <p class="rec"><b>Recommended: yes, this standard, built as step 1 of F1</b> (the one window). It is the same whichever stop you pick in F1.</p>
+</section>
+
+<section class="q" id="f1">
   <span class="tag">New · clean sheet</span>
   <h2>F1 · How far to go: one home called Availability</h2>
   <p class="when">When: every day, for everyone. A member files a medical on his phone, the admin decides bids in January, the scheduler replans an hour before publishing.</p>
@@ -354,7 +467,7 @@ dialog .dlg-body{max-width:96vw;max-height:86vh;overflow:auto;background:#0d0e12
   <p class="rec"><b>Recommended: the whole design, in these six steps.</b> Step 1 is drawn for you first; you can stop at either stop later and the squadron is better off at each one.</p>
 </section>
 
-<section class="q new" id="f2">
+<section class="q" id="f2">
   <span class="tag">New · clean sheet</span>
   <h2>F2 · On dates open for bidding, leave is always a bid</h2>
   <p class="when">When: in January the Leave War is open for March. Ghost wants 9 March off. Today he can bid on the Leave War, or file it on the Inputs page, where it stands at once without waiting for the bids to be decided.</p>
@@ -385,7 +498,7 @@ dialog .dlg-body{max-width:96vw;max-height:86vh;overflow:auto;background:#0d0e12
   <p class="rec"><b>Recommended: yes.</b> One rule a member can predict, and no way round the bidding beside it.</p>
 </section>
 
-<section class="q new" id="f3">
+<section class="q" id="f3">
   <span class="tag">New · clean sheet</span>
   <h2>F3 · "To review" in place of the Personal Inputs list</h2>
   <p class="when">When: every day of planning. Today a commitment that is already on the Ground Programme or under Unavailable still sits in Personal Inputs too, and the schedule says "to take an input off, press Reject on it in Personal Inputs below".</p>
@@ -393,7 +506,7 @@ dialog .dlg-body{max-width:96vw;max-height:86vh;overflow:auto;background:#0d0e12
   <p class="rec"><b>Recommended: yes.</b> You act on a thing where you see it, never on its copy further down.</p>
 </section>
 
-<section class="q new" id="f4">
+<section class="q" id="f4">
   <span class="tag">New · clean sheet</span>
   <h2>F4 · Deciding bids</h2>
   <p class="when">When: bidding has closed, and you sit down to decide forty requests.</p>
@@ -402,7 +515,7 @@ dialog .dlg-body{max-width:96vw;max-height:86vh;overflow:auto;background:#0d0e12
 </section>
 
 
-<section class="q new" id="f5">
+<section class="q" id="f5">
   <span class="tag">New · your brainstorm</span>
   <h2>F5 · Adding LL, OL, CSE from the Leave War, in the redesign</h2>
   <p class="when">When: Saber, an admin, has the grid open and taps Cutter's empty Wed 22 Jul to put him on a course, or on leave. It happens many times a week.</p>
