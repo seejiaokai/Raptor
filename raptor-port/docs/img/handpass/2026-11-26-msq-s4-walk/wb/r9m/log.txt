@@ -1,0 +1,11 @@
+msq-s4w-lib v1 who=wb run=r9m port=4754
+wb-r9 v1
+ROW RECORD | F-S29 | desk chromium main | Anvil posted out Overseas from 21 Dec; his ordinary 14 Dec → ⋯ → Post out → Post out | saw: ⋯: ["Attach","Other","Post out","Post in"]; sheet chip "✓ Overseas Sqn" date "Mon 14 Dec 26 ▾"; after: gone from 12-14 (18 days); reopened: ✓ Overseas Sqn | Mon 14 Dec 26 ▾ | On 14 Dec: archived.
+ROW PASS | F-S29 | desk chromium main | his last day in (13 Dec, the yellow line) tapped | saw: [bid leaveBtns head=Anvil Sun 13 Dec Auto-approve ✕ page=leavewar]
+ROW PASS | F-S38 | desk chromium main | Ridge's 2026-11-10 (bidding closed, in the past) → ⋯ → Post out | saw: day: [bid leaveBtns head=Ridge Tue 10 Nov Auto-approve ✕ page=leavewar]; Post out: [bid leaveBtns poNew head=Ridge Tue 10 Nov Auto-approve ✕ page=leavewar] date "Tue 10 Nov 26 ▾"
+ROW PASS | F-S38 | desk chromium main | Ridge's 2026-11-25 (bidding closed, in the past) → ⋯ → Post out | saw: day: [bid leaveBtns head=Ridge Wed 25 Nov Auto-approve ✕ page=leavewar]; Post out: [bid leaveBtns poNew head=Ridge Wed 25 Nov Auto-approve ✕ page=leavewar] date "Wed 25 Nov 26 ▾"
+ROW PASS | F-S38 | desk chromium main | Ridge's 2026-11-26 (bidding closed, today) → ⋯ → Post out | saw: day: [bid leaveBtns head=Ridge Thu 26 Nov Auto-approve ✕ page=leavewar]; Post out: [bid leaveBtns poNew head=Ridge Thu 26 Nov Auto-approve ✕ page=leavewar] date "Thu 26 Nov 26 ▾"
+ROW PASS | F-S38 | desk chromium main | Basher posted out Overseas from 2 Nov (line "On 2 Nov: archived."); then his gone day 2026-11-02 in November tapped | saw: gone 11-02…11-30; tap → [poOld head=Basher Mon 2 Nov ✕ page=leavewar]
+errors []
+errors []
+DONE 5 PASS 0 FAIL 1 OTHER of 6

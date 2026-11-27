@@ -1,0 +1,48 @@
+msq-s4w-lib v1 who=wd run=p2 port=4756
+wd-probe2 v1
+cell 12-07 {"x":846,"y":485,"w":27,"h":22}
+MENU Attach Other Post out Post in
+SHEET
+div#bid-picker.bidsheet [440,604 560x282]
+  div.bidsheet-hd [453,615 534x37]
+    span.who [475,625 41x17] "Cinch"
+    span#po-title.dt.when.po-act [526,625 53x17] "Post out"
+    button#bid-cancel.x [968,626 19x17] "✕"
+  div.po-form [453,664 534x209]
+    div.po-blk.po-outcomes [453,664 534x50]
+      span.lab [453,664 532x14] "Posting"
+      div.po-chips [453,684 534x30]
+        button#po-overseas.pchip.on [453,684 174x30] "✓ Overseas Sqn"
+        button#po-delete.pchip [633,684 174x30] "Delete"
+        button#po-sans.pchip [813,684 174x30] "SANS"
+    div.po-fields [453,726 534x56]
+      div.po-f [453,726 262x56]
+        span.lab [453,726 260x14] "PO from"
+        button#po-date.datebox.dateinput [453,746 262x36]
+          span.datebox-txt [464,757 223x14] "Mon 7 Dec 26"
+          span.datebox-v [695,759 9x11] "▾"
+    div#po-line.po-line [453,794 534x35] "On 7 Dec: archived."
+    div.po-foot [453,841 534x32]
+      button#po-confirm.dchip.po-main [453,841 87x32] "Post out"
+after Esc sheet count 0
+POSTIN
+div#bid-picker.bidsheet [440,650 560x236]
+  div.bidsheet-hd [453,661 534x37]
+    span.who [475,671 41x17] "Cinch"
+    span#po-title.dt.when.po-act [526,671 43x17] "Post in"
+    button#bid-cancel.x [968,672 19x17] "✕"
+  div.po-form [453,710 534x163]
+    div.po-fields [453,710 534x56]
+      div.po-f [453,710 262x56]
+        span.lab [453,710 260x14] "PI from"
+        button#pi-date.datebox.dateinput [453,730 262x36]
+          span.datebox-txt [464,740 223x14] "Mon 7 Dec 26"
+          span.datebox-v [695,742 9x11] "▾"
+    div.po-line [453,778 534x51] "Their first day in the squadron. Days before it ar"
+    div.po-foot [453,841 534x32]
+      button#pi-confirm.dchip.po-main [453,841 77x32] "Post in"
+select-sheet 1
+SELMENU Attach Other Post out Post in
+SELMENU testids ["sel-file-ATCH","sel-file-OTH","sel-postout","sel-postin"]
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

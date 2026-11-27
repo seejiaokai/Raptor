@@ -1,0 +1,8 @@
+msq-s4w-lib v1 who=wb run=r7d port=4754
+wb-r7 v1
+Echo 21 Dec box {"x":1131,"y":684,"w":27,"h":22}
+Echo sheet before: {"head":"Echo Post out ✕","chips":"✓ Overseas Sqn[on] / Delete / SANS","date":"Mon 21 Dec 26 ▾","line":"On 21 Dec: archived.","foot":["↶Undo post out"],"all":"Echo Post out ✕ POSTING ✓ Overseas Sqn Delete SANS PO FROM Mon 21 Dec 26 ▾ On 21 Dec: archived. ↶Undo post out","old":false} state poOld head=Echo Post out ✕ page=leavewar
+ROW RECORD | F-S12(d) | desk chromium | Echo (post in 14 Dec, post out 21 Dec): PO from aimed at 10 Dec, before his post-in | saw: date now "Mon 21 Dec 26 ▾"; line "On 21 Dec: archived."; reason lines []; Undo y 841 → 841; grid gone from 11-26
+errors []
+errors []
+DONE 0 PASS 0 FAIL 1 OTHER of 1

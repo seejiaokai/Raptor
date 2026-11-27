@@ -1,0 +1,20 @@
+[
+ [
+  "F-S22 the keys' ring on the blue Post out",
+  "desk-chromium",
+  "Tab from the sheet's first control to Post out",
+  "the app's cyan focus ring (D1646, D1771), visible",
+  "{\"id\":\"po-confirm\",\"fv\":true,\"outline\":\"auto 1px rgb(16, 16, 16) off 0px\",\"shadow\":\"none\",\"bg\":\"rgb(59, 198, 232)\"}",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r14fo/wd-focus-postout.png"
+ ],
+ [
+  "F-S22 the keys' ring on the card's blue Cancel",
+  "desk-chromium",
+  "card up, keys on Cancel",
+  "the app's cyan focus ring, visible against blue",
+  "{\"id\":\"po-delete-cancel\",\"fv\":true,\"outline\":\"solid 2px rgb(59, 198, 232) off 2px\",\"shadow\":\"none\",\"bg\":\"rgb(59, 198, 232)\"}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r14fo/wd-focus-cancel.png"
+ ]
+]

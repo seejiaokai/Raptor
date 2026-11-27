@@ -1,0 +1,32 @@
+msq-s4w-lib v1 who=wc run=r15b port=4755
+wc-r15 v1
+ROW RECORD | F-S10 setup | desk-chromium | Cinch: approved LL 7 Dec, pending LL 16 Dec with a remark, OD 11–15 Dec across the date | saw: 7  act hasc | LL | kids:c k-ll s-a whole | 13 weekend act hasc | OD | kids:c k-od s-a whole jl jr raptor | 16 act hasc | LL | kids:c k-ll s-w whole
+STEP ERROR the sheet, every control press: [data-testid="cell-snap-2026-12-10"] is covered at its centre by oilconf
+ROW NOT REACHED | the sheet, every control | desk-chromium | step threw | saw: press: [data-testid="cell-snap-2026-12-10"] is covered at its centre by oilconf
+reload asked to sign in again
+ROW RECORD | F-S10(8) reload after-post | desk-chromium | reload the page; the war, December | saw: 13 Dec weekend act hasc | OD | kids:c k-od s-a whole jl jr raptor | 14 Dec  act hasc | OD | kids:c k-od s-a whole jl jr raptor | 16 Dec  act hasc | LL | kids:c k-ll s-w whole
+ROW RECORD | F-S10(4) grid | desk-chromium | after the posting: grid | saw: 12 Dec weekend act hasc | OD | kids:c k-od s-a whole jl jr raptor | 13 Dec weekend act hasc | OD | kids:c k-od s-a whole jl jr raptor | 14 Dec  act hasc | OD | kids:c k-od s-a whole jl jr raptor | 16 Dec  act hasc | LL | kids:c k-ll s-w whole
+ROW RECORD | F-S10(4) legend | desk-chromium | after the posting: legend | saw: …THE LEFT EDGE: WHERE IT CAME FROM LL Filed on the Inputs page: change it there, not here LL Moved here from another day MARKS ON A DAY LL CSE Two whole days: side by side, read bottom to top LL More on this day — tap to see every entry LL ! Something on this day needs an admin — tap to see LL PO His last day in the squadron LL Leave after a posting-out — not counted for manning THE FIGURE BESIDE 
+ROW RECORD | F-S10(4) approvals | desk-chromium | after the posting: approvals | saw: Cinch IP LL Wed 16 Dec › 1 day 21.5 P 27 26 Nov 18:25 · by Saber Approve Refuse
+ROW RECORD | F-S10(4) balances | desk-chromium | after the posting: balances | saw: CinchIP21.52LLODODODODODLL
+ROW RECORD | F-S10(4) person | desk-chromium | after the posting: person | saw: Cinch ✕ BALANCES LVE 0 taken App bal Pending War bal −1 21.5 incl. carried fwd · till 31 Dec OIL 0 › MED 0 days CCL FCL PL EL CL LEAVE 2026 and ahead LL Mon 7 Dec 1 Approved LL Wed 16 Dec 1 Pending
+ROW RECORD | F-S10(4) period | desk-chromium | after the posting: period | saw: period y2027=JAN - DEC 27: Cinch row SHOWN (first head head-2027-01-01) [img/handpass/2026-11-26-msq-s4-walk/wc/r15b/009-desk-chromium-r15-after-period27.png]
+ROW RECORD | F-S10(4) admin | desk-chromium | after the posting: admin | saw: Cinch no sign-in · Pilot · CAT IP
+ROW RECORD | F-S10(4) quals | desk-chromium | after the posting: quals | saw: Cinch IPIP ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ IP · instructor pilot
+ROW RECORD | F-S10(4) bell | desk-chromium | after the posting: bell | saw: Nothing new
+ROW FAIL | F-S10(5) top-bar Undo / Redo | desk-chromium | place LL for Anvil 22 Dec; top-bar Undo; Redo | saw: after LL:  act hasc | LL | kids:c k-ll s-a whole | after Undo:  act |  | kids: ; Cinch 14 Dec  act hasc | OD | kids:c k-od s-a whole jl jr raptor | after Redo:  act hasc | LL | kids:c k-ll s-a whole
+STEP ERROR existing sheet: SANS, date, undo locator.boundingBox: Timeout 5000ms exceeded.
+ROW NOT REACHED | existing sheet: SANS, date, undo | desk-chromium | step threw | saw: locator.boundingBox: Timeout 5000ms exceeded.
+reload asked to sign in again
+ROW RECORD | F-S10(8) reload after-undo | desk-chromium | reload the page; the war, December | saw: 13 Dec weekend act hasc | OD | kids:c k-od s-a whole jl jr raptor | 14 Dec  act hasc | OD | kids:c k-od s-a whole jl jr raptor | 16 Dec  act hasc | LL | kids:c k-ll s-w whole
+ROW RECORD | F-S10(7) grid | desk-chromium | back the posting: grid | saw: 12 Dec weekend act hasc | OD | kids:c k-od s-a whole jl jr raptor | 13 Dec weekend act hasc | OD | kids:c k-od s-a whole jl jr raptor | 14 Dec  act hasc | OD | kids:c k-od s-a whole jl jr raptor | 16 Dec  act hasc | LL | kids:c k-ll s-w whole
+ROW RECORD | F-S10(7) legend | desk-chromium | back the posting: legend | saw: …THE LEFT EDGE: WHERE IT CAME FROM LL Filed on the Inputs page: change it there, not here LL Moved here from another day MARKS ON A DAY LL CSE Two whole days: side by side, read bottom to top LL More on this day — tap to see every entry LL ! Something on this day needs an admin — tap to see LL PO His last day in the squadron LL Leave after a posting-out — not counted for manning THE FIGURE BESIDE 
+ROW RECORD | F-S10(7) approvals | desk-chromium | back the posting: approvals | saw: Cinch IP LL Wed 16 Dec › 1 day 21.5 P 27 26 Nov 18:25 · by Saber Approve Refuse
+ROW RECORD | F-S10(7) balances | desk-chromium | back the posting: balances | saw: CinchIP21.52LLODODODODODLL
+ROW RECORD | F-S10(7) person | desk-chromium | back the posting: person | saw: Cinch ✕ BALANCES LVE 0 taken App bal Pending War bal −1 21.5 incl. carried fwd · till 31 Dec OIL 0 › MED 0 days CCL FCL PL EL CL LEAVE 2026 and ahead LL Mon 7 Dec 1 Approved LL Wed 16 Dec 1 Pending
+ROW RECORD | F-S10(7) period | desk-chromium | back the posting: period | saw: period y2027=JAN - DEC 27: Cinch row SHOWN (first head head-2027-01-01) [img/handpass/2026-11-26-msq-s4-walk/wc/r15b/022-desk-chromium-r15-back-period27.png]
+ROW RECORD | F-S10(7) admin | desk-chromium | back the posting: admin | saw: Cinch no sign-in · Pilot · CAT IP
+ROW RECORD | F-S10(7) quals | desk-chromium | back the posting: quals | saw: Cinch IPIP ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ IP · instructor pilot
+ROW RECORD | F-S10(7) bell | desk-chromium | back the posting: bell | saw: Nothing new
+errors []
+DONE 0 PASS 1 FAIL 23 OTHER of 24
