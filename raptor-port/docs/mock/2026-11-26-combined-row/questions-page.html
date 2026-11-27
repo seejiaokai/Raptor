@@ -195,18 +195,156 @@ table.rc tr.grp td{background:var(--accent-soft);color:var(--accent);font-weight
 table.rc tr.odd td{background:var(--warn-soft)}
 details.fold summary{cursor:pointer;color:var(--accent);font-weight:600;padding:4px 0}
 details.fold .pics{margin-top:8px}
+/* The six questions, short (chat 194): his card shape — example, at most two pictures, two one-line choices */
+.short{display:flex;flex-direction:column;gap:14px}
+.sq{background:var(--panel);border:2px solid var(--accent);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.sq h2{font-size:1.1rem}
+.qn{display:inline-block;margin-right:6px;padding:0 7px;border-radius:5px;background:var(--accent);color:var(--panel);font-size:.9rem;vertical-align:2px}
+.sq .pics.phones{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.sq .pics.phones figure img{max-width:300px}
+.sq .skwrap[data-w="390"]{max-width:390px} .sq .skwrap[data-w="300"]{max-width:300px} .sq .skwrap[data-w="760"]{max-width:760px}
+.pick{border:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.pick label{display:flex;gap:8px;align-items:flex-start;padding:9px 10px;border:1px solid var(--line);border-radius:8px;cursor:pointer}
+.pick input{margin-top:4px;flex:none;width:18px;height:18px;accent-color:var(--accent)}
+.pick label:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.reply{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.rline{font-family:ui-monospace,Consolas,monospace;background:var(--accent-soft);padding:8px 10px;border-radius:6px;width:100%;box-sizing:border-box;overflow-wrap:anywhere}
+#rcopy{font:inherit;font-weight:600;color:#fff;background:var(--accent);border:none;border-radius:6px;padding:8px 18px;cursor:pointer}
 .g-open{margin-top:4px;color:#7fe0a3;font-weight:600;font-size:11px;border-top:2px solid #2c7a4a;display:inline-block;padding-top:2px}
 </style>
 
 <div class="wrap">
 <header style="display:flex;flex-direction:column;gap:6px">
-  <span class="tag">Leave and inputs · 27 Nov · new: one Leave War window for every day (F6)</span>
-  <h1>Leave and inputs: your look</h1>
-  <p class="muted">Everything here is drawn on the real app with throwaway data: the "today" pictures are the app as it is, the "proposed" ones have the new parts drawn in. Tap a picture to see it full size. Nothing is built yet.</p>
+  <span class="tag">Leave and inputs · 27 Nov · new: the six questions, short</span>
+  <h1>Leave and inputs: six questions</h1>
+  <p class="muted">Each question is one card: an example, a picture, and two choices. Pick one on each card and copy the answer line at the bottom. Tap a picture to see it bigger. Nothing is built yet. The long version of each question is further down the page.</p>
 </header>
 
+<section class="short new" aria-label="The six questions, short">
+
+<article class="sq" id="s6">
+  <h2><span class="qn">F6</span> Should every tap on a Leave War day open the same window?</h2>
+  <p><b>Example:</b> Cutter (a member) files LL on the Inputs page. Saber (an admin) then taps that day on the Leave War.</p>
+  <div class="pics phones">
+    <figure><img src="img/w6/a06-inputs-ll-phone.png" alt="Today: the window says change it on the Inputs page, with no leave buttons" loading="lazy"><figcaption><b>Today:</b> "change it on the Inputs page". No Approve, Move or Delete.</figcaption></figure>
+    <figure><img src="img/w6/s01-inputs-ll-phone.png" alt="Proposed: the leave as a line with Approve, Refuse, Move and Delete" loading="lazy"><figcaption><b>Proposed:</b> the leave is a line with its buttons, the same as leave placed on the Leave War.</figcaption></figure>
+  </div>
+  <fieldset class="pick" data-q="F6">
+    <label><input type="radio" name="F6" value="A"> <span><b>A (recommended):</b> one window on every tap. What you can do depends on who you are, never on which page it was filed on.</span></label>
+    <label><input type="radio" name="F6" value="B"> <span><b>B:</b> keep today's six different windows.</span></label>
+  </fieldset>
+</article>
+
+<article class="sq" id="s1">
+  <h2><span class="qn">F1</span> Should the Leave War and the Inputs page become one page, "Availability"?</h2>
+  <p><b>Example:</b> Ghost (a member) wants leave in March. Today he picks between two pages, and each one opens a different window for the same leave.</p>
+  <div class="pics phones">
+    <figure class="sk-fig">
+      <div class="skwrap" data-w="390"><div class="sk sk-phone sk-short">
+        <div class="s-top p"><span class="s-logo">☰ TALON</span><span class="s-icons">↶ ↷ 🔔︎</span></div>
+        <div class="s-seg mk" data-n="1"><span class="on">Mine</span><span>Squadron</span></div>
+        <div class="p-banner">Leave War open: Mar–Apr, closes 20 Jan</div>
+        <div class="p-list">
+          <div class="p-sub">Coming up</div>
+          <div class="pc"><span class="bx bid k">LL</span><div><b>9–12 Mar</b> · 4 days<br><span class="amb2">Bid, pending</span></div></div>
+          <div class="pc"><span class="bx sd k">SD</span><div><b>17–18 Mar</b> · Stand-down<br><span class="muted2">6 pax · filed by Saber</span></div></div>
+        </div>
+        <div class="p-foot"><span class="s-btn">+ Medical</span><span class="s-btn s-pri">+ Input</span></div>
+      </div></div>
+      <figcaption><b>Proposed, a rough sketch:</b> one page. <span class="n">1</span> "Mine" is his own list, "Squadron" is the Leave War's grid.</figcaption>
+    </figure>
+  </div>
+  <fieldset class="pick" data-q="F1">
+    <label><input type="radio" name="F1" value="A"> <span><b>A (recommended):</b> yes, one page, built in six steps. Each step is shown to you first.</span></label>
+    <label><input type="radio" name="F1" value="B"> <span><b>B:</b> keep both pages, and only fix the windows, groups and times.</span></label>
+  </fieldset>
+  <p class="muted">The first three steps are the same either way.</p>
+</article>
+
+<article class="sq" id="s2">
+  <h2><span class="qn">F2</span> On dates open for bidding, should leave always be a bid?</h2>
+  <p><b>Example:</b> In January the Leave War is open for March. Ghost (a member) wants 9 March off. Today he can skip the bidding by filing it on the Inputs page, where it stands at once.</p>
+  <div class="pics phones">
+    <figure class="sk-fig">
+      <div class="skwrap" data-w="390"><div class="sk sk-phone sk-short">
+        <div class="win">
+          <div class="w-h"><span class="bx bid k">LL</span><b>Leave</b> <span class="w-date">Mon 9 Mar</span><span class="w-x">✕</span></div>
+          <div class="w-r"><span class="w-l">Duration</span><div class="seg"><span class="on">Whole day</span><span>AM</span><span>PM</span></div></div>
+          <div class="w-f"><span></span><span class="s-btn s-pri mk" data-n="1">Bid</span></div>
+        </div></div></div>
+      <figcaption><b>Proposed:</b> <span class="n">1</span> on an open date the only button is Bid.</figcaption>
+    </figure>
+  </div>
+  <fieldset class="pick" data-q="F2">
+    <label><input type="radio" name="F2" value="A"> <span><b>A (recommended):</b> always a bid. Leave already okayed by word of mouth on those dates is entered by an admin.</span></label>
+    <label><input type="radio" name="F2" value="B"> <span><b>B:</b> as today. He can also file it on the Inputs page and it stands at once.</span></label>
+  </fieldset>
+</article>
+
+<article class="sq" id="s3">
+  <h2><span class="qn">F3</span> Should "To review" replace the Personal Inputs list on the schedule?</h2>
+  <p><b>Example:</b> Grit (a member) files a dentist appointment at 14:00. Once you accept it, it shows on the Ground Programme and still sits in Personal Inputs too.</p>
+  <figure class="sk-fig">
+    <div class="skwrap" data-w="760"><div class="sk sk-desk sk-sched">
+      <div class="sc-day"><b>THU 17 MAR</b> <span class="muted2">· Draft</span></div>
+      <div class="sc-sec"><div class="sc-t red">⠿ UNAVAILABLE</div>
+        <div class="sc-row"><span class="sc-k">OD</span><span class="sc-tm">06:00 18:00</span><span class="pks"><span class="pk g">Nomad</span></span><span class="sc-rm">Overseas duty</span><span class="s-btn sm mk" data-n="1">Reject</span></div>
+      </div>
+      <div class="sc-sec"><div class="sc-t amb">⠿ TO REVIEW · 1</div>
+        <div class="sc-row mk" data-n="2"><span class="sc-k">APPT</span><span class="sc-tm">14:00 15:00</span><span class="pks"><span class="pk g">Grit</span></span><span class="sc-rm">Dentist</span><span class="s-btn sm">→ Ground</span><span class="s-btn sm">→ Unavailable</span><span class="s-btn sm">Reject</span></div>
+      </div>
+    </div></div>
+    <figcaption><b>Proposed, a rough sketch:</b> <span class="n">1</span> anything already placed has its own Reject where it sits. <span class="n">2</span> "To review" holds only what still waits for you. <button class="full" type="button">Open full size</button></figcaption>
+  </figure>
+  <fieldset class="pick" data-q="F3">
+    <label><input type="radio" name="F3" value="A"> <span><b>A (recommended):</b> yes, a short "To review" list. You reject a thing where you see it.</span></label>
+    <label><input type="radio" name="F3" value="B"> <span><b>B:</b> keep the Personal Inputs list as it is.</span></label>
+  </fieldset>
+</article>
+
+<article class="sq" id="s4">
+  <h2><span class="qn">F4</span> When you decide bids, how do you usually go through them?</h2>
+  <p><b>Example:</b> Bidding has closed and 40 requests are waiting. Saber (an admin) sits down to decide them.</p>
+  <figure class="sk-fig">
+    <div class="skwrap" data-w="300"><div class="sk" style="width:300px">
+      <div class="s-side" style="width:auto;margin:0;border-left:none">
+        <div class="sd-h"><b>Approvals</b><span class="sd-f"><span class="on mk" data-n="1">All 12</span><span>Same dates</span></span></div>
+        <div class="ap on"><span class="pk g">Ghost</span><span class="bx bid k">LL</span><span class="ap-d">9–12 Mar · 4 days</span><span class="ap-m">Avail P <b class="amb">9</b></span><span class="ap-b"><span class="s-btn ok">Approve</span><span class="s-btn">Refuse</span></span></div>
+        <div class="ap"><span class="pk g">Drifter</span><span class="bx bid k">LL</span><span class="ap-d">9–10 Mar · 2 days</span><span class="ap-m">Avail P 9</span><span class="ap-b"><span class="s-btn">Approve</span><span class="s-btn">Refuse</span></span></div>
+      </div>
+    </div></div>
+    <figcaption><b>Proposed, a rough sketch:</b> one Approvals list beside the grid. <span class="n">1</span> "All" goes person by person; "Same dates" groups everyone who asked for the same days.</figcaption>
+  </figure>
+  <fieldset class="pick" data-q="F4">
+    <label><input type="radio" name="F4" value="A"> <span><b>A:</b> person by person. The list opens on "All".</span></label>
+    <label><input type="radio" name="F4" value="B"> <span><b>B:</b> everyone asking for the same days together. The list opens on "Same dates".</span></label>
+  </fieldset>
+  <p class="muted">Recommended: both are in the one list either way. Your habit only decides which one it opens on.</p>
+</article>
+
+<article class="sq" id="s5">
+  <h2><span class="qn">F5</span> Should the Leave War let you add any type, a course included, without going to the Inputs page?</h2>
+  <p><b>Example:</b> Saber (an admin) taps Cutter's empty Wed 22 Jul to put him on a course. Today, after CSE, the window says "change it on the Inputs page" for the course's title and hours.</p>
+  <div class="pics phones">
+    <figure><img src="img/f5w-w2-war-more-proposed-phone.png" alt="Proposed: the three-dot menu lists every type" loading="lazy"><figcaption><b>Proposed:</b> ⋯ lists every type the Inputs page has.</figcaption></figure>
+    <figure><img src="img/f5w-w4-war-after-cse-proposed-phone.png" alt="Proposed: the course's own window opens over the grid" loading="lazy"><figcaption><b>Proposed:</b> after CSE, the course's own window opens right there. Its Type stays a dropdown, as you said.</figcaption></figure>
+  </div>
+  <fieldset class="pick" data-q="F5">
+    <label><input type="radio" name="F5" value="A"> <span><b>A (recommended):</b> yes, as drawn. Leave stays one tap.</span></label>
+    <label><input type="radio" name="F5" value="B"> <span><b>B:</b> as today. The Leave War sends you to the Inputs page for the details.</span></label>
+  </fieldset>
+</article>
+
+<div class="reply">
+  <p><b>Your answer line</b>, to paste back in the chat:</p>
+  <p class="rline" id="rline">Pick one choice on each card.</p>
+  <button type="button" id="rcopy">Copy</button>
+  <p class="muted">Older questions B to E and 1, 2, 5, 7 are still open further down. Add them to the line if you want.</p>
+</div>
+</section>
+
 <section class="now">
-  <h2>What to look at now</h2>
+  <h2>The long version: every question in full</h2>
   <p><span class="tag">New</span> <a href="#f6"><b>F6</b> Your question: the Leave War's window, made one standard</a>. Today a tap on a day opens one of six different windows, or nothing, and the same leave gets different buttons depending on where it was filed. Proposed: one window every time, a line for each thing on the day with the buttons you may use, the adding part below. <b>Recommended: yes, as step 1 of F1.</b></p>
   <p><b>Your clean sheet: how we would design leave and inputs from scratch.</b> Fable and Astra each answered on their own, then read each other's answer and agreed. Four questions:</p>
   <ol type="1" class="fq">
@@ -240,8 +378,8 @@ details.fold .pics{margin-top:8px}
   <p class="muted">Answer by letter and number, for example "F1–F4 as recommended", or tell me which to change.</p>
 </section>
 
-<section class="q new" id="f6">
-  <span class="tag">New · your question</span>
+<section class="q" id="f6">
+  <span class="tag">Your question</span>
   <h2>F6 · One Leave War window, whatever is on the day</h2>
   <p class="when">When: every tap on a day of the Leave War. Saber deciding a bid, granting OIL or checking a man's course; a member looking at his own day or a colleague's leave. Many times a day.</p>
   <p>You asked: some windows show the leave buttons and CSE · OD · Grant OIL · ⋯, some none. Are we standardising, so things entered on the Inputs page can be changed here too? <b>Yes.</b> First, every kind of day tapped on the real app today, as Saber and as Ranger:</p>
@@ -767,6 +905,18 @@ details.fold .pics{margin-top:8px}
   }
   window.addEventListener('resize', fit); fit();
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+  // the six short cards build one answer line to paste back
+  var qs = ['F6', 'F1', 'F2', 'F3', 'F4', 'F5'], rline = document.getElementById('rline');
+  function line() {
+    var parts = qs.map(function (q) { var c = document.querySelector('input[name="' + q + '"]:checked'); return c ? q + ' ' + c.value : null; }).filter(Boolean);
+    rline.textContent = parts.length ? parts.join(', ') : 'Pick one choice on each card.';
+  }
+  document.querySelectorAll('.pick input').forEach(function (r) { r.addEventListener('change', line); });
+  document.getElementById('rcopy').addEventListener('click', function () {
+    var b = this, t = rline.textContent;
+    try { navigator.clipboard.writeText(t).then(function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); }, function () { b.textContent = 'Select the line to copy'; }); }
+    catch (e) { b.textContent = 'Select the line to copy'; }
+  });
   document.querySelectorAll('button.full').forEach(function (btn) {
     btn.addEventListener('click', function () {
       var sk = btn.closest('.sk-fig').querySelector('.sk').cloneNode(true);

@@ -1599,3 +1599,16 @@ Met again 27 Nov 26 (chat 192, the clean sheet for the same question): the metho
 **Issue:** The script pressed the leave button with Playwright's `button:has-text("OL")`. That selector matches any button whose words merely contain "ol", ignoring case, so it pressed "Whole day" first — the two-day leave was never placed, and the roll-call's first run silently recorded the wrong state. Only reading the window's parts back (the leave figure had not moved) showed it.
 **Suggested improvement:** walk-scripts.md gains a line: press a control by its test name, or by its words anchored whole (`/^OL\b/`), never by `has-text` of a short word; and every setup step reads back the state it meant to make before the picture is taken.
 **Principle:** A text match is a substring match unless anchored; short labels collide with longer ones. Verify a set-up state, not only the press.
+
+### Observation 1105: A handoff told the next chat to "record his answers" that he had never given
+
+**Status:** OPEN
+**Date:** 2026-11-27
+**Session context:** Chat 194, leave and inputs questions page (numbered past 1104, taken on another open branch)
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** the "Pick up here" line and the ready-to-paste opening line
+
+**Issue:** The handoff's opening line said "record my answers to F6 and F1–F5 on the questions page". The page cannot store answers and has no comments, so the new chat searched the page, its comments and other chats, found nothing, and had to ask him; he then asked for the questions again, shorter. The line read as if the answers already existed somewhere.
+**Suggested improvement:** In the handoff skill's "Pick up here" step: when the next step waits on his answers, say where they will come from ("he answers in the chat; the page only builds a reply line") and make the first action "put the questions to him, short, with the page link", never "record his answers".
+**Principle:** A handoff names the source of every input the next step needs; "record X" is only written when X is already stored somewhere the next session can read.
