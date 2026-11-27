@@ -19,7 +19,7 @@ import { homeOn, todayIso } from '../state/units'
 import { CURPAGE, setPage, setInpView, setInpMode, setCalMonth, setAvailWin, AVAILWIN, CHGWIN, setChgWin, setBoardDay, setOilWait } from '../state/view'
 import { setInpEdit, setDayPop, setWeekCal, setAirKey, setDocView, setDrawer, setTplEdit, setWaveEdit, setDayTplEdit, setDraftsEdit, setDaysWin, setInpSet, setSansSet, setOilList, setInsights, INSIGHTS, setMedMove, setBellList } from '../ui/pops'
 import { openChanges } from '../ui/changesopen'
-import { closeScheduler } from '../ui/board'
+import { closeScheduler, setCxt, setSortAll } from '../ui/board'
 import { commitChipMove } from '../ui/caldrag'
 import { openDayPanel, dayPanelDate, closeDayPanel } from '../leavewar/ui/daypanelopen'
 import { setStorageKept } from '../ui/savestatus-source'
@@ -107,6 +107,14 @@ export async function guardTeardown() {
   setAvailWin(null); setChgWin(null); setInsights(false); setOilList(null); setDaysWin(null); setInpSet(false); setSansSet(false)
   setTplEdit(false); setWaveEdit(false); setDayTplEdit(false); setDraftsEdit(null); setMedMove(null); setOilWait(null); setBellList(false)
   closeDayPanel(); closeScheduler(); setLgEdit(false)
+  /* the board's own two dialogs, CX's reason (cxdlg) and Sort all (sortall), are module state in ui/board.ts, cleared on a
+     close only through HOOKS.closeBoardDialogs — which the board wires while it is mounted and unwires as it unmounts, so
+     by here, the page unmounted, closeScheduler() above no longer reaches them. A test that ends with one open (A10's
+     "the role in force changed" and "his move at midnight" leave the cancel reason open, as they should) left it set for
+     every test after it in the file. In one file a later A10 test of the same row closed it by chance; split one change a
+     file (27 Nov 26, test-support/msq-guard-a10.ts), every row after cxdlg failed its premise with "cxdlg" still named.
+     Cleared here as every other window above is */
+  setCxt(null); setSortAll(null)
   setStorageKept(true); watchSaves(null); _resetFloatWins()
   setGuardAsk(guardAsk); setGuardClose(guardCloseShown)
   sweepLeft(); armed = true
