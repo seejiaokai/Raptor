@@ -17,7 +17,8 @@ import { saveAccess, signIn, sessionFor } from '../state/accounts'
 import { setSession, SESSION } from '../state/auth'
 import { setGrant } from '../state/units'
 import { pickSquadron } from '../state/pick'
-import { notify, switchRoleView, switchRoleViewRaw, enterSquadron } from '../state/store'
+import { notify, switchRoleView, switchRoleViewRaw } from '../state/store'
+import { rawEnter } from '../test-support/raw-entry'
 import { refusalAt } from '../state/guard'
 import { holdNow } from '../state/typing-hold'
 import { UNIT } from '../engine/unitview'
@@ -42,7 +43,8 @@ afterEach(() => cleanup())
    removed together in Build 2. (The tests of the held Input window across an Undo, a new object and a second input —
    kind (a) of K0's census — hold the window by the road that still makes that state, his own move at midnight: K4's
    round 2, below.) */
-const rawPick = (u: string): void => { enterSquadron(u, holdNow() === 'war', true); notify() }
+/* (step K7: through the test kit's raw entry, which tells the entry checker the state is made on purpose) */
+const rawPick = (u: string): void => { rawEnter(u, holdNow() === 'war'); notify() }
 
 const LEAD = "This is 142's."
 const REST = 'You picked 149 — close this to go on.'

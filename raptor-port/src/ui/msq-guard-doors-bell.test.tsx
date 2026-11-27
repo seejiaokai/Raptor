@@ -25,7 +25,7 @@
    way); the bell then draws it, and it is pressed. */
 import { describe, it, expect, afterEach, beforeEach, vi } from 'vitest'
 import { act, fireEvent } from '@testing-library/react'
-import { withThird, third, signInAs, PID } from '../test-support/msq-world'
+import { withThird, third, signInAs, PID, ACCT } from '../test-support/msq-world'
 import { UNIT } from '../engine/unitview'
 import { INPUTS } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
@@ -33,18 +33,19 @@ import { HOOKS } from '../engine/hooks'
 import { CURPAGE, setPage, ADMINOPEN, INPMODE, INPVIEW, CALMONTH, SANSDAYASK, AVAILWIN, setInpView, setInpMode, setCalMonth } from '../state/view'
 import { INPEDIT, OILASK, OILLIST, BELLLIST, setInpEdit, setOilList, INSIGHTS, setInsights } from './pops'
 import { me, pageUnit, isAdmin } from '../state/perms'
-import { homeOn, todayIso } from '../state/units'
-import { enterSquadron, switchRoleViewRaw, notify } from '../state/store'
-import { holdNow } from '../state/typing-hold'
+import { homeOn, todayIso, setGrant } from '../state/units'
+import { switchRoleViewRaw, notify, heldWindowBand } from '../state/store'
+import { warBand } from '../state/typing-hold'
+import { rawEnter } from '../test-support/raw-entry'
 import { NOTICES, type Notice } from '../state/notices'
 import { isUnread } from '../state/noticeseen'
-import { requestAccess } from '../state/accounts'
+import { requestAccess, signIn, sessionFor } from '../state/accounts'
 import { bellAccessAlert } from '../state/belltap'
 import { setBellSquadron } from '../state/bellsqn'
 import { setGuardSay, type GuardOpts } from '../state/guard'
 import { guardSay } from './guardnote'
 import { openInputWindow, openWarAt, openNewPeriod } from '../leavewar/sync'
-import { getState as lwState } from '../leavewar/state/store'
+import { getState as lwState, worldUnit, leaveFiguresOf } from '../leavewar/state/store'
 import { takeRingAsk } from '../leavewar/ui/lwnav'
 import { peekNewWarAsk, clearNewWarAsk } from '../leavewar/ui/warask'
 import { openAdminUsers } from './adminopen'
@@ -53,10 +54,10 @@ import { clearToast } from './toast'
 import { watchSaves } from '../storage/savewait'
 import { setCxt, setSortAll } from './board'
 import { whatIsOpen, guardWords, GUARD_LEADS, GUARD_ENDINGS, type GuardRow } from './guard'
-import { LGEDIT } from '../state/auth'
+import { LGEDIT, SESSION, setSession } from '../state/auth'
 import {
   $, C, OPEN, app, doing, press, settle, tid, typeIn, goTracker, chartEdit, guardTeardown, openUserRow, ownInput,
-  topPick, avail, SHOWN, note, nothingHeld, answeringSaver, saver, named, row,
+  topPick, avail, SHOWN, note, nothingHeld, answeringSaver, saver, named, row, drawnBox, goLeaveWar,
 } from '../test-support/msq-guard-testkit'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -614,6 +615,19 @@ describe('B23 — an Undo\'s landing on his own page (a belt: no button reaches 
     await doing(() => { _snapView(step, 'undo') })
     expect([UNIT, CURPAGE, INPMODE]).toEqual(['u142', 'inputs', 'member'])
   })
+  /* K7b: snapView runs BEFORE the step writes (undo/timeline.ts globalUndo / globalRedo → snap), so the landing that
+     brings 142 back must wait for the step's own notify, after its writes — K6's door notified at once, inside snapView,
+     and an Undo of a 142 calendar note was left half applied (ui/msq-inputscal-own-calendar.test.tsx) */
+  it('(the order) with nothing open, _snapView sets the page and enters nothing; 142 comes back only on the next notify — the step\'s, after its writes', async () => {
+    await app('ranger')
+    await topPick('u149')
+    const step: any = { id: 'k7b-b23o', label: 'x', scope: { module: 'inputs' }, forward: [{ collection: 'inputs', id: 'x', before: { iid: 'x', person: PID.ranger, type: 'LL', date: 'Jul 20' }, after: null }], inverse: [] }
+    let seen: [string, string] | null = null
+    await act(async () => { _snapView(step, 'undo'); seen = [UNIT, CURPAGE] })
+    expect(seen, 'inside the step, before its notify: the page set, 149 still in view').toEqual(['u149', 'inputs'])
+    await doing(() => {})
+    expect([UNIT, CURPAGE], 'the step\'s notify: the landing, 142 back on his Inputs').toEqual(['u142', 'inputs'])
+  })
 })
 
 /* ================= B25 — a card of the OIL list ================= */
@@ -646,12 +660,12 @@ describe('B25 — a card of the OIL list: its page first, then the window; refus
   it('the list standing over a squadron he only views (by a raw entry — reached by no press since D2403 and D2627 A19): not refused by the list it sits in — 142 comes into view and the window opens; with a change not saved: refused, 150 in view, no window', async () => {
     await app('hunter')
     const x = await cardList()
-    await doing(() => { enterSquadron(third.u150, holdNow() === 'war', true) })
+    await doing(() => { rawEnter(third.u150) })
     expect([UNIT, !!OILLIST], 'the premise: the list over 150').toEqual([third.u150, true])
     await press(card(x), 'the card')
     expect([UNIT, CURPAGE, INPEDIT?.iid], 'through: its squadron, its page, then the window').toEqual(['u142', 'inputs', x.iid])
     await doing(() => { setInpEdit(null); setPage('viewsched'); setOilList({ from: '2026-07-18', to: '2026-07-18', name: 'Holiday', unit: 'u142' }) })
-    await doing(() => { enterSquadron(third.u150, holdNow() === 'war', true) })
+    await doing(() => { rawEnter(third.u150) })
     await OPEN.unsaved!.open()
     await press(card(x), 'the card')
     expect([UNIT, INPEDIT], 'refused').toEqual([third.u150, null])
@@ -848,6 +862,123 @@ describe('B30 — when the show-only windows close at a bell line, and when they
     await press($('#dlgAlt'), 'Discard them')
     await settle()
     expect([INSIGHTS, UNIT], 'refused at the second ask: Insights still open').toEqual([true, 'u149'])
+  })
+})
+
+/* ================= K7c (pin) — a window on another squadron, his Plan of it lowered, then a line of his own ================= */
+/* K7's report, finding 2 (my reading of the code, not run, there): Hunter, 142's admin with Plan of 149, 149 picked, a window
+   open on 149's pages; Saber lowers that Plan to View — a change he did not make; then a 142 line that brings his own
+   squadron back through the page door. The reading was that the window would no longer count where it stood (D2627 A7),
+   the door would pass and the landing would make the window live on 142's page. The typing-hold rule (state/typing-hold.ts,
+   its head): a window opened on one squadron is never made live on, nor saved into, another.
+   PRESSED, IT IS HELD AND THE DOOR NEVER PASSES (a pin — nothing in the app changed for it): both windows still count where
+   they are drawn — the Input window goes with him to 149's View-only Sched as its dialog (ui/guard.ts row 'inputdlg',
+   drawn on any page), and the Leave War window holds the war's swap, so he stays on 149's Leave War with it up (row
+   'lwsheet', its own page) — so the 142 line is refused at the page door with its "Blocked:" note, 149 stays in view, and
+   the window stays under the band of a change he did not make: the generic words (state/store.ts heldWindowBand — the
+   squadron in view is still the window's own, so not a pick's words; and, as built for those words, nothing greyed:
+   ui/msq-pick-windows.test.tsx's control). Its writes go nowhere: the Input window, which 149 no longer lets him change,
+   draws no Save, Add or Delete and its form is inert; the Leave War window's typed figure is refused at its box. Close
+   closes it, and the same line then goes through.
+   THE GRANT IS LOWERED THROUGH THE SQUADRONS' OWN DOOR (state/units.ts setGrant — a master admin's change of a Plan, PA1),
+   by Saber on her own device, as ui/msq-pick-windows.test.tsx's control and ui/msq-inputscal-own-calendar.test.tsx lower
+   it: her session is put in for the change and his given back, so his page, his pick and his window stay as they stood
+   (a signInAs would be a sign-in of his own, which takes him home and clears his windows; and state/accounts.ts
+   saveAccess reads its "your own account" test from his own person, which a swapped session leaves in place). */
+describe('K7c — a window held on 149, his Plan lowered under it: a 142 line is refused, the window stays held (K7 finding 2; pin)', () => {
+  async function planLowered() {
+    const mine = SESSION
+    setSession(sessionFor(signIn('ad', 'a')))
+    expect(setGrant(ACCT.hunter, 'u149', 'view', PID.hunter), 'the premise: Saber lowers his Plan of 149 to View').toMatchObject({ ok: true })
+    setSession(mine)
+    await doing(() => {})
+    expect([UNIT, pageUnit('own')], 'the premise: 149 still in view, his own pages 142\'s again').toEqual(['u149', 'u142'])
+  }
+  /* the band drawn, word for word as the code gives it for a window of 149's */
+  function bandIs(testid: string) {
+    const want = heldWindowBand('u149')
+    const band = tid(testid)
+    expect(band, `the band (${testid}) across the window`).not.toBeNull()
+    expect(band!.querySelector('b')!.textContent, 'the band\'s lead').toBe(want.lead)
+    expect(band!.querySelector('.sv-rest')?.textContent ?? '', 'the band\'s rest').toBe(want.rest)
+    expect(want.ro, 'not a pick\'s band: nothing greyed under it').toBeFalsy()
+    expect(document.querySelector('[data-heldro]'), 'nothing greyed (the generic band, as built)').toBeNull()
+  }
+  /** the 142 line, pressed: refused at the page door, nothing changed, the note under the line */
+  async function lineRefused(n: Notice) {
+    const page = CURPAGE, pid = String(me())
+    NOTICES.push(n)
+    await doing(() => {})
+    await bellOpen()
+    const words = noteFor('line')
+    await press(tid(`bell-line-${n.id}`), 'the 142 line')
+    expect({ unit: UNIT, page: CURPAGE }, 'refused: 149 still in view, the page as it was').toEqual({ unit: 'u149', page })
+    expect(isUnread(n, pid), 'the line still unread (D2627 A11)').toBe(true)
+    expect(note(), 'the note').toBe(words)
+    expect(said.at(-1)?.door, 'the line\'s door').toBe('line')
+  }
+
+  it('the Input window: held over 149\'s View-only Sched, its form inert with no Save, the line refused; Close closes it, and the line then goes through', async () => {
+    await hunterOn149WithWindow()
+    const iid = String((INPEDIT as any).iid)
+    const stored = JSON.stringify(INPUTS)
+    await planLowered()
+    expect(CURPAGE, 'the premise: landed on 149\'s View-only Sched (D2381)').toBe('viewsched')
+    expect(String((INPEDIT as any)?.iid), 'the window still holds the 149 input it opened on').toBe(iid)
+    expect(drawnBox('#inpEditPop'), 'the window still on the page').toBe(true)
+    expect(named(), 'it still counts where it is drawn').toBe('inputdlg')
+    bandIs('inped-moveband')
+    expect([$('#inpEditSave'), $('#inpEditDel')], 'no Save, Add or Delete drawn').toEqual([null, null])
+    const fields = [...$('#inpEditPop')!.querySelectorAll('.inped-body input, .inped-body select, .inped-body textarea, .inped-body button')]
+    expect(fields.length, 'the premise: the form is drawn').toBeGreaterThan(0)
+    expect(fields.filter(f => !f.closest('[inert]')).map(f => f.id || f.textContent), 'every control of the form dead').toEqual([])
+    const n = inputLine(PID.hunter, 'u142', of('u142'))
+    await lineRefused(n)
+    expect(String((INPEDIT as any)?.iid), 'the window still up, the same input').toBe(iid)
+    expect(drawnBox('#inpEditPop'), 'the window still on the page').toBe(true)
+    bandIs('inped-moveband')
+    expect(JSON.stringify(INPUTS), 'nothing stored changed, for 142 or 149').toBe(stored)
+    await press(tid('inped-moveband')!.querySelector('button'), 'the band\'s Close')
+    expect([INPEDIT, drawnBox('#inpEditPop')], 'Close closes it').toEqual([null, false])
+    expect(JSON.stringify(INPUTS), 'nothing saved by the Close').toBe(stored)
+    await bellOpen()
+    await press(tid(`bell-line-${n.id}`), 'the 142 line, again')
+    expect([UNIT, CURPAGE], 'nothing open: the line goes — 142, his Inputs').toEqual(['u142', 'inputs'])
+  })
+
+  it('the Leave War window: held on 149\'s Leave War, its typed figure refused, the line refused; Close closes it, and the line then goes through', async () => {
+    await app('hunter')
+    await topPick('u149')
+    await goLeaveWar()
+    const name = document.querySelector(`[data-testid^="person-"]:not([data-testid="person-window"])`)
+    const pid = String(name?.getAttribute('data-testid')).slice('person-'.length)
+    await press(name, 'a name on the grid')
+    expect(tid('person-window'), 'the premise: his window is up').not.toBeNull()
+    expect(named()).toBe('lwsheet')
+    const figs = () => JSON.stringify(leaveFiguresOf(pid))
+    const before = figs()
+    await planLowered()
+    expect([CURPAGE, worldUnit()], 'the premise: the window holds the war\'s swap — 149\'s Leave War still up').toEqual(['leavewar', 'u149'])
+    expect(tid('person-window'), 'the window still on the page').not.toBeNull()
+    expect(named(), 'it still counts on its own page').toBe('lwsheet')
+    bandIs('move-band')
+    expect(warBand(), 'the band the store published for the war').toEqual(heldWindowBand('u149'))
+    const box = tid('pw-LVE') as HTMLInputElement
+    await act(async () => { box.focus(); fireEvent.change(box, { target: { value: '7' } }); fireEvent.keyDown(box, { key: 'Enter' }); box.blur() })
+    await settle()
+    expect(figs(), 'a typed figure: nothing stored for 149').toBe(before)
+    await lineRefused(inputLine(PID.hunter, 'u142', of('u142')))
+    expect([tid('person-window') != null, worldUnit()], 'the window still up, on 149\'s war').toEqual([true, 'u149'])
+    bandIs('move-band')
+    await press(tid('move-band')!.querySelector('button'), 'the band\'s Close')
+    expect(tid('person-window'), 'Close closes it').toBeNull()
+    expect(figs(), 'nothing saved by the Close').toBe(before)
+    const again = inputLine(PID.hunter, 'u142', of('u142'))
+    NOTICES.push(again)
+    await doing(() => {})
+    await bellOpen()
+    await press(tid(`bell-line-${again.id}`), 'a 142 line')
+    expect([UNIT, CURPAGE], 'nothing open: the line goes — 142, his Inputs').toEqual(['u142', 'inputs'])
   })
 })
 

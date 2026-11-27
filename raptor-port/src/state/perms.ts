@@ -25,6 +25,7 @@
    parity harness — never a user: every question below answers it the way the gate it
    replaced did (stated per question), so no headless test changes meaning. */
 import { SESSION, ME, setEffectiveRole } from './auth'
+import { checkEntry } from './guard'
 import { store, unitSetting } from '../engine/hooks'
 import { INPUTS, inpMeta, typeGroup, isSansAvail, needsDoc, peopleOf, idsOf, leadOf, onlyNamed, holds, placeHeld, placeOf, namedOf, placeholderOf, inputSpanIso, inputSquadrons, inputUnitOf, sansNewDayProblem } from '../engine/inputs'
 import { dayNamedIds } from '../engine/publish'
@@ -242,6 +243,9 @@ export function mayViewAsMember(): boolean {
 export function switchRoleInForce(next: any): boolean {
   if (next !== 'admin' && next !== 'main') return false
   if (!mayViewAsMember()) return false
+  /* the role switch: the test set-ups' entry checker asks the guard again first (the guard rail's plan §3.4 — step K7;
+     a no-op in the app) */
+  checkEntry('switch', next)
   setEffectiveRole(next)
   return true
 }

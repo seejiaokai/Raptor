@@ -178,9 +178,8 @@ describe('B4 — every window that counts refuses, by its whole press (D2403)', 
     await doing(() => setPage('inputs'))
     /* (the raw entry — reached by no press since D2403: a pick of 150 is refused while Show All counts, so 150 with Show All
        still set is the state a change he did not make leaves; on 150 the Tracker is not offered, so it does not count) */
-    const { enterSquadron } = await import('../state/store')
-    const { holdNow } = await import('../state/typing-hold')
-    await doing(() => { enterSquadron(third.u150, holdNow() === 'war', true) })
+    const { rawEnter } = await import('../test-support/raw-entry')
+    await doing(() => { rawEnter(third.u150) })
     expect({ unit: UNIT, set: C.showAllOpen, open: whatIsOpen() }, 'the premise').toEqual({ unit: third.u150, set: true, open: null })
     await topPick('u149')
     expect(UNIT, 'through').toBe('u149')
