@@ -23,7 +23,7 @@ import { notify } from '../state/store'
 import { persistPeople } from '../state/people-settings-commit'
 import { DEFAULT_QUAL_COLS, MGMT_KEY, SCHED_KEY, qualColsOf, setQualColsOf } from '../engine/qualcols'
 import { useVersion } from './useStore'
-import { useGuardCloses, useGuardWork } from './guard'
+import { useGuardCloses, useGuardOpen } from './guard'
 /* ONE LIFT, EVERY DRAG (owner, 6 Sep 26) — the shared drag decoration every
    surface in the app wears. A column is a COMPOSITE thing (a heading and a
    cell per person), so it takes the overlay frame rather than a class. */
@@ -502,7 +502,8 @@ export function QualsPage() {
      holds words they count, as a row being edited (D2729 Q2 — §3.2 (i)). The edit mode itself is handed over while it is on,
      for a door to end at its last step (D2627 A4 — §18.1): editing off, "Edit quals" off, an armed ✕ disarmed — never the
      words in the box, and never Done's own "Quals saved". */
-  useGuardWork('qualsnew', canEditQuals() && newQual.trim() !== '')
+  /* (a door closes it by the box's only discard, its words emptied — nothing stored: step KR, D2825) */
+  useGuardOpen('qualsnew', canEditQuals() && newQual.trim() !== '', () => setNewQual(''))
   useGuardCloses('qedit', qEditing, () => { setEditing(false); setQualsEdit(false); setArmDel('') })
   /* WORDS LEFT HIDDEN IN THE BOX ARE DROPPED WHEN THE SQUADRON IN VIEW CHANGES (the orchestrator's call at K0 — §21.1, "K0 —
      done"; nothing new is drawn): Done, or "✕ Edit quals", hides the box and keeps what was typed in it, and on the same

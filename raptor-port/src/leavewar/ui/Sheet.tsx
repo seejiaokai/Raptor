@@ -55,7 +55,9 @@ setWarWindowsProbe(() => OPEN.length)
    a pick; every other sheet refuses it. Kept by panel, read in OPEN's order, handed to the guard's seam (state/guard.ts);
    the count above, which holds the war's swap, is every sheet's, marked or not, as before. */
 const MARK = new Map<HTMLElement, { showOnly: boolean; close: () => void }>()
-setWarSheetsProbe(() => OPEN.map(n => MARK.get(n) ?? { showOnly: false, close: () => {} }))
+/* (each with its panel as its `key`: the guard's loop that closes every sheet — state/guard.ts closeWarAll, step KR — asks
+   by it whether the sheet it closed has left; a sheet leaves OPEN only as it unmounts, so the list stays honest) */
+setWarSheetsProbe(() => OPEN.map(n => ({ ...(MARK.get(n) ?? { showOnly: false, close: () => {} }), key: n })))
 
 /* THE BAND ACROSS AN OPEN WINDOW WHEN HIS SQUADRON CHANGES UNDER IT (his D2243 Q7, "as drawn" — docs/mock/
    2026-11-20-multi-sqn-reshape/page.html §7, pictures q7b-d and q7b-p, D1478). While the war loaded is no longer the page's

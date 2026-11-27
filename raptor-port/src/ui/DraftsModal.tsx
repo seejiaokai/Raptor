@@ -24,6 +24,8 @@ import { useVersion } from './useStore'
 import { clickedOutside } from './outside'
 import { useSheetFocus, useEscClose } from './sheetfocus'
 import { draftsDrawn } from './windrawn'
+import { useGuardOpen } from './guard'
+import { closingForDoor } from '../state/guard'
 
 // eslint-disable-next-line react-doctor/no-high-complexity-react-function -- the day's saved plans, their rename, delete and bring-out share one set of state and one order of effects; split, that order would move
 export function DraftsModal() {
@@ -46,6 +48,10 @@ export function DraftsModal() {
   const up = draftsDrawn()   // !!DRAFTSEDIT && !(SESSION && !canEditSched()) && CURPAGE === 'editsched' — the one predicate the guard reads too (ui/windrawn.ts)
   useSheetFocus(boxRef, up)
   useEscClose(boxRef, up, () => { setNm(null); setDraftsEdit(null); notify() })
+  /* …and a door closes it the same way, a name half typed in the box let go (step KR — his D2825; the plan §3's `drafts`
+     row). The box is left first, while the squadron is still in view (KR-2's closing step), so a name it takes renames
+     this day's plan, as leaving the box does; one it refuses is dropped silently (closingForDoor, in commitName) */
+  useGuardOpen('drafts', up, () => { setNm(null); setDraftsEdit(null); notify() })
   /* self-hide for a non-admin, not just at the admin-gated opener (bug hunt,
      31 Aug 26 — point-2 authority sweep): DRAFTSEDIT survives toggleRole's
      admin→member peek (the old toggleRole's peek, gone with [ACCOUNTS]; its successor since D292, 27 Sep 26, is the admin's switch to the member view — state/store.ts switchRoleView, which does not close this sheet either), so without this an admin who opened the drafts manager
@@ -81,7 +87,8 @@ export function DraftsModal() {
       return ok
     })) {
       /* renamed — nothing more */
-    } else {
+    } else if (!closingForDoor()) {
+      /* (a door going through: nobody is left to read why — the name is dropped silently, the plan keeps its own: step KR) */
       HOOKS.toast(nm.trim() ? 'Another plan on this day already has that name' : 'A plan needs a name', 'warn')
     }
     setNm(null); notify()

@@ -149,9 +149,11 @@ const ALLOWED_OPEN: Record<string, (() => boolean)[]> = {
      readers of it (the last test of R1 reads that they read the bridge) */
   'tracker/role.js': [trackerWindowUp, trackerAsking, ...Object.values(TRACKER_SHOWS)],
 }
-/* a component's report (ui/guard.ts useGuardWork) or a closer it hands over (useGuardCloses): the call, in its frame */
-const reportsIn = (src: string, hook: 'useGuardWork' | 'useGuardCloses'): string[] =>
-  [...src.matchAll(new RegExp(`\\b${hook}\\('([a-z]+)'`, 'g'))].map(m => m[1]!)
+/* a component's report (ui/guard.ts useGuardWork) or a closer it hands over (useGuardCloses): the call, in its frame.
+   Step KR's one hook, useGuardOpen, is both — a report and a closer handed over in one call (ui/guard.ts — the plan
+   docs/superpowers/plans/2026-11-27-msq-s1-kr-no-blocks-plan.md §7), so it is read as either */
+const reportsIn = (src: string, hook: 'useGuardWork' | 'useGuardCloses' | 'useGuardOpen'): string[] =>
+  [...src.matchAll(new RegExp(`\\b${hook === 'useGuardOpen' ? hook : `(?:${hook}|useGuardOpen)`}\\('([a-z]+)'`, 'g'))].map(m => m[1]!)
 const drawnName = (f: () => boolean): string | null => Object.entries(DRAWN).find(([, g]) => g === f)?.[0] ?? null
 
 describe('R1 — every flag has a row, and every row reads what its window is drawn from', () => {
@@ -188,6 +190,8 @@ describe('R1 — every flag has a row, and every row reads what its window is dr
       if (r.report) expect(reportsIn(src, 'useGuardWork'), `${r.frame} reports ${r.id} (useGuardWork('${r.id}', …))`).toContain(r.id)
       if (r.dirty) expect(reportsIn(src, 'useGuardWork'), `${r.frame} reports what is changed in ${r.id} (useGuardWork('${r.id}', …))`).toContain(r.id)
       if (r.end) expect(reportsIn(src, 'useGuardCloses'), `${r.frame} hands over ${r.id}'s end (useGuardCloses('${r.id}', …))`).toContain(r.id)
+      /* (step KR: a close its component hands over is handed over by that very frame — useGuardOpen('<id>', …)) */
+      if (r.handed) expect(reportsIn(src, 'useGuardOpen'), `${r.frame} hands over ${r.id}'s close (useGuardOpen('${r.id}', …))`).toContain(r.id)
     }
     /* every report and every closer in the source names a row of the table (the hook's type says so too; this reads it) */
     for (const f of srcFiles(SRC)) {
@@ -382,11 +386,16 @@ const RULED_CLOSES: Record<string, string> = {
   trkdown: 'D2654 E4 — the Info panel\'s Down days close by themselves, in sight or behind the Flow chart tab',
   trkfail: 'D2654 E4 — the Info panel\'s Failures close by themselves, in sight or behind the Flow chart tab',
 }
+/* R8 WIDENED BY STEP KR (his D2825; the plan §8.2's "R8 widened"): a "window" or a "row" row now carries the close a door
+   closes it by (R10, below), so "no other row carries one" became "neither the change not saved nor a 'no' row carries
+   one" — the one refusal is never closed (D2594), and a 'no' row ends by its own `end` or not at all. What R8 was for is
+   unchanged: a window that closes BY ITSELF at the press — a "closes" row, closed even by today's doors — only on his
+   ruling. */
 export function closesProblems(rows: readonly Pick<GuardRow, 'id' | 'counts' | 'close'>[], ruled: Record<string, string>): string[] {
   const out: string[] = []
   for (const r of rows) {
     if (r.counts === 'closes' && !r.close) out.push(`${r.id}: a "closes" row carries its closer`)
-    if (r.counts !== 'closes' && r.close) out.push(`${r.id}: only a "closes" row carries a closer`)
+    if ((r.counts === 'unsaved' || r.counts === 'no') && r.close) out.push(`${r.id}: a "${r.counts}" row carries no closer`)
     if (r.counts === 'closes' && !(r.id in ruled)) out.push(`${r.id}: a window closes by itself only on his ruling`)
   }
   for (const id of Object.keys(ruled)) if (!rows.some(r => r.id === id && r.counts === 'closes')) out.push(`${id}: ruled to close by itself, but no "closes" row`)
@@ -394,7 +403,7 @@ export function closesProblems(rows: readonly Pick<GuardRow, 'id' | 'counts' | '
 }
 
 describe('R8 — a window closes by itself only on his ruling', () => {
-  it('every "closes" row carries a close, no other row carries one, and the "closes" rows are exactly those his rulings name', () => {
+  it('every "closes" row carries a close, neither the change not saved nor a "no" row carries one, and the "closes" rows are exactly those his rulings name (widened by KR, D2825)', () => {
     expect(closesProblems(GUARD_ROWS, RULED_CLOSES)).toEqual([])
   })
 })
@@ -412,9 +421,16 @@ const NEVER_CLOSED: Record<string, string> = {
 }
 export const closerMissing = (rows: readonly Pick<GuardRow, 'id' | 'counts' | 'close'>[]): string[] =>
   rows.filter(r => (r.counts === 'window' || r.counts === 'row' || r.counts === 'closes') && !(r.id in NEVER_CLOSED) && typeof r.close !== 'function').map(r => `${r.id} (${r.counts})`)
+/* OWED BY STEP KR-1b, BY NAME (the KR-1a brief, docs/superpowers/briefs/2026-11-28-msq-s1-kr1a-brief.md): Admin → Users'
+   four rows, whose closers are chat 205's own silent closes in ui/UsersPanel.tsx (closeRow(), Waiting's closeGive(),
+   shutAdd — the plan §3's table, §10). That file is another section's (U2) until it lands, so KR-1a leaves it untouched:
+   R10 is green for every other row, and fails again the moment a fifth row lacks its close — or one of these four gets
+   one, which means KR-1b has landed and this list goes. Printed, so the run says what is owed. */
+const KR1B_OWED = ['userrow (row)', 'archrow (row)', 'giveaccess (row)', 'addperson (row)']
 describe('R10 — every row a door closes carries its closer (D2825, KR)', () => {
-  it('every "window", "row" and "closes" row of GUARD_ROWS has a close (D2825)', () => {
-    expect(closerMissing(GUARD_ROWS)).toEqual([])
+  /* (the list is in the test's own name, so every run prints what is owed — the test set-up keeps the console quiet) */
+  it(`every "window", "row" and "closes" row of GUARD_ROWS has a close (D2825) — owed by KR-1b: ${KR1B_OWED.join(', ')}`, () => {
+    expect(closerMissing(GUARD_ROWS), 'only the four Users rows, KR-1b\'s, lack a close').toEqual(KR1B_OWED)
   })
   it('the one row left out is a "window" row of the table, the Tracker\'s question, with its reason (D2825, D2627 A20)', () => {
     expect(Object.keys(NEVER_CLOSED).map(id => GUARD_ROWS.find(r => r.id === id)?.counts)).toEqual(['window'])
@@ -459,12 +475,14 @@ describe('R7 — the scans catch a planted window', () => {
     expect(frameProblems({ ...files, 'ui/NewPop.tsx': 'export const P = () => <div role="dialog" />\n' }, FRAMES, ids))
       .toEqual(['ui/NewPop.tsx: 1 frame(s) no census entry maps — give each a row in ui/guard.ts GUARD_ROWS, or name it here with its reason'])
   })
-  it('R8\'s check: a "closes" row not ruled, a closer on a refusing row, and a ruled id with no row are each reported', () => {
+  it('R8\'s check: a "closes" row not ruled, a closer on the change not saved or on a "no" row, and a ruled id with no row are each reported; a closer on a window is not (widened by KR)', () => {
     const rows = [...GUARD_ROWS, { id: 'newshow', counts: 'closes' as const, close: () => {} }]
     expect(closesProblems(rows as any, RULED_CLOSES)).toEqual(['newshow: a window closes by itself only on his ruling'])
-    /* (a refusing row given a closer — K1a planted it on `days`, which closes by itself since K1b on his D2654 E1) */
-    const withCloser = GUARD_ROWS.map(r => r.id === 'everywd' ? { ...r, close: () => {} } : r)
-    expect(closesProblems(withCloser, RULED_CLOSES)).toEqual(['everywd: only a "closes" row carries a closer'])
+    /* (a refusing row given a closer — K1a planted it on `days`, which closes by itself since K1b on his D2654 E1, then
+       on `everywd`, a window, which carries one since KR (D2825): planted now on the one refusal and on a 'no' row) */
+    const withCloser = GUARD_ROWS.map(r => r.id === 'unsaved' || r.id === 'belllist' ? { ...r, close: () => {} } : r)
+    expect(closesProblems(withCloser, RULED_CLOSES)).toEqual(['belllist: a "no" row carries no closer', 'unsaved: a "unsaved" row carries no closer'])
+    expect(closesProblems(GUARD_ROWS.map(r => r.id === 'everywd' ? { ...r, close: () => {} } : r), RULED_CLOSES), 'a window with its close: nothing to report').toEqual([])
     /* (K1a planted this as `trkinfo`, which K1c builds: a made-up id stands in) */
     expect(closesProblems(GUARD_ROWS, { ...RULED_CLOSES, trknew: 'D2597' })).toEqual(['trknew: ruled to close by itself, but no "closes" row'])
   })

@@ -89,7 +89,9 @@ export function rawOnPurpose(): void { installed.checker?.raw() }
    list over here, in the pattern of state/typing-hold.ts setWarWindowsProbe (whose count of every sheet, show-only or
    not, still holds the war's swap exactly as before). Two rows of ui/guard.ts read it: `lwsheet` — a sheet open without
    the mark, which refuses — and `lwshow` — the marked ones, each closed by its own closer. Never loaded: none open. */
-export type WarSheet = { showOnly: boolean; close: () => void }
+/* `key` — the sheet's own panel, the same object for as long as that sheet is mounted (step KR: the loop below asks whether
+   the sheet it closed has left the list) */
+export type WarSheet = { showOnly: boolean; close: () => void; key?: object }
 let warSheets: () => readonly WarSheet[] = () => []
 export function setWarSheetsProbe(fn: (() => readonly WarSheet[]) | null): void { warSheets = fn || (() => []) }
 const sheetsNow = (): readonly WarSheet[] => { try { return warSheets() } catch { return [] } }
@@ -99,3 +101,39 @@ export const warSheetOpen = (): boolean => sheetsNow().some(s => !s.showOnly)
 export const warShowOpen = (): boolean => sheetsNow().some(s => s.showOnly)
 /** closes every show-only Leave War sheet by its own closer, the unmarked ones left as they are */
 export function closeWarShown(): void { for (const s of [...sheetsNow()]) if (s.showOnly) s.close() }
+/* EVERY OPEN SHEET OF THE WAR CLOSED, IN A LOOP (step KR — his D2825; the plan docs/superpowers/plans/
+   2026-11-27-msq-s1-kr-no-blocks-plan.md §3's `lwsheet` row, §5 step 6c). A door that goes through closes what is open, and a
+   sheet of the war is closed by its own close as he can press it today — so what that close keeps (a held bid's words, the
+   leave-remarks box: each saved as its sheet unmounts) is kept into the war still loaded, the squadron's own, before the
+   war swaps. One sheet at a time, the one on top first: its close is committed at once (`commit` — ui/guard.ts hands in
+   React's flushSync, which this file may not import), so the sheet is gone from the page and its unmount savers have run
+   before the list is read again; a close may bring up the sheet under it (the presets' ‹ goes back to the event), which
+   the next turn closes. THE LIST STAYS HONEST: a sheet leaves it only as it unmounts (leavewar/ui/Sheet.tsx), never because
+   it was asked to close. A close that leaves its sheet in the list is a fault, never a wait: the loop stops and says so
+   (false), and the door must not enter. No door calls it yet (KR-2's closing step will, with closingForDoor() set). */
+export function closeWarAll(commit: (fn: () => void) => void = fn => fn()): boolean {
+  const same = (a: WarSheet, b: WarSheet) => (a.key !== undefined ? a.key === b.key : a === b)
+  /* (a bound, never a count he can reach: each turn closes a sheet or stops) */
+  for (let turn = 0; turn < 64; turn++) {
+    const list = sheetsNow()
+    if (!list.length) return true
+    const top = list[list.length - 1]!
+    commit(() => top.close())
+    if (sheetsNow().some(s => same(s, top))) return false
+  }
+  return sheetsNow().length === 0
+}
+
+/* A DOOR IS CLOSING WHAT IS OPEN (step KR — the plan §3 "A value a box refuses on leaving", §5 step 6a; Astra 5, Astra 6,
+   Opus 1b). A box that saves as it is left and refuses a value (a plan's name, an event preset's name) says why and, the
+   presets, holds its sheet open so the sentence is read. At a door that is going through there is no one to read it: the
+   value is dropped silently, and the sheet is not held. Those boxes ask this; true only while a door's closing runs
+   (whileClosingForDoor — KR-2's closing step, and the tests). */
+let closingDoor = false
+export const closingForDoor = (): boolean => closingDoor
+/** runs `fn` with closingForDoor() true, and puts it back after, whatever `fn` does */
+export function whileClosingForDoor<T>(fn: () => T): T {
+  const was = closingDoor
+  closingDoor = true
+  try { return fn() } finally { closingDoor = was }
+}

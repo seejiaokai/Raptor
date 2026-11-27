@@ -68,6 +68,7 @@ import { bringRowOnScreen, rowOnScreen } from './onscreen'
 import { useVersion } from './useStore'
 import { PenIcon, ExpandIcon, CompactIcon } from './icons'
 import { useMedia } from './usemedia'
+import { useGuardOpen } from './guard'
 import { MonthJump } from './MonthJump'
 import { KEYBOARD_MIN, screenBox } from './kbscroll'
 
@@ -505,6 +506,11 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
     notify()
   }
   const closePop = () => { showDay(null); setPopPuckEdit(null); setDelAsk(null) }
+  /* THE GUARD RAIL'S CLOSE OF THE OPENED DAY (step KR — his D2825; the plan §3's `inputsday` row): its ✕, Escape's own
+     path — a picker up is settled as its Cancel settles it, so a new note whose words passed to the people picker is
+     written with no people, as the ✕ keeps it; the delete question goes with it. Counted by its place in the order of
+     windows up, as before (ui/guard.ts) */
+  useGuardOpen('inputsday', popIso != null, closePop)
 
   /* ---- the pointer: two machines on the one grid, wired once; they read the latest handlers through a ref -------- */
   const tapEntry = (entry: any) => {

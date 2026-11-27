@@ -62,6 +62,7 @@ import {
 } from '../state/store'
 import { RangePicker, type Range } from './RangePicker'
 import { Sheet } from './Sheet'
+import { closingForDoor } from '../../state/guard'
 import { shortSpan } from './dates'
 import { useVersion } from './useStore'
 import './eventsheet.css'
@@ -198,6 +199,9 @@ export function EventSheet({ line, date, to, fresh = false, presets = false, run
     document.addEventListener('click', onClick, true)
   }
   const boxDone = (err: string | null | undefined) => {
+    /* A DOOR GOING THROUGH (step KR — his D2825; the plan §3, Astra 6): a refused name is dropped silently, its box already
+       put back, and the window is not held for a sentence nobody is left to read (state/guard.ts closingForDoor) */
+    if (closingForDoor()) { typesErr.current = ''; return }
     typesErr.current = err && leaving.current ? err : ''
     showProblem(err ?? '')
   }
@@ -205,7 +209,7 @@ export function EventSheet({ line, date, to, fresh = false, presets = false, run
     // a box still holding what is being typed: saved (or refused) first, as a press that leaves
     const a = document.activeElement as HTMLElement | null
     if (a && a.tagName === 'INPUT' && a.closest('[data-testid="event-types-sheet"]')) { leaving.current = true; a.blur() }
-    const hold = presets && !!typesErr.current
+    const hold = presets && !!typesErr.current && !closingForDoor()
     leaving.current = false
     typesErr.current = ''
     if (hold) return

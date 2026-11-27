@@ -26,8 +26,10 @@
    asks yet, so the app still behaves as before. Plain modules only — no component is imported, so the test world and
    the test set-ups can load it. */
 import { useEffect, useLayoutEffect, useRef } from 'react'
-import { setGuardAsk, setGuardClose, warSheetOpen, warShowOpen, closeWarShown, type GuardOpts, type GuardRefusal } from '../state/guard'
-import { CURPAGE, SBDAY, OILDAY, ARM, RESTARM, UNPUBARM, SECDEFOFFER, OILBAR } from '../state/view'
+// eslint-disable-next-line react-doctor/no-flush-sync -- a Leave War sheet a door closes must be off the page, its unmount savers run into its own squadron's war, before the next sheet is closed and the war swaps (the plan's §5 6c): committed at once on purpose, and no View Transition runs over a sheet closing
+import { flushSync } from 'react-dom'
+import { setGuardAsk, setGuardClose, warSheetOpen, warShowOpen, closeWarShown, closeWarAll, type GuardOpts, type GuardRefusal } from '../state/guard'
+import { CURPAGE, SBDAY, OILDAY, ARM, RESTARM, UNPUBARM, SECDEFOFFER, OILBAR, setOilWait } from '../state/view'
 import { LGEDIT, setLgEdit } from '../state/auth'
 import { pageOffered } from '../state/perms'
 import { saveRefused } from '../storage/savewait'
@@ -38,10 +40,11 @@ import { unitById } from '../state/units'
 import { availDrawn, chgDrawn, inputDlgDrawn, insightsDrawn, dutyTplDrawn, waveTplDrawn, dayTplDrawn, draftsDrawn, cxDrawn, sortAllDrawn, medMoveDrawn, oilWaitDrawn } from './windrawn'
 import { closeAvailWin } from './availopen'
 import { closeChanges } from './changesopen'
-import { setInsights, setDaysWin, setInpSet, setSansSet, AIRKEY, DAYPOP, WEEKCAL, DOCVIEW, BELLLIST, DRAWER } from './pops'
+import { setInsights, setDaysWin, setInpSet, setSansSet, setInpEdit, setOilList, setTplEdit, setWaveEdit, setDayTplEdit, setDraftsEdit, setMedMove, AIRKEY, DAYPOP, WEEKCAL, DOCVIEW, BELLLIST, DRAWER } from './pops'
+import { setCxt, cancelSortAll } from './board'
 import { notify } from '../state/store'
 import { trackerCover } from '../state/typing-hold'
-import { trackerWindowsOpen, trackerAsking, trackerCloseShown } from '../tracker/role.js'
+import { trackerWindowsOpen, trackerAsking, trackerCloseShown, trackerCloseOpen } from '../tracker/role.js'
 
 /* what a row is: a window that refuses, a row being edited (Admin's — K1b), a change not saved, a window that only
    shows things and closes by itself, or 'no' — a list, a menu, a mode, a window that already closes at the press, in
@@ -97,8 +100,14 @@ export type GuardRow = {
   counts: GuardCounts
   /* the module flags it reads (ui/pops.ts, state/view.ts, state/auth.ts) — R1's roll-call of flags */
   flags?: string[]
-  /* a 'closes' row only: its component's own way of closing it */
+  /* its own way of closing it, as he can press it today. A 'closes' row's is what closeShown() runs; since step KR (his
+     D2825 — the plan docs/superpowers/plans/2026-11-27-msq-s1-kr-no-blocks-plan.md §3's table, column "Its close") a
+     'window' or a 'row' row carries one too: a door that goes through closes what is open, each by its own close, never a
+     new discard path. No door calls those yet (KR-2's closing step will); the roll-call's R10 fails a row without one */
   close?: () => void
+  /* the close is its component's, handed over while it is open (useGuardOpen, below) — the roll-call reads that its frame
+     makes that very call (R1) */
+  handed?: true
   /* a 'no' row only: why it does not count */
   why?: string
   /* a row its component reports (useGuardWork(id, on) — typed work no module flag holds): open() is workOn(id), and the
@@ -129,13 +138,27 @@ const trkShows = (id: string) => (): boolean => trackerWindowsOpen().some(w => w
 export const TRACKER_SHOWS = { bubble: trkShows('bubble'), pop: trkShows('pop'), downLog: trkShows('downLog'), failLog: trkShows('failLog') } as const
 const trkClose = (id: keyof typeof TRACKER_SHOWS) => (): void => { trackerCloseShown(id) }
 
-/* THE CLOSERS A COMPONENT HANDS OVER, for a 'closes' window whose state is its own (useGuardCloses, below) */
+/* THE CLOSERS A COMPONENT HANDS OVER, for a window whose state is its own (useGuardCloses and useGuardOpen, below) */
 const CLOSERS = new Map<GuardRowId, () => void>()
+/* EACH ROW'S CLOSE (step KR — the plan §3's table): the very way out he can press today, so a closer writes nothing its own
+   close does not write. A module's window: its own setter, then the paint (each one's ✕ or Cancel does exactly this —
+   the Input window's Cancel, never ✕'s "Close it and lose them?"; the OIL list's ✕, never "Later", which holds a sign-off;
+   the OIL question's silent drop, never leaveOilWait(), which raises a bar). A component's: the close it hands over while
+   it is open; where its state lives in a module too (Plans), the module's own setter when no component is mounted. */
+const shut = (f: () => void) => (): void => { f(); notify() }
+const handedClose = (id: GuardRowId, otherwise?: () => void) => (): void => { const f = CLOSERS.get(id); if (f) f(); else otherwise?.() }
+/* the Input window, both its shapes: its Cancel (ui/InputWindow.tsx `close` — the question sheets over it go with it) */
+const closeInputWindow = shut(() => setInpEdit(null))
+/* THE CALENDAR'S ✕ (ui/DaysWindow.tsx `close`), for itself and the three forms drawn inside it — Every Monday, a holiday,
+   a holiday sheet read in — which unmount with it. A holiday kept waiting for a leave period ("It is kept here, and saved
+   by itself as soon as a leave period covers it") is held only by its open form, so it is dropped, as the Calendar's own
+   ✕ drops it today (his D2837; the form's new words are drawn later). A day class pressed was stored at the press */
+const closeCalendar = shut(() => setDaysWin(null))
 
 const FLOAT_ROW: Record<FloatId, Omit<GuardRow, 'id' | 'where' | 'open'>> = {
-  inputedit: { name: 'the Input window', frame: 'ui/InputWindow.tsx', sel: '[data-testid="win-inputedit"]', counts: 'window', flags: ['INPEDIT'] },
+  inputedit: { name: 'the Input window', frame: 'ui/InputWindow.tsx', sel: '[data-testid="win-inputedit"]', counts: 'window', flags: ['INPEDIT'], close: closeInputWindow },
   /* a day opened on the Inputs calendar stays a plain 'window' row (§3.2 (a)): it is not of the Calendar family E1 shaped */
-  inputsday: { name: 'a day on the Inputs calendar', frame: 'ui/InputsCal.tsx', sel: '[data-testid="win-inputsday"]', counts: 'window' },
+  inputsday: { name: 'a day on the Inputs calendar', frame: 'ui/InputsCal.tsx', sel: '[data-testid="win-inputsday"]', counts: 'window', close: handedClose('inputsday'), handed: true },
   sansday: { name: 'a SANS day', frame: 'ui/SansDay.tsx', sel: '[data-testid="win-sansday"]', counts: 'closes', close: () => CLOSERS.get('sansday')?.() },
   /* THE CALENDAR FAMILY IN HIS E1 SHAPE (D2654 — "the Calendar closes at a pick unless a form of it is half done, an
      unchanged settings window beside it closing too"; §3.2 (a)). The two settings windows close by their own setters while
@@ -146,9 +169,9 @@ const FLOAT_ROW: Record<FloatId, Omit<GuardRow, 'id' | 'where' | 'open'>> = {
   inputsset: { name: 'Inputs calendar settings', frame: 'ui/InputsSettings.tsx', sel: '[data-testid="win-inputsset"]', counts: 'closes', flags: ['INPSET'], dirty: () => workOn('inputsset'), close: () => { setInpSet(false); notify() } },
   sansset: { name: 'SANS calendar settings', frame: 'ui/SansSettings.tsx', sel: '[data-testid="win-sansset"]', counts: 'closes', flags: ['SANSSET'], dirty: () => workOn('sansset'), close: () => { setSansSet(false); notify() } },
   days: { name: 'the Calendar', frame: 'ui/DaysWindow.tsx', sel: '[data-testid="win-days"]', counts: 'closes', flags: ['DAYSWIN'], holds: () => workOn('holiday') || workOn('everywd') || workOn('holimport'), close: () => { setDaysWin(null); notify() } },
-  everywd: { name: 'Every Monday', frame: 'ui/EveryWeekday.tsx', sel: '[data-testid="win-every"]', counts: 'window', dirty: () => workOn('everywd') },
-  holiday: { name: 'a holiday', frame: 'ui/HolidaysPanel.tsx', sel: '[data-testid="win-holiday"]', counts: 'window', dirty: () => workOn('holiday') },
-  oilday: { name: 'the OIL list', frame: 'ui/OilDayList.tsx', sel: '[data-testid="win-oilday"]', counts: 'window', flags: ['OILLIST'] },
+  everywd: { name: 'Every Monday', frame: 'ui/EveryWeekday.tsx', sel: '[data-testid="win-every"]', counts: 'window', dirty: () => workOn('everywd'), close: closeCalendar },
+  holiday: { name: 'a holiday', frame: 'ui/HolidaysPanel.tsx', sel: '[data-testid="win-holiday"]', counts: 'window', dirty: () => workOn('holiday'), close: closeCalendar },
+  oilday: { name: 'the OIL list', frame: 'ui/OilDayList.tsx', sel: '[data-testid="win-oilday"]', counts: 'window', flags: ['OILLIST'], close: shut(() => setOilList(null)) },
   lwday: { name: 'the Leave War\'s day panel', frame: 'leavewar/ui/DayPanel.tsx', sel: '[data-testid="win-lwday"]', counts: 'closes', close: closeDayPanel },
 }
 const floatRows: GuardRow[] = (Object.keys(FLOAT_WHERE) as FloatId[]).map(id => ({ id, where: FLOAT_WHERE[id], open: () => winUp(id), ...FLOAT_ROW[id] }))
@@ -164,15 +187,15 @@ export const GUARD_ROWS: readonly GuardRow[] = [
   { id: 'avail', name: 'ALL AVAIL', frame: 'ui/AvailWindow.tsx', where: 'any', open: availDrawn, sel: '.availwin', counts: 'closes', flags: ['AVAILWIN'], close: closeAvailWin },
   { id: 'chg', name: 'Changes', frame: 'ui/ChangesWindow.tsx', where: 'any', open: chgDrawn, sel: '.chgwin', counts: 'closes', flags: ['CHGWIN'], close: closeChanges },
   /* (c) the schedule's veiled dialogs — shaded, so only a door reached by the keys meets them */
-  { id: 'inputdlg', name: 'the Input window', frame: 'ui/InputWindow.tsx', where: 'any', open: inputDlgDrawn, sel: '#inpEditPop', counts: 'window', flags: ['INPEDIT'] },
+  { id: 'inputdlg', name: 'the Input window', frame: 'ui/InputWindow.tsx', where: 'any', open: inputDlgDrawn, sel: '#inpEditPop', counts: 'window', flags: ['INPEDIT'], close: closeInputWindow },
   { id: 'insights', name: 'Insights', frame: 'ui/Modals.tsx', where: 'any', open: insightsDrawn, sel: '#insightModal', counts: 'closes', flags: ['INSIGHTS'], close: () => { setInsights(false); notify() } },
-  { id: 'dutytpl', name: 'Duty templates', frame: 'ui/DutyTplModal.tsx', where: 'any', open: dutyTplDrawn, sel: '#tplModal', counts: 'window', flags: ['TPLEDIT'] },
-  { id: 'wavetpl', name: 'Flying waves', frame: 'ui/WaveTplModal.tsx', where: 'any', open: waveTplDrawn, sel: '#waveTplModal', counts: 'window', flags: ['WAVEEDIT'] },
-  { id: 'daytpl', name: 'Day templates', frame: 'ui/DayTplModal.tsx', where: 'any', open: dayTplDrawn, sel: '#daytplModal', counts: 'window', flags: ['DAYTPLEDIT'] },
-  { id: 'drafts', name: 'Plans', frame: 'ui/DraftsModal.tsx', where: 'editsched', open: draftsDrawn, sel: '#draftsModal', counts: 'window', flags: ['DRAFTSEDIT'] },
+  { id: 'dutytpl', name: 'Duty templates', frame: 'ui/DutyTplModal.tsx', where: 'any', open: dutyTplDrawn, sel: '#tplModal', counts: 'window', flags: ['TPLEDIT'], close: shut(() => setTplEdit(false)) },
+  { id: 'wavetpl', name: 'Flying waves', frame: 'ui/WaveTplModal.tsx', where: 'any', open: waveTplDrawn, sel: '#waveTplModal', counts: 'window', flags: ['WAVEEDIT'], close: shut(() => setWaveEdit(false)) },
+  { id: 'daytpl', name: 'Day templates', frame: 'ui/DayTplModal.tsx', where: 'any', open: dayTplDrawn, sel: '#daytplModal', counts: 'window', flags: ['DAYTPLEDIT'], close: shut(() => setDayTplEdit(false)) },
+  { id: 'drafts', name: 'Plans', frame: 'ui/DraftsModal.tsx', where: 'editsched', open: draftsDrawn, sel: '#draftsModal', counts: 'window', flags: ['DRAFTSEDIT'], close: handedClose('drafts', shut(() => setDraftsEdit(null))), handed: true },
   /* the board's two: told on his page's A3, with either up "there is nothing to press and nothing to decide" */
-  { id: 'cxdlg', name: 'the cancel reason', frame: 'ui/SchedBoard.tsx', where: 'any', open: cxDrawn, sel: '#cxPop', counts: 'window' },
-  { id: 'sortall', name: 'Sort all', frame: 'ui/SchedBoard.tsx', where: 'any', open: sortAllDrawn, sel: '#sortAllPop', counts: 'window' },
+  { id: 'cxdlg', name: 'the cancel reason', frame: 'ui/SchedBoard.tsx', where: 'any', open: cxDrawn, sel: '#cxPop', counts: 'window', close: shut(() => setCxt(null)) },
+  { id: 'sortall', name: 'Sort all', frame: 'ui/SchedBoard.tsx', where: 'any', open: sortAllDrawn, sel: '#sortAllPop', counts: 'window', close: cancelSortAll },
   /* (d) the four that leave the bar free: any press on the bar but Undo and Redo closes them first (ui/barfree.ts), so
      by the time a door's own handler runs they are shut (D2627 A1) */
   no('airpop', 'Traffic', 'ui/Modals.tsx', 'closes itself at the press on the bar, as today (D2627 A1; ui/barfree.ts)', () => AIRKEY != null, ['AIRKEY']),
@@ -180,15 +203,15 @@ export const GUARD_ROWS: readonly GuardRow[] = [
   no('weekcal', 'Jump to a date', 'ui/WeekCal.tsx', 'closes itself at the press on the bar, as today (D2627 A1; ui/barfree.ts)', () => !!WEEKCAL, ['WEEKCAL']),
   no('docview', 'the document viewer', 'ui/DocViewer.tsx', 'closes itself at the press on the bar, as today (D2627 A1; ui/barfree.ts)', () => !!DOCVIEW, ['DOCVIEW']),
   /* (e) the question sheets that are windows of their own (the others stand over a window already counted) */
-  { id: 'medmove', name: 'the medical question', frame: 'ui/MedMoveConfirm.tsx', where: 'any', open: medMoveDrawn, sel: '[data-testid="medclash"], .upconf-pop', counts: 'window', flags: ['MEDMOVE'] },
-  { id: 'oilwait', name: 'the OIL question', frame: 'ui/OilWaitSheet.tsx', where: 'any', open: oilWaitDrawn, sel: '[data-testid="oilconf"]', counts: 'window', flags: ['OILWAIT'] },
+  { id: 'medmove', name: 'the medical question', frame: 'ui/MedMoveConfirm.tsx', where: 'any', open: medMoveDrawn, sel: '[data-testid="medclash"], .upconf-pop', counts: 'window', flags: ['MEDMOVE'], close: shut(() => setMedMove(null)) },
+  { id: 'oilwait', name: 'the OIL question', frame: 'ui/OilWaitSheet.tsx', where: 'any', open: oilWaitDrawn, sel: '[data-testid="oilconf"]', counts: 'window', flags: ['OILWAIT'], close: shut(() => setOilWait(null)) },
   /* the OIL question raised from a row of the Inputs list — the page's own state (`oilConf`), no Input window under it */
-  { id: 'oilrevise', name: 'the OIL question', frame: 'ui/InputsPage.tsx', where: 'inputs', open: () => workOn('oilrevise'), sel: '[data-testid="oilconf"]', counts: 'window', report: true },
+  { id: 'oilrevise', name: 'the OIL question', frame: 'ui/InputsPage.tsx', where: 'inputs', open: () => workOn('oilrevise'), sel: '[data-testid="oilconf"]', counts: 'window', report: true, close: handedClose('oilrevise'), handed: true },
   /* typed work no frame holds (§3.1): a holiday sheet read in and not yet added (the Holidays list's own state, inside
      the Calendar — counted on his E1 answer, a form of the Calendar half done); words in Quals' "Add qualification",
      counted only while the box is drawn — edit mode on — and holds words (D2729 Q2) */
-  { id: 'holimport', name: 'a holiday sheet read in', frame: 'ui/HolidaysPanel.tsx', where: 'any', open: () => workOn('holimport'), sel: '[data-testid="hol-preview"]', counts: 'window', report: true },
-  { id: 'qualsnew', name: 'the new qualification', frame: 'ui/QualsPage.tsx', where: 'quals', open: () => workOn('qualsnew'), sel: '#qNewQual', counts: 'row', report: true },
+  { id: 'holimport', name: 'a holiday sheet read in', frame: 'ui/HolidaysPanel.tsx', where: 'any', open: () => workOn('holimport'), sel: '[data-testid="hol-preview"]', counts: 'window', report: true, close: closeCalendar },
+  { id: 'qualsnew', name: 'the new qualification', frame: 'ui/QualsPage.tsx', where: 'quals', open: () => workOn('qualsnew'), sel: '#qNewQual', counts: 'row', report: true, close: handedClose('qualsnew'), handed: true },
   /* (h) Admin's rows and forms — a component's own state, each its own report, counted once anything differs from how it
      opened (D2595, D2598; a squadron's move and a place being edited by the same rule — §3.2 (h)). The Admin page hides
      the section not shown, so a row counts while another section shows (D2627 A6), and unmounts when its tab is left */
@@ -198,20 +221,20 @@ export const GUARD_ROWS: readonly GuardRow[] = [
   /* "Add a person" (K2b — §18.3, D2598): the form under the page's top row, counted while it is open and anything in it
      differs from how a fresh form opens; Cancel and Escape empty it as they fold it, so a fold never hides typing */
   { id: 'addperson', name: 'Add a person', frame: 'ui/UsersPanel.tsx', where: 'admin', open: () => workOn('addperson'), sel: '#accAddBlock', counts: 'row', report: true },
-  { id: 'newsqn', name: 'the new squadron', frame: 'ui/SquadronsPanel.tsx', where: 'admin', open: () => workOn('newsqn'), sel: '[data-new-sqn]', counts: 'row', report: true },
-  { id: 'sqnmove', name: 'the open row', frame: 'ui/SquadronsPanel.tsx', where: 'admin', open: () => workOn('sqnmove'), sel: '[data-moving]', counts: 'row', report: true },
-  { id: 'placeedit', name: 'the open row', frame: 'ui/SquadronsPanel.tsx', where: 'admin', open: () => workOn('placeedit'), sel: '[data-placing]', counts: 'row', report: true },
+  { id: 'newsqn', name: 'the new squadron', frame: 'ui/SquadronsPanel.tsx', where: 'admin', open: () => workOn('newsqn'), sel: '[data-new-sqn]', counts: 'row', report: true, close: handedClose('newsqn'), handed: true },
+  { id: 'sqnmove', name: 'the open row', frame: 'ui/SquadronsPanel.tsx', where: 'admin', open: () => workOn('sqnmove'), sel: '[data-moving]', counts: 'row', report: true, close: handedClose('sqnmove'), handed: true },
+  { id: 'placeedit', name: 'the open row', frame: 'ui/SquadronsPanel.tsx', where: 'admin', open: () => workOn('placeedit'), sel: '[data-placing]', counts: 'row', report: true, close: handedClose('placeedit'), handed: true },
   /* (f) the Leave War: its one list of open sheets, read two ways (his D2740). Two sheets only show things and close by
      themselves — a leave filed on the Inputs page (the sheet that also reads "OIL the app credited") and an OIL award —
      each opened with the `showOnly` mark; every other sheet ("Open for bidding", a person's window and "OIL TRACKER"
      among them) refuses, as before */
-  { id: 'lwsheet', name: 'a Leave War window', frame: 'leavewar/ui/Sheet.tsx', where: 'leavewar', open: warSheetOpen, sel: '.bidsheet', counts: 'window' },
+  { id: 'lwsheet', name: 'a Leave War window', frame: 'leavewar/ui/Sheet.tsx', where: 'leavewar', open: warSheetOpen, sel: '.bidsheet', counts: 'window', close: () => { closeWarAll(flushSync) } },
   { id: 'lwshow', name: 'a Leave War window', frame: 'leavewar/ui/Sheet.tsx', where: 'leavewar', open: warShowOpen, sel: '.bidsheet', counts: 'closes', close: closeWarShown },
   /* (g) the Tracker (K1c): its windows that refuse, its unsaved-edits question, and the four that only show things — an
      event's details, the ⓘ bubble (D2597); the marking window (D2654 E2); Down days and Failures, in sight or behind the
      phone's Flow chart tab (D2654 E4). Its modes (Edit chart layout, Details mode, the tools set) are 'no' in its own
      table, never counted here */
-  { id: 'trk', name: 'a Tracker window', frame: 'tracker/App.jsx', where: 'tracker', open: trackerWindowUp, sel: '#page-tracker .modal, #trkFlexWin, #showAllPanel, #lullCal, #lullCopy', counts: 'window' },
+  { id: 'trk', name: 'a Tracker window', frame: 'tracker/App.jsx', where: 'tracker', open: trackerWindowUp, sel: '#page-tracker .modal, #trkFlexWin, #showAllPanel, #lullCal, #lullCopy', counts: 'window', close: () => { trackerCloseOpen() } },
   { id: 'trkask', name: 'the Tracker\'s question', frame: 'tracker/TrackerPage.tsx', where: 'any', open: trackerAsking, sel: '#dlgModal', counts: 'window' },
   { id: 'trkinfo', name: 'an event\'s details', frame: 'tracker/app/core.js', where: 'tracker', open: TRACKER_SHOWS.bubble, sel: '#detailBubble[style*="display: block"]', counts: 'closes', close: trkClose('bubble') },
   { id: 'trkpop', name: 'the marking window', frame: 'tracker/components/Pop.jsx', where: 'tracker', open: TRACKER_SHOWS.pop, sel: '#pop', counts: 'closes', close: trkClose('pop') },
@@ -362,6 +385,17 @@ export function useGuardCloses(id: GuardRowId, on: boolean, close: () => void): 
     CLOSERS.set(id, f)
     return () => { if (CLOSERS.get(id) === f) CLOSERS.delete(id) }
   }, [id, on])
+}
+
+/* ONE HOOK FOR WORK A COMPONENT HOLDS (step KR — the plan §7, "One hook, useGuardOpen(id, open, close)"): while `open`, its
+   latest close is the row's close (a door closes what is open — his D2825), and the row is counted. It is the two hooks
+   above in one call, so the count and its unmount are exactly theirs. `counts` — what the row counts while its door still
+   refuses: until each door is converted (KR-3, KR-4) a row keeps refusing for exactly what it refused for before, so an
+   Admin row opened and left unchanged still counts nothing (D2598); its close is held all the while it is open, changed or
+   not (205's answer: an opened row is closed at a door). KR-5 drops `counts`, and with it the two hooks above. */
+export function useGuardOpen(id: GuardRowId, open: boolean, close: () => void, counts: boolean = open): void {
+  useGuardWork(id, counts)
+  useGuardCloses(id, open, close)
 }
 
 /* WHAT THE NOTE SAYS (K3 — the plan §4.6; the words table of docs/superpowers/briefs/2026-11-26-msq-s1-k3-brief.md, which

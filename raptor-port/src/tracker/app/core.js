@@ -16,7 +16,7 @@ import * as FMT from './fileFormat.js';
 import * as FS from './fileStore.js';
 import { normalizeImport as normalizeFile, STUDENT_GUARD_MSG, STUDENT_CHART_MSG, sameDef, remapStudentsSyl } from './fileTransfer.js';
 import { findEvents } from './eventOrder.js';
-import { onTrackerSessionEnd, onBeforeTrackerLogout, onBeforeTrackerSwitch, trackerIsAdmin, onTrackerWindows, onTrackerAsking, onTrackerCloseShown } from '../role.js';
+import { onTrackerSessionEnd, onBeforeTrackerLogout, onBeforeTrackerSwitch, trackerIsAdmin, onTrackerWindows, onTrackerAsking, onTrackerCloseShown, onTrackerCloseOpen } from '../role.js';
 /* Raptor's one edge feel (D899) */
 import { edgePan } from '../../ui/edgescroll';
 import { getPeople, onPeople, whoami, whoamiId, getGonePeople, onGonePeople, getMedInputs, onMedInputs } from '../people.js';
@@ -213,6 +213,29 @@ onTrackerCloseShown(id => {
    between them once its session has ended, so the next person never gets the next one
    (Fable's final read F6) */
 let sessionSerial = 0;
+/* THE ONE CLOSER OF EVERY WINDOW THAT REFUSES A DOOR (step KR — his D2825, 27 Nov 26; the plan docs/superpowers/plans/
+   2026-11-27-msq-s1-kr-no-blocks-plan.md §3's `trk` row, §5 step 3b): `id` a window of TRK_WINDOWS, or none for every one
+   of them that counts 'window' — each by the function its own Close or Cancel calls, writing nothing that close does not.
+   A QUESTION BOX ASKED BY A JOB (`dlg`, and every one waiting behind it) is a job still running: the job is ENDED first —
+   the serial its multi-question jobs already read is bumped (the import's `ended()`, the export's `gone()`), and only that,
+   none of endSession()'s other resets — then each question is answered cancelled, so the job stops where a plain cancelled
+   answer would have meant "Skip this one" and gone on to the next question. The ending is a navigation signal, never the
+   prompt's own Cancel. Every other job that asks is a single question, or stops at a cancelled answer by itself (the KR-1a
+   report lists them). Never the unsaved-edits question a door itself asks (`switchAsking`: D2825 keeps it, the `trkask`
+   row). No door calls it yet — KR-2's closing step will, after its own question is settled. */
+onTrackerCloseOpen(id => {
+  const want = k => !id || id === k;
+  if (want('dlg') && !switchAsking && (dlg || _dlgQueue.length)) { sessionSerial++; dlgCancelAll(); }
+  if (want('infoId') && infoId != null) closeInfo();
+  if (want('editId') && editId != null) closeEdit();
+  if (want('sylModalOpen') && sylModalOpen) closeModal();
+  if (want('ordMode') && ordMode) closeOrd();
+  if (want('copyOpen') && copyOpen) closeCopy();
+  if (want('flexWinOpen') && flexWinOpen) closeFlexWin();
+  if (want('showAllOpen') && showAllOpen) closeShowAll();
+  if (want('lullPick') && lullPick) closeLullPicker();
+  if (want('lullCopy') && lullCopy) closeLullCopy();
+});
 function endSession() {
   sessionSerial++;
   cancelGestures();

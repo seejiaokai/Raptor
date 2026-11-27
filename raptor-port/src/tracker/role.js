@@ -103,3 +103,14 @@ let closeShownFn = null
 export function onTrackerCloseShown(f) { closeShownFn = typeof f === 'function' ? f : null }
 /** closes a Tracker window that only shows things, by its id — or, with none, every one open */
 export function trackerCloseShown(id) { if (!closeShownFn) return; try { closeShownFn(id) } catch (_) { /* never stops a door */ } }
+/* …AND THE CLOSER OF EVERY OTHER WINDOW (step KR — his D2825, 27 Nov 26: a door that goes through closes what is open, by
+   its own way out, half-typed work dropped; the plan docs/superpowers/plans/2026-11-27-msq-s1-kr-no-blocks-plan.md §3's
+   `trk` row, §5 step 3b). One closer, by its TRK_WINDOWS id or, with none, every window of the table that refuses: each by
+   the function its own Close or Cancel calls in core.js. A question box asked by a job (a name, a choice — `dlg`) is ENDED
+   first and then answered cancelled, it and every one waiting behind it, so a job that asks more than one question stops
+   rather than taking the cancelled answer as "Skip this one" and asking the next. Never the unsaved-edits question a door
+   itself asks (`trkask` — D2825 keeps it). No door calls it yet (KR-2's closing step will). Never loaded: nothing to close. */
+let closeOpenFn = null
+export function onTrackerCloseOpen(f) { closeOpenFn = typeof f === 'function' ? f : null }
+/** closes a Tracker window that refuses a door, by its id — or, with none, every one open; a job's question ended first */
+export function trackerCloseOpen(id) { if (!closeOpenFn) return; try { closeOpenFn(id) } catch (_) { /* never stops a door */ } }
