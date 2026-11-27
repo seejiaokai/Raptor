@@ -1,0 +1,38 @@
+[
+ [
+  "pinned row after the lift",
+  "phone-webkit",
+  "Outlaw 8 Dec (low) tapped: the app lifts the day above the window; pictures 0–900 ms",
+  "the pinned dates row drawn in every frame (D1789, \"Nothing pinned leaks\")",
+  "0ms: top 49 h 44 vis visible op 1 pos fixed scrollY 234 (001-phone-webkit-pinned-0ms.png) | 60ms: top 49 h 44 vis visible op 1 pos fixed scrollY 234 (002-phone-webkit-pinned-60ms.png) | 150ms: top 49 h 44 vis visible op 1 pos fixed scrollY 234 (003-phone-webkit-pinned-150ms.png) | 400ms: top 49 h 44 vis visible op 1 pos fixed scrollY 234 (004-phone-webkit-pinned-400ms.png) | 900ms: top 49 h 44 vis visible op 1 pos fixed scrollY 234 (005-phone-webkit-pinned-900ms.png)",
+  "RECORD",
+  ""
+ ],
+ [
+  "pinned row after the lift",
+  "phone-chromium",
+  "Outlaw 8 Dec (low) tapped: the app lifts the day above the window; pictures 0–900 ms",
+  "the pinned dates row drawn in every frame (D1789, \"Nothing pinned leaks\")",
+  "0ms: top 49 h 44 vis visible op 1 pos fixed scrollY 246 (006-phone-chromium-pinned-0ms.png) | 60ms: top 49 h 44 vis visible op 1 pos fixed scrollY 246 (007-phone-chromium-pinned-60ms.png) | 150ms: top 49 h 44 vis visible op 1 pos fixed scrollY 246 (008-phone-chromium-pinned-150ms.png) | 400ms: top 49 h 44 vis visible op 1 pos fixed scrollY 246 (009-phone-chromium-pinned-400ms.png) | 900ms: top 49 h 44 vis visible op 1 pos fixed scrollY 246 (010-phone-chromium-pinned-900ms.png)",
+  "RECORD",
+  ""
+ ],
+ [
+  "pinned row after the lift",
+  "phone-webkit-main",
+  "Outlaw 8 Dec (low) tapped: the app lifts the day above the window; pictures 0–900 ms",
+  "the pinned dates row drawn in every frame (D1789, \"Nothing pinned leaks\")",
+  "0ms: top 49 h 44 vis visible op 1 pos fixed scrollY 234 (011-phone-webkit-main-pinned-0ms.png) | 60ms: top 49 h 44 vis visible op 1 pos fixed scrollY 234 (012-phone-webkit-main-pinned-60ms.png) | 150ms: top 49 h 44 vis visible op 1 pos fixed scrollY 234 (013-phone-webkit-main-pinned-150ms.png) | 400ms: top 49 h 44 vis visible op 1 pos fixed scrollY 234 (014-phone-webkit-main-pinned-400ms.png) | 900ms: top 49 h 44 vis visible op 1 pos fixed scrollY 234 (015-phone-webkit-main-pinned-900ms.png)",
+  "RECORD",
+  ""
+ ],
+ [
+  "pinned row after the lift",
+  "phone-chromium-main",
+  "Outlaw 8 Dec (low) tapped: the app lifts the day above the window; pictures 0–900 ms",
+  "the pinned dates row drawn in every frame (D1789, \"Nothing pinned leaks\")",
+  "0ms: top 49 h 44 vis visible op 1 pos fixed scrollY 246 (016-phone-chromium-main-pinned-0ms.png) | 60ms: top 49 h 44 vis visible op 1 pos fixed scrollY 246 (017-phone-chromium-main-pinned-60ms.png) | 150ms: top 49 h 44 vis visible op 1 pos fixed scrollY 246 (018-phone-chromium-main-pinned-150ms.png) | 400ms: top 49 h 44 vis visible op 1 pos fixed scrollY 246 (019-phone-chromium-main-pinned-400ms.png) | 900ms: top 49 h 44 vis visible op 1 pos fixed scrollY 246 (020-phone-chromium-main-pinned-900ms.png)",
+  "RECORD",
+  ""
+ ]
+]

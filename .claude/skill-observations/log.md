@@ -2056,3 +2056,37 @@ Met again 26 Nov 26: section chat S2 (chat 205) — started by the coordinator f
 **Issue:** The red run on the old code reported "66 failed, 72 passed". The default reporter names only the failing tests, so the 72 looked like the older tests in the same files. Comparing against a verbose green run showed 22 new tests had passed on the old code. Nine were named pins or controls, but 13 were not named so: they proved behaviour the old code already had. They would have been reported as "seen failing first".
 **Suggested improvement:** In "Verify RED", add: run the red pass with a reporter that names every test (or diff the red failures against a verbose green list), and for each new test that passed on the old code either name it a pin/control in its title or rewrite it until it fails for the missing behaviour.
 **Principle:** A red count is not evidence per test; only a per-test list shows which new tests actually guard the change.
+
+### Observation 1085: A helper agent may be refused writing its report to a file
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** chat 196, S4 bug check — two blind code-reader helpers (Opus, Fable) and a drawing-check helper (numbered past 1084, the highest on another open branch)
+**Skill:** New skill candidate: reader and walker briefs (the bug-check order's section 4 briefs)
+**Type:** open-source
+**Phase/Area:** a reader brief naming where the helper writes its report
+
+**Issue:** Both code-reader helpers were told to write their whole report to a scratch file; the file tool refused each, saying subagents should return findings as text. Each returned the report in its final message, which the host saved by hand. The drawing-check helper wrote its report file without trouble, so the refusal is not constant.
+**Suggested improvement:** A reader brief asks for the report both ways — written to the named file where the tool allows it, and returned whole in the final message — and the host saves the returned copy when the file is missing. The working note that says helper reports are written to a file gets the same line.
+**Principle:** When a delegated worker's output must survive, ask for it on two channels and check which one arrived, since a tool can refuse one of them without warning.
+
+### Observation 1100: A walker resumed after the app restarts loses its file writes — the host saves its report
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** chat 201, the S4 posting sheet's fanned-out walk (four Opus walkers); numbered past 1090 on other open branches
+**Skill:** New skill candidate: fanned-out walk (`raptor-port/docs/walk-scripts.md` §2, the walker's brief)
+**Type:** open-source
+**Phase/Area:** the walker's brief — "write your report to a named file", and resuming a stopped helper
+
+**Issue:** the desktop app restarted mid-walk and stopped two of four background walkers. Resumed by a message, both
+finished, but each was refused when it wrote its report file ("a helper may not write report files") and handed the
+whole report back in its message instead; the two walkers never stopped wrote theirs. The host had to save both
+reports itself, and the background lock-refresh loop the host had started died with the restart too, so the checks
+lock sat stale for 32 minutes while other chats waited on it.
+**Suggested improvement:** in walk-scripts.md §2 and the host's resume step: (1) after a restart, before resuming any
+helper, refresh every lock the host holds and restart its refresh loop; (2) a resumed helper's brief says "if the
+report file write is refused, hand the whole report back in your message" — and the host saves it to the named file
+at once; (3) the host checks each helper's report file exists before counting the walk.
+**Principle:** a restart silently drops a session's background loops and can narrow a resumed helper's permissions;
+recheck every standing resource (locks, loops, write rights) after a restart, before relying on what was set up before.

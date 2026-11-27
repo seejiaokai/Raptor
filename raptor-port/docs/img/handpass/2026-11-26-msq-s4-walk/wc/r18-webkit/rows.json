@@ -1,0 +1,92 @@
+[
+ [
+  "A1 phone: gone day holding his pending LL",
+  "phone-webkit",
+  "Piston: pending LL 8 Dec; Post out Delete 7 Dec; tap 8 Dec",
+  "the one-day window as on any other day (D1722) — never the posting sheet; the day in sight above it (D1290)",
+  "bid-picker: Piston Tue 8 Dec Auto-approve ✕ No manning row turns amber or red Placed Saber · Thu 26 Nov, 18:22 Approve Refuse ⇄Move Delete till 8 Dec Document Whole day AM PM Pick a range LL −1 OL −1 OIL −1 CCL −1 FCL −1 PL −1 EL −1 CL −1 CSE OD Grant OIL ⋯ | cell y 388–406, sheet top 551, hit the cell",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r18-webkit/021-phone-webkit-a1-gone-ll-11-at-lift.png ; img/handpass/2026-11-26-msq-s4-walk/wc/r18-webkit/022-phone-webkit-a1-gone-ll-11-settled.png"
+ ],
+ [
+  "A1 phone R3b",
+  "phone-webkit",
+  "Auto-approve on, LL pressed again",
+  "kept pending, the reason said once (R3b, D1541)",
+  "[\"span-note: 8 Dec 26 kept pending — He posts out on 7 Dec: refuse or delete it.\"] / +600ms [\"span-note: 8 Dec 26 kept pending — He posts out on 7 Dec: refuse or delete it.\"] | cell gone outlv act hasc bx-gone selcell | LL | c k-ll s-w whole",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r18-webkit/025-phone-webkit-a1-kept.png"
+ ],
+ [
+  "A1 phone R3c-2",
+  "phone-webkit",
+  "closed by ✕, the day tapped again",
+  "no stale note",
+  "[]",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r18-webkit/026-phone-webkit-a1-reopen-13-at-lift.png ; img/handpass/2026-11-26-msq-s4-walk/wc/r18-webkit/027-phone-webkit-a1-reopen-13-settled.png"
+ ],
+ [
+  "A1 phone: empty gone day",
+  "phone-webkit",
+  "tap Piston's empty 9 Dec",
+  "the posting sheet only, no leave buttons (D2727); the day in sight above it",
+  "postout-sheet: Piston Post out ✕ POSTING Overseas Sqn ✓ Delete SANS PO FROM Mon 7 Dec 26 ▾ On 7 Dec the app deletes him automatically. Days he flew keep his puck. ↶Undo post out | cell y 388–406, sheet top 535, hit the cell | leave buttons 0",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r18-webkit/028-phone-webkit-a1-empty-14-at-lift.png ; img/handpass/2026-11-26-msq-s4-walk/wc/r18-webkit/029-phone-webkit-a1-empty-14-settled.png"
+ ],
+ [
+  "A3 phone: new Post in",
+  "phone-webkit",
+  "Sidewinder 8 Dec → ⋯ → Post in",
+  "the posting alone: \"Sidewinder  Post in\", PI from, the line, blue Post in (D2653, D2732)",
+  "bid-picker: Sidewinder Post in ✕ PI FROM Tue 8 Dec 26 ▾ Their first day in the squadron. Days before it are blank and count nobody — leave can still be dated there. Post in",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r18-webkit/040-phone-webkit-a3-new-postin.png"
+ ],
+ [
+  "A3/D2743 phone: pre-post-in day holding an entry",
+  "phone-webkit",
+  "tap Sidewinder's 3 Dec (holds his LL, before his 8 Dec post-in)",
+  "that entry's own window (D2743)",
+  "bid-picker: Sidewinder Thu 3 Dec Auto-approve ✕ No manning row turns amber or red Placed Saber · Thu 26 Nov, 18:23 Approve Refuse ⇄Move Delete till 3 Dec Document Whole day AM PM Pick a range LL 11 OL 11 OIL −1 CCL −1 FCL −1 PL −1 EL −1 CL −1 CSE OD Grant OIL ⋯ | cell y 442–460, sheet top 551, hit the cell",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r18-webkit/043-phone-webkit-a3-ll-before-21-at-lift.png ; img/handpass/2026-11-26-msq-s4-walk/wc/r18-webkit/044-phone-webkit-a3-ll-before-21-settled.png"
+ ],
+ [
+  "A3/D2743 phone: empty pre-post-in day",
+  "phone-webkit",
+  "tap Sidewinder's empty 2 Dec",
+  "the Post in sheet (D2743, D2727); the day in sight above it (D1290)",
+  "postin-sheet: Sidewinder Post in ✕ PI FROM Tue 8 Dec 26 ▾ Posted in on 8 Dec 26 — on the manpower from that day. Days before it count nobody, but leave can still be dated there. ↶Undo post in | cell y 442–460, sheet top 628, hit the cell",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r18-webkit/045-phone-webkit-a3-empty-before-22-at-lift.png ; img/handpass/2026-11-26-msq-s4-walk/wc/r18-webkit/046-phone-webkit-a3-empty-before-22-settled.png"
+ ],
+ [
+  "A3 phone Q3",
+  "phone-webkit",
+  "press the day under the open Post in sheet, then again",
+  "first closes it, the next opens it afresh (D2732 Q3)",
+  "first: none (covered false at cell-mamba-2026-12-02) | second: postin-sheet (covered false at cell-mamba-2026-12-02)",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r18-webkit/047-phone-webkit-a3-q3-first-23-at-lift.png ; img/handpass/2026-11-26-msq-s4-walk/wc/r18-webkit/049-phone-webkit-a3-q3-second-24-at-lift.png ; img/handpass/2026-11-26-msq-s4-walk/wc/r18-webkit/050-phone-webkit-a3-q3-second-24-settled.png"
+ ],
+ [
+  "A8 phone: Ranger his in-service day",
+  "phone-webkit",
+  "as Ranger tap 2026-12-04, ⋯",
+  "no posting door of any kind (D328); his own day: bid window, ⋯ Attach alone (D1326); after his post-out: RECORD (F-S14(6) reading)",
+  "bid-picker: Ranger Fri 4 Dec ✕ No manning row turns amber or red till 4 Dec Document Whole day AM PM Pick a range LL 11.5 OL 11.5 OIL −1 CCL 1 FCL 4 PL 0.5 EL 3 CL −1 CSE OD ⋯ | ⋯ bid-more-menu=Attach | posting parts ",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r18-webkit/069-phone-webkit-a8-2026-12-04-34-at-lift.png ; img/handpass/2026-11-26-msq-s4-walk/wc/r18-webkit/070-phone-webkit-a8-2026-12-04-34-settled.png ; img/handpass/2026-11-26-msq-s4-walk/wc/r18-webkit/073-phone-webkit-a8-menu-2026-12-04.png"
+ ],
+ [
+  "A8 phone: Ranger a blank day after his post-out",
+  "phone-webkit",
+  "as Ranger tap 2026-12-10, ⋯",
+  "no posting door of any kind (D328); his own day: bid window, ⋯ Attach alone (D1326); after his post-out: RECORD (F-S14(6) reading)",
+  "bid-picker: Ranger Thu 10 Dec ✕ No manning row turns amber or red till 10 Dec Document Whole day AM PM Pick a range LL 11.5 OL 11.5 OIL −1 CCL 1 FCL 4 PL 0.5 EL 3 CL −1 CSE OD ⋯ | ⋯ bid-more-menu=Attach | posting parts ",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r18-webkit/074-phone-webkit-a8-2026-12-10-36-at-lift.png ; img/handpass/2026-11-26-msq-s4-walk/wc/r18-webkit/075-phone-webkit-a8-2026-12-10-36-settled.png ; img/handpass/2026-11-26-msq-s4-walk/wc/r18-webkit/078-phone-webkit-a8-menu-2026-12-10.png"
+ ]
+]

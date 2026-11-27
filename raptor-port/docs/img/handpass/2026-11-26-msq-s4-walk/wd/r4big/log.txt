@@ -1,0 +1,35 @@
+msq-s4w-lib v1 who=wd run=r4big port=4756
+wd-lib v1
+wd-big v1
+bringIn [data-testid="cell-snap-2026-12-07"] 0 {"x":955,"y":485,"w":27,"h":22} scroll 0 286
+ROW RECORD | F-S23 short window: the one-day window | 1440x500 | tap Cinch 7 Dec | saw: sheet {"x":440,"y":221,"w":560,"h":265,"r":1000,"b":486} inside true
+1440x500 M {"vw":1440,"vh":500,"docW":1440,"bodyW":1440,"pageScrollX":0,"root":{"x":440,"y":204.3,"w":560,"h":281.7,"r":1000,"b":486},"inside":true,"head":{"hd":{"x":453,"y":215.3,"w":534,"h":37,"r":987,"b":252.3},"who":"Cinch","whoBox":{"x":474.7,"y":225.3,"w":41.3,"h":17,"r":516,"b":242.3},"whoCut":false,"act":"Post out","actBox":{"x":526,"y":225.3,"w":53,"h":17,"r":579,"b":242.3},"x":{"x":968.4,"y":226.3,"w":18.6,"h":17,"r":987,"b":243.3},"oneLine":true,"xInside":true},"chips":[{"t":"✓ Overseas Sqn","x":453,"y":284.3,"w":174,"h":30,"r":627,"b":314.3,"cut":false,"lines":1,"on":true,"dis":false},{"t":"Delete","x":633,"y":284.3,"w":174,"h":30,"r":807,"b":314.3,"cut":false,"lines":1,"on":false,"dis":false},{"t":"SANS","x":813,"y":284.3,"w":174,"h":30,"r":987,"b":314.3,"cut":false,"lines":1,"on":false,"dis":false}],"chipRows":1,"chipH":[30,30,30],"chipW":[174,174,174],"form":{"x":453,"y":264.3,"w":534,"h":208.7,"r":987,"b":473},"date":{"x":453,"y":346.3,"w":262,"h":36,"r":715,"b":382.3},"dateTxt":"Mon 7 Dec 26▾","dateHalfOff":0,"line":{"x":453,"y":394.3,"w":534,"h":34.7,"r":987,"b":429},"lineTxt":"On 7 Dec: archived.","amber":null,"main":{"x":453,"y":441,"w":86.8,"h":32,"r":539.8,"b":473},"mainTxt":"Post out","mainBg":"rgb(59, 198, 232)","mainDisabled":false,"foot":[{"t":"Post out","x":453,"y":441,"w":86.8,"h":32,"r":539.8,"b":473}],"wrapped":[],"overflow":[],"edges":{"formL":453,"formR":987,"chipsL":453,"chipsR":987,"lineL":453,"lineR":987,"mainL":453}} scroller null
+ROW PASS | F-S23 short window: Post out sheet | 1440x500 | ⋯ → Post out | saw: sheet {"x":440,"y":204.3,"w":560,"h":281.7,"r":1000,"b":486} inside true; ✕ {"x":968.4,"y":226.3,"w":18.6,"h":17,"r":987,"b":243.3} in=true; button {"x":453,"y":441,"w":86.8,"h":32,"r":539.8,"b":473} in=true; inner scroller null; docW 1440
+ROW PASS | F-S23 short window: the card | 1440x500 | Delete → Post out | saw: card {"x":453,"y":306.3,"w":300,"h":125.9,"r":753,"b":432.2} inside true; button {"x":453,"y":441,"w":87,"h":32}
+ROW RECORD | F-S23 short window: scroll the sheet with the card up | 1440x500 | wheel up over the sheet with the card open | saw: card before {"x":453,"y":306.3,"w":300,"h":125.9,"r":753,"b":432.2}; after {"x":453,"y":306.3,"w":300,"h":125.9,"r":753,"b":432.2}; button after {"x":453,"y":441,"w":87,"h":32}
+ROW PASS | F-S23 short window: existing posting sheet | 1440x500 | tap a gone day | saw: sheet {"x":440,"y":204.3,"w":560,"h":281.7,"r":1000,"b":486} inside true; ✕ {"x":968.4,"y":226.3,"w":18.6,"h":17,"r":987,"b":243.3}; undo {"t":"↶Undo post out","x":453,"y":441,"w":142.7,"h":32,"r":595.7,"b":473}
+1440x500 errors []
+bringIn [data-testid="cell-snap-2026-12-07"] 0 {"x":971,"y":485,"w":27,"h":22} scroll 0 286
+ROW RECORD | F-S23 short window: the one-day window | 1440x500-main | tap Cinch 7 Dec | saw: sheet {"x":440,"y":221,"w":560,"h":265,"r":1000,"b":486} inside true
+1440x500-main M {"vw":1440,"vh":500,"docW":1440,"bodyW":1440,"pageScrollX":0,"root":{"x":440,"y":82.3,"w":560,"h":403.7,"r":1000,"b":486},"inside":true,"head":{"hd":{"x":453,"y":93.3,"w":534,"h":37,"r":987,"b":130.3},"who":"Cinch","whoBox":{"x":474.7,"y":103.3,"w":41.3,"h":17,"r":516,"b":120.3},"whoCut":false,"act":null,"actBox":null,"x":{"x":968.4,"y":104.3,"w":18.6,"h":17,"r":987,"b":121.3},"oneLine":true,"xInside":true},"chips":[],"form":null,"date":null,"dateTxt":null,"line":null,"lineTxt":null,"amber":null,"main":null,"mainTxt":null,"mainBg":null,"mainDisabled":null,"foot":[],"wrapped":[],"overflow":[]} scroller null
+ROW RECORD | F-S23 short window: Post out sheet | 1440x500-main | ⋯ → Post out | saw: sheet {"x":440,"y":82.3,"w":560,"h":403.7,"r":1000,"b":486} inside true; ✕ {"x":968.4,"y":104.3,"w":18.6,"h":17,"r":987,"b":121.3} in=true; button null in=null; inner scroller null; docW 1440
+1440x500-main errors []
+ROW PASS | F-S25 new Post out (no zoom) | 1536x864 | day → ⋯ → Post out | saw: sheet {"x":488,"y":568.3,"w":560,"h":281.7,"r":1048,"b":850}; chips [["✓ Overseas Sqn",174,30],["Delete",174,30],["SANS",174,30]]; halfOff 0; docW 1536
+ROW PASS | F-S25 the card (no zoom) | 1536x864 | Delete → Post out | saw: go {"x":652.6,"y":747.2,"w":62,"h":36,"r":714.6,"b":783.2} cancel {"x":722.6,"y":747.2,"w":65.4,"h":36,"r":788,"b":783.2} dashed inside true
+1536x864 cell width before/after zoom 27 11
+ROW PASS | F-S25 grid zoomed out | 1536x864 | Ctrl+wheel ×4 over the grid | saw: cell width 27 → 11
+ROW PASS | F-S25 Post out with the grid zoomed out | 1536x864 | day → ⋯ → Post out, grid zoomed | saw: sheet {"x":488,"y":568.3,"w":560,"h":281.7,"r":1048,"b":850} vs {"x":488,"y":568.3,"w":560,"h":281.7,"r":1048,"b":850}; chips [[174,30],[174,30],[174,30]]; halfOff 0
+ROW PASS | F-S25 card with the grid zoomed out | 1536x864 | Delete → Post out | saw: card {"x":501,"y":670.3,"w":300,"h":125.9,"r":801,"b":796.2} button {"x":501,"y":805,"w":87,"h":32} go h 36 cancel h 36
+ROW PASS | F-S25 existing sheet, grid zoomed | 1536x864 | tap a gone day | saw: sheet {"x":488,"y":568.3,"w":560,"h":281.7,"r":1048,"b":850}; foot [{"t":"↶Undo post out","x":501,"y":805,"w":142.7,"h":32,"r":643.7,"b":837}]; chips [[174,30],[174,30],[174,30]]
+1536x864 errors []
+ROW PASS | F-S25 new Post out (no zoom) | 2560x1440 | day → ⋯ → Post out | saw: sheet {"x":1000,"y":1144.3,"w":560,"h":281.7,"r":1560,"b":1426}; chips [["✓ Overseas Sqn",174,30],["Delete",174,30],["SANS",174,30]]; halfOff 0; docW 2560
+ROW PASS | F-S25 the card (no zoom) | 2560x1440 | Delete → Post out | saw: go {"x":1164.6,"y":1323.2,"w":62,"h":36,"r":1226.6,"b":1359.2} cancel {"x":1234.6,"y":1323.2,"w":65.4,"h":36,"r":1300,"b":1359.2} dashed inside true
+2560x1440 cell width before/after zoom 27 11
+ROW PASS | F-S25 grid zoomed out | 2560x1440 | Ctrl+wheel ×4 over the grid | saw: cell width 27 → 11
+bringIn [data-testid="cell-snap-2026-12-07"] 0 {"x":2290,"y":347,"w":11,"h":9} scroll 0 -253
+ROW PASS | F-S25 Post out with the grid zoomed out | 2560x1440 | day → ⋯ → Post out, grid zoomed | saw: sheet {"x":1000,"y":1144.3,"w":560,"h":281.7,"r":1560,"b":1426} vs {"x":1000,"y":1144.3,"w":560,"h":281.7,"r":1560,"b":1426}; chips [[174,30],[174,30],[174,30]]; halfOff 0
+ROW PASS | F-S25 card with the grid zoomed out | 2560x1440 | Delete → Post out | saw: card {"x":1013,"y":1246.3,"w":300,"h":125.9,"r":1313,"b":1372.2} button {"x":1013,"y":1381,"w":87,"h":32} go h 36 cancel h 36
+bringIn [data-testid="cell-snap-2026-12-08"] 0 {"x":2301,"y":347,"w":10,"h":9} scroll 0 -253
+ROW PASS | F-S25 existing sheet, grid zoomed | 2560x1440 | tap a gone day | saw: sheet {"x":1000,"y":1144.3,"w":560,"h":281.7,"r":1560,"b":1426}; foot [{"t":"↶Undo post out","x":1013,"y":1381,"w":142.7,"h":32,"r":1155.7,"b":1413}]; chips [[174,30],[174,30],[174,30]]
+2560x1440 errors []
+wd-big done
