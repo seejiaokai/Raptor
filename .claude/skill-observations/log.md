@@ -1612,3 +1612,16 @@ Met again 27 Nov 26 (chat 192, the clean sheet for the same question): the metho
 **Issue:** The handoff's opening line said "record my answers to F6 and F1–F5 on the questions page". The page cannot store answers and has no comments, so the new chat searched the page, its comments and other chats, found nothing, and had to ask him; he then asked for the questions again, shorter. The line read as if the answers already existed somewhere.
 **Suggested improvement:** In the handoff skill's "Pick up here" step: when the next step waits on his answers, say where they will come from ("he answers in the chat; the page only builds a reply line") and make the first action "put the questions to him, short, with the page link", never "record his answers".
 **Principle:** A handoff names the source of every input the next step needs; "record X" is only written when X is already stored somewhere the next session can read.
+
+### Observation 1106: A page on a previous account cannot be read from a new one
+
+**Status:** OPEN
+**Date:** 28 Nov 26
+**Session context:** chat 196, the first chat on his new account: the handoff said "read the live questions page first", but the page was published from his previous account and the read came back "not found".
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** the handoff block's pointers to published pages
+
+**Issue:** The handoff named a published page as the thing to read and republish. After the account move the page could not be opened at all; only because a working copy of the page was kept in the repo could the next chat go on, by publishing a fresh page from it.
+**Suggested improvement:** When a handoff is written ahead of an account or workspace move, its block names the repo copy of every published page as the source, and says the link may not open on the new account; the next chat publishes a new page from the copy and names the new link.
+**Principle:** A link to something hosted under one account is not durable state; the repo copy is. Hand off the copy, and treat the link as a convenience.
