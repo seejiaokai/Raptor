@@ -341,6 +341,8 @@ Astra and a fresh, blind Opus (the Fable seat — reads owed, D2819); KR-6 its o
 
 ## 12. Questions for him — four cards (D2439)
 
+**ANSWERED — his "Yes as recommended" to questions 31–34 (27 Nov 26, the coordinator's record on the batch `f808642e7`, D2835–D2838): **31 (D2835)** — a bell line about an OPEN request of a man who has moved opens under his new squadron, brought into view first; a request closed before the move stays with the old squadron; the looks for someone who only views, and for an old squadron's admin only, are drawn for him first. **32 (D2836, KR-Q2)** — a window held since his midnight move closes at a pick. **33 (D2837, KR-Q3)** — a holiday waiting for a leave period is dropped at a switch, and its form says "kept only while this window stays open" (new words: Opus drafts, a fresh Fable reads, drawn first — D2441, D1625). **34 (D2838, KR-Q4)** — a box with no Save button is saved into its own squadron first, then the switch goes through in the same press; if that save fails, the switch is stopped ("Not saved", D2594). KR-Q1 held (`[KR-Q1-HELD]`). Where a line below differs, these answers win; KR-1's builder folds them into §3–§5 and §8 (D2836 removes Q2's case, D2837 adds the form's words and its drop, D2838 makes the save-then-switch with its failure stop part of KR-2's closing step; D2835 is the bell door's, KR-4, with K10's root under D2834).**
+
 **Q1 — Words for three rare presses while a save has failed.**
 *Situation:* rare, any admin. A save of his has not gone through — the "Not saved" band with Retry is up — and, before
 pressing Retry, he taps a card on the OIL list that would bring another squadron, presses Redo where it would change the
