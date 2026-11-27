@@ -24,7 +24,7 @@ import { act } from '@testing-library/react'
 import { withThird, third } from '../test-support/msq-world'
 import { setPage } from '../state/view'
 import { setDaysWin, setOilList, setBellList } from './pops'
-import { whatIsOpen, guardWords, guardLead, guardRow, GUARD_LEADS, GUARD_ENDINGS, workSay, calendarOver, trackerBehindInfo, usersOutOfSight, squadronsOutOfSight, type GuardWordsAt } from './guard'
+import { whatIsOpen, guardWords, guardLead, guardRow, GUARD_LEADS, GUARD_ENDINGS, GUARD_UNDO_LEADS, workSay, calendarOver, trackerBehindInfo, usersOutOfSight, squadronsOutOfSight, type GuardWordsAt } from './guard'
 import { refuse } from '../state/guard'
 import { toast, toastAt, placeToast, placeNote, noteAtFoot, clearToast, NOTE_X, type NoteBox, type NotePlaceIn } from './toast'
 import { noteAtFor, guardSay } from './guardnote'
@@ -78,10 +78,12 @@ describe('the words — each lead raised by its real state, joined to every endi
     await OPEN.oilday!.open()
     saysEvery(GUARD_LEADS.window, 'oilday')
   })
-  it('a door with no ending of his yet (a card, the page door, K8\'s Undo) says nothing — no words are drafted for it', async () => {
+  /* (K8 re-pointed this pin: the Undo's ending is built now — D2729, the section page's group 5 — and its words are the
+     describe "K8 — the Undo ending" below; a Redo's ending stands nowhere he has seen, so it takes the Undo's old place) */
+  it('a door with no ending of his yet (a card, the page door, a Redo) says nothing — no words are drafted for it', async () => {
     await app('hunter')
     await OPEN.oilday!.open()
-    for (const door of ['card', 'page', 'undo']) expect(words(door, 'u149'), door).toBeNull()
+    for (const door of ['card', 'page', 'redo']) expect(words(door, 'u149'), door).toBeNull()
   })
   it('a Leave War window: in sight "close the open window"; behind the Inputs tab "…on the Leave War" (D2627 A7)', async () => {
     await app('hunter')
@@ -233,6 +235,93 @@ describe('two at once — named one at a time, in GUARD_ORDER (D2627 A10; D2729 
     saysEvery(GUARD_LEADS.row, 'userrow')
     await press($('#accEdCancel'), 'the row\'s Cancel')
     saysEvery(GUARD_LEADS.retry, 'unsaved')
+  })
+})
+
+/* K8 — THE UNDO ENDING (§4.6; D2729, the section page's group 5): "…then press Undo again." joins only the leads that add no
+   Undo step — a row's or a form's Cancel half (the sections' words review, kept), "close the open window" and the Retry lead
+   as they are. A lead with no Cancel half shown to him takes the plain lead for its kind, pinned here and listed in the K8
+   report for a fresh Fable and his look. */
+describe('K8 — the Undo ending: only the leads that add no Undo step (§4.6, D2729)', () => {
+  const undoSays = (lead: string, id?: string, at: GuardWordsAt = {}) => {
+    if (id) expect(whatIsOpen()?.row.id, 'the row that refuses').toBe(id)
+    expect(words('undo', '', at)).toBe(`Blocked: ${lead}, then ${GUARD_ENDINGS.undo}`)
+  }
+  it('the two sentences he saw, letter for letter (group 5): the window and the half-done holiday', async () => {
+    expect(`Blocked: ${GUARD_LEADS.window}, then ${GUARD_ENDINGS.undo}`).toBe('Blocked: close the open window, then press Undo again.')
+    expect(`Blocked: ${GUARD_UNDO_LEADS.holidayNew}, then ${GUARD_ENDINGS.undo}`).toBe('Blocked: cancel the new holiday, then press Undo again.')
+    await app('hunter')
+    await OPEN.oilday!.open()
+    undoSays(GUARD_LEADS.window, 'oilday')
+  })
+  it('the Cancel halves the words review kept: the open row, giving access, the new squadron, the new person', async () => {
+    expect(GUARD_UNDO_LEADS).toMatchObject({ row: 'cancel the open row', giveAccess: 'cancel giving access', newSquadron: 'cancel the new squadron', addPerson: 'cancel the new person' })
+    await app('hunter')
+    await OPEN.userrow!.open()
+    undoSays(GUARD_UNDO_LEADS.row, 'userrow')
+    await guardTeardown(); await app('hunter')
+    await OPEN.sqnmove!.open()
+    undoSays(GUARD_UNDO_LEADS.row, 'sqnmove')
+    await guardTeardown(); await app('hunter')
+    await OPEN.giveaccess!.open()
+    undoSays(GUARD_UNDO_LEADS.giveAccess, 'giveaccess')
+    await guardTeardown(); await app('hunter')
+    await OPEN.newsqn!.open()
+    undoSays(GUARD_UNDO_LEADS.newSquadron, 'newsqn')
+    await guardTeardown(); await app('hunter')
+    await OPEN.addperson!.open()
+    undoSays(GUARD_UNDO_LEADS.addPerson, 'addperson')
+  })
+  it('the half-done holiday: "cancel the new holiday"; with no leave period for it, its Cancel half too (the agent\'s reading — creating the period would add a step)', async () => {
+    await app('hunter')
+    await OPEN.holiday!.open()
+    undoSays(GUARD_UNDO_LEADS.holidayNew, 'holiday')
+    await guardTeardown(); await app('hunter')
+    await openHolidayNoLeave()
+    expect(guardLead(whatIsOpen()!.row).key, 'the premise: the no-leave-period state').toBe('holidayNoLeave')
+    undoSays(GUARD_UNDO_LEADS.holidayNew, 'holiday')
+  })
+  it('a change not saved: the Retry lead as it is — a Retry re-sends the change already made, adding no step', async () => {
+    await app('hunter')
+    await OPEN.unsaved!.open()
+    undoSays(GUARD_LEADS.retry, 'unsaved')
+  })
+  it('(listed for a fresh Fable and his look) the leads with no Cancel half shown to him take the plain lead for their kind', async () => {
+    /* the section named (D2814): "…on Users" / "…on Squadrons" — no Cancel half naming the section was shown */
+    await app('hunter')
+    await OPEN.userrow!.open()
+    undoSays(GUARD_UNDO_LEADS.row, 'userrow', { usersOut: true })
+    await guardTeardown(); await app('hunter')
+    await OPEN.newsqn!.open()
+    undoSays(GUARD_UNDO_LEADS.newSquadron, 'newsqn', { squadronsOut: true })
+    await guardTeardown(); await app('hunter')
+    await OPEN.addperson!.open()
+    undoSays(GUARD_UNDO_LEADS.addPerson, 'addperson', { usersOut: true })
+    await guardTeardown(); await app('hunter')
+    await OPEN.giveaccess!.open()
+    undoSays(GUARD_UNDO_LEADS.giveAccess, 'giveaccess', { usersOut: true })
+    /* the Calendar's other forms and the settings windows: "close the open window" (closing adds no step) */
+    await guardTeardown(); await app('hunter')
+    await openHolidayChanged()
+    undoSays(GUARD_LEADS.window, 'holiday')
+    await guardTeardown(); await app('hunter')
+    await OPEN.everywd!.open()
+    undoSays(GUARD_LEADS.window, 'everywd')
+    await guardTeardown(); await app('hunter')
+    await OPEN.holimport!.open()
+    undoSays(GUARD_LEADS.window, 'holimport')
+    await guardTeardown(); await app('hunter')
+    await OPEN.inputsset!.open()
+    undoSays(GUARD_LEADS.window, 'inputsset')
+    /* a window on a page out of sight (§4.6 gap 2c, not drawn): the plain window lead */
+    await guardTeardown(); await app('hunter')
+    await OPEN.lwsheet!.open()
+    await doing(() => setPage('inputs'))
+    undoSays(GUARD_LEADS.window, 'lwsheet')
+    /* the new qualification: neither a Cancel half nor a window — its own words, as built */
+    await guardTeardown(); await app('hunter')
+    await OPEN.qualsnew!.open()
+    undoSays(GUARD_LEADS.newQual, 'qualsnew')
   })
 })
 
@@ -434,6 +523,18 @@ describe('the door → place table (§4.6 — "which control", never the geometr
     setBellList(false)
     expect(noteAtFor('bell').under(), 'no list open, no bell drawn').toBeNull()
     for (const d of ['card', 'page']) expect(noteAtFor(d).under(), d).toBeNull()
+  })
+  it('K8 — an Undo stands under the Undo on screen, its left edge, under the bar: the top bar\'s; the board\'s while the board is up; a Redo at the foot', () => {
+    const d = fake('<div class="topbar"><button id="undoBtn"></button></div><div id="sbHost" hidden><div class="sb-top"><button id="sbUndo"></button></div></div>')
+    const u = noteAtFor('undo', { from: 'bar' })
+    expect([u.under()?.id, u.edge, u.below, u.from]).toEqual(['undoBtn', 'left', 'bar', 'bar'])
+    d.querySelector('#sbHost')!.removeAttribute('hidden')
+    expect(noteAtFor('undo').under()?.id, 'the board up, over the top bar').toBe('sbUndo')
+    expect(noteAtFor('redo').under(), 'a Redo: no ending of his yet, the foot').toBeNull()
+  })
+  it('K8 — on an upright phone an Undo\'s note goes to the foot, as every note does (group 5\'s phone drawing)', () => {
+    asPhone()
+    expect(noteAtFoot(noteAtFor('undo', { from: 'bar' }).from)).toBe(true)
   })
   it('no import cycle (the review round): the words\' file never loads the note; the app\'s shell and the test world do, once each', () => {
     const src = (rel: string) => readFileSync(join(__dirname, '..', rel), 'utf8')

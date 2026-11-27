@@ -57,9 +57,22 @@ export function refuse(door: string, to: string, opts: GuardOpts = {}): boolean 
   const r = refusalAt(door, to, opts)
   if (!r) { installed.checker?.leave(door, to, opts); return false }
   installed.checker?.refused(door, to, opts, r)
+  SAID = null
   say?.(r, door, to, opts)
   return true
 }
+/* WHAT THE LAST REFUSAL SAID (step K8 — the plan §4.1 rows 13 and 21). Undo and Redo hand their refusal's reason back to
+   the engine that pressed them (ui/topstate.ts globalUndoEngine), which raises any reason it is handed as a note of its
+   own: the guard's refusal is already said by the seam, under the Undo button, so the reason it hands back is the very
+   words said — or UNSAID, for a door with no ending of his yet (Redo) — and the engine passes over both, so one press
+   says one note. The note's own function reports its words (ui/guardnote.ts guardSay); a refusal clears them first. */
+let SAID: string | null = null
+export function noteSaid(words: string): void { SAID = words }
+export const saidNote = (): string | null => SAID
+/** the reason of a refusal the seam said nothing for (a door with no words of his yet) — never shown */
+export const UNSAID = '(refused by the guard rail: its words are not his yet)'
+/** was this refusal's reason already said (or left unsaid) by the guard — so its caller says nothing more */
+export const saidByGuard = (reason: string): boolean => reason === UNSAID || (SAID != null && reason === SAID)
 /* THE WINDOWS THAT CLOSE BY THEMSELVES (D2596, D2597): the door's one call once its change is going through (§4.2) —
    never at a refusal, a Stay or a change he did not make */
 export function setGuardClose(fn: (() => void) | null): void { closer = fn }

@@ -397,14 +397,30 @@ export const GUARD_LEADS = {
   retry: 'press Retry to save your changes',                                 // D2627 A13
 } as const
 export type GuardLeadKey = keyof typeof GUARD_LEADS
-/* the ending — what he pressed. Left open to K8's "press Undo again." and D2627 A18's "try again." / a button naming itself:
-   no press reaches them until K4–K6 (and K8) say which, so neither is built here */
+/* the ending — what he pressed. Still left open: D2627 A18's "try again." (a card of the OIL list, the page door) and a
+   Redo's — neither stands on the section page nor in the sections' words review, so neither is built (the K8 report) */
 export const GUARD_ENDINGS = {
   pick: (num: string): string => `pick ${num}.`,                            // D2590
   toMember: 'switch to the member view.',                                    // D2590
   toAdmin: 'switch back to the admin view.',                                 // D2590
   line: 'press this line again.',                                            // D2590
   bell: 'press the bell again.',                                             // D2627 A8
+  undo: 'press Undo again.',                                                 // D2729 (the section page, group 5)
+} as const
+/* THE UNDO ENDING TAKES ONLY THE LEADS THAT ADD NO UNDO STEP (§4.6; the second words review's gap 2a): "save or cancel the
+   open row, then press Undo again" is untrue if he saves — the save is the newest step, and Undo then takes back the save,
+   not what he pressed Undo for. So with this ending a row's or a form's lead offers its Cancel half alone — each its
+   ruled lead with "save or" / "add or" / "finish or" taken off (the sections' words review, kept; "cancel the new
+   holiday" drawn on the section page, group 5 — D2729). "close the open window" and the Retry lead join as they are: a
+   window closed and a Retry landed add no step (a Retry re-sends the change already made — ui/savestatus-source.ts
+   retrySaves). A lead with no Cancel half shown to him takes the plain lead for its kind, and is listed in the K8 report
+   for a fresh Fable and his look (guardUndoLead below). */
+export const GUARD_UNDO_LEADS = {
+  row: 'cancel the open row',                                                // the words review (kept)
+  giveAccess: 'cancel giving access',                                        // the words review (kept)
+  newSquadron: 'cancel the new squadron',                                    // the words review (kept)
+  addPerson: 'cancel the new person',                                        // the words review (kept)
+  holidayNew: 'cancel the new holiday',                                      // D2729 (group 5's phone drawing)
 } as const
 export type GuardDoor = keyof typeof GUARD_ENDINGS
 
@@ -513,7 +529,29 @@ export function guardLead(row: GuardRow, at: GuardWordsAt = {}): { key: GuardLea
   /* any other row on a page out of sight has no words of its own: the plain lead (listed under "Words owed") */
   return k(row.counts === 'row' ? 'row' : 'window')
 }
-/** the ending for a door — null for a door with no ruled ending yet (K8's Undo, a card, the page door: K4–K8 say which) */
+/** the lead an Undo's refusal takes: only a lead that adds no Undo step (GUARD_UNDO_LEADS above). By the lead the row
+ *  takes for any other press:
+ *  - the window's and the Retry lead: as they are;
+ *  - a row or a form with its Cancel half shown to him: that half — "…on Users" / "…on Squadrons" (D2814) dropped, since
+ *    no Cancel half naming the section was shown (listed);
+ *  - "cancel the new holiday, or create its leave period": its Cancel half, the new holiday's shown words (the agent's
+ *    reading — creating the leave period would add a step);
+ *  - any other: the plain lead for its kind, a window's "close the open window" (closing it adds no step) — listed; the
+ *    new qualification, the one row lead with neither a Cancel half nor a window, keeps its own words (listed) */
+export function guardUndoLead(row: GuardRow, at: GuardWordsAt = {}): { key: GuardLeadKey | keyof typeof GUARD_UNDO_LEADS; words: string; names: string } {
+  const l = guardLead(row, at)
+  const u = (key: keyof typeof GUARD_UNDO_LEADS) => ({ key, words: GUARD_UNDO_LEADS[key] as string, names: l.names })
+  switch (l.key) {
+    case 'window': case 'retry': case 'newQual': return l
+    case 'row': case 'rowOnUsers': case 'rowOnSquadrons': return u('row')
+    case 'giveAccess': case 'giveAccessOnUsers': return u('giveAccess')
+    case 'newSquadron': case 'newSquadronOnSquadrons': return u('newSquadron')
+    case 'addPerson': case 'addPersonOnUsers': return u('addPerson')
+    case 'holidayNew': case 'holidayNoLeave': return u('holidayNew')
+    default: return { key: 'window', words: GUARD_LEADS.window, names: l.names }
+  }
+}
+/** the ending for a door — null for a door with no ruled ending yet (a card, the page door, a Redo: the K8 report) */
 export function guardEnding(door: string, to: string): string | null {
   switch (door) {
     case 'pick': { const num = unitById(to)?.num; return num ? GUARD_ENDINGS.pick(String(num)) : null }
@@ -521,16 +559,17 @@ export function guardEnding(door: string, to: string): string | null {
     case 'toAdmin': return GUARD_ENDINGS.toAdmin
     case 'line': return GUARD_ENDINGS.line
     case 'bell': return GUARD_ENDINGS.bell
+    case 'undo': return GUARD_ENDINGS.undo
     default: return null
   }
 }
 /** the whole note: "Blocked: <lead>, then <ending>" — null where the door has no ending of his yet */
 /*  (the reason is the row's own — `unsaved` is the Retry row — so the row decides the lead; the reason is taken as the seam
-    hands it over, the plan's shape) */
+    hands it over, the plan's shape. The Undo's ending takes its own leads — guardUndoLead) */
 export function guardWords(_reason: GuardRefusal['reason'], row: GuardRow, door: string, to: string, at: GuardWordsAt = {}): string | null {
   const end = guardEnding(door, to)
   if (!end) return null
-  return `Blocked: ${guardLead(row, at).words}, then ${end}`
+  return `Blocked: ${(door === 'undo' ? guardUndoLead(row, at) : guardLead(row, at)).words}, then ${end}`
 }
 /** a row of the table by its id (the note's way from the seam's refusal back to the row) */
 export const guardRow = (id: string): GuardRow | undefined => BY_ID.get(id as GuardRowId)
