@@ -389,9 +389,12 @@ export function levelFrom(acct: LevelAccount | null | undefined, unit: string, i
 export function mayGivePlanAt(acct: (LevelAccount & { on?: boolean }) | null | undefined, person: any, unit: string, iso: string, r: UnitRows | null | undefined, fallback: string | null): boolean {
   if (!acct || !r || acct.on === false) return false
   if (!person || person.special || person.deleted || person.archived) return false
-  if (acct.master) return acct.role === 'admin'
+  /* his home read FIRST, for a master admin too (U2 fix round 1, fix 3 — Astra 1): R1's "an unreadable home answers no"
+     is every reader's, so a master admin whose home cannot be read gives nothing */
   const home = homeUnitOn(r, acct.pid, iso, fallback)
-  if (home == null || home !== unit) return false
+  if (home == null) return false
+  if (acct.master) return acct.role === 'admin'
+  if (home !== unit) return false
   return levelFrom(acct, unit, iso, r, fallback) === 'admin'
 }
 
@@ -403,16 +406,29 @@ export function mayGivePlanAt(acct: (LevelAccount & { on?: boolean }) | null | u
    disagree. A home row alone makes nobody an admin today (a move counts from tomorrow, D2119): the first admin of a new
    squadron moving in is never caught here. A master admin made one is a master admin's act, judged by its own rules. */
 export interface MadeAdmin { account: string; pid: string; unit: string }
+/* AN ADMIN IN FORCE ON A SIDE (U2 fix round 1, fix 4 — opus2 F1, security S3; R1's list, D2730 Q10): his account
+   switched on and his man on the roster — not archived, deleted or a placeholder — on that side, read through that
+   side's people. So Enable of a switched-off admin, and Restore of an archived one, are "making an admin" (R2's own
+   words: "a man an admin in force of `unit` who was not one before it" — the agent's reading, said to the coordinator) */
+const inForceOn = (y: LevelAccount & { on?: boolean }, person: (pid: string) => any): boolean => {
+  if (y.on === false) return false
+  const p = person(String(y.pid))
+  return !!p && !p.special && !p.deleted && !p.archived
+}
 export function madeAdminsIn(w: {
-  acctB: readonly LevelAccount[]; acctA: readonly LevelAccount[]; rowsB: UnitRows; rowsA: UnitRows; today: string; fallback: string | null
+  acctB: readonly (LevelAccount & { on?: boolean })[]; acctA: readonly (LevelAccount & { on?: boolean })[]
+  rowsB: UnitRows; rowsA: UnitRows; today: string; fallback: string | null
+  /* the people before and after the command (each side's own — a restore lifts an archive in the same command) */
+  personB: (pid: string) => any; personA: (pid: string) => any
 }): MadeAdmin[] {
   const out: MadeAdmin[] = []
   for (const y of w.acctA) {
     if (y.role !== 'admin' || y.pid == null || y.pid === '') continue
+    if (!inForceOn(y, w.personA)) continue
     const u = homeUnitOn(w.rowsA, String(y.pid), w.today, w.fallback)
     if (u == null || levelFrom(y, u, w.today, w.rowsA, w.fallback) !== 'admin') continue
     const x = w.acctB.find(z => String(z.pid) === String(y.pid))
-    if (x && levelFrom(x, u, w.today, w.rowsB, w.fallback) === 'admin') continue
+    if (x && inForceOn(x, w.personB) && levelFrom(x, u, w.today, w.rowsB, w.fallback) === 'admin') continue
     out.push({ account: y.id, pid: String(y.pid), unit: u })
   }
   return out

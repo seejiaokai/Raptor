@@ -2131,3 +2131,28 @@ the `account.told` section pass it over to it), `src/state/undo-wire.ts` (`acctL
 - `src/state/msq-s2-u2-lines.test.ts` (Pass B: the four lines to the right readers, an Undo and a Redo, D2808's endings
   pinned silent, forged lines refused).
 - `src/ui/msq-s2-u2-tap.test.tsx` (Pass B: a tap on the line, through the bell, on the posting line's road).
+
+Chat 205, 27 Nov 26 — step U2's first fix round (the four blind readers' findings; the brief
+`docs/superpowers/briefs/2026-11-27-msq-s2-u2fix-brief.md`). **Changed:** `src/state/accounts.ts` (`mayGivePlanByAccount`
+— the account's own role, for the Undo's two stuck checks; Enable of an admin asks Q8; `makeAdminProblem` exported;
+`adminLineAudienceOn` — a squadron's admin audience on a day already begun, by the records; D2807's possessive curly),
+`src/state/units-model.ts` (`mayGivePlanAt` reads the home first, for a master admin too; `madeAdminsIn` counts an admin
+in force only — switched on, his man on the roster — over each side's people), `src/state/undo-wire.ts` (the stuck
+checks ask the account's own role; "made a member" read off the step's forward images; `makeAdminStuck` hands each
+side's switch and people), `src/state/perms.ts` (the Plan who-check and the first mark asked of the app's actor too;
+`madeAdminViolation` judges the app's actor and an archive change; a bare `account.told` judged before the early
+return; the move line's audience as it stood), `src/state/acctlines.ts` (`planMovesOwed` reads the dated audience),
+`src/leavewar/sync.ts` (Restore of an admin's man asks Q8 — `restoreMakesAdminProblem`), `src/ui/userslist-model.ts`
+(`hasUsersRow` — the panel's own list, asked by a Plan line's tap), `src/ui/topstate.ts` (`planLine` opens nothing for
+a man with no row there, asked before the line's squadron is entered), `src/ui/msq-guard-rollcall.test.ts` (the page
+door's census lets that one read stand before the ask), `src/ui/msq-s2-u2-tap.test.tsx` (the archived man's tap enters
+nothing). **New (tests):**
+- `src/state/msq-s2-u2fix-memberview.test.ts` (fix 1: the member view is "Switch back…", never blocked for good).
+- `src/state/msq-s2-u2fix-redo.test.ts` (fix 2: a Redo refused whole; the make-member pair kept).
+- `src/state/msq-s2-u2fix-home.test.ts` (fix 3: an unreadable home fails closed for a master admin).
+- `src/state/msq-s2-u2fix-enable.test.ts` (fix 4: Enable, Restore and the Undo of a Suspend are making an admin).
+- `src/state/msq-s2-u2fix-appactor.test.ts` (fix 5: nobody signed in, or the projection door, gives no Plan, makes no
+  admin).
+- `src/state/msq-s2-u2fix-told.test.ts` (fix 6: a bare `account.told` carries only account and Plan lines).
+- `src/ui/msq-s2-u2fix-tap.test.tsx` (fix 7: a Plan line about a man with no row there opens nothing).
+- `src/state/msq-s2-u2fix-moveday.test.ts` (fix 8: a man made an admin after a move gets no line of it).

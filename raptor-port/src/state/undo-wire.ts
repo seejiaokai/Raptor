@@ -19,7 +19,7 @@ import { roleStore, invalidateRoleTargets } from './mission-roles'
 import { decodeRoleId } from '../engine/mission-role'
 import { peopleStore, settingsStore } from './people-settings-commit'
 import { rosterRestoreProblem } from './roster-restore'
-import { seedAccounts, levelIn, accountById, ACCOUNT_PFX, signedInAccount, adminNow, masterRightLeft, accountsAfter, ACCOUNTS_LIST, mayGivePlanNow, makeAdminUndoWords, readAccounts, levelAcct, adminLineAudience } from './accounts'
+import { seedAccounts, levelIn, accountById, ACCOUNT_PFX, signedInAccount, adminNow, masterRightLeft, accountsAfter, ACCOUNTS_LIST, mayGivePlanNow, mayGivePlanByAccount, makeAdminUndoWords, readAccounts, levelAcct, adminLineAudience } from './accounts'
 import { unitRows, homeOn, unitRowsBefore, unitRowsAfter, unitById, madeAdminsNow, grantRowHolds } from './units'
 import { setDescribeUnits } from '../undo/describe'
 import { store } from '../engine/hooks'
@@ -696,7 +696,9 @@ function masterRightRefusal(changes: readonly Change[]): string | null {
    asks the replay too (perms.ts unitRowViolation); these two make the same answer a step the timeline blocks for good,
    in words, before anything is written — never a refusal on every press. Read over the step's FULL images
    (entry.inverse / entry.forward), never the list the leave-outs have thinned, so a Plan row left out never turns a
-   refused step into a half one. The app's own actor (nobody signed in — a headless test, the boot) is the gate's to pass,
+   refused step into a half one. Both ask the ACCOUNT's own role (accounts.ts mayGivePlanByAccount — U2 fix round 1,
+   fix 1), never the role in force: an admin's own step pressed in the member view is the timeline's "Switch back to the
+   admin view to undo that." (D292), never blocked for good. The app's own actor (nobody signed in — a headless test, the boot) is the gate's to pass,
    as it does; a session with no account fails closed, as the gate's reader does. */
 const restoreOf = (entry: UndoEntry, dir: 'undo' | 'redo'): Change[] => (dir === 'undo' ? entry.inverse : entry.forward)
 /* the account rows as stored now (none stored: the seeded list), as accounts.ts accountsAfter reads the other side */
@@ -723,11 +725,24 @@ function planRestoreStuck(entry: UndoEntry, dir: 'undo' | 'redo'): boolean {
   /* (both sides from the stored rows, as makeAdminStuck below reads them) */
   const rowsB = unitRowsAfter([]), rowsA = unitRowsAfter(changes as any)
   const acctB = readAccounts(accountRowsNow()), acctA = readAccounts(accountsAfter(changes) ?? accountRowsNow())
-  const roleSwap = (acc: string, from: string, to: string): boolean => changes.some(x => {
+  const swapIn = (list: readonly Change[], acc: string, from: string, to: string): boolean => list.some(x => {
     if (!isAccountRow(x) || String(x.id) !== ACCOUNT_PFX + acc) return false
     const was = accountImage(acc, x.before), is = x.op === 'delete' ? null : accountImage(acc, x.after)
     return !!was && !!is && String(was.pid) === String(is.pid) && was.role === from && is.role === to
   })
+  const roleSwap = (acc: string, from: string, to: string): boolean => swapIn(changes, acc, from, to)
+  /* WAS THE STEP ITSELF "MADE A MEMBER" (U2 fix round 1, fix 2 — opus1 F2, opus2 F2, security S4): over the step's
+     FORWARD images, whichever way it is pressed — the account admin → member, the same man kept, AND this very Plan row
+     ended (taken away) in the same step. Only that step's pair is left out rather than refused (R3 (c)); the Redo of
+     "made an admin and given Plan in one Save" has the same shape as the Undo of "made a member" and was halved — the
+     role made, the Plan silently left out — where the rule says refused whole */
+  const dropped = (acc: string, rowId: string): boolean => {
+    const fw = entry.forward
+    const demoted = swapIn(fw, acc, 'admin', 'main')
+    const ended = fw.some(x => isGrantRow(x) && String(x.id) === rowId && (x.before as any)?.level === 'admin'
+      && (x.op === 'delete' || x.after == null) && String((x.before as any)?.account ?? '') === acc)
+    return demoted && ended
+  }
   for (const c of changes) {
     if (!isGrantRow(c)) continue
     const ctx = grantCtx(c, dir, entry, changes)
@@ -735,12 +750,14 @@ function planRestoreStuck(entry: UndoEntry, dir: 'undo' | 'redo'): boolean {
     const b: any = store.get(String(c.id), null)
     const n: any = c.op === 'delete' ? null : c.after
     const acc = String((n ?? b)?.account ?? '')
-    if (n && n.level === 'admin' && roleSwap(acc, 'main', 'admin')) continue
-    if (b && b.level === 'admin' && !n && roleSwap(acc, 'admin', 'main')) continue
+    /* the Undo of "made a member": the role back, the Plan left out (R3 (c)) */
+    if (dir === 'undo' && n && n.level === 'admin' && roleSwap(acc, 'main', 'admin') && dropped(acc, String(c.id))) continue
+    /* the Redo of "made a member": the Plan dropped again under the member's drop (D2250) */
+    if (dir === 'redo' && b && b.level === 'admin' && !n && roleSwap(acc, 'admin', 'main') && dropped(acc, String(c.id))) continue
     const hB = holderNow(String(b?.account ?? ''), acctB), hA = holderNow(String(n?.account ?? ''), acctA)
     const planB = !!b && b.level === 'admin' && !!hB && grantRowHolds(hB, b, today, rowsB)
     const planA = !!n && n.level === 'admin' && !!hA && grantRowHolds(hA, n, today, rowsA)
-    if ((planB && !mayGivePlanNow(String(b.unit))) || (planA && !mayGivePlanNow(String(n.unit)))) return true
+    if ((planB && !mayGivePlanByAccount(String(b.unit))) || (planA && !mayGivePlanByAccount(String(n.unit)))) return true
   }
   return false
 }
@@ -755,12 +772,19 @@ function makeAdminStuck(entry: UndoEntry, dir: 'undo' | 'redo'): string | boolea
   /* both sides read the same way, from the stored rows — the accounts as the loader reads them, the squadron rows as stored
      — so a list held in memory that lags the store never reads as a man made an admin (the gate reads its two worlds the
      same way, perms.ts buildWorlds) */
+  /* (U2 fix round 1, fix 4: each side's switch and people — the Undo of a Suspend switches an admin's sign-in back on, an
+     admin in force again; a person the step writes is read as the step leaves him) */
+  const peopleA = new Map<string, any>()
+  for (const c of changes) if (c.collection === 'people') peopleA.set(String(c.id), c.op === 'delete' ? null : c.after ?? null)
+  const personB = (pid: string) => (PEOPLE as any)[pid]
+  const personA = (pid: string) => (peopleA.has(pid) ? peopleA.get(pid) : (PEOPLE as any)[pid])
   const made = madeAdminsNow({
-    acctB: readAccounts(accountRowsNow()).map(x => levelAcct(x)), acctA: readAccounts(after).map(x => levelAcct(x)),
-    rowsB: unitRowsAfter([]), rowsA: unitRowsAfter(changes as any), today: todayIso(),
+    acctB: readAccounts(accountRowsNow()).map(x => ({ ...levelAcct(x), on: x.on })),
+    acctA: readAccounts(after, undefined, personA).map(x => ({ ...levelAcct(x), on: x.on })),
+    rowsB: unitRowsAfter([]), rowsA: unitRowsAfter(changes as any), today: todayIso(), personB, personA,
   })
   for (const m of made) {
-    if (!mayGivePlanNow(m.unit)) return dir === 'undo' ? makeAdminUndoWords(m.unit) : true
+    if (!mayGivePlanByAccount(m.unit)) return dir === 'undo' ? makeAdminUndoWords(m.unit) : true
   }
   return false
 }

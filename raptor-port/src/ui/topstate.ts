@@ -14,6 +14,7 @@ import { bellAccessAlert, openBellRequest, enterForLine, type LineEntry } from '
 import { homeOn, todayIso } from '../state/units'
 import { bugAlert, unseenReports } from '../state/reports'
 import { openAdminUsers } from './adminopen'
+import { hasUsersRow } from './userslist-model'
 import { oilPendingFor, openWarAt } from '../leavewar/sync'
 import { inpById } from '../engine/inputs'
 import { setOilAsk, setInpEdit, BELLLIST, setBellList, setOilList } from './pops'
@@ -127,12 +128,17 @@ const postLine: Opens = (n, where) => {
 const warLine: Opens = (_n, where) => (where === 'no' ? null : 'leavewar')
 const sansLine: Opens = n => (sansDueOf(n) ? 'inputs' : null)
 /* A SQUADRON'S PLAN LINE (U2 — the plan §21.2 Q4, on the posting line's road; agreed with chat 204, this file's owner):
-   that squadron's Admin → Users at the man's row; a man with no row there (archived, deleted) opens nothing (D1691) */
-const planLine: Opens = (n, where) => {
-  if (where === 'no') return null
-  const p: any = (PEOPLE as any)[String(((n.what || [])[0] as any)?.who ?? '')]
-  return !p || p.deleted || p.archived || p.special ? null : 'admin'
+   that squadron's Admin → Users at the man's row; a man with no row there (archived, deleted) opens nothing (D1691) —
+   nor one with no row on that squadron's list today, by the panel's own rule (U2 fix round 1, fix 7 — opus1 F3, opus2 F3,
+   Astra 4: Mako, his Plan of 149 ended, a man made a member or moved away, is on no list of 149's; the tap opened 149's
+   page with nobody to ring). Never brought in by a search: "a man with no row there opens nothing" */
+const planRow = (n: Notice): boolean => {
+  const pid = String(((n.what || [])[0] as any)?.who ?? '')
+  const p: any = (PEOPLE as any)[pid]
+  if (!p || p.deleted || p.archived || p.special) return false
+  return !!n.u && hasUsersRow(String(n.u), todayIso(), pid)
 }
+const planLine: Opens = (n, where) => (where === 'no' || !planRow(n) ? null : 'admin')
 export const LINE_KINDS: Record<string, Opens> = {
   /* an input's line, whatever its first part says (state/notices.ts noticeParts) */
   del: inputLine, in: inputLine, out: inputLine, cx: inputLine, uncx: inputLine, off: inputLine, on: inputLine,
@@ -164,6 +170,11 @@ export function lineOpens(n: Notice, where: LineEntry): string | null {
 export function openNotice(n: Notice): void {
   const o = { line: n.id }
   const again = () => { if (stillHis(n)) openNotice(n); else notify() }
+  /* A PLAN LINE THAT WILL OPEN NOTHING ENTERS NOTHING (U2 fix round 1, fix 7 — the host's addition, agreed with chat 204):
+     a man with no row on that squadron's Admin → Users today (archived, deleted, a placeholder, or on no list of it) —
+     asked BEFORE the squadron is entered, so the tap never moves him to 149 for nothing: entering would close what he had
+     open and drop his typing (D2825). The line is read and stays as the record (D1691) */
+  if (kindOf(n) === 'sqplan' && !planRow(n)) { markNoticeRead(n.id); notify(); return }
   const mine = me()
   const u = sansDueOf(n) && !n.u && mine ? homeOn(mine, todayIso()) : n.u
   const where = isAcctNotice(n) ? 'here' : enterForLine(u, again, 'line', o)

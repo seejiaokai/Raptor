@@ -716,9 +716,12 @@ function censusProblems(files: Record<string, string>): string[] {
       if (!body) { out.push(`${c.file}: no function ${c.fn}`); continue }
       if (c.fn === 'openNotice') {
         /* the ask before the list is closed and before any line is read — but the read of a kind LINE_KINDS does not know,
-           which opens nothing (its own line, before the ask) */
+           which opens nothing (its own line, before the ask); and, since U2's first fix round (fix 7, the host's addition
+           agreed with chat 204), the read of a squadron's Plan line about a man with no row there, which opens nothing
+           either and is asked before the squadron is entered (its own line, `kindOf(n) === 'sqplan' && !planRow(n)`) */
         const ask = body.search(/ownPageRefused\(page, 'line', o, again\)/), close = body.search(/setBellList\(/)
-        const readsBefore = ask < 0 ? [] : body.slice(0, ask).split('\n').filter(l => /markNoticeRead\(/.test(l) && !/!LINE_KINDS\[kindOf\(n\)\]/.test(l))
+        const opensNothing = (l: string) => /!LINE_KINDS\[kindOf\(n\)\]/.test(l) || /kindOf\(n\) === 'sqplan' && !planRow\(n\)/.test(l)
+        const readsBefore = ask < 0 ? [] : body.slice(0, ask).split('\n').filter(l => /markNoticeRead\(/.test(l) && !opensNothing(l))
         if (ask < 0 || close < 0 || ask > close || readsBefore.length) out.push(`${c.file}: ${c.fn} does not ask the page door before it marks a line read`)
       } else if (!/^if \(ownPageRefused\('[a-z]+'\)\) return\b/.test(firstStatement(body))) {
         out.push(`${c.file}: ${c.fn}'s first statement is not its ownPageRefused line ("${firstStatement(body)}")`)

@@ -345,3 +345,62 @@ check (U8). Readings 22–24 are his answers (D2730 Q10–Q12), so no clause is 
 8. Note 5 of the roles table reads D2817's words; the data model, data schema, screen contracts and file map are true.
 9. One new test file (20 tests) was seen red against the old code (13, the other 7 named pins); every listed file passes.
 10. The outside security pin S3 still fails by design under D2626, as in Passes A and B.
+
+## Fix round 1 — the four blind readers' findings (the brief `2026-11-27-msq-s2-u2fix-brief.md`)
+
+One Opus builder; nothing committed, staged, pushed or built; one test file at a time. Each proof copied into a test file
+of its own (`msq-s2-u2fix-*`, all calling `withThird()`), seen failing for the reader's reason, then fixed.
+
+1. **The member view is not a lost right (opus1 F1).** `state/accounts.ts mayGivePlanByAccount` (the account's own role,
+   otherwise `mayGivePlanNow`'s body); `undo-wire.ts planRestoreStuck` and `makeAdminStuck` ask it. Test
+   `msq-s2-u2fix-memberview` (5): 4 failed before (3 the proof, 1 the master admin case), all pass.
+2. **A Redo refused whole (opus1 F2, opus2 F2, security S4).** `planRestoreStuck`: a `dropped` check over the step's
+   forward images (admin → member and this very Plan row ended); the first skip only on an Undo, the second only on a
+   Redo, each only where the step was "made a member". Test `msq-s2-u2fix-redo` (3): the Redo case failed before; the
+   make-member pair (Undo leaves the Plan out, Redo drops it) passes both sides.
+3. **An unreadable home fails closed for a master admin (Astra 1).** `units-model.ts mayGivePlanAt` reads the home first.
+   Test `msq-s2-u2fix-home` (2): 1 failed before.
+4. **Enable and Restore are making an admin (opus2 F1, security S3 — the agent's reading, for the coordinator).**
+   `units-model.ts madeAdminsIn` counts an admin only if switched on and his man on the roster, each side's people handed
+   in; `perms.ts madeAdminViolation` passes them and also runs on an archived-mark change; `makeAdminStuck` the same;
+   `updateAccount` asks Q8 on an admin's off → on; `leavewar/sync.ts restoreProblem` and `restoreArchivedAs` ask it of an
+   admin's man (`restoreMakesAdminProblem`; `makeAdminProblem` exported). No screen change. Test `msq-s2-u2fix-enable`
+   (8): the door, the gate, the Undo of a Suspend and the Restore failed before (4); controls (Kestrel's Enable and
+   Restore — an overseas man's return — and a member's) pass.
+5. **The gate asks the app's own actor (security S1, steps 1–2 only).** `perms.ts unitRowViolation`: the Plan who-check and
+   the first mark asked of the app's actor too, exempt only origin `seed` / `remote` and a removal inside
+   `lw.postoutRun`; `madeAdminViolation` exempts only `seed` / `remote`. The app's writers checked: the posting pass (only
+   removals of rights), the move-day pass (writes no right), `account.told` (lines only), a restore (a person's), the
+   seeds (no command). Test `msq-s2-u2fix-appactor` (5): all four ("nobody signed in" ×2, the projection door ×2) failed
+   before and are refused now; `command/` untouched. One knock-on: two forged posting-pass cases in
+   `leavewar/postout-roster` were refused under the new name first; the posting pass's own reason is now named first
+   inside `madeAdminViolation` (refused either way).
+6. **A bare `account.told` (security S2).** `acctLineViolation` runs its `account.told` branch before the early return.
+   Test `msq-s2-u2fix-told` (7, the "it shows" case dropped): 5 failed before.
+7. **A Plan line about a man with no row opens nothing (opus1 F3, opus2 F3, Astra 4).** `ui/userslist-model.ts
+   hasUsersRow` (the panel's own `usersListOf`); `ui/topstate.ts planLine` asks it; with the host's addition (agreed with
+   chat 204) `openNotice` asks it BEFORE `enterForLine` and, on no row, marks the line read and stops — he is not moved
+   to 149. Pass B's archived case re-pointed by name (it now also pins 142 still in view); the page door's census in
+   `msq-guard-rollcall` lets that one read stand before the ask, as it lets an unknown kind's. Test
+   `msq-s2-u2fix-tap` (5): ended, made a member and moved failed before; the host's case (a row open with typing, stays)
+   failed with the pre-check off; "Given Plan" still opens the ringed row. Astra's proof-4 (brought in by a search) is
+   kept out — the brief's rule is "a man with no row there opens nothing".
+8. **The move line's audience as it stood (Astra 3).** `accounts.ts adminLineAudienceOn` — the audience on the move day
+   less a reader whose right there began after that day began, by the records (`adminAt`, `masterAt`/`kept`, a Plan's
+   `fromAt`); the writer (`acctlines.ts planMovesOwed`) and the gate (`perms.ts planLineViolation`) ask it; fixed ids kept.
+   A dated record of the master mark exists (`masterAt`); what the records do not hold — a role or mark held that day and
+   taken away since — is not brought back. Test `msq-s2-u2fix-moveday` (1): failed before.
+9. **One kind of apostrophe.** `makeAdminUndoWords` reads "Only 149’s own admins … so this can’t be undone."; no test
+   pinned the old string literally (the U2 tests build it from the function); `msq-s2-u2fix-enable` pins it.
+
+**Checks** (from `raptor-port/`): every file named in the brief's "When you finish", one at a time — 59 files, 1135 tests
+passed, 0 failed (1 todo, as before); `msq-guard-open -t "userrow|archrow|giveaccess|addperson"` 12 passed;
+`node reference/tfin.js` 728/0; `npx tsc -p tsconfig.app.json --noEmit` clean; `npm run lint:changed -- --base HEAD
+--include-untracked` no new finding; `npm run docsize` passes (HANDOFF and OUTSTANDING over their tripwires, deferred by
+D29 — not touched here). **Records:** `docs/file-map.md`, `docs/data-model.md` §11 (User, Notice, UnitGrant rows).
+
+**Not this round, as the brief says:** Astra 2 (a man moving INTO the squadron he plans writes its admins no line — for
+his word); security S1 steps 3–4 and the wider projection-door gap (SEC-R4-2); fixread10's old pin S3 (fails by design).
+The Leave War's "Undo post out" (a Restore with no post-in date) is not asked Q8 at its door; the gate now judges it
+(an archived-mark change), so a Plan holder's Undo post out of another squadron's admin is refused as "That did not
+save" rather than in D2806's sentence — read from the code, not tested; named for the host.

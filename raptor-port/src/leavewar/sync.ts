@@ -168,7 +168,7 @@ import type { StorageBackend } from './state/storage'
 import { HOOKS } from '../engine/hooks'
 import { deferEffect as cmdDeferEffect, commitProjection as cmdCommitProjection, commit as cmdCommit, CmdRefused, isInReducer, isCommitting as cmdIsCommitting, activeEnvelope, isQueued, isOk, type CommitResult, type Txn } from '../command'
 /* [POST-OUT-OUTCOMES] (27 Sep 26): the posting's outcomes cross the seam HERE, the one place the war meets Raptor */
-import { suspendForPosting, enableAfterPosting, lastAdminIfGone, lastAdminLock, masterDeleteProblem, masterChangeProblem, otherSquadronPersonProblem, accountOfPid, suspendForArchive, enableForRestore, ACCOUNTS_LIST, isAdminAccount, adminLineAudience, endRightsOfArchived } from '../state/accounts'
+import { suspendForPosting, enableAfterPosting, lastAdminIfGone, lastAdminLock, masterDeleteProblem, masterChangeProblem, otherSquadronPersonProblem, accountOfPid, suspendForArchive, enableForRestore, ACCOUNTS_LIST, isAdminAccount, adminLineAudience, endRightsOfArchived, makeAdminProblem } from '../state/accounts'
 import { accessWas, tellAccess, writeMoveLines, acctFollowUps } from '../state/acctlines'
 import { markBack, clearBack, CURPAGE } from '../state/view'
 /* every page change by a press goes through the page door (step K6 — the guard rail's plan §4.5, R5 (b)) */
@@ -3624,6 +3624,14 @@ export function restoreArchivedPerson(id: string, postIn?: string): boolean {
   if (callsignProblem(body.cs, id)) return false
   return restoreBody(id, null, postIn)
 }
+/* an archived man whose account is an admin's comes back an admin in force — asked of the one who restores him as making an
+   admin of his squadron (accounts.ts makeAdminProblem — D2806's sentence; U2 fix round 1, fix 4). A master admin's man is
+   masterChangeProblem's, said first by both doors */
+function restoreMakesAdminProblem(id: string): string | null {
+  const a = accountOfPid(id)
+  if (!a || a.role !== 'admin' || a.master) return null
+  return makeAdminProblem(homeOn(id, todayIso()))
+}
 /* why Restore on Admin → Users would be refused ([ONE-DOOR], D308): not an admin, not an archived man, no whole date,
    or a post-in on or before the day his stint closed (the store's one sentence). null when it would go ahead. */
 export function restoreProblem(id: string, postIn: string): string | null {
@@ -3635,6 +3643,11 @@ export function restoreProblem(id: string, postIn: string): string | null {
   if (other) return other
   const body = rosterBody(id)
   if (!body || !body.archived || body.special || body.deleted) return 'That person cannot be restored'
+  /* RESTORE IS MAKING AN ADMIN (U2 fix round 1, fix 4 — opus2 F1, security S3): an archived man is no admin in force (R1's
+     list), and Restore brings him back with his sign-in on (D322) — so a man whose account is an admin's is restored only
+     by one who may make an admin of his squadron (its own admins or a master admin, D2806's sentence) */
+  const adminAcct = restoreMakesAdminProblem(id)
+  if (adminAcct) return adminAcct
   if (!/^\d{4}-\d{2}-\d{2}$/.test(String(postIn ?? ''))) return 'Pick the post-in date'
   /* a man of another squadron than the war loaded: judged on his own squadron's stored window (A3), read, never loaded */
   const fu = foreignHome(id)
@@ -3738,6 +3751,9 @@ export function restoreArchivedAs(id: string, cs: string, postIn?: string): stri
   if (other) return other
   const body = rosterBody(id)
   if (!body || !body.archived || body.special || body.deleted) return 'That person cannot be restored'
+  /* (an admin's man brought back — restoreProblem's own check, asked here for the Restore with no post-in date too) */
+  const adminAcct = restoreMakesAdminProblem(id)
+  if (adminAcct) return adminAcct
   const want = String(cs ?? '').trim()
   const bad = callsignProblem(want, id) || (postIn !== undefined ? restoreProblem(id, postIn) : null)
   if (bad) return bad

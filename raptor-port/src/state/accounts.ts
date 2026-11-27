@@ -463,6 +463,37 @@ export function adminLineAudience(unit: string, iso: string = todayIso(), rows?:
   }
   return out
 }
+/* WHO WAS TOLD A SQUADRON'S ADMIN LINES ON A DAY ALREADY BEGUN, AS THE RECORDS HOLD IT (U2 fix round 1, fix 8 — Astra 3):
+   adminLineAudience on that day, less any reader whose admin right there began only after that day began. The move-day
+   pass rescans the moves of the last weeks at every wake, so a man made an admin of 149 on the 17th was written the line
+   of a move on the 16th — its moment now, so the bell's retirement (notices.ts rightHolds) showed it. Read from what the
+   records keep, road by road, the earliest that holds on `iso` counting: his home's admin role (`adminAt`), the master
+   mark (`masterAt`, or for a squadron he held Plan of when made one, that Plan's moment — `kept`), a Plan of it
+   (`Grant.fromAt`); a road with no moment (a row from before moments were kept, D56) counts from always. What the records
+   do not hold — a role or mark held on that day and taken away since — is not brought back: such a man is no reader
+   today, as before. ONE body: the writer (acctlines.ts planMovesOwed) and the gate (perms.ts planLineViolation) ask it. */
+export function adminLineAudienceOn(unit: string, iso: string, rows: UnitRows): string[] {
+  const [y, m, d] = iso.split('-').map(Number)
+  const dayStart = new Date(y!, m! - 1, d!).getTime()
+  return adminLineAudience(unit, iso, rows).filter(pid => {
+    const a = ACCOUNTS_LIST.find(x => String(x.pid) === pid)
+    if (!a) return false
+    let best = Infinity
+    const take = (x: unknown): void => { best = Math.min(best, typeof x === 'number' && Number.isFinite(x) ? x : -Infinity) }
+    if (a.master === true) {
+      const k = a.kept && Object.prototype.hasOwnProperty.call(a.kept, unit) ? a.kept[unit] : undefined
+      take(typeof k === 'number' && Number.isFinite(k) ? (Number.isFinite(a.masterAt) ? Math.min(k, a.masterAt!) : -Infinity) : a.masterAt)
+    }
+    const bare = levelAcct({ ...a, master: undefined })
+    if (homeBefore(pid, iso, rows) === unit) {
+      if (levelBefore(bare, unit, iso, rows) === 'admin') take(a.adminAt)
+    } else {
+      const g = rows.grants.find(x => x.account === a.id && x.unit === unit && x.level === 'admin' && grantRowHolds({ id: a.id, pid, pidFrom: a.pidFrom }, x, iso, rows))
+      if (g) take(g.fromAt)
+    }
+    return best < dayStart
+  })
+}
 /* THE MASTER MARK (multi-squadron batch 1, step 1 — D2191): a master is an admin of every unit and the only one who
    makes a unit or another master. The mark lives on the account row (the database's User.master) and changes only by
    its own command, setMaster below — the commit gate (perms.ts unitRowViolation) refuses a change of it in any other. */
@@ -509,6 +540,16 @@ export function mayGivePlanNow(unit: string): boolean {
   const role = roleOf() === 'admin' && mine.role === 'admin' ? 'admin' : 'main'
   return mayGivePlanOn({ ...levelAcct(mine, role), on: mine.on }, (PEOPLE as any)[mine.pid], unit, todayIso(), unitRows())
 }
+/* THE SAME QUESTION OF THE ACCOUNT ITSELF, WHATEVER VIEW HE IS IN (U2 fix round 1, fix 1 — opus1 F1): the account's own
+   role in place of the role in force; otherwise mayGivePlanNow's body, failing closed the same. Asked only by the Undo's
+   two stuck checks (undo-wire.ts planRestoreStuck, makeAdminStuck), which say "blocked for good": the member view is
+   not a lost right — it is the timeline's "Switch back to the admin view to undo that." (D292, mayReverse), and once he
+   is back the step goes through. mayGivePlanNow stays for the apply (grantCtx's mayPlan), the doors and the screen. */
+export function mayGivePlanByAccount(unit: string): boolean {
+  const mine = signedInAccount()
+  if (!mine) return false
+  return mayGivePlanOn({ ...levelAcct(mine), on: mine.on }, (PEOPLE as any)[mine.pid], unit, todayIso(), unitRows())
+}
 /* THE WORDS OF WHO MAY (each his, exactly — the brief's §4): a squadron's number, else its id */
 const numOfUnit = (unit: string | null | undefined): string => (unit ? String(unitById(unit)?.num ?? unit) : '')
 /* the line's sentence — the greyed Plan's, and every Plan door's refusal (D2626, final on the section page, D2730) */
@@ -522,15 +563,17 @@ export const makeAdminWords = (unit: string): string => {
   const n = numOfUnit(unit)
   return `Only ${n}'s own admins or a master admin can make an admin of ${n}.`
 }
-/* the refused Undo (his D2807 — the curly apostrophe, as the app's other Undo words: the planning read's B4) */
+/* the refused Undo (his D2807 — the curly apostrophe, as the app's other Undo words: the planning read's B4; the
+   squadron's possessive curly too, so the one note — with the app's tail " Press Undo again for: Osprey’s role." —
+   carries one kind of apostrophe: Fable's word review, U2 fix round 1, fix 9) */
 export const makeAdminUndoWords = (unit: string): string => {
   const n = numOfUnit(unit)
-  return `Only ${n}'s own admins or a master admin can make an admin of ${n}, so this can’t be undone.`
+  return `Only ${n}’s own admins or a master admin can make an admin of ${n}, so this can’t be undone.`
 }
 /* Q8 AT A DOOR (his D2730 Q8, D2806): a man left an admin in force of `unit` who was not one is refused for one who may not
    give Plan of it — `unit` his home that day (or, for a man the door makes, where his home will be); no home known (a
    shared store before its rows) fails closed, as the reader does */
-function makeAdminProblem(unit: string | null | undefined): string | null {
+export function makeAdminProblem(unit: string | null | undefined): string | null {
   if (!unit) return 'This change could not be saved.'
   return mayGivePlanNow(unit) ? null : makeAdminWords(unit)
 }
@@ -805,6 +848,13 @@ export function updateAccount(id: string, patch: { name?: any; role?: AccountRol
      the re-link's refusal in the same sentence (the agent's reading, B6 — named in the U2 report) */
   if (next0.role === 'admin' && (patch.role === 'admin' || next0.pid !== a.pid) && !(next0.pid === a.pid && adminNow(a)) && adminNow(next0)) {
     const q = makeAdminProblem(homeOn(next0.pid, todayIso()))
+    if (q) return q
+  }
+  /* ENABLE IS MAKING AN ADMIN (U2 fix round 1, fix 4 — opus2 F1, security S3; R2 with R1's list: an admin switched off is
+     no admin in force, so switching him on again leaves a man an admin in force who was not one — the agent's reading,
+     said to the coordinator): an admin's sign-in switched off → on, only by one who may make an admin of his squadron */
+  if (patch.on === true && !a.on && a.role === 'admin' && next0.role === 'admin') {
+    const q = makeAdminProblem(homeOn(a.pid, todayIso()))
     if (q) return q
   }
   /* A RE-LINK CARRIES NO RIGHT (the reshape plan §4.3, guardrail 1): every right of the sign-in, holding or ended, goes in

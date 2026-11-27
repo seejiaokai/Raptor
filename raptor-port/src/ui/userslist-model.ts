@@ -51,3 +51,11 @@ export function usersListOf(unit: string, iso: string, query: string): UsersList
     count: onRoster.length,
   }
 }
+/* DOES HE HAVE A ROW ON THIS SQUADRON'S ADMIN → USERS THAT DAY (U2 fix round 1, fix 7 — opus1 F3, opus2 F3, Astra 4): one
+   of its own people (on the roster or archived), or a man of another squadron holding Plan of it — the panel's own list
+   above, with no search, never a copy of its rule. A tap on a squadron's Plan line about a man with none opens nothing
+   (ui/topstate.ts planLine — D1691's road). Until U3 and U5 add their folds, a View holder of it has no row. */
+export function hasUsersRow(unit: string, iso: string, pid: string): boolean {
+  const l = usersListOf(unit, iso, '')
+  return l.own.includes(pid) || l.planners.includes(pid) || l.archived.includes(pid)
+}

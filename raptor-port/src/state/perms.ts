@@ -34,7 +34,7 @@ import { deriveActor } from '../command/actor'
 import { voidedOil } from '../engine/oil'
 /* the seeded accounts, read only by the posting pass's first-write rule below (accounts.ts imports this file; the call is
    made only when a command is judged, never as the module loads) */
-import { seedAccounts, ACCOUNTS_LIST, isMasterAccount, accountBefore, levelAcct, readAccounts, adminLineAudience, type Account } from './accounts'
+import { seedAccounts, ACCOUNTS_LIST, isMasterAccount, accountBefore, levelAcct, readAccounts, adminLineAudience, adminLineAudienceOn, type Account } from './accounts'
 import { unitRowsBefore, unitRowsAfter, levelBefore, homeBefore, homeChangesBefore, todayIso, homeOn, levelOfAccount, setNewHomeUnit, grantBefore, grantRowHolds, datedBreach, lockBreach, everOfBefore, units as storeUnits, unitById as storeUnitById, mayGivePlanOn, madeAdminsNow } from './units'
 import { PEOPLE, sansStart, sansStop } from '../engine/people'
 import { UNIT, BOOT_UNIT } from '../engine/unitview'
@@ -2848,6 +2848,25 @@ function unitRowViolation(env: CommitEnvelope): string | null {
       if (after.unitplaces.some(x => x.place === key)) return `a place removed while a unit is there (${id})`
     }
     /* WHO */
+    /* THE APP'S OWN ACTOR IS ASKED TOO, FOR PLAN AND THE FIRST MARK (U2 fix round 1, fix 5 — the security reader's S1,
+       steps 1–2; his D2730 Q10: "every one of these answers no when it cannot read: nobody signed in"). A command with
+       nobody signed in, or one through the app's projection door, ran as the app and skipped every who-check below, so a
+       forged grant row gave Plan of 149. Now a grant row that is Plan on either side, or carries the first-admin mark,
+       is asked of the app's actor as of anyone — and the app's actor may give no Plan (planActorOf: no account, fails
+       closed). Exempt only: a command from the seed or from another device (origin `seed` / `remote`), and a removal
+       inside the posting pass (`lw.postoutRun` — the Delete and Overseas outcomes take a man's rights with him, D2311).
+       Every other path where the app writes a grant row is a removal there; the move-day pass writes none (a move ends a
+       right by its date, Piece B), and `account.told` writes bell lines only. */
+    if (sys && id.startsWith(GRANT_PFX) && env.origin !== 'seed' && env.origin !== 'remote'
+      && !(b && n == null && env.type === 'lw.postoutRun')) {
+      const planB = !!b && b.level === 'admin' && grantRowHolds(holderB(String(b.account)), b, today, before)
+      const planA = !!n && n.level === 'admin' && grantRowHolds(holderA(String(n.account)), n, today, after)
+      if (planB || planA) return `Plan given, changed or taken by one who may not give it (${id})`
+      if (n && n.first === true) {
+        const keptFirst = !!b && b.first === true && String(b.account) === String(n.account) && String(b.unit) === String(n.unit) && b.level === 'admin' && n.level === 'admin'
+        if (!keptFirst) return `a squadron's first-admin mark written outside "+ New squadron" (${id})`
+      }
+    }
     if (sys) continue
     if (id.startsWith(UNITPLACE_PFX) || id.startsWith(GRANT_PFX) || id.startsWith(HOME_PFX)) {
       /* A PERSON DELETE TAKES EVERY RIGHT HIS SIGN-IN HOLDS, WHATEVER THE SQUADRON (fix read 11, fault H — the host's
@@ -3120,19 +3139,34 @@ function homeUnitViolation(env: CommitEnvelope): string | null {
    asks too, state/undo-wire.ts makeAdminStuck), the actor must be one who may give that squadron's Plan, as he stood
    before the command (mayGivePlanOf — the same rule as Plan's). Before this, a Plan holder of 142 passed the account-row
    check by his Plan and could make a 142 man 142's admin. Asked only of a command that changes an account or makes a
-   person — never of a home row alone (a move counts from tomorrow, D2119), nor of the app's own pass or the seed. An Undo
+   person — never of a home row alone (a move counts from tomorrow, D2119), nor of the seed or another device's command
+   (the app's own actor is judged since U2 fix round 1, fix 5, and may make no admin). An Undo
    or Redo is judged here too: the Undo of "made a member" is the same act (his D2807). */
 function madeAdminViolation(env: CommitEnvelope): string | null {
-  const a = env.actor
-  if (!a || a.role === 'system' || env.origin === 'seed') return null
+  /* (U2 fix round 1, fix 5 — the security reader's S1 step 2: the app's own actor is judged too — nobody signed in, or
+     the projection door, made Osprey 149's admin — exempt only for a command from the seed or another device; the app's
+     actor may make no admin, planActorOf failing closed for it) */
+  if (env.origin === 'seed' || env.origin === 'remote') return null
   const accts = env.changes.some(c => c.collection === 'settings' && String(c.id).startsWith(ACCOUNT_ROW))
   const madePerson = env.changes.some(c => c.collection === 'people' && c.before == null && c.op !== 'delete' && c.after != null)
-  if (!accts && !madePerson) return null
+  /* (U2 fix round 1, fix 4: a man's archived mark changed — a Restore lifts it, so an admin's man back on the roster is
+     an admin in force again — opus2 F1, security S3) */
+  const archCh = env.changes.some(c => c.collection === 'people' && !!(c.before as any)?.archived !== !!(c.op === 'delete' ? null : (c.after as any))?.archived)
+  if (!accts && !madePerson && !archCh) return null
   const w = worldsOf(env) ?? buildWorlds(env)
   const today = todayIso()
-  const made = madeAdminsNow({ acctB: w.acctB.map(x => levelAcct(x)), acctA: w.acctA.map(x => levelAcct(x)), rowsB: w.rowsB, rowsA: w.rowsA, today })
+  /* each side's accounts with their switch and that side's people: an admin switched off, or his man archived, is no
+     admin in force (units-model.ts madeAdminsIn) */
+  const made = madeAdminsNow({
+    acctB: w.acctB.map(x => ({ ...levelAcct(x), on: x.on })), acctA: w.acctA.map(x => ({ ...levelAcct(x), on: x.on })),
+    rowsB: w.rowsB, rowsA: w.rowsA, today, personB: w.personB, personA: w.personA,
+  })
   for (const m of made) {
-    if (!mayGivePlanOf(m.unit, planActorOf(env), w.rowsB, today)) return `a man made an admin of ${m.unit} by one who may not give its Plan (${ACCOUNT_ROW}${m.account})`
+    if (mayGivePlanOf(m.unit, planActorOf(env), w.rowsB, today)) continue
+    /* (the posting pass's own hard rule names an account it does not owe first, as it did before the app's actor was judged
+       here — refused either way: postingPassViolation, asked again further down) */
+    const pass = env.type === 'lw.postoutRun' && (!env.actor || env.actor.role === 'system') ? postingPassViolation(env) : null
+    return pass ?? `a man made an admin of ${m.unit} by one who may not give its Plan (${ACCOUNT_ROW}${m.account})`
   }
   return null
 }
@@ -4004,13 +4038,16 @@ export const acctChange = (c: Change): boolean =>
   c.collection === 'notices' && (isAcctNotice(c.before) || (c.op !== 'delete' && isAcctNotice(c.after)))
 function acctLineViolation(env: CommitEnvelope): string | null {
   const ch = env.changes.filter(acctChange)
-  if (!ch.length) return null
   const a = env.actor
   const today = todayIso(), now = Date.now()
   let replayed: ((c: Change) => boolean) | null | undefined
   const shape = (n: any): boolean => !lineMalformed(n) && n.what.length === 1 && n.what[0].k === 'acct' && n.iid === ''
     && n.u === undefined && n.fu === undefined && typeof n.to === 'string' && Number.isFinite(n.at) && Math.abs(n.at - now) <= AT_SLACK_MS
     && String(n.name) === String((PEOPLE as any)[String(n.to)]?.cs ?? n.to)
+  /* (U2 fix round 1, fix 6 — the security reader's S2, [ACCT-TOLD-OTHER-LINES]: asked BEFORE "no account line, nothing to
+     judge" — a bare `account.told` carrying no account line at all, only a posting's, a holiday's or an input's line,
+     returned early here and rode past every other line check, which skip the app's own writer. It carries only account
+     lines and squadrons' Plan lines, from the app) */
   if (env.type === 'account.told') {
     /* (…the squadrons' admins' lines a move owes ride beside his own — judged by planLineViolation, U2) */
     if (!a || a.role !== 'system' || env.changes.some(c => !acctChange(c) && !planLineChange(c))) return 'an account line the app did not owe (account.told)'
@@ -4028,6 +4065,7 @@ function acctLineViolation(env: CommitEnvelope): string | null {
     }
     return null
   }
+  if (!ch.length) return null
   const self = a?.personId == null ? null : String(a.personId)
   /* what this command's own change owes each man, part by part — each once */
   const w = buildWorlds(env)
@@ -4105,8 +4143,9 @@ function planLineViolation(env: CommitEnvelope): string | null {
         // eslint-disable-next-line react-doctor/js-set-map-lookups -- one look in a list worked out afresh for this line's own man and day, never the same list twice
         || !homeChangesBefore(pid, addDays(d, -1), d, rows).includes(d)
         || !planLinesOf(pid, movedParts(accessIn(acct, rows, addDays(d, -1)), accessIn(acct, rows, d))).some(l => l.u === n.u && deepEqual(l.part, p))
+        /* (the audience as it stood on the move day — the writer's own body, U2 fix round 1, fix 8) */
         // eslint-disable-next-line react-doctor/js-set-map-lookups -- one look in the audience of this line's own squadron and day, worked out afresh for it
-        || !adminLineAudience(n.u, d, rows).includes(String(n.to))) return `a squadron's Plan line only the app writes for a move (${where})`
+        || !adminLineAudienceOn(n.u, d, rows).includes(String(n.to))) return `a squadron's Plan line only the app writes for a move (${where})`
     }
     return null
   }

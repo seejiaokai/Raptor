@@ -14,7 +14,7 @@ import { HOOKS, store } from '../engine/hooks'
 import { activeEnvelope } from '../command'
 import { PEOPLE } from '../engine/people'
 import { addDays } from './flyplan-model'
-import { ACCOUNTS_LIST, ACCOUNT_PFX, levelAcct, readAccounts, seedAccounts, adminLineAudience, type Account } from './accounts'
+import { ACCOUNTS_LIST, ACCOUNT_PFX, levelAcct, readAccounts, seedAccounts, adminLineAudience, adminLineAudienceOn, type Account } from './accounts'
 import { me } from './perms'
 import { NOTICES, noticeAccount, noticePlanLine, type NoticePart, type AcctChange } from './notices'
 import { unitRows, unitRowsBefore, unitRowsAfter, todayIso, homeBefore, levelBefore, grantBefore, homeChangesOn } from './units'
@@ -262,7 +262,8 @@ export function planMovesOwed(today: string = todayIso()): Array<{ to: string; u
     if (!x || x.deleted || x.special) continue
     for (const d of homeChangesOn(pid, addDays(today, -MOVES_TOLD_DAYS), today)) {
       for (const l of planLinesOf(pid, movedParts(accessIn(a, rows, addDays(d, -1)), accessIn(a, rows, d)))) {
-        for (const to of adminLineAudience(l.u, d, rows)) {
+        /* (the audience as it stood on the move day, by the records — U2 fix round 1, fix 8: a man made an admin since gets none) */
+        for (const to of adminLineAudienceOn(l.u, d, rows)) {
           const id = planMovedLineId(a.id, d, l.u, to)
           if (to !== pid && !have.has(id)) out.push({ to, u: l.u, part: l.part, day: d, id })
         }

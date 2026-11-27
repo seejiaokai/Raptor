@@ -66,7 +66,9 @@ describe('a tap on a squadron\'s Plan line (Q4, on the posting line\'s road)', (
     expect(isUnread(n, PID.hunter), 'the line still unread (D2627 A11)').toBe(true)
     expect(BELLLIST, 'the list still open').toBe(true)
   })
-  it('a man archived since: opens nothing, the line read and kept as the record (D1691)', async () => {
+  /* (re-pointed in U2's first fix round, fix 7 — the host's addition, agreed with chat 204: a line that will open nothing
+     is asked before its squadron is entered, so 142 stays in view; before, 149 was entered first, then nothing opened) */
+  it('a man archived since: opens nothing and enters nothing — 142 still in view, the line read and kept as the record (D1691)', async () => {
     signInAs('saber')
     expect(updateAccount(ACCT.ranger, { role: 'admin' }), 'setup: Ranger made an admin of 142').toBeNull()
     signInAs('kestrel')
@@ -79,6 +81,7 @@ describe('a tap on a squadron\'s Plan line (Q4, on the posting line\'s road)', (
     expect(lineOpens(n, 'entered'), 'lineOpens: nothing for an archived man').toBeNull()
     await pressLine(n)
     expect(CURPAGE, 'no Admin page').not.toBe('admin')
+    expect(UNIT, '149 not entered for a tap that opens nothing').toBe('u142')
     expect(isUnread(n, PID.hunter), 'the line read').toBe(false)
     expect(NOTICES.some(x => x.id === n.id), 'the line kept').toBe(true)
   })
