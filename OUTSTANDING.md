@@ -1392,6 +1392,7 @@ features that then want several weeks at once, weigh whether weeks become separa
 the live one) — put to him with its cost; until then nothing changes. **Place:** with [DB-STEP].
 
 ### [XFER] Multi-squadron + transfer a person with their data — future milestone (with [DB-STEP])
+- **27 Nov 26, his D2845–D2847 (filed by D201):** at a move, a pending upchit leaves the old Medical tab and shows on the new one, its admin closing it; an upchit closed before the move stays on the old tab (today it moves); leave across the move goes with him, changeable by the new squadron's admins, the old admin no longer; unapproved leave after the move goes to the new squadron's Leave War (today stranded). Drawn first where not yet drawn (D1625).
 - **27 Nov 26, his D2842 (filed by D201):** a Tracker course still running at a move goes with him — his place and progress shown on the new squadron's Tracker, finished there; the old squadron's Tracker keeps what he flew there as history. Today the course stays in the old Tracker and its tie to him breaks (chat 204's q30b report, item 9). Drawn first (D1625).
 **His D2634 (25 Nov 26, chat 175):** postings — post out with every outcome, Transfer to Sqn among them, and post in — get a
 new interface on Admin → Users with the Leave War's full functionality (a SANS man the war hides reached there); the Leave
