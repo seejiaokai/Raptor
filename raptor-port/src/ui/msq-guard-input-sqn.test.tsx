@@ -8,21 +8,22 @@
    master admin. Wed 15 Jul 26 unless a test moves the clock. */
 import { describe, it, expect, afterEach, vi } from 'vitest'
 import { act, cleanup, render, fireEvent } from '@testing-library/react'
-import { withThird, third, signInAs, PID, ACCT, at, pastMidnight, moveMan } from '../test-support/msq-world'
+import { withThird, third, signInAs, signOut, PID, ACCT, at, pastMidnight, moveMan } from '../test-support/msq-world'
 import { commitNewInput, askOilIfPending } from './inputedit'
 import { inputsPageRows } from './InputsPage'
 import { InputEditor } from './InputWindow'
-import { INPEDIT, OILASK, OILLIST, setInpEdit, setOilList, setOilAsk } from './pops'
-import { INPUTS, inputSquadrons, idsOf } from '../engine/inputs'
+import { INPEDIT, OILASK, OILLIST, DOCVIEW, setInpEdit, setOilList, setOilAsk } from './pops'
+import { INPUTS, inputSquadrons, idsOf, inputUnitOf, inputOnDay, inputsOnDay, isDownchit } from '../engine/inputs'
+import { medDownAsOf, pendingUpchits, medEpisode } from '../engine/medical'
 import { PEOPLE } from '../engine/people'
 import { UNIT } from '../engine/unitview'
-import { notify, writeInputsBatch } from '../state/store'
+import { notify, writeInputsBatch, switchRoleView } from '../state/store'
 import { pageUnit, ownPageMayBe, myUnit, me } from '../state/perms'
-import { inputSqn, letOpenOn } from '../state/inputsqn'
+import { inputSqn, letOpenOn, letReadOnly, holderOf, isOpenMedical, lifeOf, filedOn, foreignInput } from '../state/inputsqn'
 import { globalUndo, globalRedo } from '../undo/timeline'
 import { fileStraight } from '../leavewar/state/store'
 import { enterForLine } from '../state/belltap'
-import { saveAccess } from '../state/accounts'
+import { saveAccess, addAccount } from '../state/accounts'
 import { setHome, unitsLoad, homeOn, todayIso } from '../state/units'
 import { pickSquadron } from '../state/pick'
 import { setPage, CURPAGE, setInpView, setInpMode, setCalMonth } from '../state/view'
@@ -655,13 +656,17 @@ describe('INPUT_DOORS — every door into an input\'s window says whether it bri
 /** the page the window stands on, as the window works it out (ui/InputWindow.tsx `pageSqn`: a saved input's window on the
  *  Inputs page stands on his own pages' squadron, anywhere else on the schedule in view's) */
 const windowPage = (): string => (CURPAGE === 'inputs' ? pageUnit('own') : UNIT)
-/** the root's verdict on the window a press just opened: '' — its note would let it stand live on the page; else what it
- *  is ("u142's input on u149's page" — a window born held) */
+/** the root's verdict on the window a press just opened: '' — its note would let it stand live on the page, or open it
+ *  there read only (step K10-a's `letReadOnly`, the K10 root plan §4.2 item 1: the window stands on `let ?? (ro ? at :
+ *  unit)`); else what it is ("u142's input on u149's page" — a window born held) */
+/* (asked optionally: on the code before step K10-a there is no `letReadOnly`, and a window it would open read only is born
+   held there — the very failure the re-pointed findings and M2 are seen red for, never a missing function's TypeError) */
+const readOnlyThere = (r: any, p: string): boolean => (letReadOnly as any)?.(r, p, me()) === true
 function bornHeld(): string {
   const r = INPEDIT, p = windowPage()
   if (!r || r._new) return ''
   const own = inputSqn(r, p)
-  return own === p || letOpenOn(r, p, me()) === p ? '' : `${own}'s input on ${p}'s page`
+  return own === p || letOpenOn(r, p, me()) === p || readOnlyThere(r, p) ? '' : `${own}'s input on ${p}'s page`
 }
 const shut = async () => { await doing(() => { setInpEdit(null); setOilAsk(null) }) }
 const rowIds = (): string[] => [...document.querySelectorAll('#inBody tr[data-iid]')].map(e => (e as HTMLElement).dataset.iid!)
@@ -822,8 +827,12 @@ describe('§5.5 — the doors into the Input window, each pressed (step K10): wh
   })
 })
 
-describe('§5.5 — two doors that DO open a window its note would hold (step K10\'s finding, put to him): the root is not switched on while they stand', () => {
-  it('FINDING — "Edit input" in the document viewer, from the Medical tab: Saber (a master admin), 149 picked, a man moved 142 → 149 — his 142 medical\'s card on 149\'s Medical tab opens 142\'s record on 149\'s page, with no case to let it', async () => {
+/* RE-POINTED AT STEP K10-a (the K10 root plan §7.1 FIND-1, FIND-2), every assertion of the two finding pins kept but the
+   last, which named the root's old verdict ("born held") and now names his answer: D2834 / D2845 for the Medical tab (a
+   record still open when its man moves goes with him — 149's), D2835 for the bell line (the View-only presser reads it
+   read only, today's look). */
+describe('§5.5 — the two doors step K10 found, answered by his D2834, D2845 and D2835 (step K10-a): neither opens a window born held', () => {
+  it('FIND-1 — D2834/D2845: "Edit input" in the document viewer, from the Medical tab: Saber (a master admin), 149 picked, a man moved 142 → 149 — his still-open OML\'s card on 149\'s Medical tab opens it as 149\'s, its note\'s answers live', async () => {
     /* Nasty's OML of 6–9 Jul (seeded, 142's), no upchit: moved to 149 by Saber, counting from Thu 16 Jul */
     const oml = INPUTS.find((r: any) => r.person === 'nasty' && r.type === 'OML') as any
     expect(oml && inputSquadrons(oml), 'the premise: his OML is 142\'s').toEqual(['u142'])
@@ -841,9 +850,53 @@ describe('§5.5 — two doors that DO open a window its note would hold (step K1
     expect(card, 'his 142 OML\'s card stands on 149\'s Medical tab (the tab lists the men on its roster on the day)').not.toBeNull()
     await press(card, 'the card')
     await press($('#docViewEdit'), '"Edit input"')
-    expect([UNIT, CURPAGE, String(INPEDIT?.iid)], 'the window of his 142 OML, on 149\'s page').toEqual(['u149', 'inputs', String(oml.iid)])
-    expect(bornHeld(), 'born held: neither of letOpenOn\'s cases covers it (today it opens live, and its Save writes 142\'s record under 149)').toBe('u142\'s input on u149\'s page')  })
-  it('FINDING — a bell line whose squadron is no longer the input\'s: Hunter (Plan of 149) filed a Training for Osprey; Osprey moved to 150 before its day; the line enters 149 and opens a 150 record there, with no case to let it', async () => {
+    expect([UNIT, CURPAGE, String(INPEDIT?.iid)], 'the window of his OML, on 149\'s page').toEqual(['u149', 'inputs', String(oml.iid)])
+    /* (his D2834: "anything that's outstanding that is not closed will need to be transferred with the person" — the OML,
+       still pending, is 149's now: the window's note takes 149, the page's own) */
+    expect(inputSqn(INPEDIT, 'u149'), 'the note\'s own squadron: 149, its holder').toBe('u149')
+    expect(bornHeld(), 'not born held: the page\'s own').toBe('')
+    live()
+  })
+  it('FIND-1 — D2834/D2845: …Kestrel (149\'s admin) reads it read only — the window\'s own mirror of the gate, which judges it by its days — and closes it with "Upchit": her Upchit dated on the move day is saved, 149\'s, and Nasty leaves Pending Upchit', async () => {
+    const oml = INPUTS.find((r: any) => r.person === 'nasty' && r.type === 'OML') as any
+    signInAs('saber')
+    expect(moveMan('nasty', 'u149').ok).toBe(true)
+    await act(async () => { pastMidnight() })
+    await app('kestrel' as any)
+    expect(pageUnit('own'), 'the premise: her own pages are 149\'s').toBe('u149')
+    await doing(() => { setPage('inputs'); setInpView('med') })
+    await press($('#medCalBtn'), 'the tab\'s "as of"')
+    await press($('[data-medday="2026-07-16"]'), 'Thu 16 Jul')
+    const card = () => $(`.med-pend .medcard[data-medcard="${oml.iid}"]`)
+    expect(card(), 'his OML under Pending Upchit on 149\'s tab').not.toBeNull()
+    await press(card(), 'the card')
+    await press($('#docViewEdit'), '"Edit input"')
+    expect([UNIT, CURPAGE, String(INPEDIT?.iid)]).toEqual(['u149', 'inputs', String(oml.iid)])
+    expect(bornHeld(), 'not born held: 149\'s, its holder').toBe('')
+    expect(tid('inped-ro'), 'read only for her (the window\'s own `foreign` test: she is an admin of none of its days\' squadrons)').not.toBeNull()
+    expect($('#inpEditSave'), 'no Save offered').toBeNull()
+    expect(foreignInput(oml), 'the predicate letReadOnly shares with the window says the same').toBe(true)
+    await shut()
+    /* "Upchit", from the same card: dated on Thu 16 Jul (the viewer seeds the demo's notional today, 13 Jul — the K10 root
+       plan §3.1: a date before the move would touch 142 and is the gate's to refuse, `[XFER]`'s) */
+    await press(card(), 'the card again')
+    await press($('#docViewUpchit'), '"Upchit"')
+    expect(INPEDIT?._ctx, 'the premise: the upchit\'s own window').toBe('up')
+    await press($('#inpEditUpDate'), 'the upchit\'s date box')
+    await press(tid('dcal-day-2026-07-16'), 'Thu 16 Jul')
+    const before = new Set(INPUTS.map((r: any) => r.iid))
+    await press($('#inpEditSave'), 'Add')
+    for (let i = 0; i < 3; i++) {
+      if (tid('upconf-save')) await press(tid('upconf-save'), 'the upchit sheet\'s Save')
+      else if (tid('docconf')) await press(tid('docconf-nodoc'), '"No document"')
+    }
+    const up = INPUTS.find((r: any) => !before.has(r.iid) && r.type === 'Upchit') as any
+    expect(up, 'her Upchit saved').toBeTruthy()
+    expect(inputSquadrons(up), '149\'s').toEqual(['u149'])
+    expect(card(), 'Nasty off Pending Upchit on 149\'s tab').toBeNull()
+    expect(pendingUpchits(20260716).some((e: any) => e.row.iid === oml.iid), 'off the tab\'s own Pending list').toBe(false)
+  })
+  it('FIND-2 — D2835, the View-only presser: a bell line whose squadron is no longer the input\'s: Hunter (Plan of 149) filed a Training for Osprey; Osprey moved to 150 before its day; the line enters 149 and the root\'s answer is read only, not born held', async () => {
     signInAs('hunter')
     const row = file({ person: PID.osprey, type: 'Training', start: '2026-07-27', end: '2026-07-27', title: 'Sim refresher' })
     signInAs('kestrel')
@@ -859,7 +912,10 @@ describe('§5.5 — two doors that DO open a window its note would hold (step K1
     await press($('#notifyBell'), 'the bell')
     await press(tid(`bell-line-${line.id}`), 'the line')
     expect([UNIT, CURPAGE, String(INPEDIT?.iid)], 'the line\'s own squadron, 149, its Inputs page, the window').toEqual(['u149', 'inputs', String(row.iid)])
-    expect(bornHeld(), 'born held: the line entered the squadron it was written for, not the input\'s').toBe(`${third.u150}'s input on u149's page`)  })
+    expect(inputSqn(INPEDIT, 'u149'), 'the premise: still 150\'s (its day is ahead: nothing carried)').toBe(third.u150)
+    expect(readOnlyThere(INPEDIT, 'u149'), 'read only on 149 (letReadOnly case 3: his pages may never be 150\'s, it does not name him, he could change nothing of it)').toBe(true)
+    expect(bornHeld(), 'not born held').toBe('')
+  })
 })
 
 describe('F8 (pin) — an input naming men of both squadrons is live and listed on both pages', () => {
@@ -905,5 +961,419 @@ describe('K0\'s settlement (§5.5\'s home-page row) — his own input of the squ
     expect(pageUnit('own')).toBe('u149')
     await doing(() => setInpEdit(INPUTS.find((x: any) => x.iid === lv.iid)))
     live(); expect(bornHeld()).toBe('')
+  })
+})
+
+/* ======================= STEP K10-a — under his D2834, D2845, D2846, D2847 (the K10 root plan §7.1) =======================
+   docs/superpowers/plans/2026-11-28-msq-s1-k10-root-plan.md. A ONE-MAN record still open when its man moves squadron goes
+   with him (D2834: "anything that's outstanding that is not closed will need to be transferred with the person"); one
+   closed before the move stays (D2846: "an upchit given by the old squadron"); his leave across the move is the new
+   squadron's (D2847); 149's admin closes a carried downchit when the paper comes in (D2845). Built here: `holderOf` (its
+   settle day, the episode's own upchit, the filing day), `inputSqn` holder-first, `lifeOf`, `letOpenOn`'s case 2 narrowed,
+   `letReadOnly` cases 3 and 4, and the Medical tab's Upchit Complete listed by the upchit's filing day. THE ROOT ITSELF
+   STAYS OFF (K10-d): a window's held answer is judged here, as in §5.5 above, by the root's own answers (`bornHeld`).
+   The days: Wed 15 Jul unless a test moves the clock; a move saved on a day counts from the next (D2119). */
+const D = (d: number) => `2026-07-${String(d).padStart(2, '0')}`
+const ordOf = (iso: string) => +iso.slice(0, 4) * 10000 + +iso.slice(5, 7) * 100 + +iso.slice(8, 10)
+/** Nasty's seeded OML of 6–9 Jul (state/demoseed.ts DEMO_MED — 142's, no upchit: Pending Upchit) */
+const nastyOml = (): any => INPUTS.find((r: any) => r.person === 'nasty' && r.type === 'OML')
+/** a move of `pid` to `unit`, saved on `iso` by Saber (a master admin), counting from the next day */
+function moveOn(iso: string, pid: string, unit: string) {
+  at(iso); unitsLoad()
+  signInAs('saber')
+  expect(moveMan(pid, unit).ok, `${pid} moved to ${unit}, saved on ${iso}`).toBe(true)
+}
+/** a filing through the Inputs page's own door on `iso`, by `who` — the clock set first, so its saved-at moment is that day */
+function fileOn(iso: string, who: string, draft: Record<string, unknown>): any {
+  at(iso); unitsLoad()
+  signInAs(who)
+  return file(draft)
+}
+const upchitOn = (iso: string, who: string, dated: string) => fileOn(iso, who, { person: 'nasty', type: 'Upchit', start: dated, end: dated })
+/** Ranger's leave of Tue 14 – Sat 18 Jul, filed by him on Wed 15 Jul */
+const rangerLeave = () => fileOn(D(15), 'ranger', { person: PID.ranger, type: 'LL', start: D(14), end: D(18) })
+
+describe('H1 — holderOf: the squadron that holds a one-man record now, only where a move of his has carried it (D2834; the plan §2.1)', () => {
+  it('Nasty\'s OML of 6–9 Jul, still pending: moved 142 → 149 (from 16 Jul) — null on the 15th (the move saved, not yet run), 149 on the 16th and 17th; moved on to 150 (from 20 Jul) while still pending — 149 on the 19th, 150 on the 20th and 21st (it follows him while open)', () => {
+    const oml = nastyOml()
+    expect(oml && inputSquadrons(oml), 'the premise: 142\'s').toEqual(['u142'])
+    expect(holderOf(oml, D(15)), 'no move').toBeNull()
+    moveOn(D(15), 'nasty', 'u149')
+    expect(holderOf(oml, D(15)), 'the move saved ahead: not carried until its day').toBeNull()
+    expect(holderOf(oml, D(16)), 'the move day').toBe('u149')
+    expect(holderOf(oml, D(17))).toBe('u149')
+    at(D(17))
+    expect(holderOf(oml), 'today, by the clock').toBe('u149')
+    expect(isOpenMedical(oml, D(17)), 'open').toBe(true)
+    moveOn(D(19), 'nasty', third.u150)
+    expect(holderOf(oml, D(19))).toBe('u149')
+    expect(holderOf(oml, D(20)), 'his second move\'s day').toBe(third.u150)
+    expect(holderOf(oml, D(21))).toBe(third.u150)
+  })
+  it('…and back to 142 (from 20 Jul) while still pending: 149 on the 17th, null on the 21st — his first squadron\'s again, nothing carried', () => {
+    const oml = nastyOml()
+    moveOn(D(15), 'nasty', 'u149')
+    expect(holderOf(oml, D(17))).toBe('u149')
+    moveOn(D(19), 'nasty', 'u142')
+    expect(holderOf(oml, D(19))).toBe('u149')
+    expect(holderOf(oml, D(21)), 'back on 142, the squadron of its first day').toBeNull()
+  })
+  it('…closed by an upchit Kestrel (149\'s admin) files on 18 Jul, then moved on to 150: 149 before it was filed (open), 149 for good after (it stays where it was closed — D2845)', () => {
+    const oml = nastyOml()
+    moveOn(D(15), 'nasty', 'u149')
+    const up = upchitOn(D(18), 'kestrel', D(18))
+    expect(filedOn(up), 'its filing day: its saved-at moment').toBe(D(18))
+    expect(holderOf(oml, D(17)), 'the day before it was filed: still open, his').toBe('u149')
+    expect(isOpenMedical(oml, D(17))).toBe(true)
+    moveOn(D(19), 'nasty', third.u150)
+    expect(holderOf(oml, D(18)), 'the filing day').toBe('u149')
+    expect(holderOf(oml, D(19))).toBe('u149')
+    expect(holderOf(oml, D(21)), 'after his move to 150: kept by 149').toBe('u149')
+    expect(isOpenMedical(oml, D(21)), 'closed').toBe(false)
+    expect(holderOf(up, D(21)), 'an upchit is never carried: by its own day').toBeNull()
+  })
+  it('…an upchit dated 17 Jul but filed on 10 Jul, before the move (given by the old squadron — D2846; the filing day decides, the planner\'s reading R1): null on the 10th, 15th, 16th, 17th and 21st', () => {
+    const oml = nastyOml()
+    const up = upchitOn(D(10), 'saber', D(17))
+    expect(filedOn(up)).toBe(D(10))
+    moveOn(D(15), 'nasty', 'u149')
+    for (const d of [10, 15, 16, 17, 21]) expect(holderOf(oml, D(d)), `on ${D(d)}`).toBeNull()
+    expect(isOpenMedical(oml, D(16)), 'closed before the move').toBe(false)
+  })
+  it('…replaced: the OML of 6–9 Jul by an ATT C of 12–13 Jul (a separate later episode); an upchit Kestrel files on 17 Jul closes the ATT C, never the OML (Astra 5): the OML null throughout, the ATT C 149 from the move day', () => {
+    const oml = nastyOml()
+    const attc = fileOn(D(11), 'saber', { person: 'nasty', type: 'ATT C', start: D(12), end: D(13) })
+    moveOn(D(15), 'nasty', 'u149')
+    upchitOn(D(17), 'kestrel', D(17))
+    for (const d of [15, 16, 17, 18]) expect(holderOf(oml, D(d)), `the OML on ${D(d)} — replaced, read by its days`).toBeNull()
+    expect(isOpenMedical(oml, D(15)), 'replaced: not open').toBe(false)
+    expect(holderOf(attc, D(15)), 'the ATT C before the move').toBeNull()
+    expect(holderOf(attc, D(16)), 'the ATT C on the move day: open, carried').toBe('u149')
+    expect(holderOf(attc, D(17)), 'closed by 149\'s upchit, filed after the move').toBe('u149')
+    expect(holderOf(attc, D(18))).toBe('u149')
+  })
+  it('Ranger\'s leave of 14–18 Jul across his move to 149 (from 16 Jul): null on the 15th (saved ahead), 149 on the 16th, 17th and 19th — then moved on to 150 (from 20 Jul): still 149 on the 21st (kept — D2847, Astra 4)', () => {
+    const lv = rangerLeave()
+    moveOn(D(15), PID.ranger, 'u149')
+    expect(holderOf(lv, D(15))).toBeNull()
+    for (const d of [16, 17, 19]) expect(holderOf(lv, D(d)), `on ${D(d)}`).toBe('u149')
+    moveOn(D(19), PID.ranger, third.u150)
+    expect(holderOf(lv, D(21)), 'after his move to 150').toBe('u149')
+  })
+  it('…or back to 142 (from 20 Jul): still 149 on the 21st (kept)', () => {
+    const lv = rangerLeave()
+    moveOn(D(15), PID.ranger, 'u149')
+    moveOn(D(19), PID.ranger, 'u142')
+    expect(holderOf(lv, D(21))).toBe('u149')
+  })
+  it('never carried: an input of several people (R8), a new input, one whose first day is ahead, and a record his move did not run across', () => {
+    signInAs('hunter')
+    const both = file({ person: PID.hunter, type: 'Training', start: D(14), end: D(14), title: 'Shared' })
+    expect(writeInputsBatch(() => { (INPUTS.find((x: any) => x.iid === both.iid) as any).people.push({ p: PID.ranger, by: PID.hunter, at: Date.now() }) })).toBe(true)
+    const ahead = fileOn(D(15), 'ranger', { person: PID.ranger, type: 'LL', start: D(27), end: D(27) })
+    const before = fileOn(D(15), 'ranger', { person: PID.ranger, type: 'LL', start: D(14), end: D(14) })
+    moveOn(D(15), PID.ranger, 'u149')
+    expect(holderOf(INPUTS.find((x: any) => x.iid === both.iid), D(17)), 'several people').toBeNull()
+    expect(holderOf({ _new: true, person: PID.ranger, type: 'LL' }, D(17)), 'a new input').toBeNull()
+    expect(holderOf(ahead, D(17)), 'its first day ahead: 149\'s by its days already').toBeNull()
+    expect(holderOf(before, D(17)), 'wholly before the move: stays (D2847)').toBeNull()
+  })
+})
+
+describe('H2 (pin) — holderOf reads nothing of who is signed in or looking (the plan §2.4)', () => {
+  it('every H1 kind of record, and inputSqn and lifeOf with it on 142\'s, 149\'s and 150\'s pages: the same answer signed in as Saber, Hunter, Kestrel, Nasty, Ranger, Osprey, Mako and nobody, in the admin view and the member view', async () => {
+    signInAs('saber')
+    expect(addAccount('nasty', 'nasty', 'main'), 'a sign-in for Nasty (an admin-added account takes any password)').toBeNull()
+    const oml = nastyOml()
+    const lv = rangerLeave()
+    const ll = INPUTS.find((r: any) => r.person === 'nasty' && r.type === 'LL')
+    expect(ll, 'the premise: Nasty\'s seeded LL of 14 Jul').toBeTruthy()
+    signInAs('hunter')
+    const both = file({ person: PID.hunter, type: 'Training', start: D(21), end: D(21), title: 'Shared' })
+    expect(writeInputsBatch(() => { (INPUTS.find((x: any) => x.iid === both.iid) as any).people.push({ p: PID.osprey, by: PID.hunter, at: Date.now() }) })).toBe(true)
+    moveOn(D(15), 'nasty', 'u149')
+    moveOn(D(15), PID.ranger, 'u149')
+    at(D(17)); unitsLoad()
+    const recs = [oml, lv, ll, INPUTS.find((x: any) => x.iid === both.iid)]
+    const pages = ['u142', 'u149', third.u150]
+    const answer = () => JSON.stringify(recs.map(r => [holderOf(r), lifeOf(r).slice().sort(), ...pages.map(p => inputSqn(r, p))]))
+    signOut()
+    const base = answer()
+    expect(holderOf(oml), 'the premise: Nasty\'s OML carried').toBe('u149')
+    expect(holderOf(lv), 'the premise: Ranger\'s leave carried').toBe('u149')
+    for (const who of ['saber', 'hunter', 'kestrel', 'nasty', 'ranger', 'osprey', 'mako']) {
+      signInAs(who)
+      expect(me(), `${who} signed in`).toBeTruthy()
+      expect(answer(), who).toBe(base)
+      if (['saber', 'hunter', 'kestrel', 'mako'].includes(who)) {
+        await act(async () => { await switchRoleView() })
+        expect(answer(), `${who}, the member view`).toBe(base)
+        await act(async () => { await switchRoleView() })
+      }
+    }
+  })
+})
+
+describe('H3 — inputSqn puts a carried record\'s holder first (the plan §2.2)', () => {
+  it('Nasty\'s carried OML → 149 on 142\'s, 149\'s and 150\'s pages; Ranger\'s carried leave → 149 on 142\'s page and on 149\'s (F0\'s assertions, above, unchanged)', () => {
+    const oml = nastyOml()
+    const lv = rangerLeave()
+    moveOn(D(15), 'nasty', 'u149')
+    moveOn(D(15), PID.ranger, 'u149')
+    at(D(17)); unitsLoad()
+    for (const p of ['u142', 'u149', third.u150]) expect(inputSqn(oml, p), `Nasty's OML on ${p}'s page`).toBe('u149')
+    expect(inputSqn(lv, 'u142'), 'Ranger\'s leave on 142\'s page — it touches 142, but it went with him').toBe('u149')
+    expect(inputSqn(lv, 'u149')).toBe('u149')
+  })
+})
+
+describe('H4 (pin) — "open" agrees with the Medical tab, record by record (Opus 9)', () => {
+  it('a medical record is open by holderOf\'s rule ⇔ it is in the episode of an entry the tab lists under Medically Down or Pending Upchit that day: every seeded medical record, every day of the demo fortnight (13–26 Jul), unmoved and with Nasty moved', () => {
+    const check = (label: string) => {
+      const meds = INPUTS.filter((r: any) => isDownchit(r.type))
+      expect(meds.length, 'the premise: the seeded medical records').toBeGreaterThan(2)
+      for (let d = 13; d <= 26; d++) {
+        const iso = D(d), o = ordOf(iso)
+        const listed = new Set<any>()
+        for (const e of [...medDownAsOf(o), ...pendingUpchits(o)]) for (const x of medEpisode(e.row)) listed.add(x)
+        for (const r of meds) expect(isOpenMedical(r, iso), `${label}: ${r.person}'s ${r.type} of ${r.date} on ${iso}`).toBe(listed.has(r))
+      }
+    }
+    check('unmoved')
+    moveOn(D(15), 'nasty', 'u149')
+    check('Nasty moved to 149')
+  })
+})
+
+describe('H5 (pin) — the engine\'s readers and the save gate read neither inputSqn nor holderOf (the plan §5, §10 risk 4)', () => {
+  it('Nasty\'s OML: its squadrons, its days on 142\'s and 149\'s rosters, 142\'s Unavailable list of 6–9 Jul and its first day\'s squadron — the same before and after his move', () => {
+    const oml = nastyOml()
+    const read = () => JSON.stringify({
+      sq: inputSquadrons(oml), unit: inputUnitOf(oml),
+      on: [6, 7, 8, 9].map(d => [inputOnDay(oml, 'u142', D(d)), inputOnDay(oml, 'u149', D(d))]),
+      list: [6, 7, 8, 9].map(d => inputsOnDay('u142', D(d)).includes(oml)),
+    })
+    const was = read()
+    expect(JSON.parse(was).list, 'the premise: on 142\'s Unavailable list those days').toEqual([true, true, true, true])
+    moveOn(D(15), 'nasty', 'u149')
+    at(D(17)); unitsLoad()
+    /* (the doors asked, as a press asks them — what they answer is H3's) */
+    for (const p of ['u142', 'u149', third.u150]) inputSqn(oml, p)
+    expect(read(), 'the engine\'s readers unchanged').toBe(was)
+  })
+  it('no file of the engine, the Leave War or the save gate (state/perms.ts) imports state/inputsqn.ts', async () => {
+    const { readFileSync, readdirSync } = await import('node:fs')
+    const under = (dir: string) => (readdirSync(`src/${dir}`, { recursive: true }) as string[]).map(p => `${dir}/${String(p).split('\\').join('/')}`)
+      .filter(p => /\.(ts|tsx|js|jsx)$/.test(p) && !/\.test\./.test(p))
+    const files = [...under('engine'), ...under('leavewar'), 'state/perms.ts']
+    expect(files.length, 'the premise: files read').toBeGreaterThan(20)
+    const importing = files.filter(p => /^\s*import[^\n]*inputsqn['"]/m.test(readFileSync(`src/${p}`, 'utf8')))
+    expect(importing).toEqual([])
+  })
+})
+
+describe('H6 — letOpenOn\'s case 2 narrowed to the list\'s width (K9\'s aheadAt; D2729 Q8 — the plan §4.3)', () => {
+  it('a moved master admin\'s old 142 duty on his new 149 home page → null (it was let there, then held at the root)', async () => {
+    signInAs('saber')
+    const duty = file({ person: PID.saber, type: 'Duty', start: D(15), end: D(15), title: 'Duty officer' })
+    expect(saveAccess(ACCT.kestrel, { master: true }), 'Kestrel made a master admin').toBeNull()
+    signInAs('kestrel')
+    expect(setHome(PID.saber, 'u149').ok, 'Saber moved to 149, counting from Thu 16 Jul').toBe(true)
+    unitsLoad()
+    await act(async () => { pastMidnight() })
+    signInAs('saber')
+    expect(myUnit(todayIso()), 'the premise: 149 is his home today').toBe('u149')
+    expect(inputSqn(duty, 'u149'), 'the premise: his duty is 142\'s').toBe('u142')
+    expect(ownPageMayBe('u142'), 'the premise: a master admin\'s pages may be 142\'s (case 1 does not let it)').toBe(true)
+    expect(letOpenOn(duty, 'u149', PID.saber), 'not let on his 149 home page').toBeNull()
+  })
+  it('K0\'s settlement unchanged by the narrowing: Saber, home 142, a move to 149 saved for 1 Dec — his leave of 5 Dec on his 142 home page → 142', () => {
+    at('2026-11-30'); unitsLoad()
+    signInAs('saber')
+    expect(saveAccess(ACCT.kestrel, { master: true }), 'Kestrel made a master admin').toBeNull()
+    signInAs('kestrel')
+    expect(setHome(PID.saber, 'u149').ok, 'a move to 149 saved for Tue 1 Dec').toBe(true)
+    unitsLoad()
+    signInAs('saber')
+    expect(myUnit(todayIso()), 'the premise: 142 his home today').toBe('u142')
+    const lv = file({ person: PID.saber, type: 'LL', start: '2026-12-05', end: '2026-12-05' })
+    expect(inputSqn(lv, 'u142'), 'the premise: 149\'s on its day').toBe('u149')
+    expect(letOpenOn(lv, 'u142', PID.saber), 'his own, of the squadron he moves to, on his home page').toBe('u142')
+  })
+})
+
+describe('H7 — letReadOnly: the window opens read only on a page that is not the record\'s own (the plan §4.3 cases 3 and 4)', () => {
+  it('case 3 — Hunter (Plan of 149, View of 150) and Osprey\'s Training, Osprey since moved to 150: read only on 149; on 150 its own, not read only by this', async () => {
+    signInAs('hunter')
+    const row = file({ person: PID.osprey, type: 'Training', start: '2026-07-27', end: '2026-07-27', title: 'Sim refresher' })
+    signInAs('saber')
+    expect(moveMan(PID.osprey, third.u150).ok).toBe(true)
+    await act(async () => { pastMidnight() })
+    signInAs('hunter')
+    expect(inputSqn(row, 'u149'), 'the premise: 150\'s').toBe(third.u150)
+    expect(lifeOf(row), 'the premise: 149 is not in its life (case 4 does not reach it)').not.toContain('u149')
+    expect(letReadOnly(row, 'u149', PID.hunter)).toBe(true)
+    expect(letReadOnly(row, third.u150, PID.hunter), 'its own page').toBe(false)
+  })
+  it('case 4 — Nasty\'s carried OML (moved to 149 from 16 Jul): read only on 142\'s page (in its life, not its holder); on 149\'s, its holder, not read only by this', () => {
+    const oml = nastyOml()
+    moveOn(D(15), 'nasty', 'u149')
+    at(D(17)); unitsLoad()
+    signInAs('saber')
+    expect(lifeOf(oml).slice().sort()).toEqual(['u142', 'u149'])
+    expect(letReadOnly(oml, 'u142', PID.saber)).toBe(true)
+    expect(letReadOnly(oml, 'u149', PID.saber)).toBe(false)
+    expect(letReadOnly(oml, third.u150, PID.saber), '150 is not in its life').toBe(false)
+  })
+  it('case 4 — moved twice (149 from 16 Jul, 150 from 20 Jul), still pending: read only on 149 (between the moves) and on 142; not on 150, its holder', () => {
+    const oml = nastyOml()
+    moveOn(D(15), 'nasty', 'u149')
+    moveOn(D(19), 'nasty', third.u150)
+    at(D(21)); unitsLoad()
+    signInAs('saber')
+    expect(inputSqn(oml, 'u149'), 'the premise: 150\'s, its holder').toBe(third.u150)
+    expect(letReadOnly(oml, 'u149', PID.saber), 'the squadron between his moves (Astra 3, Opus 3)').toBe(true)
+    expect(letReadOnly(oml, 'u142', PID.saber)).toBe(true)
+    expect(letReadOnly(oml, third.u150, PID.saber)).toBe(false)
+  })
+  it('case 4 — a move to 149 saved ahead (from 16 Jul), the OML pending, today 15 Jul: read only on 149 (a squadron he is moving into); on 142, still its own, not read only by this', () => {
+    const oml = nastyOml()
+    moveOn(D(15), 'nasty', 'u149')
+    signInAs('saber')
+    expect(inputSqn(oml, 'u149'), 'the premise: 142\'s until the move runs').toBe('u142')
+    expect(letReadOnly(oml, 'u149', PID.saber)).toBe(true)
+    expect(letReadOnly(oml, 'u142', PID.saber)).toBe(false)
+  })
+  it('Ranger\'s carried leave on 142\'s List: read only (case 4); a two-squadron input (F8): false on both pages; an OML closed before the move (its upchit filed on 10 Jul): false on 149 (not in its life)', () => {
+    const lv = rangerLeave()
+    signInAs('hunter')
+    const both = file({ person: PID.hunter, type: 'Training', start: D(21), end: D(21), title: 'Shared' })
+    expect(writeInputsBatch(() => { (INPUTS.find((x: any) => x.iid === both.iid) as any).people.push({ p: PID.osprey, by: PID.hunter, at: Date.now() }) })).toBe(true)
+    const oml = nastyOml()
+    upchitOn(D(10), 'saber', D(10))
+    moveOn(D(15), PID.ranger, 'u149')
+    moveOn(D(15), 'nasty', 'u149')
+    at(D(17)); unitsLoad()
+    signInAs('hunter')
+    expect(letReadOnly(lv, 'u142', PID.hunter), 'Ranger\'s carried leave on 142\'s List').toBe(true)
+    const b = INPUTS.find((x: any) => x.iid === both.iid)
+    expect(letReadOnly(b, 'u142', PID.hunter), 'F8 on 142').toBe(false)
+    expect(letReadOnly(b, 'u149', PID.hunter), 'F8 on 149').toBe(false)
+    expect(inputSqn(oml, 'u149'), 'the premise: the closed OML stays 142\'s').toBe('u142')
+    expect(letReadOnly(oml, 'u149', PID.hunter), 'closed before the move: not in its life').toBe(false)
+  })
+})
+
+/** the Medical tab's "as of" moved to `iso` by its own calendar (every day of these tests is in July 2026) */
+async function asOfDay(iso: string) {
+  await press($('#medCalBtn'), 'the tab\'s "as of"')
+  await press($(`[data-medday="${iso}"]`), `the as-of day ${iso}`)
+}
+const medTab = async () => { await doing(() => { setPage('inputs'); setInpView('med') }) }
+
+describe('M1 — Upchit Complete lists an upchit by the roster on its filing day (D2846; the plan §3.1)', () => {
+  it('Nasty\'s upchit filed on 10 Jul, before his move to 149: on 142\'s tab only, as of 13 Jul and as of 17 Jul', async () => {
+    const up = upchitOn(D(10), 'saber', D(10))
+    moveOn(D(15), 'nasty', 'u149')
+    at(D(17)); unitsLoad()
+    await app('saber')
+    await medTab()
+    const onTab = () => !!$(`.med-done .medcard[data-medcard="${up.iid}"]`)
+    for (const d of [17, 13]) { await asOfDay(D(d)); expect(onTab(), `on 142's tab as of ${D(d)}`).toBe(true) }
+    await topPick('u149')
+    await medTab()
+    for (const d of [17, 13]) { await asOfDay(D(d)); expect(onTab(), `not on 149's tab as of ${D(d)}`).toBe(false) }
+  })
+  /* (two tests: one upchit closes the OML, and a second for the same period is refused — "already closed") */
+  it('…one filed after the move: Kestrel\'s, filed on 17 Jul dated 17 Jul — on 149\'s tab only, as of 17 Jul', async () => {
+    moveOn(D(15), 'nasty', 'u149')
+    const a = upchitOn(D(17), 'kestrel', D(17))
+    await app('saber')
+    await medTab()
+    const onTab = () => !!$(`.med-done .medcard[data-medcard="${a.iid}"]`)
+    await asOfDay(D(17))
+    expect(onTab(), 'not on 142\'s tab').toBe(false)
+    await topPick('u149')
+    await medTab()
+    await asOfDay(D(17))
+    expect(onTab(), 'on 149\'s tab').toBe(true)
+  })
+  it('…a backdated certificate (D2845): filed on 17 Jul, after the move, dated 14 Jul — on 149\'s tab only, as of 15 Jul and as of 17 Jul', async () => {
+    moveOn(D(15), 'nasty', 'u149')
+    const b = upchitOn(D(17), 'saber', D(14))
+    expect(new Date(b.at).getDate(), 'the premise: saved on 17 Jul').toBe(17)
+    expect(inputSquadrons(b), 'the premise: 142\'s by its date').toEqual(['u142'])
+    await app('saber')
+    await medTab()
+    const onTab = () => !!$(`.med-done .medcard[data-medcard="${b.iid}"]`)
+    for (const d of [15, 17]) { await asOfDay(D(d)); expect(onTab(), `not on 142's tab as of ${D(d)}`).toBe(false) }
+    await topPick('u149')
+    await medTab()
+    for (const d of [15, 17]) { await asOfDay(D(d)); expect(onTab(), `on 149's tab as of ${D(d)}`).toBe(true) }
+  })
+})
+
+/** every card of every section of the Medical tab, and every page of its viewer's pager, then "Edit input": the number of
+ *  windows opened, each judged by the root's own answers (`bornHeld`) */
+async function everyCard(label: string, seen: Set<string>): Promise<number> {
+  const cards = () => [...document.querySelectorAll('#medView .medcard')] as HTMLElement[]
+  const count = cards().length
+  let n = 0
+  for (let i = 0; i < count; i++) {
+    await press(cards()[i]!, `${label}: card ${i}`)
+    expect(DOCVIEW, `${label}: card ${i} opened the viewer`).toBeTruthy()
+    const pages = +((($('.docview-count')?.textContent) || '1 of 1').split(' of ')[1] || 1)
+    await press($('#docViewClose'), 'the viewer\'s ✕')
+    for (let pg = 0; pg < pages; pg++) {
+      await press(cards()[i]!, `${label}: card ${i}`)
+      for (let k = 0; k < pg; k++) await press($('#docViewNext'), 'the pager\'s next')
+      await press($('#docViewEdit'), '"Edit input"')
+      expect(INPEDIT, `${label}: card ${i}, page ${pg + 1} opened its window`).toBeTruthy()
+      seen.add(`${windowPage()}:${String(INPEDIT?.iid)}`)
+      expect(bornHeld(), `${label}: card ${i}, page ${pg + 1} (${String(INPEDIT?.iid)})`).toBe('')
+      n++
+      await shut()
+    }
+  }
+  return n
+}
+/** 142's, 149's and 150's tabs, each as of every day named: every card pressed (Saber, a master admin, picks each) */
+async function sweep(days: number[]): Promise<Set<string>> {
+  const seen = new Set<string>()
+  let n = 0
+  await app('saber')
+  for (const u of ['u142', 'u149', third.u150]) {
+    if (UNIT !== u) await topPick(u)
+    await medTab()
+    expect(pageUnit('own'), `the premise: ${u}'s tab`).toBe(u)
+    for (const d of days) { await asOfDay(D(d)); n += await everyCard(`${u} as of ${D(d)}`, seen) }
+  }
+  expect(n, 'the premise: windows opened').toBeGreaterThan(0)
+  return seen
+}
+
+describe('M2 — every card of the Medical tab opens a window that is not born held (the plan §3.1, §10 risk 2)', () => {
+  it('Nasty unmoved (today 15 Jul): 142\'s, 149\'s and 150\'s tabs as of 13, 15 and 17 Jul', async () => {
+    const seen = await sweep([13, 15, 17])
+    expect(seen.has(`u142:${nastyOml().iid}`), 'the premise: his OML pressed on 142\'s tab').toBe(true)
+  })
+  it('Nasty moved to 149 (from 16 Jul; today 17 Jul): as of 13, 15 (a day before the move) and 17 Jul', async () => {
+    moveOn(D(15), 'nasty', 'u149')
+    at(D(17)); unitsLoad()
+    const seen = await sweep([13, 15, 17])
+    expect(seen.has(`u149:${nastyOml().iid}`), 'his OML pressed on 149\'s tab (finding 1\'s press)').toBe(true)
+    expect(seen.has(`u142:${nastyOml().iid}`), 'and on 142\'s, as of a day before the move').toBe(true)
+  })
+  it('Nasty moved twice (149 from 16 Jul, 150 from 20 Jul; today 21 Jul): as of 13, 15, 18 (between the moves) and 21 Jul', async () => {
+    moveOn(D(15), 'nasty', 'u149')
+    moveOn(D(19), 'nasty', third.u150)
+    at(D(21)); unitsLoad()
+    const seen = await sweep([13, 15, 18, 21])
+    for (const u of ['u142', 'u149', third.u150]) expect(seen.has(`${u}:${nastyOml().iid}`), `his OML pressed on ${u}'s tab`).toBe(true)
+  })
+  it('Nasty\'s move to 149 saved ahead (from 16 Jul; today 15 Jul): as of 13, 15 and 17 Jul (a day after the saved move)', async () => {
+    moveOn(D(15), 'nasty', 'u149')
+    const seen = await sweep([13, 15, 17])
+    expect(seen.has(`u149:${nastyOml().iid}`), 'his OML pressed on 149\'s tab, as of a day after the saved move').toBe(true)
   })
 })

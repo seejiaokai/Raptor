@@ -57,6 +57,7 @@ const RECORDS: Record<string, string> = {
   'leavewar/schedrecs.ts': 'the Leave War\'s one typed doorway to the stored list (warInputs, warLines) — what it hands out is read and written by the files listed for each',
   'leavewar/ui/Matrix.tsx': 'the input a war cell derives from, by its id (warInputs — the Leave War\'s doorway)',
   'state/changelines.ts': 'the change history\'s line for an input',
+  'state/inputsqn.ts': 'does a move of his carry a one-man record (holderOf — the K10 root plan §2.1, his D2834): his later downchits and his upchits, read as records, never written',
   'engine/rowinput.ts': 'the input one man\'s row stands for now (rowInputOf): the record his row addresses while he is in it, else the one cut out for him — found by its id, never written',
   'state/docs.ts': 'a medical input\'s documents',
   'state/perms.ts': 'who may change an input',

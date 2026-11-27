@@ -95,6 +95,29 @@ describe('the Medical view', () => {
     expect($('.medsec.med-pend').textContent).toContain('OML1–5 Jul')
     expect($('.medsec.med-done').textContent).toContain('8 Jul')
   })
+  /* D2846 (the K10 root plan §3.1, step K10-a): Upchit Complete lists an upchit by the roster on its FILING day — its
+     saved-at moment, else its `mod` stamp where that is a date, else its own date (state/inputsqn.ts filedOn; data already
+     stored, D56). With one squadron every man is on its roster whatever the day, so each kind of record still lists: the
+     moves themselves are ui/msq-guard-input-sqn.test.tsx M1's. */
+  it('D2846 (pin) Upchit Complete by the filing day: an upchit with no saved-at moment and a `mod` that is no date (yeti\'s), one with a dated `mod` and one with a saved-at moment all still list', async () => {
+    const yeti = INPUTS.find((r: any) => r.person === 'yeti' && r.type === 'Upchit') as any
+    expect([yeti.at, yeti.mod], 'the premise: no saved-at moment, its mod not a date').toEqual([undefined, 'now'])
+    const dated = await plant({ person: 'shrek', type: 'Upchit', date: 'Jul 6', mod: '2026-07-07' })
+    const stamped = await plant({ person: 'divot', type: 'Upchit', date: 'Jul 12', at: new Date(2026, 6, 12, 10).getTime() })
+    try {
+      const done = cardsIn('med-done').map(c => c.dataset.medcard)
+      expect(done, 'all three listed').toEqual(expect.arrayContaining([yeti.iid, dated.iid, stamped.iid]))
+    } finally {
+      await act(async () => { writeInputsBatch(() => { for (const r of [dated, stamped]) INPUTS.splice(INPUTS.indexOf(r), 1) }); notify() })
+    }
+  })
+  it('D2846 the filing day read (state/inputsqn.ts filedOn): its saved-at moment, else a dated `mod`, else its own date', async () => {
+    const { filedOn } = await import('../state/inputsqn')
+    expect(filedOn({ type: 'Upchit', date: 'Jul 8', yr: 2026, mod: 'now' }), 'no moment, its mod no date: its own date').toBe('2026-07-08')
+    expect(filedOn({ type: 'Upchit', date: 'Jul 6', yr: 2026, mod: '2026-07-07' }), 'its mod').toBe('2026-07-07')
+    expect(filedOn({ type: 'Upchit', date: 'Jul 12', yr: 2026, mod: '2026-07-01', at: new Date(2026, 6, 14, 10).getTime() }), 'its saved-at moment first').toBe('2026-07-14')
+    expect(filedOn(null)).toBeNull()
+  })
   /* D965 (built as drawn — D961): a card is two rows — the puck alone, then the kind and the period ("ATT C 10–14 Jul");
      Pending Upchit reads the kind and period, "was down" gone; Upchit Complete says no kind and no "upchitted", only its
      date (three a row is a browser's to measure — e2e/medical.spec.ts) */

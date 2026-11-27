@@ -31,6 +31,7 @@ const ALLOWED: Record<string, { n: number; why: string }> = {
   'engine/overlay.ts': { n: 3, why: 'an index of every input by its id (a look-up table), the stored weeks\' memo signature (requestsSig) — a cache key over every record, never a list shown — and landingRequests, a squadron\'s requests as they land, each judged on its own first day by the one body (inputOnDay — the reshape plan §3.2 A-iii, Fable F4: a writer never iterates "touches")' },
   'engine/medical.ts': { n: 2, why: 'one man\'s medical rows (a man\'s own, whatever squadron) — and, with no man named, the Medical tab\'s three lists, which ui/MedicalView.tsx and ui/InputsPage.tsx narrow to the signed-in person\'s own squadron' },
   'state/person-delete.ts': { n: 1, why: 'a deleted man\'s own inputs — his, whatever squadron' },
+  'state/inputsqn.ts': { n: 2, why: 'one man\'s own medical rows — his later downchits and his upchits, whatever squadron — for whether a move of his carries his record (holderOf, the K10 root plan §2.1, his D2834)' },
   'state/roster-restore.ts': { n: 1, why: 'is a man still named in ANY input — every squadron\'s' },
   'state/history.ts': { n: 1, why: 'the history snapshot: the whole list, stored whole' },
   'state/persist.ts': { n: 1, why: 'storage: every input saved, one row each' },

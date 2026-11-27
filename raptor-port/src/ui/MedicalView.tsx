@@ -24,6 +24,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { PEOPLE, byCrew } from '../engine/people'
 import { onRosterOf } from '../engine/roster'
 import { pageUnit } from '../state/perms'
+import { filedOn } from '../state/inputsqn'
 import { INPUT_TYPES, inpMeta, inpType, leadOf, remarksTyped, defaultAllday } from '../engine/inputs'
 import { medDownAsOf, pendingUpchits, upchitsWithin, medEpisode } from '../engine/medical'
 import { docHas, rowDocIds } from '../state/docs'
@@ -196,7 +197,12 @@ export function MedicalView({ onClose }: { onClose?: () => void }) {
   const mine = (e: any) => onRosterOf(e.person, pageUnit('own'), asOf)
   const down = medDownAsOf(ord).filter(mine).sort(crew)
   const pend = pendingUpchits(ord).filter(mine).sort(crew)
-  const done = upchitsWithin(ord, 30).filter(mine)          // newest first, its own order
+  /* UPCHIT COMPLETE LISTS AN UPCHIT BY THE ROSTER ON ITS FILING DAY (his D2846: "an upchit given by the old squadron" — the
+     K10 root plan §3.1, the planner's reading R1): never the "as of" day's, nor its own date's. An upchit filed before his
+     move stands on his old squadron's tab and not on the new one's; one filed after it — a backdated certificate the new
+     squadron files included (D2845) — on the new one's. A card stands on one tab instead of the other; nothing new is
+     drawn (R10). (state/inputsqn.ts filedOn: its saved-at moment, else its `mod` stamp, else its own date.) */
+  const done = upchitsWithin(ord, 30).filter((e: any) => onRosterOf(e.person, pageUnit('own'), filedOn(e.row) ?? asOf))   // newest first, its own order
 
   /* this person's overlapping-episode documents that are actually on file.
      ROWS feed the pager; the card's count of documents — its title, and the drawing and number from two (D966, D967) — counts FILES (an
