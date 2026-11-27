@@ -1392,6 +1392,7 @@ features that then want several weeks at once, weigh whether weeks become separa
 the live one) — put to him with its cost; until then nothing changes. **Place:** with [DB-STEP].
 
 ### [XFER] Multi-squadron + transfer a person with their data — future milestone (with [DB-STEP])
+- **27 Nov 26, his D2842 (filed by D201):** a Tracker course still running at a move goes with him — his place and progress shown on the new squadron's Tracker, finished there; the old squadron's Tracker keeps what he flew there as history. Today the course stays in the old Tracker and its tie to him breaks (chat 204's q30b report, item 9). Drawn first (D1625).
 **His D2634 (25 Nov 26, chat 175):** postings — post out with every outcome, Transfer to Sqn among them, and post in — get a
 new interface on Admin → Users with the Leave War's full functionality (a SANS man the war hides reached there); the Leave
 War keeps its sheets; built with the Transfer step (batch 4), drawn first. With it, D2633's "It's him" for another
