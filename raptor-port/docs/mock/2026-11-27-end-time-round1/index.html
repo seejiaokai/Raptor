@@ -42,6 +42,7 @@ figcaption{font-size:.86rem;color:var(--muted)}
 .fact{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
 .fact b{display:block;font-size:1.05rem}
 .fact span{color:var(--muted);font-size:.88rem}
+.fact a{color:var(--accent)}
 .later{color:var(--muted);font-size:.95rem}
 #zoom{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;flex-direction:column;z-index:20;
   padding:calc(env(safe-area-inset-top,0px) + 10px) max(10px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 10px) max(10px,env(safe-area-inset-left,0px))}
@@ -87,7 +88,7 @@ button:focus-visible,a:focus-visible,img:focus-visible{outline:3px solid var(--a
   <div class="facts">
     <div class="fact"><b>Which items count</b><span>Every item with someone on it needs a start and an end. A row with a start needs its end. Left out: rows from an All day input, cancelled or information-only items, the AMT brief and debrief with nobody on them, and blank rows.</span></div>
     <div class="fact"><b>Checked</b><span>82 cases walked on a desktop and an iPhone-sized screen, then three re-walks; three independent code reads; every fault found was fixed and checked again. GitHub's full checks: all passed.</span></div>
-    <div class="fact"><b>No preview link yet</b><span>Vercel refused to build a preview: it allows only so many builds a day. It said to retry within 24 hours of 07:45 this morning. I'll send the link once a preview is ready.</span></div>
+    <div class="fact"><b>Try it yourself</b><span><a href="https://raptor-git-claude-end-time-guard-202-kai-e2f5.vercel.app">The preview</a>, with this morning's last version. On Edit Schedule, empty an end time and then pick a sign-off name.</span></div>
   </div>
 </section>
 
@@ -165,7 +166,7 @@ button:focus-visible,a:focus-visible,img:focus-visible{outline:3px solid var(--a
     <div>
       <h3>6. When it goes live, and who reads it after</h3>
       <p>This is high-risk work: it can stop a day being published. Opus built it, as you asked for this week. Fable's own read of the finished code waits for Monday's allowance reset. Until then, two fresh Opus readers and Astra read it.</p>
-      <p class="rec">Recommended: I build your round-1 answers and the Legend line on the same branch and check them. You look at the preview once Vercel builds again, then say "merge live". Fable reads it after Monday; anything it finds is fixed as a follow-up.</p>
+      <p class="rec">Recommended: I build your round-1 answers and the Legend line on the same branch and check them. You look at the preview again, then say "merge live". Fable reads it after Monday; anything it finds is fixed as a follow-up.</p>
     </div>
   </div>
 </section>

@@ -333,8 +333,8 @@ the later merge keeps both (D78).
      - Re-walks: after each round. N4 was re-checked by a fresh walker: 14 pass, 0 fail.
      - A fresh Fable read the built words: all ten kept (`…/briefs/2026-11-27-end-time-guard-words-fable.md`).
      - Evidence: `raptor-port/docs/handpass/2026-11-27-end-time-guard.md`.
-     - GitHub's full checks: green on `b0b334e4c`. The last push, `6b57bdd97` (the words read, the pictures), had its run going at 08:20; read it before saying green.
-     - **Vercel refused the preview:** "Deployment rate limited, retry in 24 hours" (07:45), so there is no preview link yet.
+     - GitHub's full checks: all 27 green on `6b57bdd97`, the last push (read 08:50).
+     - **Vercel:** at 07:45 it refused a preview ("Deployment rate limited, retry in 24 hours"); the 08:20 push built. The preview is https://raptor-git-claude-end-time-guard-202-kai-e2f5.vercel.app — Ready on `6b57bdd97`.
   5. **Drawn for his look:** the Legend line (D2803) and the OIL list's foot line (D2800; Opus drafted, a fresh Fable adjusted, `…/briefs/2026-11-27-oil-later-words-fable.md`). They are in `raptor-port/docs/mock/2026-11-27-morning-drawings/`.
   - **The morning page,** round 1 of six questions with pictures: https://claude.ai/artifact/HfbFJcMVJyVVwgtKiRVUQG (source `raptor-port/docs/mock/2026-11-27-end-time-round1/`).
 - **Waiting on him:**
@@ -349,7 +349,7 @@ the later merge keeps both (D78).
   - At [END-TIME-GUARD]'s merge: mark D2046, D2053, D1990, D2055, D2072, D2073, D2080, D360 and D605 as narrowed to drafts, with their pages, and close [ROW-NO-TIME-MARK].
   - The Logic page's words (Q-W5).
   - This branch: bring `main` in, then open its own pull request. It carries a check, so it is not notes-only.
-- **Pick up here:** take his round-1 answers from the morning page and record each. Then build them, with the Legend line, on `claude/end-time-guard-202` (Opus; Fable reads words); check them, walk them and push once. Then send him the preview link when Vercel builds, and wait for "merge live".
+- **Pick up here:** take his round-1 answers from the morning page and record each. Then build them, with the Legend line, on `claude/end-time-guard-202` (Opus; Fable reads words); check them, walk them and push once. Then send him the preview link once Vercel is Ready, and wait for "merge live".
 - **Opening line:** "First list the live chats. Work in `C:/Users/User/projects/Raptor-readings` on `claude/readings-lapse-fix-fdbb3c` (records) and `C:/Users/User/projects/Raptor-endtime` on `claude/end-time-guard-202` (the build); check each is level with its origin and `git pull --ff-only`. If the file tools refuse a write in either folder, stop and tell me. Take the next free chat number in `main`'s `HANDOFF.md` and the open blocks. Read `HANDOFF.md`, the `claude/readings-lapse-fix-fdbb3c` block (chat 202's night). Then take my answers to round 1 on the morning page, record each, and build them on the end-time branch."
 - **Rulings:** D2800–D2804, D2850–D2858 (oil, the scheduler) · **Walk:** see the evidence sheet's last `Walk:` line, 1845 pictures, N1–N4 pass · **Reads owed:** above · **Next chat number:** 203 or the next free one (200 the highest on `main`, 202 this chat) · **Model:** Opus, high, for the round-1 build; Fable reads words, and the code after the 30 Nov reset on his word.
 - **Nothing merged; nothing touched the live app.**
