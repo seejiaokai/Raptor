@@ -23,7 +23,8 @@ const { chromium, webkit } = createRequire(resolve(ROOT, 'package.json'))('playw
 const CHROMIUM = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium'
 const LAUNCH = existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {}
 const URL_ = 'http://localhost:4741/'
-const MOCK = resolve(ROOT, 'docs/mock/2026-11-26-msq-questions')
+/* (v2, 27 Nov 26: the round of six cards puts its pictures under round-kr/ — the brief 2026-11-27-msq-s1-round-q32-37) */
+const MOCK = resolve(ROOT, 'docs/mock/2026-11-26-msq-questions/round-kr')
 const OUT = { q30: resolve(MOCK, 'q30'), q31: resolve(MOCK, 'q31') }
 for (const d of Object.values(OUT)) mkdirSync(d, { recursive: true })
 const TMP = resolve(ROOT, '.tmp/n204-q30-31'); mkdirSync(TMP, { recursive: true })
@@ -108,6 +109,13 @@ async function pickAs(s, num, k) {
   FACT(`${k}.picked`, { want: num, bar: await barSq(s) })
 }
 const sqMark = s => boxOf(s, s.desk ? '.topbar .mark' : '.topbar .mark, .drawer-sqn .mark')
+/* (v2) the squadron number only where it can be seen - on a phone the window lies over the top bar, and a ring there would
+   mark the window's title instead */
+async function shownMark(s) {
+  const m = await sqMark(s); if (!m) return null
+  const ok = await s.page.evaluate(([x, y]) => !!document.elementFromPoint(x, y)?.closest('.topbar .mark, .drawer-sqn .mark'), [m.x + m.w / 2, m.y + m.h / 2])
+  return ok ? m : null
+}
 async function sshot(s, q, name, rects, pad = 14) {
   const { page } = s
   if (s.desk) await page.mouse.move(1, 1).catch(() => {})
@@ -236,7 +244,8 @@ async function medical(s, k) {
   FACT(`${k}.asOf`, (await words(s, '#medCalBtn'))[0] || '')
   const cards = await s.page.evaluate(() => [...document.querySelectorAll('.medcard')].filter(e => e.getBoundingClientRect().height > 0).map(e => ({ iid: e.dataset.medcard, words: e.innerText.replace(/\s+/g, ' ').trim().slice(0, 100) })))
   FACT(`${k}.cards`, cards)
-  const nasty = cards.find(c => /Nasty/i.test(c.words) && /OML/.test(c.words)) || cards.find(c => /Nasty/i.test(c.words))
+  /* (v2: the card names him by his callsign, Quill - his record's id is "nasty"; his OML is the one of 6–9 Jul) */
+  const nasty = cards.find(c => /Nasty|Quill/i.test(c.words) && /OML/.test(c.words) && /6.9 Jul/.test(c.words)) || cards.find(c => /Nasty|Quill/i.test(c.words) && /OML/.test(c.words))
   FACT(`${k}.nastyCard`, nasty ?? null)
   return nasty
 }
@@ -274,7 +283,7 @@ try {
       await hit(s, '#docViewEdit', 1000)
       const w = await winNow(s); FACT(`${k}.window`, { ...w, squadron: await barSq(s), page: await curPage(s) })
       if (!w.open) throw new Error('the Input window did not open')
-      const m = await sqMark(s), sv = await boxOf(s, '#inpEditSave')
+      const m = await shownMark(s), sv = await boxOf(s, '#inpEditSave')
       const ra = m ? await tring(s, m, 'the squadron') : null
       const rb = sv ? await tring(s, sv, 'Save') : null
       await sshot(s, 'q30', `q30-149-today-open-${n}`, [ra, rb, await boxOf(s, '[data-testid="win-inputedit"]')])
@@ -296,7 +305,8 @@ try {
       await hit(s, '#notifyBell', 800)
       const lines = await s.page.evaluate(() => [...document.querySelectorAll('[data-testid^="bell-line-"]')].filter(e => e.getBoundingClientRect().height > 0).map(e => ({ id: e.dataset.testid, words: e.innerText.replace(/\s+/g, ' ').trim().slice(0, 160) })))
       FACT(`${k}.lines`, lines)
-      const line = lines.find(l => /Osprey/.test(l.words) && /Training|Sim|27/.test(l.words)) || lines.find(l => /Osprey/.test(l.words))
+      /* (v2: a line about an input names its type and day - "Training Mon 27 Jul Remark changed · Saber" - not the man) */
+      const line = lines.find(l => /Osprey/.test(l.words) && /Training|Sim|27/.test(l.words)) || lines.find(l => /Training/.test(l.words) && /27 Jul/.test(l.words))
       if (!line) throw new Error('no line about Osprey\'s Training on Kestrel\'s bell')
       const lb = await boxOf(s, `[data-testid="${line.id}"]`)
       const r1 = await tring(s, lb, 'the line')
@@ -305,7 +315,7 @@ try {
       await hit(s, s.page.locator(`[data-testid="${line.id}"]`).first(), 1200)
       const w = await winNow(s); FACT(`${k}.today`, { ...w, squadron: await barSq(s), page: await curPage(s), toast: await toastNow(s) })
       if (!w.open) throw new Error('the line opened no window')
-      const m = await sqMark(s), sv = await boxOf(s, '#inpEditSave')
+      const m = await shownMark(s), sv = await boxOf(s, '#inpEditSave')
       const ra = m ? await tring(s, m, 'the squadron') : null
       const rb = sv ? await tring(s, sv, 'Save') : null
       await sshot(s, 'q31', `q31-today-open-${n}`, [ra, rb, await boxOf(s, '[data-testid="win-inputedit"]')])
@@ -320,7 +330,7 @@ try {
       await hit(s, s.page.locator(`#inBody [data-iid="${ID.training}"], #inList [data-iid="${ID.training}"]`).first(), 1000)
       const w2 = await winNow(s); FACT(`${k}.proposed`, { ...w2, squadron: await barSq(s), page: await curPage(s) })
       if (!w2.open) throw new Error('the Training\'s window did not open on 150')
-      const m2 = await sqMark(s), sv2 = await boxOf(s, '#inpEditSave')
+      const m2 = await shownMark(s), sv2 = await boxOf(s, '#inpEditSave')
       const rc = m2 ? await tring(s, m2, 'the squadron') : null
       const rd = sv2 ? await tring(s, sv2, 'Save') : null
       await sshot(s, 'q31', `q31-proposed-open-${n}`, [rc, rd, await boxOf(s, '[data-testid="win-inputedit"]')])
