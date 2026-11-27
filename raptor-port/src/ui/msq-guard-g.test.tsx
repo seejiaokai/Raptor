@@ -17,16 +17,16 @@
 import { describe, it, expect, afterEach } from 'vitest'
 import { render, act, fireEvent, cleanup } from '@testing-library/react'
 import { withThird, third, signInAs, worlds, PID } from '../test-support/msq-world'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, idsOf, inputSquadrons } from '../engine/inputs'
 import { NOTICES } from '../state/notices'
 import { setBellSquadron } from '../state/bellsqn'
 import { App } from './App'
 import { HOOKS } from '../engine/hooks'
 import { UNIT } from '../engine/unitview'
-import { PEOPLE, nameToId } from '../engine/people'
+import { PEOPLE, nameToId, isSpecial } from '../engine/people'
 import { notify, switchRoleViewRaw } from '../state/store'
-import { isAdmin, mayViewAsMember } from '../state/perms'
-import { setPage, CURPAGE } from '../state/view'
+import { isAdmin, mayViewAsMember, pageUnit } from '../state/perms'
+import { setPage, CURPAGE, setInpMode, setInpView, setCalMonth } from '../state/view'
 import { pickSquadron } from '../state/pick'
 import { homeOn, todayIso } from '../state/units'
 import { addPersonAndAccount, accountByName } from '../state/accounts'
@@ -36,7 +36,8 @@ import { boxValue, pickDate } from './datecal-testkit'
 import { whatIsOpen, closeShown, guardWords, guardRow, GUARD_LEADS, GUARD_ENDINGS } from './guard'
 import { VCONF, ruleFmt } from '../engine/rules'
 import { LGEDIT, setLgEdit } from '../state/auth'
-import { setOilList } from './pops'
+import { setOilList, INPEDIT } from './pops'
+import { tap } from '../test-support/msq-guard-testkit'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 withThird()
@@ -570,5 +571,165 @@ describe('G10 — the "Welcome back" card only on his own squadron (D2628 C4)', 
     expect([UNIT, CURPAGE], 'nothing moved').toEqual(['u142', was])
     expect((PEOPLE as any)[PID.hunter].back, 'the card spent').toBeFalsy()
     expect($('#welcomeBack'), 'gone').toBeNull()
+  })
+})
+
+/* ======================= G11, G12 — what the Inputs pages offer on another squadron (step K9, §10 step 7) =======================
+   The plan §18.6 (his D2628 C2, D2655 D12, D2646) and §18.7 (D2628 C3, D2655 D11, D2729 Q6); the section page's group 3,
+   drawn and seen (D2729): the Person box reading "Pick…", Add with nobody picked saying the app's own "Pick at least one
+   person", "+ Commitment" greyed with "150 has no SANS aircrew." under it, and the drag's passing note of the same words.
+   Every door pressed on the real controls: the squadron button and its row, "+ Input", a calendar's day and its
+   "+ Input", a drag across days, "+ Medical", "+ Commitment". */
+async function appAs(who: 'hunter' | 'saber' | 'ranger', unit?: string) {
+  signInAs(who)
+  page = render(<App />)
+  await settle()
+  if (unit) {
+    await press($('#sqnMenuBtn'), 'the squadron button')
+    await press($(`#sqnMenu .sqm-row[data-unit="${unit}"]`), `the row of ${unit}`)
+    expect(UNIT, `the premise: ${unit} picked`).toBe(unit)
+  }
+}
+const inputsAt = async (view: 'table' | 'cal' | 'med', mode: 'member' | 'sans' = 'member') => {
+  await act(async () => { setPage('inputs'); setInpMode(mode); setInpView(view); setCalMonth({ y: 2026, m: 7 }); notify() })
+  await settle()
+}
+/* a drag across two days of a month (sanscal.test.tsx's way: the machine asks where the pointer is) */
+async function dragAcross(day: (iso: string) => HTMLElement | null, from: string, to: string) {
+  ;(document as any).elementFromPoint = (x: number) => (x < 100 ? day(from) : day(to))
+  const base = { pointerId: 1, pointerType: 'mouse', isPrimary: true, button: 0 }
+  await act(async () => {
+    fireEvent.pointerDown(day(from)!, { ...base, clientX: 10, clientY: 10 })
+    fireEvent.pointerMove(window, { ...base, clientX: 200, clientY: 10 })
+    fireEvent.pointerUp(window, { ...base, clientX: 200, clientY: 10 })
+    fireEvent.click(day(to)!)
+  })
+  await settle()
+  ;(document as any).elementFromPoint = undefined
+}
+const icDay = (iso: string) => $(`[data-icday="${iso}"]`)
+const scDay = (iso: string) => $(`[data-testid="sc-day-${iso}"]`)
+/** the window's Person box, as he meets it on another squadron's page: empty — "Pick…" — its list that squadron's men on
+ *  its roster that day and nobody else, never the presser */
+function emptyPersonBox(unit: string, presser: string) {
+  const sel = $('#inpEditPerson') as HTMLSelectElement | null
+  expect(sel, 'the Person box').not.toBeNull()
+  expect(sel!.value, 'nobody picked').toBe('')
+  expect(sel!.selectedOptions[0]?.textContent, 'it reads "Pick…"').toBe('Pick…')
+  const ids = [...sel!.options].map(o => o.value).filter(v => v && !isSpecial(v))
+  expect(ids.length, 'the squadron\'s men offered').toBeGreaterThan(0)
+  expect(ids, 'never the presser').not.toContain(presser)
+  for (const id of ids) expect(homeOn(id, todayIso()), `${PEOPLE[id]?.cs} is ${unit}'s`).toBe(unit)
+  return ids
+}
+const cancelWin = async () => { await press($('#inpEditCancel'), 'Cancel'); expect(INPEDIT).toBeNull() }
+
+describe('G11 — "+ Input" on another squadron\'s page offers only that squadron\'s men (D2628 C2, §18.6)', () => {
+  it('Hunter on 149: the List\'s "+ Input", a calendar day\'s "+ Input", a drag across days and "+ Medical" each open with the Person box empty, 149\'s men, not Hunter', async () => {
+    await appAs('hunter', 'u149')
+    await inputsAt('table')
+    await press($('#inNew'), 'the List\'s "+ Input"')
+    emptyPersonBox('u149', PID.hunter); await cancelWin()
+    await inputsAt('cal')
+    await tap(icDay('2026-07-29'), 'Wed 29 Jul')
+    await press($('#icPopAdd'), 'the day\'s "+ Input"')
+    emptyPersonBox('u149', PID.hunter); await cancelWin()
+    await press($('[data-testid="win-inputsday-x"]'), 'the day\'s ✕')
+    await dragAcross(icDay, '2026-07-27', '2026-07-28')
+    expect(INPEDIT, 'the drag opens the window').not.toBeNull()
+    emptyPersonBox('u149', PID.hunter); await cancelWin()
+    await inputsAt('med')
+    await press($('#medNew'), '"+ Medical"')
+    emptyPersonBox('u149', PID.hunter); await cancelWin()
+  })
+  it('Add with nobody picked says the app\'s own "Pick at least one person" and saves nothing; a 149 man picked, the input is 149\'s', async () => {
+    await appAs('hunter', 'u149')
+    await inputsAt('cal')
+    await tap(icDay('2026-07-29'), 'Wed 29 Jul')
+    await press($('#icPopAdd'), 'the day\'s "+ Input"')
+    const had = new Set(INPUTS.map((r: any) => r.iid))
+    const t0 = toasts().length
+    await press($('#inpEditSave'), 'Add')
+    expect(toasts().slice(t0), 'the app\'s own words for an empty choice').toEqual(['Pick at least one person'])
+    expect(INPUTS.filter((r: any) => !had.has(r.iid)), 'nothing saved').toEqual([])
+    expect(INPEDIT, 'the window stays').not.toBeNull()
+    await act(async () => { fireEvent.change($('#inpEditPerson')!, { target: { value: PID.osprey } }) })
+    await press($('#inpEditSave'), 'Add')
+    if ($('[data-testid="docconf"]')) await press($('[data-testid="docconf-nodoc"]'), '"No document"')
+    const x = INPUTS.find((r: any) => !had.has(r.iid)) as any
+    expect(x && idsOf(x), 'filed for the 149 man').toEqual([PID.osprey])
+    expect(inputSquadrons(x), 'it is 149\'s').toEqual(['u149'])
+  })
+  it('Saber on 150: 150\'s men on its roster that day and nobody else — not an archived man, not Saber', async () => {
+    await appAs('saber', third.u150)
+    await inputsAt('table')
+    await press($('#inNew'), 'the List\'s "+ Input"')
+    const ids = emptyPersonBox(third.u150, PID.saber)
+    for (const id of ids) expect(PEOPLE[id]?.archived, `${PEOPLE[id]?.cs} not archived`).toBeFalsy()
+    expect(ids).toContain(PID.mako)
+  })
+  it('(pin, today\'s too) Hunter on 142: himself, as today', async () => {
+    await appAs('hunter')
+    await inputsAt('table')
+    await press($('#inNew'), 'the List\'s "+ Input"')
+    expect(($('#inpEditPerson') as HTMLSelectElement).value).toBe(PID.hunter)
+  })
+  it('(pin, today\'s too) Ranger, 149 picked (his Inputs page is always his own squadron\'s): himself', async () => {
+    await appAs('ranger', 'u149')
+    await inputsAt('table')
+    await press($('#inNew'), 'the List\'s "+ Input"')
+    expect(INPEDIT?.person, 'filed for himself').toBe(PID.ranger)
+  })
+})
+
+describe('G12 — "+ Commitment" on another squadron\'s SANS calendar offers only its SANS aircrew (D2628 C3, D2729 Q6, §18.7)', () => {
+  /* Hunter SANS aircrew of 142 and Osprey of 149 — the Quals SANS tick's mark (PEOPLE[id].san), set as the premise */
+  const sansMen = async () => { await act(async () => { (PEOPLE as any)[PID.hunter].san = true; (PEOPLE as any)[PID.osprey].san = true; notify() }) }
+  it('Hunter (SANS, 142) on 149, one SANS man there: the window opens on him, Hunter not offered; saved, it counts on 149, not on 142', async () => {
+    await appAs('hunter', 'u149')
+    await sansMen()
+    await inputsAt('cal', 'sans')
+    await tap(scDay('2026-07-20'), 'Mon 20 Jul')
+    const add = $('[data-testid="sd-add"]') as HTMLButtonElement
+    expect(add?.disabled, '"+ Commitment" pressable').toBe(false)
+    await press(add, '"+ Commitment"')
+    expect(INPEDIT?.person, 'opened on 149\'s SANS man').toBe(PID.osprey)
+    const offered = [...document.querySelectorAll<HTMLOptionElement>('#inpEditPerson option')].map(o => o.value)
+    expect(offered, 'Hunter not offered').not.toContain(PID.hunter)
+    const had = new Set(INPUTS.map((r: any) => r.iid))
+    await press($('#inpEditSave'), 'Add')
+    const x = INPUTS.find((r: any) => !had.has(r.iid)) as any
+    expect(x && idsOf(x), 'the commitment is the 149 man\'s').toEqual([PID.osprey])
+    expect(inputSquadrons(x), 'counted on 149\'s day, not on 142\'s').toEqual(['u149'])
+  })
+  it('Saber on 150, which has no SANS aircrew: "+ Commitment" greyed, "150 has no SANS aircrew." under it; a drag across days says it and opens nothing', async () => {
+    await appAs('saber', third.u150)
+    await inputsAt('cal', 'sans')
+    await tap(scDay('2026-07-20'), 'Mon 20 Jul')
+    expect(($('[data-testid="sd-add"]') as HTMLButtonElement)?.disabled, 'greyed').toBe(true)
+    expect($('[data-testid="sd-addwhy"]')?.textContent, 'its reason under it').toBe('150 has no SANS aircrew.')
+    await press($('[data-testid="win-sansday-x"]'), 'the day\'s ✕')
+    const t0 = (HOOKS.toast as any).mock.calls.length
+    await dragAcross(scDay, '2026-07-20', '2026-07-22')
+    expect((HOOKS.toast as any).mock.calls.slice(t0), 'the passing note, where the calendar says a refused drag').toEqual([['150 has no SANS aircrew.', 'warn']])
+    expect(INPEDIT, 'nothing opens').toBeNull()
+  })
+  it('(pin, today\'s too) on 142: Hunter, SANS, files his own', async () => {
+    await appAs('hunter')
+    await sansMen()
+    await inputsAt('cal', 'sans')
+    await tap(scDay('2026-07-20'), 'Mon 20 Jul')
+    await press($('[data-testid="sd-add"]'), '"+ Commitment"')
+    expect(INPEDIT?.person).toBe(PID.hunter)
+  })
+  it('(pin) Hunter only views 150 and never reaches its SANS calendar: with 150 picked his SANS calendar is 142\'s, his own "+ Commitment" live', async () => {
+    await appAs('hunter', third.u150)
+    await sansMen()
+    expect(pageUnit('own'), 'his own pages stay 142\'s (a View)').toBe('u142')
+    await inputsAt('cal', 'sans')
+    await tap(scDay('2026-07-20'), 'Mon 20 Jul')
+    expect(($('[data-testid="sd-add"]') as HTMLButtonElement)?.disabled).toBe(false)
+    await press($('[data-testid="sd-add"]'), '"+ Commitment"')
+    expect(INPEDIT?.person).toBe(PID.hunter)
   })
 })

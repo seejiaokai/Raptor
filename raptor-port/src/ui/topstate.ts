@@ -17,7 +17,8 @@ import { openAdminUsers } from './adminopen'
 import { oilPendingFor, openWarAt } from '../leavewar/sync'
 import { inpById } from '../engine/inputs'
 import { setOilAsk, setInpEdit, BELLLIST, setBellList, setOilList } from './pops'
-import { me } from '../state/perms'
+import { me, pageUnit } from '../state/perms'
+import { inputSqn } from '../state/inputsqn'
 import { holidayLineOn, noticeSpan, isWarNotice, postOf, isAcctNotice, noticeLive, sansDueOf, type Notice } from '../state/notices'
 import { PEOPLE } from '../engine/people'
 import { unreadFor, markNoticeRead } from '../state/noticeseen'
@@ -78,8 +79,13 @@ export function bellTap(from?: HTMLElement | null): void {
       /* (…and still his to answer once a question it waited for is answered — openInputOnPage, below). THE BELL'S OIL TAP
          THROUGH THE PAGE DOOR (step K6 — the plan §4.1 row 9, §4.5; F2b): it sets nothing before the page, so it asks
          nothing itself; the window, its toast and the OIL question are all the door's `then`, so none opens behind a
-         refusal. Part F's own line ahead of it — `enterForLine(inputSqn(row, pageUnit('own')), …, 'bell', o)`, the
-         input's own squadron brought into view first (D2621) — is step K9's (§10 step 7), not built here. */
+         refusal.
+         …AND THE INPUT'S OWN SQUADRON FIRST (step K9 — the plan §5.3; his D2621: "a bell line about such an input brings
+         its squadron into view first"; state/inputsqn.ts INPUT_DOORS 'belloil'): refused, or waiting for the Tracker's
+         question or a save, nothing opens and the bell is pressed again once answered; where his pages may never be its
+         squadron (a moved man's old input), the window opens where he is (D2621). */
+      const w = enterForLine(inputSqn(row, pageUnit('own')), () => bellTap(from), 'bell')
+      if (w === 'asked' || w === 'refused') return
       openInputOnPage(oilHit.iid, () => { HOOKS.toast('Weekend/PH work — confirm your OIL'); setOilAsk(oilHit.iid) },
         () => { const m = me(); return !!m && oilPendingFor(m).some(h => h.iid === oilHit.iid) }, { door: 'bell' })
       return

@@ -44,6 +44,7 @@ import { CALMONTH, setCalMonth, matchesHiSet, INPREVEAL, clearInpReveal, PLANREV
 import { HL_GROUPS } from './hlchips-model'
 import { canEditOwn } from '../state/auth'
 import { isMe, mayDeleteInput, viewerId, me, pageUnit } from '../state/perms'
+import { listReach } from '../state/inputsqn'
 import { rosterOf } from '../engine/roster'
 import { addDays } from '../state/flyplan-model'
 import { HOOKS } from '../engine/hooks'
@@ -97,7 +98,7 @@ const isoToday = () => {
    chip tests can drive a day directly instead of steering the whole page
    through the DOM to get there. */
 /* the calendar's rows, before its filters — the List's own (one body, so the two can never disagree) */
-const calRows = (): any[] => inputsListed(pageUnit('own'), me())
+const calRows = (): any[] => inputsListed(pageUnit('own'), me(), undefined, listReach())
 // eslint-disable-next-line react-doctor/only-export-components -- one day's inputs as the month and the List both filter them, read with the page's own window helpers (ui/inputedit.tsx); a model file importing those would draw the input window's whole module graph into the pure models, and the tests that drive a day directly import it from here
 export function dayEntries(iso: string, f: { fPerson: string, fType: string, fSearch: string }, mode?: 'member') {
   const label = fmt(iso)
