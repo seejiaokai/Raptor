@@ -2116,3 +2116,16 @@ recheck every standing resource (locks, loops, write rights) after a restart, be
 **Issue:** A mechanism that blocks the user (refusing a press while something is open) was designed, red-teamed and built across many steps from rulings given one question at a time. Only when the whole of it was shown as one plain picture — today's refusal beside the press going through — did the owner ask "could we go without the block", and he chose to drop it. The cost of building it, and then of planning its removal, would have been saved by putting the whole trade-off to him once, with a picture, before the first step.
 **Suggested improvement:** In the brainstorming or plan skill, before a plan adds a mechanism that refuses or blocks the user's own action, put one card to the owner: the situation, a picture of the block and of the action simply going through (with what would be lost), the size of building each, and a recommendation. Build the block only on his choice.
 **Principle:** A guard that stops the user is a product choice, not a technical one. Show the owner the simplest alternative, letting the action through and accepting what is lost, with its cost, before investing in the guard.
+
+### Observation 1104: Question cards for a non-technical owner — draft in the short shape first
+
+**Status:** OPEN
+**Date:** 27 Nov 26
+**Session context:** the multi-squadron coordinator putting a round of questions on the one questions page (numbered past 1103 on another branch)
+**Skill:** New skill candidate: owner-question-cards
+**Type:** open-source
+**Phase/Area:** writing decision questions for a non-technical decision-maker
+
+**Issue:** a long "how it will look" card — today-versus-later pairs, who-may-edit detail, the agent's readings — lost the owner completely; he restated the whole point in three lines himself. Cut to one example, what each screen shows, one decision and one-line choices, every card was answered within minutes, and he asked for that shape every time.
+**Suggested improvement:** a short skill or checklist for question pages: title = the question; one named example with roles in brackets; what he sees (at most two pictures); A (recommended) and B, one line each; internals only when they ARE the choice; a self-test "could he say it back in three lines?" before publishing; a writer helper's brief carries the shape.
+**Principle:** a decision-maker answers what he can restate; detail that is not the choice belongs in the record, not the question.

@@ -383,7 +383,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 ### [GH-PAGES-PREVIEW-DOCS] A preview on GitHub Pages — the documents and the steps (27 Nov 26, chat 206, his D2832) — OPEN
 **What:** his D2832 lets a preview for his look be published on GitHub Pages (public, one site, each preview replacing the last); the live app stays on Vercel. `.github/workflows/deploy.yml`'s head and `raptor-port/docs/gates-and-deploy.md` still say there is no GitHub Pages site (D343).
-**To do:** correct both, and write in gates-and-deploy.md how a preview is published there (built with the site's sub-path, pushed to the `gh-pages` branch, Pages set to serve it) as first done for pull request 857.
+**To do:** correct both, and write in gates-and-deploy.md how a preview is published there (built with the site's sub-path, pushed to the `gh-pages` branch, Pages set to serve it) as first done for pull request 857; his D2839 makes it the usual preview link, so `.claude/rules/shipping.md`'s link steps change too (a rule file — his "merge live").
 **Where:** `.github/workflows/deploy.yml` (merges only on his "merge live"), `raptor-port/docs/gates-and-deploy.md`.
 
 ### [USERS-JUDGE-THREE-COPIES] Admin → Users' "judge the rest" written three times — a tidiness note (27 Nov 26, the eleventh read; filed by chat 205) — OPEN
@@ -1392,6 +1392,8 @@ features that then want several weeks at once, weigh whether weeks become separa
 the live one) — put to him with its cost; until then nothing changes. **Place:** with [DB-STEP].
 
 ### [XFER] Multi-squadron + transfer a person with their data — future milestone (with [DB-STEP])
+- **27 Nov 26, his D2845–D2847 (filed by D201):** at a move, a pending upchit leaves the old Medical tab and shows on the new one, its admin closing it; an upchit closed before the move stays on the old tab (today it moves); leave across the move goes with him, changeable by the new squadron's admins, the old admin no longer; unapproved leave after the move goes to the new squadron's Leave War (today stranded). Drawn first where not yet drawn (D1625).
+- **27 Nov 26, his D2842 (filed by D201):** a Tracker course still running at a move goes with him — his place and progress shown on the new squadron's Tracker, finished there; the old squadron's Tracker keeps what he flew there as history. Today the course stays in the old Tracker and its tie to him breaks (chat 204's q30b report, item 9). Drawn first (D1625).
 **His D2634 (25 Nov 26, chat 175):** postings — post out with every outcome, Transfer to Sqn among them, and post in — get a
 new interface on Admin → Users with the Leave War's full functionality (a SANS man the war hides reached there); the Leave
 War keeps its sheets; built with the Transfer step (batch 4), drawn first. With it, D2633's "It's him" for another
