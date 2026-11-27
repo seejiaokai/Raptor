@@ -23,6 +23,7 @@ import { PEOPLE } from '../engine/people'
 import { unreadFor, markNoticeRead } from '../state/noticeseen'
 import { trackerUndoApi, onTrackerUndo, trackerUndoVersion } from '../tracker/undo-bridge.js'
 import { trackerCover } from '../state/typing-hold'
+import { saidByGuard } from '../state/guard'
 
 /* ---- the Sync chip (a demonstration toggle — there is no server yet; the one state for both bars) ---- */
 let FASTSYNC = false
@@ -280,9 +281,11 @@ export function globalUndoEngine(): UndoEngine {
       /* (owner D838 + D839, 14 Oct 26: "without undoing" — a reader could not tell whether the undo had been done; this
          press closes the mode and undoes nothing) */
       if (oilUndoBoundary()) { HOOKS.toast('Left OIL Earn without undoing. The next undo would change the day itself.', 'ok'); notify(); return }
-      const r = globalUndo(); if (!r.ok && r.reason) HOOKS.toast(r.reason, 'warn'); notify()
+      /* (a refusal the guard rail already said under the Undo button — or left unsaid — is not said again: step K8,
+         state/guard.ts saidByGuard; a second note here would move the first off the button, in another face) */
+      const r = globalUndo(); if (!r.ok && r.reason && !saidByGuard(r.reason)) HOOKS.toast(r.reason, 'warn'); notify()
     }),
-    redo: () => offCaret(() => { const r = globalRedo(); if (!r.ok && r.reason) HOOKS.toast(r.reason, 'warn'); notify() }),
+    redo: () => offCaret(() => { const r = globalRedo(); if (!r.ok && r.reason && !saidByGuard(r.reason)) HOOKS.toast(r.reason, 'warn'); notify() }),
   }
 }
 /* THE TRACKER'S OWN HISTORY (D349 (2): "the Tracker's own Undo and Redo move to the top bar too", still taking back the

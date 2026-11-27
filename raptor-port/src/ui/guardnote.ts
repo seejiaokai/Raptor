@@ -9,14 +9,16 @@
    - a bell line → under the pressed line inside the bell's list where it fits, else under the list (p4b);
    - a tap on the lit bell → under the bell on screen (the one the list opens under, else the bell drawn — the board's
      `#sbBell` on the board), its right edge;
-   - a card, the page door → the foot.
-   (K8's Undo is not here.) A press made inside the ☰ menu goes to the foot (`from: 'drawer'` — ui/toast.ts noteAtFoot).
+   - an Undo (step K8 — §4.1 rows 13 and 21) → under the Undo button on screen (the top bar's `#undoBtn`; the board's
+     `#sbUndo` while the board, drawn over the top bar, is up), its left edge; at the foot on a phone, as every note is;
+   - a card, the page door, a Redo (no ending of his yet) → the foot.
+   A press made inside the ☰ menu goes to the foot (`from: 'drawer'` — ui/toast.ts noteAtFoot).
    With no page — a headless test — the words go to HOOKS.toast as a 'blocked' note. The note is told to a screen reader by
    toast() as every note is.
 
    Loaded by one side-effect import each in ui/Shell.tsx (the app) and test-support/msq-world.ts (the test world); never by
    ui/guard.ts, which this file reads, so there is no cycle. No door calls the seam yet (K4–K6): installed, never asked. */
-import { setGuardSay, type GuardOpts, type GuardRefusal } from '../state/guard'
+import { setGuardSay, noteSaid, type GuardOpts, type GuardRefusal } from '../state/guard'
 import { HOOKS } from '../engine/hooks'
 import { toastAt, type NoteAt } from './toast'
 import { guardLead, guardRow, guardWords } from './guard'
@@ -30,6 +32,12 @@ const bellOnScreen = (): HTMLElement | null =>
 const lineEl = (id: string | undefined) => (): HTMLElement | null =>
   id ? document.querySelector<HTMLElement>(`[data-testid="bell-line-${id.replace(/["\\]/g, '\\$&')}"]`) : null
 const footOnly = (): HTMLElement | null => null
+/* the Undo pressed: the board's own while the board is up (it covers the top bar and carries its own pair), else the top
+   bar's (the board is always in the page, hidden while shut — ui/SchedBoard.tsx `hidden={!open}`) */
+const undoOnScreen = (): HTMLElement | null => {
+  const sb = document.getElementById('sbUndo')
+  return sb && !sb.closest('[hidden]') ? sb : document.getElementById('undoBtn')
+}
 
 /** THE TABLE, door → where the note stands (§4.6's last bullets) */
 export function noteAtFor(door: string, opts: GuardOpts = {}): NoteAt {
@@ -39,7 +47,8 @@ export function noteAtFor(door: string, opts: GuardOpts = {}): NoteAt {
     case 'toMember': case 'toAdmin': return { under: byId('roleBadge'), edge: 'right', below: 'bar', from }
     case 'line': return { under: lineEl(opts.line), edge: 'left', below: 'self', inside: () => document.querySelector<HTMLElement>('.bell-list'), from }
     case 'bell': return { under: bellOnScreen, edge: 'right', below: 'bar', from }
-    /* a card of the OIL list, the page door, anything else: the foot */
+    case 'undo': return { under: undoOnScreen, edge: 'left', below: 'bar', from }
+    /* a card of the OIL list, the page door, a Redo, anything else: the foot */
     default: return { under: footOnly, edge: 'left', below: 'bar', from }
   }
 }
@@ -49,8 +58,10 @@ export function guardSay(r: GuardRefusal, door: string, to: string, opts: GuardO
   const row = guardRow(r.id)
   if (!row) return
   const words = guardWords(r.reason, row, door, to)
-  /* a door with no ending of his yet (K8's Undo, a card, the page door — their steps say which) says nothing here */
+  /* a door with no ending of his yet (a card, the page door, a Redo — the K8 report lists them) says nothing here */
   if (!words) return
+  /* (the words reported to the seam, so a caller that shows its own refusal — Undo's engine — does not say them twice) */
+  noteSaid(words)
   if (typeof document === 'undefined') { HOOKS.toast(words, 'blocked'); return }
   toastAt(words, { ...noteAtFor(door, opts), names: guardLead(row).names })
 }
