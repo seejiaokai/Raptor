@@ -139,9 +139,9 @@ export function askAccess(unit: string) {
  *  another 142 man on Fri 17 Jul, the day then made a public holiday on 142's list by Hunter; the list it opens by itself
  *  put away. Made while 142 is in view. */
 export async function holidayLine(): Promise<Notice> {
-  const { commitNewInput } = await import('../ui/inputedit')
-  const { holidayAdd } = await import('../leavewar/state/store')
-  const { setOilList } = await import('../ui/pops')
+  const [{ commitNewInput }, { holidayAdd }, { setOilList }] = await Promise.all([
+    import('../ui/inputedit'), import('../leavewar/state/store'), import('../ui/pops'),
+  ])
   for (let i = NOTICES.length - 1; i >= 0; i--) if ((NOTICES[i].what?.[0] as any)?.k === 'oilhol') NOTICES.splice(i, 1)
   const man = Object.keys(PEOPLE).find(id => { const p = (PEOPLE as any)[id]; return !p.special && !p.archived && id !== PID.hunter && id !== PID.ranger && id !== PID.saber && homeOn(id, todayIso()) === 'u142' })!
   await doing(() => {
