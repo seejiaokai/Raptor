@@ -236,6 +236,31 @@ function SquadronConfig() {
 /* how long a row a bell's posting line lands on stays ringed — the app's one just-added mark's six seconds (state/view.ts
    FRESH_MS; 06-inputs.css inflash) */
 const RING_MS = 6000
+/* THE INTENT TAKEN WHILE DRAWING, NOT IN AN EFFECT (U1's sixth round — Astra's finding 2 of the fifth read): taken in an
+   effect, the intent reached Users one draw late — Users' first draw responding to it still had the old `ring`, judged a
+   row whose man's move had landed unseen and queued the row-changed note, before the landing that should have closed it
+   silently (his own bell tap, as his pick is) arrived. Taken here, React draws the Admin page again at once with the
+   intent in hand, before Users draws — React's own pattern for state that follows a value, as Users' useOpenRequest is.
+   Only the clearing of the app's record, a write outside this page, stays an effect, as do the scroll and the ring's
+   timer. (A hook of its own, out of AdminPage, so the page's own control flow stays small — the code check.) */
+function useAdminIntent(
+  setCat: (c: string) => void, setDrilled: (d: boolean) => void, setOpenNew: (n: number) => void,
+  setRing: (r: { seq: number; pid: string; on: boolean } | null) => void,
+): void {
+  const intentSeq = ADMINOPEN ? ADMINOPEN.seq : 0
+  const [taken, setTaken] = useState(0)
+  if (ADMINOPEN && ADMINOPEN.seq !== taken) {
+    const it = ADMINOPEN
+    setTaken(it.seq)
+    /* (Users, or the panel the intent names — Squadrons for an Undo of "+ New squadron", the fix read's A3) */
+    setCat(it.cat ?? 'users'); setDrilled(true)
+    setOpenNew(it.newPerson ? it.seq : 0)
+    setRing(it.person ? { seq: it.seq, pid: it.person, on: true } : null)
+  }
+  useEffect(() => {
+    if (ADMINOPEN && ADMINOPEN.seq === taken) clearAdminOpen()
+  }, [intentSeq, taken])
+}
 export function AdminPage() {
   useVersion()
   /* which category the pane shows; `drilled` only matters on a phone, where the
@@ -255,17 +280,7 @@ export function AdminPage() {
      keyed on its `seq`, so it works whether this page was just mounted or was already up
      (on Squadron config, say), and a second press is a new intent. `drilled` is inert on a
      desktop (the rail and the pane sit side by side there). */
-  const intentSeq = ADMINOPEN ? ADMINOPEN.seq : 0
-  useEffect(() => {
-    const it = ADMINOPEN
-    if (!it) return
-    /* (Users, or the panel the intent names — Squadrons for an Undo of "+ New squadron", the fix read's A3) */
-    setCat(it.cat ?? 'users'); setDrilled(true)
-    setOpenNew(it.newPerson ? it.seq : 0)
-    const seq = it.seq, person = it.person
-    setRing(person ? { seq, pid: person, on: true } : null)
-    clearAdminOpen()
-  }, [intentSeq])
+  useAdminIntent(setCat, setDrilled, setOpenNew, setRing)
   /* THE RING'S SIX SECONDS, an effect of its own keyed on the tap: the intent's effect above runs again the moment ADMINOPEN
      is cleared, and a timer it cleaned up there left the ring on for good (the walk's B4); keyed here, a second tap starts
      its own six seconds and a page left takes its timer with it */

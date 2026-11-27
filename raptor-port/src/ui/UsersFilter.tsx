@@ -17,7 +17,8 @@ import { escCloses } from './sheetfocus'
 import {
   SEAT_TICKS, ROLE_TICKS, roleWord, filterCount, toggleTick, NO_FILTER, type UsersFilter, type FilterGroup,
 } from './usersfilter-model'
-import { numOf, byNum } from './useraccess-model'
+import { numOf } from './useraccess-model'
+import { inSquadronOrder } from '../state/perms'
 
 /* the panel's name in the Escape list: an opened row on the page asks it to answer first ((p), his D2396) */
 export const FILTER_ESC = 'accFilterPanel'
@@ -58,7 +59,8 @@ export function UsersFilterBox(p: { f: UsersFilter; onChange: (f: UsersFilter) =
     return () => { document.removeEventListener('pointerdown', outside); off() }
   }, [open])
   const n = filterCount(p.f, p.master)
-  const sqns = units().map(u => u.id).sort(byNum)
+  /* (his home first, then by number — the one order, his D2730 Q1) */
+  const sqns = inSquadronOrder(units().map(u => u.id))
   return (
     <div className="od-fwrap" ref={wrap}>
       <button type="button" className={'abtn od-fbtn' + (n ? ' on' : '')} id="accFilter" ref={btn}

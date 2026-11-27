@@ -5,7 +5,8 @@
 // iPhone's letters) - both at deviceScaleFactor 2.
 // THE WORLD (k0p-lib makeWorld's, made again here through the app's own controls), then, as Saber, on 149: Merlin given a
 // sign-in "merlin" (a 149 member with a sign-in, for question A) and Osprey made an admin of 149 (a second 149 admin, for
-// question B). Pictures go to docs/mock/2026-11-25-msq-pick-guard-q3/drawn/s2q-*. Nothing here writes the app's code.
+// question B). Pictures go to docs/mock/2026-11-25-msq-pick-guard-q3/drawn/q13-*, q14-*, q15-* (the questions' numbers on
+// the one questions page; first written as 10-12 / A-C). Nothing here writes the app's code.
 // THE MARK: what would be new in the app wears a teal dashed ring - 2px #0D9488, 4px clear of the part (draw-s2-lib's).
 import { mkdirSync, writeFileSync, existsSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'

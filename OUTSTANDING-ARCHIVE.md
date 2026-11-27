@@ -8937,3 +8937,9 @@ A walk script written partly in another letter coding (Latin-1) made the code ch
 **To do, on his go:** the one line in `doctor.config.json`, on pull request 826 (which cannot go green without it) or on its own branch from `main` if he wants it live first; then a line in `raptor-port/docs/gates-and-deploy.md`'s traps (how to read `skippedCheckReasons` when the check says it compared nothing). Chats 173 and 174 were told on 25 Nov 26 and leave the setting alone.
 **Where:** checks and tooling; with [MSQ-PICK-GUARD] on pull request 826.
 
+
+*Moved here 2026-11-27 by backlog-archive.mjs ([USERS-ARCH-FOLD-DRAFT]). Forward facts: `raptor-port/docs/file-map.md`.*
+
+### [USERS-ARCH-FOLD-DRAFT] Folding Archived resets an open archived editor (found 8 Nov 26, walker C of pull request 702)
+**What:** on Admin → Users, with an archived man's editor open, a new callsign typed and Delete armed, folding the Archived group and unfolding it shows the editor still open, but its box reads his old callsign again and Delete is no longer armed; the roster's editors keep both through the same fold. The same on `main` and on pull request 702's branch (`raptor-port/docs/handpass/parts/2026-11-08-rd-last-findings-walkC.md`, S14 "Fold Archived, unfold — archived"). Nothing saved is wrong — only typing not yet saved is dropped, silently. **To do:** keep the archived editor's typing and armed Delete across the fold as the roster's are, or close it on the fold so it does not look kept; a test red first. **Place:** low, the agent's — with the next People and accounts job.
+

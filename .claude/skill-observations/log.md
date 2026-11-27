@@ -1937,6 +1937,33 @@ sides.
 **Issue:** The brief said "you are the latest Fable, high thinking, as orchestrator", but the chat it started ran on a different, weaker model. Nothing in the start step set the model, and nothing in the brief told the new chat to check which model it was. The new chat noticed only because its own system text names its model; it stopped before reading anything and asked, and the owner switched it by hand.
 **Suggested improvement:** In the handoff / start-a-chat steps: (1) the starter passes the model in the call that starts the chat, where the call takes one; (2) every brief that names a model ends its first paragraph with "first check which model you are; if it differs from the one named here, say so and wait before reading or building anything".
 **Principle:** A role assigned in words is not a setting. When a brief depends on which model or tool runs it, the started worker verifies that fact first, before spending anything, and the starter sets it mechanically where it can.
+Met again 26 Nov 26: section chat S2 (chat 205) — started by the coordinator for the latest Fable, it came up on Opus; the brief's "first check which model you are" caught it before any work, and the coordinator switched it.
+
+### Observation 1086: A helper's report held hostage by a shared lock it only needed for its last step
+
+**Status:** OPEN
+**Date:** 2026-11-26
+**Session context:** Chat 199, the multi-squadron build's section 2 orchestrator (Admin → Users); three Opus helpers started at once, each told to run `npm run build` under the checks lock at the end. (Numbered past 1085, the highest on any open branch.)
+**Skill:** dispatching-parallel-agents
+**Type:** open-source
+**Phase/Area:** Writing a helper's brief — the verification step
+
+**Issue:** Another chat held the machine's one checks lock for the whole afternoon. Two builders had finished their work in ten minutes but sat for 35–45 minutes waiting for the lock before reporting, and a drawing helper whose whole run needed the lock produced no pictures. The orchestrator learned the work was done only by looking at the working tree itself.
+**Suggested improvement:** In a brief, any step that needs a shared lock comes AFTER the report is written and handed back: "write the report and reply first; then try the locked check for at most N minutes and add its result as a last line, or say NOT RUN". A job that cannot start without the lock (a served build, a drawing run) checks the lock before anything else and returns at once if it is held, so the orchestrator can queue it instead of spending a helper on waiting.
+**Principle:** A helper's findings should never queue behind a resource only its final check needs. Report first, then wait — and a job that needs the scarce resource from its first step tests for it before doing anything else.
+
+### Observation 1087: Opening one picture loaded three whole rule files into the orchestrator's context
+
+**Status:** OPEN
+**Date:** 2026-11-26
+**Session context:** Chat 199, the same session; the orchestrator opened one approved drawing (a PNG under `raptor-port/docs/mock/`) with the Read tool to know the layout its builders would be held to.
+**Skill:** New skill candidate: orchestrator-context-budget
+**Type:** internal
+**Phase/Area:** What an orchestrator reads itself and what it sends a helper to read
+
+**Issue:** The one Read of a mock-up picture matched the `paths:` of the screen-design rulings, the scheduler rulings and the interface guide's loader, and all three were loaded whole — about 40,000 tokens, 7% of the window, for one picture. The scheduler's page was not needed for the job at all.
+**Suggested improvement:** An orchestrating chat does not open drawings or source files itself when a helper will be held to them anyway: the builder's brief names the drawings, and the orchestrator reviews the diff and the helper's own account of each departure. Where it must look, it asks a helper to describe the picture, or looks only after the area's rules are already loaded for another reason. Worth checking whether the scheduler rulings' `paths:` should match `docs/mock/**` at all.
+**Principle:** Path-triggered context is charged to whoever opens the file. A coordinator that only needs a conclusion about a file should have a worker open it.
 
 ### Observation 1088: An orchestrating chat that opens source files loads every area's rule pages and fills itself
 
@@ -1976,6 +2003,19 @@ sides.
 **Issue:** The rule under test was "a value still waiting is written BEFORE the mode ends", because the very next step changes which record a late write would land in. The builder's test called the closing function, awaited the page settling, then read the value. It passed with the new code taken out: the old code writes the same value on a zero-delay timer, and the wait let that timer run. The builder reported honestly that the test "could not fail first", but had no fix. The fix was one line: assert the value on the line right after the call, inside the same synchronous block, before any await or timer.
 **Suggested improvement:** In the skill's section on watching a test fail, add: when the requirement is about ORDER or about "at once", the assertion must sit before any await, timer flush or settle helper; a test that settles first proves only the end state. And: "this test cannot fail first" is a finding about the test, to be resolved by asking what observable differs between old and new code at the earliest moment, never accepted as a pin.
 **Principle:** To test that something happens before something else, observe it at the moment in between; an end-state check cannot fail for ordering.
+
+### Observation 1093: A helper told to write its report to a file its tool refuses — and the host's "go round it" was itself refused
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** Multi-squadron build, section S2 (Admin → Users) — an orchestrator running builders and blind readers as helpers. Numbered past 1092, which another open branch holds.
+**Skill:** dispatching-parallel-agents
+**Type:** open-source
+**Phase/Area:** Writing a helper's brief — how its result comes back
+
+**Issue:** Helpers were briefed to save their report as a Markdown file. Their file tool declined report files, so reports came back only as the final reply and the host retyped or saved them. The host then added "if the tool refuses, write the file by shell instead" to the next brief — and that launch was refused outright by the permission layer, as an instruction to go round a control. Four rounds of four readers each depended on these reports.
+**Suggested improvement:** In the skill's section on what a helper returns, add: ask for the report AS THE FINAL REPLY (the host saves it), and for proofs or data as files of the kind the helper may write (test files, outputs) in a named hand-back folder; never brief a helper to bypass a refused write by another route — say "if your file tool declines, put the whole report in your reply".
+**Principle:** Design a helper's hand-back around what its tools allow by default; an instruction to work around a refusal is itself likely to be refused, and costs the whole launch.
 
 ### Observation 1094: A check that could not run locally hid a file-shape finding until it could
 

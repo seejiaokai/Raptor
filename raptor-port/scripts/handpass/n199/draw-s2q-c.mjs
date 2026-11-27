@@ -1,11 +1,14 @@
-// draw-s2q-c - section 2's question C (chat 199, 26 Nov 26): the admins' bell line when a man's Plan of 149 ends by an
+// draw-s2q-c - section 2's question 15 on the one questions page (first written as question 12/C; chat 199, 26 Nov 26):
+// the admins' bell line when a man's Plan of 149 ends by an
 // archive, an overseas posting, a delete or the master mark (D2311; the plan's §21.2 "Still held" 3). Drawn as
 // draw-s2-bell's s2-33 drew "Plan of 149 ended": each new line a clone of the bell's first real line, its parts replaced,
 // the squadron number first (round 5's numbersFirst), the man's home number after his name, the numbers and Show buttons
 // in round 5's squadron colours (D2638). Nothing here writes the app's code.
-//   s2q-c-{d,p}-ended    Saber's bell, 142, 149 and 150 shown: "archived · Hunter", "posted overseas" (the app's, on its
-//                        date), "deleted · Hunter"
-//   s2q-c-{d,p}-master   Kestrel's bell (149's admin): "Plan of 149 ended: master admin covers every squadron · Saber"
+//   q15-{d,p}-ended      Saber's bell, 142, 149 and 150 shown: "archived · Hunter", "posted out overseas" (the app's, on
+//                        its date), "deleted · Hunter"
+//   q15-{d,p}-master     Kestrel's bell (149's admin): "Plan of 149 ended: made a master admin · Saber" (the review's final;
+//                        the ruled own-bell words are the other wording, named on the card, not drawn)
+// The words are the fresh Fable review's final column (words-s2q.mjs).
 //   node raptor-port/scripts/handpass/n199/draw-s2q-c.mjs   (ONLY=ended,master  SZ=d,p)
 import { run, FACT, wait, signIn, vis, box, shot, tring, want, closeAll, today, COL, ERRS } from './s2q-lib.mjs'
 import { WQ } from './words-s2q.mjs'
@@ -23,11 +26,18 @@ const realLines = s => s.page.evaluate(L => [...document.querySelectorAll(L + ' 
    fixed width; the new lines' own squadron number in its place, the man's home number after his name */
 async function topLines(s, lines, home) {
   return s.page.evaluate(({ L, lines, home, about }) => {
-    const first = document.querySelector(L + ' .bl-line')
+    let first = document.querySelector(L + ' .bl-line'), tmpl = null
+    /* Saber's bell can be empty in this world ("Nothing new", 26 Nov 26 run): then one line is built in the app's own
+       markup (ui/topbits.tsx's bell list, copied), cloned from, and removed */
+    if (!first) { const sc = document.querySelector(L + ' .bl-scroll'); sc.querySelector('.bl-empty')?.remove()
+      tmpl = first = document.createElement('button'); first.type = 'button'; first.className = 'bl-line'; first.setAttribute('role', 'menuitem')
+      first.innerHTML = '<span class="bl-dot" aria-hidden="true"></span><span class="bl-main"><span class="bl-t"><b class="bl-name"></b><i class="bl-day"></i></span><span class="bl-what"></span></span><span class="bl-ago"></span>'
+      sc.appendChild(first) }
     for (const c of [...lines].reverse()) { const e = first.cloneNode(true); e.removeAttribute('data-testid'); e.dataset.s2q = c.id; e.classList.add('unread')
       e.querySelector('.bl-name').textContent = c.name; e.querySelectorAll('.bl-sqn').forEach(m => m.remove())
       e.querySelector('.bl-day').textContent = c.day; e.querySelector('.bl-what').textContent = c.what; e.querySelector('.bl-ago').textContent = c.ago
       document.querySelector(L + ' .bl-line').before(e) }
+    tmpl?.remove()
     for (const e of document.querySelectorAll(L + ' .bl-line')) {
       const t = e.querySelector('.bl-t'), what = e.querySelector('.bl-what').textContent, own = !e.dataset.s2q && about.some(re => new RegExp(re).test(what))
       let m = e.querySelector('.bl-sqn')
@@ -48,8 +58,8 @@ const bellShot = async (s, k, ids) => { await s.page.evaluate(() => document.act
 try {
   const DAY = today()
   for (const sz of ['d', 'p']) {
-    if (want('ended', sz)) await run(`c-${sz}-ended`, sz, async s => {
-      const k = `s2q-c-${sz}-ended`
+    if (want('ended', sz)) await run(`q15-${sz}-ended`, sz, async s => {
+      const k = `q15-${sz}-ended`
       await signIn(s, 'saber'); await tapBell(s)
       FACT(`${k}.realLines`, (await realLines(s)).slice(0, 8))
       const show = await showAll(s)
@@ -61,13 +71,16 @@ try {
       FACT(`${k}.drawn`, { show, column: col, lines: (await realLines(s)).slice(0, 6), note: 'Cobra, Blade and Basher holding Plan of 149 is drawn, not in the world' })
       await bellShot(s, k, ['archived', 'overseas', 'deleted'])
     })
-    if (want('master', sz)) await run(`c-${sz}-master`, sz, async s => {
-      const k = `s2q-c-${sz}-master`
+    if (want('master', sz)) await run(`q15-${sz}-master`, sz, async s => {
+      const k = `q15-${sz}-master`
       await signIn(s, 'kestrel'); await tapBell(s)
       if (!(await s.page.locator(LIST).count())) await tapBell(s)
       FACT(`${k}.realLines`, (await realLines(s)).slice(0, 8))
       const show = await showAll(s)
       const col = await topLines(s, [{ id: 'master', name: 'Hunter', home: '142', sq: '149', day: DAY, what: `${WQ.planEndMaster('149')} · Saber`, ago: 'now' }], '149')
+      /* only the new line (the coordinator's word, 26 Nov 26): Kestrel's two older lines of this world, about his Plan of
+         150, are not what the question is about and left a blank number place - taken out of the picture */
+      FACT(`${k}.removed`, await s.page.evaluate(L => { const r = [...document.querySelectorAll(L + ' .bl-line:not([data-s2q])')]; r.forEach(e => e.remove()); return r.length }, LIST))
       await paintBell(s)
       FACT(`${k}.drawn`, { show, column: col, lines: (await realLines(s)).slice(0, 5) })
       await bellShot(s, k, ['master'])

@@ -2617,7 +2617,10 @@ Display (D2638–D2640, D2649, D2652) — and part V is now built by two section
   may make him a member, his Plan ending with it (D2250); the last-admin refusals (D2247); a Plan holder of 149 still
   gives View of 149 and makes 149's men admins of 149 (D2336, D2201) — **the second half is NQ1's (§8.4): with a move
   before it, it passes Plan on in two steps; V5 pins it by name, "not covered — NQ1", until he answers — all three ways a Plan
-  holder of 149 turns a 149 man into 149's own admin: the role tick, a re-link, his Undo of a make-member**; only a master admin makes squadrons and master
+  holder of 149 turns a 149 man into 149's own admin: the role tick, a re-link, his Undo of a make-member** — **ANSWERED,
+  26 Nov 26 (Q8 of D2730, with D2806 and D2807): no longer unchanged. A Plan holder of 149 still gives View of 149, but
+  makes no one an admin of 149 — only 149's own admins or a master admin do, by all three ways, Undo and Redo included
+  ("His answers to questions 13, 14 and 15", §21.2); the three pins are re-pointed in U2**; only a master admin makes squadrons and master
   admins, and "+ New squadron" still gives its first admin Plan (D2308); a move ends Plan (D2203).
 - **Tests first.** **V5** — the doors: Kestrel gives Hunter Plan of 149, and takes it away: saved. Mako gives Hunter
   Plan of 150 — he then holds Plan of two (D2630). Hunter, holding Plan of 149, gives a second 142 admin Plan of 149:
@@ -3505,8 +3508,8 @@ group, in place.
 |---|---|---|---|
 | **U0** | V0 | The pins (`msq-s2-asis.test.tsx`); NQ1's three ways written as tests | the core's K0 (`withThird()`) |
 | **U1** | V1 | §19.1 — another squadron's man: the short row, the role in words, no grey number inside his group, the one access line with Save and Cancel, the no-sign-in words, **the row's own save**, and the row reporting its unsaved change. **Not here: "Edit on 142 →" (U3) and the refusal at a pick (V4c)** | the core's K2a; its row drawn; the row's report is counted once the core's K1 has landed (a one-line call the core adds in this file — §21.5). **Nothing else — this is the step that stops a 142 record being changed from 149's page (security S7; §11 risk 23)** |
-| **U2** | V2 | §19.2 — Plan given and ended by the squadron's own admins: `mayGivePlanOf`, the doors, the gate, the replay rule, the lines — one commit | the lines drawn with their two coloured numbers; the refusal's and the re-link door's sentences read by a fresh Fable; **the core's K6** for the lines' tap (`lineOpens`); **NQ1** holds only the making of an admin by a Plan holder; the Plan lines' tap is on §8.5's list; **readings 22 ("own admins" as admins who can sign in — the fail-closed clause for a switched-off, archived or posted-out admin), 23 (a replay by one who lost the right blocked for good) and 24 (the re-link door's sentence) each hold their own clause — permission rules: answered, or that clause left out and said** |
-| **U3** | V3 | §19.3 — the folded squadrons at the page's foot, live people only, the tick retired (D2654 E8), "Edit on 142 →" (D2652 N5) | **the core's K4** (the pick's door) for the link, with its tests V11b; **NQ3** the search's match; **"home squadron first" — everywhere or here only — holds the headings' order (§19.3): by number until he answers** |
+| **U2** | V2 | §19.2 — Plan given and ended by the squadron's own admins: `mayGivePlanOf`, the doors, the gate, the replay rule, the lines — one commit | the lines drawn with their two coloured numbers; the refusal's and the re-link door's sentences read by a fresh Fable; **the core's K6** for the lines' tap (`lineOpens`); **NQ1** held only the making of an admin by a Plan holder — answered (D2806, D2807: built in U2); the Plan lines' tap is on §8.5's list; **readings 22 ("own admins" as admins who can sign in — the fail-closed clause for a switched-off, archived or posted-out admin), 23 (a replay by one who lost the right blocked for good) and 24 (the re-link door's sentence) each held their own clause — all three answered (D2730 Q10–Q12), so no clause is left out** |
+| **U3** | V3 | §19.3 — the folded squadrons at the page's foot, live people only, the tick retired (D2654 E8), "Edit on 142 →" (D2652 N5); **the Archived fold kept to the page's own squadron's men — the security read of U1, finding B: a master admin's Squadron tick brings another squadron's archived men into the fold whole (Restore, Delete); its as-built pin in the section's tests, named "… — changes at U3", turns into this rule's test here** | **the core's K4** (the pick's door) for the link, with its tests V11b; **NQ3** the search's match; **"home squadron first" — everywhere or here only — holds the headings' order (§19.3): by number until he answers** |
 | **U4** | V9 (part) | §19.12 — the one search over every group; the order; the three folding headings; "People" not folding | its drawings ("Nobody matches."); **NQ3** |
 | **U5** | V9 (part) | §19.12 — "From other squadrons" with "View only" folded; Outgoing and Incoming | the empty block and the opened rows drawn; **the readings of §19.12 — which postings the two groups show before the Transfer step, what a press on an Outgoing row opens, a man of the squadron's own shown in two groups while searching, one opened row a page — each answered, or that piece left out (D2611)** |
 | **U6** | V9 (part) | §19.12 — the jumps: Admin's left column made to stay put and its list under "Users"; the phone's pinned rows | the jump's film; the rule and drawing for 375 px, a two-figure count and a missing group (D2652); **finding 3 settled with the bell section** |
@@ -3596,6 +3599,43 @@ core's steps land: V4c and V11b and the two links (K4), the three taps (K6). **A
 draws it (chat 198's measure) — put right in U4 and measured by the drawing check. **The test world:** the plan's
 Viper, Blade and Basher are not in `test-support/msq-world.ts` (the core's file); a test uses the world's own men
 through `moveMan` and `acrossMove`, and a man it truly lacks is asked of the coordinator.
+
+**After U1's reads (chat 205, 26 Nov 26).** The fresh blind Opus read and the security read of U1 (15112a2ac) proved
+that a row was judged once, at opening: a row opened whole stayed the whole editor after a squadron pick or after the
+man's move landed. **The rule now, built as U1's fix before U1 merges:** the page holds, for every open row, the
+squadron it opened on and whether it opened whole or short; on every draw the row is judged again and, where the
+judgement has changed, it closes with nothing typed carried — silently at his own pick, with the Q13 note where it
+changed under him with no pick; every write the whole row can make (Save, Suspend / Enable, Give sign-in, Archive,
+Delete) judges the row first and refuses with the Q13 note. This replaces row Q13's unstated "an opened short row
+stays drawn across a pick until Save or Cancel". **Finding B** (another squadron's archived men in the Archived fold
+by a master admin's Squadron tick) is U3's — written into U3's row above. **Finding C** (a man with no readable
+home gets the whole row) cannot arise in today's store: pinned as built and filed, `[MSQ-S2-NO-HOME-ROW]`, closed
+before the database step. **The three questions of "Still held" above are numbered 13, 14 and 15 on the one
+questions page** (chat 200 took 10–12): read "Question 10 / 11 / 12" above as 13 / 14 / 15.
+
+**His answers to questions 13, 14 and 15 (26 Nov 26 — "as recommended"; D2806, D2807, D2808): the three "Still held"
+items above are lifted.** (1) **D2806** — for an admin with Plan of 149 who is neither 149's own admin nor a master
+admin, "Admin" is greyed in the Role box, as "Master admin" is, with one grey line under it, "Only 149's own admins or
+a master admin can make an admin of 149." — on a man's row and in "+ Add a person", "Give access" and "Give sign-in";
+not greyed on a man already an admin of 149; the last-admin note reads for him "Kestrel is 149's last admin. Only
+149's own admins or a master admin can make another." (2) **D2807** — his Undo of his own "made a member" is refused
+with "Only 149's own admins or a master admin can make an admin of 149, so this can't be undone." (3) **D2808** — a
+Plan ended by an archive, an overseas posting, a delete or a master admin's making writes one bell line to that
+squadron's admins, in the four approved wordings; **built by this section (S2) as a step of its own right after U2 —
+"U2L", the same file and gate rule as U2's other Plan lines — the bell section only draws them (the coordinator's
+call, 27 Nov 26; §21.3's rule that the bell section does not write `state/notices.ts` stands).** **So U2 is built WHOLE — Q8's
+clause, the doors, the gate, the row and the refused Undo together; there is no separate U2b** (read "U2b" above as
+U2). Every comment and test of these cites its number.
+
+**After U1's fourth round (chat 205, 26 Nov 26 — e1d116deb).** Three reads by four blind readers each found the rule
+sound and one more stale-row case; they were one fault, so the fourth round is ONE guard (D2404): a whole row and an
+archived man's row keep, from the press that opened them, a copy of everything they show and could write over, and
+whether the signed-in person is still an admin of the squadron the row opened on; the page, the editor and every
+action judge the store against the copy, and any difference closes the row with nothing written and the Q13 note,
+once. What the admin types is held by the page with the open row. The short row keeps its read-afresh design. This
+replaces "the page holds … the squadron it opened on and whether it opened whole or short" above as the whole of the
+rule; a later step that adds a field to either editor adds it to the copy (the test of
+`src/ui/msq-s2-rejudge4.test.tsx` §20 fails otherwise).
 
 ### 21.3 The bell, its colours and the Display page (§19.5–§19.8, §19.13)
 

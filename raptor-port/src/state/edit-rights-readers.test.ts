@@ -85,7 +85,7 @@ const INVENTORY: Record<string, { n: Partial<Record<keyof typeof Q, number>>; ki
   'ui/InputsSettings.tsx': { n: { adminOfUnit: 1 }, kind: ['named'], why: 'the Inputs settings window edits the squadron it opened on' },
   'ui/SansSettings.tsx': { n: { adminOfUnit: 1 }, kind: ['named'], why: 'the SANS settings window edits the squadron it opened on' },
   'ui/oilday.ts': { n: { adminOfUnit: 1 }, kind: ['named'], why: 'the OIL list of the squadron it lists' },
-  'ui/UsersPanel.tsx': { n: { adminOfUnit: 1 }, kind: ['named'], why: 'a person\'s row on Admin → Users: his sign-in, role, Suspend, Archive and Delete are an admin of his own squadron\'s (D2191, R3)' },
+  'ui/UsersPanel.tsx': { n: { adminOfUnit: 1, isAdmin: 1 }, kind: ['named', 'role'], why: 'a person\'s row on Admin → Users: his sign-in, role, Suspend, Archive and Delete are an admin of his own squadron\'s (D2191, R3); isAdmin — as the app takes the Admin page away under an open row, whether the role in force is still an admin\'s: a question about the person, deciding only whether the "row changed" note is said (the member view and a sign-out are his own leaving — no note); it offers no control and gates no write (U1\'s third fix round)' },
   'ui/useraccess-model.ts': { n: { adminOfUnit: 1 }, kind: ['named'], why: 'a person\'s squadron line: access to 149 is an admin of 149\'s to give (D2336)' },
   'ui/usersfilter-model.ts': { n: { adminOfUnit: 1 }, kind: ['named'], why: 'Add a person\'s Home squadron offers each squadron he is an admin of — the door\'s own test, roster-add.ts newHomeProblem (§4 item 7)' },
   /* ---- role: a question about the person ---- */

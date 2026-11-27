@@ -21,7 +21,7 @@
 import { PEOPLE } from '../engine/people'
 import { accountOfPid, isAdminAccount, levelAcct } from '../state/accounts'
 import { units, unitById, grantOfOn, homeOn } from '../state/units'
-import { adminOfUnit } from '../state/perms'
+import { adminOfUnit, inSquadronOrder } from '../state/perms'
 import { usersListOf } from './userslist-model'
 
 export type SeatTick = 'Pilots' | 'WSOs' | 'Personnel'
@@ -37,7 +37,6 @@ const CAT_ORDER = ['IP', 'IW', 'IR', 'FI', 'A', 'B', 'C', 'D', 'OCU']
 
 const P = (pid: string): any => (PEOPLE as any)[pid]
 const num = (u: string): string => String(unitById(u)?.num ?? u)
-const byNum = (a: string, b: string) => num(a).localeCompare(num(b), undefined, { numeric: true })
 const byCs = (x: string, y: string) => String(P(x)?.cs ?? '').localeCompare(String(P(y)?.cs ?? ''))
 
 export const roleWord = (r: RoleTick, unit: string): string =>
@@ -92,7 +91,8 @@ export interface UsersView {
 }
 export function usersView(unit: string, iso: string, query: string, f: UsersFilter, master: boolean): UsersView {
   const sq = sqnTicks(f, master)
-  const inView = sq.length ? [...sq].sort(byNum) : [unit]
+  /* (the squadrons in view, and their headings below, in the one order — his home first, then by number: D2730 Q1) */
+  const inView = sq.length ? inSquadronOrder(sq, iso) : [unit]
   const grouped = !(inView.length === 1 && inView[0] === unit)
   const lists = inView.map(u => ({ u, l: usersListOf(u, iso, query), all: usersListOf(u, iso, '') }))
   const placed = new Set<string>()
@@ -104,7 +104,7 @@ export function usersView(unit: string, iso: string, query: string, f: UsersFilt
   /* a search's find of a man of a squadron not in view: under his own squadron when grouped, on the one list when not */
   const found = lists[0]!.l.found
   for (const pid of found) if (!placed.has(pid)) put(grouped ? (homeOn(pid, iso) ?? unit) : unit, pid)
-  const units_ = [...rowsOf.keys()].sort(byNum)
+  const units_ = inSquadronOrder([...rowsOf.keys()], iso)
   const before = units_.reduce((n, u) => n + rowsOf.get(u)!.length, 0)
   const groups: UsersGroup[] = []
   for (const u of grouped ? units_ : [unit]) {
@@ -132,8 +132,8 @@ export function usersView(unit: string, iso: string, query: string, f: UsersFilt
 
 /* ADD A PERSON'S "HOME SQUADRON" (§4 item 7 — picture b1-7): the squadrons the signed-in admin is an admin of (his own,
    one he holds Plan of, every one for a master admin — perms.ts adminOfUnit, the door's own test, roster-add.ts
-   newHomeProblem), the page's own first, the rest by number */
+   newHomeProblem), the page's own first, the rest in the one order — his home first, then by number (D2730 Q1) */
 export function addHomeChoices(unit: string): string[] {
-  const mine = units().map(u => u.id).filter(u => adminOfUnit(u)).sort(byNum)
+  const mine = inSquadronOrder(units().map(u => u.id).filter(u => adminOfUnit(u)))
   return mine.includes(unit) ? [unit, ...mine.filter(u => u !== unit)] : mine
 }

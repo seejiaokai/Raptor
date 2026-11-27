@@ -14,7 +14,8 @@
    one Undo step; the door and the commit gate judge each part again. */
 import type { AccessLine } from '../state/accounts'
 import { units, homeOn, todayIso } from '../state/units'
-import { numOf, byNum, lineState, type RolePick } from './useraccess-model'
+import { numOf, lineState, type RolePick } from './useraccess-model'
+import { inSquadronOrder } from '../state/perms'
 import { ROLES_TABLE, ROLES_LABEL, ROLES_KEY, ROLES_NOTES, TABLE_ROLES, ROLE_HEADS, MARK_WORD } from './rolestable'
 
 export function RoleBox(p: { id: string; value: RolePick; disabled?: boolean; masterOff?: boolean; onChange: (v: RolePick) => void }) {
@@ -28,13 +29,17 @@ export function RoleBox(p: { id: string; value: RolePick; disabled?: boolean; ma
 }
 
 const WORD: Record<AccessLine, string> = { none: 'None', view: 'View', plan: 'Plan' }
-/* the squadron lines under Sign-in and Role */
+/* the squadron lines under Sign-in and Role. `only` — the one squadron to draw: another squadron's man on this squadron's
+   page shows this page's squadron's line alone (his D2625, D2655 D5 — UsersPanel's short row); each line's state is
+   lineState's, unchanged */
 export function SquadronLines(p: {
   pid: string; hasSignIn: boolean; rolePick: RolePick; now: Record<string, AccessLine>; pick: Record<string, AccessLine>
-  onPick: (unit: string, v: AccessLine) => void
+  onPick: (unit: string, v: AccessLine) => void; only?: string
 }) {
   const home = homeOn(p.pid, todayIso())
-  const all = units().map(u => u.id).sort(byNum)
+  /* (the signed-in person's home first, then by number — the one order, his D2730 Q1; `home` above is the opened man's,
+     which only marks his "Home squadron" line) */
+  const all = p.only ? [p.only] : inSquadronOrder(units().map(u => u.id))
   return (
     <div className="acc-sq" data-testid="acc-sq">
       {all.map(u => {
