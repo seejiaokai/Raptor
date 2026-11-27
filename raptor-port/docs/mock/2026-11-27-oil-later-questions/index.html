@@ -1,0 +1,90 @@
+<title>OIL Later — three questions</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one column of question cards, each with its picture, choices and recommendation. */
+:root{
+  --bg:#f4f6f8; --card:#ffffff; --fg:#17202a; --mute:#5b6876; --line:#d8dee5;
+  --accent:#0e7490; --rec:#0f766e; --recbg:#e6f6f3; --warn:#9a3412;
+  --font:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0d141b; --card:#16202a; --fg:#e6edf3; --mute:#9aa8b6; --line:#2a3846;
+  --accent:#38bdd8; --rec:#5eead4; --recbg:#12302c; --warn:#fdba74; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0d141b; --card:#16202a; --fg:#e6edf3; --mute:#9aa8b6; --line:#2a3846;
+  --accent:#38bdd8; --rec:#5eead4; --recbg:#12302c; --warn:#fdba74; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--font);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px}
+main{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+h1{font-size:1.4rem;margin:0;text-wrap:balance}
+.top{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.top ol{margin:6px 0 0;padding-left:20px}
+.top li{margin:4px 0}
+.q{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.q h2{font-size:1.1rem;margin:0;text-wrap:balance}
+.when{color:var(--mute);margin:0}
+.when b{color:var(--fg)}
+figure{margin:0}
+figure img{width:100%;border:1px solid var(--line);border-radius:6px;cursor:zoom-in;display:block}
+figcaption{font-size:.85rem;color:var(--mute);margin-top:4px}
+.opt{border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.opt.rec{border-color:var(--rec);background:var(--recbg)}
+.opt h3{font-size:1rem;margin:0 0 4px}
+.tag{font-size:.75rem;letter-spacing:.04em;text-transform:uppercase;color:var(--rec);font-weight:700}
+.opt p{margin:0}
+.why{margin:0}
+.warn{color:var(--warn)}
+#zoom{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;z-index:20;
+  padding:calc(env(safe-area-inset-top,0px) + 12px) max(12px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 12px) max(12px,env(safe-area-inset-left,0px))}
+#zoom img{max-width:100%;max-height:85vh;object-fit:contain}
+#zoom button{font:inherit;padding:8px 18px;border-radius:6px;border:0;background:#fff;color:#111;cursor:pointer}
+button:focus-visible,img:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+</style>
+
+<main>
+  <h1>OIL “Later” — three questions before it is finished</h1>
+
+  <div class="top">
+    <strong>Look at now</strong> — newest first, each with my recommendation:
+    <ol>
+      <li><a href="#q3">An answer changed after the four have signed</a>: clear the names (recommended).</li>
+      <li><a href="#q2">A published day</a>: the names stay when an open question is answered (recommended).</li>
+      <li><a href="#q1">The last box with some answers picked</a>: show no line (recommended).</li>
+    </ol>
+  </div>
+
+  <section class="q" id="q3">
+    <h2>3 · An answer is changed after all four have signed</h2>
+    <p class="when"><b>When it happens:</b> rare, on a weekend or holiday not yet published. Ace, Anvil and Basher each press Later. Bolt, at APPROVED BY, answers <b>No</b> for Saber’s range duty and saves, so all four have signed. Before the day goes out, Saber opens his own duty and changes OIL to <b>Yes</b>.</p>
+    <figure><img src="img/oil-C1-D.png" alt="Friday 17 Jul: CUR CK Ace, SKED CK Anvil, PLANNED BY Basher signed; the OIL list waits on APPROVED BY Bolt, listing Nomad's overseas duty and Saber's range duty" tabindex="0"><figcaption>Friday 17 Jul: three signed, the list waiting on Bolt at APPROVED BY, Saber’s range duty second.</figcaption></figure>
+    <div class="opt rec"><span class="tag">Recommended</span><h3>A · The four names are cleared</h3><p>An answer someone signed over was changed, so the day must be signed again before it is published. Answering a question that was still open when they signed leaves the names, as built.</p></div>
+    <div class="opt"><h3>B · The names stay for any answer, first or changed</h3><p class="warn">The day could be published with Saber earning OIL that Bolt refused, and no sign-off box would change.</p></div>
+    <p class="why"><b>Why A:</b> it keeps what you asked for (the person without the authority presses Later, management answers, nobody signs twice) and still stops OIL going out that a signer turned down.</p>
+  </section>
+
+  <section class="q" id="q2">
+    <h2>2 · On a published day, does an answer clear the names?</h2>
+    <p class="when"><b>When it happens:</b> after a day is published, something is added that needs an OIL answer, so the day needs an amendment signed. Ace, Anvil and Basher press Later. Bolt answers at APPROVED BY and saves.</p>
+    <figure><img src="img/oil-C1-D.png" alt="The same sign-off boxes and OIL list, as they would look on the amended day" tabindex="0"><figcaption>The same boxes and list, but on a day already published that is waiting for an amendment.</figcaption></figure>
+    <div class="opt rec"><span class="tag">Recommended</span><h3>A · Ace, Anvil and Basher stay signed</h3><p>The same rule as a day not yet published. The day still shows the amendment waiting until AL is published.</p></div>
+    <div class="opt"><h3>B · Their three names are cleared</h3><p>This is how the build works now, because any change on a published day clears the sign-offs. The three sign again; the list does not ask them, since the question has been answered.</p></div>
+    <p class="why"><b>Why A:</b> it is the same job as on any other day, and B makes three people sign twice for nothing they need to look at again.</p>
+  </section>
+
+  <section class="q" id="q1">
+    <h2>1 · The last box, with some answers picked</h2>
+    <p class="when"><b>When it happens:</b> management signs the last of a day’s four boxes. The list asks first. Bolt picks Yes for Nomad’s overseas duty and leaves Saber’s range duty unpicked.</p>
+    <figure><img src="img/oil-C1-P.png" alt="Phone: the OIL list on APPROVED BY Bolt with its foot line" tabindex="0"><figcaption>The last box on a phone. With nothing picked, the line reads as you approved: “Later: Bolt signs, and OIL stays unanswered for now”.</figcaption></figure>
+    <div class="opt rec"><span class="tag">Recommended</span><h3>A · No line</h3><p>“Save: the next sign-off asks the rest” would be untrue here, since there is no next box.</p></div>
+    <div class="opt"><h3>B · “Save: the rest stays unanswered for now”</h3><p>Words a fresh Fable offered; not drawn for you before.</p></div>
+  </section>
+</main>
+
+<div id="zoom" hidden><img alt=""><button type="button" id="zclose">Close</button></div>
+<script>
+const z=document.getElementById('zoom'),zi=z.querySelector('img');
+const open=i=>{zi.src=i.src;zi.alt=i.alt;z.hidden=false;document.getElementById('zclose').focus()};
+document.querySelectorAll('figure img').forEach(i=>{i.addEventListener('click',()=>open(i));i.addEventListener('keydown',e=>{if(e.key==='Enter')open(i)})});
+document.getElementById('zclose').addEventListener('click',()=>{z.hidden=true});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')z.hidden=true});
+</script>
