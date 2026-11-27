@@ -959,13 +959,19 @@ describe('[LW-POSTIN-BALANCE] the Balances page', () => {
     act(() => { saber(); setBalanceLock(true); ranger() })
     expect(screen.queryByTestId('bal-postin')).toBeNull()
   })
-  it('D2746: a row never typed — its boxes empty with the amber dashed edge, War bal "Not typed", never 0', () => {
+  /* D2820 (27 Nov 26, his answer "a" to question 28 — narrows D2746 for this page only): no words here — the empty boxes keep
+     the amber dashed edge, War bal's place an empty amber dashed outline, named "Not typed" on hover and to a screen reader;
+     his person window, My leave and Approvals keep the words (personwindow.test.tsx) */
+  it('D2746, D2820: a row never typed — its boxes empty with the amber dashed edge, War bal an empty amber outline, never 0 and no words', () => {
     render(<BalancesPage />)
     expect(lve('stiff').notTyped).toBe(true)
     expect(box('bal-LVE-stiff').value).toBe('')
     expect(box('bal-LVE-stiff').className).toContain('nt')
     expect(box('bal-cf-stiff').value).toBe('')
-    expect(screen.getByTestId('bal-war-stiff').textContent).toBe('Not typed')
+    expect(screen.getByTestId('bal-war-stiff').textContent).toBe('')
+    expect(screen.getByTestId('bal-war-stiff').querySelector('.bp-nto')?.getAttribute('aria-label')).toBe('Not typed')
+    expect(screen.getByTestId('bal-war-stiff').querySelector('.bp-nto')?.getAttribute('title')).toBe('Not typed')
+    expect(screen.getByTestId('bal-row-stiff').textContent).not.toContain('Not typed')
     expect(screen.getByTestId('bal-war-stiff').className).not.toContain('neg')
     for (const k of ['CCL', 'FCL', 'PL', 'EL', 'CL']) expect(box(`bal-${k}-stiff`).value).toBe('')
     /* a row typed is untouched */
@@ -979,12 +985,15 @@ describe('[LW-POSTIN-BALANCE] the Balances page', () => {
     expect(box('bal-LVE-stiff').value).toBe('24')
     expect(screen.getByTestId('bal-war-stiff').textContent).toBe('24')
   })
-  it('D2746: a member reads another man’s figure never typed as the amber dash, and his War bal "Not typed"', () => {
+  it('D2746, D2820: a member reads another man’s figure never typed as an empty amber outline, his War bal the same, no words', () => {
     ranger()
     render(<BalancesPage />)
     const row = screen.getByTestId('bal-row-stiff')
-    expect(row.querySelector('.bp-ro.nt')?.textContent).toBe('–')
+    expect(row.querySelector('.bp-ro.nt')?.textContent).toBe('')
     expect(row.querySelector('.bp-ro.nt')?.getAttribute('aria-label')).toBe('Not typed')   // the words review, D2441
-    expect(screen.getByTestId('bal-war-stiff').textContent).toBe('Not typed')
+    expect(row.querySelector('.bp-ro.nt')?.getAttribute('title')).toBe('Not typed')
+    expect(screen.getByTestId('bal-war-stiff').textContent).toBe('')
+    expect(screen.getByTestId('bal-war-stiff').querySelector('.bp-nto')?.getAttribute('aria-label')).toBe('Not typed')
+    expect(row.textContent).not.toContain('Not typed')
   })
 })

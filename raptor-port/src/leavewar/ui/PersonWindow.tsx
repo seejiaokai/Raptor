@@ -73,7 +73,8 @@ function Clip() {
 
 /** a figure read only (round 20d's `r17-box ro`) */
 function Ro({ v, sm, testid, nt }: { v: number; sm?: boolean; testid?: string; nt?: boolean }) {
-  /* a figure never typed, read only (D2746): the amber dash, as the Balances page draws it — "Not typed" itself stands in War
+  /* a figure never typed, read only (D2746): the amber dash (the Balances page draws an empty amber outline there since
+     D2820, 27 Nov 26 — this window keeps the dash and the words) — "Not typed" itself stands in War
      bal's place */
   if (nt) return <span className={`r17-box ro nt${sm ? ' sm' : ''}`} data-testid={testid} title="Not typed" aria-label="Not typed">–</span>
   return <span className={`r17-box ro${sm ? ' sm' : ''}${v === 0 ? ' z' : ''}`} data-testid={testid}>{figWords(v)}</span>

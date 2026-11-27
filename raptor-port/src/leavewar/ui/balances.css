@@ -130,11 +130,11 @@
      its box empty, its edge "No grade"'s dashed amber (.bp-gr.none); a read-only figure the amber dash; War bal's place
      "Not typed" in the same amber. The person window's tile box takes the same edge (personwindow.css .r17-box). */
   .bp-bx.nt:not(:focus) { border: 1px dashed rgba(242, 200, 121, .8); background: transparent; }
-  .bp-ro.nt { color: #F2C879; font-weight: 600; }
-  /* two lines, as War bal's column is drawn — on a phone (55 wide) one line ran over the OIL column, and on a desktop it
-     widened the column 26px and moved OIL and OTHER LEAVE off the drawing (the walk's phone fault 1 and desktop drawing
-     check, 27 Nov 26) */
-  .bp-nt { display: inline-block; color: #F2C879; font: 700 12px/1.1 system-ui; white-space: normal; text-align: right; }
+  /* NO WORDS ON THIS PAGE (D2820, question 28 A, 27 Nov 26 — "not typed seems abit excessive"): a read-only figure never
+     typed and War bal's place take an empty outline in the empty box's own dashed amber, the size of the box a typeable
+     row shows in that column (.bp-bx 54 × 28, .sm 44), so the row's height and every column stay as they were */
+  .bp-ro.nt, .bp-nto { display: inline-block; box-sizing: border-box; width: 54px; min-width: 54px; height: 28px; padding: 0; border: 1px dashed rgba(242, 200, 121, .8); border-radius: 7px; vertical-align: middle; }
+  .bp-ro.nt.sm { width: 44px; min-width: 44px; }
   /* THE ONE LINE WHERE A BALANCE CAN BE TYPED (D2749, D2812): once above the rows, as drawn
      (scripts/handpass/lw-postin-bal-q16b-draw.mjs pageShot — 13px, #9aa4b2, 8px 16px 8px, its line 2px below that) */
   .bp-pi { flex: none; margin: 10px 16px 8px; color: #9aa4b2; font: 400 13px/1.45 system-ui; }
