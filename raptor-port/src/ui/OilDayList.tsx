@@ -84,14 +84,15 @@ function FootButtons({ empty, done, onClose, onLater, onSave }: { empty: boolean
 }
 /* THE FOOT'S QUIET WORDS while a sign-off is held (his D2859 — Opus drafted, a fresh Fable adjusted, approved 27 Nov 26):
    nothing picked, what Later does; some picked, what Save leaves; every row picked, nothing to say. On the LAST of the four
-   boxes no box is left to ask after it (`last`): Later's own line says the question stays open; with some picked there is
-   no line (the agent's reading, put to him — "the next sign-off asks the rest" would be untrue there). No sign-off held:
-   the bells' line, where it is true. */
+   boxes no box is left to ask after it (`last`): Later's own line says the question stays open, and with some picked
+   Save's line says the rest does (his D2867, 27 Nov 26 — a fresh Fable's words). No sign-off held: the bells' line,
+   where it is true. */
 function footSaid(held: { cs: string; last: boolean } | null, rows: number, done: number, belled: boolean): string {
   if (!rows) return ''
   if (!held) return belled ? 'What is left goes to the schedulers’ bells' : ''
   if (!done) return held.last ? `Later: ${held.cs} signs, and OIL stays unanswered for now` : `Later: ${held.cs} signs, and the next sign-off asks again`
-  return done < rows && !held.last ? 'Save: the next sign-off asks the rest' : ''
+  if (done >= rows) return ''
+  return held.last ? 'Save: the rest stays unanswered for now' : 'Save: the next sign-off asks the rest'
 }
 
 function Body({ from, to, unit, name, fresh, plain, hold }: { from: string; to: string; unit: string; name: string; fresh: boolean; plain: boolean; hold?: SignHold }) {

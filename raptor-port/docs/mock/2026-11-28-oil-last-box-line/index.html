@@ -1,0 +1,48 @@
+<title>OIL list — last sign-off line</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* one column: what to look at, then the two pictures; tap a picture for a large view */
+:root { --bg:#f5f6f8; --fg:#16181d; --mute:#5b6270; --card:#ffffff; --line:#dde1e7; --mark:#e0287f; color-scheme:light;
+  --sans: -apple-system, "Segoe UI", system-ui, sans-serif }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#111317; --fg:#eceef2; --mute:#9aa1ad; --card:#1a1d23; --line:#2b3038; --mark:#ff4fa3; color-scheme:dark } }
+:root[data-theme="dark"] { --bg:#111317; --fg:#eceef2; --mute:#9aa1ad; --card:#1a1d23; --line:#2b3038; --mark:#ff4fa3; color-scheme:dark }
+body { background:var(--bg); color:var(--fg); font-family:var(--sans); line-height:1.5 }
+.wrap { max-width:760px; margin:0 auto; padding-block:24px 48px; padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px)); display:grid; gap:20px }
+h1 { font-size:1.35rem; margin:0; text-wrap:balance }
+.now { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:14px 16px; display:grid; gap:8px }
+.now b { color:var(--mark) }
+p { margin:0 }
+.mute { color:var(--mute); font-size:.92rem }
+figure { margin:0; display:grid; gap:8px }
+figure img { width:100%; border-radius:8px; border:1px solid var(--line); cursor:zoom-in; display:block }
+figcaption { font-size:.92rem; color:var(--mute) }
+.pics { display:grid; gap:20px; grid-template-columns:1fr 1fr }
+@media (max-width:640px) { .pics { grid-template-columns:1fr } }
+#zoom { position:fixed; inset:0; background:rgba(0,0,0,.88); display:grid; place-items:center; padding:calc(env(safe-area-inset-top, 0px) + 56px) 12px 12px; z-index:20 }
+#zoom img { max-width:100%; max-height:100%; border-radius:8px }
+#zoomClose { position:fixed; top:calc(env(safe-area-inset-top, 0px) + 10px); right:calc(env(safe-area-inset-right, 0px) + 12px); font:600 1rem var(--sans); padding:8px 16px; border-radius:8px; border:0; background:#fff; color:#111 }
+#zoomClose:focus-visible, figure img:focus-visible { outline:3px solid var(--mark); outline-offset:2px }
+</style>
+<div class="wrap">
+  <h1>The new line on the last sign-off</h1>
+  <div class="now">
+    <p><b>Look at now:</b> the ringed line at the bottom of the OIL list. This is what you said yes to (your answer to question 1).</p>
+    <p><b>When it shows:</b> Ace, Anvil and Basher have already signed by pressing Later. Bolt picks his name in APPROVED BY, the last of the four boxes. The list asks about Ranger's and Saber's Training. Bolt answers Ranger (Yes · FO) and leaves Saber blank. The line now reads <b>"Save: the rest stays unanswered for now"</b>. Until this change it showed nothing there.</p>
+    <p class="mute">Nothing to decide unless it looks wrong. These are pictures of the real app on this job's build. Tap a picture to see it large.</p>
+  </div>
+  <div class="pics">
+    <figure><img src="img/last-box-some-picked-phone.png" alt="The OIL list on a phone: Approved by Bolt, 1 of 2 answered, the foot line ringed: Save: the rest stays unanswered for now" tabindex="0"><figcaption>On an iPhone</figcaption></figure>
+    <figure><img src="img/last-box-some-picked-desktop.png" alt="The same OIL list on a desktop, the foot line ringed" tabindex="0"><figcaption>On a desktop</figcaption></figure>
+  </div>
+</div>
+<div id="zoom" hidden><button id="zoomClose" type="button">Close</button><img id="zoomImg" alt=""></div>
+<script>
+const z = document.getElementById('zoom'), zi = document.getElementById('zoomImg')
+const openZ = img => { zi.src = img.src; zi.alt = img.alt; z.hidden = false; document.getElementById('zoomClose').focus() }
+document.querySelectorAll('figure img').forEach(img => {
+  img.addEventListener('click', () => openZ(img))
+  img.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openZ(img) } })
+})
+document.getElementById('zoomClose').addEventListener('click', () => { z.hidden = true })
+document.addEventListener('keydown', e => { if (e.key === 'Escape') z.hidden = true })
+</script>

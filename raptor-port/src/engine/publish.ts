@@ -18,7 +18,7 @@ import { inputProtected, weekLockReason, anyUnreadableWeek } from './quarantine'
 import { rosterIds, dayRuleVals } from './faceattrs'
 import { rosterOf, rosterToday, homeUnitOf } from './roster'
 import { UNIT } from './unitview'
-import { oilEvidence, oilEvidenceKey, oilSignKey, oilKeyNoMem, oilDecisionsKey, oilKeyBeforeStand, oilUpgradeMovedMoney, oilMovedInputsOnly, oilRuleShift, oilShiftKey, oilKeptVals, oilValsSame } from './oilev'
+import { oilEvidence, oilEvidenceKey, oilSignKey, oilKeyNoMem, oilDecisionsKey, oilKeyBeforeStand, oilUpgradeMovedMoney, oilMovedInputsOnly, oilRuleShift, oilShiftKey, oilKeptVals, oilValsSame, oilAnsKept, oilAnsAtSign } from './oilev'
 import { oilRuleValsNow } from './oil'
 
 /* the reference calls straight into the UI here; the engine routes those four
@@ -665,7 +665,9 @@ function filingDelta(di:any,issuedFil:any):DeltaEntry[]{
    not merely its block. Guessing it from `acc` made a cancelled row key
    `active` on the issued side and `cx` live, which offered an amendment on a
    day the money already agreed was unchanged. */
-function oilDelta(di:any,issuedDay:any):DeltaEntry[]{
+/* `ev`: the live day's evidence to compare, where a caller reads it another way — the signature's copy of the pending
+   comparison reads the answers to questions open at signing as unanswered (pendingKeyAtSign, his D2868) */
+function oilDelta(di:any,issuedDay:any,ev?:any):DeltaEntry[]{
   const w=(issuedDay||{}).oilev;
   /* CAN THE TWO SIDES BE COMPARED ON MEMBERSHIP AT ALL ([OIL-SEATS-CAN-EARN]
      step 9b)? Only where the issued side actually recorded it. A block frozen
@@ -677,7 +679,7 @@ function oilDelta(di:any,issuedDay:any):DeltaEntry[]{
      An older EARNING block did record membership, so it is still compared on
      it — that signal is real and predates this step. */
   const mem=!!(w&&(w.mem||w.earns));
-  const now=oilEvidenceKey(oilEvidence(di),DAYS[+di],mem), was=oilEvidenceKey(w,issuedDay,mem);
+  const now=oilEvidenceKey(ev||oilEvidence(di),DAYS[+di],mem), was=oilEvidenceKey(w,issuedDay,mem);
   return (now===was?[]:[{addr:`oil:${+di}`,kind:'oil',from:was,to:now} as DeltaEntry]).concat(oilRuleDelta(di,issuedDay));}
 /* …AND THE LOGIC VALUES THE VERSION'S OIL WAS WORKED OUT FROM ([OIL-WORK-START] — owner, D592 (4), 5 Oct 26: "a published
    day keeps the OIL it went out with"). The version keeps them (oilev.ts — the block's `rv`) and its OIL goes on being
@@ -1590,8 +1592,11 @@ function currentBindNow(di:any){ const d=DAYS[di];
      and publication all call the SAME body, so they cannot disagree about what
      is being signed. ONE PART OF IT IS LEFT OUT OF THE SIGNATURE ON PURPOSE: an
      input's OIL answer (his D2800, D2801 — the names already signed stand through
-     an answer given after them; engine/oilev.ts oilSignKey). On a published day the
-     answer is still a change waiting, and `pd` below still takes the four down. */
+     an answer given after them; engine/oilev.ts oilSignKey). It is kept beside it
+     instead (`oa`, each input's answer as it stood at signing): an answer the names
+     were signed over that has since CHANGED clears them (his D2869), and the answer to
+     a question open at signing leaves them on a published day too (his D2868 — `pd`
+     and `orv` are read with it unanswered, signBoundOk). */
   /* THE SIGNATURE'S PROJECTION, NOT THE COMPARISON'S (D45, step 9b) — the OIL key
      below still leaves membership out, and everything else about the block still
      binds through it. BUT D45's signature half was REPLACED on 25 Sep 26 by D103
@@ -1622,7 +1627,7 @@ function currentBindNow(di:any){ const d=DAYS[di];
      equality — a Logic change that touches no record on this day leaves the four standing (D103: only a change that
      shows). Both plan challenges asked for it (Astra's finding 1, Sol's finding 1). */
   const oev=oilEvidence(di);
-  return {dg:d?digest(shown,di):'', iso:dayIso(CURWEEK,di), base:dayCurVer(di)||'', rev:(SCHED.curDraft||{})[di]||'', fil:filingKey(di), oil:oilSignKey(oev,d), gord:'', pd:pendingKey(di), orv:oev.earns?oilKeptVals(oev):null};}
+  return {dg:d?digest(shown,di):'', iso:dayIso(CURWEEK,di), base:dayCurVer(di)||'', rev:(SCHED.curDraft||{})[di]||'', fil:filingKey(di), oil:oilSignKey(oev,d), gord:'', pd:pendingKey(di), orv:oev.earns?oilKeptVals(oev):null, oa:oev.earns?oilAnsKept(oev):null};}
 /* ANY PENDING CHANGE WIPES THE SIGN-OFFS (owner, D103, 25 Sep 26 — his own idea: "why dont we just wipe the
    sign offs for any changes to the schedule?"). ONE rule: something waiting means sign again. So a signature on
    a PUBLISHED day also binds to the whole pending comparison itself — every entry of dayDelta, the same body
@@ -1639,12 +1644,49 @@ function currentBindNow(di:any){ const d=DAYS[di];
    that row's id; one naming the issued day (a delete, a hole — `was`) keeps its issued position, which never moves. A
    real re-order still clears the four (the ORDER entry, and the digest bound as shown); a legacy row with no id keeps
    its position. A binding stored before this re-signs once (demo data — D56). */
-function pendingKey(di:any):string{
+function pendingKey(di:any):string{return pendingKeyOf(di,dayDelta(di));}
+function pendingKeyOf(di:any,delta:DeltaEntry[]):string{
   const g=(DAYS[di]&&DAYS[di].ground)||[];
   const addr=(e:any)=>{ const a=String(e.addr); if(e.kind==='delete'||e.was)return a;
     const m=/^(gr?):(\d+)\.(\d+)(.*)$/.exec(a); if(!m||+m[2]!==+di)return a;
     const r=g[+m[3]]; return r&&r.rid?`${m[1]}:${di}.@${r.rid}${m[4]}`:a; };
-  return dayDelta(di).map((e:any)=>`${addr(e)}${'␟'}${e.kind}${'␟'}${e.from??''}${'␟'}${e.to??''}`).sort().join('\n');}
+  return delta.map((e:any)=>`${addr(e)}${'␟'}${e.kind}${'␟'}${e.from??''}${'␟'}${e.to??''}`).sort().join('\n');}
+/* …READ AS A SIGNATURE SAW IT, FOR AN OIL QUESTION OPEN WHEN IT WAS GIVEN (his D2868, 27 Nov 26 — "as recommended": on
+   a published day too, the answer to an OIL question that stood open when the names were signed leaves them; the day
+   still shows the change waiting). The same comparison, but the day's OIL entry worked out with the answers to the
+   questions open at that signing (`oa`, kept null) read as unanswered — so that answer, and only it, does not move this
+   copy, while every other change (the input's times, its people, a further answer to a question they DID sign over —
+   D2869, failed on its own) moves it as before. Only the OIL entry is re-read: the input details axis carries no answer
+   (inputs.ts inpDetailKey). Null where nothing is to be read back (no open-at-signing question answered since), so the
+   caller falls back to the plain comparison. */
+function pendingKeyAtSign(di:any,oa:any):string|null{di=+di;
+  if(!oa)return null;
+  /* once per repaint for the same open questions (passMemo — the roles signed together share one answer) */
+  const open=Object.keys(oa).filter((k:string)=>oa[k]==null).sort().join('␟');
+  return passMemo('pka'+open+'␞',di,()=>pendingKeyAtSignNow(di,oa));}
+function pendingKeyAtSignNow(di:number,oa:any):string|null{
+  const ev=oilEvidence(di), at=oilAnsAtSign(ev,oa);
+  if(at===ev)return null;
+  if(!((SCHED.dayOK||{})[di]))return null;
+  const ver=dayCurVerIn(SCHED,di,CURWEEK), snap=ver!=null?daySnapIn(SCHED,di,ver,CURWEEK):null;
+  if(!snap||!snap.d)return null;
+  const oilAddr=`oil:${di}`;
+  return pendingKeyOf(di,dayDelta(di).filter((e:any)=>e.addr!==oilAddr).concat(oilDelta(di,snap.d,at).filter((e:any)=>e.addr===oilAddr)));}
+/* the binding's pending axis: the plain comparison, or — only where it moved — the copy above */
+function pdBoundOk(di:any,x:any,c:any):boolean{
+  if((x.pd||'')===(c.pd||''))return true;
+  const m=pendingKeyAtSign(di,x.oa);
+  return m!=null&&(x.pd||'')===m;}
+/* AN ANSWER THE NAMES WERE SIGNED OVER THAT HAS SINCE CHANGED CLEARS THEM (his D2869, 27 Nov 26 — "as recommended":
+   "nobody can change OIL after the signers saw it"; narrows D2801's "any OIL answer" to the answer of a question that
+   stood open). Each input answered at signing must read the same answer now — a different one, or none (an answer
+   taken away). An input open at signing is free (D2800). An input gone from the day is the OIL key's to judge. A binding
+   made before `oa` existed binds nothing here (demo data — D56). Putting the answer back restores the names (AM11). */
+function oilAnsBoundOk(was:any,now:any):boolean{
+  if(!was||!now)return true;
+  for(const k of Object.keys(was)){ if(was[k]==null||!Object.prototype.hasOwnProperty.call(now,k))continue;
+    if(now[k]!==was[k])return false; }
+  return true;}
 /* set a role's signer through the ONE sanctioned write path (ui/Shell.tsx). A
    truthy signer binds that role to the current content; clearing a role drops its
    binding. Tests / a legacy demo book that write signOf(di)[role] directly leave
@@ -1670,18 +1712,23 @@ function signBoundOk(di:any,role:any,cur?:any){const b=(SCHED.signBind||{})[+di]
      rides `dg`. Every new binding carries gord ''; one stored while it existed re-signs once (demo data — D56) */
   /* …and the pending comparison (D103): a binding written before it existed reads '' — which is exactly what a
      day with nothing waiting has, so it stands there and falls the moment anything is pending */
-  return x.dg===c.dg&&x.iso===c.iso&&x.base===c.base&&x.rev===c.rev&&x.fil===c.fil&&(x.gord||'')===(c.gord||'')&&(x.pd||'')===(c.pd||'')&&oilBoundOk(di,x.oil,c.oil)&&oilRvBoundOk(di,x.orv);}
+  return x.dg===c.dg&&x.iso===c.iso&&x.base===c.base&&x.rev===c.rev&&x.fil===c.fil&&(x.gord||'')===(c.gord||'')&&oilAnsBoundOk(x.oa,c.oa)&&pdBoundOk(di,x,c)&&oilBoundOk(di,x.oil,c.oil)&&oilRvBoundOk(di,x.orv,x.oa);}
 /* the day as it stands now, under the Logic values it was signed with against today's: the same question, and the same
    body, the pending comparison asks of an issued day (oilev.ts oilRuleShift) — so the two cannot disagree about what
    "this Logic change moves somebody's OIL" means. A binding with no kept values — a day that earned nothing when it was
-   signed, or one signed before this build — binds nothing here; putting the value back restores the four (AM11). */
-function oilRvBoundOk(di:any,was:any){
+   signed, or one signed before this build — binds nothing here; putting the value back restores the four (AM11).
+   …WITH THE ANSWERS AS THEY STOOD AT SIGNING (Astra's red-team read of the plan, finding 1, and the fresh Opus read's
+   F3 — 27 Nov 26): read with today's answers, a Logic change that moved nobody while a question was open "moved"
+   somebody the moment it was answered, and the names fell on the answer — what his D2800, D2801 and D2868 say an answer
+   to an open question never does. So an input open at signing reads unanswered here (`oa` — oilev.ts oilAnsAtSign); a
+   Logic change that moves OIL the names WERE signed over still clears them. */
+function oilRvBoundOk(di:any,was:any,oa?:any){
   if(!was)return true;
   /* the common case first — nothing changed since he signed — before any evidence is built: this runs for every signed
      role on every repaint (docs/performance.md Part 1) */
   const n=oilRuleValsNow();
   if(oilValsSame(was,n))return true;   // the four kept values (D2044; the flight length since D2046)
-  return oilRuleShift(DAYS[+di],{...oilEvidence(di),rv:was}).length===0;}
+  return oilRuleShift(DAYS[+di],{...oilAnsAtSign(oilEvidence(di),oa),rv:was}).length===0;}
 /* A BINDING WRITTEN BEFORE `stand` EXISTED stores the OIL key in the old
    six-part form, which can never equal today's seven-part one — so every
    signature given before this build fell off a day whose content had not moved,

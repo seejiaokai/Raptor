@@ -12,9 +12,10 @@
    LATER IS "NOT MY CALL" (his D2800, 26 Nov 26 — narrowing D2294's "Later asks no more that day"): a scheduler without
    the authority to decide OIL signs by Later, and management, signing a later box (usually APPROVED BY), sees the
    question and answers it. So nothing remembers a Later: every press of any of the four boxes asks while an input on the
-   day stands unanswered, and a Save that leaves rows unpicked leaves them to the next press the same way. An answer given
-   after a name no longer clears it on a day not yet published, wherever it is given (his D2801 — engine/oilev.ts
-   oilSignKey leaves the answer out of what a signature is bound to).
+   day stands unanswered, and a Save that leaves rows unpicked leaves them to the next press the same way. The answer to a
+   question that stood open when a name was given does not clear it, wherever it is given, on a published day too (his
+   D2801, D2868); an answer the name was signed over that later changes does (his D2869 — engine/oilev.ts oilSignKey,
+   engine/publish.ts oilAnsBoundOk).
 
    ONE DOOR: the sign-off boxes of the Scheduler Board and of Edit Schedule's week are one delegated handler
    (ui/Shell.tsx), which calls signPick. The list (ui/OilDayList.tsx) calls holdSave / holdLater; its close throws the
@@ -114,9 +115,11 @@ export function holdLater(hold: SignHold, iso: string, unit: string): void {
   HOOKS.reflow()      // the box is drawn by the schedule's own builders: it reads the name on their next draw
 }
 
-/** SAVE, with a sign-off held: THE ANSWERS FIRST, THEN THE NAME (D2294). Since his D2800 an answer no longer clears a name
- *  on a day not yet published, so the order matters only to Undo: two steps, the name's first (the agent's reading, told
- *  to him: the answer is a change to the inputs, the name a change to the schedule's own record). What this Save leaves
+/** SAVE, with a sign-off held: THE ANSWERS FIRST, THEN THE NAME (D2294). KEEP THIS ORDER: the name is then signed OVER the
+ *  answers its signer gave, so if one of them is changed later this name falls with the rest (his D2869); written the
+ *  other way round, the signer's own answers would read as "open when he signed" and a later change would leave his name.
+ *  Undo takes two steps, the name's first (the agent's reading, told to him: the answer is a change to the inputs, the
+ *  name a change to the schedule's own record). What this Save leaves
  *  unpicked is left as Later leaves it: the next press asks the rest (his D2800). False where the answers were refused:
  *  nothing is signed, and the list stays up. */
 export function holdSave(hold: SignHold, iso: string, unit: string, picks: Readonly<Record<string, OilPick | undefined>>): boolean {

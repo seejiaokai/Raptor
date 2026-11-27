@@ -1006,13 +1006,37 @@ export function oilMovedInputsOnly(now: OilEvidence | null | undefined, nowDay: 
  *  is given (the list, the input's own "OIL?" sign, a bell line: all write the
  *  input's `oil`). The answer is read here as unanswered, so the key is the one an
  *  unanswered day has always had. Only the signature's key: the publication
- *  comparison (oilEvidenceKey) keeps the answer, so on a PUBLISHED day an answer is a
- *  change waiting and the pending axis of the binding (engine/publish.ts pendingKey)
- *  still takes the four down — D2801 is of a day not yet published (D103). Whether the
- *  day earns at all is the day's own fact (HOOKS.oilEarningDay), never an answer's. */
+ *  comparison (oilEvidenceKey) keeps the answer, so on a PUBLISHED day an answer is
+ *  still a change waiting (D103's count, the publish button).
+ *
+ *  …BUT ONLY THE ANSWER TO A QUESTION THAT STOOD OPEN WHEN THEY SIGNED (his D2868,
+ *  D2869 — 27 Nov 26, "as recommended"): an answer CHANGED after a name was given
+ *  clears the names signed over it, and on a published day too the open question's
+ *  answer leaves them. So the binding also keeps each input's answer as it stood at
+ *  signing (oilAnsKept, the binding's `oa`): engine/publish.ts signBoundOk fails a kept
+ *  answer that moved, and reads the pending comparison and the Logic check with the
+ *  open-at-signing answers read as unanswered (oilAnsAtSign). Whether the day earns at
+ *  all is the day's own fact (HOOKS.oilEarningDay), never an answer's. */
 export function oilSignKey(ev: OilEvidence | null | undefined, day?: any): string {
   if (!ev || !ev.earns) return ''
   return oilKeyNoMem(oilEvidenceKey({ ...ev, inputs: ev.inputs.map(i => (i.ans == null ? i : { ...i, ans: null })) }, day))
+}
+
+/** EACH INPUT'S OIL ANSWER AS IT STANDS — kept in a signature's binding (`oa`), so a later read can tell an answer to a
+ *  question that was open at signing (kept null: it leaves the names — D2800, D2868) from an answer the names were
+ *  signed over and that has since changed (kept a number: it clears them — D2869). */
+export function oilAnsKept(ev: OilEvidence | null | undefined): Record<string, number | null> {
+  const out: Record<string, number | null> = {}
+  for (const i of (ev && ev.inputs) || []) out[i.iid] = i.ans == null ? null : i.ans
+  return out
+}
+/** THE EVIDENCE AS A SIGNATURE SAW IT, ANSWERS ONLY: each input whose question stood open when the binding was made
+ *  (`oa[iid]` null) reads unanswered again; every other input as it is now. An answer the binding kept that has since
+ *  moved is failed on its own (publish.ts oilAnsBoundOk), so it needs no restoring here. Returns the same object when
+ *  nothing is to be read back, so a caller can skip the work. */
+export function oilAnsAtSign(ev: OilEvidence, oa: Record<string, number | null> | null | undefined): OilEvidence {
+  if (!oa || !ev || !ev.inputs.some(i => i.ans != null && Object.prototype.hasOwnProperty.call(oa, i.iid) && oa[i.iid] == null)) return ev
+  return { ...ev, inputs: ev.inputs.map(i => (i.ans != null && Object.prototype.hasOwnProperty.call(oa, i.iid) && oa[i.iid] == null ? { ...i, ans: null } : i)) }
 }
 
 /** DOES THIS ISSUED DAY PREDATE THE RECORD OF WHO IS BEHIND ITS PUCKS, AND WOULD
