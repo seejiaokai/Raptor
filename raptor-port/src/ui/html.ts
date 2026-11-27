@@ -430,6 +430,13 @@ export function viewVerSelHTML(di:any){
     +`<option value="working"${work?' selected':''}>Working draft — not issued</option>`
     +`</select>`
 }
+/* [END-TIME-GUARD] — EDIT SCHEDULE'S LEGEND LINE FOR THE OUTLINE (his D2803, D2860: approved as drawn,
+   docs/mock/2026-11-27-morning-drawings/legend.mjs): at the Legend's foot an empty time box outlined grey, one outlined
+   red, then his words. Edit Schedule's Legend only — View-only Sched never shows the outline (D2853), so its Legend never
+   names it; kept apart from legendHTML(), which both Legends share and the reference's item set pins (html.test.ts). */
+export function timeLegendHTML(){
+  return `<span style="margin-left:8px" data-leg="timegap"><span class="qk tg-leg" style="background:transparent;box-shadow:inset 0 0 0 1px var(--ink-3);border-radius:4px;min-width:26px;padding:0;margin-right:3px"></span><span class="qk tg-leg" style="background:transparent;box-shadow:inset 0 0 0 1px var(--hard);border-radius:4px;min-width:26px;padding:0;margin-right:5px"></span>Time missing, fill it</span>`;
+}
 export function legendHTML(){
   return `<span><i style="background:var(--fcp)"></i>FCP (pilot)</span><span><i style="background:var(--rcp)"></i>RCP (WSO)</span><span data-leg="pers"><i style="background:var(--pers);box-shadow:inset 0 0 0 1px var(--pers-line)"></i>Personnel (ground crew)</span>
     <span style="margin-left:8px">Level:</span>

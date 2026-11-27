@@ -32,7 +32,7 @@ import { toast } from './toast'
 import { HIST } from '../state/history'
 import { useVersion, useUndoVersion } from './useStore'
 import { ViewWeek } from './ViewWeek'
-import { legendHTML } from './html'
+import { legendHTML, timeLegendHTML } from './html'
 import { routeClick, routeOpenKey, routeMenuKey } from './interactions'
 import { routeFocusOut, routeFocusIn, routeKeyDown, routeReportingInput, enteredOnAnother } from './textedit'
 import { SCHED_MOVE_WORDS } from '../state/typing-hold'
@@ -642,7 +642,7 @@ export function Shell() {
           <ALPanel />
           <details className="legendbox" id="eLegendBox">
             <summary className="legend-sum">Legend — colours &amp; flags</summary>
-            <div className="legend" id="eLegend" dangerouslySetInnerHTML={{ __html: legendHTML() }} />
+            <div className="legend" id="eLegend" dangerouslySetInnerHTML={{ __html: legendHTML() + timeLegendHTML() }} />
           </details>
           <div className="edit-board">
             <EditWeek />

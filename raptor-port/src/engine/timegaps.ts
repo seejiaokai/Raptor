@@ -2,7 +2,8 @@
    the original app). Every refusal and every screen asks this; none counts by itself.
 
    His rulings: D2852 (26 Nov 26) — before a sign-off, Publish day or Publish AL, every item with someone on it needs its
-   start and its end, and a row with a start needs its end even with nobody on it; an empty start counts as an empty end
+   start and its end, and a row with a start needs its end even with nobody on it (D2862, 27 Nov: any time typed asks for
+   the other — a row with only its end typed, nobody on it, needs its start too); an empty start counts as an empty end
    does; left out: a row from an input with All day ticked, a cancelled or information-only item, the AMT block's BRIEF
    and DEBRIEF while nobody is on them, a blank row with nobody on it. "Someone on it": a person, ALL or ALL AVAIL, or a
    callsign typed in its people box; a desk showing only its role is nobody. D2612 (25 Nov): the day is never published
@@ -12,7 +13,6 @@
    WHAT NO RULING SETTLES KEEPS WHAT THE APP DID BEFORE — NEVER REFUSED (his D2611: a builder's reading is never built
    on). Each is a question put to him (docs/superpowers/plans/2026-11-27-end-time-guard-plan.md §R5), pinned by a skipped
    test in timegaps.test.ts:
-   - R1: only the end typed, nobody on it — not counted;
    - R2: a word other than "TBD" in a time box (from an older saved week; the writer refuses one) — neither a missing
      box nor a typed start;
    - R7: a line with aircraft, every one cancelled — not counted;
@@ -58,6 +58,7 @@ export function dayTimeGaps(d: any, di: number): TimeGaps {
     const miss: string[] = []
     if (someone) { if (s === 'empty') miss.push(sKey); if (e === 'empty') miss.push(eKey) }
     else if (s === 'clock' && e === 'empty') miss.push(eKey)
+    else if (e === 'clock' && s === 'empty') miss.push(sKey)   // D2862: any time typed asks for the other
     if (miss.length) { out.items++; out.boxes.push(...miss) }
   }
   ;((d.allhands || []) as any[]).forEach((x: any, ri: number) => {

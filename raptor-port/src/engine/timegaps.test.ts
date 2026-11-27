@@ -162,11 +162,23 @@ describe('a ground programme row', () => {
   it('people boxes with blank entries are nobody', () => {
     expect(G(ground({ who: '  ', more: [''], str: '', end: '' })).items).toBe(0)
   })
-  it.todo('only the END typed and nobody on it — waits on his answer R1 (today: never refused)')
+  /* his D2862 (27 Nov 26, round 1's question 4): any time typed asks for the other */
+  it('only the END typed and nobody on it: counted, the START box (D2862)', () => {
+    expect(G(ground({ who: '', str: '', end: '17:00' }))).toEqual({ items: 1, boxes: ['gr:0.0.str'] })
+  })
+  it('a word, not a time, in the END box and nobody on it: plain — a word is no time typed (R2 unchanged)', () => {
+    expect(G(ground({ who: '', str: '', end: 'late' })).items).toBe(0)
+  })
 })
 
 describe('a Common Programme row', () => {
   const ap = (x: any) => ({ allhands: [{ prog: 'SQN PT', ...x }] })
+  it('SODB with only its END typed, nobody on it: counted, the START box (D2862)', () => {
+    expect(G({ allhands: [{ prog: 'SODB', who: '', str: '', end: '08:00' }] }).boxes).toEqual(['ap:0.0.str'])
+  })
+  it('a flying line with only its landing typed, nobody on it: counted, the take-off box (D2862)', () => {
+    expect(G({ waves: [{ formations: [{ to: '', ld: '10:30', aircraft: [{ p: '', w: '' }] }] }] }).boxes).toEqual(['ff:0.0.0.to'])
+  })
   it('ALL AVAIL with a start and no end: the END box', () => {
     expect(G(ap({ who: 'allavail', str: '15:00', end: '' })).boxes).toEqual(['ap:0.0.end'])
   })

@@ -357,8 +357,52 @@ describe('the Scheduler Board (D2853, D2734)', () => {
   })
 })
 
+/* his D2861 (27 Nov 26, round 1's question 3 — the plan's R3): red at once while the day already shows red */
+describe('a box emptied after a refused press (D2861)', () => {
+  const red = (k: string) => weekBox(k).classList.contains('tg-red')
+  it('while the day shows red, a box emptied after the refusal is red at once — no new press', async () => {
+    await edit('dr:3.0.0.end', ''); await edit('gr:3.0.str', '')
+    await click($(`#eWeek .day[data-day="${THU}"] .sgn.tg-block`))
+    expect([red('dr:3.0.0.end'), red('gr:3.0.str')]).toEqual([true, true])
+    await edit('dr:3.0.1.end', '')
+    expect(missIn('#eWeek')).toContain('dr:3.0.1.end')
+    expect(red('dr:3.0.1.end'), 'the newly emptied box is red at once').toBe(true)
+  })
+  it('once every time is typed the day is grey again: a box emptied then is grey until the next refused press', async () => {
+    await edit('dr:3.0.0.end', '')
+    await click($(`#eWeek .day[data-day="${THU}"] .sgn.tg-block`))
+    expect(red('dr:3.0.0.end')).toBe(true)
+    await edit('dr:3.0.0.end', '13:00')
+    expect(missIn('#eWeek')).toEqual([])
+    await edit('dr:3.0.1.end', '')
+    expect(missIn('#eWeek')).toEqual(['dr:3.0.1.end'])
+    expect(red('dr:3.0.1.end'), 'grey: the day showed no red when it was emptied').toBe(false)
+  })
+  it('another day stays grey: red at once is the refused day only', async () => {
+    await edit('dr:3.0.0.end', '')
+    await click($(`#eWeek .day[data-day="${THU}"] .sgn.tg-block`))
+    await edit('dr:4.0.0.end', '')
+    expect(missIn('#eWeek')).toContain('dr:4.0.0.end')
+    expect(red('dr:4.0.0.end'), 'Friday was never refused').toBe(false)
+    expect(red('dr:3.0.0.end'), 'Thursday still red').toBe(true)
+  })
+})
+
+describe('the Legend line (D2803, D2860)', () => {
+  it('Edit Schedule\'s Legend ends with the grey box, the red box and "Time missing, fill it"', () => {
+    const last = [...document.querySelectorAll('#eLegend > span')].pop() as HTMLElement
+    expect(last.dataset.leg).toBe('timegap')
+    expect(last.textContent).toBe('Time missing, fill it')
+    const boxes = [...last.querySelectorAll('.qk')] as HTMLElement[]
+    expect(boxes.map(b => b.style.boxShadow)).toEqual(['inset 0 0 0 1px var(--ink-3)', 'inset 0 0 0 1px var(--hard)'])
+  })
+  it('View-only Sched\'s Legend never names the outline (D2853)', () => {
+    expect(document.querySelector('#vLegend [data-leg="timegap"]')).toBeNull()
+    expect(document.querySelector('#vLegend')?.textContent ?? '').not.toContain('Time missing')
+  })
+})
+
 describe('kept for his answers (the plan §R5)', () => {
-  it.todo('a box emptied after a refused press: red or grey — waits on his answer R3 (built: grey until the next refused press)')
   it.todo('the board\'s count line tapped goes to each empty box in turn — waits on his answer Q19 (today: plain words)')
   it.todo('the desktop Amendments panel\'s Publish AL greyed but pressable — waits on his answer R6 (today: disabled until signed)')
 })

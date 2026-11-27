@@ -17,8 +17,8 @@
    RED IS KEPT PER BOX (D2853 "staying red until the time is typed"): a refused press marks the boxes missing at that moment,
    for that squadron's date and saved plan (Astra's red-team read, 4: two plans never share a colour), each box named by
    its row's id and field so a delete, sort or drag keeps it on its row (boxName, below); the plan's name moving round
-   unchanged content carries it (carryTimeRed); a box leaves the set as soon as its time is typed. A box emptied AFTER the refused press is grey until the next refused press — the plan's
-   question R3, built on the literal reading until he answers. Held in this browser for the session (ui/pops.ts TIME_RED,
+   unchanged content carries it (carryTimeRed); a box leaves the set as soon as its time is typed. A box emptied AFTER the refused press is red at once while the day
+   still shows red, the day grey again once every time is typed (his D2861, answering the plan's question R3). Held in this browser for the session (ui/pops.ts TIME_RED,
    cleared at sign-out — the plan's R4). */
 import { timeGapsOf } from '../engine/timegaps'
 import { UNIT } from '../engine/unitview'
@@ -96,6 +96,11 @@ export function paintTimeGaps(): void {
           const positional = TIME_BOX.test(n), rid = n.slice(0, n.lastIndexOf('.'))
           if (!names.has(n) && (positional || onDay.has(rid))) red.delete(n)
         }
+        /* RED AT ONCE ON A DAY THAT SHOWS RED (his D2861, 27 Nov 26 — round 1's question 3): while any empty box of
+           the day is red, every empty box of it is red — one emptied after the refused press, or a new row's, included;
+           once none of its empty boxes is red (every time typed), the day is grey again until the next refused press.
+           "Shows red" reads the boxes on the day only: a deleted row's kept name (for Undo) does not turn the day red. */
+        if ([...names].some(n => red.has(n))) names.forEach(n => red.add(n))
         if (!red.size) TIME_RED.delete(k)
       }
       x = { miss, red: TIME_RED.get(k) }
