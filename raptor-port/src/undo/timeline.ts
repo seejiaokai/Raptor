@@ -76,6 +76,7 @@ export interface UndoHooks {
   /* (`entry` — the step itself, as deadRefusal has it: a posting out's refusal tells a war step's approval by its module —
      state/person-delete.ts postingRestoreProblem) */
   restoreRefusal?(changes: Change[], dir: 'undo' | 'redo', entry?: UndoEntry): string | null
+  squadronRefusal?(entry: UndoEntry, dir: 'undo' | 'redo'): string | null
   /* [POST-OUT-OUTCOMES] (the plan's Round 2, Astra round-2 2, Fable round-2 1): a step whose restore would put a DELETED
      man back (state/person-delete.ts deletedRestoreProblem) can NEVER be taken — a delete is final — so the dispatcher
      passes over it when it chooses the next step (it stays in the list, still guarding older steps that share its
@@ -1183,6 +1184,7 @@ export function globalUndo(): UndoResult {
   if (ruleU) return { ok: false, reason: ruleU }
   // C7(b) — refuse an unrestorable closure BEFORE the view-snap moves anything.
   if (missingStores(entry.inverse).length) return { ok: false, reason: plainRestoreReason() }
+  const sq = hooks.squadronRefusal ? hooks.squadronRefusal(entry, 'undo') : null; if (sq) return { ok: false, reason: sq }
   snap(entry, 'undo')
   // N11 — loadContext's loadWeek can emit orphan projections that bump revisions
   // AFTER the pre-check, so re-run the conflict check now that the target week is
@@ -1215,6 +1217,7 @@ export function globalRedo(): UndoResult {
   const ruleR = hooks.restoreRefusal ? hooks.restoreRefusal(entry.forward, 'redo', entry) : null   // W3-F8
   if (ruleR) return { ok: false, reason: ruleR }
   if (missingStores(entry.forward).length) return { ok: false, reason: plainRestoreReason() }
+  const sq = hooks.squadronRefusal ? hooks.squadronRefusal(entry, 'redo') : null; if (sq) return { ok: false, reason: sq }
   snap(entry, 'redo')
   // N11 — see globalUndo: re-check after the view-snap loaded the target week.
   const postConflict = redoConflictOf(entry)

@@ -28,7 +28,8 @@ import {
   installUndo, registerUndoStore, setCutoverModules, setUndoHooks, setDescribeNames,
 } from '../undo'
 import { verifiedReplay, verifiedWarRestore, restoreOffAt, restoreDir, applyingRestore, outOfBandWords } from '../undo/timeline'
-import { filedForOther, ownPart, setInputReplayCheck, lwClosedKeys, setLwRestoreCheck, restoreRedated, restoreStood, setRestoreOffAt, setRestoreDir, lwUnitNow, trkUnitNow, pageUnit, isAdmin, restoreLeavesOut, setRestoreGrantCtx, madeAsAdmin, inputWhoProblem, type RestoreGrantCtx } from './perms'
+import { filedForOther, ownPart, setInputReplayCheck, lwClosedKeys, setLwRestoreCheck, restoreRedated, restoreStood, setRestoreOffAt, setRestoreDir, lwUnitNow, trkUnitNow, pageUnit, isAdmin, restoreLeavesOut, setRestoreGrantCtx, madeAsAdmin, inputWhoProblem, pageOffered, myUnit, type RestoreGrantCtx } from './perms'
+import { refuse, saidNote, UNSAID } from './guard'
 import type { RecordCtx, UndoEntry } from '../undo/types'
 import type { Change } from '../command'
 import { deriveActor } from '../command'
@@ -36,7 +37,7 @@ import { setRecordKeyHook } from '../command/commit'
 import { weekOf, dayKeyOf, recordKeyIn, stampOf } from '../undo/derive'
 import { todayIso } from './units'
 import { schedStore, schedPostRestore } from './sched-commit'
-import { weekstashStore, loadWeek, setPage } from './store'
+import { weekstashStore, loadWeek, stepPage } from './store'
 import { HIST } from './history'
 import { armDrop, prunePreviews, SBDAY, CURPAGE, setBoardDay, focusQualsRow, requestAdminUsers, requestAdminSquadrons, setSecDefOffer, setInpView, setInpMode, setCalMonth, INPVIEW, CALMONTH, clearInpReveal, requestInpReveal, requestPlanReveal } from './view'
 import { canEditSched, SESSION } from './auth'
@@ -289,7 +290,9 @@ function snapView(entry: UndoEntry, dir: 'undo' | 'redo'): void {
      on one of his own pages while a squadron he only views is picked, so the door is the belt; where it does not go (a
      refusal, or the Tracker's question), the landing's own `then` and the rest of the view-snap are not run — only on
      'went' */
-  if (land && land.primary && CURPAGE !== land.primary && !land.also.includes(CURPAGE) && setPage(land.primary) !== 'went') return
+  /* …THE STEP'S OWN DOOR, stepPage (step K7b): the same question, but the page set with no notify of its own, so his own
+     squadron is entered on the step's own notify, AFTER its writes — never here, ahead of them (store.ts stepPage) */
+  if (land && land.primary && CURPAGE !== land.primary && !land.also.includes(CURPAGE) && stepPage(land.primary) !== 'went') return
   if (land && land.then) land.then()
   if (land && land.primary === 'leavewar') {
     const date = lwDateOf(entry) ?? flyDateOf(entry)
@@ -613,6 +616,37 @@ function inputStuck(changes: Change[], entry: UndoEntry): boolean {
 /** tests only — the landing, driven with a made-up entry */
 export const _snapView = (e: UndoEntry, d: 'undo' | 'redo'): void => snapView(e, d)
 
+/* AN UNDO OR REDO THAT WOULD CHANGE THE SQUADRON IN VIEW IS ASKED OF THE GUARD BEFORE ITS STEP (step K8 — the guard rail's
+   plan §4.1 rows 13 and 21; his D2654 E7). Asked by undo/timeline.ts globalUndo / globalRedo as the last of their
+   refusals, just ahead of the view-snap, so a refusal moves nothing and writes nothing — never half way, as a refusal at
+   the landing's page door (stepPage, inside snapView) would be: the step's writes come after the view-snap. Either road
+   brings his own squadron into view by itself, after the step:
+   - row 21: the step's own changes — its inverse for an Undo, its forward for a Redo — remove or change the row of the
+     squadron in view (`unit:<id>`, its UNIT_PFX row; any image other than the one it holds now, its going included), so
+     the pick stands on nothing and the next notify enters his home (store.ts maybeReenter) — the Undo of "+ New
+     squadron" while that squadron is picked (pressed, P4 1c);
+   - row 13: the step's landing (landingOf) is a page the squadron in view does not offer, so the landing enters his own
+     squadron to show it (store.ts landOnOfferedPage) — read exactly as snapView reads it.
+   Then the guard is asked as a door: refused while a window that counts is open, a row or form holds a change or a save
+   has failed — and only then; with nothing open the step goes on as today. Refused, the seam says the note under the Undo
+   button and the reason handed back is the words said (UNSAID for a Redo, whose ending is not his yet — the K8 report),
+   so the engine that pressed it says nothing more (ui/topstate.ts). The squadron it would enter: his own, today. With this
+   ask ahead of the step, stepPage's own refusal is no longer reached from an Undo or Redo (the state cannot change between
+   the two asks but by the view-snap's own week load); it stays the landing's door, a belt. */
+function squadronRefusal(entry: UndoEntry, dir: 'undo' | 'redo'): string | null {
+  const changes = dir === 'undo' ? entry.inverse : entry.forward
+  const row = UNIT_PFX + UNIT
+  const takesUnit = changes.some(c => c.collection === 'settings' && String(c.id) === row
+    && !sameImage(c.before, c.op === 'delete' ? null : c.after))
+  const land = takesUnit ? null : landingOf(entry, dir)
+  const awayToLand = !!land && !!land.primary && CURPAGE !== land.primary && !land.also.includes(CURPAGE) && !pageOffered(land.primary)
+  if (!takesUnit && !awayToLand) return null
+  if (!refuse(dir, myUnit(todayIso()), { from: 'bar' })) return null
+  return saidNote() ?? UNSAID
+}
+/** tests only — the hook, asked of a made-up step */
+export const _squadronRefusal = (e: UndoEntry, d: 'undo' | 'redo'): string | null => squadronRefusal(e, d)
+
 /* NO RIGHT LEFT ON A MASTER ADMIN'S ACCOUNT BY AN UNDO OR REDO (§15 D14 — the fix read's A1), and the refusal SAYS WHO wrote
    what blocks it (D148 — the fix reads' A4 and their third round, the shape of undo/timeline.ts standingConflict: a record
    key, named through outOfBandWords). The account the restore would leave a right holding on, and that right
@@ -687,6 +721,8 @@ export function installGlobalUndo(): void {
     /* [POST-OUT-OUTCOMES]: a step that would put a deleted man back is passed over, never taken (person-delete.ts) */
     /* the direction and the step's module: a war step's Redo is judged by the leave it adds (person-delete.ts) */
     deadRefusal: (changes, dir, entry) => deletedRestoreProblem(changes as any, dir, entry?.scope?.module),
+    /* step K8: an Undo or Redo that would change the squadron in view, asked of the guard before its step (above) */
+    squadronRefusal,
     /* D148 — the refusal says who: the callsign he goes by (a rename moves nothing, so it is read live) */
     seenOverlay,
     nameOf: (a) => (a.personId != null && (PEOPLE as any)[a.personId] ? String((PEOPLE as any)[a.personId].cs) : null),
