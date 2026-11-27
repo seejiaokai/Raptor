@@ -399,6 +399,35 @@ describe('R8 — a window closes by itself only on his ruling', () => {
   })
 })
 
+/* R10 — STEP KR (his D2825, 27 Nov 26: the guard refuses nothing for open work — what is open closes, by its own way out;
+   the plan docs/superpowers/plans/2026-11-27-msq-s1-kr-no-blocks-plan.md §2, §3, §8.1): a door closes every open row before
+   it enters, so every row a door can find open — a window, a row being edited, a window that closes by itself — carries
+   the close it is closed by. Read from the table, as R8 is; the "unsaved" row (the one refusal, D2594) and the "no" rows
+   (the modes end by their own `end`, the rest never count) are not asked. One "window" row is left out by name: `trkask`,
+   the Tracker's own unsaved-edits question, which a door never closes — D2825 keeps it, and a door asks it (the plan §3's
+   table, its row "trkask: not closed — the question D2825 keeps"; §5 step 4). Nothing else may join that list without
+   his ruling. (R8's "no other row carries one" is the plan §8.2's "R8 widened" — KR's to change, with this.) */
+const NEVER_CLOSED: Record<string, string> = {
+  trkask: 'D2825 keeps the Tracker\'s question about unsaved chart edits (D2627 A20) — a door asks it, never closes it',
+}
+export const closerMissing = (rows: readonly Pick<GuardRow, 'id' | 'counts' | 'close'>[]): string[] =>
+  rows.filter(r => (r.counts === 'window' || r.counts === 'row' || r.counts === 'closes') && !(r.id in NEVER_CLOSED) && typeof r.close !== 'function').map(r => `${r.id} (${r.counts})`)
+describe('R10 — every row a door closes carries its closer (D2825, KR)', () => {
+  it('every "window", "row" and "closes" row of GUARD_ROWS has a close (D2825)', () => {
+    expect(closerMissing(GUARD_ROWS)).toEqual([])
+  })
+  it('the one row left out is a "window" row of the table, the Tracker\'s question, with its reason (D2825, D2627 A20)', () => {
+    expect(Object.keys(NEVER_CLOSED).map(id => GUARD_ROWS.find(r => r.id === id)?.counts)).toEqual(['window'])
+  })
+  it('(the check\'s own test, true on any code) a planted window, row and closes row with no close are each reported; one with a close and the "unsaved" and "no" rows are not', () => {
+    const f = () => {}
+    expect(closerMissing([
+      { id: 'w', counts: 'window' }, { id: 'r', counts: 'row' }, { id: 'c', counts: 'closes' },
+      { id: 'ok', counts: 'window', close: f }, { id: 'u', counts: 'unsaved' }, { id: 'n', counts: 'no' },
+    ] as any)).toEqual(['w (window)', 'r (row)', 'c (closes)'])
+  })
+})
+
 describe('R7 — the scans catch a planted window', () => {
   it('R1\'s scan: a new `export let` in state/view.ts is reported', () => {
     const planted = read('state/view.ts') + '\nexport let NEWWIN: any = null\n'
