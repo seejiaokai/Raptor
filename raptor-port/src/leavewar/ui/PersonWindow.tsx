@@ -73,7 +73,11 @@ function Clip() {
 }
 
 /** a figure read only (round 20d's `r17-box ro`) */
-function Ro({ v, sm, testid }: { v: number; sm?: boolean; testid?: string }) {
+function Ro({ v, sm, testid, nt }: { v: number; sm?: boolean; testid?: string; nt?: boolean }) {
+  /* a figure never typed, read only (D2746): the amber dash, and no words anywhere — no pointing hint either (his D2823,
+     27 Nov 26: "No Not typed anywhere"); a screen reader still hears "Not typed", so the dash never reads as a minus (the
+     agent's reading, put to him) */
+  if (nt) return <span className={`r17-box ro nt${sm ? ' sm' : ''}`} data-testid={testid} aria-label="Not typed">–</span>
   return <span className={`r17-box ro${sm ? ' sm' : ''}${v === 0 ? ' z' : ''}`} data-testid={testid}>{figWords(v)}</span>
 }
 
@@ -222,16 +226,16 @@ export function PersonWindow({ person, since, hasRow, onClose, onOil, onGo }: {
     if (ro && tile) ro.observe(tile)
     window.addEventListener('resize', fit)
     return () => { ro?.disconnect(); window.removeEventListener('resize', fit) }
-  }, [L.war, phone])
+  }, [L.war, L.notTyped, phone])
   /* nothing pending reads "–", as the Balances page writes it (walker D's note, 29 Oct 26: the tile drew "0" beside the
      page's "–") */
   const pend = (n: number) => (n ? `−${figWords(n)}` : '–')
   const app = boxes
-    ? <FigBox value={L.app} label={`${name} LVE App bal`} testid="pw-LVE" cls="r17-box" fit={16} save={save('LVE')} />
-    : <Ro v={L.app} testid="pw-LVE" />
+    ? <FigBox value={L.app} blank={L.notTyped} label={`${name} LVE Official bal`} testid="pw-LVE" cls="r17-box" fit={16} save={save('LVE')} />
+    : <Ro v={L.app} nt={L.notTyped} testid="pw-LVE" />
   const cf = boxes
-    ? <FigBox value={L.cf} sm label={`${name} LVE carried forward`} testid="pw-LVE-cf" cls="r17-box sm" fit={10} save={save('LVE', 'cf')} />
-    : <Ro v={L.cf} sm testid="pw-LVE-cf" />
+    ? <FigBox value={L.cf} blank={L.notTyped} sm label={`${name} LVE carried forward`} testid="pw-LVE-cf" cls="r17-box sm" fit={10} save={save('LVE', 'cf')} />
+    : <Ro v={L.cf} nt={L.notTyped} sm testid="pw-LVE-cf" />
   const till = f.cfTill ? (() => { const d = new Date(`${f.cfTill}T12:00:00`); return `${d.getDate()} ${['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()]}` })() : ''
   const yearWords = (p: YearPick) => (p.ahead ? `${p.year} and ahead` : String(p.year))
 
@@ -248,22 +252,30 @@ export function PersonWindow({ person, since, hasRow, onClose, onOil, onGo }: {
           {locked && <span className="r14-lk" data-testid="pw-lock"><Lock />{admin ? 'Locked for members' : 'Locked by admin'}</span>}
         </div>
         <div className="r17-bal zz-balgrid">
-          {/* LVE: App bal · Pending · War bal on one line, the pending figure amber, the word grey (D1251, D1252) */}
-          <div className="r17-t r17-lve" data-testid="pw-tile-LVE">
+          {/* LVE: Official bal · Pending · War bal on one line, the pending figure amber, the word grey (D1251, D1252;
+              "Official bal", never "App bal" — D2810) */}
+          <div className={`r17-t r17-lve${boxes ? ' pi' : ''}`} data-testid="pw-tile-LVE">
             <span className="k"><Kb k="LVE" /><span className="tk" data-testid="pw-taken">{figWords(f.lveTaken)} taken</span></span>
             <div className="r17-sum">
-              <span className="h" style={{ gridColumn: 1 }}>App bal</span>
+              <span className="h" style={{ gridColumn: 1 }}>Official bal</span>
               <span className="h" style={{ gridColumn: 2 }}>Pending</span>
               <span className="h" style={{ gridColumn: 3 }}>War bal</span>
               <span className="v" style={{ gridColumn: 1 }}>{app}</span>
               <span className={`v${L.pending ? ' pd' : ''}`} style={{ gridColumn: 2 }} data-testid="pw-LVE-pend">{pend(L.pending)}</span>
-              <span className="v war" ref={warRef} style={{ gridColumn: 3 }} data-testid="pw-LVE-war">{figWords(L.war)}</span>
+              {/* a balance never typed reads the amber "–" where War bal stands, no words (D2746, his D2823 — "Not typed" was
+                  drawn here first, marked/q11-person-window.png) */}
+              <span className={`v war${L.notTyped ? ' nt' : ''}`} ref={warRef} style={{ gridColumn: 3 }} data-testid="pw-LVE-war" aria-label={L.notTyped ? 'Not typed' : undefined}>{L.notTyped ? '–' : figWords(L.war)}</span>
             </div>
             {/* THE DATE ON A LINE OF ITS OWN ON A PHONE (his "a", D1520 — his picture: "till 31 Dec" ran into the OIL tile): the
                 desktop keeps the approved one line, its " · till …" inside the carried line; a phone shows the line below it
                 instead (personwindow.css). Only one of the two is ever shown, so a screen reader reads the date once */}
             <span className="r17-cf">incl. {cf} carried fwd{till ? <span className="r17-tw">{` · till ${till}`}</span> : null}</span>
             {till && <span className="r17-till" data-testid="pw-LVE-till">till {till}</span>}
+            {/* THE ONE LINE WHERE A BALANCE CAN BE TYPED (D2749, D2748, settled by D2812): under the LVE box, only where a box is
+                drawn — an admin always, a member on his own window while unlocked; no other instruction, no fold, and no line
+                naming where or when the figure was typed. Drawn: docs/img/handpass/2026-11-26-lw-postin-balance/marked/
+                q16-final-pw-desk.png, q16-final-phone.png */}
+            {boxes && <span className="r17-pi" data-testid="pw-postin">Only leave after post-in is deducted.</span>}
           </div>
           {/* OIL: read only, "0 ›" his OIL tracker (D1209, D1008) — never a box */}
           <div className="r17-t" data-testid="pw-tile-OIL">
@@ -287,12 +299,12 @@ export function PersonWindow({ person, since, hasRow, onClose, onOil, onGo }: {
                 <span className="k"><Kb k={k} /></span>
                 <span className="f">
                   {boxes
-                    ? <FigBox value={K.app} label={`${name} ${k}`} testid={`pw-${k}`} cls="r17-box" fit={16} save={save(k)} />
-                    : <Ro v={K.app} testid={`pw-${k}`} />}
+                    ? <FigBox value={K.app} blank={K.notTyped} label={`${name} ${k}`} testid={`pw-${k}`} cls="r17-box" fit={16} save={save(k)} />
+                    : <Ro v={K.app} nt={K.notTyped} testid={`pw-${k}`} />}
                 </span>
                 {K.pending !== 0 && <>
                   <span className="ln a"><span>Pending</span><b className="pd" data-testid={`pw-${k}-pend`}>−{figWords(K.pending)}</b></span>
-                  <span className="ln b"><span>War bal</span><b data-testid={`pw-${k}-war`}>{figWords(K.war)}</b></span>
+                  <span className="ln b"><span>War bal</span><b className={K.notTyped ? 'nt' : undefined} aria-label={K.notTyped ? 'Not typed' : undefined} data-testid={`pw-${k}-war`}>{K.notTyped ? '–' : figWords(K.war)}</b></span>
                 </>}
               </div>
             )

@@ -16,7 +16,7 @@ import { ELOG } from '../engine/editlog'
 import { initStore as raptorInitStore, notify as raptorNotify, resetSession } from '../state/store'
 import { accountsLoad, signIn, sessionFor } from '../state/accounts'
 import { installGlobalUndo } from '../state/undo-wire'
-import { globalUndo } from '../undo'
+import { globalRedo, globalUndo } from '../undo'
 import { _resetTimeline } from '../undo/timeline'
 import { NOTICES } from '../state/notices'
 import { noticeSeenLoad } from '../state/noticeseen'
@@ -32,6 +32,7 @@ import { figuresOf, linesOfWar, ownDays } from './approvals'
 import { myLeaveOf } from './ui/myleave'
 import { nameFigures, nameLines } from './ui/matrixrowparts'
 import { balanceLabel, belowZeroAsk, goesBelow } from './ui/belowzero'
+import { saveTypedFigure } from './ui/balancefigs'
 
 const mem: Record<string, string> = {}
 let PEOPLE0 = ''
@@ -90,6 +91,23 @@ describe('one world, every reader agrees (the build spec §1.6)', () => {
     const who = getState().people.find(p => p.id === 'bane')
     expect(figuresOf(lineOf('bane'), who).bal).toMatchObject({ counter: 'annual', label: '', value: war })
     expect(balanceAfterFill('bane', [], 'LL')).toEqual({ counter: 'annual', before: war, after: war })
+  })
+
+  /* D2823 (27 Nov 26, his "No Not typed anywhere"): a balance never typed is said by every reader without words — each hands
+     its screen the fact, and the screen draws an amber "–" where the figure would stand */
+  it('D2823: a balance never typed — the grid\'s figure, My leave, Approvals\' LVE BAL and a leave button\'s "left" each know it', () => {
+    expect(leaveFiguresOf('bane').kinds.LVE.notTyped).toBe(true)
+    expect(setCell('bane', '2026-06-03', 'LL')).toBe(true)
+    const period = getState().period
+    expect(nameLines('bane', period).nt).toBe(true)
+    expect(myLeaveOf(getState().wars, 'bane', TODAY).lveNt).toBe(true)
+    expect(figuresOf(lineOf('bane'), undefined).bal).toMatchObject({ counter: 'annual', nt: true })
+    expect(balanceAfterFill('bane', ['2026-06-04'], 'LL')?.notTyped).toBe(true)
+    /* once typed, none of them says so */
+    expect(setTypedBalance('bane', 'LVE', 20, 0)).toBe(true)
+    expect(nameLines('bane', period).nt).toBeFalsy()
+    expect(myLeaveOf(getState().wars, 'bane', TODAY).lveNt).toBe(false)
+    expect(figuresOf(lineOf('bane'), undefined).bal?.nt).toBeFalsy()
   })
 
   it('§1.5 row 10 (reading 24): the tile\'s Pending reads 11, while My leave and Approvals\' DAYS count the bid alone, 5', () => {
@@ -155,11 +173,12 @@ describe('the change history: a typed figure, a grade, the grades list, the lock
   it('"LVE balance 18 → 20" from the running figure, under Leave War · Ranger, who beside it; its Undo in its own words', () => {
     ranger()
     expect(setTypedBalance('bane', 'LVE', 18, 2)).toBe(true)
-    /* a first typing reads from the running figure he saw (the spec §1.1 — the store works it out itself since the
-       security read's finding 2), and, its carried-forward part moved, its own carried-forward line */
-    expect(lines().map(r => r.lbl)).toEqual(['Leave War · Ranger · LVE balance', 'Leave War · Ranger · LVE carried fwd'])
+    /* a FIRST typing of a balance never typed has no figure to come from — it read "Not typed", never 0 (D2746): its line is
+       "LVE balance → 18", and, its carried-forward part moved, its own "carried fwd → 2" line. (Before D2746 it read from
+       the running figure, 0, he saw — the spec §1.1; a later typing still does, below.) */
+    expect(lines().map(r => r.lbl)).toEqual(['Leave War · Ranger · LVE balance →', 'Leave War · Ranger · LVE carried fwd →'])
     expect(lines()[0]).toMatchObject({ to: '18', sub: 'bane', sect: 'abs', fld: 'balance', itype: 'LVE', pid: 'bane' })
-    expect(lines()[0]!.from).toBeTruthy()
+    expect(lines()[0]!.from).toBeFalsy()
     expect(lines()[1]).toMatchObject({ to: '2', sub: 'bane', fld: 'carried' })
     ELOG.rows.length = 0
     expect(setTypedBalance('bane', 'LVE', 20, 2, { amount: 18, cf: 2 })).toBe(true)
@@ -168,6 +187,28 @@ describe('the change history: a typed figure, a grade, the grades list, the lock
     ELOG.rows.length = 0
     globalUndo()
     expect(lines().map(r => r.lbl)).toEqual(['Undo — LVE balance 18 → 20'])
+  })
+  it('a first Official bal typed into the empty box carries nothing forward from the figure counted underneath (the fresh Opus code read\'s F1, 27 Nov 26)', () => {
+    /* a grade given in 2026, two 1 Jans since: underneath "Not typed" the count from 0 holds 66 incl. 33 carried forward —
+       no figure at all (D2746). Typed 20, the row must be 20 incl. 0, one history line; never 20 incl. 20, which the next
+       1 Jan would wipe as carried-forward days */
+    expect(setPersonGrade('bane', 'jp')).toBe(true)
+    setMemberTodayForTests('2028-01-15')
+    const under = leaveFiguresOf('bane').kinds.LVE
+    expect(under.notTyped).toBe(true)
+    expect(under.cf).toBeGreaterThan(0)
+    ELOG.rows.length = 0
+    expect(saveTypedFigure('bane', 'LVE', 20)).toBeNull()
+    expect(rawState().balances.bane?.LVE).toMatchObject({ amount: 20, cf: 0 })
+    expect(lines().map(r => r.lbl)).toEqual(['Leave War · Ranger · LVE balance →'])
+    /* Undo puts him back to never typed, Redo to 20 incl. 0 (Astra's read, F2) */
+    globalUndo()
+    expect(leaveFiguresOf('bane').kinds.LVE.notTyped).toBe(true)
+    globalRedo()
+    expect(rawState().balances.bane?.LVE).toMatchObject({ amount: 20, cf: 0 })
+    /* the next 1 Jan: his 20 carried forward whole, his grade's 33 added — 53 incl. 20, never 33 incl. 0 */
+    setMemberTodayForTests('2029-01-02')
+    expect([leaveFiguresOf('bane').kinds.LVE.app, leaveFiguresOf('bane').kinds.LVE.cf]).toEqual([53, 20])
   })
   it('a change of the carried-forward part alone is its own line, and its Undo says so', () => {
     expect(setTypedBalance('bane', 'LVE', 18, 2)).toBe(true)

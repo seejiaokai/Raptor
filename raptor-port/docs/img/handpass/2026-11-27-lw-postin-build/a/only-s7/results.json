@@ -1,0 +1,72 @@
+[
+ {
+  "id": "s7.0 never typed: both LVE boxes empty with the dashed amber edge, War bal \"Not typed\"",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"off\":\"\",\"cf\":\"\",\"pend\":\"–\",\"war\":\"Not typed\",\"offNt\":true}",
+  "pics": [
+   "s7-00-never"
+  ]
+ },
+ {
+  "id": "s7.1 carried fwd typed first: refused at its box — RECORD its words and look",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "refusal shown \"Type the Official bal first (shown true, colour rgb(255, 179, 185), fill rgb(42, 18, 21))\"; row after: {\"off\":\"\",\"cf\":\"\",\"pend\":\"–\",\"war\":\"Not typed\",\"offNt\":true}",
+  "pics": [
+   "s7-01-cf-first"
+  ]
+ },
+ {
+  "id": "s7.1b the refusal saved nothing (still \"Not typed\")",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"off\":\"\",\"cf\":\"\",\"pend\":\"–\",\"war\":\"Not typed\",\"offNt\":true}",
+  "pics": []
+ },
+ {
+  "id": "s7.2 Official bal 0 typed: saved, War bal 0, the amber edge gone",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"off\":\"0\",\"cf\":\"0\",\"pend\":\"–\",\"war\":\"0\",\"offNt\":false}",
+  "pics": [
+   "s7-02-zero"
+  ]
+ },
+ {
+  "id": "s7.3 Undo (top bar): back to never typed — empty dashed boxes, \"Not typed\"",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"off\":\"\",\"cf\":\"\",\"pend\":\"–\",\"war\":\"Not typed\",\"offNt\":true}",
+  "pics": [
+   "s7-03-undo"
+  ]
+ },
+ {
+  "id": "s7.4 Redo: 0 again",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"off\":\"0\",\"cf\":\"0\",\"pend\":\"–\",\"war\":\"0\",\"offNt\":false}",
+  "pics": [
+   "s7-04-redo"
+  ]
+ },
+ {
+  "id": "s7.5 24 typed, then carried 2: Official 24, carried 2, War 24",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"off\":\"24\",\"cf\":\"2\",\"pend\":\"–\",\"war\":\"24\",\"offNt\":false}",
+  "pics": [
+   "s7-05-24"
+  ]
+ },
+ {
+  "id": "s7.6 the change history names the first figure with no invented \"from\" (no \"0 → 0\", no \"0 → 24\")",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "history lines about the balance: (none found on the changes window — ⠿ Changes · week of 10/8 0 changes this week ✕ New to you 0 All changes 0 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who No changes this week yet.)",
+  "pics": [
+   "s7-06-history"
+  ]
+ }
+]

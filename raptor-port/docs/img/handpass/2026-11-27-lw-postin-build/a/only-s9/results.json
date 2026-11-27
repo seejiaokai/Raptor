@@ -1,0 +1,12 @@
+[
+ {
+  "id": "s9.0 the drawing's world rebuilt and pictured (the comparing follows)",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "window measures {\"line\":{\"x\":30,\"y\":205,\"w\":291,\"h\":16,\"fs\":\"11px\",\"col\":\"rgb(138, 150, 163)\"},\"cf\":{\"x\":55,\"y\":178,\"w\":36,\"h\":18,\"fs\":\"11.5px\",\"col\":\"rgb(125, 136, 148)\"},\"box\":{\"x\":30,\"y\":146,\"w\":53,\"h\":28,\"fs\":\"16px\",\"col\":\"rgb(241, 244, 247)\"},\"tile\":{\"x\":21,\"y\":93,\"w\":309,\"h\":136,\"fs\":\"13px\",\"col\":\"rgb(241, 244, 247)\"}}",
+  "pics": [
+   "s9-build-desk-pw",
+   "s9-build-desk-bal"
+  ]
+ }
+]

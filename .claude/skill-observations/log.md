@@ -2090,3 +2090,29 @@ report file write is refused, hand the whole report back in your message" — an
 at once; (3) the host checks each helper's report file exists before counting the walk.
 **Principle:** a restart silently drops a session's background loops and can narrow a resumed helper's permissions;
 recheck every standing resource (locks, loops, write rights) after a restart, before relying on what was set up before.
+
+### Observation 1102: A blank "never set" state must also blank every value saved alongside the first real entry
+
+**Status:** OPEN
+**Date:** 2026-11-27
+**Session context:** chat 208, the Leave War's "Not typed" balance build (numbered past 1096, the highest on the open branches)
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** choosing the red tests for a new "empty until first entered" state
+
+**Issue:** A figure was made to read "Not typed" (empty boxes) instead of a count from 0, but the count kept running underneath. The first save of the main figure copied a companion part (the carried-forward days) from that hidden count, so a first entry silently saved a value nobody saw or typed. Both blind code readers caught it; the build's own red tests, all about what the screen shows, did not.
+**Suggested improvement:** when a test list is written for a new "not yet set" state over a value still computed underneath, add one red test per save door: the FIRST real entry into the blank state writes only what the person typed, and every companion part saved with it comes from what was shown (blank → its zero), never from the hidden computed value.
+**Principle:** hiding a computed default on screen does not remove it from the save path; test that the first write after a blank state takes nothing the person could not see.
+
+### Observation 1104: Question cards for a non-technical owner — draft in the short shape first
+
+**Status:** OPEN
+**Date:** 27 Nov 26
+**Session context:** the multi-squadron coordinator putting a round of questions on the one questions page (numbered past 1103 on another branch)
+**Skill:** New skill candidate: owner-question-cards
+**Type:** open-source
+**Phase/Area:** writing decision questions for a non-technical decision-maker
+
+**Issue:** a long "how it will look" card — today-versus-later pairs, who-may-edit detail, the agent's readings — lost the owner completely; he restated the whole point in three lines himself. Cut to one example, what each screen shows, one decision and one-line choices, every card was answered within minutes, and he asked for that shape every time.
+**Suggested improvement:** a short skill or checklist for question pages: title = the question; one named example with roles in brackets; what he sees (at most two pictures); A (recommended) and B, one line each; internals only when they ARE the choice; a self-test "could he say it back in three lines?" before publishing; a writer helper's brief carries the shape.
+**Principle:** a decision-maker answers what he can restate; detail that is not the choice belongs in the record, not the question.

@@ -52,7 +52,7 @@ const INVENTORY: Record<string, { n: Partial<Record<keyof typeof Q, number>>; ki
   'ui/drag.ts': { n: { canEditSched: 1, editMode: 1 }, kind: ['schedule'], why: `${SCHED}: a puck dragged on the week` },
   'ui/highlights.ts': { n: { editMode: 1 }, kind: ['schedule'], why: `${SCHED}: the highlight's edit affordance` },
   'ui/html.ts': { n: { canEditSched: 11, editMode: 1 }, kind: ['schedule'], why: `${SCHED}: the week's markup` },
-  'ui/interactions.ts': { n: { canEditSched: 30, editMode: 10 }, kind: ['schedule'], why: `${SCHED}: the week's handlers` },
+  'ui/interactions.ts': { n: { canEditSched: 33, editMode: 10 }, kind: ['schedule'], why: `${SCHED}: the week's handlers — with the missing-time rule's three (pull request 858, [END-TIME-GUARD]): a sign-off box refusing for a missing time, pressed and keyed, and the count line's tap to the next empty box` },
   'ui/mission-role-offer.ts': { n: { canEditSched: 4 }, kind: ['schedule'], why: `${SCHED}: the mission-role offer on Edit Schedule` },
   'ui/peek.ts': { n: { editMode: 1 }, kind: ['schedule'], why: `${SCHED}: the next-week peek` },
   'ui/rowdrag.ts': { n: { canEditSched: 1 }, kind: ['schedule'], why: `${SCHED}: a row dragged` },

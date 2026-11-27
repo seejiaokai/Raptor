@@ -1815,6 +1815,8 @@ test('drag-selecting a row fills the leave across the whole span', async ({ page
 test('a drag that would go below zero asks once, then writes on the same leave again', async ({ page }) => {
   desktopOnly()
   await lwView(page, 'slipway')
+  /* his FCL typed as 0 first: the demo types no FCL, and a balance never typed asks nothing until it has a figure (D2746) */
+  await page.evaluate(() => (window as any).lwTypeBalance('slipway', 'FCL', 0))
   await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-08')
   await expect(page.locator('[data-testid="select-sheet"]')).toBeVisible()
   await page.locator('[data-testid="sel-FCL"]').click()
@@ -1849,6 +1851,8 @@ async function staysPut(page: Page, btn: string, note: string) {
 test('the drag window: the leave tapped stays put when the below-zero line appears, and the same spot tapped again goes ahead (D2030)', async ({ page }) => {
   desktopOnly()
   await lwView(page, 'slipway')
+  /* his FCL typed as 0 first: the demo types no FCL, and a balance never typed asks nothing until it has a figure (D2746) */
+  await page.evaluate(() => (window as any).lwTypeBalance('slipway', 'FCL', 0))
   await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-08')
   await expect(page.locator('[data-testid="select-sheet"]')).toBeVisible()
   const at = await staysPut(page, 'sel-FCL', 'sel-note')
@@ -1861,6 +1865,8 @@ test('the drag window: the leave tapped stays put when the below-zero line appea
 
 test('the one-day window: the leave tapped stays put when the below-zero line appears, and the same spot tapped again goes ahead (D2030)', async ({ page }) => {
   await lwView(page, 'slipway')
+  /* his FCL typed as 0 first: the demo types no FCL, and a balance never typed asks nothing until it has a figure (D2746) */
+  await page.evaluate(() => (window as any).lwTypeBalance('slipway', 'FCL', 0))
   await page.locator('[data-testid="cell-slipway-2026-02-11"]').click()
   await expect(page.locator('[data-testid="bid-picker"]')).toBeVisible()
   const at = await staysPut(page, 'bid-FCL', 'span-note')
@@ -8824,7 +8830,7 @@ for (const role of ['admin', 'member'] as const) {
     await lwRole(page, role)
     await openBalancesPage(page)
     const g = await balColumnsOff(page)
-    expect(g.heads).toEqual(['NAME', 'GRADE · AUTO + LVE ON 1 JAN', 'APP BAL', 'INCL. CARRIED FWD', 'PENDING APPROVAL', 'WAR BAL', 'OIL', 'CCL', 'FCL', 'PL', 'EL', 'CL'])
+    expect(g.heads).toEqual(['NAME', 'GRADE · AUTO + LVE ON 1 JAN', 'OFFICIAL BAL', 'INCL. CARRIED FWD', 'PENDING APPROVAL', 'WAR BAL', 'OIL', 'CCL', 'FCL', 'PL', 'EL', 'CL'])
     expect(g.rows).toBeGreaterThan(20)
     expect(g.off).toEqual([])
   })
