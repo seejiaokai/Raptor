@@ -202,8 +202,10 @@ export function inputBelongs(r:any,unit:any,at?:any):boolean{if(!r)return false;
 /* a squadron's inputs on one day (a day reader), and every input touching it (a list reader) */
 export function inputsOnDay(unit:any,iso:any,list?:any):any[]{return (list===undefined?INPUTS:list).filter((r:any)=>!!r&&inputOnDay(r,unit,iso)&&sansShownOn(r,iso));}
 export function inputsTouching(unit:any,list?:any):any[]{return (list===undefined?INPUTS:list).filter((r:any)=>!!r&&inputTouches(r,unit));}
-/* his own Inputs page: every input touching his squadron, and every input naming him wherever it sits (C2) */
-export function inputsListed(unit:any,pid:any,list?:any):any[]{const p=String(pid??''); return (list===undefined?INPUTS:list).filter((r:any)=>!!r&&(inputTouches(r,unit)||(p!==''&&holds(r,p))));}
+/* his own Inputs page: every input touching his squadron, and every input naming him wherever it sits (C2) — but for one
+   with a squadron his own pages could be (`reach`, handed in by the page: state/inputsqn.ts listReach — the engine reads no
+   accounts), which is listed there, not here (his D2621); with no `reach`, every input naming him, as before */
+export function inputsListed(unit:any,pid:any,list?:any,reach?:any):any[]{const p=String(pid??''); return (list===undefined?INPUTS:list).filter((r:any)=>!!r&&(inputTouches(r,unit)||(p!==''&&holds(r,p)&&!(reach&&inputSquadrons(r).some((u:any)=>reach(u,r))))));}
 /* a squadron's inputs by the day each LANDS — its own first day (the reshape plan §3.2 A-iii, Fable F4: a body that writes
    an input's accepted mark or lands it asks the first day, never "touches"; state/store.ts landingInputs). The contract
    step (phase 3) took inputsFor's no-day form: a day reader names its day (inputsFor(unit, at) / inputsOnDay). */

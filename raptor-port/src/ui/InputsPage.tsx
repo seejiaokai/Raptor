@@ -21,6 +21,7 @@ import { HOOKS } from '../engine/hooks'
 import { LOOK_MAX, LOOK_MIN, lookaheadParse, lookaheadLabel, lookaheadSavedNote, lookaheadRange, lookaheadOf, setLookaheadFor, type Lookahead } from '../engine/lookahead'
 import { canEditOwn } from '../state/auth'
 import { me, isAdmin, mayEditInput, pageUnit } from '../state/perms'
+import { listReach } from '../state/inputsqn'
 import { todayIso } from '../engine/editlog'
 import { openWinFor } from '../state/cutoff'
 import { rosterOf, onRosterOf } from '../engine/roster'
@@ -63,7 +64,7 @@ import { useMedia } from './usemedia'
 // eslint-disable-next-line react-doctor/only-export-components -- the page's squadron, read by the page and its proofs
 export const inputsPageUnit = (): string => pageUnit('own')
 // eslint-disable-next-line react-doctor/only-export-components -- the page's rows before its filters, read by the page and its proofs
-export const inputsPageRows = (): any[] => inputsListed(inputsPageUnit(), me())
+export const inputsPageRows = (): any[] => inputsListed(inputsPageUnit(), me(), undefined, listReach())
 // eslint-disable-next-line react-doctor/only-export-components -- the Person filter's people, read by the page and its proofs
 export const inputsFilterPeople = (): string[] => people(inputsPageUnit())
 // eslint-disable-next-line react-doctor/only-export-components -- the look-ahead the page opens on, read by the page and its proofs
@@ -304,6 +305,16 @@ export function InputsPage() {
     })
   }, [relit])
   useEffect(()=>()=>clearInpReveal(),[])
+  /* THE PINS AND THE REVEAL GO WHERE THE PAGE'S SQUADRON CHANGES (the guard rail's plan §5.1, Opus F-e — his D2621): the
+     page stays mounted across a pick, a bell line's entry and his own move at midnight, and a pin held for 142's List is
+     no pin of 149's. (What is drawn meanwhile is already only the page's own list — the pins' filter below.) */
+  const pinSqn = inputsPageUnit()
+  const pinWas = useRef(pinSqn)
+  useEffect(() => {
+    if (pinWas.current === pinSqn) return
+    pinWas.current = pinSqn
+    clearInpReveal(); setPinned([])
+  }, [pinSqn])
 
   /* SCROLL THE NEW ROW INTO VIEW (owner — "once an input is made, the view
      will snap to the input u just made"). The row pins to the top and is lit;
@@ -454,7 +465,8 @@ export function InputsPage() {
 
   let pinCount = 0
   /* (the signed-in person's own squadron's — the Inputs page stays on his own, D2132; multi-squadron step 3) */
-  let rows = inputsInMode(inputsPageRows(), INPMODE)
+  const pageRows = inputsPageRows()
+  let rows = inputsInMode(pageRows, INPMODE)
   /* A SHARED INPUT IS ONE LINE (owner D655 — "shown and edited as one thing"; the plan §3.13) — and since the one-rule
      build it IS one record with the list of its people (owner D756, 11 Oct 26; the plan
      docs/superpowers/plans/2026-10-11-one-rule-plan.md §4.5): a row a record, the Name naming EVERYONE in it, A to Z,
@@ -499,7 +511,12 @@ export function InputsPage() {
     /* A PIN IS ITS INPUT'S ONE ROW, ONCE (Sol's read of the calendar job's bug check, 8 Oct 26 — one filing was drawn
        twice while a shared input was a record a man and a pin pointed at one of them). A pin points at a RECORD and
        the record is the row, so each is listed once. */
-    const pins = [...new Set(inputsInMode(pinned.map(id => INPUTS.find((x: any) => String(x.iid) === id)).filter(Boolean), INPMODE))]
+    /* …AND ONLY FROM THE PAGE'S OWN LIST (the guard rail's plan §5.1, Opus F-e — his D2621): a pin is found in all of
+       INPUTS, so his own 142 duty saved on 142's List and pinned would stand at the head of 149's List, its "OIL?" button
+       with it, once 149 is picked. A pin the page does not list is not drawn (and the pins are cleared where the page's
+       squadron changes — above). */
+    const listed = new Set(pageRows)
+    const pins = [...new Set(inputsInMode(pinned.map(id => INPUTS.find((x: any) => String(x.iid) === id)).filter(Boolean), INPMODE))].filter(r => listed.has(r))
     if (pins.length) rows = pins.concat(rows.filter((r: any) => pins.indexOf(r) < 0))
     pinCount = pins.length
   }
