@@ -800,6 +800,8 @@ describe('[LW-POSTIN-BALANCE] the person window', () => {
     const lve = screen.getByTestId('my-leave-lve')
     expect(lve.textContent).toBe('LVE –')
     expect(lve.querySelector('.nt')!.textContent).toBe('–')
+    /* the strip's dots keep their spaces (the D2823 re-walk's picture: "LVE – ·OIL 0", a space lost in the edit) */
+    expect(screen.getByTestId('my-leave').textContent).toMatch(/LVE – · OIL \S+ · \S+ pending/)
     expect(document.body.textContent).not.toContain('Not typed')
     expect(document.querySelector('[title*="Not typed"]')).toBeNull()
   })

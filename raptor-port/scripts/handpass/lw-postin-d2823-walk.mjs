@@ -92,14 +92,15 @@ async function gridCheck(w, pid) {
   const P = w.page
   await click(w, T('lw-tab-grid')); await P.waitForTimeout(500)
   await L.reachCell(w, pid, '2026-12-01'); await P.waitForTimeout(300); await neutral(P)
-  const g = await P.evaluate(pid => [...document.querySelectorAll(`[data-person="${pid}"]`)].filter(e => e.getBoundingClientRect().width > 0).map(e => {
+  const g = await P.evaluate(pid => [...document.querySelectorAll(`td.figbox[data-person="${pid}"]`)].filter(e => e.getBoundingClientRect().width > 0).map(e => {
     const fb = e.querySelector('.fb'); const f = getComputedStyle(fb)
     return { text: fb.textContent, cls: fb.className, color: f.color, title: e.getAttribute('title') || '', used: e.querySelector('.fu')?.textContent || '' }
   }), pid)
   ok(w, g.length > 0 && g.every(x => x.text === '–' && isAmber(x.color) && !x.cls.includes('neg')), `the grid beside his name reads the amber "–" (${JSON.stringify(g)})`)
   ok(w, g.every(x => !/not typed/i.test(x.title) && !/LVE\s+[-−–\d]/.test(x.title)), `its hover names no figure and no words (${g.map(x => x.title).join(' | ')})`)
-  await mark(P, `[data-person="${pid}"]`, 1, { side: 'right', off: '-2px' })
-  await clipShot(w, `${w.who}-grid`, `[data-person="${pid}"]`, { l: 8, r: 260, t: 50, b: 50 }, (r, c) => ({ ...c, x: 0, W: r.x + r.w + (w.phone ? 140 : 300) }))
+  await P.locator(`td.figbox[data-person="${pid}"]`).last().scrollIntoViewIfNeeded(); await P.waitForTimeout(300); await neutral(P)
+  await mark(P, `td.figbox[data-person="${pid}"]`, 1, { side: 'right', off: '-2px' })
+  await clipShot(w, `${w.who}-grid`, `td.figbox[data-person="${pid}"]`, { l: 8, r: 260, t: 50, b: 50 }, (r, c) => ({ ...c, x: 0, W: r.x + r.w + (w.phone ? 140 : 300) }))
   await unmark(P)
 }
 async function approvalsCheck(w, pid) {
@@ -143,7 +144,10 @@ async function windowCheck(w, pid) {
   const P = w.page
   await click(w, T('lw-tab-grid')); await P.waitForTimeout(400)
   await L.reachCell(w, pid, '2026-12-01')
-  await P.locator(`[data-person="${pid}"]`).first().click(); await P.waitForSelector(T('person-window'), { state: 'visible' }); await P.waitForTimeout(500)
+  /* the box a finger meets: on a phone the frozen copy of the names lies over the real cell, so the last one drawn */
+  const boxEl = P.locator(`td.figbox[data-person="${pid}"]`).last()
+  await boxEl.scrollIntoViewIfNeeded(); await neutral(P)
+  await boxEl.click(); await P.waitForSelector(T('person-window'), { state: 'visible' }); await P.waitForTimeout(500)
   await neutral(P)
   const pw = await P.evaluate(() => {
     const war = document.querySelector('[data-testid="pw-LVE-war"]'); const win = document.querySelector('[data-testid="person-window"]')
@@ -219,7 +223,8 @@ try {
     await signInAs(m, 'pelican@mail', 'x', T('my-leave'))
     await myLeaveCheck(m)
     await gridCheck(m, pid)
-    await buttonsCheck(m, pid)
+    /* (no leave buttons for him: nothing is open for bidding, so a member's tap opens no bid window — D1177; the admin's
+       run above reads them) */
     await windowCheck(m, pid)
     ok(m, m.errs.length === 0, `no page or console errors (${m.errs.join(' | ') || 'none'})`)
     await m.ctx.close()
