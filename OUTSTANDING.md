@@ -199,6 +199,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Publishing and checks**
 - [GH-PAGES-PREVIEW-DOCS] — his D2832: a preview for his look may go on GitHub Pages; the documents still saying "no GitHub Pages site" (deploy.yml's head, gates-and-deploy.md) are corrected, and how a preview is published there is written down.
+- [SAVEFAIL-SWITCH-SIGNIN] — with the ?savefail test switch on, sign-in now waits for a save that never lands, so the switch no longer gets him past sign-in to see the "Not saved" band (D1666); likely D2205's wait for the last person's save. A possible fault, unchecked.
+- [KR-Q1-HELD] — the plan to drop the blocks asked what a stopped press says at Redo, an OIL card or a press naming no door while a save has failed; no button reaches any of them today, so it was not put to him (the coordinator's call). Put it if one becomes reachable.
 - [LAPSED-SESSION-DOORS] — the account doors and the commit gate accept a write from a signed-in person whose own sign-in was just switched off, archived, deleted or made a member, until his screen next redraws; cannot happen in one browser today — closed before the database step.
 - [ROW-NOTE-OPEN-AGAIN] — a question for him, kept until the database or Transfer step: Admin → Users' "…row changed while it was open, so nothing was saved. Open it again." where he can no longer open that row (his own right lowered, or he was made a member) — recommended: end it at "…so nothing was saved." there.
 - [ADD-FORM-MIDNIGHT-HOLD] — "Add a person" open with a name typed, his own move to another squadron lands at midnight, Add puts the man into the new squadron with no word; the guard rail's step K5b, drawn first (27 Nov 26).
@@ -368,6 +370,16 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 **Cause:** `state/undo-wire.ts` `installGlobalUndo`'s `showBubble` toasts the receipt at once; `ui/UsersPanel.tsx useOpenWorkJudged` says its note after the redraw. The same may hold for any page whose redraw raises a note after an Undo — an app-wide shape, not this page's alone.
 **To do:** a note raised since the last draw and still showing is joined by the draw's own note on one line (the reader's fix: `ui/toast.ts` records the last unbatched note — `lastShown()` — and `useOpenWorkJudged` joins it when it says its note); check the other pages that say a note on a redraw; red first.
 **Where:** the passing note (`ui/toast.ts`), Undo / Redo, Admin → Users; a note's words — filed under the coordinator's limit, not held for the database step.
+
+### [SAVEFAIL-SWITCH-SIGNIN] The ?savefail test switch no longer gets past sign-in (27 Nov 26, found by chat 204's drawing helper; filed by chat 206) — OPEN
+**What:** with ?savefail on, sign-in waits for a save that never lands, so he cannot use the switch to see the "Not saved" band on his iPhone (D1666). Likely cause: a sign-in waits for the last person's pending save (D2205). `raptor-port/scripts/handpass/mgb-savefail.mjs` assumes the switch still works.
+**To do:** reproduce red first; let the test switch fail only saves made after sign-in, or sign-in not wait on a switched-off save; check the walk script.
+**Where:** the save layer and sign-in; with the multi-squadron batch's fixes.
+
+### [KR-Q1-HELD] What a stopped press says at Redo, an OIL card or a no-words press while a save has failed — held, not put (27 Nov 26, chat 206) — OPEN
+**What:** the plan to drop the blocks (his D2825) asked whether these three presses say the Retry note ("…then press Redo again." etc.) or stay silent. No button reaches any of them today (the tests call them belts), so the coordinator held the question rather than spend his time on it. The card text and pictures are in `raptor-port/docs/superpowers/briefs/2026-11-27-msq-s1-round-kr-draw-report.md` on chat 204's branch.
+**To do:** put it to him if a later change makes one reachable; until then they stay silent.
+**Where:** section 1, the guard rail.
 
 ### [GH-PAGES-PREVIEW-DOCS] A preview on GitHub Pages — the documents and the steps (27 Nov 26, chat 206, his D2832) — OPEN
 **What:** his D2832 lets a preview for his look be published on GitHub Pages (public, one site, each preview replacing the last); the live app stays on Vercel. `.github/workflows/deploy.yml`'s head and `raptor-port/docs/gates-and-deploy.md` still say there is no GitHub Pages site (D343).
