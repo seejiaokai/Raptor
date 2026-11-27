@@ -1,0 +1,83 @@
+[
+ [
+  "fixture",
+  "desk-chromium overseas",
+  "pending LL 15 Dec, AM LL 21 Dec, OD 16–18 Dec on Cinch and Anvil, then Post out overseas from 14 Dec",
+  "the posting set, days from 14 Dec gone",
+  "line: On 14 Dec: archived. card:  | 20 Dec: gone weekend act hasc | PO | kids:c whole",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r10b-overseas/001-desk-chromium-r10-fixture.png"
+ ],
+ [
+  "A1/F-S8 OD middle day",
+  "desk-chromium overseas",
+  "tap Cinch's OD on 17 Dec (gone) and Anvil's on 17 Dec (ordinary)",
+  "the ordinary whole-entry window, the same as on an ordinary day, never the posting sheet (D1722, D1565)",
+  "GONE: bid-picker: Cinch 16–18 Dec Auto-approve ✕ No manning row turns amber or red OD Whole day · change it on the Inputs page till 18 Dec Document Whole day AM PM All 3 days Thu 17 LL 19 OL 19 OIL −3 CCL 0 FCL −3 PL −3 EL −3 CL −3 CSE OD Grant OIL ⋯ ### ORDINARY: bid-picker: Anvil 16–18 Dec Auto-approve ✕ No manning row is amber or red OD Whole day · change it on the Inputs page till 18 Dec Document Whole day AM PM All 3 days Thu 17 LL 16 OL 16 OIL −3 CCL −1 FCL −3 PL −3 EL −3 CL −3 CSE OD Grant OIL ⋯",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r10b-overseas/002-desk-chromium-r10-od-gone.png ; img/handpass/2026-11-26-msq-s4-walk/wc/r10b-overseas/003-desk-chromium-r10-od-ordinary.png"
+ ],
+ [
+  "A1/F-S7(e) R3b/D1541",
+  "desk-chromium overseas",
+  "gone day 15 Dec holding his pending LL: window=bid-picker; Auto-approve on; LL pressed again",
+  "approved, nothing \"kept pending\" (D1541)",
+  "before: gone outlv act hasc bx-gone selcell | LL | kids:c k-ll s-w whole | after: gone outlv act hasc bx-gone | LL | kids:c k-ll s-a whole | said(now): [] | said(+600ms): [] | toast: ",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r10b-overseas/004-desk-chromium-r10-ll-pressed.png ; img/handpass/2026-11-26-msq-s4-walk/wc/r10b-overseas/005-desk-chromium-r10-ll-settled.png"
+ ],
+ [
+  "A1 R3c-2",
+  "desk-chromium overseas",
+  "closed the window, opened the same day again",
+  "no stale \"kept pending\" note (R3c-2)",
+  "window: bid-picker: Cinch Tue 15 Dec Auto-approve ✕ Placed Saber · Thu 26 Nov, 18:10 · Approved Saber · Thu 26 Nov, 18:10 Approved Refuse ⇄Move Delete till 15 Dec Document Whole day AM PM Pick a range LL 22 OL 22 OIL 0 CCL 3 FCL 0 PL 0 EL 0 CL 0 CSE OD Grant OIL ⋯ | said: []",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r10b-overseas/006-desk-chromium-r10-reopen.png"
+ ],
+ [
+  "A10 AM-only gone day",
+  "desk-chromium overseas",
+  "tap Cinch's AM LL on 21 Dec (gone)",
+  "the window that day opens on any other day (D1722) — not the posting sheet",
+  "bid-picker: Cinch Mon 21 Dec Auto-approve ✕ No manning row turns amber or red Placed Saber · Thu 26 Nov, 18:10 Approve Refuse ⇄Move Delete till 21 Dec Document Whole day AM PM Pick a range <LL 22 <OL 22 <OIL −0.5 <CCL 2.5 <FCL −0.5 <PL −0.5 <EL −0.5 <CL −0.5 CSE OD Grant OIL ⋯",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r10b-overseas/007-desk-chromium-r10-am-gone.png"
+ ],
+ [
+  "F-S7(a) empty gone day",
+  "desk-chromium overseas",
+  "tap Cinch's empty gone day 22 Dec",
+  "the posting sheet only; no leave buttons, no \"Place leave or OIL here instead…\" (D2727)",
+  "postout-sheet: Cinch Post out ✕ POSTING ✓ Overseas Sqn Delete SANS PO FROM Mon 14 Dec 26 ▾ On 14 Dec: archived. ↶Undo post out | leave buttons: 0 | \"Place leave\": 0",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r10b-overseas/008-desk-chromium-r10-empty-gone.png"
+ ],
+ [
+  "F-S7(b) drag straddling P",
+  "desk-chromium overseas",
+  "drag Cinch 10–14 Dec (14 Dec gone), Auto-approve on, LL",
+  "approved on every day, nothing kept pending (D1541, D1545)",
+  "sheet: select-sheet: Cinch 10–14 Dec · 5 days Auto-approve ✕ No manning row turns amber or red till 14 Dec Document Whole day AM PM LL 19 OL 19 OIL −3 CCL 0 FCL −3 PL −3 EL −3 CL −3 CSE OD Grant OIL ⋯ | notes: [] | toast:  | cells: 10: act hasc/LL ; 11: act hasc/LL ; 12:weekend act hasc/LL ; 13:weekend act pofin bx-last hasc/LL PO ; 14:gone outlv act hasc bx-gone/LL",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r10b-overseas/009-desk-chromium-r10-straddle-open.png ; img/handpass/2026-11-26-msq-s4-walk/wc/r10b-overseas/010-desk-chromium-r10-straddle-filled.png"
+ ],
+ [
+  "F-S7(c) drag wholly after P",
+  "desk-chromium overseas",
+  "drag Cinch 22–23 Dec (both gone)",
+  "RECORD what the drag window offers",
+  "sheet: select-sheet: Cinch 22–27 Dec · 6 days Auto-approve ✕ No manning row turns amber or red till 27 Dec Document Whole day AM PM LL 16 OL 16 OIL −3 CCL 0 FCL −3 PL −3 EL −3 CL −3 CSE OD Grant OIL ⋯ | more: sel-extra-row=CSE OD Grant OIL ⋯ Attach Other Post out Post in ; sel-more-menu=Attach Other Post out Post in ; sel-file-ATCH=Attach ; sel-file-OTH=Other ; sel-postout=Post out ; sel-postin=Post in",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r10b-overseas/011-desk-chromium-r10-drag-after.png"
+ ],
+ [
+  "F-S7f-approvals",
+  "desk-chromium overseas",
+  "step threw",
+  "",
+  "bring: could not bring into view: [data-testid=\"appr-line-snap\"] [data-testid=\"appr-approve\"]",
+  "NOT REACHED",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r10b-overseas/014-desk-chromium-F-S7f-approvals-error.png"
+ ]
+]

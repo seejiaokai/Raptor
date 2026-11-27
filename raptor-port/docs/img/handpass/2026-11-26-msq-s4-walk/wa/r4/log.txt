@@ -1,0 +1,7 @@
+msq-s4w-lib v1 who=wa run=r4 port=4753
+wa-lib v1
+wa-r4-selmark v1
+ROW RECORD | F-S2 range mark | phone-chromium | Cinch 8–10 Dec by the finger range gesture; drag sheet open | saw: during [".planselbtn",".planselbtn",".planselbtn",".planselbtn",".planselbtn",".planselbtn",".planselbtn","war-picker.wk on warpick"]; after [".planselbtn@116,174",".planselbtn@506,174",".planselbtn@896,174",".planselbtn@1286,174",".planselbtn@1676,174",".planselbtn@2066,174",".planselbtn@2456,174","war-picker.wk on warpick@50,105"]; cells ["act","act","act"]; {"bid":null,"postout":null,"postin":n
+ROW RECORD | F-S2 range mark (posting) | phone-chromium | ⋯ → Post out in the drag sheet | saw: [".planselbtn",".planselbtn",".planselbtn",".planselbtn",".planselbtn",".planselbtn",".planselbtn","war-picker.wk on warpick"]
+ROW RECORD | F-S2 range mark | phone-chromium-main | Cinch 8–10 Dec by the finger range gesture; drag sheet open | saw: during [".planselbtn",".planselbtn",".planselbtn",".planselbtn",".planselbtn",".planselbtn",".planselbtn","war-picker.wk on warpick"]; after [".planselbtn@116,174",".planselbtn@506,174",".planselbtn@896,174",".planselbtn@1286,174",".planselbtn@1676,174",".planselbtn@2066,174",".planselbtn@2456,174","war-picker.wk on warpick@50,105"]; cells ["act","act","act"]; {"bid":null,"postout":null,"postin":n
+ROW RECORD | F-S2 range mark (posting) | phone-chromium-main | ⋯ → Post out in the drag sheet | saw: [".planselbtn",".planselbtn",".planselbtn",".planselbtn",".planselbtn",".planselbtn",".planselbtn","war-picker.wk on warpick"]

@@ -1,0 +1,20 @@
+msq-s4w-lib v1 who=wd run=r9cm port=4756
+wd-lib v1
+wd-chipmove v1
+phone-chromium before [["✓ Overseas Sqn",622.3,30],["Delete",622.3,30],["SANS",658.3,30]] sheet {"x":12,"y":542.3,"w":378,"h":317.7,"r":390,"b":860} line On 7 Dec: archived. {"x":25,"y":768.3,"w":352,"h":34.7,"r":377,"b":803}
+phone-chromium after Delete [["Overseas Sqn",605.7,30],["✓ Delete",605.7,30],["SANS",641.7,30]] sheet {"x":12,"y":525.7,"w":378,"h":334.3,"r":390,"b":860} line On 7 Dec the app deletes him automatically. Days he flew keep his puck. {"x":25,"y":751.7,"w":352,"h":51.3,"r":377,"b":803}
+ROW FAIL | lesson 27 chips under the finger (402) | phone-chromium | Post out sheet: tap Delete | saw: chip moves [-16.6,-16.6,-16.6]; sheet top 542.3 → 525.7, height 317.7 → 334.3; line "On 7 Dec the app deletes him automatically. Days he flew keep his puck." 34.7 → 51.3 tall
+ROW PASS | lesson 27 a tap where SANS was | phone-chromium | tap at SANS's place before the change (112,673) — under it now: po-form | saw: chips now [["Overseas Sqn",false],["Delete",false],["✓ SANS",true]]; sheet open
+ROW PASS | lesson 27 chosen chip height (402) | phone-chromium | po-overseas chosen | saw: [["✓ Overseas Sqn",30,622.3],["Delete",30,622.3],["SANS",30,658.3]]
+ROW PASS | lesson 27 chosen chip height (402) | phone-chromium | po-delete chosen | saw: [["Overseas Sqn",30,605.7],["✓ Delete",30,605.7],["SANS",30,641.7]]
+ROW PASS | lesson 27 chosen chip height (402) | phone-chromium | po-sans chosen | saw: [["Overseas Sqn",30,622.3],["Delete",30,622.3],["✓ SANS",30,658.3]]
+phone-chromium errors []
+phone-webkit before [["✓ Overseas Sqn",629.3,30],["Delete",629.3,30],["SANS",665.3,28]] sheet {"x":12,"y":552.3,"w":378,"h":307.7,"r":390,"b":860} line On 7 Dec: archived. {"x":25,"y":770.3,"w":352,"h":34.7,"r":377,"b":805}
+phone-webkit after Delete [["Overseas Sqn",612.7,30],["✓ Delete",612.7,30],["SANS",648.7,28]] sheet {"x":12,"y":535.7,"w":378,"h":324.3,"r":390,"b":860} line On 7 Dec the app deletes him automatically. Days he flew keep his puck. {"x":25,"y":753.7,"w":352,"h":51.3,"r":377,"b":805}
+ROW FAIL | lesson 27 chips under the finger (402) | phone-webkit | Post out sheet: tap Delete | saw: chip moves [-16.6,-16.6,-16.6]; sheet top 552.3 → 535.7, height 307.7 → 324.3; line "On 7 Dec the app deletes him automatically. Days he flew keep his puck." 34.7 → 51.3 tall
+ROW PASS | lesson 27 a tap where SANS was | phone-webkit | tap at SANS's place before the change (112,679) — under it now: po-form | saw: chips now [["Overseas Sqn",false],["Delete",false],["✓ SANS",true]]; sheet open
+ROW FAIL | lesson 27 chosen chip height (402) | phone-webkit | po-overseas chosen | saw: [["✓ Overseas Sqn",30,629.3],["Delete",30,629.3],["SANS",28,665.3]]
+ROW FAIL | lesson 27 chosen chip height (402) | phone-webkit | po-delete chosen | saw: [["Overseas Sqn",30,612.7],["✓ Delete",30,612.7],["SANS",28,648.7]]
+ROW FAIL | lesson 27 chosen chip height (402) | phone-webkit | po-sans chosen | saw: [["Overseas Sqn",28,629.3],["Delete",28,629.3],["✓ SANS",30,663.3]]
+phone-webkit errors []
+wd-chipmove done

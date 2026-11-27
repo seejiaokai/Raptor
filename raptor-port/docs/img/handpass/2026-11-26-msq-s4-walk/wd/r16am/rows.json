@@ -1,0 +1,110 @@
+[
+ [
+  "A13 the longest warning (amber) on Saber's own Post out",
+  "520x874-chromium",
+  "Saber's own day → ⋯ → Post out",
+  "RECORD: an amber last-admin line (D306) above the button, fitting, page no wider",
+  "amber parts []; main {\"x\":25,\"y\":815,\"w\":86.8,\"h\":32,\"r\":111.8,\"b\":847}; line {\"x\":25,\"y\":768.3,\"w\":470,\"h\":34.7,\"r\":495,\"b\":803} \"On 7 Dec: archived, account suspended.\"; docW 520; wrapped []",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r16am/003-520x874-chromium-amber-settled.png"
+ ],
+ [
+  "A13 the amber line with each chip",
+  "520x874-chromium",
+  "po-delete",
+  "the button stays under the hand (lesson 27); page no wider",
+  "button {\"x\":25,\"y\":815,\"w\":86.8,\"h\":32,\"r\":111.8,\"b\":847} → {\"x\":25,\"y\":815,\"w\":86.8,\"h\":32,\"r\":111.8,\"b\":847}; chips [[\"Overseas Sqn\",579],[\"✓ Delete\",579],[\"SANS\",615]]; docW 520",
+  "RECORD",
+  ""
+ ],
+ [
+  "A13 the amber line with each chip",
+  "520x874-chromium",
+  "po-sans",
+  "the button stays under the hand (lesson 27); page no wider",
+  "button {\"x\":25,\"y\":815,\"w\":86.8,\"h\":32,\"r\":111.8,\"b\":847} → {\"x\":25,\"y\":815,\"w\":86.8,\"h\":32,\"r\":111.8,\"b\":847}; chips [[\"Overseas Sqn\",622.3],[\"Delete\",622.3],[\"✓ SANS\",658.3]]; docW 520",
+  "RECORD",
+  ""
+ ],
+ [
+  "A13 the amber line with each chip",
+  "520x874-chromium",
+  "po-overseas",
+  "the button stays under the hand (lesson 27); page no wider",
+  "button {\"x\":25,\"y\":815,\"w\":86.8,\"h\":32,\"r\":111.8,\"b\":847} → {\"x\":25,\"y\":815,\"w\":86.8,\"h\":32,\"r\":111.8,\"b\":847}; chips [[\"✓ Overseas Sqn\",622.3],[\"Delete\",622.3],[\"SANS\",658.3]]; docW 520",
+  "RECORD",
+  ""
+ ],
+ [
+  "A13 the longest warning (amber) on Saber's own Post out",
+  "701x900-chromium",
+  "Saber's own day → ⋯ → Post out",
+  "RECORD: an amber last-admin line (D306) above the button, fitting, page no wider",
+  "amber parts []; main {\"x\":83.5,\"y\":841,\"w\":86.8,\"h\":32,\"r\":170.3,\"b\":873}; line {\"x\":83.5,\"y\":794.3,\"w\":534,\"h\":34.7,\"r\":617.5,\"b\":829} \"On 7 Dec: archived, account suspended.\"; docW 701; wrapped []",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r16am/011-701x900-chromium-amber-settled.png"
+ ],
+ [
+  "A13 the amber line with each chip",
+  "701x900-chromium",
+  "po-delete",
+  "the button stays under the hand (lesson 27); page no wider",
+  "button {\"x\":83.5,\"y\":841,\"w\":86.8,\"h\":32,\"r\":170.3,\"b\":873} → {\"x\":83.5,\"y\":841,\"w\":86.8,\"h\":32,\"r\":170.3,\"b\":873}; chips [[\"Overseas Sqn\",657.7],[\"✓ Delete\",657.7],[\"SANS\",657.7]]; docW 701",
+  "RECORD",
+  ""
+ ],
+ [
+  "A13 the amber line with each chip",
+  "701x900-chromium",
+  "po-sans",
+  "the button stays under the hand (lesson 27); page no wider",
+  "button {\"x\":83.5,\"y\":841,\"w\":86.8,\"h\":32,\"r\":170.3,\"b\":873} → {\"x\":83.5,\"y\":841,\"w\":86.8,\"h\":32,\"r\":170.3,\"b\":873}; chips [[\"Overseas Sqn\",684.3],[\"Delete\",684.3],[\"✓ SANS\",684.3]]; docW 701",
+  "RECORD",
+  ""
+ ],
+ [
+  "A13 the amber line with each chip",
+  "701x900-chromium",
+  "po-overseas",
+  "the button stays under the hand (lesson 27); page no wider",
+  "button {\"x\":83.5,\"y\":841,\"w\":86.8,\"h\":32,\"r\":170.3,\"b\":873} → {\"x\":83.5,\"y\":841,\"w\":86.8,\"h\":32,\"r\":170.3,\"b\":873}; chips [[\"✓ Overseas Sqn\",684.3],[\"Delete\",684.3],[\"SANS\",684.3]]; docW 701",
+  "RECORD",
+  ""
+ ],
+ [
+  "A13 the longest warning (amber) on Saber's own Post out",
+  "mid-chromium",
+  "Saber's own day → ⋯ → Post out",
+  "RECORD: an amber last-admin line (D306) above the button, fitting, page no wider",
+  "amber parts []; main {\"x\":245,\"y\":709,\"w\":86.8,\"h\":32,\"r\":331.8,\"b\":741}; line {\"x\":245,\"y\":662.3,\"w\":534,\"h\":34.7,\"r\":779,\"b\":697} \"On 7 Dec: archived, account suspended.\"; docW 1024; wrapped []",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r16am/016-mid-chromium-amber-settled.png"
+ ],
+ [
+  "A13 the amber line with each chip",
+  "mid-chromium",
+  "po-delete",
+  "the button stays under the hand (lesson 27); page no wider",
+  "button {\"x\":245,\"y\":709,\"w\":86.8,\"h\":32,\"r\":331.8,\"b\":741} → {\"x\":245,\"y\":709,\"w\":86.8,\"h\":32,\"r\":331.8,\"b\":741}; chips [[\"Overseas Sqn\",525.7],[\"✓ Delete\",525.7],[\"SANS\",525.7]]; docW 1024",
+  "RECORD",
+  ""
+ ],
+ [
+  "A13 the amber line with each chip",
+  "mid-chromium",
+  "po-sans",
+  "the button stays under the hand (lesson 27); page no wider",
+  "button {\"x\":245,\"y\":709,\"w\":86.8,\"h\":32,\"r\":331.8,\"b\":741} → {\"x\":245,\"y\":709,\"w\":86.8,\"h\":32,\"r\":331.8,\"b\":741}; chips [[\"Overseas Sqn\",552.3],[\"Delete\",552.3],[\"✓ SANS\",552.3]]; docW 1024",
+  "RECORD",
+  ""
+ ],
+ [
+  "A13 the amber line with each chip",
+  "mid-chromium",
+  "po-overseas",
+  "the button stays under the hand (lesson 27); page no wider",
+  "button {\"x\":245,\"y\":709,\"w\":86.8,\"h\":32,\"r\":331.8,\"b\":741} → {\"x\":245,\"y\":709,\"w\":86.8,\"h\":32,\"r\":331.8,\"b\":741}; chips [[\"✓ Overseas Sqn\",552.3],[\"Delete\",552.3],[\"SANS\",552.3]]; docW 1024",
+  "RECORD",
+  ""
+ ]
+]

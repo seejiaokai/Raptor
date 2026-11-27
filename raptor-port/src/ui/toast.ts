@@ -7,8 +7,10 @@ export let toastT:any=null;
    14 items" was replaced in the same instant by the OIL check's warning, so the person only ever saw the warning). While
    a batch is open every toast is COLLECTED instead of shown; when it closes they are said as one line — in order, a
    repeat said once, in the strongest colour any of them asked for (hard > warn > plain). A throw inside drops them (the
-   command rolled back; nothing it said is true). Only the publish command opens one (state/sched-commit.ts
-   commitPublish, through HOOKS.toastBatch) — scoped, never a global "same breath" join: other code says a failure after
+   command rolled back; nothing it said is true). Two places open one: the publish command (state/sched-commit.ts
+   commitPublish, through HOOKS.toastBatch) and Admin → Users, for the notes it owes at one draw or as it goes — two
+   pieces of open work closed at one moment, each note's words whole, side by side (ui/UsersPanel.tsx sayChanged) —
+   scoped, never a global "same breath" join: other code says a failure after
    a success on purpose (Astra 03). A batch opened inside a batch is the outer one's. */
 /* TWO NOTES ABOUT ONE DAY NAME IT ONCE (owner D837, 14 Oct 26 — the passing note N1; the words of record:
    docs/superpowers/briefs/2026-10-13-wording-recheck.md, "For the builder"). Publishing Monday said "Monday published —

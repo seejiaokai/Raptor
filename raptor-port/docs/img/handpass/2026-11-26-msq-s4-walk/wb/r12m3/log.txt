@@ -1,0 +1,8 @@
+msq-s4w-lib v1 who=wb run=r12m3 port=4754
+wb-r12 v1
+clock at start Thu Nov 26 2026 23:57:03
+ROW PASS | A17 / F-S36 set-up | desk chromium | clock Thu Nov 26 2026 23:57:13: Piston Overseas from 27 Nov ("On 27 Nov: archived."), Warden Delete from 27 Nov, through the app | saw: grid: Piston from 11-27, Warden from 11-27; Admin → Users {"Piston":"Piston no sign-in · Pilot · CAT IP POSTING OUT 27 NOV · OVERSEAS SQN","Warden":"Warden no sign-in · Pilot · CAT IP POSTING OUT 27 NOV · AUTO DELETE"}; bell: (no bell list)
+ROW RECORD | A17 | desk chromium | left the Leave War for Inputs before midnight; came back at Fri Nov 27 2026 00:00:24 | saw: Piston from 11-27; Warden rows 1; Admin → Users {"Piston":"(no row)","Warden":"(no row)"}; bell: PistonFri 27 Nov Posted out · archived now WardenFri 27 Nov Posted out · deleted now Mark all read
+errors []
+errors []
+DONE 1 PASS 0 FAIL 1 OTHER of 2

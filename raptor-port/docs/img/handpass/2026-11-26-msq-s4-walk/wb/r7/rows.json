@@ -1,0 +1,164 @@
+[
+ [
+  "A2",
+  "desk chromium",
+  "new one-day sheet (Cinch 14 Dec): Delete, Post out → the card",
+  "hangs from Post out, wholly usable; Delete dashed grey, as tall as Cancel, Cancel blue (D1628, D2732 Q4)",
+  "Delete dashed rgb(138, 150, 163) bg rgb(26, 31, 38) (62×36); Cancel bg rgb(59, 198, 232) (65×36); above its anchor by 9px; inside screen true; \"Delete Cinch? On 14 Dec the app deletes him automatically. Days he flew keep his puck. Delete Cancel\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r7/001-desk-chromium-a2-new-card.png"
+ ],
+ [
+  "A2",
+  "desk chromium",
+  "the card's Delete pressed once",
+  "acts once, for the person and date shown: a Delete posting from 14 Dec, waiting (D1102, D1105)",
+  "line before \"On 14 Dec the app deletes him automatically. Days he flew keep his puck.\"; gone from 12-14 (18 days); reopened: Overseas Sqn / ✓ Delete[on] / SANS | Mon 14 Dec 26 ▾ | On 14 Dec the app deletes him automatically. Days he flew ke",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r7/002-desk-chromium-a2-new-after-delete.png , img/handpass/2026-11-26-msq-s4-walk/wb/r7/003-desk-chromium-a2-new-reopen.png"
+ ],
+ [
+  "A2",
+  "desk chromium",
+  "drag sheet (Anvil 15–18 Dec): ⋯ → Post out, Delete, Post out → the card",
+  "hangs from Post out; Delete dashed grey, as tall as Cancel (D1628, D2732 Q4)",
+  "Delete dashed rgb(138, 150, 163) bg rgb(26, 31, 38) (62×36); Cancel bg rgb(59, 198, 232) (65×36); above its anchor by 9px; inside screen true; \"Delete Anvil? On 15 Dec the app deletes him automatically. Days he flew keep his puck. Delete Cancel\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r7/004-desk-chromium-a2-drag-card.png"
+ ],
+ [
+  "A2",
+  "desk chromium",
+  "the drag card's Delete pressed once",
+  "a Delete posting for Anvil from the range's first day, 15 Dec, once",
+  "gone from 12-15 (17 days); state [page=leavewar]",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r7/005-desk-chromium-a2-drag-after-delete.png"
+ ],
+ [
+  "A2 / F-S12(b)",
+  "desk chromium",
+  "existing Overseas posting (Piston 21 Dec): its Delete chip → the card",
+  "hangs from the CHIP (D1628); Delete dashed grey, as tall as Cancel (D2732 Q4)",
+  "Delete dashed rgb(138, 150, 163) bg rgb(26, 31, 38) (62×36); Cancel bg rgb(59, 198, 232) (65×36); below its anchor by 9px; inside screen true; \"Delete Piston? On 21 Dec the app deletes him automatically. Days he flew keep his puck. Delete Cancel\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r7/006-desk-chromium-a2-old-card.png"
+ ],
+ [
+  "A2",
+  "desk chromium",
+  "the existing card's Delete pressed once; then Admin → Users",
+  "the posting's outcome becomes Delete, date unchanged; Admin → Users \"posting out <date> · auto delete\" for the three (D1105)",
+  "sheet after: Overseas Sqn / ✓ Delete[on] / SANS | Mon 21 Dec 26 ▾ | On 21 Dec the app deletes him automatically. Days he flew ke || Admin → Users: {\"Cinch\":\"Cinch no sign-in · Pilot · CAT IP POSTING OUT 14 DEC · AUTO DELETE\",\"Anvil\":\"Anvil no sign-in · Pilot · CAT IP POSTING OUT 15 DEC · AUTO DELETE\",\"Piston\":\"Piston no sign-in · Pilot · CAT IP POSTING OUT 21 DEC · AUTO DELETE\"}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r7/007-desk-chromium-a2-old-after-delete.png , img/handpass/2026-11-26-msq-s4-walk/wb/r7/008-desk-chromium-a2-admin-users-after-three.png"
+ ],
+ [
+  "A2 / F-S12(c)",
+  "desk chromium",
+  "existing Delete posting (Warden 21 Dec): PO from → today 26 Nov → the question",
+  "\"Delete Warden now?\" hanging from the date box; its Delete the SAME dashed grey, Cancel blue (his D2744 — a red Delete is a FAIL); the date not saved until the second tap (D1102)",
+  "Delete dashed rgb(138, 150, 163) bg rgb(26, 31, 38) (62×36); Cancel bg rgb(59, 198, 232) (65×36); above its anchor by 9px; inside screen true; \"Delete Warden now? On 26 Nov the app deletes him automatically. Days he flew keep his puck. Delete Cancel\" | grid still from 12-21",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r7/009-desk-chromium-a2-now-card-Cancel.png"
+ ],
+ [
+  "A2",
+  "desk chromium",
+  "\"Delete Warden now?\" up; Cancel; then reopen",
+  "no destructive change; the saved date (21 Dec) restored, not the unconfirmed today (D1102, D1627)",
+  "card gone, [poOld head=Warden Post out ✕ page=leavewar], date box \"Mon 21 Dec 26 ▾\"; grid from 12-21; reopened date \"Mon 21 Dec 26 ▾\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r7/010-desk-chromium-a2-now-after-Cancel.png , img/handpass/2026-11-26-msq-s4-walk/wb/r7/011-desk-chromium-a2-now-reopen-Cancel.png"
+ ],
+ [
+  "A2",
+  "desk chromium",
+  "\"Delete Warden now?\" up; Escape; then reopen",
+  "no destructive change; the saved date (21 Dec) restored, not the unconfirmed today (D1102, D1627)",
+  "card gone, [poOld head=Warden Post out ✕ page=leavewar], date box \"Mon 21 Dec 26 ▾\"; grid from 12-21; reopened date \"Mon 21 Dec 26 ▾\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r7/013-desk-chromium-a2-now-after-Escape.png , img/handpass/2026-11-26-msq-s4-walk/wb/r7/014-desk-chromium-a2-now-reopen-Escape.png"
+ ],
+ [
+  "A2",
+  "desk chromium",
+  "\"Delete Warden now?\" up; a press on the sheet outside the card [postout-sheet]; then reopen",
+  "no destructive change; the saved date (21 Dec) restored, not the unconfirmed today (D1102, D1627) — RECORD what it dismisses",
+  "card UP, [poOld card head=Warden Post out ✕ page=leavewar], date box \"Thu 26 Nov 26 ▾\"; grid from 12-21; reopened date \"Mon 21 Dec 26 ▾\"",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r7/016-desk-chromium-a2-now-after-a_press_.png , img/handpass/2026-11-26-msq-s4-walk/wb/r7/017-desk-chromium-a2-now-reopen-a_press_.png"
+ ],
+ [
+  "A2",
+  "desk chromium",
+  "\"Delete Warden now?\" up; a press outside the sheet [sheet-scrim]; then reopen",
+  "no destructive change; the saved date (21 Dec) restored, not the unconfirmed today (D1102, D1627) — RECORD what it dismisses",
+  "card gone, [page=leavewar], date box \"\"; grid from 12-21; reopened date \"Mon 21 Dec 26 ▾\"",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r7/019-desk-chromium-a2-now-after-a_press_.png , img/handpass/2026-11-26-msq-s4-walk/wb/r7/020-desk-chromium-a2-now-reopen-a_press_.png"
+ ],
+ [
+  "A2",
+  "desk chromium",
+  "\"Delete Warden now?\" → Delete",
+  "acts once: Warden deleted today — his row gone from the war's current view, gone from Admin → Users (D1102, D299)",
+  "after: [page=leavewar], Warden rows on grid 1; Admin → Users: {\"Warden\":\"(no row)\",\"Piston\":\"Piston no sign-in · Pilot · CAT IP POSTING OUT 21 DEC · AUTO DELETE\"}",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r7/021-desk-chromium-a2-now-confirmed.png , img/handpass/2026-11-26-msq-s4-walk/wb/r7/022-desk-chromium-a2-admin-after-now.png"
+ ],
+ [
+  "F-S12(a)",
+  "desk chromium",
+  "Basher's existing sheet, outcome Overseas",
+  "head \"Basher Post out\"; the foot holds \"Undo post out\" ALONE with the teal arrow, no \"(PO)\", no \"Place leave…\" (D2732 Q1/Q2, D2727)",
+  "head \"Basher Post out ✕\" | chips ✓ Overseas Sqn[on] / Delete / SANS | Mon 21 Dec 26 ▾ | line \"On 21 Dec: archived.\" | foot [\"↶Undo post out\"] arrow rgb(59, 198, 232) | old words false",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r7/023-desk-chromium-fs12-Overse.png"
+ ],
+ [
+  "F-S12(a)",
+  "desk chromium",
+  "Basher's existing sheet, outcome SANS",
+  "head \"Basher Post out\"; the foot holds \"Undo post out\" ALONE with the teal arrow, no \"(PO)\", no \"Place leave…\" (D2732 Q1/Q2, D2727)",
+  "head \"Basher Post out ✕\" | chips Overseas Sqn / Delete / ✓ SANS[on] | Mon 21 Dec 26 ▾ | line \"On 21 Dec: becomes SANS.\" | foot [\"↶Undo post out\"] arrow rgb(59, 198, 232) | old words false",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r7/024-desk-chromium-fs12-SANS.png"
+ ],
+ [
+  "F-S12(a)",
+  "desk chromium",
+  "Basher's existing sheet, outcome none (SANS tapped again)",
+  "head \"Basher Post out\"; the foot holds \"Undo post out\" ALONE with the teal arrow, no \"(PO)\", no \"Place leave…\" (D2732 Q1/Q2, D2727)",
+  "head \"Basher Post out ✕\" | chips Overseas Sqn / Delete / SANS | Mon 21 Dec 26 ▾ | line \"On 21 Dec: off the manpower, nothing else.\" | foot [\"↶Undo post out\"] arrow rgb(59, 198, 232) | old words false",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r7/025-desk-chromium-fs12-none_.png"
+ ],
+ [
+  "F-S12(a)",
+  "desk chromium",
+  "Basher's existing sheet, outcome Delete waiting",
+  "head \"Basher Post out\"; the foot holds \"Undo post out\" ALONE with the teal arrow, no \"(PO)\", no \"Place leave…\" (D2732 Q1/Q2, D2727)",
+  "head \"Basher Post out ✕\" | chips Overseas Sqn / ✓ Delete[on] / SANS | Mon 21 Dec 26 ▾ | line \"On 21 Dec the app deletes him automatically. Days he flew ke\" | foot [\"↶Undo post out\"] arrow rgb(59, 198, 232) | old words false",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r7/026-desk-chromium-fs12-Delete.png"
+ ],
+ [
+  "F-S12(e)",
+  "desk chromium",
+  "Basher's sheet opened from 2026-12-21",
+  "head always \"Basher Post out\", never the tapped day; PO from the posting's own date (21 Dec) (D2732 Q2)",
+  "head \"Basher Post out ✕\" | date Mon 21 Dec 26 ▾",
+  "FAIL",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r7/027-desk-chromium-fs12e-2026-12-21.png"
+ ],
+ [
+  "F-S12(e)",
+  "desk chromium",
+  "Basher's sheet opened from 2026-12-31",
+  "head always \"Basher Post out\", never the tapped day; PO from the posting's own date (21 Dec) (D2732 Q2)",
+  "head \"Basher Post out ✕\" | date Mon 21 Dec 26 ▾",
+  "FAIL",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r7/028-desk-chromium-fs12e-2026-12-31.png"
+ ]
+]

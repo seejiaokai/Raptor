@@ -1,0 +1,18 @@
+msq-s4w-lib v1 who=wb run=r5d port=4754
+wb-r5 v2
+rows ["row-dice:Reaper","row-shaft:Anvil","row-snap:Cinch","row-pump:Piston","row-bane:Ranger","row-stiff:Saber","row-mamba:Sidewinder","row-nact:Warden","row-slipway:Drifter","row-razer:Ridge","row-glass:Basher","row-freak:Echo","row-slash:Blade","row-taipan:Cobra","row-beams:Comet","row-chaps:Forge","row-boosh:Havoc","row-prowler:Hunter","row-harpoon:Trident","row-split:Vandal","row-dj:Ace","row-salsa:Saint","row-bruise:Gambit","row-pike:Nomad"]
+cell 14 open bid: act selcell
+cell 14 open PO: act selcell
+cell 14 closed: act
+keys {"Reaper":"dice","Anvil":"shaft","Cinch":"snap","Piston":"pump","Ranger":"bane","Saber":"stiff","Sidewinder":"mamba","Warden":"nact","Drifter":"slipway","Ridge":"razer","Basher":"glass","Echo":"freak","Blade":"slash","Cobra":"taipan","Comet":"beams","Forge":"chaps","Havoc":"boosh","Hunter":"prowler","Trident":"harpoon","Vandal":"split","Ace":"dj","Saint":"salsa","Gambit":"bruise","Nomad":"pike","Outlaw":"casper","Diesel":"fantom","Vapor":"vegas","Ledger":"drill","Quill":"nasty","Relay":"dirty","Scope":"stuff","Static":"wolf","Cinder":"ammo","Rune":"pain","Cutter":"psy","Dash":"spaceman","Fable":"plasma","Ghost":"riddler","Grit":"sufa","Hex":"rocky","Ryder":"xray","Vector":"divot","Wisp":"shrek","Recon":"prism","Talisman":"haowen","Wildcard":"bapster","Cotter":"spanner","Ratchet":"torque","Widget":"gizmo"}
+fixtures: Piston gone ["12-14","12-15","12-16","12-17","12-18","12-19","12-20","12-21","12-22","12-23","12-24","12-25","12-26","12-27","12-28","12-29","12-30","12-31"] Ridge gone ["12-01","12-02","12-03","12-04","12-05","12-06","12-07","12-08","12-09","12-10","12-11","12-12","12-13"]
+reopen from 
+ERROR locator.boundingBox: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('[data-testid="cell-pump-null"]').first()[22m
+
+    at Module.press (C:\Users\User\projects\Raptor\.claude\worktrees\msq-s4-walk-c1b6e5\raptor-port\scripts\handpass\msq\msq-s4w-lib.mjs:123:23)
+    at C:\Users\User\AppData\Roaming\Claude\side-session-notes\local_eeb07289-ed8b-483b-8502-00962970c7d1\s4-chat201\wb\wb-r5.mjs:112:13
+errors w1 []
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

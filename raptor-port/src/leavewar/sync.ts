@@ -4012,7 +4012,7 @@ export function adminArchived(id: string): string | null {
 }
 
 /**
- * The posting sheet's "Undo post out (PO)" — he is back, AS HE WAS BEFORE THE POST OUT (the absence-record re-test,
+ * The posting sheet's "Undo post out" (once "Undo post out (PO)" — D2732 Q1) — he is back, AS HE WAS BEFORE THE POST OUT (the absence-record re-test,
  * W5-F1, 26 Sep 26 — found by the orders walker). A Post out with "Archive on PO date" on (the sheet's default)
  * archives his body the moment its date has come; the sheet's Undo used to clear the date and LEAVE the archive, and
  * an archived man with no posting dates is dropped from the war's roster — so his row, his bids and his leave vanished

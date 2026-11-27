@@ -1,0 +1,13 @@
+msq-s4w-lib v1 who=wb run=r11s port=4754
+wb-r11 v1
+ROW RECORD | F-S32 | desk chromium | tab A: Cinch's existing sheet, Delete chip armed (card up); tab B: Undo post out; back to A | saw: B: Cinch gone 0; A on return [poOld card head=Cinch Post out ✕ page=leavewar] card "Delete Cinch? On 21 Dec the app deletes him automatically. D"; Cinch gone in A 11; A pressed the card's Delete → [poOld head=Cinch Post out ✕ page=leavewar], Cinch gone in A 11
+ERROR locator.boundingBox: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('[data-testid="bid-more"]').first()[22m
+
+    at press (C:\Users\User\projects\Raptor\.claude\worktrees\msq-s4-walk-c1b6e5\raptor-port\scripts\handpass\msq\msq-s4w-lib.mjs:123:23)
+    at Module.more (C:\Users\User\projects\Raptor\.claude\worktrees\msq-s4-walk-c1b6e5\raptor-port\scripts\handpass\msq\msq-s4w-lib.mjs:139:9)
+    at C:\Users\User\AppData\Roaming\Claude\side-session-notes\local_eeb07289-ed8b-483b-8502-00962970c7d1\s4-chat201\wb\wb-r11.mjs:71:77
+errors []
+errors []
+DONE 0 PASS 0 FAIL 1 OTHER of 1

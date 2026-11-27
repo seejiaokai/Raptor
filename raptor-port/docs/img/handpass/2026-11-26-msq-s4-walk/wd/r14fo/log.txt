@@ -1,0 +1,10 @@
+msq-s4w-lib v1 who=wd run=r14fo port=4756
+wd-lib v1
+wd-focus v1
+desk-chromium tab order ["po-overseas","po-delete","po-sans","po-date","po-confirm"]
+ROW RECORD | F-S22 the keys' ring on the blue Post out | desk-chromium | Tab from the sheet's first control to Post out | saw: {"id":"po-confirm","fv":true,"outline":"auto 1px rgb(16, 16, 16) off 0px","shadow":"none","bg":"rgb(59, 198, 232)"}
+desk-chromium chip ring {"id":"po-overseas","fv":false,"outline":"none 3px rgb(59, 198, 232) off 0px","shadow":"none","bg":"rgba(59, 198, 232, 0.14)"}
+ROW PASS | F-S22 the keys' ring on the card's blue Cancel | desk-chromium | card up, keys on Cancel | saw: {"id":"po-delete-cancel","fv":true,"outline":"solid 2px rgb(59, 198, 232) off 2px","shadow":"none","bg":"rgb(59, 198, 232)"}
+desk-chromium errors []
+errors []
+DONE 1 PASS 0 FAIL 1 OTHER of 2

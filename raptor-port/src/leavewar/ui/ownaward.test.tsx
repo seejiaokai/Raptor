@@ -89,7 +89,8 @@ describe('his own award opens read only on any day not open for him (D261)', () 
 })
 
 /* OUTSIDE HIS POSTING DATES (Astra's final read, 3, 27 Sep 26): an award may be given on a day after he posts out or
-   before he posts in ("Place leave or OIL here instead…", N12), and the grid drew that day as a bare PO (or blank) and
+   before he posts in (then by "Place leave or OIL here instead…", N12 — gone since D2727; the OIL tracker still
+   dates an award on any day), and the grid drew that day as a bare PO (or blank) and
    let nobody tap it — his own award was hidden from him, and from the admin's eye too. Leave dated there already shows
    with the posting hatch (answer C); an award now does the same, and his tap opens it read only. */
 describe('his own award outside his posting dates (the final read)', () => {

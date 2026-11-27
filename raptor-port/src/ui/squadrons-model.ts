@@ -1,7 +1,7 @@
 /* ADMIN → SQUADRONS — WHAT THE PAGE READS (batch 1's second half, plan §6 — P2, PG1, D2196, D2298, D2306, D2308, D2336;
    pictures b1-3, b1-4, b1-9, b1-10, p7). Pure reads, no screen: ui/SquadronsPanel.tsx draws what this answers.
 
-   - `squadronRows` — each squadron by number, its place today and its people (the count Admin → Users' "People · N"
+   - `squadronRows` — each squadron, his home first then by number (D2730 Q1), its place today and its people (the count Admin → Users' "People · N"
      reads for that squadron — ui/userslist-model.ts, so the two never disagree): "Home base · 61 people";
    - `placeRows` — each place, A to Z, its grey line the squadrons at it (today or from a later day — a move saved for
      tomorrow counts, as the time zone's door reads it: units-model.ts unitsAtPlace) then its time zone for today:
@@ -16,7 +16,8 @@
 import { PEOPLE } from '../engine/people'
 import { ACCOUNTS_LIST } from '../state/accounts'
 import { units, places, unitRows, placeOfOn, unitById, homeOn, firstAdminProblem } from '../state/units'
-import { gmtLabel, unitsAtPlace, validTz } from '../state/units-model'
+import { gmtLabel, unitsAtPlace, validTz, squadronOrder } from '../state/units-model'
+import { myHomeOn, inSquadronOrder } from '../state/perms'
 import { usersListOf } from './userslist-model'
 
 /* the drawn faded example in the number box (b1-9), and the number the line names until one is typed */
@@ -24,12 +25,15 @@ export const NUM_EXAMPLE = '150'
 /* the last choice of every Place list (D2298): it opens the new place's name and time zone in the same form */
 export const NEW_PLACE = '+new'
 
+/* (by number — the first admin's list below is a list of people, ordered by their squadron's number then callsign; the
+   lists of squadrons on this page take the one order, his D2730 Q1: state/perms.ts myHomeOn / inSquadronOrder) */
 const byNum = (a: string, b: string) => a.localeCompare(b, undefined, { numeric: true })
 const numOf = (u: string) => unitById(u)?.num ?? u
 
 export interface SquadronRow { id: string; num: string; sub: string }
 export function squadronRows(iso: string): SquadronRow[] {
-  return [...units()].sort((a, b) => byNum(a.num, b.num)).map(u => {
+  /* (his home first, then by number — the one order, D2730 Q1) */
+  return squadronOrder(units(), myHomeOn(iso), u => u.id, u => u.num).map(u => {
     const n = usersListOf(u.id, iso, '').count
     const place = placeOfOn(u.id, iso)
     return { id: u.id, num: u.num, sub: [place?.name, `${n} ${n === 1 ? 'person' : 'people'}`].filter(Boolean).join(' · ') }
@@ -44,7 +48,7 @@ export interface PlaceRow { id: string; name: string; tz: string; sub: string; a
 export function placeRows(iso: string): PlaceRow[] {
   const r = unitRows()
   return [...places()].sort((a, b) => a.name.localeCompare(b.name)).map(p => {
-    const at = unitsAtPlace(r, p.id, iso).sort((a, b) => byNum(numOf(a), numOf(b)))
+    const at = inSquadronOrder(unitsAtPlace(r, p.id, iso), iso)
     return { id: p.id, name: p.name, tz: p.tz, at, sub: [...at.map(numOf), tzLabel(p.tz, iso)].join(' · ') }
   })
 }

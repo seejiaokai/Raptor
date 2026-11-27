@@ -1,0 +1,7 @@
+msq-s4w-lib v1 who=wc run=r16-main port=4755
+wc-r16 v1
+ids ["po-date=Tue 15 Dec 26 ▾","po-overseas=✓ Overseas Sqn","po-delete=Delete","po-sans=SANS","po-transfer=Transfer to Sqn","po-line=On 15 Dec: archived.","po-confirm=Post out"]
+ROW RECORD | F-S17(3) on main: the button and the refusal | desk-chromium-main | Ridge (two stints) 15 Dec → ⋯ → Post out, PO from 27 Nov, Post out | saw: button before 453,841 87x32 | after the date 453,841 87x32 | after the press 453,793 87x32 | reason ["post-err: Ridge was posted out on 26 Nov 26 and came back on 7 Dec 26 — an earlier stint's dates can't be moved here."]
+ROW RECORD | A7/F-S13 on main: chips as the amber line comes and goes | desk-chromium-main | Saber the last admin of 142 → today → ⋯ → Post out; Overseas, SANS, none, Delete | saw: opened: chips 539,733 109x30 | 654,733 59x30 | 719,733 54x30 button 453,841 87x32 amber ["po-blocked: Saber is 142's last admin. The posting waits until 142 has another admin."] ## SANS: chips 539,764 97x30 | 642,764 59x30 | 707,764 67x30 button 453,841 87x32 amber [] ## none: chips 539,764 97x30 | 642,764 59x30 | 707,764 54x30 button 453,841 87x32 amber [] ## Delete: chips 539,733 97x30 | 642,733
+errors []
+DONE 0 PASS 0 FAIL 2 OTHER of 2

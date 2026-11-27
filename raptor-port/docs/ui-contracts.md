@@ -202,7 +202,7 @@ Whoever may read two squadrons or more (`state/perms.ts readableUnits` — his h
 holds that day, every squadron for a master admin; the account's own role, so the member view keeps them) has the top
 bar's squadron number as a button: "142 ▾", nothing about the mark moving, a pale fill round it while open or under the
 pointer. One squadron: the plain mark, no ▾ (D2132). Its list (`ui/SquadronMenu.tsx`, in the app's own small menu's look,
-`.sb-moremenu`): "SCHEDULES", then a row per squadron by number — a tick on the one in view, the number, and a short grey
+`.sb-moremenu`): "SCHEDULES", then a row per squadron, his home first then by number (D2730 Q1) — a tick on the one in view, the number, and a short grey
 label at the right: "Your squadron" (his home), "Full access" (a Plan or the master mark while the role in force is
 admin), "View only" (a View, or any other squadron in the member view — D2253). Rows 38 high on a desktop and a phone
 alike (D2304). A desktop hangs it 12px under the bar at the mark's left; a phone opens a sheet from the bar's foot, the
@@ -273,7 +273,7 @@ floats, leaves the menu free.
 D2336; the drawings `docs/mock/2026-11-22-msq-b1-screens/img/b1-3`, `b1-4`, `b1-9`, `b1-10`, `p7`): a tile on the Admin
 rail for every admin, after Users — "Squadrons", grey line "Places", the line map pin (`ui/icons.tsx MapPinIcon`, never
 Users' people). Built from Users' own parts (`.acc-list`, `.acc-row.od-row`, `.acc-edit`, `.adm-2col`, `.mfield`, `.abtn`):
-"Squadrons · N", a row per squadron by number, its grey line its place today and its people ("Home base · 61 people" —
+"Squadrons · N", a row per squadron, his home first then by number (D2730 Q1), its grey line its place today and its people ("Home base · 61 people" —
 the count Users' "People · N" reads, `ui/userslist-model.ts`); then, for a master admin only, "+ New squadron"; then
 "Places · N", a row per place A to Z, its grey line the squadrons at it — today or from a later day, a move saved for
 tomorrow counting (`state/units-model.ts unitsAtPlace`) — and its time zone for today ("142 · 149 · Perth · GMT+8",
@@ -7064,13 +7064,38 @@ Pinned in `ui/accounts-ui.test.tsx` (AC10) and `ui/memberview.test.tsx`.
 - **The board's desktop layout on a phone pinches, and its drag follows the edge (D1107):** pinch to zoom in and out; a puck carried to the edge of what is on screen scrolls the board that way (the design guide §5A, D895). Its design questions go to him with pictures first; [BOARD-PHONE-PINCH-ZOOM].
 - **Quals on a phone pinches too (D1108):** its wide table zooms in and out, its pinned heading row and name column kept in line (D993); the same round of questions and the same job, [BOARD-PHONE-PINCH-ZOOM].
 
-## A posting out — four chips, one line, "Post out" (`[POST-OUT-OUTCOMES]`, 27 Sep 26 — D229, D294, D298, D300)
+## A posting out — its chips, one line, "Post out" (`[POST-OUT-OUTCOMES]`, 27 Sep 26 — D229, D294, D298, D300; once "four chips", three since "Transfer to Sqn" waits for the Transfer step, D2659)
+
+**WAY C (his D2648, D2653; his go for the multi-squadron build's section 4, D2732, 26 Nov 26 — these rows reach `main`
+with that build's batch).** Every posting sheet — Post out and Post in from a day's sheet and from a drag, and an
+existing posting's sheet — is the posting's ALONE: while it is open the leave's parts step aside (the day line, who
+placed it, the actions row, Remarks and Document, Duration, the leave buttons, the row under the leaves, the OIL detail,
+Auto-approve), and the head names the act, "Cinch  Post out" / "Cinch  Post in" (`.po-act`), the day only in its date
+box (D1462 narrowed for these sheets; lesson 105). Order down the sheet: the chips (equal; one row at a desk, two to a
+line at ≤520px), "PO from" (label over box, the box half the width — the other half is the Transfer step's "To
+squadron"), the one line on a strip (`.po-line`), an amber line (the last admin, D306, just above the button), the
+button — "Post out" / "Post in" in the app's main-button blue (`.dchip.po-main`; his 18 Aug 26 grey hatched chip set
+aside, D2653 b), a refusal's reason under it. An existing posting's foot holds "Undo post out" / "Undo post in" alone,
+design A (D2732 Q1): Move's grey chip with the top bar's Undo arrow in teal, "(PO)"/"(PI)" dropped. The "Delete Cinch?"
+card's Delete is the Leave War's dashed grey Delete (`.abtn.po-del`, D2732 Q4, D332), on the three sheets' cards, and
+"Delete Cinch now?" (the date's question) wears it too, Cancel staying blue (his D2744). A press on the day under an open posting
+closes it, the next opens the day afresh (Q3). "Place leave or OIL here instead…" is gone from both posting sheets (his
+D2727): an admin's tap on a BARE day outside a man's time opens the posting sheet only; a gone day that already holds an
+entry opens what that day opens on any other day (D1722, D1725 — the door the three restored browser tests of
+`e2e/leavewar.spec.ts` R3b, D1541's and R3c-2 take); a day before his post-in date that holds an entry opens that entry's
+own window the same way, an empty one the Post in sheet (his D2743 — the code reads' F1 / A); a member's own tap on his own such day
+still opens the bid sheet. While a posting is open its window is named for it to a screen reader ("Post out" / "Post
+in"), the keys go to its first control when the menu item pressed left the screen, and on a phone the day it was opened
+from — or a drag's first day, over one man — is scrolled just above it (D1290; `cellinsight.ts`, every posting window
+and the drag window; chat 197, the three code reads' finds, pinned by `leavewar/ui/msq-s4-reads.test.tsx`). Built in `OutcomeChips.tsx`'s shared parts and `bidpicker.css` `.bidsheet .po-form`; pinned
+by `leavewar/ui/msq-s4-posting.test.tsx` and `e2e/msq-s4-posting-leavewar.spec.ts`. Where the older text below says
+otherwise about the look or order, this paragraph wins; what each posting DOES is unchanged.
 
 The approved mock-up `docs/mock/post-out.html` §1 is the design of record (D299). On EVERY posting door — the bid sheet's
 PO (`po-*`), an existing posting's Post out sheet (`postout-*`), the drag selection's PO (`sel-po-*`) — the same row:
-the date once, in its own box ("PO from"); four short chips `leavewar/ui/OutcomeChips.tsx` — "Overseas Sqn" (the
-default — the old "Archive on PO date"), "Delete", "SANS" (never offered for a ground-crew man — SANS is an aircrew status, his D1709, 5 Nov 26; the writer `sync.ts postOutProblem` refuses it too), "Transfer to Sqn" (drawn, not pressable — "Comes with the
-shared database", D281); ONE line saying what the chosen one does on the date ("On 14 Oct: archived, account
+the date once, in its own box ("PO from"); the short chips `leavewar/ui/OutcomeChips.tsx` — "Overseas Sqn" (the
+default — the old "Archive on PO date"), "Delete", "SANS" (never offered for a ground-crew man — SANS is an aircrew status, his D1709, 5 Nov 26; the writer `sync.ts postOutProblem` refuses it too); "Transfer to Sqn" was drawn greyed ("Comes with the
+shared database", D281) and is LEFT OUT altogether until the Transfer step (his D2659, 26 Nov 26), so three chips for an aircrew man, two for ground crew; ONE line saying what the chosen one does on the date ("On 14 Oct: archived, account
 suspended." — the account named only when he has one; "archived on Quals" until Quals lost its archive, D310); the button just "Post out" (D300; "Post in" likewise). Tapping
 the chosen chip again un-chooses it — "off the manpower, nothing else" (the agent's call, on his look card). **A Delete
 asks twice** (D287 (3)): the bid sheet's button turns into "Tap again to delete <callsign>"; on the Post out sheet (which
@@ -7184,7 +7209,7 @@ of shows no row for him (`leavewar/engine/people.ts` — `inSquadron`, `beforeFi
 **A person's access, by squadron (since 22 Nov 26 — batch 1's second half §4 items 3–5; his D2303, design B, pictures
 rB1–rB4; D2305, D2306, D2320, D2336; built chat 149):** the opened row's Role box reads Member, Admin, Master admin
 ("Master admin" greyed for anyone but a master admin; a new sign-in's box Member or Admin). Under Sign-in and Role, one
-line per squadron by number, the number in the field labels' look (`ui/UserAccess.tsx`): his home "142 Home squadron";
+line per squadron, the signed-in person's home first then by number (D2730 Q1), the number in the field labels' look (`ui/UserAccess.tsx`): his home "142 Home squadron";
 every other "149 None · View · Plan" (the editor's segmented buttons); Master admin held or picked, "Full access" with no
 buttons. A line not his to change is greyed with one grey line under it: no sign-in, "Give him a sign-in first to give
 access."; not an admin of that squadron, "Only an admin of 149 can give access to 149."; Plan on a member (or Member
@@ -12398,7 +12423,11 @@ Duration → Which leave → Also (the admin's +OIL · PO · PI). On an empty da
 - **Approval carries them** (7.2, `sync.ts doorApprove` / `doorDecideApproved`): onto the leave on the Inputs page and back
   at a put-back; a run joins only days with the same words, tick and documents; a join keeps every paper; a request that
   carries its own unticked till joins only a leave showing the same (one with none takes its neighbour's — D953).
-- **On a phone** a window opening over a low cell first scrolls the cell just above the window (5.7, `Matrix.tsx`).
+- **On a phone** a window opening over a low cell first scrolls the cell just above the window (5.7, `Matrix.tsx`) — and
+  again, once, as the window becomes a posting (Post out or Post in from its ⋯): the posting's sheet is taller than the
+  leave's and rose over the day it was opened from, so his D2732 Q3 press on that day landed on the sheet (chat 196, 26 Nov
+  26; one body, `cellinsight.ts keepCellAboveSheet`, called by both; pinned by `msq-s4-posting.test.tsx` PT10 and the
+  phone case of `e2e/msq-s4-posting-leavewar.spec.ts`).
 
 **The Inputs page, the same night (7.4 — D1150, D1179):** the input window draws its Document row for every kind; a NEW leave
 (or one retyped into leave) with none asks "No document — <callsign>, <kind>" / "Attach the approval from the leave app now,

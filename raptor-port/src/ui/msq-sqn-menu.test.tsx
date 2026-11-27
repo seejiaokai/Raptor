@@ -62,10 +62,12 @@ describe('who gets the menu, and its rows', () => {
     act(() => { switchRoleView() })
     expect(menuSquadrons().map(r => `${r.num} ${r.label}`)).toEqual(['142 Your squadron', '149 View only'])
   })
-  it('Kestrel, 149\'s admin, with View of 142: 142 "View only", 149 "Your squadron" — in the store\'s order', () => {
+  /* RE-POINTED 26 Nov 26 to his D2730 Q1 — "home squadron first, then the rest by number, in every list of squadrons":
+     the menu stood by number (142 before 149) for Kestrel too; his own 149 now stands first */
+  it('Kestrel, 149\'s admin, with View of 142: 149 "Your squadron" first, then 142 "View only" — his home first (D2730 Q1)', () => {
     give(ACCT.kestrel, 'u142', 'view')
     signInAs('kestrel')
-    expect(menuSquadrons().map(r => `${r.num} ${r.label}`)).toEqual(['142 View only', '149 Your squadron'])
+    expect(menuSquadrons().map(r => `${r.num} ${r.label}`)).toEqual(['149 Your squadron', '142 View only'])
   })
   it('eight squadrons: Saber\'s menu has eight rows; Hunter, first admin of 150–155, has his home and those six', () => {
     signInAs('saber')

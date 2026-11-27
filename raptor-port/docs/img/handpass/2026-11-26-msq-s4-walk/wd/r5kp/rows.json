@@ -1,0 +1,182 @@
+[
+ [
+  "F-S21 fixture: long new person",
+  "phone-webkit",
+  "Quals + Add person → callsign WWWWWWWWWWWWWW, pilot, CAT OCU, no sign-in → Add person; Leave War",
+  "his row on the Leave War",
+  "row id pmwxeehv9981c1f; too-long note shown: 0",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r5kp/003-phone-webkit-kinds-lw.png"
+ ],
+ [
+  "F-S21 fixture: + SANS",
+  "phone-webkit",
+  "gear → + SANS",
+  "the SANS group's rows appear at the foot",
+  "new rows: [\"ipman\",\"romeo\",\"yeti\",\"vinci\",\"krait\",\"cards\",\"wrangler\",\"badger\",\"waldo\",\"nick\",\"bullet\"]",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r5kp/004-phone-webkit-kinds-sans-on.png"
+ ],
+ [
+  "F-S21 Post out head and chips: pilot IP (Cinch)",
+  "phone-webkit",
+  "day → ⋯ (Attach/Other/Post out/Post in) → Post out",
+  "head \"<Name>  Post out\" one line with ✕, name not cut; ground crew two chips (D1709); Overseas line \"archived.\" without a sign-in, \"archived, account suspended.\" with one (D300/D310); already-SANS: RECORD chips and line",
+  "head who=\"Cinch\" {\"x\":46.7,\"y\":573.3,\"w\":46.7,\"h\":18,\"r\":93.5,\"b\":591.3} act {\"x\":103.5,\"y\":575.3,\"w\":56.2,\"h\":15,\"r\":159.6,\"b\":590.3} ✕ {\"x\":358.4,\"y\":574.3,\"w\":18.6,\"h\":17,\"r\":377,\"b\":591.3} oneLine true whoCut false; chips [[\"✓ Overseas Sqn\",173,30,false],[\"Delete\",173,30,false],[\"SANS\",173,28,false]]; line \"On 7 Dec: archived.\"; docW 402",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r5kp/005-phone-webkit-kind-pilot-snap.png"
+ ],
+ [
+  "F-S21 Post in head: pilot IP (Cinch)",
+  "phone-webkit",
+  "day → ⋯ → Post in",
+  "head \"<Name>  Post in\" one line with ✕, name not cut",
+  "who=\"Cinch\" oneLine true whoCut false ✕in true; line \"Their first day in the squadron. Days before it are blank and count nobody — leave can still be dated there.\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r5kp/006-phone-webkit-kind-in-pilot-snap.png"
+ ],
+ [
+  "F-S21 Post out head and chips: WSO IW (Basher)",
+  "phone-webkit",
+  "day → ⋯ (Attach/Other/Post out/Post in) → Post out",
+  "head \"<Name>  Post out\" one line with ✕, name not cut; ground crew two chips (D1709); Overseas line \"archived.\" without a sign-in, \"archived, account suspended.\" with one (D300/D310); already-SANS: RECORD chips and line",
+  "head who=\"Basher\" {\"x\":46.7,\"y\":573.3,\"w\":57.6,\"h\":18,\"r\":104.4,\"b\":591.3} act {\"x\":114.4,\"y\":575.3,\"w\":56.2,\"h\":15,\"r\":170.5,\"b\":590.3} ✕ {\"x\":358.4,\"y\":574.3,\"w\":18.6,\"h\":17,\"r\":377,\"b\":591.3} oneLine true whoCut false; chips [[\"✓ Overseas Sqn\",173,30,false],[\"Delete\",173,30,false],[\"SANS\",173,28,false]]; line \"On 7 Dec: archived.\"; docW 402",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r5kp/007-phone-webkit-kind-WSO-glass.png"
+ ],
+ [
+  "F-S21 Post in head: WSO IW (Basher)",
+  "phone-webkit",
+  "day → ⋯ → Post in",
+  "head \"<Name>  Post in\" one line with ✕, name not cut",
+  "who=\"Basher\" oneLine true whoCut false ✕in true; line \"Their first day in the squadron. Days before it are blank and count nobody — leave can still be dated there.\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r5kp/008-phone-webkit-kind-in-WSO-glass.png"
+ ],
+ [
+  "F-S21 ground crew (Cotter)",
+  "phone-webkit",
+  "stopped",
+  "",
+  "mouse.wheel: Mouse wheel is not supported in mobile WebKit",
+  "NOT REACHED",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r5kp/009-phone-webkit-kind-error.png"
+ ],
+ [
+  "F-S21 Post out head and chips: CAT IR (Reaper)",
+  "phone-webkit",
+  "day → ⋯ (Attach/Other/Post out/Post in) → Post out",
+  "head \"<Name>  Post out\" one line with ✕, name not cut; ground crew two chips (D1709); Overseas line \"archived.\" without a sign-in, \"archived, account suspended.\" with one (D300/D310); already-SANS: RECORD chips and line",
+  "head who=\"Reaper\" {\"x\":46.7,\"y\":573.3,\"w\":58.2,\"h\":18,\"r\":104.9,\"b\":591.3} act {\"x\":114.9,\"y\":575.3,\"w\":56.2,\"h\":15,\"r\":171.1,\"b\":590.3} ✕ {\"x\":358.4,\"y\":574.3,\"w\":18.6,\"h\":17,\"r\":377,\"b\":591.3} oneLine true whoCut false; chips [[\"✓ Overseas Sqn\",173,30,false],[\"Delete\",173,30,false],[\"SANS\",173,28,false]]; line \"On 7 Dec: archived.\"; docW 402",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r5kp/010-phone-webkit-kind-CAT-dice.png"
+ ],
+ [
+  "F-S21 Post in head: CAT IR (Reaper)",
+  "phone-webkit",
+  "day → ⋯ → Post in",
+  "head \"<Name>  Post in\" one line with ✕, name not cut",
+  "who=\"Reaper\" oneLine true whoCut false ✕in true; line \"Their first day in the squadron. Days before it are blank and count nobody — leave can still be dated there.\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r5kp/011-phone-webkit-kind-in-CAT-dice.png"
+ ],
+ [
+  "F-S21 Post out head and chips: CAT A (Drifter)",
+  "phone-webkit",
+  "day → ⋯ (Attach/Other/Post out/Post in) → Post out",
+  "head \"<Name>  Post out\" one line with ✕, name not cut; ground crew two chips (D1709); Overseas line \"archived.\" without a sign-in, \"archived, account suspended.\" with one (D300/D310); already-SANS: RECORD chips and line",
+  "head who=\"Drifter\" {\"x\":46.7,\"y\":573.3,\"w\":54.6,\"h\":18,\"r\":101.3,\"b\":591.3} act {\"x\":111.3,\"y\":575.3,\"w\":56.2,\"h\":15,\"r\":167.5,\"b\":590.3} ✕ {\"x\":358.4,\"y\":574.3,\"w\":18.6,\"h\":17,\"r\":377,\"b\":591.3} oneLine true whoCut false; chips [[\"✓ Overseas Sqn\",173,30,false],[\"Delete\",173,30,false],[\"SANS\",173,28,false]]; line \"On 7 Dec: archived.\"; docW 402",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r5kp/012-phone-webkit-kind-CAT-slipway.png"
+ ],
+ [
+  "F-S21 Post in head: CAT A (Drifter)",
+  "phone-webkit",
+  "day → ⋯ → Post in",
+  "head \"<Name>  Post in\" one line with ✕, name not cut",
+  "who=\"Drifter\" oneLine true whoCut false ✕in true; line \"Their first day in the squadron. Days before it are blank and count nobody — leave can still be dated there.\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r5kp/013-phone-webkit-kind-in-CAT-slipway.png"
+ ],
+ [
+  "F-S21 Post out head and chips: CAT C (Ridge)",
+  "phone-webkit",
+  "day → ⋯ (Attach/Other/Post out/Post in) → Post out",
+  "head \"<Name>  Post out\" one line with ✕, name not cut; ground crew two chips (D1709); Overseas line \"archived.\" without a sign-in, \"archived, account suspended.\" with one (D300/D310); already-SANS: RECORD chips and line",
+  "head who=\"Ridge\" {\"x\":46.7,\"y\":573.3,\"w\":47,\"h\":18,\"r\":93.7,\"b\":591.3} act {\"x\":103.7,\"y\":575.3,\"w\":56.2,\"h\":15,\"r\":159.9,\"b\":590.3} ✕ {\"x\":358.4,\"y\":574.3,\"w\":18.6,\"h\":17,\"r\":377,\"b\":591.3} oneLine true whoCut false; chips [[\"✓ Overseas Sqn\",173,30,false],[\"Delete\",173,30,false],[\"SANS\",173,28,false]]; line \"On 7 Dec: archived.\"; docW 402",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r5kp/014-phone-webkit-kind-CAT-razer.png"
+ ],
+ [
+  "F-S21 Post in head: CAT C (Ridge)",
+  "phone-webkit",
+  "day → ⋯ → Post in",
+  "head \"<Name>  Post in\" one line with ✕, name not cut",
+  "who=\"Ridge\" oneLine true whoCut false ✕in true; line \"Their first day in the squadron. Days before it are blank and count nobody — leave can still be dated there.\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r5kp/015-phone-webkit-kind-in-CAT-razer.png"
+ ],
+ [
+  "F-S21 CAT B (Saint)",
+  "phone-webkit",
+  "stopped",
+  "",
+  "mouse.wheel: Mouse wheel is not supported in mobile WebKit",
+  "NOT REACHED",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r5kp/016-phone-webkit-kind-error.png"
+ ],
+ [
+  "F-S21 CAT D (Diesel)",
+  "phone-webkit",
+  "stopped",
+  "",
+  "mouse.wheel: Mouse wheel is not supported in mobile WebKit",
+  "NOT REACHED",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r5kp/017-phone-webkit-kind-error.png"
+ ],
+ [
+  "F-S21 Post out head and chips: has a sign-in (Ranger)",
+  "phone-webkit",
+  "day → ⋯ (Attach/Other/Post out/Post in) → Post out",
+  "head \"<Name>  Post out\" one line with ✕, name not cut; ground crew two chips (D1709); Overseas line \"archived.\" without a sign-in, \"archived, account suspended.\" with one (D300/D310); already-SANS: RECORD chips and line",
+  "head who=\"Ranger\" {\"x\":46.7,\"y\":573.3,\"w\":58.4,\"h\":18,\"r\":105.1,\"b\":591.3} act {\"x\":115.1,\"y\":575.3,\"w\":56.2,\"h\":15,\"r\":171.3,\"b\":590.3} ✕ {\"x\":358.4,\"y\":574.3,\"w\":18.6,\"h\":17,\"r\":377,\"b\":591.3} oneLine true whoCut false; chips [[\"✓ Overseas Sqn\",173,30,false],[\"Delete\",173,30,false],[\"SANS\",173,28,false]]; line \"On 7 Dec: archived, account suspended.\"; docW 402",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r5kp/018-phone-webkit-kind-has-bane.png"
+ ],
+ [
+  "F-S21 Post in head: has a sign-in (Ranger)",
+  "phone-webkit",
+  "day → ⋯ → Post in",
+  "head \"<Name>  Post in\" one line with ✕, name not cut",
+  "who=\"Ranger\" oneLine true whoCut false ✕in true; line \"Their first day in the squadron. Days before it are blank and count nobody — leave can still be dated there.\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r5kp/019-phone-webkit-kind-in-has-bane.png"
+ ],
+ [
+  "F-S21 already SANS",
+  "phone-webkit",
+  "stopped",
+  "",
+  "mouse.wheel: Mouse wheel is not supported in mobile WebKit",
+  "NOT REACHED",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r5kp/020-phone-webkit-kind-error.png"
+ ],
+ [
+  "F-S21 longest callsign, no sign-in",
+  "phone-webkit",
+  "stopped",
+  "",
+  "mouse.wheel: Mouse wheel is not supported in mobile WebKit",
+  "NOT REACHED",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r5kp/021-phone-webkit-kind-error.png"
+ ],
+ [
+  "F-S21 the name drawn the same for every kind",
+  "phone-webkit",
+  "the name's place in the head across kinds",
+  "the same x and offset for pilot, WSO, ground crew, each CAT (lesson 9)",
+  "{\"pilot IP (Cinch)\":[46.7,10],\"WSO IW (Basher)\":[46.7,10],\"CAT IR (Reaper)\":[46.7,10],\"CAT A (Drifter)\":[46.7,10],\"CAT C (Ridge)\":[46.7,10],\"has a sign-in (Ranger)\":[46.7,10]}",
+  "PASS",
+  ""
+ ]
+]

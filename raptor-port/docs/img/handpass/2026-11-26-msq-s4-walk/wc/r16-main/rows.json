@@ -1,0 +1,20 @@
+[
+ [
+  "F-S17(3) on main: the button and the refusal",
+  "desk-chromium-main",
+  "Ridge (two stints) 15 Dec → ⋯ → Post out, PO from 27 Nov, Post out",
+  "as on main today — compare the button's place before / after the reason",
+  "button before 453,841 87x32 | after the date 453,841 87x32 | after the press 453,793 87x32 | reason [\"post-err: Ridge was posted out on 26 Nov 26 and came back on 7 Dec 26 — an earlier stint's dates can't be moved here.\"]",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r16-main/001-desk-chromium-main-r16-before.png ; img/handpass/2026-11-26-msq-s4-walk/wc/r16-main/002-desk-chromium-main-r16-refused.png"
+ ],
+ [
+  "A7/F-S13 on main: chips as the amber line comes and goes",
+  "desk-chromium-main",
+  "Saber the last admin of 142 → today → ⋯ → Post out; Overseas, SANS, none, Delete",
+  "as on main today — compare the chips' places",
+  "opened: chips 539,733 109x30 | 654,733 59x30 | 719,733 54x30 button 453,841 87x32 amber [\"po-blocked: Saber is 142's last admin. The posting waits until 142 has another admin.\"] ## SANS: chips 539,764 97x30 | 642,764 59x30 | 707,764 67x30 button 453,841 87x32 amber [] ## none: chips 539,764 97x30 | 642,764 59x30 | 707,764 54x30 button 453,841 87x32 amber [] ## Delete: chips 539,733 97x30 | 642,733 71x30 | 719,733 54x30 button 453,841 87x32 amber [\"po-blocked: Saber is a master admin, so he can't be deleted\"]",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r16-main/003-desk-chromium-main-r16-hold-overseas.png ; img/handpass/2026-11-26-msq-s4-walk/wc/r16-main/004-desk-chromium-main-r16-hold-sans.png"
+ ]
+]
