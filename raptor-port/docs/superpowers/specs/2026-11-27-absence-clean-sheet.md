@@ -40,10 +40,11 @@ scheduler chooses away or attending, or rejects it.
 2. What you may do follows who you are and what the entry is, never the page.
 3. **A bid becomes leave by changing state — the same entry before and after**, charged once, its request and
    decision kept; a decision may cover only part of a bid's dates, as today.
-4. **Leave on a date open for bidding is a bid; on any other date it is recorded as approved and stands.** A member
-   has one Leave action and the date decides (no second button beside Bid while bidding is open); an admin may record
-   approved leave on any date; a range crossing open and closed dates shows which part needs approval. (His to rule —
-   question F2; D1166 ruled closed dates only.)
+4. **NOT TAKEN — his D2882 (28 Nov 26, F2 "no"): on a date open for bidding a member may bid OR file leave that
+   stands at once, as today.** The readers' proposal, kept for the record: leave on a date open for bidding is a bid;
+   on any other date it is recorded as approved and stands; one Leave action, the date deciding (no second button
+   beside Bid while bidding is open); an admin may record approved leave on any date; a range crossing open and closed
+   dates shows which part needs approval. The open-date window therefore offers both — its look drawn before any build.
 5. **A group is one entry.** A change is for everyone unless **Change · [6 pax] · [Cutter]** is pressed (D2783,
    D2784), on every page; it takes him out at the press, his paper going with him, one Undo putting him back.
    **Grabbing one man's box of a group** (a drag of its body or edge) asks the same question at the box, every time,
