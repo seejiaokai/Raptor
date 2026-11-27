@@ -1,0 +1,5 @@
+msq-s4w-lib v1 who=wc run=r20 port=4755
+wc-r20 v1
+ROW RECORD | F-S11 a man added today, posted out from today | desk-chromium | Admin → Users: Add Zednew (post-in date left at today); the war: his 26 Nov → ⋯ → Post out, Overseas, Post out | saw: add: Zednew added to the roster — set flight and quals on the Quals page | before: bid-picker: Zednew Post out ✕ POSTING ✓ Overseas Sqn Delete SANS PO FROM Thu 26 Nov 26 ▾ On 26 Nov: archived. Post out | after: bid-picker: Zednew Post out ✕ POSTING ✓ Overseas Sqn Delete SANS PO FROM Thu 26 Nov 26 ▾ On 26 Nov: archived. Post out Posted in on 26 Nov 26 — the post-out has to be after that day. | toas
+errors []
+DONE 0 PASS 0 FAIL 1 OTHER of 1

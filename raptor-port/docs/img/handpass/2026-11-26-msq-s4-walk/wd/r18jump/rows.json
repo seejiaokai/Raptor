@@ -1,0 +1,38 @@
+[
+ [
+  "lesson 27 chips jump when Delete is chosen",
+  "desk-chromium",
+  "Saber (master admin) 7 Dec → ⋯ → Post out → Delete",
+  "the chips stay under the hand (standing rule 2 Sep 26; lesson 27); main for comparison",
+  "before {\"overseas\":684.3,\"delete\":684.3,\"button\":841,\"sheetTop\":604.3} after {\"overseas\":657.7,\"delete\":657.7,\"button\":841,\"sheetTop\":577.7}; Overseas chip moved -26.6px",
+  "FAIL",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r18jump/001-desk-chromium-jump-before.png ; img/handpass/2026-11-26-msq-s4-walk/wd/r18jump/002-desk-chromium-jump-after-delete.png"
+ ],
+ [
+  "lesson 27 chips jump when Delete is chosen",
+  "desk-chromium-main",
+  "Saber (master admin) 7 Dec → ⋯ → Post out → Delete",
+  "the chips stay under the hand (standing rule 2 Sep 26; lesson 27); main for comparison",
+  "before {\"overseas\":764.3,\"delete\":764.3,\"button\":841,\"sheetTop\":482.3} after {\"overseas\":732.7,\"delete\":732.7,\"button\":841,\"sheetTop\":450.7}; Overseas chip moved -31.6px",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r18jump/003-desk-chromium-main-jump-before.png ; img/handpass/2026-11-26-msq-s4-walk/wd/r18jump/004-desk-chromium-main-jump-after-delete.png"
+ ],
+ [
+  "lesson 27 chips jump when Delete is chosen",
+  "phone-chromium",
+  "Cinch 7 Dec → ⋯ → Post out → Delete",
+  "the chips stay under the hand (standing rule 2 Sep 26; lesson 27); main for comparison",
+  "before {\"overseas\":622.3,\"delete\":622.3,\"button\":815,\"sheetTop\":542.3} after {\"overseas\":605.7,\"delete\":605.7,\"button\":815,\"sheetTop\":525.7}; Overseas chip moved -16.6px",
+  "FAIL",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r18jump/005-phone-chromium-jump-before.png ; img/handpass/2026-11-26-msq-s4-walk/wd/r18jump/006-phone-chromium-jump-after-delete.png"
+ ],
+ [
+  "lesson 27 chips jump when Delete is chosen",
+  "phone-chromium-main",
+  "Cinch 7 Dec → ⋯ → Post out → Delete",
+  "the chips stay under the hand (standing rule 2 Sep 26; lesson 27); main for comparison",
+  "before {\"overseas\":702.3,\"delete\":702.3,\"button\":815,\"sheetTop\":420.3} after {\"overseas\":685.7,\"delete\":685.7,\"button\":815,\"sheetTop\":403.7}; Overseas chip moved -16.6px",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r18jump/007-phone-chromium-main-jump-before.png ; img/handpass/2026-11-26-msq-s4-walk/wd/r18jump/008-phone-chromium-main-jump-after-delete.png"
+ ]
+]

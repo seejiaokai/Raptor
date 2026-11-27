@@ -1,0 +1,64 @@
+msq-s4w-lib v1 who=wa run=sD1 port=4753
+wa-lib v1
+wa-sD v1
+ROW PASS | F-S2(1) | phone-chromium | Nomad 8–10 Dec low on screen; the range gesture (slow) | saw: {"bid":null,"postout":null,"postin":null,"select":595,"poForm":null,"confirm":null,"leaveGroup":true,"card":null,"head":"Nomad 8–10 Dec · 3 days Auto-approve ✕","gone":0}
+ROW PASS | F-S2(2) | phone-chromium | ⋯ → Post out in the drag sheet | saw: scrollY 0→228→280; first day 517-535 hit=true at=cell-pike-2026-12-08; last day hit=true; sheetTop 542; date "Tue 8 Dec 26 ▾"; sheet: Nomad Post out ✕ POSTING ✓ Overseas Sqn Delete SANS PO FROM Tue 8 Dec 26 ▾ On 8 Dec: archived. Post out
+ROW RECORD | F-S2(3) | phone-chromium | press 9 Dec (a day of the range) | saw: {"bid":595,"postout":null,"postin":null,"select":null,"poForm":null,"confirm":null,"leaveGroup":true,"card":null,"head":"Nomad Wed 9 Dec Auto-approve ✕","gone":0} | Nomad Wed 9 Dec Auto-approve ✕ No manning row turns amber or red till 9 Dec Docu
+ROW RECORD | F-S2(4) | phone-chromium | press 9 Dec (a day of the range) | saw: {"bid":null,"postout":null,"postin":null,"select":null,"poForm":null,"confirm":null,"leaveGroup":false,"card":null,"head":null,"gone":0} | 
+ROW PASS | F-S2(1) | phone-chromium | Nomad 8–10 Dec low on screen; the range gesture (ordinary) | saw: {"bid":null,"postout":null,"postin":null,"select":595,"poForm":null,"confirm":null,"leaveGroup":true,"card":null,"head":"Nomad 8–10 Dec · 3 days Auto-approve ✕","gone":0}
+ROW PASS | F-S2(2) | phone-chromium | ⋯ → Post out in the drag sheet | saw: scrollY 0→228→280; first day 517-535 hit=true at=cell-pike-2026-12-08; last day hit=true; sheetTop 542; date "Tue 8 Dec 26 ▾"; sheet: Nomad Post out ✕ POSTING ✓ Overseas Sqn Delete SANS PO FROM Tue 8 Dec 26 ▾ On 8 Dec: archived. Post out
+ROW RECORD | F-S2(3) | phone-chromium | press 9 Dec (a day of the range) | saw: {"bid":595,"postout":null,"postin":null,"select":null,"poForm":null,"confirm":null,"leaveGroup":true,"card":null,"head":"Nomad Wed 9 Dec Auto-approve ✕","gone":0} | Nomad Wed 9 Dec Auto-approve ✕ No manning row turns amber or red till 9 Dec Docu
+ROW RECORD | F-S2(4) | phone-chromium | press 9 Dec (a day of the range) | saw: {"bid":null,"postout":null,"postin":null,"select":null,"poForm":null,"confirm":null,"leaveGroup":false,"card":null,"head":null,"gone":0} | 
+phone-chromium drag 200,300->750 scrollY 299 -> 0
+phone-chromium drag 200,600->495.5 scrollY 0 -> 90
+ROW RECORD | A4 mark on the tapped gone day | phone-chromium | Outlaw posted out from 8 Dec; tap his gone 10 Dec (lower third) | saw: sheet {"bid":null,"postout":542,"postin":null,"select":null,"poForm":602,"confirm":null,"leaveGroup":false,"card":null,"head":"Outlaw Post out ✕","gone":24}; day 516-534 above=true; mark {"cls":"gone act hasc","outline":"none rgb(241, 244, 247)","shadow":"none","after":"none rgb(241, 244, 247) none"}
+phone-chromium drag 200,750->150 scrollY 0 -> 585
+phone-chromium drag 200,750->150 scrollY 585 -> 629
+phone-chromium drag 200,750->150 scrollY 629 -> 629
+phone-chromium drag 200,750->150 scrollY 629 -> 629
+phone-chromium drag 200,750->150 scrollY 629 -> 629
+phone-chromium drag 200,750->150 scrollY 629 -> 629
+ROW FAIL | F-S3(1) | phone-chromium | page at its foot (scrollY 629); Widget (last row) 10 Dec tapped | saw: cell 715-733 sheetTop 595 hit=false at=span-range scrollY 629
+ROW RECORD | F-S3(2) | phone-chromium | ⋯ → Post out on the last row | saw: cell 715-733 sheetTop 578 hit=false at=po-fields scrollY 629; chips: Widget Post out ✕ POSTING ✓ Overseas Sqn Delete PO FROM Thu 10 Dec 26 ▾ On 10 Dec: archive
+ROW RECORD | F-S3(3)(4) | phone-chromium | press the day | saw: press: [data-testid="cell-gizmo-2026-12-10"] is covered at its centre by po-fields
+phone-chromium drag 200,500->100 scrollY 629 -> 629
+phone-chromium drag 200,500->100 scrollY 629 -> 629
+phone-chromium drag 200,150->500 scrollY 629 -> 294
+ROW PASS | F-S3(5) | phone-chromium | posting open; flick hard to the foot, then back (lesson 24); picture img/handpass/2026-11-26-msq-s4-walk/wa/sD1/021-phone-chromium-S3-flick-foot.png | saw: {"before":{"y":629,"sheet":{"x":12,"y":578,"w":378,"h":282},"head":{"x":11,"y":49,"w":380,"h":44}},"after":{"y":294,"sheet":{"x":12,"y":578,"w":378,"h":282},"head":{"x":11,"y":49,"w":380,"h":44},"st":{"bid":578,"postout":null,"postin":null,"select":null,"poForm":638,"confirm":815,"leaveGroup":false,"card":null,"head":"Widget Post out ✕","gone":0}}}
+phone-chromium drag 200,600->450 scrollY 0 -> 135
+ROW PASS | F-S39 pinch out behind | phone-chromium | posting open part-way down; two fingers spread over the grid, drifting 30px (mid img/handpass/2026-11-26-msq-s4-walk/wa/sD1/023-phone-chromium-S39-pinch-out-mid.png) | saw: cell width 22→37; sheet {"x":12,"y":542,"w":378,"h":318}→{"x":12,"y":542,"w":378,"h":318}; {"bid":542,"postout":null,"postin":null,"select":null,"poForm":602,"confirm":815,"leaveGroup":false,"card":null,"head":"Cinch Post out ✕","gone":0}
+ROW PASS | F-S39 pinch in behind | phone-chromium | fingers together over the grid (mid img/handpass/2026-11-26-msq-s4-walk/wa/sD1/025-phone-chromium-S39-pinch-in-mid.png) | saw: cell width 37→17.2; sheet {"x":12,"y":542,"w":378,"h":318}
+ROW PASS | F-S39 pinch on sheet | phone-chromium | two fingers spread ON the sheet (mid img/handpass/2026-11-26-msq-s4-walk/wa/sD1/027-phone-chromium-S39-pinch-on-sheet-mid.png) | saw: cell width 17.2→37; sheet {"x":12,"y":542,"w":378,"h":318}; page scale 1; sheet fill rgb(20, 24, 29) op 1
+ROW RECORD | F-S39 sideways | phone-chromium | card up; the phone turned sideways (874×402) | saw: card {"x":177,"y":749,"w":62,"h":44}→{"x":322,"y":285,"w":62,"h":36}; button {"x":170,"y":343,"w":87,"h":32}; chip tops 186,186,186
+ROW RECORD | F-S39 upright again | phone-chromium | turned back upright | saw: card {"x":177,"y":749,"w":62,"h":44}; button {"x":25,"y":815,"w":87,"h":32}; chip tops 606,606,642
+phone-chromium drag 200,700->150 scrollY 299 -> 299
+phone-chromium drag 200,700->150 scrollY 299 -> 299
+phone-chromium drag 200,150->750 scrollY 299 -> 0
+phone-chromium drag 200,150->750 scrollY 0 -> 0
+phone-chromium drag 200,150->750 scrollY 0 -> 0
+phone-chromium drag 200,750->100 scrollY 0 -> 0
+phone-chromium drag 200,750->100 scrollY 0 -> 0
+phone-chromium drag 200,750->100 scrollY 0 -> 0
+ROW PASS | F-S40 flicks | phone-chromium | posting open (scrollY 0→299 on opening); flicked to the top (img/handpass/2026-11-26-msq-s4-walk/wa/sD1/031-phone-chromium-S40-flicked-top.png) and the foot (img/handpass/2026-11-26-msq-s4-walk/wa/sD1/032-phone-chromium-S40-flicked-foot.png) | saw: scrollY top 0, foot 0; sheet {"x":12,"y":542,"w":378,"h":318}→{"x":12,"y":542,"w":378,"h":318}; {"bid":542,"postout":null,"postin":null,"select":null,"poForm":602,"confirm":815,"leaveGroup":false,"card":null,"head":"Outlaw Post out ✕","gone":0}
+phone-chromium drag 200,600->300 scrollY 0 -> 0
+phone-chromium drag 200,600->300 scrollY 0 -> 0
+phone-chromium drag 200,600->300 scrollY 0 -> 0
+phone-chromium drag 200,600->300 scrollY 0 -> 0
+phone-chromium drag 200,600->300 scrollY 0 -> 0
+phone-chromium drag 200,600->300 scrollY 0 -> 0
+phone-chromium drag 200,600->300 scrollY 0 -> 0
+phone-chromium drag 200,600->300 scrollY 0 -> 0
+phone-chromium S40 ERROR bringTo: could not bring [data-testid="cell-casper-2026-12-09"] into 200-512 last {"x":266,"y":815,"w":20,"h":19}
+phone-chromium drag 200,700->450 scrollY 0 -> 235
+ROW RECORD | A18 press after a flick | phone-chromium | a quick flick with no rest, then a tap on a day 60ms after the lift | saw: {"bid":null,"postout":null,"postin":null,"select":null,"poForm":null,"confirm":null,"leaveGroup":false,"card":null,"head":null,"gone":0}
+phone-chromium drag 200,300->750 scrollY 400 -> 0
+ROW PASS | A18 year end | phone-chromium | Cinch 31 Dec (the period's last day) → ⋯ Post out | saw: {"cellTop":369,"cellBot":387,"hit":true,"at":"cell-snap-2026-12-31","sheetTop":542,"sheetShown":true,"above":true,"inView":true,"scrollY":0} | Cinch Post out ✕ POSTING ✓ Overseas Sqn Delete SANS PO FROM Thu 31 Dec 26 ▾ On 31 Dec: archived. Pos
+ROW PASS | A18 year start | phone-chromium | Diesel 1 Jan (low row, the period's first day, in the past) → ⋯ Post out | saw: {"cellTop":517,"cellBot":535,"hit":true,"at":"cell-fantom-2026-01-01","sheetTop":542,"sheetShown":true,"above":true,"inView":true,"scrollY":334} | Diesel Post out ✕ POSTING ✓ Overseas Sqn Delete SANS PO FROM Thu 1 Jan 26 ▾ On 1 Jan: archived. Post out
+ROW PASS | F-S2(1) | phone-chromium-main | Nomad 8–10 Dec low on screen; the range gesture (ordinary) | saw: {"bid":null,"postout":null,"postin":null,"select":595,"poForm":null,"confirm":null,"leaveGroup":true,"card":null,"head":"Nomad 8–10 Dec · 3 days Auto-approve ✕","gone":0}
+ROW RECORD | F-S2(2) | phone-chromium-main | ⋯ → Post out in the drag sheet | saw: scrollY 0→0→0; first day 797-815 hit=false at=bidsheet-row postout; last day hit=false; sheetTop 420; date "Tue 8 Dec 26 ▾"; sheet: Nomad 8–10 Dec · 3 days Auto-approve ✕ No manning row turns amber or red till 10 Dec Document Whole day AM PM LL 11 OL 1
+ROW RECORD | F-S2(3) | phone-chromium-main | press 9 Dec (a day of the range) | saw: not pressable: press: [data-testid="cell-pike-2026-12-09"] is covered at its centre by bidsheet-row postout
+ROW RECORD | F-S2(4) | phone-chromium-main | press 9 Dec (a day of the range) | saw: not pressable: press: [data-testid="cell-pike-2026-12-09"] is covered at its centre by bidsheet-row postout
+phone-chromium-main drag 200,300->750 scrollY 246 -> 0
+phone-chromium-main drag 200,600->495.5 scrollY 0 -> 90
+ROW RECORD | A4 mark on the tapped gone day | phone-chromium-main | Outlaw posted out from 8 Dec; tap his gone 10 Dec (lower third) | saw: sheet {"bid":null,"postout":544,"postin":null,"select":null,"poForm":null,"confirm":null,"leaveGroup":false,"card":null,"head":"Outlaw Thu 10 Dec ✕","gone":24}; day 725-743 above=false; mark {"cls":"gone act hasc","outline":"none rgb(241, 244, 247)","shadow":"none","after":"none rgb(241, 244, 247) none"}
+wa-sD done
