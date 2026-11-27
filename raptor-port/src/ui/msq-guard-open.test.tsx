@@ -22,7 +22,6 @@ import { homeOn, todayIso } from '../state/units'
 import { CURPAGE, setPage, setInpView, setInpMode, setCalMonth, setAvailWin, AVAILWIN, CHGWIN, setChgWin, setBoardDay, setOilWait } from '../state/view'
 import { setInpEdit, setDayPop, setWeekCal, setAirKey, setDocView, setDrawer, setTplEdit, setWaveEdit, setDayTplEdit, setDraftsEdit, setDaysWin, setInpSet, setSansSet, setOilList, setInsights, INSIGHTS, setMedMove, setBellList } from './pops'
 import { openChanges } from './changesopen'
-import { closeScheduler } from './board'
 import { commitChipMove } from './caldrag'
 import { openDayPanel, dayPanelDate, closeDayPanel } from '../leavewar/ui/daypanelopen'
 import { setStorageKept } from './savestatus-source'
@@ -51,7 +50,7 @@ import { endTrackerSession, trackerWindowsOpen, trackerAsking } from '../tracker
 import { getPeople } from '../tracker/people.js'
 import { pageOffered, setTrkUnitProbe } from '../state/perms'
 import { trackerCover } from '../state/typing-hold'
-import { rawEnter, rawRole } from '../test-support/raw-entry'
+import { rawEnter } from '../test-support/raw-entry'
 import { rowReachable } from './guard'
 import { setStorageMaker, storageUnit } from '../tracker/storage.js'
 import { Whiteboard } from '../storage/whiteboard'
@@ -750,55 +749,7 @@ describe('A9 — nothing stale after a sign-out or an unmount', () => {
   })
 })
 
-describe('A10 — counted means drawn', () => {
-  /* the changes he did not make that the test world can make, each from a fresh open */
-  const CHANGES: Record<string, { setup?: () => void; onPick?: string; change: () => Promise<void> }> = {
-    'his right in the squadron lowered to View': {
-      onPick: 'u149',
-      change: async () => {
-        signInAs('saber')
-        expect(saveAccess(ACCT.hunter, { grants: { u149: 'view' } })).toBeNull()
-        signInAs('hunter')
-        await doing(() => {})
-      },
-    },
-    /* (step K7: the role moved with nothing asked — the stand-in for his account's role changed while he is signed in
-       (state/store.ts refreshAccess), never the view switch's press — so through the test kit's raw role change, which
-       tells the entry checker it is made on purpose) */
-    'the role in force changed': { change: async () => { await doing(() => { rawRole('main') }) } },
-    'his move at midnight': {
-      setup: () => { signInAs('saber'); expect(moveMan(PID.hunter, third.u150).ok).toBe(true) },
-      change: async () => { await act(async () => { pastMidnight() }); await settle() },
-    },
-    'the page changed by a landing': { change: async () => { await doing(() => setPage(CURPAGE === 'inputs' ? 'viewsched' : 'inputs')) } },
-    'the board closed under its dialog': { change: async () => { await doing(() => closeScheduler()) } },
-  }
-  const counting = GUARD_ROWS.filter(rowRefuses)
-  for (const r of counting) {
-    for (const [what, c] of Object.entries(CHANGES)) {
-      it(`${r.id}, then ${what}: not named, or its box is on the page`, async () => {
-        c.setup?.()
-        await app('hunter')
-        if (c.onPick) await topPick(c.onPick)
-        await OPEN[r.id]!.open()
-        expect(named(), `the premise: ${r.id} open`).toBe(r.id)
-        expect(r.counts === 'unsaved' || drawnBox(r.sel), `the premise: ${r.id}'s box ${r.sel} is drawn`).toBe(true)
-        await c.change()
-        const still = whatIsOpen()?.row.id === r.id || r.open()
-        if (still && r.counts !== 'unsaved') expect(drawnBox(r.sel), `${r.id} still counts after "${what}" — its box ${r.sel} must be on the page`).toBe(true)
-      })
-    }
-  }
-  it('the worked case: Duty templates under a lowered Plan — the flag still set, no dialog, nothing open', async () => {
-    await app('hunter')
-    await topPick('u149')
-    await OPEN.dutytpl!.open()
-    expect(named()).toBe('dutytpl')
-    await CHANGES['his right in the squadron lowered to View']!.change()
-    expect(drawnBox('#tplModal'), 'no dialog').toBe(false)
-    expect(whatIsOpen()).toBeNull()
-  })
-})
+/* A10 — counted means drawn: moved whole on 27 Nov 26 to five files, one per change he did not make — ui/msq-guard-drawn-{rights,midnight,role,landing,board}.test.tsx, through test-support/msq-guard-a10.ts (the block was three quarters of this file's time, and took its GitHub share past the 20-minute limit) */
 
 describe('A14 (pin — no door asks the guard yet) — the guard is not asked on a change he did not make', () => {
   /* (re-pointed at K4: the set-up's pick of 149 is his own press, which since K4 asks the guard as it should — so the spy
