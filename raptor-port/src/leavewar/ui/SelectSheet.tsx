@@ -483,7 +483,7 @@ export function SelectSheet({
                 raised them by its own height and the second tap it asks for missed (e2e/leavewar.spec.ts, "stays put"). */}
             {note && noteAt === 'leave' && <span className="note warn" data-testid="sel-note">{note}</span>}
             <LeaveButtons portion={portion} onPick={fill} filled={approving} testPrefix="sel"
-              figure={wouldLeave && nPeople === 1 ? code => wouldLeave(sel.people[0]!, sel.cells.map(c => c.date), code)?.after ?? null : undefined} />
+              figure={wouldLeave && nPeople === 1 ? code => { const r = wouldLeave(sel.people[0]!, sel.cells.map(c => c.date), code); return r ? (r.notTyped ? 'nt' : r.after) : null } : undefined} />
           </div>
 
           {/* No Medical row: medical is member-filed only (owner, 13 Sep 26) —

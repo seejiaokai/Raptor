@@ -18,6 +18,7 @@ import { HOOKS } from '../engine/hooks'
 import { dayApproved } from '../engine/publish'
 import { dayDrafts, curDraftId, draftRename, draftDelete, MAX_DRAFT_NAME } from '../engine/drafts'
 import { switchDraft } from './board'
+import { carryTimeRed } from './timegap-paint'
 import { DRAFTSEDIT, setDraftsEdit, OILLIST } from './pops'
 import { useVersion } from './useStore'
 import { clickedOutside } from './outside'
@@ -132,7 +133,7 @@ export function DraftsModal() {
               /* [ARCH-STACK] follow-up #1 (row F): route the delete through a
                  sched.draft.delete command (was HOOKS.histPush direct). The delete
                  + histPush run inside; the UI updates below stay outside. */
-              const tid = t.id
+              const tid = t.id, liveWas = curDraftId(di)
               if (!schedWriteValue(SCHED_TYPES.draftDelete, () => {
                 const ok = draftDelete(di, tid)
                 /* deletion rides the undo stack like the rename above; any frozen
@@ -143,6 +144,9 @@ export function DraftsModal() {
                 if (ok) HOOKS.histPush()
                 return ok
               })) return
+              /* [END-TIME-GUARD] down to one plan, the survivor is the plain working copy again: its red goes with it
+                 (D2853 — ui/timegap-paint.ts carryTimeRed) */
+              if (liveWas != null && curDraftId(di) == null) carryTimeRed(di, String(liveWas), '')
               const name = t.name
               setSel(dayDrafts(di)[0] ? dayDrafts(di)[0].id : null)
               setNm(null)

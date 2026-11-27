@@ -5226,7 +5226,7 @@ function outsideSource(wars: readonly MergedWar[]): LeaveSource {
  *  store would write count (`cellProblem` refuses the rest). null for leave that spends no balance. The sheets ask when
  *  `after` is below zero AND below `before` (`belowzero.ts goesBelow`) — a fill that spends nothing never asks, even of a
  *  man already in the red (Astra's final read, F4). */
-export function balanceAfterFill(personId: string, dates: readonly string[], code: string): { counter: CounterName; before: number; after: number } | null {
+export function balanceAfterFill(personId: string, dates: readonly string[], code: string): { counter: CounterName; before: number; after: number; notTyped?: true } | null {
   const spends = leaveCodeOf(code)?.spends
   if (!spends) return null
   const counter = spends.counter
@@ -5239,11 +5239,16 @@ export function balanceAfterFill(personId: string, dates: readonly string[], cod
   }
   const kind = BAL_KINDS.find(k => KIND_COUNTER[k] === counter)
   if (!kind) return null
-  const before = leaveFiguresOf(personId).kinds[kind].war
-  if (!writes.length) return { counter, before, after: before }
+  const now = leaveFiguresOf(personId).kinds[kind]
+  const before = now.war
+  /* A BALANCE NEVER TYPED (D2746, question 11 A): the below-zero question waits until there is a figure. The fill's figures
+     are still worked out from 0 as before (the leave buttons' "left"); `notTyped` tells the asking doors (belowzero.ts
+     goesBelow) not to ask */
+  const nt = now.notTyped ? { notTyped: true as const } : {}
+  if (!writes.length) return { counter, before, after: before, ...nt }
   const cell = parseCell(code)
   const after = leaveFiguresOf(personId, { dates: writes, code: cell?.type ?? code, portion: cell?.portion ?? 'full' }).kinds[kind].war
-  return { counter, before, after }
+  return { counter, before, after, ...nt }
 }
 
 /** WHAT A BID WOULD DO TO MANNING — the bid windows' day line (D1144, D1213; M3): each day of `dates` the store would
@@ -5530,7 +5535,9 @@ export function balancesLocked(): boolean { return state.balLock }
  *  world and Approvals' DAYS (approvals.ts ownDays) read this one list, so the two never part (the code read's 5). */
 export function peopleCountedFor(pid: string): Person[] {
   const hidden = HIDDEN_IDENTITY && !state.people.some(p => p.id === pid) ? HIDDEN_IDENTITY(pid) : null
-  return hidden ? [...state.people, hidden] : state.people
+  /* …with HIS OWN stored posting laid on (withStored): the bare projection has no post-in date, so a leave before it came
+     off a hidden man's balance (D2747 — both scenario designers of [LW-POSTIN-BALANCE], 27 Nov 26) */
+  return hidden ? [...state.people, withStored(hidden)] : state.people
 }
 function leaveWorld(pid: string): LeaveYearWorld {
   return {
@@ -5545,7 +5552,8 @@ const FIG_CACHE = new Map<string, PersonFigures>()
 let FIG_KEY: unknown[] = []
 function figKey(): unknown[] {
   const st = getState()
-  return [st.wars, absenceVersion(), state.balances, state.gradeHist, state.grades, state.ledger, state.openings, state.people, state.eventDefs, memberToday()]
+  /* …and the stored postings: a hidden man's post-in date is read from them (peopleCountedFor — D2747) */
+  return [st.wars, absenceVersion(), state.balances, state.gradeHist, state.grades, state.ledger, state.openings, state.people, state.postOuts, state.eventDefs, memberToday()]
 }
 /** EVERY FIGURE OF ONE PERSON (engine/leaveyear.ts personFigures) — the person window, the Balances page, the grid's
  *  figure beside his name, My leave, Approvals' LVE BAL and the bid windows all read this one answer. */
@@ -5602,7 +5610,9 @@ export function setTypedBalance(pid: string, kind: BalKind, amount: number, cf?:
      screens' calls stand */
   void from
   const was = leaveFiguresOf(pid).kinds[kind]
-  const note = JSON.stringify({ k: kind, from: { amount: was.app, ...(kind === 'LVE' ? { cf: was.cf } : {}) }, to: { amount, ...(lveCf !== undefined ? { cf: lveCf } : {}) } })
+  /* a balance never typed had no figure to come from (D2746 — it read "Not typed", never 0): its first figure's history line
+     reads "LVE balance → 24", the line the history already writes when there is no "from" (state/changelines.ts) */
+  const note = JSON.stringify({ k: kind, ...(was.notTyped ? {} : { from: { amount: was.app, ...(kind === 'LVE' ? { cf: was.cf } : {}) } }), to: { amount, ...(lveCf !== undefined ? { cf: lveCf } : {}) } })
   gesture('lw.balance', () => {
     state = withCurrent({ ...state, balances: { ...state.balances, [pid]: { ...state.balances[pid], [kind]: rec } } })
     persistNotify()

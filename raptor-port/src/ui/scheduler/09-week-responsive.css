@@ -251,6 +251,11 @@
   .plist .pl-row>.nm{grid-column:1;grid-row:1/span 2}
   .plist .pl-row .t.t-s{grid-column:2;grid-row:1}
   .plist .pl-row .t.t-e{grid-column:2;grid-row:2;padding-top:0}
+  /* [END-TIME-GUARD] AN OUTLINED END KEEPS ITS START'S HEIGHT (the walk's C58; his lessons 42, 43 — a box and its pair one
+     height): stacked under START, END has no top padding, so its outline drew 11px against START's 15px, a squashed pill.
+     While outlined it takes START's 4px back above its text, pulled up by the same 4px, so nothing in the row moves. The
+     Common Programme's END (its third cell) the same. */
+  #eWeek .plist .pl-row .t.t-e.tg-miss,#eWeek .allhands .ah-row>.tg-miss:nth-child(3){padding-top:4px;margin-top:-4px}
   .plist .pl-row .t.allday{grid-column:2;grid-row:1/span 2}
   /* THE ONE ROW OF A SHARED INPUT KEEPS ITS TWO TIMES TOGETHER AT ITS TOP (owner D743 — the approved picture 2;
      [GROUP-INPUT-ONE-ROW]). The start sits in the row's first line and the end in its second; with four pucks stacked

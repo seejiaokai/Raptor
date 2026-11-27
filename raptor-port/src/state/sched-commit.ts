@@ -38,7 +38,8 @@ import { DAYS } from '../engine/data'
 import { INPUTS, mintInpIds, namedOf } from '../engine/inputs'
 import { reconcileDayFiling } from '../engine/slots'
 import { ensureRowIds, rowsOf } from '../engine/rowids'
-import { SCHED, setDayApproved, publishALDay, unpublishDay, dayCurVer, signClear, signClearPlans } from '../engine/publish'
+import { SCHED, setDayApproved, publishALDay, unpublishDay, dayCurVer, signClear, signClearPlans, protectedWeek, dayApproved, dayHasChanges } from '../engine/publish'
+import { refuseForTime } from './timeguard'
 import { parseVerId } from '../engine/verid'
 import { splitParts, canonicalBook, issuedBook, parseVerN, dayIndexOf, BOOK_BY_KEY, BOOK_BY_DAY, type WeekParts } from './weekrows'
 import { mintOrd, sortByOrd } from '../command/ord'
@@ -803,13 +804,23 @@ function commitPublish(type: string, fn: () => void, di: number): CommitResult {
 /* first-publish a day (stamps its frozen Original — a sched.issuance record, sequence 0, + the
    publish boundary). Routed additively: the engine setDayApproved runs unchanged
    inside the command. */
+/* [END-TIME-GUARD] (his D2612, D2855 E1): a day is never published while an item on it is missing a time — refused here,
+   before the command, so nothing is minted and no publish gate runs (state/timeguard.ts says the note). Asked only where
+   the engine would publish (the fresh Opus red-team read, 2d): the read-only quarantine keeps the first word, and a press
+   on a day already published stays the engine's no-op. Before the signature check, so the greyed button's press says
+   the time (D2855 E1). The engine's own publish is untouched — a verbatim port the reference parity pins. */
+const TIME_REFUSED: CommitResult = { ok: false, reason: 'refused', message: 'a time is missing' }
 export function commitSetDayApproved(di: number, on: any): CommitResult {
+  if (on && !protectedWeek() && !dayApproved(di) && refuseForTime(di, 'publish')) return TIME_REFUSED
   return commitPublish(SCHED_TYPES.approve, () => setDayApproved(di, on), di)
 }
 
 /* publish one day's changes as its next per-day AL (a new sched.issuance record +
    the publish boundary). */
 export function commitPublishALDay(di: number): CommitResult {
+  /* [END-TIME-GUARD] (D2612): the same refusal, asked only where publishALDay would issue — the quarantine, "…is still a
+     draft" and "No changes to publish" keep their own words (2d); a correction reissues with no change (GU5-001) */
+  if (!protectedWeek() && dayApproved(di) && (dayHasChanges(di) || !!(SCHED.correcting && SCHED.correcting[di])) && refuseForTime(di, 'publishAL')) return TIME_REFUSED
   /* the issue step freezes EVERY dotted mark on the day as "changed at ALn" (alIssue), while its
      item count comes from the real difference — so a mark left on a detail that is back at the
      issued value went into the published record as a change AL1 never made ([HUMAN-RETEST] walk
