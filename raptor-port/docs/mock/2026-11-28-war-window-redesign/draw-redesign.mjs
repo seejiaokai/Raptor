@@ -13,6 +13,11 @@
 //   B  "F6 kept whole, grouped by owner": every part of F6 stays in view; the entry's card, its Remarks row, its
 //      Duration and the leave buttons (lit on its kind) share one raised surface, so the form reads as the entry's;
 //      CSE · OD · Grant OIL · ⋯ stand apart below it as the way to add another.
+//   A2 (round 2 — his D2884, lesson 170: "it doesnt seem intuitive to click on the LL to change the leave"): A, but a
+//      LEAVE's card also holds Duration and the eight leave buttons, lit on its kind, under its Remarks row — one tap
+//      on another re-types it, as today (D1467), and the buttons plainly belong to that leave. A card that is not
+//      leave (an OIL award here) has none. A group's card: the Change line heads the same rows, "3 pax" lit — the
+//      buttons under it change the leave for everyone; "Cutter" takes him out first (D2783, D2784).
 // Approve · Refuse wear D2881's look in both (tick / cross at rest; decided: solid + the cyan ring, the other grey).
 // New or moved parts are outlined dashed yellow and numbered; each frame is also saved clean (…-clean) — no outline.
 // Run from raptor-port/ (the main folder's, for playwright), one size a process, against the served build:
@@ -27,7 +32,7 @@ const { PW, PHONE, sleep, tap, reach, closeAll, CUT } = R
 const arg = (k, d) => { const i = process.argv.indexOf('--' + k); return i > 0 ? process.argv[i + 1] : d }
 const IMG = path.resolve(arg('img', path.join(HERE, 'img'))), VW = +arg('vw', 402)
 mkdirSync(IMG, { recursive: true })
-const VERSION = 'draw-redesign v1.0 (28 Nov 26, chat 195)'
+const VERSION = 'draw-redesign v2.0 (28 Nov 26, chat 195 — round 2 adds A2)'
 console.log(VERSION, '| pictures to', IMG, '| phone width', VW)
 
 const BASE = '2026-12-31'
@@ -44,13 +49,13 @@ const FRAMES = [
   { id: 's01-inputs-ll', iso: '2026-12-09', date: 'Wed 9 Dec', lit: 'LL',
     cards: [{ box: 'c k-ll s-a whole', t: 'LL', main: 'Approved · Whole day', sub: PLACED('Cutter'), acts: ['approved', 'refuseOff', 'move', 'del'], form: true }] },
   { id: 's00-pending', iso: '2026-12-02', date: 'Wed 2 Dec', lit: 'LL', cards: [LL_PEND] },
-  { id: 's07-group', iso: '2026-12-21', date: 'Mon 21 Dec',
+  { id: 's07-group', iso: '2026-12-21', date: 'Mon 21 Dec', lit: 'LL',
     cards: [{ box: 'c k-ll s-a whole', t: 'LL', main: 'Approved · Whole day', pucks: ['psy', 'riddler', 'spaceman'], sub: '<span class="bp-placedline">“Family trip” · placed <b>Saber</b></span>',
-      acts: ['approved', 'refuseOff'], change: ['3 pax', 'Cutter'] }] },
+      acts: ['approved', 'refuseOff'], change: ['3 pax', 'Cutter'], groupForm: true, rmkText: 'Family trip', subA2: PLACED('Saber') }] },
   /* two more of direction A, so its rule is seen at both ends: a day of two entries, and an empty day */
-  { id: 'x05-two', only: 'A', iso: '2026-12-18', date: 'Fri 18 Dec',
+  { id: 'x05-two', only: ['A', 'A2'], lit: 'LL', iso: '2026-12-18', date: 'Fri 18 Dec',
     cards: [{ box: 'c k-oil s-a whole', t: 'FO', main: 'OIL award · a day', sub: '<span class="bp-placedline">Weekend det · given by Saber</span>', acts: ['edit', 'del'] }, LL_PEND] },
-  { id: 'x01-empty', only: 'A', iso: '2026-12-01', date: 'Tue 1 Dec', cards: [] },
+  { id: 'x01-empty', only: ['A'], iso: '2026-12-01', date: 'Tue 1 Dec', cards: [] },
 ]
 
 const CSS = `
@@ -81,6 +86,7 @@ const CSS = `
 .rd .rd-change{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;align-items:center}
 .rd .rd-change .note{padding-left:2px}
 .rd-new{outline:2px dashed #FFD23F !important;outline-offset:2px}
+.rd-m .rd-new{outline-offset:0 !important;width:64%}
 .rd-tag{position:fixed;z-index:2147483647;background:#FFD23F;color:#15171c;font:800 11px/17px system-ui,sans-serif;padding:0 6px;border-radius:9px;pointer-events:none;box-shadow:0 0 0 1px #15171c;white-space:nowrap}`
 
 /* the transform, in the page: the window today's app opens on an empty day of the same man becomes the frame's */
@@ -88,7 +94,7 @@ function transform(f) {
   const vis = e => e && e.getBoundingClientRect().width > 0
   const sheet = ['bid-picker', 'raptor-sheet'].map(t => document.querySelector(`[data-testid="${t}"]`)).find(vis)
   if (!sheet) return 'no window'
-  const A = f.dir === 'A', held = f.cards.length > 0, full = held   /* every drawn state that holds an entry holds the whole day */
+  const A = f.dir[0] === 'A', A2 = f.dir === 'A2', held = f.cards.length > 0, full = held   /* every drawn state that holds an entry holds the whole day */
   sheet.classList.add('rd', 'rd-' + f.dir)
   const hd = sheet.querySelector('.bidsheet-hd')
   hd.querySelector('.when, .dt').textContent = f.date
@@ -111,18 +117,19 @@ function transform(f) {
     const card = document.createElement('div'); card.className = 'rd-card'; card.dataset.rd = ++n
     const pucks = c.pucks ? `<span class="rd-pucks">${c.pucks.map(puck).join('')}</span>` : ''
     const acts = c.acts.map(a => f.ACT[a]).join('')
-    const change = c.change ? `<div class="rd-change"><span class="note">Change</span><button class="pchip">${c.change[0]}</button><button class="pchip">${c.change[1]}</button></div>` : ''
-    card.innerHTML = `<ul class="daylist flat"><li class="dl-line dl-card"><div class="dl-head"><span class="leg-box dl-box" aria-hidden="true"><span class="${c.box}">${c.t}</span></span><div class="dl-text"><span class="dl-main">${c.main}</span>${pucks}<span class="dl-sub bp-placed">${c.sub}</span></div><span class="dk-chev" aria-hidden="true">›</span></div><div class="dl-acts bp-acts">${acts}</div>${change}</li></ul>`
+    const change = c.change ? `<div class="rd-change"><span class="note">Change</span><button class="pchip${A2 ? ' on' : ''}">${c.change[0]}</button><button class="pchip">${c.change[1]}</button></div>` : ''
+    card.innerHTML = `<ul class="daylist flat"><li class="dl-line dl-card"><div class="dl-head"><span class="leg-box dl-box" aria-hidden="true"><span class="${c.box}">${c.t}</span></span><div class="dl-text"><span class="dl-main">${c.main}</span>${pucks}<span class="dl-sub bp-placed">${A2 && c.subA2 ? c.subA2 : c.sub}</span></div><span class="dk-chev" aria-hidden="true">›</span></div><div class="dl-acts bp-acts">${acts}</div>${change}</li></ul>`
     /* the entry's own Remarks · till · Document row, inside its card (a group's is changed through Change) */
-    if (c.form && rmk) {
+    if ((c.form || (A2 && c.groupForm)) && rmk) {
       const row = rmk.parentElement === sheet ? rmk : rmk.cloneNode(true)
       card.appendChild(row)
-      if (!A) { card.appendChild(dur); card.appendChild(leave); leave.querySelector(`[data-testid="bid-${f.lit}"]`)?.classList.add('lit') }
+      if (c.rmkText) row.querySelector('textarea').value = c.rmkText
+      if (!A || A2) { card.appendChild(dur); card.appendChild(leave); leave.querySelector(`[data-testid="bid-${f.lit}"]`)?.classList.add('lit') }
     }
     anchor.after(card); anchor = card
   }
   if (held && rmk.parentElement === sheet) rmk.remove()
-  if (held && (A || dur.parentElement === sheet)) { dur.remove(); leave.remove() }
+  if (held && dur.parentElement === sheet) { dur.remove(); leave.remove() }
   /* Auto-approve governs the leave buttons: it shows while they show */
   if (A && full) sheet.querySelector('[data-testid="bid-approve-tick"]')?.remove()
   /* the grid's cyan mark on the state's day */
@@ -136,14 +143,14 @@ async function mark(p, on, f) {
   await p.evaluate(([on, A, held]) => {
     document.querySelectorAll('.rd-tag').forEach(t => t.remove()); document.querySelectorAll('.rd-new').forEach(e => e.classList.remove('rd-new'))
     if (!on) return
-    const list = [['.rd-m', '1'], ...[...document.querySelectorAll('.rd-card')].map((c, i) => [`.rd-card[data-rd="${i + 1}"]`, '2'])]
+    const list = [['.rd-m [data-testid="bid-dayline-calm"]', '1'], ...[...document.querySelectorAll('.rd-card')].map((c, i) => [`.rd-card[data-rd="${i + 1}"]`, '2'])]
     if (held && A) list.push(['[data-testid="bid-extra-row"]', '3'])
     if (held && !A) list.push(['[data-testid="bid-extra-row"]', '3'])
     for (const [sel, text] of list) {
       const e = [...document.querySelectorAll(sel)].find(x => x.getBoundingClientRect().width > 0); if (!e) continue
       e.classList.add('rd-new')
       const r = e.getBoundingClientRect(), t = document.createElement('span'); t.className = 'rd-tag'; t.textContent = text; document.body.appendChild(t)
-      t.style.left = Math.max(2, r.right - t.getBoundingClientRect().width + 4) + 'px'; t.style.top = Math.max(2, (text === '1' ? r.bottom - 12 : r.top - 9)) + 'px'
+      t.style.left = Math.max(2, r.right - t.getBoundingClientRect().width + 4) + 'px'; t.style.top = Math.max(2, (text === '1' ? r.top + 1 : r.top - 9)) + 'px'; if (text === '1') t.style.left = (r.right + 6) + 'px'
     }
   }, [on, f.dir === 'A', f.cards.length > 0])
 }
@@ -184,7 +191,7 @@ try {
   const p = await ctx.newPage(); p.setDefaultTimeout(10000)
   p.on('pageerror', e => errs.push('PAGEERROR ' + e.message)); p.on('console', m => { if (m.type() === 'error') errs.push('CONSOLE ' + m.text().slice(0, 160)) })
   await R.setupWorld(p); await p.addStyleTag({ content: CSS })
-  for (const dir of ['A', 'B']) for (const f of FRAMES.filter(f => !f.only || f.only === dir)) await draw(p, dir, f)
+  for (const dir of ['A', 'B', 'A2']) for (const f of FRAMES.filter(f => !f.only || f.only.includes(dir))) await draw(p, dir, f)
   console.log('DONE', VERSION)
 } catch (e) { console.log('FAILED', e.message.split('\n')[0]) }
 finally { console.log('errors:', errs.length, errs.slice(0, 5)); await browser.close() }

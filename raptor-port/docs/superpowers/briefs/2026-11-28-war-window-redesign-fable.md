@@ -214,3 +214,75 @@ then `B-s01-inputs-ll-clean-phone.png`; the marked copies where a part is being 
 - No design lesson added. One candidate, if he takes A, in his words to come: a window shows the buttons that can act
   on this day, not every button the window has.
 - The mock folder and this report are untracked; nothing else in the working copy changed.
+
+## Round 2 — A2, after his D2884 / lesson 170 (28 Nov 26)
+
+His words on A: "it doesnt seem intuitive to click on the LL to change the leave". A sent a change of kind through the
+leave's own line (›); he wants the control that changes a leave standing in view, with that leave. A2 does that and
+keeps the rest of A.
+
+**A2, what changes from A**
+- **A leave's card also holds Duration and the eight leave buttons, lit on its kind, under its Remarks row.** One tap
+  on another kind re-types it, one tap on AM or PM changes its Duration — as today (D1467 kept whole). Because they
+  sit inside the card, on its raised surface, they read as this leave's and not as an add form.
+- **A card that is not leave has none** — the OIL award in the two-entry frame keeps only Edit… · Delete. An OD, a CSE
+  or a medical card would be the same (not drawn; F6's s02 and s03 already show them without).
+- **A group's card (s07):** the Change line stands directly over the rows it governs, **"3 pax" lit** — so Remarks,
+  Duration and the leave buttons under it change the leave for everyone, which is his rule (D2783: for everyone
+  unless the man's button is pressed). Pressing "Cutter" takes him out first, as D2783 says, and the window is then
+  his own leave's. The lit "3 pax" is my reading, not his ruling (D2784 gives the word and the two buttons, not which
+  is lit); without it the leave buttons under a group would change it for three people with nothing saying so.
+  In A2 the group's remark sits in its Remarks box ("Family trip") as every other leave's does, and the line under
+  the pucks is the plain placed line.
+- **Kept from A:** the manning line under the title; one card an entry, each with its own Remarks · till · Document;
+  the last row CSE · OD · Grant OIL · ⋯ in every state; Auto-approve only while leave buttons that *add* are showing
+  (so not in these four frames); on a day with a free half the add part (Duration + leave buttons) stays outside the
+  cards, above the last row (described, not drawn — as in A).
+- "Pick a range" stays on the Duration row, as today's window has it on a one-day leave.
+
+**What A2 gives up against A, said plainly**
+- **Height and quiet.** s01 and s00 are 364px again (A: 256; F6: about 357); the group 424; two entries 465. The
+  entry's line is once more a small thing above a field of colour. This is the cost of one-tap re-typing and I think
+  he has chosen it knowingly: he changes kinds by tapping, and A2 is honest about whose buttons they are.
+- **Two cyan rings once a leave is decided** (s01, s07): "Approved" (D2881) and the lit kind. They now sit in one card
+  about one leave, so they read as "decided" and "its kind" rather than as two selections — better than F6, where the
+  second ring floated in an unowned form — but it is still one mark with two meanings in one card. If it bothers him
+  on the picture, the fix to draw next is the lit kind keeping its filled look without the ring (a change to the
+  leave button's lit look, his to rule); I have not drawn it because nobody asked for the lit look to change.
+- A2 for one leave is close to round 1's B without the Auto-approve switch. What A2 adds over B: the rule for other
+  kinds of card, for a group and for two entries.
+
+**A3 — not drawn, and why.** I weighed the kind's box drawn as a picker (the LL box with a ▾ opening the eight kinds).
+It is not clearly better, so by the brief it is not drawn: it is two taps where he finds one natural; it hides the
+balances (LL 9.5, OIL 1) at the moment a kind is being chosen; a small box that opens a menu is the very "tap the LL
+to change it" he called unintuitive; and it would be a second way to pick a kind beside the buttons an empty day
+shows. In-card buttons are the same control in both places.
+
+**Rulings:** keeps everything A kept, and now D1467 whole and D2884 / lesson 170. Still narrows D1187 as A did (the
+switch absent where no adding leave button shows). Changes none other. **Cost to build:** as A, a little less — the
+re-type path is today's, moved inside the card; the group's "for everyone" path through the leave buttons is new and
+belongs with the combined-row work (D2778).
+
+**Words old → new, round 2**
+
+| Where | Round 1 | A2 |
+|---|---|---|
+| The group card's small line | "“Family trip” · placed Saber" (F6's) | "Placed Saber · Fri 27 Nov, 12:46", the remark moved into the Remarks box |
+
+No other word added or changed.
+
+**Marks fixed.** In every marked picture, A and B included, mark 1 now outlines only the manning words and its number
+stands clear to their right; it no longer meets mark 2 or the ✕. All of A's and B's pictures were redrawn by the same
+run (same names).
+
+**Pictures, round 2** (`raptor-port/docs/mock/2026-11-28-war-window-redesign/img/`, 16 new; the folder now holds 48):
+`A2-s01-inputs-ll`, `A2-s00-pending`, `A2-s07-group`, `A2-x05-two` — each as `-phone.png`, `-desktop.png`,
+`-clean-phone.png`, `-clean-desktop.png`.
+
+**Checked:** script `draw-redesign.mjs` v2.0 (one flag-free run draws A, B and A2); the main folder's existing dist on
+4181, started by me and stopped after; no build, lock not taken. Console and page errors 0 in all three runs (phone
+402, desktop, phone 390). At 390 wide: sideways overflow 0 for window and page on every A2 frame, nothing past the
+window's edge. Opened by me: all 8 marked A2 pictures and 2 of the 8 clean ones (`A2-s01` phone, `A2-x05` phone); of
+the redrawn A and B, `A-s01` phone re-opened to confirm the mark fix — the other redrawn A and B pictures differ from
+the ones I opened in round 1 only by that mark and were not re-opened. Not checked: Safari / an iPhone's letters; a
+member's view; `npm run docsize` still fails on the scheduler rulings page's size, which is not this work's.
