@@ -128,6 +128,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [OIL-EARN-BOARD-TIDY] — the three code reads' tidiness notes on the OIL Earn board change (D489), filed not fixed.
 
 **Leave War**
+- [LW-PERIODS-MANAGE] — his D2890, D2891 (28 Nov 26): "+ New period" at the top of the period list; delete or archive a period, its effects drawn and put to him first; not built.
 - [LW-DECIDE-LOOK] — his D2881 (28 Nov 26): the decided Approve or Refuse solid with the window's cyan ring, the other grey, a drawn tick or cross at rest — everywhere the war decides; drawn, not built (the next Leave War batch).
 - [SANS-CHIP-ON-SANS] — the Post out sheet offers the "SANS" chip to a man already SANS; D2163: not offered for him (small fix, no answer needed; the next Leave War batch).
 - [LW-FOUR-ITEMS-LEFTOVERS] — what the four Leave War items (pull request 801, live 17 Nov 26) left for him: five like-for-like suggestions and three departures from the drawings — questions kept until he says (D994), pictures first.
@@ -314,6 +315,9 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [LW-PERIODS-MANAGE] Leave War periods: "+ New period" at the top of the list; delete or archive a period (his D2890, D2891; filed 28 Nov 26, chat 195) — OPEN
+**What it is:** "+ New period" moves from the period list's last line to its top (D2890, `raptor-port/src/leavewar/ui/Chrome.tsx`, an admin's only, both sizes). An admin can delete or archive a period (D2891): nothing exists for it today. First a drawing and his answers — what each does to the period's bids, approved leave (kept on the Inputs page) and OIL credits (owed, never lost silently), and where an archived period is seen; high risk (OIL), its check sized then.
 
 ### [LW-DECIDE-LOOK] The Leave War's Approve and Refuse redrawn so the decided one reads plainly as picked (his D2880, D2881; filed 28 Nov 26, chat 194) — OPEN
 **What it is:** he asked (27 Nov 26) for Approve and Refuse to be redesigned; the first drawings' decided one did not feel selected (D2880); he picked "A, solid + cyan ring" (D2881): the decided one keeps its solid green or red and dark words ("Approved" / "Refused") and wears the cyan ring the window's lit leave button wears (`bidpicker.css`, outline 2px accent, offset 2px); the other turns grey, still pressable; at rest each shows a drawn tick or cross before its word and a faint edge of its own colour. Size, height, row, place, words and the second-tap rule unchanged (D1361, D1427 narrowed).
