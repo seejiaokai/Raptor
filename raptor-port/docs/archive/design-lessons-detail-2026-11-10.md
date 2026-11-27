@@ -201,3 +201,5 @@ Lessons 160 and 161 (numbers 151–159 left clear of the open readings branch, w
 - Lesson 161: none known to the coordinator.
 
 Read by one fresh reader (a fresh Opus, 27 Nov 26): both OK with small changes, taken — lesson 160 "his window" → "a person's window" and his own reason added ("which he found excessive there"); lesson 161 "the phone's small gap" → "a gap like the phone's" (he asked for "similar", not the same to the pixel).
+
+Lesson 162 (D2823) read by one fresh reader (a fresh Opus, 27 Nov 26): the outline and the "–" elsewhere were written as his rule; they are the agent's reading — moved into the reading, as the reader proposed. Other places: none beyond lesson 160's list.

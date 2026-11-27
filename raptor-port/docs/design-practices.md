@@ -648,7 +648,7 @@ first, as a chat does for ruling numbers, and names it in its handoff block; whe
 the merge renumbers only the branch's own side, by script, and the closing report tells him the old and new numbers
 (D1417).*
 
-**Lesson 162 (27 Nov 26, D2823 — asked "we said to not use not typed correct?", then, of three choices, "No Not typed anywhere").** A balance never typed shows the words "Not typed" nowhere — an empty box carries the amber dashed outline, a figure that only stands an amber "–". Widens lesson 160 to the whole app. *(The agent's reading: the desktop's pointing hint goes too; he was told and may keep it.)*
+**Lesson 162 (27 Nov 26, D2823 — asked "we said to not use not typed correct?", then, of three choices, "No Not typed anywhere").** A balance never typed shows the words "Not typed" nowhere. Widens lesson 160 to the whole app. *(The agent's reading: elsewhere an empty box takes the Balances page's amber dashed outline, and a shown figure an amber "–"; the desktop's pointing hint goes too. He was told and may keep it.)*
 
 **Lesson 161 (27 Nov 26, D2822 — "The left one, the text that says only leave after post-in is deducted, u can make it similar to the 2nd pic spacing").** On a desktop the Balances page's line "Only leave after post-in is deducted." sits close above the column headings, with a gap like the phone's, not over a tall empty space. *(The agent's reading: a line that belongs to a table sits as close to it on a desktop as on a phone.)*
 
