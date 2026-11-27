@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- STOP iOS ZOOMING IN ON A TAPPED CELL (owner, 12 Aug 26 — "can u don't
+         zoom it to the text? Just keep it as the fullscreen mode on mobile").
+         iOS Safari auto-zooms any focused input whose font-size is under 16px,
+         and this app's dense cells run 8.5–11.5px BY DESIGN — the density is a
+         measured contract (scheduler.css), so the fonts cannot grow. Since
+         iOS 10, `maximum-scale=1` is IGNORED for pinch zoom (accessibility
+         keeps working) but still honoured for the focus auto-zoom — exactly
+         the split wanted here. It is added at runtime, and ONLY on Apple touch
+         devices, because Android Chrome does honour it and would lose pinch
+         zoom for nothing (Android never auto-zooms on focus). The platform
+         test is the standard pair: iPhones report their name in the platform
+         string; iPads have reported plain "MacIntel" since iPadOS 13, told
+         apart from real Macs by their touch points.
+         ON EVERY OTHER TOUCH SCREEN THE PAGE ITSELF NEVER ZOOMS (owner D1567,
+         2 Nov 26 — "only allow the grids to be zoomed. Not the page. Sometimes
+         I get stuck and I can't zoom out if the page zooms in."), which
+         replaces the old "never add user-scalable=no": an Android phone takes
+         `maximum-scale=1, user-scalable=no` as "no page zoom". The grids that
+         zoom by their own pinch read the fingers themselves and keep zooming.
+         An iPhone ignores this setting for a pinch, so it is held off there by
+         the stylesheet's touch-action and ui/nopagezoom.ts instead; its setting
+         stays the one above, so the keyboard and the focus behave as walked.
+         A desktop (a mouse or trackpad first) keeps the plain setting and the
+         browser's own zoom (D1286). -->
+    <script>
+      if (/iPad|iPhone|iPod/.test(navigator.platform)
+          || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1))
+        document.querySelector('meta[name=viewport]')
+          .setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1')
+      else if (window.matchMedia && window.matchMedia('(pointer: coarse)').matches)
+        document.querySelector('meta[name=viewport]')
+          .setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no')
+    </script>
+    <!-- Declaring an icon is also what stops the browser probing /favicon.ico
+         and logging a 404 on every load. Vite rewrites this href against
+         `base` ('./' — see vite.config.ts), so it resolves under the Pages
+         sub-path as well as at a preview root. -->
+    <link rel="icon" type="image/svg+xml" href="/Raptor/favicon.svg" />
+    <title>TALON — 142 Flying Programme</title>
+    <!-- the name under the app's icon when it is added to an iPhone's home screen (D1606) -->
+    <meta name="apple-mobile-web-app-title" content="TALON" />
+    <!-- THE LOADING CLAW (D1591, D1605). Drawn by the browser from this page alone — no script, no library, nothing
+         to download — so it shows before the app's code arrives and adds nothing to the load. The logo's three claws
+         (the same paths as ui/Login.tsx and favicon.svg) each sit in a narrow window laid along the claw from its tip;
+         the window slides down the claw while the claw inside slides back by the same amount, so the claw stays put
+         and is uncovered from its tip to its end: left at 0, middle at 0.16 s, right at 0.32 s, 0.42 s each, held
+         whole 0.55 s, faded, and drawn again — one round 1.77 s. Only sliding and fading are used, the two kinds of
+         movement a browser keeps running while the app's code is busy starting (3 Nov 26: a claw drawn by masks
+         stood frozen, or never showed, while a slow phone ran the code). Shown from the first moment, on every start, a quick
+         one too (D1615), and 0.2 s into its round: from the very start the left claw is only 2% drawn at 0.05 s and 12% at
+         0.1 s, a dark page; 0.2 s in, two-thirds of it shows in the first frame (his iPhone recording, 3 Nov 26). Still and
+         whole for a reader who asked for less motion. ui/bootclaw.ts fades it out and takes
+         it away the moment the app has drawn itself. Each window: its corner at the claw's tip less (10px, 1px), 13px
+         wide, as long as the claw plus 2px, turned to the claw's line (scripts: talon-claw-build-frames.mjs). -->
+    <style>
+      #bootclaw{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;background:#0B0D10;
+        transition:opacity .2s ease-out}
+      /* THE SAME CLAW WHILE A SLOW PAGE OPENS (D1607, D1610, D1611): ui/pageclaw.ts lays .pgclaw over the page area under
+         the top bar, the bar staying, and these rules draw it — one definition for both, nothing more to download. From
+         the tap, with no wait (D1611): only pages measured to go blank raise it, and a wait left a flicker. */
+      .pgclaw{position:fixed;left:0;right:0;bottom:0;top:var(--topbar-h,58px);z-index:50;display:grid;place-items:center;
+        background:#0B0D10;transition:opacity .2s ease-out}
+      #bootclaw.gone,.pgclaw.gone{opacity:0;pointer-events:none}
+      /* under the claw after 8 s on a slow signal (D1632): the claw's 72px mark is centred, so 18px under its foot */
+      .pgclaw-still{position:absolute;left:0;right:0;top:calc(50% + 54px);text-align:center;font-size:13px;line-height:1.4;color:#8A96A3}
+      /* the page's name for a screen reader only ([TALON-CLAW-SPOKEN]) */
+      .pgclaw-say{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+      #bootclaw .mk,.pgclaw .mk{position:relative;width:72px;height:72px;filter:drop-shadow(0 0 26px rgba(59,198,232,.55))}
+      #bootclaw .cs,.pgclaw .cs{position:absolute;inset:0;animation:bc-fade 1.77s linear -.2s infinite backwards}
+      #bootclaw .w,.pgclaw .w{position:absolute;width:13px;overflow:hidden;transform-origin:10px 1px}
+      #bootclaw .w svg,.pgclaw .w svg{position:absolute;width:72px;height:72px;display:block}
+      #bootclaw .c,.pgclaw .c{fill:#3BC6E8}
+      #bc-w0,.pgclaw .pw0{left:-4.37px;top:10.25px;height:67.18px;transform:rotate(-21.25deg);animation:bc-w0 1.77s linear -.2s infinite backwards}
+      #bc-w0 svg,.pgclaw .pw0 svg{left:4.37px;top:-10.25px;transform-origin:5.63px 11.25px;transform:rotate(21.25deg);animation:bc-i0 1.77s linear -.2s infinite backwards}
+      @keyframes bc-w0{0%{transform:rotate(-21.25deg) translateY(-67.18px);animation-timing-function:cubic-bezier(.5,0,.25,1)}23.729%,100%{transform:rotate(-21.25deg) translateY(0)}}
+      @keyframes bc-i0{0%{transform:translateY(67.18px) rotate(21.25deg);animation-timing-function:cubic-bezier(.5,0,.25,1)}23.729%,100%{transform:translateY(0) rotate(21.25deg)}}
+      #bc-w1,.pgclaw .pw1{left:10.25px;top:1.25px;height:75.57px;transform:rotate(-23.43deg);animation:bc-w1 1.77s linear -.2s infinite backwards}
+      #bc-w1 svg,.pgclaw .pw1 svg{left:-10.25px;top:-1.25px;transform-origin:20.25px 2.25px;transform:rotate(23.43deg);animation:bc-i1 1.77s linear -.2s infinite backwards}
+      @keyframes bc-w1{0%,9.040%{transform:rotate(-23.43deg) translateY(-75.57px);animation-timing-function:cubic-bezier(.5,0,.25,1)}32.768%,100%{transform:rotate(-23.43deg) translateY(0)}}
+      @keyframes bc-i1{0%,9.040%{transform:translateY(75.57px) rotate(23.43deg);animation-timing-function:cubic-bezier(.5,0,.25,1)}32.768%,100%{transform:translateY(0) rotate(23.43deg)}}
+      #bc-w2,.pgclaw .pw2{left:27.13px;top:-1px;height:56.29px;transform:rotate(-34.02deg);animation:bc-w2 1.77s linear -.2s infinite backwards}
+      #bc-w2 svg,.pgclaw .pw2 svg{left:-27.13px;top:1px;transform-origin:37.13px 0px;transform:rotate(34.02deg);animation:bc-i2 1.77s linear -.2s infinite backwards}
+      @keyframes bc-w2{0%,18.079%{transform:rotate(-34.02deg) translateY(-56.29px);animation-timing-function:cubic-bezier(.5,0,.25,1)}41.808%,100%{transform:rotate(-34.02deg) translateY(0)}}
+      @keyframes bc-i2{0%,18.079%{transform:translateY(56.29px) rotate(34.02deg);animation-timing-function:cubic-bezier(.5,0,.25,1)}41.808%,100%{transform:translateY(0) rotate(34.02deg)}}
+      @keyframes bc-fade{0%,72.881%{opacity:1;animation-timing-function:ease-in}88.701%,100%{opacity:0}}
+      @media (prefers-reduced-motion:reduce){
+        #bootclaw,.pgclaw{transition:none}
+        .pgclaw .cs,.pgclaw .w,.pgclaw .w svg,#bootclaw .cs,#bootclaw .w,#bootclaw .w svg{animation:none}
+      }
+    </style>
+    <script type="module" crossorigin src="/Raptor/assets/index-BDm_6vyD.js"></script>
+    <link rel="modulepreload" crossorigin href="/Raptor/assets/wavetpl-DUYFzvF5.js">
+    <link rel="modulepreload" crossorigin href="/Raptor/assets/glyphs-Bx8-62PC.js">
+    <link rel="modulepreload" crossorigin href="/Raptor/assets/lift-eC32_21R.js">
+    <link rel="modulepreload" crossorigin href="/Raptor/assets/store-ttBamb5C.js">
+    <link rel="modulepreload" crossorigin href="/Raptor/assets/changesmodel-CkL-1Ht1.js">
+    <link rel="modulepreload" crossorigin href="/Raptor/assets/weeknav-DEdR3eQ_.js">
+    <link rel="modulepreload" crossorigin href="/Raptor/assets/inputedit-r-FznM3f.js">
+    <link rel="modulepreload" crossorigin href="/Raptor/assets/vvfollow-B5RkXdcC.js">
+    <link rel="modulepreload" crossorigin href="/Raptor/assets/undo-bridge-CzXc6gaO.js">
+    <link rel="modulepreload" crossorigin href="/Raptor/assets/RangePicker-Sjjksx_o.js">
+    <link rel="modulepreload" crossorigin href="/Raptor/assets/pan-wj92hweF.js">
+    <link rel="modulepreload" crossorigin href="/Raptor/assets/drag-BQZ7DBsd.js">
+    <link rel="stylesheet" crossorigin href="/Raptor/assets/RangePicker-CFDM6F5I.css">
+    <link rel="stylesheet" crossorigin href="/Raptor/assets/index-CjzzsTGj.css">
+  </head>
+  <body>
+    <div id="bootclaw" role="img" aria-label="TALON is loading">
+      <div class="mk" aria-hidden="true">
+        <div class="cs">
+          <div class="w" id="bc-w0"><svg viewBox="0 -2 60 64"><path class="c" d="M3 8 Q4.9 38.3 24 62 Q11.5 35.8 3 8 Z"/></svg></div>
+          <div class="w" id="bc-w1"><svg viewBox="0 -2 60 64"><path class="c" d="M16 0 Q17.4 35.0 42 60 Q26.6 31.0 16 0 Z"/></svg></div>
+          <div class="w" id="bc-w2"><svg viewBox="0 -2 60 64"><path class="c" d="M31 -2 Q36.4 23.5 58 38 Q42.9 19.1 31 -2 Z"/></svg></div>
+        </div>
+      </div>
+    </div>
+    <div id="root"></div>
+  </body>
+</html>

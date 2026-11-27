@@ -1,0 +1,178 @@
+{
+  "_RangePicker-CFDM6F5I.css": {
+    "file": "assets/RangePicker-CFDM6F5I.css",
+    "src": "_RangePicker-CFDM6F5I.css"
+  },
+  "_RangePicker-Sjjksx_o.js": {
+    "file": "assets/RangePicker-Sjjksx_o.js",
+    "name": "RangePicker",
+    "imports": [
+      "_wavetpl-DUYFzvF5.js",
+      "_lift-eC32_21R.js",
+      "_glyphs-Bx8-62PC.js",
+      "_store-ttBamb5C.js",
+      "_inputedit-r-FznM3f.js",
+      "_changesmodel-CkL-1Ht1.js",
+      "_vvfollow-B5RkXdcC.js",
+      "_undo-bridge-CzXc6gaO.js"
+    ],
+    "css": [
+      "assets/RangePicker-CFDM6F5I.css"
+    ]
+  },
+  "_changesmodel-CkL-1Ht1.js": {
+    "file": "assets/changesmodel-CkL-1Ht1.js",
+    "name": "changesmodel",
+    "imports": [
+      "_wavetpl-DUYFzvF5.js",
+      "_glyphs-Bx8-62PC.js"
+    ]
+  },
+  "_drag-BQZ7DBsd.js": {
+    "file": "assets/drag-BQZ7DBsd.js",
+    "name": "drag",
+    "imports": [
+      "_wavetpl-DUYFzvF5.js",
+      "_lift-eC32_21R.js",
+      "_glyphs-Bx8-62PC.js",
+      "_store-ttBamb5C.js",
+      "_inputedit-r-FznM3f.js",
+      "_changesmodel-CkL-1Ht1.js",
+      "_pan-wj92hweF.js"
+    ]
+  },
+  "_glyphs-Bx8-62PC.js": {
+    "file": "assets/glyphs-Bx8-62PC.js",
+    "name": "glyphs",
+    "imports": [
+      "_wavetpl-DUYFzvF5.js"
+    ]
+  },
+  "_inputedit-r-FznM3f.js": {
+    "file": "assets/inputedit-r-FznM3f.js",
+    "name": "inputedit",
+    "imports": [
+      "_wavetpl-DUYFzvF5.js",
+      "_lift-eC32_21R.js",
+      "_glyphs-Bx8-62PC.js",
+      "_store-ttBamb5C.js",
+      "_changesmodel-CkL-1Ht1.js",
+      "_weeknav-DEdR3eQ_.js"
+    ]
+  },
+  "_lift-eC32_21R.js": {
+    "file": "assets/lift-eC32_21R.js",
+    "name": "lift",
+    "imports": [
+      "_wavetpl-DUYFzvF5.js",
+      "_glyphs-Bx8-62PC.js"
+    ]
+  },
+  "_pan-wj92hweF.js": {
+    "file": "assets/pan-wj92hweF.js",
+    "name": "pan",
+    "imports": [
+      "_wavetpl-DUYFzvF5.js",
+      "_glyphs-Bx8-62PC.js",
+      "_store-ttBamb5C.js",
+      "_changesmodel-CkL-1Ht1.js",
+      "_weeknav-DEdR3eQ_.js"
+    ]
+  },
+  "_store-ttBamb5C.js": {
+    "file": "assets/store-ttBamb5C.js",
+    "name": "store",
+    "imports": [
+      "_wavetpl-DUYFzvF5.js",
+      "_glyphs-Bx8-62PC.js"
+    ]
+  },
+  "_undo-bridge-CzXc6gaO.js": {
+    "file": "assets/undo-bridge-CzXc6gaO.js",
+    "name": "undo-bridge"
+  },
+  "_vvfollow-B5RkXdcC.js": {
+    "file": "assets/vvfollow-B5RkXdcC.js",
+    "name": "vvfollow",
+    "imports": [
+      "_wavetpl-DUYFzvF5.js",
+      "_glyphs-Bx8-62PC.js",
+      "_inputedit-r-FznM3f.js",
+      "_changesmodel-CkL-1Ht1.js"
+    ]
+  },
+  "_wavetpl-DUYFzvF5.js": {
+    "file": "assets/wavetpl-DUYFzvF5.js",
+    "name": "wavetpl"
+  },
+  "_weeknav-DEdR3eQ_.js": {
+    "file": "assets/weeknav-DEdR3eQ_.js",
+    "name": "weeknav"
+  },
+  "index.html": {
+    "file": "assets/index-BDm_6vyD.js",
+    "name": "index",
+    "src": "index.html",
+    "isEntry": true,
+    "imports": [
+      "_wavetpl-DUYFzvF5.js",
+      "_lift-eC32_21R.js",
+      "_glyphs-Bx8-62PC.js",
+      "_store-ttBamb5C.js",
+      "_inputedit-r-FznM3f.js",
+      "_changesmodel-CkL-1Ht1.js",
+      "_RangePicker-Sjjksx_o.js",
+      "_weeknav-DEdR3eQ_.js",
+      "_drag-BQZ7DBsd.js",
+      "_pan-wj92hweF.js",
+      "_vvfollow-B5RkXdcC.js"
+    ],
+    "dynamicImports": [
+      "src/leavewar/LeaveWarPage.tsx",
+      "src/tracker/TrackerPage.tsx",
+      "index.html",
+      "_wavetpl-DUYFzvF5.js",
+      "_changesmodel-CkL-1Ht1.js",
+      "_pan-wj92hweF.js",
+      "_drag-BQZ7DBsd.js"
+    ],
+    "css": [
+      "assets/index-CjzzsTGj.css"
+    ]
+  },
+  "src/leavewar/LeaveWarPage.tsx": {
+    "file": "assets/LeaveWarPage-C_kE8GHy.js",
+    "name": "LeaveWarPage",
+    "src": "src/leavewar/LeaveWarPage.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "_wavetpl-DUYFzvF5.js",
+      "_lift-eC32_21R.js",
+      "_glyphs-Bx8-62PC.js",
+      "_store-ttBamb5C.js",
+      "_inputedit-r-FznM3f.js",
+      "_RangePicker-Sjjksx_o.js",
+      "_vvfollow-B5RkXdcC.js"
+    ],
+    "css": [
+      "assets/LeaveWarPage-Q0d5vEfU.css"
+    ]
+  },
+  "src/tracker/TrackerPage.tsx": {
+    "file": "assets/TrackerPage-Bz19Tdlc.js",
+    "name": "TrackerPage",
+    "src": "src/tracker/TrackerPage.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "_wavetpl-DUYFzvF5.js",
+      "_lift-eC32_21R.js",
+      "_glyphs-Bx8-62PC.js",
+      "_store-ttBamb5C.js",
+      "_undo-bridge-CzXc6gaO.js",
+      "index.html"
+    ],
+    "css": [
+      "assets/TrackerPage-D5o-ZzBw.css"
+    ]
+  }
+}
