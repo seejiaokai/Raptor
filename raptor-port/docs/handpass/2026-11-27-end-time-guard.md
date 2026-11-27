@@ -511,3 +511,112 @@ Walk (after the second re-walk): docs/handpass/2026-11-27-end-time-guard.md · 1
 Walk (after the third fix): docs/handpass/2026-11-27-end-time-guard.md · 1785 pictures (388 the re-walk's, 85 the second re-walk's, 36 the third fix's) · 40 surfaces · 82 orders + 44 re-walked + 13 re-walked again · MISSING: 1 fixed (the count-line tap, built and walked) / 0 ruled / 0 to file · N1, N2, N3 pass · N4 fixed and checked by its fixer (not yet re-walked by a fresh walker)
 
 Walk: docs/handpass/2026-11-27-end-time-guard.md · 1845 pictures (388 the re-walk's, 85 the second re-walk's, 36 the third fix's, 60 the independent check's) · 40 surfaces · 82 orders + 44 re-walked + 13 re-walked again + 14 checked independently · MISSING: 1 fixed (the count-line tap, built and walked) / 0 ruled / 0 to file · N1, N2, N3, N4 pass (N4 by a fresh walker, 14 PASS · 0 FAIL)
+
+## Round 1 — his answers built (27 Nov 26, late morning — chat 202, after compaction)
+
+His answers to round 1 of the morning page, "All as recommended" (D2859–D2864, recorded on the records branch before
+the build). Built in one commit on this branch:
+- **D2860** — Edit Schedule's Legend ends with an empty box outlined grey, one outlined red, then "Time missing, fill
+  it"; View-only Sched's Legend leaves it out (D2853).
+- **D2861** — while any empty box of a day is red, every empty box of it is red (a box emptied after the refusal, a
+  new row's); the day is grey again once none is (every time typed).
+- **D2862** — a row with only its end typed, nobody on it, counts its start: any time typed asks for the other.
+- D2863 (the Publish ending, the count alone once four names show) and D2864 (how it goes live) change nothing built.
+- D2859 (the OIL list's foot words) is NOT here: the words say the next sign-off asks again, which is untrue until
+  [OIL-LATER-PASSES-ON] is built — that job, next, on a branch cut from this one.
+
+### The eight answers and the tier
+1 money — NO: the outline and the count do not change OIL or who counts as present. 2 the published record — YES: an
+end-only row now stops a day being published. 3 saved data — NO: nothing new is saved; red is held in the browser for
+the session, as before. 4 a shared drawer — NO. 5 a new gesture or mode — NO. 6 a new surface — NO (a Legend line on an
+existing fold). 7 roles — NO: the same refusal for every signer. 8 the warning list / how a rule is read — YES: which
+rows count. **Tier: FULL**, sized to the three changes and what they reach (the first walk's 40 surfaces stand for the
+rest; the plain-user round repeated).
+
+### Red-first
+- `engine/timegaps.test.ts`: three new cases (a ground row, SODB on the Common Programme, a flying line's landing —
+  each with only its end typed) FAILED on the old rule, pass on the new; a word in the end box stays plain (R2).
+- `ui/timeguard-screens.test.tsx`: "a box emptied after the refusal is red at once" FAILED on the old paint, passes on
+  the new; grey again once every time is typed; another day stays grey; the Legend line on Edit Schedule, not on
+  View-only Sched.
+- The four touched test files: 131 pass, 8 waiting on his later answers.
+
+### The drawing check (D1494, D1495)
+`R1-LEGEND-{P,D}-built.png` against `R1-LEGEND-{P,D}-drawn.png` (the drawing redrawn by the morning script's own
+markup, on the same page): every box, the words and their place within 2px, the same colours, font and text, the line
+the Legend's last — **MATCH** on the iPhone size and the desktop. View-only Sched's Legend: no line. Looked at by eye:
+the grey box, the red box, then his words, under "long day".
+
+### The scenarios (the bug-check order §4; D2443, D2819)
+Designed blind, each unseen by the other: Astra, AR01–AR30 (`docs/superpowers/briefs/2026-11-27-end-time-guard-r1-scenarios-astra.md`),
+and a fresh Opus in Fable's seat, OF01–OF28 (`…-r1-scenarios-opus.md`), from one brief (`…-r1-scenarios-brief.md`).
+Fable's own design is owed (D2819; the reads-owed list). The host combined them into five walkers' shares by theme:
+A the Legend and the plain-user rounds; B red at once; C delete, drag, Undo, plans, the board; D the end-only rule on
+every kind of row and words in a box; E the count tap, the sign-off boxes, Publish day and AL, the OIL list's order, a
+saved session.
+
+### The walk (27 Nov 26, 11:26–11:52 by this PC's clock; the lock held throughout; one build served on 4257)
+Five Opus walkers (D2256), desktop 1536 Chromium and iPhone 402 WebKit, every state made with the app's own controls.
+Pictures `R1-<case>-<D|P>-*.png` (662 with the drawing check's four). The host opened the deciding pictures:
+R1-OF05-D-2-sxo2-red (the SXO end emptied after the refusal, red at once), R1-OF19-D-week-red (SODB's start, end-only,
+red after Publish day refused), R1-OF28-P-5-curck-lift (the phone round: five items, the end-only SAFETY BRIEF's start
+outlined).
+
+| Walker | Cases | PASS | FAIL | OBSERVE | Not walked |
+|---|---|---|---|---|---|
+| A | AR01 AR02 AR30 OF01–OF04 OF27 OF28 | 9 | 0 | parts | OF28's Wednesday-first and day swiping |
+| B | AR11–AR15 AR21 OF05–OF09 OF12 OF13 | 10 | 0 | OF12, OF13, AR13's in-box part | — |
+| C | AR16–AR20 OF10 OF11 OF14–OF17 | 11 | 0 | parts | OF14's move to Friday (no control moves a row to another day) |
+| D | AR03–AR10 OF19–OF24 | 11 | 0 | AR09, AR10, OF22's All-day part | AR07's naming a typed row "All day" |
+| E | AR22–AR29 OF18 OF25 OF26 | 9 | 0 | AR27, OF25 | AR22's folding (no fold on the week); AR28's edit behind the OIL list on the phone (the list covers the day) |
+
+**Browser errors: none in any run.** No fault found; nothing to fix.
+
+What held, in short: the Legend line on Edit Schedule only, matching both drawings, once, through every page move;
+red at once on the refused day only — on the week and the board, after Tab or a click, after Undo, on the phone —
+and grey again once every time is typed; red following its row through delete, drag, Undo and every plan move, two
+plans never sharing a colour; the end-only rule on the Common Programme, a flying line's landing, a desk, the OFT and
+AMT rows, a ground row, the SC standby line and EXT SQN, each counted once, refused on every press, the week and the
+board agreeing; the rows left out (AMT BRIEF/DEBRIEF, ⓘ, CX, an All-day input's row) still out; words refused by the
+writer as before; the plain-user rounds end to end on both devices — five items, the refusal, red at once, the count
+tap, Publish day, an amendment refused then AL1 published.
+
+**OBSERVE, put to him or already his:**
+- **OF12 (for him, with this round):** a box that only starts to count after the refusal — a man put on a blank row,
+  ⓘ taken off, a CX taken back, a new crewed row — comes up red at once, as the built reading "every empty box of a day
+  that shows red" gives. His D2861 names "a box emptied after it"; the recommendation he took gave its reason, "two
+  colours for the same fault on one day is confusing". Put to him: keep as built (recommended).
+- OF13: a man taken off a red row and put back: red while another red box stands on the day, grey when none does —
+  the same rule.
+- AR13: a box emptied but not yet left shows no outline until it is left (as built since last night).
+- AR16, OF11: when the only red row is deleted the day is grey; Undo brings it back red, and boxes emptied then are red.
+- OF15, AR19, AR18: + Alt Plan's copy starts grey (two plans never share a colour, D2853's walk C62).
+- AR29: red is held for the session; after a reload or a new sign-in the box is grey, still counted (the plan's R4).
+- AR27: the desktop Amendments panel's Publish AL is a disabled button; a press does nothing (the plan's R6, his later round).
+- OF25: an end typed after four names are signed clears the names, as every change does, so the line reads "1 item
+  missing a time · 4 to sign".
+- AR23: the board's count line is plain words (the plan's Q19).
+- OF22: on the board, an end typed on an All-day input's row fills its start with 00:00 (the request's times, D739/D740).
+- Walker B's side note — emptying a time on an input's own row turns the input all day, so the row leaves the rule:
+  the plan's Q17, his later round.
+- OF21: on the board the SC standby line draws one start per seat row, four outlines for one item; the week one box.
+- The phone: an empty start box is 34×15 against a typed time's 11px text; the row stays in line (R1-OF28-P-5).
+- The refusal note stays a few seconds after the day is complete, then fades; switching to View-only, its text was
+  still in the page for a moment, never on screen in the settled pictures.
+- Walker A: Templates and Plans stay open when their own button is pressed again; the Changes windows and the phone ⓘ
+  window stay open after an outside tap — not this change, for the consistency look.
+
+### The code reads (after the walk; each blind to the walk and to the other)
+Astra (`…-r1-coderead-astra.md`) and a fresh Opus (`…-r1-coderead-opus.md`), one brief (`…-r1-coderead-brief.md`):
+**no finding from either.** The Opus reader's "considered" two (a deleted row's kept red name coming back by a path
+other than Undo; two changes judged together while the day is off screen) found no path a scheduler's presses reach —
+not findings. Fable's own code read is owed (D2819; the reads-owed list). Tidiness, filed not fixed (D489): the new
+flying-line test sits under the Common Programme group; the Legend line repeats the outline's colours inline rather than
+from the outline's own style; two header lines of the outline file run long; the rule file's header still calls R2
+"pinned by a skipped test" beside its new live test.
+
+### Gates
+GitHub's run on the pushed commit: 25 pass, 2 skipped (as on every run); Vercel's preview refused, "Deployment rate
+limited — retry in 24 hours" (the day's build count, across every chat).
+
+Walk: docs/handpass/2026-11-27-end-time-guard.md · 2507 pictures (1845 before this round, 662 this round's) · 40 surfaces · 82 orders + 44 re-walked + 13 re-walked again + 14 checked independently + 57 this round (5 walkers) · MISSING: 1 fixed (the count-line tap, built and walked) / 0 ruled / 0 to file · round 1: 50 PASS, 0 FAIL, OBSERVE parts listed above, one put to him (OF12)
