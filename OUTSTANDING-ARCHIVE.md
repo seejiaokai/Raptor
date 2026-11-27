@@ -8914,3 +8914,15 @@ narrowing D275): BUILT 22 Nov 26 there, each landing a failing test first; walk 
 ### [VERCEL-SHIPPING-LINES] Two shipping lines still say every push builds on Vercel (a reader's note, 14 Nov 26; D2032, D201)
 Since [VERCEL-SKIP-NOTES] went live (pull request 765), a push that changes only notes builds nothing on Vercel, but two lines of `.claude/rules/shipping.md` still say otherwise: "A branch push … gives him a Vercel link to look at" (§"Push" and "merge live") and "`vercel.json` at the repo root builds `raptor-port` for every push" (§The loop). Raised by the fresh Opus reader of the Vercel line on 14 Nov 26 (chat 70). **To do:** reword both to say a push that changes the app gives a link and builds, a notes-only push builds nothing; the gates-and-deploy note already carries the detail. `shipping.md` governs the agent, so the change is read as a guide change (Astra and a fresh Opus reader) and goes live only on his "merge live".
 
+
+*Moved here 2026-11-27 by backlog-archive.mjs ([ROW-NO-TIME-MARK]). Forward facts: `.claude/rules/decisions/scheduler.md`.*
+
+### [ROW-NO-TIME-MARK] A "?" where a row has no timing or no end time (filed 29 Sep 26, D361)
+**26 Nov 26 — replaced by the end-time outline (his D2852):** closes when [END-TIME-GUARD] is built.
+**Owner, 29 Sep 26 (D361):** *"In the future I think there’s a ? Shown if no timing or end time is entered. As a future job
+I think."* Today a row with a start and no end shows nothing missing on the row itself; only an ALL AVAIL on it names the
+assumed hour, in the window its count opens (D360, D361 — a "~" on the count was mocked up and declined). A row with NO start
+already makes its ALL AVAIL count a "?" (D360 (4)). **To do:** scope it with him first — which rows (programme, duties,
+sims, ground; the flying line's times?), where the "?" sits (the empty time box, or beside it), what a tap or hover says,
+and whether a published face prints it. LOOK tier. **Place:** low; a future job, his "as a future job I think".
+
