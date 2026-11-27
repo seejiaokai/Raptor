@@ -1605,3 +1605,17 @@ recheck every standing resource (locks, loops, write rights) after a restart, be
 **Issue:** A figure was made to read "Not typed" (empty boxes) instead of a count from 0, but the count kept running underneath. The first save of the main figure copied a companion part (the carried-forward days) from that hidden count, so a first entry silently saved a value nobody saw or typed. Both blind code readers caught it; the build's own red tests, all about what the screen shows, did not.
 **Suggested improvement:** when a test list is written for a new "not yet set" state over a value still computed underneath, add one red test per save door: the FIRST real entry into the blank state writes only what the person typed, and every companion part saved with it comes from what was shown (blank → its zero), never from the hidden computed value.
 **Principle:** hiding a computed default on screen does not remove it from the save path; test that the first write after a blank state takes nothing the person could not see.
+
+
+### Observation 1108: A blind reader opened the forbidden file before it reached the brief's exclusion
+
+**Status:** OPEN
+**Date:** 28 Nov 26
+**Session context:** [OIL-LATER-PASSES-ON] bug check, chat 210 — Astra's blind scenario design (numbered past 1107, held on another branch)
+**Skill:** claudex-loop
+**Type:** open-source
+**Phase/Area:** building a brief for the other provider — blindness rules
+
+**Issue:** The command line said only "read the brief at <path> and do what it asks"; the brief listed the files the reader must not open. The reader explored the repository first, opened the handoff file (which describes the build and its known open points), and only then read the brief and its exclusion. Its report said so. The scenario list was therefore only partly blind.
+**Suggested improvement:** In the brief-building step, put the blindness rules in the command line itself, before the pointer to the brief: "Do not open X, Y, Z. First read <brief>." Ask the reader to state at the top of its report whether it opened anything on the excluded list.
+**Principle:** A reader explores before it reads instructions held in a file; any rule that must hold from the first step goes in the prompt itself, not only in a file the prompt points to.
