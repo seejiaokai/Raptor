@@ -1,0 +1,96 @@
+// @vitest-environment jsdom
+// NOT RUN: prepared from source in the read-only exported copy.
+import { expect, it } from 'vitest'
+import {
+  withThird, signInAs, signOut, moveMan, pastMidnight,
+  on, PID, ACCT, third,
+} from '../test-support/msq-world'
+import {
+  saveAccess, updateAccount, accountById, accountsLoad, ACCOUNT_PFX,
+} from './accounts'
+import { unitsLoad } from './units'
+import { NOTICES } from './notices'
+import { commitSettingsIntent, settingsStore } from './people-settings-commit'
+import { commitProjection } from '../command'
+import { store } from '../engine/hooks'
+
+withThird()
+
+const reload = (): void => {
+  unitsLoad()
+  accountsLoad()
+}
+
+const movesToOsprey = () => NOTICES.filter(n => {
+  const p: any = n.what?.[0]
+  return String(n.to) === PID.osprey
+    && n.u === 'u149'
+    && n.day === '2026-07-16'
+    && p?.k === 'sqplan'
+    && p.who === PID.hunter
+    && p.c === 'moved'
+})
+
+it.each(['no session', 'projection'] as const)(
+  '%s cannot backdate liveAt and give Osprey an earlier move line',
+  route => {
+    signInAs('kestrel')
+    expect(saveAccess(ACCT.osprey, { role: 'admin' })).toBeNull()
+    expect(updateAccount(ACCT.osprey, { on: false })).toBeNull()
+    reload()
+
+    signInAs('saber')
+    expect(moveMan(PID.hunter, third.u150)).toMatchObject({ ok: true })
+    pastMidnight()
+    reload()
+
+    expect(accountById(ACCT.osprey)!.on).toBe(false)
+    expect(movesToOsprey()).toHaveLength(0)
+
+    on(17, 9)
+    signInAs('kestrel')
+    expect(updateAccount(ACCT.osprey, { on: true })).toBeNull()
+    reload()
+
+    const returnedAt = Date.now()
+    expect(accountById(ACCT.osprey)!.liveAt).toBe(returnedAt)
+    expect(movesToOsprey()).toHaveLength(0)
+
+    if (route === 'no session') signOut()
+    else signInAs('ranger')
+
+    const key = ACCOUNT_PFX + ACCT.osprey
+    const row: any = store.get(key, null)
+    expect(row?.liveAt).toBe(returnedAt)
+
+    const older = new Date(2026, 6, 15, 8).getTime()
+    const forged = { ...row, liveAt: older }
+
+    const result: any = route === 'no session'
+      ? commitSettingsIntent('account.update', null, () => {
+          store.set(key, forged)
+        })
+      : commitProjection({
+          type: 'account.update',
+          scope: { module: 'settings' },
+          apply: (txn: any) => {
+            txn.enlist(settingsStore)
+            store.set(key, forged)
+          },
+        })
+
+    reload()
+    pastMidnight()
+    reload()
+
+    expect({
+      ok: result.ok,
+      liveAt: accountById(ACCT.osprey)!.liveAt,
+      earlierMoveLines: movesToOsprey().length,
+    }).toEqual({
+      ok: false,
+      liveAt: returnedAt,
+      earlierMoveLines: 0,
+    })
+  },
+)
