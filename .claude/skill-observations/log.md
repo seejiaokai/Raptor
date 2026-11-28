@@ -1724,3 +1724,16 @@ recheck every standing resource (locks, loops, write rights) after a restart, be
 **Issue:** A figure was made to read "Not typed" (empty boxes) instead of a count from 0, but the count kept running underneath. The first save of the main figure copied a companion part (the carried-forward days) from that hidden count, so a first entry silently saved a value nobody saw or typed. Both blind code readers caught it; the build's own red tests, all about what the screen shows, did not.
 **Suggested improvement:** when a test list is written for a new "not yet set" state over a value still computed underneath, add one red test per save door: the FIRST real entry into the blank state writes only what the person typed, and every companion part saved with it comes from what was shown (blank → its zero), never from the hidden computed value.
 **Principle:** hiding a computed default on screen does not remove it from the save path; test that the first write after a blank state takes nothing the person could not see.
+
+### Observation 1110: A "keep both sides" merge of the handoff file drops a block's closing marker
+
+**Status:** OPEN
+**Date:** 28 Nov 26
+**Session context:** chat A213 bringing `main` into `claude/sans-warnlines-185`; numbered past other branches' 1103–1109.
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** resolving a clash in the handoff file at a merge
+
+**Issue:** Two branches each rewrote a different block of the handoff file at the same place. Git's clash region held each side's block WITHOUT its closing `<!-- /now -->` (the shared closing line sat after the region), so "keep both sides" left the first block unclosed. The document check still passed; it was seen only by reading the result.
+**Suggested improvement:** after any merge that touches the handoff file, count opening and closing block markers and require them equal (a line in the merge steps, or the document check failing on an unclosed block).
+**Principle:** when a merge keeps both sides of a clash between two delimited blocks, the delimiter both sides shared appears once — check the block markers balance before committing.
