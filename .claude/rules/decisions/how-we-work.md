@@ -151,6 +151,7 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 - He runs the guide check; its list comes back as findings put to him, no guide changing for it without his word and its read [D886]. A chat started from a handoff has Remote Control on [D1195].
 - Write the state into the repo as you go; when the work closes, condense it in its own docs-only commit, never inside a fix — a saved context is a summary (decisions, state, next step), never the conversation [D69].
 - Every chat's title starts with its number — 1 the M365 package chat, 2 the rules diet's step 4, then counting on; a coordinator's with C before it, as C210, and a chat it starts or runs with A, as A211 — and each chat says its number when it reports to him; the handoff file keeps the next free number [D1744, D2849, D2893].
+- A coordinator hands itself off without asking him, at a clean, pushed point, and archives a chat it ran once that chat has handed off — its work pushed, nothing left only in its folder — and its successor has started [D2906].
 
 ## Names and privacy
 - His personal instructions file and the agent's working notes about him never go into the public project; a copy for a move is one private file on his PC [D2254].
