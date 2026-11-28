@@ -5,9 +5,15 @@
    (#drawerRole — D292, 27 Sep 26, [POST-OUT-OUTCOMES]; the old role toggle's successor). Open/close is
    the DRAWER flag in pops.ts; every action closes the drawer, as the
    reference's handlers all end with classList.remove('open'). */
-import { useEffect } from 'react'
+import { useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { PEOPLE } from '../engine/people'
-import { isAdmin, me, mayViewAsMember } from '../state/perms'
+import { UNIT } from '../engine/unitview'
+import { isAdmin, me, mayViewAsMember, menuSquadrons, pageOffered } from '../state/perms'
+import { pickSquadron, pickWillAsk, pickRefused } from '../state/pick'
+import { sqnNum } from './export'
+import { TalonMark } from './icons'
+import { SquadronRows } from './SquadronMenu'
+import { canEditSched } from '../state/auth'
 import { waitingCount } from '../state/accounts'
 import { CURPAGE } from '../state/view'
 import { notify, setPage, switchRoleView } from '../state/store'
@@ -24,7 +30,9 @@ export function Drawer() {
   const mineCs = mine && PEOPLE[mine] ? PEOPLE[mine].cs : ''
   const waiting = admin ? waitingCount() : 0
   const items: [string, string, boolean][] = [
-    ['editsched', 'Edit Schedule', !!admin], ['viewsched', 'View-only Sched', true],
+    /* Edit Schedule is the schedule in view's, as the top bar's tab (Shell.tsx — the second-half plan §2 item 3):
+       a View holder of 149 with 149 picked is not offered it (the walk's F1, 23 Nov 26) */
+    ['editsched', 'Edit Schedule', canEditSched()], ['viewsched', 'View-only Sched', true],
     ['inputs', 'Inputs', true], ['quals', 'Quals', true], ['logic', 'Logic', true],
     ['leavewar', 'Leave War', true],
     ['tracker', 'Tracker', true],
@@ -84,15 +92,25 @@ export function Drawer() {
   return (
     /* role="presentation": the shade beside the panel is nothing a screen reader should name; Escape closes the drawer */
     <div className={'drawer' + (DRAWER ? ' open' : '')} id="drawer" role="presentation"
+      onPointerDownCapture={pressBegins}
+      /* the click of the press that closed the list is spared wherever it lands — on the shade (the menu stays open) or on
+         a line of the menu, which the list's closing has just moved up under the finger (the re-walk of 23 Nov 26, N1: a
+         tap on Inputs opened the Leave War): it opens nothing, as D2384's "a press elsewhere closes the list first" says */
+      /* only a POINTER's click is spared: a keyboard's (Enter or Space on a button — a click with no press before it,
+         detail 0) reads the note away and acts, so a press that closed the list and never clicked (a right press, a finger
+         that slid) cannot swallow the next key (the read of that fix, 23 Nov 26, the fresh Opus reader and Astra) */
+      onClickCapture={e => { if (pressClosedList() && e.detail > 0) { e.stopPropagation(); e.preventDefault() } }}
       onClick={e => { if (clickedOutside(e, 'drawer')) close() }}>
       <div className="drawer-panel">
+        <DrawerSquadron />
         <h4>Menu</h4>
         {/* role="button" + tabIndex + Enter/Space, same reason as the topbar nav
             in Shell.tsx (design critique, 15 Aug 26 — a hrefless <a> is not in the
             tab order and has no button role, so a keyboard user could not reach
             these). Tag stays <a> so `#drawerNav a[data-page]` selectors hold. */}
         <nav className="drawer-nav" id="drawerNav">
-          {items.filter(i => i[2]).map(([p, label]) => {
+          {/* a squadron he only views picked: its View-only Sched and Help alone (his D2381 — perms.ts pageOffered) */}
+          {items.filter(i => i[2] && pageOffered(i[0])).map(([p, label]) => {
             const go = () => { setPage(p); setDrawer(false); notify() }
             // eslint-disable-next-line react-doctor/prefer-tag-over-role -- a page tab of the phone's menu, drawn by its rule for links (`.drawer-nav a`) as the top bar's tabs are; tests and walks find them as #drawerNav a[data-page]
             return <a key={p} data-page={p} role="button" tabIndex={0} className={p === CURPAGE ? 'on' : ''}
@@ -109,12 +127,95 @@ export function Drawer() {
             reopen the drawer from the previous user's session. */}
         <p className="drawer-acct" id="drawerAcct">Signed in as <b>{mineCs || '—'}</b> · {admin ? 'Admin' : 'Member'}</p>
         {/* D292 (27 Sep 26): on a phone the badge is hidden, so the admin's switch to the member view and back sits
-            here, under his name (the approved picture 7c); it closes the menu first, as every drawer action does */}
+            here, under his name (the approved picture 7c); it closes the menu first, as every drawer action does — and
+            redraws it closed itself (the guard rail's plan §4.1 row 4, §4.4): the switch may now be refused, or wait on
+            the Tracker's question, before its own notify(), and the menu must be gone either way, the note at the foot
+            with the window in sight (D2627 A16) */}
         {mayViewAsMember() && <div className="drawer-row"><button className="abtn" id="drawerRole"
-          onClick={() => { setDrawer(false); switchRoleView() }}>{admin ? 'Switch to the member view' : 'Back to the admin view'}</button></div>}
+          onClick={() => { setDrawer(false); notify(); void switchRoleView({ from: 'drawer' }) }}>{admin ? 'Switch to the member view' : 'Back to the admin view'}</button></div>}
         <div className="drawer-row"><button className="abtn" id="drawerLogout"
           onClick={() => { setDrawer(false); void logOut() }}>Logout</button></div>
       </div>
+    </div>
+  )
+}
+
+/* THE MENU'S HEAD: THE TALON MARK AS THE SQUADRON DROP-DOWN (his D2382, D2383, D2384 — version D as drawn,
+   docs/mock/2026-11-23-view-only-tabs/d1–d5). The top bar's own mark, its number the schedule in view's:
+   - two squadrons or more — a button reading "149 ▾", in the top bar's button look (.sqm-btn, its soft box while open);
+     a tap opens the Schedules menu's own rows (SquadronRows) right under it, inside the menu, not hung over it; a pick
+     switches the squadron through the menu's one act (state/pick.ts pickSquadron) — the list closes, the menu STAYS
+     open, its pages changed at once; Escape or a press elsewhere closes the list first, the menu still open;
+   - one squadron — the mark alone, no ▾ (D2132);
+   - under the mark, for everyone, one grey line saying his access to the squadron in view, in the list's words
+     ("149 · View only", "142 · Your squadron", "149 · Full access" — perms.ts menuSquadrons). */
+/* a press outside the open list closes the list only: its click, reaching the menu's shade when the press is let go, must
+   not close the menu too (the reads of 23 Nov 26, F2).
+   KNOWN BY THE PRESS ITSELF, NEVER BY THE CLOCK (the fix rounds' read of 23 Nov 26, Astra 2): the first fix gave that click
+   700 ms to arrive, so a press held a second closed the list and the menu both, and a second quick press was spared too.
+   Every press that begins anywhere in the menu clears the note first (the shade's capture handler, which runs before
+   the list's own listener on the document); the press that closes the list then sets it; and any click that reaches
+   the menu reads it and clears it (the menu's click capture) — so only the click of that same press is spared, however
+   long it was held, wherever in the menu it lands, and a press that never clicks (a finger that slid) spares nothing
+   after it. */
+let PRESS_CLOSED_LIST = false
+const pressBegins = (): void => { PRESS_CLOSED_LIST = false }
+const pressClosedList = (): boolean => { const was = PRESS_CLOSED_LIST; PRESS_CLOSED_LIST = false; return was }
+function DrawerSquadron() {
+  useVersion()
+  const rows = menuSquadrons()
+  const num = sqnNum('schedule')
+  const many = rows.length > 1
+  const cur = rows.find(r => r.id === UNIT)
+  const [open, setOpen] = useState<null | { keyboard: boolean }>(null)
+  const wrap = useRef<HTMLDivElement>(null), btn = useRef<HTMLButtonElement>(null), list = useRef<HTMLDivElement>(null)
+  /* the menu closed, or a right taken away so one squadron is left: the list closes with it */
+  if (open && (!many || !DRAWER)) setOpen(null)
+  const shown = many && DRAWER && !!open
+  useEffect(() => {
+    if (!shown) return
+    /* opened by the keys: the squadron in view takes the focus */
+    if (open?.keyboard) (list.current?.querySelector<HTMLElement>('.sqm-row[aria-checked="true"]') ?? list.current?.querySelector<HTMLElement>('.sqm-row'))?.focus()
+    const outside = (e: PointerEvent) => { if (!wrap.current?.contains(e.target as Node)) { PRESS_CLOSED_LIST = true; setOpen(null) } }
+    const off = escCloses(() => list.current, () => { setOpen(null); btn.current?.focus() }, btn.current)
+    document.addEventListener('pointerdown', outside)
+    return () => { document.removeEventListener('pointerdown', outside); off() }
+  }, [shown, open])
+  /* a pick that will ask the Tracker's question about unsaved chart edits first closes the menu, as its Logout does before
+     the sign-out's same question — the question is drawn under the menu's panel (the walk of 23 Nov 26, F2); a pick the
+     guard refuses closes it too, so the "Blocked:" note stands at the foot with the window it names in sight (D2627 A16;
+     the drawing p3-p); any other pick leaves the menu open (D2384) */
+  const pick = (u: string) => {
+    setOpen(null)
+    if (pickRefused(u) || pickWillAsk(u)) { setDrawer(false); notify() } else btn.current?.focus()
+    void pickSquadron(u, { from: 'drawer' })
+  }
+  const move = (e: ReactKeyboardEvent) => {
+    const items = [...(list.current?.querySelectorAll<HTMLButtonElement>('.sqm-row') ?? [])]
+    if (!items.length) return
+    const i = items.indexOf(document.activeElement as HTMLButtonElement)
+    const to = e.key === 'ArrowDown' ? (i + 1) % items.length : e.key === 'ArrowUp' ? (i - 1 + items.length) % items.length
+      : e.key === 'Home' ? 0 : e.key === 'End' ? items.length - 1 : -1
+    if (to < 0) return
+    e.preventDefault(); items[to]!.focus()
+  }
+  return (
+    /* the top bar's list's keys too (ui/SquadronMenu.tsx — the reads of 23 Nov 26, F3): focus leaving the list closes it,
+       Arrow Down or Up on the mark opens it on the squadron in view */
+    <div className="drawer-sqn" ref={wrap}
+      onBlur={e => { if (e.relatedTarget && !e.currentTarget.contains(e.relatedTarget as Node)) setOpen(null) }}>
+      {many
+        ? <button type="button" className={'sqm-btn' + (shown ? ' on' : '')} id="drawerSqnBtn" ref={btn}
+          aria-haspopup="menu" aria-expanded={shown} aria-controls="drawerSqnList" aria-label={`Squadron ${num} — pick a squadron's schedule`}
+          onClick={e => setOpen(o => (o ? null : { keyboard: e.detail === 0 }))}
+          onKeyDown={e => { if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); setOpen({ keyboard: true }) } }}>
+          <TalonMark num={num} menu />
+        </button>
+        : <TalonMark num={num} />}
+      {shown && <div className="sb-moremenu drawer-sqlist" id="drawerSqnList" role="menu" aria-label="Schedules" ref={list} onKeyDown={move}>
+        <SquadronRows rows={rows} pick={pick} />
+      </div>}
+      {cur && <p className="drawer-acct drawer-sqline" id="drawerSqnLine">{cur.num} · {cur.label}</p>}
     </div>
   )
 }

@@ -41,6 +41,9 @@ const csOf = (cs: string) => Object.keys(PEOPLE).find(k => (PEOPLE as any)[k].cs
 const drop = (...css: string[]) => { for (const cs of css) { const id = csOf(cs); if (id) delete (PEOPLE as any)[id]; delete (ID_BY_CS as any)[cs.toLowerCase()] } }
 const clearRequests = async () => { await signInAs('ad', 'a'); for (const r of ACCESS_REQS.slice()) declineRequest(r.id) }
 const optTexts = (sel: string) => [...(document.querySelector(sel) as HTMLSelectElement).options].map(o => o.textContent)
+/* Admin → Users' add form opens under the page's top row when "+ Add a person" is pressed (the guard rail's K2a — his
+   D2652 N13 i, D2726, D2729 Q10); one App runs through this file, so a form an earlier test left open is used as it is */
+const openAdd = async () => { if (!$('#accAddBlock')) await click($('#accAddOpen')) }
 
 const mem: Record<string, string> = {}
 const toasts: string[] = []
@@ -73,7 +76,9 @@ describe('NP4 — the sign-up card asks what the admin asks (D214, D222, D225, D
   it('four labelled fields, the D222 label, no Name box; Pilot / WSO / Personnel; CAT hidden for personnel', async () => {
     await signInAs('fresh@mail')
     const labels = $$('#accForm label').map(l => l.textContent)
-    expect(labels).toEqual(['Displayed callsign/name', 'Initials', 'Pilot, WSO or personnel', 'CAT'])
+    /* (since batch 1's second half §5 item 1 — D2094, D2111, picture b1-5 — "Squadron" is the card's first choice where
+       the store holds more than one squadron, as the demo's 142 and 149; the four fields follow it unchanged) */
+    expect(labels).toEqual(['Squadron', 'Displayed callsign/name', 'Initials', 'Pilot, WSO or personnel', 'CAT'])
     expect($('#accFull'), 'the Name box gave way to initials (D219)').toBeFalsy()
     expect(optTexts('#accSeat')).toEqual(['Pick…', 'Pilot', 'WSO', 'Personnel (ground crew)'])
     await type($('#accSeat') as HTMLSelectElement, 'GND')
@@ -86,6 +91,7 @@ describe('NP4 — the sign-up card asks what the admin asks (D214, D222, D225, D
   })
   it('D226: past 14 letters the card says so at once, and Request access refuses — nothing cut', async () => {
     await signInAs('fresh@mail')
+    await type($('#accSqn') as HTMLSelectElement, 'u142')   // it starts on "Pick…" (his D2396 (f))
     await type($('#accCs') as HTMLInputElement, 'Christopher Tan')
     expect(($('#accCs') as HTMLInputElement).value, 'the box keeps every letter').toBe('Christopher Tan')
     expect($('#accCsLong').textContent).toMatch(/at most 14 letters/)
@@ -96,6 +102,7 @@ describe('NP4 — the sign-up card asks what the admin asks (D214, D222, D225, D
   })
   it('D225: initials may be blank; the waiting screen reads what he gave', async () => {
     await signInAs('fresh@mail')
+    await type($('#accSqn') as HTMLSelectElement, 'u142')   // it starts on "Pick…" (his D2396 (f))
     await type($('#accCs') as HTMLInputElement, 'Viper')
     await act(async () => { $('#accForm').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })) })
     expect($('#accErr').textContent, 'a missing pick is refused with its reason').toBe('Pick pilot, WSO or personnel')
@@ -111,6 +118,7 @@ describe('NP4 — the sign-up card asks what the admin asks (D214, D222, D225, D
   })
   it('D1650 / D1656: the screen after asking is the pass, then the three steps, the read-only line, its two buttons and "Signed in as" at the foot', async () => {
     await signInAs('pass@mail')
+    await type($('#accSqn') as HTMLSelectElement, 'u142')   // it starts on "Pick…" (his D2396 (f))
     await type($('#accCs') as HTMLInputElement, 'Stranger')
     await type($('#accIni') as HTMLInputElement, 'ST')
     await type($('#accSeat') as HTMLSelectElement, 'GND')
@@ -287,6 +295,7 @@ describe('NP1 — adding on Admin → Users: New person with an account, or alon
   it('a blank sign-in makes a roster-only person: no Role, "Add person"', async () => {
     await signInAs('ad', 'a')
     await act(async () => { setPage('admin'); notify() })
+    await openAdd()
     expect($('#accModeRoster'), 'no On the roster half on the add form').toBeFalsy()
     expect($('#accAddRole'), 'no account, no role').toBeFalsy()
     expect($('#accAdd').textContent).toBe('Add person')
@@ -300,6 +309,7 @@ describe('NP1 — adding on Admin → Users: New person with an account, or alon
   it('with a sign-in: "Add person and sign-in", Role shown; refused halves leave nothing', async () => {
     await signInAs('ad', 'a')
     await act(async () => { setPage('admin'); notify() })
+    await openAdd()
     await type($('#accAddName') as HTMLInputElement, 'hex')
     expect($('#accAdd').textContent).toBe('Add person and sign-in')
     expect($('#accAddRole')).toBeTruthy()
@@ -318,6 +328,7 @@ describe('NP1 — adding on Admin → Users: New person with an account, or alon
   it('an add clears the WHOLE form — nothing half-typed comes back (Astra read #1)', async () => {
     await signInAs('ad', 'a')
     await act(async () => { setPage('admin'); notify() })
+    await openAdd()
     await type($('#accAddName') as HTMLInputElement, 'gecko@mail')
     await type($('#accAddRole') as HTMLSelectElement, 'admin')
     await type($('#accAddCs') as HTMLInputElement, 'Gecko')
@@ -346,6 +357,7 @@ describe('NP4 — a CAT never rides through Personnel (26 Aug 26; Astra read #2)
   it('Admin → Users New person: Pilot + CAT C → Personnel → WSO shows CAT "Pick…"', async () => {
     await signInAs('ad', 'a')
     await act(async () => { setPage('admin'); notify() })
+    await openAdd()
     await type($('#accAddSeat') as HTMLSelectElement, 'FCP'); await type($('#accAddCat') as HTMLSelectElement, 'C')
     await type($('#accAddSeat') as HTMLSelectElement, 'GND')
     expect(($('#accAddCat') as HTMLSelectElement).disabled, 'personnel: "None — personnel"').toBe(true)
@@ -377,6 +389,7 @@ describe('NP7 — the words (D219, D220)', () => {
     expect($('#apvPid').getAttribute('aria-label')).toBe('The callsign or name this account belongs to')
     expect($('label[for="apvPid"]').textContent).toBe('Callsign/Name')
     await click($('#apvCancel'))
+    await openAdd()
     expect($('label[for="accAddCs"]').textContent).toBe('Callsign/Name')
     expect(optTexts('#accAddSeat')).toEqual(['Pick…', 'Pilot', 'WSO', 'Personnel (ground crew)'])
     expect(document.body.innerHTML).not.toMatch(/\((FCP|RCP)\)/)
@@ -391,7 +404,9 @@ describe("NP6 — the admins' bell, each admin's own (D216, D227)", () => {
     await signInAs('ad', 'a')
     expect($('#notifyBell').classList.contains('on')).toBe(true)
     await click($('#notifyBell')); await flush()
-    expect(toasts).toContain('1 waiting for access — opening Admin → Users')
+    /* (the words since his D2325 — picture f9, batch 1's second half §15 D3: the squadron landed on named; the toast was
+       "1 waiting for access — opening Admin → Users") */
+    expect(toasts).toContain('1 waiting for access to 142')
     expect(CURPAGE).toBe('admin')
     expect($('#admUsers').classList.contains('on')).toBe(true)
     expect(accessAlert(), 'the list was on his screen').toBe(false)

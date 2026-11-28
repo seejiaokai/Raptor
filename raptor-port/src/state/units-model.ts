@@ -34,7 +34,12 @@ export interface UnitPlace { id: string; unit: string; place: string; from: stri
 /* `first` (the sign-in kinds review's K3 — D2160, D2191, D2247): the Plan "+ New squadron" gives the squadron's named first
    admin (units.ts addUnit, a master admin's alone). A man who moves squadron joins as a member — save the first admin of
    a new squadron, who moves into it as its admin: adminRoleHolds reads this mark for that, and nothing else does. */
-export interface Grant { id: string; account: string; unit: string; level: GrantLevel; from?: string; first?: true }
+/* `fromAt` (batch 1's second half, plan §16 D1′ — his D2310, D2218): the MOMENT the right became Plan (ms), written by
+   every door that makes a grant's level `admin` (units.ts setGrant, putGrantLine, addUnit) and kept while it stays Plan;
+   a View row has none. The bell shows a squadron's admin line only where the right its reader holds there began no later
+   than the line (notices.ts rightStart), so Plan taken at 10:00 and given at 11:00 brings none of the old lines back.
+   An Undo restores the row whole, its moment with it. Absent on a row from before it was kept (D56): from always. */
+export interface Grant { id: string; account: string; unit: string; level: GrantLevel; from?: string; first?: true; fromAt?: number }
 export interface Home { id: string; pid: string; unit: string; from: string }
 export interface UnitRows { units: Unit[]; places: Place[]; unitplaces: UnitPlace[]; grants: Grant[]; homes: Home[] }
 
@@ -95,7 +100,8 @@ export function validUnitPlace(v: any, key?: string): UnitPlace | null {
 export function validGrant(v: any, key?: string): Grant | null {
   if (!v || typeof v !== 'object' || typeof v.id !== 'string' || !GRANT_ID.test(v.id) || (key != null && v.id !== key)) return null
   if (!isStr(v.account) || !isUnitId(v.unit) || (v.level !== 'admin' && v.level !== 'view')) return null
-  return { id: v.id, account: v.account, unit: v.unit, level: v.level, ...(validIso(v.from) ? { from: String(v.from) } : {}), ...(v.first === true && v.level === 'admin' ? { first: true as const } : {}) }
+  return { id: v.id, account: v.account, unit: v.unit, level: v.level, ...(validIso(v.from) ? { from: String(v.from) } : {}), ...(v.first === true && v.level === 'admin' ? { first: true as const } : {}),
+    ...(v.level === 'admin' && Number.isFinite(v.fromAt) ? { fromAt: +v.fromAt } : {}) }
 }
 export function validHome(v: any, key?: string): Home | null {
   if (!v || typeof v !== 'object' || typeof v.id !== 'string' || !HOME_ID.test(v.id) || (key != null && v.id !== key)) return null
@@ -143,6 +149,13 @@ export const unitIn = (r: UnitRows, id: string): Unit | undefined => r.units.fin
 export const placeIn = (r: UnitRows, id: string): Place | undefined => r.places.find(p => p.id === id)
 /* the place a unit is at on a date (its place's id), or null for a unit never placed */
 export const placeIdOn = (r: UnitRows, unit: string, iso: string): string | null => atOn(r.unitplaces.filter(x => x.unit === unit), iso)?.place ?? null
+/* THE SQUADRONS AT A PLACE (batch 1's second half §6 item 3 — D2196, D2336, PG1; §15 D13, R-O8a): every squadron whose
+   place that day is it, or whose place row names it from a later day (a move saved for tomorrow counts) — the set an
+   admin must be an admin of, every one, to change its time zone; the door (state/units.ts setPlace) and the gate
+   (state/perms.ts unitRowViolation) read this one body */
+export const unitsAtPlace = (r: UnitRows, placeId: string, iso: string): string[] =>
+  r.units.filter(u => placeIdOn(r, u.id, iso) === placeId
+    || r.unitplaces.some(x => x.unit === u.id && x.place === placeId && x.from > iso)).map(u => u.id)
 
 /* HOMES INDEXED BY PERSON, ONCE PER SET OF ROWS (the reshape plan §3.2 A-i; C10's measured cost): every read of a man's
    squadron used to filter every home row; a list over a year of days (the Leave War's rosters, Piece D) and a right read
@@ -359,3 +372,21 @@ export function levelFrom(acct: LevelAccount | null | undefined, unit: string, i
 
 /* the date a move counts from: the next day's start (D2119) — a move typed today never rewrites today */
 export const moveFrom = (today: string): string => addDays(today, 1)
+
+/* THE ONE ORDER OF SQUADRONS (his D2730 Q1: "home squadron first, then the rest by number, in every list of squadrons —
+   one order everywhere"). Every list of squadrons the app draws calls this, so no list keeps a sort of its own that could
+   drift from the others. Numbers compare as numbers, exactly as the sorts it replaces did (9 < 142 < 249 < 1000); a home
+   that is not in the list, or none, leaves it plain by number; equal numbers keep the order they came in (a stable
+   sort). Generic over what a caller holds — bare unit ids, Unit rows, { id, num } rows — through `idOf` and `numOf`, so
+   none needs a second copy of the comparison. `bySquadronOrder` is the comparator, for a caller that sorts in place;
+   `squadronOrder` returns a new array and never changes the one it is given. */
+export function bySquadronOrder<T>(home: string | null | undefined, idOf: (x: T) => string, numOf: (x: T) => string): (a: T, b: T) => number {
+  return (a, b) => {
+    const ah = home ? idOf(a) === home : false, bh = home ? idOf(b) === home : false
+    if (ah !== bh) return ah ? -1 : 1
+    return String(numOf(a)).localeCompare(String(numOf(b)), undefined, { numeric: true })
+  }
+}
+export function squadronOrder<T>(items: readonly T[], home: string | null | undefined, idOf: (x: T) => string, numOf: (x: T) => string): T[] {
+  return [...items].sort(bySquadronOrder(home, idOf, numOf))
+}

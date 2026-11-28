@@ -117,9 +117,9 @@
           plain flex line. overflow-x:auto is kept only as a safety net for a
           sub-340px screen, where the row now scrolls as ONE piece — no pins, so
           no control can emerge from behind another. */
-  .topbar .mark .k{font-size:8.5px;letter-spacing:.14em}
-  .topbar .mark .v{font-size:15px}
-  .topbar .mark .rglyph{width:24px;height:24px}
+  .topbar .mark .k,.drawer-sqn .mark .k{font-size:8.5px;letter-spacing:.14em}
+  .topbar .mark .v,.drawer-sqn .mark .v{font-size:15px}
+  .topbar .mark .rglyph,.drawer-sqn .mark .rglyph{width:24px;height:24px}
   .burger{width:32px;height:30px}
   /* Insights uses schedule More menus and Logout the phone drawer (D558); the
      empty .acct (its "View as" select is already phone-hidden) leaves too, so

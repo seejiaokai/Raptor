@@ -91,5 +91,5 @@ Loads with any OIL, Leave War, placeholder-puck or publishing file (the `paths:`
 
 ## From other areas
 - The scheduler's, on OIL (shared inputs, ALL AVAIL, OIL Earn on the board, placeholders, availability, the crowd at publication): D762, D660, D682, D753, D272, D277, D65, D1782, D27, D33, D47, D36, D37, D38, D39, D40, D41, D51, D44, D45.
-- Two parts stated here: a person added to a shared input follows its answer, the scheduler asked on the spot only where there is none yet, a No's note saying they are not counted [D755, D776]; an answer for a day the input no longer covers stays on the record, credited for nothing, and counts again if the input moves back [D731, D762].
+- Two parts stated here: a person added to a shared input follows its answer, the scheduler asked on the spot only where there is none yet, a No's note saying they are not counted [D755, D776]; an answer for a day the input no longer covers stays on the record, credited for nothing, and counts again if the input moves back [D731, D762, D2627].
 - The design file's D1793; the Leave War's D265 with D260; People & accounts' D327; How we work's D54 (leave it — the pending mark once `[OIL-SEATS-CAN-EARN]` ships) and D56.

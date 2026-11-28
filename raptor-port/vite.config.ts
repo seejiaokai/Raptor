@@ -38,8 +38,10 @@ export default defineConfig({
           include: ['src/**/*.test.{ts,tsx}'],
           exclude: ['**/node_modules/**', 'src/leavewar/**'],
           /* the marks guard ([WARN-HIDE-KEPT], 1 Oct 26): after every validate() of every test, each puck flag must
-             belong to a warning of its own — src/testing/marks-guard.ts */
-          setupFiles: ['src/testing/marks-guard.ts'],
+             belong to a warning of its own — src/testing/marks-guard.ts; the entry checker (the guard rail's step K7):
+             no squadron or view change by press goes through with something open its door did not leave out, and
+             nothing opens behind a refusal — src/testing/entry-checker.ts */
+          setupFiles: ['src/testing/marks-guard.ts', 'src/testing/entry-checker.ts'],
           /* 20s like leavewar's, for the same reason: headroom on a slow
              shared runner, not a target. The default 5s failed main's deploy
              on 19 Aug 26 — a board.test.tsx test that runs ~1s locally timed

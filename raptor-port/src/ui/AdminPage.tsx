@@ -33,15 +33,21 @@ import { kindLabel } from '../engine/wavetpl'
 import { secDefault, moveSecDefault, secDefaultSave, secDefaultReset, waveDefault, waveDefaultView, moveWaveDefault, waveDefaultSave, waveDefaultReset } from '../engine'
 import { clearHistoryData, clearEditHistory, type ClearMode } from './inputedit'
 import { useVersion } from './useStore'
-import { UsersIcon, SlidersIcon, DatabaseIcon } from './icons'
+import { UsersIcon, SlidersIcon, DatabaseIcon, MapPinIcon } from './icons'
+import { SquadronsPanel } from './SquadronsPanel'
 import { DateBox } from './DateBox'
 import { DateCal } from './DateCal'
 import { sayDateYY } from './daysfmt'
+import { sqnNum } from './export'
 
 /* The rail is data-driven so a new settings category is one row here plus its
    panel below — nothing else in the layout moves. */
 const CATS = [
   { id: 'users', label: 'Users', sub: 'Sign-in and roster', icon: <UsersIcon /> },
+  /* the squadrons and their places, for every admin (batch 1's second half §6 — D2110, D2196; pictures b1-3, p7): its
+     tile wears the map pin, never Users' people (one thing, one icon — D1134); "Places" its grey line until batch 2's
+     detachments */
+  { id: 'squadrons', label: 'Squadrons', sub: 'Places', icon: <MapPinIcon /> },
   { id: 'config', label: 'Squadron config', sub: 'Duty, day & wave templates', icon: <SlidersIcon /> },
   { id: 'data', label: 'Data', sub: 'Storage & cleanup', icon: <DatabaseIcon /> },
 ]
@@ -157,7 +163,8 @@ const ADEF_SEC_LABEL: Record<string, string> = {
   notes: 'Overall notes', prog: 'Common Programme', waves: 'Flying waves', duty: 'Duties', sims: 'Sims', ground: 'Ground Programme',
   inputs: 'Personal Inputs', avail: 'Available crew', sans: 'SANS availability', unav: 'Unavailable',
 }
-function ArrangeDefaults() {
+/* `ro`: the squadron in view is not his to change (D2317) — every control greyed, as the drawing f1a draws it */
+function ArrangeDefaults({ ro }: { ro: boolean }) {
   const sec = secDefault()
   const wav = waveDefaultView()
   const waveOn = waveDefault().length > 0
@@ -168,8 +175,8 @@ function ArrangeDefaults() {
   const row = (key: string, i: number, len: number, label: string, up: () => void, down: () => void) => (
     <div className="arrsec-row" key={key} data-adefrow={key}>
       <span className="grip">
-        <button className="tnudge" aria-label={`Move ${label} up`} disabled={i === 0} onClick={up}>▲</button>
-        <button className="tnudge" aria-label={`Move ${label} down`} disabled={i === len - 1} onClick={down}>▼</button>
+        <button className="tnudge" aria-label={`Move ${label} up`} disabled={ro || i === 0} onClick={up}>▲</button>
+        <button className="tnudge" aria-label={`Move ${label} down`} disabled={ro || i === len - 1} onClick={down}>▼</button>
       </span>
       <span className="arrsec-name">{label}</span>
       <span className="arrsec-pos">{i + 1}</span>
@@ -183,7 +190,7 @@ function ArrangeDefaults() {
           () => nudgeSec(key, -1), () => nudgeSec(key, 1)))}
       </div>
       <p className="adm-note">The order the day’s panels show in. The schedule sections apply on both Edit Schedule and the Scheduler Board; the crew lists (Personal Inputs, Available crew, SANS, Unavailable) reorder on the Scheduler Board only. A day arranged on its own keeps its own order.</p>
-      <button className="abtn" id="admSecDefReset" onClick={resetSec} style={{ marginTop: 2 }}>Reset to standard order</button>
+      <button className="abtn" id="admSecDefReset" onClick={resetSec} disabled={ro} style={{ marginTop: 2 }}>Reset to standard order</button>
       <div className="arrsec-subh" style={{ marginTop: 16 }}>Flying-wave order</div>
       <div className="arrsec-list" id="admWaveDefault">
         {wav.map((key, i) => row(key, i, wav.length, kindLabel(key as any),
@@ -194,19 +201,71 @@ function ArrangeDefaults() {
           ? 'A new wave added to a schedule that isn’t signed off lands in this order (e.g. SC on top). It never re-orders a day already planned, or a signed-off day.'
           : 'Off — a new wave is added at the bottom. Move a wave type to set the order new waves are placed in on a fresh schedule.'}
       </p>
-      {waveOn && <button className="abtn" id="admWaveDefOff" onClick={resetWav} style={{ marginTop: 2 }}>Turn off wave order</button>}
+      {waveOn && <button className="abtn" id="admWaveDefOff" onClick={resetWav} disabled={ro} style={{ marginTop: 2 }}>Turn off wave order</button>}
     </div>
   )
+}
+
+/* SQUADRON CONFIG FOLLOWS THE SQUADRON IN VIEW (his D2317 — the drawings f1a, f1b, draw-f.mjs f1): its templates and
+   default arrangement load with the schedule in view's settings, so its heading names that squadron ("Squadron config ·
+   149", for his own as well — f1b), and it is his to change only as an admin of it — step A's "schedule" kind (auth.ts
+   canEditSched → perms.ts maySchedEditPage), the same question Logic and the template editors ask */
+const paneTitle = (c: { id: string; label: string }): string => (c.id === 'config' ? `${c.label} · ${sqnNum('schedule')}` : c.label)
+/* the panel's controls — the front doors to the template editors (the modals are App-level siblings, App.tsx; these
+   buttons set the same pops.ts flags the picker pencils set). NOT HIS TO CHANGE (D2317): the set-up is the squadron in
+   view's and he is no admin of it — a View holder with 149 picked: the line names it as drawn, every control below is
+   greyed, and each door still asks again */
+function SquadronConfig() {
+  const ro = !canEditSched()
+  const num = sqnNum('schedule')
+  const door = (open: (on: boolean) => void) => () => { if (!canEditSched()) return; open(true); notify() }
+  return (<>
+    {ro && <p className="adm-note adm-cfg-ro" id="admCfgRo">{`This is ${num}'s set-up. Only an admin of ${num} can change it.`}</p>}
+    <h4 className="adm-sub">Default arrangement</h4>
+    <ArrangeDefaults ro={ro} />
+    <hr className="adm-sep" />
+    <button className="abtn" id="admDutyTpl" disabled={ro} onClick={door(setTplEdit)}>Duty templates…</button>
+    <p className="adm-note">A duty template is a saved duty block — its rows and times — that "+ Block" copies onto any day as a plain, conflict-checked desk.</p>
+    <button className="abtn" id="admDayTpl" disabled={ro} onClick={door(setDayTplEdit)}>Day templates…</button>
+    <p className="adm-note">A day template is a whole captured day — waves, duties, sims and ground rows — recaptured off a real day and re-applied from the day-templates picker.</p>
+    <button className="abtn" id="admWaveTpl" disabled={ro} onClick={door(setWaveEdit)}>Wave templates…</button>
+    <p className="adm-note">A wave template is a saved flying wave — its rule-set and lines — that "+ Wave" drops onto any day.</p>
+  </>)
 }
 
 /* how long a row a bell's posting line lands on stays ringed — the app's one just-added mark's six seconds (state/view.ts
    FRESH_MS; 06-inputs.css inflash) */
 const RING_MS = 6000
+/* THE INTENT TAKEN WHILE DRAWING, NOT IN AN EFFECT (U1's sixth round — Astra's finding 2 of the fifth read): taken in an
+   effect, the intent reached Users one draw late — Users' first draw responding to it still had the old `ring`, judged a
+   row whose man's move had landed unseen and queued the row-changed note, before the landing that should have closed it
+   silently (his own bell tap, as his pick is) arrived. Taken here, React draws the Admin page again at once with the
+   intent in hand, before Users draws — React's own pattern for state that follows a value, as Users' useOpenRequest is.
+   Only the clearing of the app's record, a write outside this page, stays an effect, as do the scroll and the ring's
+   timer. (A hook of its own, out of AdminPage, so the page's own control flow stays small — the code check.) */
+function useAdminIntent(
+  setCat: (c: string) => void, setDrilled: (d: boolean) => void, setOpenNew: (n: number) => void,
+  setRing: (r: { seq: number; pid: string; on: boolean } | null) => void,
+): void {
+  const intentSeq = ADMINOPEN ? ADMINOPEN.seq : 0
+  const [taken, setTaken] = useState(0)
+  if (ADMINOPEN && ADMINOPEN.seq !== taken) {
+    const it = ADMINOPEN
+    setTaken(it.seq)
+    /* (Users, or the panel the intent names — Squadrons for an Undo of "+ New squadron", the fix read's A3) */
+    setCat(it.cat ?? 'users'); setDrilled(true)
+    setOpenNew(it.newPerson ? it.seq : 0)
+    setRing(it.person ? { seq: it.seq, pid: it.person, on: true } : null)
+  }
+  useEffect(() => {
+    if (ADMINOPEN && ADMINOPEN.seq === taken) clearAdminOpen()
+  }, [intentSeq, taken])
+}
 export function AdminPage() {
   useVersion()
   /* which category the pane shows; `drilled` only matters on a phone, where the
      rail and pane share the screen — it flips from the list to the detail */
-  const [cat, setCat] = useState('users')
+  const [cat, setCat] = useState<string>(() => ADMINOPEN?.cat ?? 'users')
   /* arriving by the bell or Quals' "+ Add person" opens Users straight away — on a phone
      drilled in, never the category list first ([ACCOUNTS-NEW-PERSON]) */
   const [drilled, setDrilled] = useState(() => !!ADMINOPEN)
@@ -214,21 +273,14 @@ export function AdminPage() {
   /* a man to bring into view and ring on Users (a bell's posting line — [POSTOUT-RUN-NOTICE]): `seq` the tap, `on` while his
      row wears the just-added mark — its six seconds */
   const [ring, setRing] = useState<{ seq: number; pid: string; on: boolean } | null>(null)
+  /* this category's page is on his screen: chosen, and on a phone drilled in */
+  const onScreen = (c: string): boolean => cat === c && (drilled || !HOOKS.isPhone())
   const admin = isAdmin()
   /* THE ONE CONSUMER of "open Admin → Users" (state/view.ts ADMINOPEN — Fable F2, Astra 4):
      keyed on its `seq`, so it works whether this page was just mounted or was already up
      (on Squadron config, say), and a second press is a new intent. `drilled` is inert on a
      desktop (the rail and the pane sit side by side there). */
-  const intentSeq = ADMINOPEN ? ADMINOPEN.seq : 0
-  useEffect(() => {
-    const it = ADMINOPEN
-    if (!it) return
-    setCat('users'); setDrilled(true)
-    setOpenNew(it.newPerson ? it.seq : 0)
-    const seq = it.seq, person = it.person
-    setRing(person ? { seq, pid: person, on: true } : null)
-    clearAdminOpen()
-  }, [intentSeq])
+  useAdminIntent(setCat, setDrilled, setOpenNew, setRing)
   /* THE RING'S SIX SECONDS, an effect of its own keyed on the tap: the intent's effect above runs again the moment ADMINOPEN
      is cleared, and a timer it cleaned up there left the ring on for good (the walk's B4); keyed here, a second tap starts
      its own six seconds and a page left takes its timer with it */
@@ -271,7 +323,7 @@ export function AdminPage() {
         <div className="adm-pane">
           <div className="adm-pane-head">
             <button type="button" className="adm-back" onClick={() => setDrilled(false)} aria-label="Back to categories">‹</button>
-            <h3>{active.label}</h3>
+            <h3>{paneTitle(active)}</h3>
           </div>
           <div className="adm-pane-body">
             {/* ---- Users — the accounts ([ACCOUNTS], D166 (1), D204, 26 Sep 26): who can
@@ -281,22 +333,19 @@ export function AdminPage() {
             <section className={'adm-panel' + (cat === 'users' ? ' on' : '')} id="admUsers">
               {/* `shown`: the waiting list is on his screen — Users chosen, and on a phone
                   drilled in (the category list alone does not count — D216, D227) */}
-              <UsersPanel shown={cat === 'users' && (drilled || !HOOKS.isPhone())} openNew={openNew} ring={ring} />
+              <UsersPanel shown={onScreen('users')} openNew={openNew} ring={ring} />
+            </section>
+            {/* ---- Squadrons — each squadron and its place, the places and their time zones, "+ New squadron" for a
+                master admin (ui/SquadronsPanel.tsx) ---- */}
+            <section className={'adm-panel' + (cat === 'squadrons' ? ' on' : '')} id="admSquadrons">
+              <SquadronsPanel shown={onScreen('squadrons')} />
             </section>
             {/* ---- Squadron configuration — front doors to the two template
                 editors. The modals are App-level siblings (App.tsx), so they
                 paint over this page exactly as they do over any other; these
                 buttons just set the same pops.ts flags the picker pencils set. ---- */}
             <section className={'adm-panel' + (cat === 'config' ? ' on' : '')} id="admConfig">
-              <h4 className="adm-sub">Default arrangement</h4>
-              <ArrangeDefaults />
-              <hr className="adm-sep" />
-              <button className="abtn" id="admDutyTpl" onClick={() => { setTplEdit(true); notify() }}>Duty templates…</button>
-              <p className="adm-note">A duty template is a saved duty block — its rows and times — that "+ Block" copies onto any day as a plain, conflict-checked desk.</p>
-              <button className="abtn" id="admDayTpl" onClick={() => { setDayTplEdit(true); notify() }}>Day templates…</button>
-              <p className="adm-note">A day template is a whole captured day — waves, duties, sims and ground rows — recaptured off a real day and re-applied from the day-templates picker.</p>
-              <button className="abtn" id="admWaveTpl" onClick={() => { setWaveEdit(true); notify() }}>Wave templates…</button>
-              <p className="adm-note">A wave template is a saved flying wave — its rule-set and lines — that "+ Wave" drops onto any day.</p>
+              <SquadronConfig />
             </section>
             {/* ---- Data & persistence — the honesty card. This page is where the
                 real controls land when the shared database arrives; until then the

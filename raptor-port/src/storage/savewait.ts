@@ -30,3 +30,15 @@ export function saveWaiting(): boolean {
   const s = postman?.status
   return s === 'failed' || s === 'unsaved'
 }
+/* THE SIGN-IN'S HOLD (batch 1's second half §8 — step G, his D2205 M2, D2322; ui/Login.tsx): a sign-in is held while the
+   last change on this page has not landed — waiting, or still on its way — so it is saved under the last person's name,
+   never the next one's; and its line says "not saved yet" once a save was refused */
+/** a change on this page has not landed yet: waiting (above) or in flight */
+export function saveSettling(): boolean { return saveWaiting() || postman?.status === 'saving' }
+/** the last save was refused (the sign-in's line turns to "not saved yet — check the connection") */
+export function saveRefused(): boolean { return postman?.status === 'failed' }
+/** call `fn` on every change of the saver's state; returns the way to stop. No saver to listen to: never fires. */
+export function onSaveStatus(fn: () => void): () => void {
+  const p = postman
+  return p?.onStatus ? p.onStatus(fn) : () => {}
+}

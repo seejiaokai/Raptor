@@ -3,9 +3,10 @@
    and a bell's posting line ([POSTOUT-RUN-NOTICE], D1547 — `person`: his row brought into
    view and ringed). The intent is state/view.ts ADMINOPEN; the Admin page is its one consumer. */
 import { requestAdminUsers } from '../state/view'
-import { notify, setPage } from '../state/store'
+import { notify, setPage, ownPageRefused } from '../state/store'
 
 export function openAdminUsers(opts: { newPerson?: boolean; person?: string } = {}): void {
+  if (ownPageRefused('admin')) return
   requestAdminUsers(!!opts.newPerson, opts.person)
   setPage('admin')
   notify()

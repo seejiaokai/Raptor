@@ -94,7 +94,7 @@ export const SETTINGS_KEYS = [
 /* - `noticeseen:<pid>` — what each person has read of his bell's notices, `NoticeSeen`; written ONLY by
      state/noticeseen.ts, through its one command `notices.seen` (own row only — the one-rule build's step 7). */
 /* (…'apprseen:' — each admin's own moment of opening the Leave War's Approvals, M4 8.4: state/apprseen.ts) */
-export const SETTINGS_ROW_PREFIXES = ['account:', 'accessreq:', 'reqseen:', 'seen:', 'noticeseen:', 'apprseen:', 'lwseen:', ...FLY_ROW_PREFIXES,
+export const SETTINGS_ROW_PREFIXES = ['account:', 'accessreq:', 'reqseen:', 'seen:', 'noticeseen:', 'apprseen:', 'lwseen:', 'bellsqn:', ...FLY_ROW_PREFIXES,
   /* the units, places, homes and rights (state/units.ts — multi-squadron batch 1, step 1), one row each */
   ...UNIT_ROW_PREFIXES] as const
 /* EVERY UNIT'S SETTINGS, NAMED WITH ITS UNIT (multi-squadron batch 1, step 2 — engine/hooks.ts storedKey): a unit's own
@@ -290,8 +290,10 @@ function commitPeople(type: string, fn: (txn: any) => void, meta?: any): CommitR
    `fn` writes through store.set, which writes raw while a command is running. `meta`
    carries what the gate reads (perms.ts cmdAuthorize: meta.owner for a pending
    person's own request). */
-export function commitSettingsIntent(type: string, meta: any, fn: () => void): CommitResult {
-  const cmd: Command = { type, scope: settingsScope(), meta, apply: (txn) => { txn.enlist(settingsStore); fn() } }
+/* (`fn` is handed the transaction, as commitPeopleIntent's is: a step that owes a bell line enlists the bell in the same
+   command — state/acctlines.ts tellAccess) */
+export function commitSettingsIntent(type: string, meta: any, fn: (txn: any) => void): CommitResult {
+  const cmd: Command = { type, scope: settingsScope(), meta, apply: (txn) => { txn.enlist(settingsStore); fn(txn) } }
   return commit(cmd)
 }
 /* [ACCOUNTS-NEW-PERSON] (D214, D217) — a NAMED people intent (`person.add`: Person C, never

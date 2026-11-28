@@ -43,6 +43,11 @@ const type = async (el: HTMLInputElement | HTMLSelectElement, v: string) => {
   })
 }
 const signInAs = async (name: string, pass = 'x') => act(async () => { resetSession(sessionFor(signIn(name, pass))); notify() })
+/* the card's Request access, its Squadron chosen where it shows one (D2396 (f): it starts on "Pick…" and sends nothing) */
+const sendRequest = async () => {
+  if ($('#accSqn')) await type($('#accSqn') as HTMLSelectElement, 'u142')
+  await act(async () => { $('#accForm').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })) })
+}
 /* a sign-up as the card sends it ([ACCOUNTS-NEW-PERSON] — D214: callsign/name, initials, seat, CAT) */
 const ask = (cs: string, o: { ini?: string; seat?: string; cat?: string } = {}) =>
   requestAccess({ cs, ini: o.ini ?? 'JB', seat: o.seat ?? 'FCP', cat: o.cat ?? 'C' })
@@ -162,7 +167,7 @@ describe('AC11 — the access screens (D204)', () => {
     await type($('#accIni') as HTMLInputElement, 'JB')
     await type($('#accSeat') as HTMLSelectElement, 'FCP')
     await type($('#accCat') as HTMLSelectElement, 'C')
-    await act(async () => { $('#accForm').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })) })
+    await sendRequest()
     expect($('#accessWaiting')).toBeTruthy()
     expect($('#accessWaiting').textContent).toContain('Viper')
     await click($('#accOut'))
@@ -186,7 +191,7 @@ describe('AC11 — the access screens (D204)', () => {
     await signInAs('wait1@mail')
     await type($('#accCs') as HTMLInputElement, 'W1')
     await type($('#accSeat') as HTMLSelectElement, 'GND')
-    await act(async () => { $('#accForm').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })) })
+    await sendRequest()
     expect($('#accessWaiting')).toBeTruthy()
     expect($('#accessWaiting')!.closest('.login')!.querySelector('.lb-word')!.textContent, 'D1606 — the access screen names the app TALON').toBe('TALON')
     expect($('#accGuest'), 'no button').toBeFalsy()
@@ -376,7 +381,7 @@ describe('D1657 — the failed-save band on the sign-in and the access screens (
     await type($('#accCs') as HTMLInputElement, 'Band')
     await type($('#accSeat') as HTMLSelectElement, 'FCP')
     await type($('#accCat') as HTMLSelectElement, 'C')
-    await act(async () => { $('#accForm').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })) })
+    await sendRequest()
     expect($('#accessWaiting')).toBeTruthy()
     expect($('.saveband.is-screen'), 'the request was not saved: the waiting screen says so').toBeTruthy()
     expect($('#accessWaiting').classList.contains('band-up')).toBe(true)
@@ -485,7 +490,7 @@ describe('D1901 — the "Not kept" band on the sign-in, the access screens and t
     await type($('#accCs') as HTMLInputElement, 'Keep')
     await type($('#accSeat') as HTMLSelectElement, 'FCP')
     await type($('#accCat') as HTMLSelectElement, 'C')
-    await act(async () => { $('#accForm').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })) })
+    await sendRequest()
     expect($('#accessWaiting')).toBeTruthy()
     expect($('#accessWaiting').classList.contains('band-up')).toBe(true)
     expect($('.saveband.is-screen').textContent).toContain('Not kept')

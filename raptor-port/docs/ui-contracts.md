@@ -196,6 +196,114 @@ It closes `[SHELL-SIDEWAYS-BAR]` (28 Sep 26): at 844 × 390 the bar wrapped onto
 How it is built: `ui/navfold.ts`; the menu closes on Escape, the keys back on ☰ (`ui/Drawer.tsx`); pinned by
 `navfold.test.tsx`, `drawer-keys.test.tsx`, `e2e/topbar-names.spec.ts`; its check `docs/handpass/2026-11-04-topbar-names.md`.
 
+## The Schedules menu — "142 ▾" (his D2301, D2304, D2132, D2253, 22 Nov 26 — batch 1's second half §3, built chat 149)
+
+Whoever may read two squadrons or more (`state/perms.ts readableUnits` — his home that day, each View or Plan of his that
+holds that day, every squadron for a master admin; the account's own role, so the member view keeps them) has the top
+bar's squadron number as a button: "142 ▾", nothing about the mark moving, a pale fill round it while open or under the
+pointer. One squadron: the plain mark, no ▾ (D2132). Its list (`ui/SquadronMenu.tsx`, in the app's own small menu's look,
+`.sb-moremenu`): "SCHEDULES", then a row per squadron, his home first then by number (D2730 Q1) — a tick on the one in view, the number, and a short grey
+label at the right: "Your squadron" (his home), "Full access" (a Plan or the master mark while the role in force is
+admin), "View only" (a View, or any other squadron in the member view — D2253). Rows 38 high on a desktop and a phone
+alike (D2304). A desktop hangs it 12px under the bar at the mark's left; a phone opens a sheet from the bar's foot, the
+full width, the page under it dimmed. Escape and an outside press close it, the arrows and Home / End move along the
+rows, focus goes back to the button. **A pick is navigation, not a command:** `state/store.ts enterSquadron`, the same
+path as sign-in and midnight (an open Leave War window holds the war's step) — nothing saved, the Undo list untouched
+(D148); the schedule pages and Logic follow it for everyone, his own pages only for a master admin or a Plan holder of
+it (`pageUnit('own')`). Pinned by `ui/msq-sqn-menu.test.tsx`; the drawing `docs/mock/2026-11-22-msq-b1-screens/img/mA1-d.png`,
+`mA1-p.png`, `f5d-p.png`.
+
+**The board's number (§3 item 8, the drawing b1-2 — night job 2, 23 Nov 26):** the Scheduler Board's bar carries the
+squadron in view's number (`ui/export.ts sqnNum('schedule')`) in a small grey badge after the day title (`.sb-sqn`, the
+standby badge's recipe in grey, 8.5px type — 7px on a phone), inside `.sb-title`, so no button in the bar moves; on a
+phone it rides the title's ellipsis. Shown for every squadron, one or several, as drawn. Pinned by
+`ui/msq-board-sqn.test.tsx`; the geometry by `e2e/msq-job2.spec.ts`. **The desktop title slot is 344px since the night fix
+job (23 Nov 26), was 312:** the app loads no fonts, and with the number the Wednesday title was 331px in the Linux font
+GitHub's run uses (290 in Windows' own) — 19px into the day chips. The slot stays fixed (the 22 Aug rule — the chips never
+slide between days), sized for the widest font seen with the today dot; the chips sit 32px further right than b1-2 drew
+them, on every day. Pinned in a wide font too: `e2e/geometry.spec.ts` "the full day name comes back above 820px".
+
+**Admin → Squadron config follows the squadron in view (his D2317 — the drawings f1a, f1b; the night fix job, 23 Nov
+26):** its templates and default arrangement load with the schedule in view's settings, so the pane's heading names it —
+"Squadron config · 149", "· 142" for his own; it is his to change only as an admin of that squadron (`canEditSched()` →
+`maySchedEditPage`, the schedule kind). Anyone else — a View holder with 149 picked — sees the line "This is 149's set-up.
+Only an admin of 149 can change it." at the panel's top (`#admCfgRo`) and every control greyed (32 in the demo: the
+arrows, the two buttons under the lists, the three template doors), each door asking again. `ui/AdminPage.tsx`
+`SquadronConfig`, `paneTitle`; pinned by `ui/msq-admin-config.test.tsx`.
+
+**The Tracker follows the squadron picked (his D2395, replacing D2318's hold until sign-out and its two bands):** with Plan
+of 149 or as a master admin, picking 149 shows and edits 149's Tracker, and picking 142 brings 142's back, no sign-out;
+with only View it is not offered (D2381). A move (`tracker/app/core.js` — the block "THE TRACKER FOLLOWS THE SQUADRON
+PICKED") leaves the old squadron first, the page reading "Loading…": its windows and modes closed, its questions answered
+"cancelled", all it still had running run out on the OLD door; then its records leave memory, the door moves, and the new
+squadron is read through the boot's own path. Each squadron's Undo steps wait for it (given back on the same course and
+chart); his place on each squadron's Tracker is his own. Where the door stays (`tracker/storage.js` 'held'): his own move at
+midnight with the chart editor or unsaved edits open — its band across the chart editor, D2243 Q7, the door moving once
+that work is gone — and the switch to the member view over unsaved edits: nothing of the Tracker shown, kept in memory,
+one band with no Close, "This is 149's Tracker. Leave the member view to open it." (`state/perms.ts trackerCoverKind`,
+words by `state/store.ts`; the column measured to the band's foot). A right taken away is never held: the Tracker goes to
+his own squadron, a draft of the lost squadron's chart goes with the corner's "This change could not be saved."
+**A pick with unsaved chart edits asks first** (the drawing f2d): the menu's pick and a bell tap that enters
+another squadron (`state/pick.ts askBeforeEntering`, `state/belltap.ts enterForLine`) — wherever the pick takes the Tracker
+off the squadron it is on, or brings up one he only views (D2637) — ask the logout's question, its last line "Save them before switching to 142?", Save them
+/ Discard them / Stay, where he is: from another page the Tracker's section shows the question alone over it
+(`.trk-askonly`), never the Tracker tab brought forward; Save saves into the Tracker's own squadron before the pick (a save
+that did not take: he stays), Discard drops the edits, Stay makes no pick. Pinned by `tracker/msq-trk-follows-pick.test.tsx`,
+`state/msq-trk-cover.test.tsx`, `tracker/msq-trk-pick-ask.test.tsx`, `e2e/msq-job2.spec.ts`.
+
+**A window open at a pick (his D2323 — the drawings f7a, f7b):** a Leave War window or an Input window open when his pick
+(or a bell tap) moves the page to another squadron is held as at midnight, but its band reads "This is 142's. You picked
+149 — close this to go on." and every control under it is greyed and dead (`ui/heldro.ts` — `inert` and `data-heldro` on
+every part but the title strip with its ✕ and the band with its Close); picking back gives the window back as it was.
+Held by his own midnight move the window keeps its own words and live controls. Pinned by `ui/msq-pick-windows.test.tsx`.
+**A View holder's window too (D2381, the fix rounds' read of 23 Nov 26):** his own pages and his war stay his squadron's at
+a pick of a squadron he only views, so "the squadron under the window changed" never holds it — it is held because the
+squadron in view no longer offers its page (`state/perms.ts pageOffered`): an Input window carried over 149's View-only
+Sched (`ui/InputWindow.tsx`, a window of his own pages opened while they were offered), a Leave War window on the page
+it holds (`state/store.ts publishBands`), each with the pick's band and greyed. The Leave War page lands on View-only
+Sched when its last window goes, band or no band (`state/typing-hold.ts warWindowGone` → the store's release).
+Found by the drawing check (23 Nov 26): a Leave War window's scrim lies over the top bar, so a press on "142 ▾" lands on
+the scrim and closes the window first; on an iPhone the Input window covers the bar too. The band is met there by the
+keyboard, a bell tap from elsewhere or a window left open in another way — on a desktop the Input window on Inputs, which
+floats, leaves the menu free.
+
+## Admin → Squadrons, and Request access's squadron (batch 1's second half §5 item 1, §6 — night job 3, 23 Nov 26)
+
+**Admin → Squadrons** (`ui/SquadronsPanel.tsx`, its reads `ui/squadrons-model.ts`; his D2110, D2196, D2298, D2306, D2308,
+D2336; the drawings `docs/mock/2026-11-22-msq-b1-screens/img/b1-3`, `b1-4`, `b1-9`, `b1-10`, `p7`): a tile on the Admin
+rail for every admin, after Users — "Squadrons", grey line "Places", the line map pin (`ui/icons.tsx MapPinIcon`, never
+Users' people). Built from Users' own parts (`.acc-list`, `.acc-row.od-row`, `.acc-edit`, `.adm-2col`, `.mfield`, `.abtn`):
+"Squadrons · N", a row per squadron, his home first then by number (D2730 Q1), its grey line its place today and its people ("Home base · 61 people" —
+the count Users' "People · N" reads, `ui/userslist-model.ts`); then, for a master admin only, "+ New squadron"; then
+"Places · N", a row per place A to Z, its grey line the squadrons at it — today or from a later day, a move saved for
+tomorrow counting (`state/units-model.ts unitsAtPlace`) — and its time zone for today ("142 · 149 · Perth · GMT+8",
+`gmtLabel`). One row's form open at a time, as on Users.
+- **A squadron's place** (b1-4): its row opens only for an admin of it (`state/units.ts mayMoveUnit`, the move door's own
+  check — a disabled row otherwise); a Place list ending "+ New place…", which opens "New place's name" and "Time zone" in
+  the same form (D2298); the line "Saved at once. The new place applies from tomorrow." (D2306); Save moves it through
+  `moveUnit` from tomorrow (D2119, D2160) — the move and a new place one command, one Undo step.
+- **A place** (p7): its row opens for every admin — "Name" and "Time zone" (each zone picked by its city's name and shown
+  as GMT+X for today, D2165; every zone the browser knows, `tzChoices`); where `placeChangeProblem` refuses him (an admin
+  of every squadron at it, a master admin always — D2196, D2336, §15 D13, §16 D13′) both boxes and Save are greyed and
+  its words stand under them: "Only an admin of both 142 and 149 can change the time zone: both squadrons are here."
+  (three or more name every one). The drawing greyed only the time zone; the door refuses a rename too, so the name is
+  greyed with it. Save through `setPlace`.
+- **"+ New squadron"** (b1-9, b1-10 — D2308, D2298): the button gives way to a row "New squadron / Not saved yet" with
+  "Squadron number" (a faded "150"), "Place" (ending "+ New place…" as above) and "First admin" ("Pick an admin…", then
+  the admins `state/units.ts firstAdminProblem` would take — never a master admin, nobody moving squadron tomorrow; §15
+  D14 — as "Hunter · 142"); its line "Hunter gets Plan of 150, full access to it, so 150 starts with an admin." (D2306;
+  "The first admin" before one is picked, the number typed filled in, the faded 150 until then), "Saved together: 150 and
+  its new place, Northern base." before it where a new place is typed (b1-10). Save makes the squadron, its place row, a
+  new place and the first admin's Plan through `addUnit` — ONE command, one Undo step; a refusal stays in the form, said
+  in the warning note; the new squadron's row then wears the just-added ring for its six seconds (`.acc-ring`, D850).
+Pinned by `ui/msq-squadrons-panel.test.tsx`; the doors by `state/units-place.test.ts`.
+
+**Request access asks the squadron** (§5 item 1 — D2094, D2111; the drawing b1-5): "Squadron" is the card's first choice
+(`#accSqn`, the CAT choice's look), the squadrons by number, the first picked to start as drawn; the request is sent with
+it (`state/accounts.ts requestAccess(np, unit)`) and reaches that squadron's admins only. With one squadron in the store
+there is nothing to choose, so no box (as Add a person's Home squadron). Pinned by `ui/msq-squadrons-panel.test.tsx` and
+`ui/accounts-newperson.test.tsx` NP4.
+
 ## The day carries across a page switch (owner, 9 Aug 26)
 
 View-only Sched and Edit Schedule are **two separate horizontal scrollers** —
@@ -5161,6 +5269,27 @@ ahead of "Taken off the programme" / "Back on the programme", which read wrongly
 - **Who is told:** every named person in the input before or after the change, and whoever filed it — never whoever
   made the change, never the men behind ALL AVAIL / ALL, never a man archived or deleted. A leave the Leave War
   approves makes no notice (the war tells it on its own page).
+- **The "Show" buttons (batch 1's second half §7 item 3 — 8a, 8c; his D2198, D2202, D2321; built night job 4, 23 Nov
+  26 — the approved pictures `docs/mock/2026-11-22-msq-b1-screens/img/p3a-*`, `p3c-d`, `f5a-p`):** whoever's bell may
+  show lines of more than one squadron — his home and every squadron whose admin lines reach him, read from the one
+  audience they are written to (`state/bellsqn.ts bellSquadrons` → `state/accounts.ts adminLineAudience`: a master
+  admin every squadron, an admin holding Plan his Plan squadrons; a View holder never) — gets "Show" and a filter chip
+  (`.fchip`) per squadron, by number, at the left of the list's foot, 6px apart: on where his bell shows that squadron
+  (`bellShows` — his own choice, else a master admin's home on and the rest off, a Plan squadron on). A press switches
+  it, saved as his own choice (`setBellSquadron`, the command `bell.squadrons`, never an Undo step — `undo/timeline.ts`
+  NOT_STEPS); the lines, the unread count and the lit bell follow at once (`state/notices.ts noticeLive`); the choice
+  survives a reload. One squadron: no row (Ranger, Hunter alone, Kestrel). Many: ONE row that slides sideways, never
+  wrapping, cut off at the list's edge — with eight on his iPhone, 72px past the edge as drawn; "Mark all read" keeps
+  its one line beside it when anything is unread, the row giving way. The foot shows whenever the row does. Built:
+  `ui/topbits.tsx BellShowRow`, `scheduler/02-shell.css .bl-sqns`. Pins: `ui/msq-bell-show.test.tsx`.
+- **The grey squadron mark (§7 item 3, 8b — picture p3b):** a line of a squadron other than his home today carries that
+  squadron's number after its name, in the grey badge already approved for another squadron's line (the role chip's
+  recipe in neutral grey, as Admin → Users' `.acc-sqn`; 6px after the name, the date 7px after it); his home's lines
+  none, and never his own account's lines ("Given Plan of 149: full access to 149 · Saber" — §15 D5, D2319). A line
+  stored before lines carried their squadron reads as his home's: no mark (D56). **His D2628 (25 Nov 26), not yet built: the number first on every line, in one column, grey, no colour — narrowed by his D2638 (26 Nov 26, not yet built): the number wears its squadron's colour, as its Show button does, the unread dot staying blue; each admin picks his own colours on a new Admin page, Display (his D2639, 26 Nov 26, not yet built, drawn first). His D2624 (25 Nov 26), not yet built:
+  whenever the bell shows more than one squadron, every line of a squadron wears its number, his home's too ("142"),
+  whichever is picked; his own account's lines still none — filed under [MSQ-PICK-GUARD].** Built: `state/belltap.ts
+  lineSqnMark`, `scheduler/02-shell.css .bl-sqn`. Pins: `ui/msq-bell-show.test.tsx`.
 
 ## A cancelled input on the Inputs pages and on the schedule's own line (owner D760, D767, D768 — 12 Oct 26; step 5)
 
@@ -5215,8 +5344,12 @@ except where noted:
   order (`[ACCOUNTS-NEW-PERSON]`, D216, D227, 26 Sep 26) — when an ADMIN has an
   access request he has not yet had on screen (`accessAlert()`,
   `state/accounts.ts`: each request carries `seenBy`, the admins who have seen
-  it, so every admin's bell is his own). That tap toasts "N waiting for access —
-  opening Admin → Users" and opens Admin → Users (`ui/adminopen.ts
+  it, so every admin's bell is his own; since 22 Nov 26 only a request of a
+  squadron switched on in his bell lights it — `state/belltap.ts
+  bellAccessAlert`, §15 D3). That tap (since 22 Nov 26, §15 D3, D2325) enters
+  the newest such request's squadron when it is not the page's, toasts
+  "N waiting for access to 149" (N — that squadron's Waiting list) and opens
+  Admin → Users (`ui/adminopen.ts
   openAdminUsers`, from any page, the Admin page itself included); the list on
   his screen — the Users pane beside the rail on a desktop, the drilled-in list on
   a phone, never the category list alone — puts it out (`markRequestsSeen`, one
@@ -6453,7 +6586,8 @@ entry plus its `.adm-panel` section; the owner is filling this in over time.
 The three category panels:
 
 - **`#admUsers` Users** (the rail's line under it: "Sign-in and roster" — was "Who can sign in", Fable R13) — one row per PERSON, every action on his row: §Admin → Users — one door (`[ONE-DOOR]`, D309, D310); the `[ACCOUNTS]` text it replaced is in `docs/archive/ui-contracts-2026-09-27.md`.
-- **`#admConfig` Squadron configuration** — `#admDutyTpl` / `#admDayTpl`
+- **`#admConfig` Squadron configuration** (the squadron in view's, read only to anyone who is not its admin — D2317, §The
+  board's number's neighbour paragraph "Admin → Squadron config follows the squadron in view") — `#admDutyTpl` / `#admDayTpl`
   open the duty-template and day-template editors by setting the SAME
   `pops.ts` flags the picker pencils set (`setTplEdit` / `setDayTplEdit`).
   Front doors, not new surfaces: the modals stay App-level siblings and
@@ -7071,6 +7205,59 @@ of shows no row for him (`leavewar/engine/people.ts` — `inSquadron`, `beforeFi
 
 **Quals** keeps quals, CAT, flight and initials (D310): no ✕ in edit mode, no Archived section; its help line says
 "Archive, restore and delete are on Admin → Users."; the admin's "he's back" prompt stays (it skips a man archived again).
+
+**A person's access, by squadron (since 22 Nov 26 — batch 1's second half §4 items 3–5; his D2303, design B, pictures
+rB1–rB4; D2305, D2306, D2320, D2336; built chat 149):** the opened row's Role box reads Member, Admin, Master admin
+("Master admin" greyed for anyone but a master admin; a new sign-in's box Member or Admin). Under Sign-in and Role, one
+line per squadron, the signed-in person's home first then by number (D2730 Q1), the number in the field labels' look (`ui/UserAccess.tsx`): his home "142 Home squadron";
+every other "149 None · View · Plan" (the editor's segmented buttons); Master admin held or picked, "Full access" with no
+buttons. A line not his to change is greyed with one grey line under it: no sign-in, "Give him a sign-in first to give
+access."; not an admin of that squadron, "Only an admin of 149 can give access to 149."; Plan on a member (or Member
+picked), "Plan is for admins only."; Plan for anyone but a master admin, "Only a master admin gives Plan." (a Plan held
+today, the whole line). Plan picked says what it gives: "Full access to 149, every page: its schedule and publishing, its
+settings, its people and their sign-ins." A man of another squadron on the list (found by search, or a Plan holder of
+it) wears his squadron's grey number by his name, and the rest of his row — sign-in, role, Suspend, Archive, Delete —
+is greyed unless the admin is an admin of his own squadron (D2191). A Plan holder's grey line ends "· also plans 149",
+the same on both lists. **Save sends the role, the mark, every line and a rename of his sign-in at once** (`state/accounts.ts saveAccess` —
+one command, one Undo step; a refusal of any part saves nothing and the row stays open with it — the final reads, R4; a
+rename alone goes through its own door, one command too). Pinned by `ui/msq-users-row.test.tsx`,
+`ui/msq-fix3-users-one-save.test.tsx`.
+
+**"▸ What each role allows" (since 23 Nov 26 — §4 item 6; his D2302, D2305, picture k2; the night of 22–23 Nov, job 1):**
+under the squadron lines of every opened row, closed, in the Logic page's "How it works" fold look — 6px under a line's
+grey reason, as `draw-roles.mjs` drew it (the lines' foot 4px, their grey line's 2px; it sat 6px lower until the night
+fix job, 23 Nov 26 — `e2e/users-fit.spec.ts`). Inside: "View and Plan
+give access to another squadron."; (its View column to change with D2381, 23 Nov 26 — View-only Sched and Help alone; backlog item MULTI-SQN-VIEW-ONLY-TABS) the grid — Edit Schedule, View-only Sched, Logic, Inputs, Quals, Leave War, Tracker,
+Admin down the side; Member, Admin, View, Plan, Master admin across; ✓, "read" or —, notes 1–4 on Member's Inputs, Quals,
+Leave War and Tracker ticks and 5 on Admin's and Plan's Admin ticks; "✓ can change · read: can see, not change · —
+cannot open"; the five notes, as drawn. The cells and words are ONE table, `ui/rolestable.ts`; `ui/rolestable.test.tsx`
+signs in a person of each role (View, Plan and Master admin with 149 picked) and asks the app's own readers whether each
+page opens on that squadron and offers its controls — a drawn cell the app answers otherwise is listed there (KNOWN) and
+put to him, never changed to pass. On his iPhone the grid fits the row (`e2e/users-fit.spec.ts`).
+
+**The filter (since 23 Nov 26 — §4 item 2; his D2335, D2307, D2306; pictures nfa–nfd, f5c-p):** one "Filter" button
+beside the search (a line funnel, the app's .abtn), the two one row after "People · 61" — on a phone the row's full width.
+A tap opens a panel under it, over the list (380px on a desktop, its right edge on the button's; the row's width on a
+phone): tick chips in Edit Schedule's chip look (`.fchip`, "✓ " on a ticked one) — Seat (Pilots, WSOs, Personnel), CAT
+(the CATs held on the list), Role (Member — a sign-in that is not an admin's; Admin — an admin not a master admin;
+"Plans 149" — the page's squadron's number: a man of another squadron holding Plan of it; Master admin) and, for a master
+admin alone, Squadron (a chip per squadron, D2321) — and "Clear all". Several ticks in a group mean any of them; the
+groups combine; a man with no sign-in holds no role. The button lit (pale blue with blue words, the app's switched-on look, as tall as the search box — D2401) with its
+count, "Filter · 2" — every squadron ticked counts one; the line over the list "Showing 1 of 61 · Clear" (the rows shown
+of those the list shows with no Seat, CAT or Role tick), Clear taking every tick off. Rows are only hidden, A to Z kept
+(D322); the Archived fold's rows and count follow the ticks too. The panel closes on a press outside it and on Escape,
+the keys back on the button; a tick keeps it open. What each tick keeps: `ui/usersfilter-model.ts`. **A master admin's
+Squadron ticks** (D2270): the ticked squadrons' people, each squadron under its heading ("142 · 61", "149 · 10" — its
+own people), each group A to Z, a man of a squadron other than the page's wearing its grey number; the heading "People ·
+71" counts the squadrons in view; every squadron of two ticked and nothing else, "Showing both squadrons, grouped ·
+Clear" (picture nfc). A search still finds a man of a squadron not in view, under his own squadron's heading. Pinned by
+`ui/msq-users-filter.test.tsx`.
+
+**Add a person's "Home squadron" (since 23 Nov 26 — §4 item 7; picture b1-7):** first in the form, the squadrons the
+signed-in admin is an admin of (`perms.ts adminOfUnit` — his own, one he holds Plan of, every one for a master admin),
+the page's own first and picked; with one to offer there is nothing to choose, so no box. The squadron picked carries
+through the whole add — his home row and his first stint that squadron's (`state/accounts.ts addPersonAndAccount` →
+`roster-add.ts newHomeProblem`), the post-in in that squadron's war only. Pinned by `ui/msq-users-filter.test.tsx`.
 ## The loading claw (`[TALON-LOADING-CLAW]`, D1591, D1605, 3 Nov 26)
 
 While the app loads, the talon claws scratch in over a plain dark screen: the left claw from its tip to its end, the
@@ -7181,6 +7368,14 @@ blue fade from the top left over the whole card (D1654). *Was, 26 Sep 26: one li
 **Viper** (JKB · Pilot · CAT C).", "an admin will answer it".*);
 **Switched off** (`#accessOff`). Each has Sign out (`#accOut`, through `ui/logout.ts`). Each, and the sign-in, carries the
 failed-save band across its top while a save has failed, the screen moved down under it (D1657 — §The failed-save warning).
+**The sign-in waits for the last save (since 22 Nov 26 — batch 1's second half §8, step G; D2205, D2322; pictures 10, f6a,
+f6b):** Sign in pressed while a change on the page has not landed (waiting or still on its way — `storage/savewait.ts
+saveSettling`) is held — the button "Signing in…", disabled at the app's .42, and one small grey line under it (`#lheld`),
+"Waiting for the last change on this page to save.", or, once a save was refused, "The last change has not saved yet —
+check the connection. Sign in waits until it saves."; a wrong name or password is said at once, never held. When it lands:
+a sign-out's owed reload runs first (`ui/logout.ts`) and the card after it shows his typed name kept (this tab only,
+ten minutes, never the password — `ui/signinhold.ts`), the password empty, and under the name (`#lkept`) "Saved. Press
+Sign in again." — the same on this page should the reload be held back; with no reload owed he is signed in by himself.
 Above the phone width the column is centred only while it fits, so a screen taller than the window starts at its top and
 every part can be scrolled to (`.login-wrap{margin-block:auto}`, 5 Nov 26). **A person waiting sees the waiting screen
 and nothing else of the app (D2239, replacing D215, D221 and D213):** a person signed in without access — on no list,
@@ -8096,7 +8291,9 @@ The Inputs / SANS redesign, plan §3.4. `ui/DaysWindow.tsx`, on the windows shel
     2031 yet."; two holes joined by "or"), no year button is offered, and each run has its own: "Add a period for 1 Apr
     – 31 Dec…", which opens the Leave War's own New-period sheet with those dates picked.
 - **The holiday form (`HolidayForm` — D641, D652).** A window on the shell, at the left on a desktop, the bottom panel
-  on a phone. "Add a holiday": Kind — Public holiday (lit) / Off day; Name (40 letters at most; empty, the box shows
+  on a phone. "Add a holiday": Kind — Public holiday (lit) / Off day, with a quiet line at the Kind label's right, "Off days
+  stay each squadron's own" (his D2190 point 2, the drawing b1-8 — on the label's own row, so the window grows no taller;
+  12px grey; it describes the group, whose name stays "Kind"; built by the night fix job, 23 Nov 26); Name (40 letters at most; empty, the box shows
   the word it will be saved under) with "On grid" beside it (its short form — capitals as typed, three at most);
   **Dates — the Leave War's own range calendar (D671, 8 Oct 26: "use the same calendar interface and logic for
   selecting start and end date"), `leavewar/ui/RangePicker` itself, not two date boxes:** one tap is one day, a second
@@ -12362,7 +12559,8 @@ Built on `claude/leave-war-m4-planning-d18224` from `docs/superpowers/plans/2026
   A line the rules refuse says why, in red, under its dates; one drawn from a state since changed says what happened
   ("Already refused by Hex", "Moved to Thu 29 Jan", "No longer there" — B8). Approve all approves exactly what the list
   shows: one tap arms it ("Approve 13 — tap again"), anything that changes what the list shows disarms it.
-- **New (D1231's reading):** the moment he OPENS the tab is stored (`state/apprseen.ts`); "New N" shows the requests
+- **New (D1231's reading):** the moment he OPENS the tab is stored (`state/apprseen.ts`) — one per squadron, for the war
+  the page shows, so 142's visit leaves 149's requests "New" (batch 1's second half §3 item 7, R2); "New N" shows the requests
   placed since the previous moment and, under them, "Also since you last looked · nothing to decide" — a member's
   withdrawn pending bid ("Bid withdrawn by Cinch", its box struck through) and leave filed on the Inputs page ("Filed on
   the Inputs page · approved") — each with its dates as a link (`sync.ts alsoSince`). The dots go when he leaves.

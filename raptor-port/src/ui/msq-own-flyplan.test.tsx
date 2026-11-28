@@ -18,6 +18,7 @@ import { swapWarWorld, warUnit, flyAnswer } from '../leavewar/sync'
 import { setPage, setInpView, setCalMonth } from '../state/view'
 import { UNIT, BOOT_UNIT } from '../engine/unitview'
 import { pageUnit } from '../state/perms'
+import { PEOPLE } from '../engine/people'
 import { InputsCal } from './InputsCal'
 import { SansCal } from './SansCal'
 import { SansDay } from './SansDay'
@@ -100,7 +101,13 @@ describe("the flying plan on his own pages is his own squadron's — 142's, whil
     expect(pageUnit('own')).toBe('u149')
     await render(<InputsCal fPerson="all" fType="all" fSearch="" />)
     expect($(`[data-testid="ib-tag-${NF}"]`), "149 flies at night: no tag").toBeNull()
+    /* (re-pointed at the guard rail's step K9 — the plan §18.7, his D2628 C3: on another squadron's SANS calendar
+       "+ Commitment" opens only on that squadron's own SANS aircrew, and with none it opens nothing. 149 had none in this
+       world, so the window opened on nobody before; 149 is given one SANS man — the Quals SANS tick's mark — and the plan's
+       answer is asserted as before) */
+    ;(PEOPLE as any)[PID.osprey].san = true
     expect(openSansAdd(NF)).toBe(true)
+    expect((INPEDIT as any)?.person, "on 149's own SANS man").toBe(PID.osprey)
     expect((INPEDIT as any)?.sans).toEqual({ f: true })
   })
 

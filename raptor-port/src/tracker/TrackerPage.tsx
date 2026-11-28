@@ -20,14 +20,15 @@
    and handed to tracker.css as `--tr-top`. Hidden, the section is display:none
    and measures 0×0, so the measurement is taken only while active — the same
    rule LeaveWarPage follows for its own re-measure. */
-import { memo, useEffect, useLayoutEffect, useState, useSyncExternalStore } from 'react'
+import { memo, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { createPortal } from 'react-dom'
 import App, { PAGE_ID } from './App.jsx'
 import { wireTrackerPeople } from './peoplewire'
 import * as core from './app/core.js'
 import { seedDemoNow } from '../state/seeds'
-import { subscribeBands, trackerBand } from '../state/typing-hold'
+import { subscribeBands, trackerBand, trackerCover, type TrkCover } from '../state/typing-hold'
 import { MoveBandView } from '../ui/MoveBand'
+import { keysBack } from '../ui/sheetfocus'
 import './tracker.css'
 
 /* The render firewall (LeaveWarPage.tsx has the measured why): every Raptor
@@ -45,16 +46,60 @@ core.setTrackerSeedDemo(seedDemoNow())
    is then a no-op. */
 wireTrackerPeople()
 
-const TrBody = memo(function TrBody({ active }: { active: boolean }) {
-  return <App active={active} />
+const TrBody = memo(function TrBody({ active, locked }: { active: boolean; locked: boolean }) {
+  return <App active={active} locked={locked} />
+})
+
+/* THE ONE COVER LEFT (his D2395, 23 Nov 26): the Tracker follows the squadron picked, so the read-only and hidden bands of
+   D2318 are gone. What is left is the switch to the member view while this Tracker holds his unsaved chart edits (the door
+   held — tracker/storage.js): the page says so in one band across its top, in the band's own look with no button
+   (ui/MoveBand.tsx), its words written by state/store.ts (state/typing-hold.ts trackerCover), and nothing of the Tracker
+   is shown — its bar, chart and panel — but kept: no reset, so the edits are not lost; leaving the member view brings them
+   back as they were. No press, focus or key reaches it (`inert` on its host, and App's document keys off).
+   The host wraps the Tracker always, so the cover coming or going never remounts it. The band stands above the Tracker's
+   column, whose height is measured to the band's foot (below). */
+function useCover(): TrkCover { return useSyncExternalStore(subscribeBands, trackerCover, trackerCover) }
+
+/* THE PICK'S QUESTION ASKED FROM ANOTHER PAGE (§16 D2′ — "never jumping to the Tracker page first"; core.js
+   onBeforeTrackerSwitch): while the Tracker asks "Save them before switching to 142?" and its tab is not the one on screen,
+   the Tracker's section shows that question alone — over the page he is on, the rest of the Tracker unseen
+   (`.trk-askonly`, tracker.css) — and Escape answers Stay, as on the Tracker's own page. */
+const TrkAskOnly = memo(function TrkAskOnly({ active }: { active: boolean }) {
+  useSyncExternalStore(core.subscribe, core.getVersion)
+  const up = !active && core.switchAsking && !!core.dlg
+  useLayoutEffect(() => {
+    const el = up ? document.getElementById(PAGE_ID) : null
+    if (!el) return
+    el.classList.add('trk-askonly')
+    /* (a child's layout effect runs before the page's: the cover's lock comes off first, or the focus below would not land) */
+    el.querySelector('.trk-host')?.removeAttribute('inert')
+    /* the keys into the question, on its safe answer (Stay), so it is answered without a mouse (the design guide §2) */
+    document.getElementById('dlgCancel')?.focus()
+    const esc = (e: KeyboardEvent) => { if (e.key === 'Escape' && core.dlg) { e.preventDefault(); core.dlgClose(false) } }
+    document.addEventListener('keydown', esc)
+    return () => { el.classList.remove('trk-askonly'); document.removeEventListener('keydown', esc) }
+  }, [up])
+  /* …AND ON THE TRACKER'S OWN TAB THE QUESTION TAKES THE KEYS TOO (the night of 24 Nov 26, the re-walk's A1 —
+     tracker/msq-trk-ask-keys.test.tsx). The pick's and the Logout's question is raised from the top bar, outside the
+     Tracker's page: after a pick made by the keys they stayed on the squadron button behind the question, so Enter opened
+     the list again over it and its answers were sixteen Tabs away. The same step as above, on the same safe answer; and
+     once it is answered the keys go back to the button that raised it, where they were — if they are nowhere, or still
+     in the question as it goes (ui/sheetfocus.ts keysBack), never taken from where he has put them since. */
+  const here = active && core.switchAsking && !!core.dlg
+  useLayoutEffect(() => {
+    if (!here) return
+    const was = document.activeElement as HTMLElement | null
+    document.getElementById('dlgCancel')?.focus()
+    return () => keysBack(() => (was && was !== document.body ? was : null), document.getElementById('dlgModal'))
+  }, [here])
+  return null
 })
 
 /* THE BAND ACROSS THE CHART EDITOR WHEN HIS SQUADRON CHANGES UNDER IT (the reshape plan §3.2 A-iv "Typed work at the swap";
    his D2243 Q7, "as drawn" — docs/mock/2026-11-20-multi-sqn-reshape/page.html §7, pictures q7c-d and q7c-p, D1478).
-   The Tracker cannot be re-read in place once it has loaded (the plan §14 item 3 — its records sit in module caches of
-   app/core.js; tracker/storage.js rebindStorageUnit): at his move's midnight the schedule and the Leave War move to his
-   new squadron, and this page keeps the squadron it loaded until he signs in again, the gate's 7f refusing his changes
-   to it. So while "Edit chart layout" is open on a Tracker that is no longer his page's own squadron, one band stands
+   At his move's midnight the schedule and the Leave War move to his new squadron, and the Tracker follows them unless
+   chart work is open (his D2395 — core.js followUnit): the door then stays until that work is gone, the gate's 7f refusing
+   his changes to it. So while "Edit chart layout" is open on a Tracker that is no longer his page's own squadron, one band stands
    across the chart's top, between the editing tools and the editing hint, in the failed-save band's own look
    (ui/scheduler/17-save-status.css): "You are 149's from today. This can't be saved in 142's Tracker." — the words
    state/store.ts writes into state/typing-hold.ts — and one button, "Close", the editing row's own button look. Close
@@ -98,6 +143,20 @@ export function TrackerPage({ active = true }: { active?: boolean }) {
      booting; the + Add dialog reads the bridge when it opens, so the order
      does not matter. */
   useEffect(() => { wireTrackerPeople() }, [])
+  const cover = useCover()
+  /* WHILE THE TRACKER ASKS ITS QUESTION OVER ANOTHER PAGE the cover steps aside, or the question stands inside a hidden,
+     locked host at no size and every later pick waits on it unseen (the walk of 24 Nov 26, F2; Fable F2). `.trk-askonly`
+     still shows nothing of the Tracker but the question. */
+  const asking = useSyncExternalStore(core.subscribe, () => core.switchAsking && !!core.dlg, () => false)
+  const covered = !!cover && !asking
+  const host = useRef<HTMLDivElement>(null)
+  const bandRef = useRef<HTMLDivElement>(null)
+  /* the host locked while covered (above): no press, no focus — set on the node, the cover's one switch */
+  useLayoutEffect(() => {
+    const h = host.current
+    if (!h) return
+    if (covered) h.setAttribute('inert', ''); else h.removeAttribute('inert')
+  }, [covered])
   useEffect(() => {
     if (!active) return
     const el = document.getElementById(PAGE_ID)
@@ -113,7 +172,9 @@ export function TrackerPage({ active = true }: { active?: boolean }) {
       /* whatever Raptor draws above the page section — the top bar, the
          "View as" row — measured as the section's own top edge at scroll 0,
          so a wrapped phone bar or a future extra row is never a stale number */
-      if (el) el.style.setProperty('--tr-top', Math.max(0, Math.round(el.getBoundingClientRect().top + window.scrollY)) + 'px')
+      /* …and, after a pick, the cover's band above the Tracker's column (above): the column ends at the screen's foot */
+      const band = bandRef.current ? bandRef.current.getBoundingClientRect().height : 0
+      if (el) el.style.setProperty('--tr-top', Math.max(0, Math.round(el.getBoundingClientRect().top + window.scrollY + band)) + 'px')
     }
     measure()
     window.addEventListener('resize', measure)
@@ -125,6 +186,17 @@ export function TrackerPage({ active = true }: { active?: boolean }) {
       window.removeEventListener('resize', measure)
       document.body.classList.remove('tr-on')
     }
-  }, [active])
-  return <><TrBody active={active} /><TrkMoveBand /></>
+    /* the cover coming or going changes the band above the column — measured again, and the board refitted to a box it
+       may only now have (a hidden Tracker shown again) */
+  }, [active, cover])
+  return (
+    <>
+      {cover ? <div ref={bandRef} className="trk-cover-band"><MoveBandView band={cover} testid="trk-cover-band" /></div> : null}
+      <div ref={host} className={'trk-host' + (covered ? ' trk-gone' : '')} data-testid="trk-host">
+        <TrBody active={active} locked={!!cover} />
+      </div>
+      <TrkMoveBand />
+      <TrkAskOnly active={active} />
+    </>
+  )
 }

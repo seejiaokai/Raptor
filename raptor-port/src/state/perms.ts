@@ -25,6 +25,7 @@
    parity harness — never a user: every question below answers it the way the gate it
    replaced did (stated per question), so no headless test changes meaning. */
 import { SESSION, ME, setEffectiveRole } from './auth'
+import { checkEntry } from './guard'
 import { store, unitSetting } from '../engine/hooks'
 import { INPUTS, inpMeta, typeGroup, isSansAvail, needsDoc, peopleOf, idsOf, leadOf, onlyNamed, holds, placeHeld, placeOf, namedOf, placeholderOf, inputSpanIso, inputSquadrons, inputUnitOf, sansNewDayProblem } from '../engine/inputs'
 import { dayNamedIds } from '../engine/publish'
@@ -33,20 +34,23 @@ import { deriveActor } from '../command/actor'
 import { voidedOil } from '../engine/oil'
 /* the seeded accounts, read only by the posting pass's first-write rule below (accounts.ts imports this file; the call is
    made only when a command is judged, never as the module loads) */
-import { seedAccounts, ACCOUNTS_LIST, isMasterAccount, accountBefore, levelAcct, readAccounts, adminsOf, type Account } from './accounts'
-import { unitRowsBefore, unitRowsAfter, levelBefore, homeBefore, homeChangesBefore, todayIso, homeOn, levelOfAccount, setNewHomeUnit, grantBefore, grantRowHolds, datedBreach, lockBreach, everOfBefore } from './units'
+import { seedAccounts, ACCOUNTS_LIST, isMasterAccount, accountBefore, levelAcct, readAccounts, adminLineAudience, type Account } from './accounts'
+import { unitRowsBefore, unitRowsAfter, levelBefore, homeBefore, homeChangesBefore, todayIso, homeOn, levelOfAccount, setNewHomeUnit, grantBefore, grantRowHolds, datedBreach, lockBreach, everOfBefore, units as storeUnits, unitById as storeUnitById } from './units'
 import { PEOPLE, sansStart, sansStop } from '../engine/people'
 import { UNIT, BOOT_UNIT } from '../engine/unitview'
 import { unitOf, isUnitId, split } from '../storage/unitid'
 import {
   UNIT_PFX, PLACE_PFX, UNITPLACE_PFX, GRANT_PFX, HOME_PFX, UNIT_ROW_PREFIXES, validUnit, validPlace, validUnitPlace, validGrant,
-  validHome, unitIn, placeIn, placeIdOn, moveFrom, grantStart, type UnitRows, type LevelAccount, type GrantHolder,
+  validHome, unitIn, placeIn, placeIdOn, moveFrom, grantStart, unitsAtPlace, squadronOrder, type UnitRows, type LevelAccount,
+  type GrantHolder,
 } from './units-model'
 import { oilPlanOf } from './inputgate-hook'
 import type { Actor, Change, CommitEnvelope } from '../command/types'
 import { deepEqual } from '../command/util'
 /* (notices.ts reads this module too — mayEditSched; each side calls the other only at run time, never at load) */
-import { noticeAboutHim, filerTold, filerVia, foldedInto, joinFilerImgs, dayOfAt, changeFiler, APP_ACTS, passMade, warMade, holMade, shareMade, AT_SLACK_MS, NOTICES } from './notices'
+import { noticeAboutHim, noticeLeftBell, filerTold, filerVia, foldedInto, joinFilerImgs, dayOfAt, changeFiler, APP_ACTS, passMade, warMade, holMade, shareMade, AT_SLACK_MS, NOTICES, isAcctNotice, poFailedLineId } from './notices'
+import { accessIn, accessParts, movedParts, acctByApp, movedLineId, MOVES_TOLD_DAYS, type AcctPart } from './acctlines'
+import { addDays } from './flyplan-model'
 
 export type Act = 'C' | 'R' | 'U' | 'D'
 /* THE ROLES A SESSION HOLDS. The guest role is gone (his D2239, 20 Nov 26: the guest view is removed — a person who asked
@@ -100,6 +104,8 @@ export const T = {
   balance: 'LeaveBalance',
   grade: 'LeaveGrade',
   lwseen: 'LeaveSeen',
+  /* which squadrons' lines a person's bell shows (state/bellsqn.ts — batch 1's second half §7 item 3): his own row */
+  bellsqn: 'BellSquadrons',
   profile: 'LeavePersonProfile',
   tracker: 'Course, Syllabus, TrainingEvent, EventPrerequisite, Layout, CoursePlan, Enrolment, Attempt',
   /* multi-squadron batch 1, step 1 (state/units.ts): the units, the places they are at (and when), a right in a unit
@@ -152,6 +158,7 @@ export const PERMS: Record<string, PermRow> = {
   [T.balance]: row(cell('C R U D'), cell('R', 'C U D')),
   [T.grade]: row(cell('C R U D'), cell('R')),
   [T.lwseen]: row(cell('', 'C R U'), cell('', 'C R U')),
+  [T.bellsqn]: row(cell('', 'C R U'), cell('', 'C R U')),
   [T.profile]: row(cell('C R U D'), cell('R')),
   [T.tracker]: row(cell('C R U D'), cell('C R U D')),
   /* the units (step 1): every signed-in person reads the units — a pending person's view names theirs; only
@@ -237,6 +244,9 @@ export function mayViewAsMember(): boolean {
 export function switchRoleInForce(next: any): boolean {
   if (next !== 'admin' && next !== 'main') return false
   if (!mayViewAsMember()) return false
+  /* the role switch: the test set-ups' entry checker asks the guard again first (the guard rail's plan §3.4 — step K7;
+     a no-op in the app) */
+  checkEntry('switch', next)
   setEffectiveRole(next)
   return true
 }
@@ -283,19 +293,121 @@ export function pageUnit(kind: 'schedule' | 'own', iso: string = todayIso()): st
   if (acct && UNIT !== homeOn(m, iso) && (acct.master === true || levelOfAccount(levelAcct(acct), UNIT, iso) === 'admin')) return UNIT
   return myUnit(iso)
 }
+/* COULD HIS OWN PAGES BE `u`'s (batch 1's second half §7 item 5, R9 — the bell's tap on a line of another squadron): the
+   squadron pageUnit('own') would answer were `u` picked — his home that day, or, the role in force admin, a squadron he
+   is admin of by a Plan or the master mark (pageUnit's own test, above). A View holder's own pages are always his home,
+   so a View of `u` answers false. */
+export function ownPageMayBe(u: string, iso: string = todayIso()): boolean {
+  if (!SESSION || !me() || !u) return false
+  if (u === myUnit(iso)) return true
+  if (roleOf() !== 'admin') return false
+  const acct: any = ACCOUNTS_LIST.find(a => a.id === SESSION.user)
+  return !!acct && (acct.master === true || levelOfAccount(levelAcct(acct), u, iso) === 'admin')
+}
+/* HIS OWN PAGES' SQUADRON WERE `u` PICKED (§16 D2′ — the pick's question for unsaved Tracker edits asks it before the pick):
+   `u` where pageUnit('own') would follow the pick (ownPageMayBe), else his own squadron that day. */
+export function ownPageIfPicked(u: string, iso: string = todayIso()): string {
+  return ownPageMayBe(u, iso) ? u : myUnit(iso)
+}
+/* THE TRACKER IN THE MEMBER VIEW (his D2395, which took away D2318's read-only and hidden bands; D2253): the Tracker
+   follows his own pages' squadron (tracker/app/core.js followUnit), so it stands on another (trkUnitNow — its bound
+   squadron) only where the door is held for chart work. This says whether the MEMBER VIEW is why: the role in force is a
+   member's and, read from the ACCOUNT, he is an admin of that squadron by any road — a Plan of it, the master mark, his
+   home's admin role — so leaving the member view opens it. Anything else (bound = own, nothing bound, nobody signed in, a
+   right lowered or taken): null. The gate's 7f clause still judges every Tracker write by the role in force
+   (trkUnitViolation, below). */
+export type TrkCoverKind = { kind: 'member'; bound: string; own: string } | null
+export function trackerCoverKind(iso: string = todayIso()): TrkCoverKind {
+  const bound = trkUnitNow()
+  if (!bound || !SESSION || !me() || roleOf() === 'admin') return null
+  const own = pageUnit('own', iso)
+  if (bound === own) return null
+  const acct: any = ACCOUNTS_LIST.find(a => a.id === SESSION.user)
+  const adminThere = !!acct && acct.role === 'admin' && (acct.master === true || levelOfAccount(levelAcct(acct), bound, iso) === 'admin')
+  return adminThere ? { kind: 'member', bound, own } : null
+}
+/* A WINDOW THE MEMBER VIEW HOLDS (his D2389, D2400; state/typing-hold.ts memberViewBand): he is an admin in the member view,
+   and the window's squadron is the one in view, not his home, and one he is an admin of by a Plan or the master mark — read
+   from the ACCOUNT, as trackerCoverKind's 'member' is — so the switch back really gives him the window: the band tells him
+   so only where that is true. A right lowered or taken meanwhile, or a window on another squadron than the one in view
+   (a pick's, D2323), is not this. */
+export function heldByMemberView(world: string, iso: string = todayIso()): boolean {
+  if (!SESSION || !me() || roleOf() === 'admin' || !mayViewAsMember()) return false
+  if (world !== UNIT || world === myUnit(iso)) return false
+  const acct: any = ACCOUNTS_LIST.find(a => a.id === SESSION.user)
+  return !!acct && acct.role === 'admin' && (acct.master === true || levelOfAccount(levelAcct(acct), world, iso) === 'admin')
+}
 /* DOES THE PICK STILL STAND ON `iso` (the blind read's R6, its pick half — the reshape plan §19b; A-iv widened, dormant
    until P1/P3): the squadron picked (engine/unitview.ts UNIT) is one the signed-in person can read that day — his home
    there, a View or Plan of it that holds that day (units-model.ts levelFrom, the reading rule), or a master admin's
-   anywhere. Nobody signed in: the boot unit only. state/store.ts notify() re-enters his own squadron when it does not. */
+   anywhere. Nobody signed in: the boot unit only. state/store.ts notify() re-enters his own squadron when it does not.
+   One body with the menu's rows (§15 D9). */
 export function pickStandsOn(iso: string): boolean {
-  if (!SESSION) return UNIT === BOOT_UNIT
-  const m = me()
-  if (!m) return UNIT === BOOT_UNIT
-  if (homeOn(m, iso) === UNIT) return true
-  const acct: any = ACCOUNTS_LIST.find(a => a.id === SESSION.user)
-  if (!acct) return false
-  return acct.master === true || levelOfAccount(levelAcct(acct), UNIT, iso) != null
+  return readableUnits(iso).includes(UNIT)
 }
+/* THE SQUADRONS HE MAY READ ON `iso` — the Schedules menu's rows (the second-half plan §3 item 1) and the pick's test
+   above, one body (§15 D9): his home that day; each squadron a View or Plan of his holds that day (units-model.ts
+   levelFrom, read from the ACCOUNT'S own role, so a Plan holder or master admin in the member view keeps them — "View
+   only", D2253); every squadron in the store for a master admin. Nobody signed in, or a sign-in with no person: the boot
+   unit only. In the one order (his D2730 Q1 — inSquadronOrder below): his home first, then by number; a squadron undone
+   away is in none. */
+export function readableUnits(iso: string = todayIso()): string[] {
+  if (!SESSION) return [BOOT_UNIT]
+  const m = me()
+  if (!m) return [BOOT_UNIT]
+  const home = homeOn(m, iso)
+  const acct: any = ACCOUNTS_LIST.find(a => a.id === SESSION.user)
+  const out: string[] = []
+  for (const u of storeUnits()) {
+    if (u.id === home) { out.push(u.id); continue }
+    if (acct && (acct.master === true || levelOfAccount(levelAcct(acct), u.id, iso) != null)) out.push(u.id)
+  }
+  /* (a home the store does not list still reads as his, as before this reader) */
+  if (home && !out.includes(home)) out.unshift(home)
+  /* (the store keeps its rows by id, in no order a person reads) */
+  return inSquadronOrder(out, iso)
+}
+/* HIS HOME SQUADRON ON `iso`, FOR ORDERING A LIST (his D2730 Q1 — "his" is the signed-in person's home that day): read as
+   every page reads it, homeOn(me(), iso). Nobody signed in, a person waiting, or no home: null, so a list stays by number.
+   Unlike myUnit it never falls back to the boot unit, which would stand first a squadron that is nobody's home. */
+export function myHomeOn(iso: string = todayIso()): string | null {
+  if (!SESSION) return null
+  const m = me()
+  return m ? homeOn(m, iso) : null
+}
+/* A LIST OF SQUADRON IDS IN THE ONE ORDER (his D2730 Q1: "home squadron first, then the rest by number, in every list of
+   squadrons — one order everywhere"): units-model.ts squadronOrder with his home that day (myHomeOn) and each id's number
+   from the store. A list of squadron ids a screen draws calls this, never a sort of its own. */
+export function inSquadronOrder(ids: readonly string[], iso: string = todayIso()): string[] {
+  return squadronOrder(ids, myHomeOn(iso), id => id, id => String(storeUnitById(id)?.num ?? id))
+}
+/* THE SCHEDULES MENU'S ROWS (M1/M2 — his D2301): each squadron he may read, its number and its short grey label — "Your
+   squadron" his home that day; "Full access" where the role in force is admin and he is admin there by a Plan or the
+   master mark; "View only" otherwise — a View, or a Plan or master admin's squadron while he is in the member view
+   (D2253). One row only: no menu (D2132). */
+export type MenuLabel = 'Your squadron' | 'Full access' | 'View only'
+export function menuSquadrons(iso: string = todayIso()): { id: string; num: string; label: MenuLabel }[] {
+  const m = me()
+  const home = m ? homeOn(m, iso) : null
+  const acct: any = SESSION ? ACCOUNTS_LIST.find(a => a.id === SESSION.user) : null
+  const adminNow = roleOf() === 'admin'
+  return readableUnits(iso).map(id => ({
+    id, num: String(storeUnitById(id)?.num ?? id),
+    label: id === home ? 'Your squadron'
+      : adminNow && acct && (acct.master === true || levelOfAccount(levelAcct(acct), id, iso) === 'admin') ? 'Full access'
+        : 'View only',
+  }))
+}
+/* A SQUADRON HE ONLY VIEWS IS PICKED (his D2381, "View only and help"): the squadron in view is one the Schedules menu
+   labels "View only" — a View of it, or a Plan of it or the master mark while he is in the member view (D2253). Then its
+   View-only Sched and Help alone are offered: the top bar's tabs and the ☰ menu (pageOffered), and state/store.ts's
+   standing check lands him there or brings his own squadron back (landOnOfferedPage). Nobody signed in: false. */
+export const VIEW_ONLY_PAGES: readonly string[] = ['viewsched', 'help']
+export function viewOnlyPick(iso: string = todayIso()): boolean {
+  if (!SESSION || !me()) return false
+  return menuSquadrons(iso).find(r => r.id === UNIT)?.label === 'View only'
+}
+export const pageOffered = (page: string): boolean => VIEW_ONLY_PAGES.includes(page) || !viewOnlyPick()
 /* AN ADMIN OF THE PAGE'S SQUADRON (the Plan audit's PE1 as the blind read's R5 rewrote it): the role in force is admin AND
    his level in the page's squadron that day is admin — so a View holder picking another squadron is never offered its
    edit controls, and the member view is never an admin's (O3). mayEditSched keeps its body for its ~160 other readers;
@@ -304,9 +416,37 @@ export function adminOfPage(kind: 'schedule' | 'own', iso: string = todayIso()):
   if (!SESSION || roleOf() !== 'admin') return false
   const acct: any = ACCOUNTS_LIST.find(a => a.id === SESSION.user)
   if (!acct) return pageUnit(kind, iso) === UNIT
-  return levelOfAccount(levelAcct(acct), pageUnit(kind, iso), iso) === 'admin'
+  return levelOfAccount(asAdminInForce(acct), pageUnit(kind, iso), iso) === 'admin'
 }
+/* THE ACCOUNT READ WITH THE ROLE IN FORCE, ADMIN — for the two edit-rights questions below and above, each asked only once
+   the role in force is admin. In the app the role in force is never above the account's own (only an admin switches to
+   the member view and back — switchRoleInForce), so this is the account's own level; the localhost bridge's
+   raptorRole('admin') — a member given the admin role in place, the world unchanged (bug-check order §7.7) — keeps the
+   meaning it had before step A: an admin of his own squadron, his rows elsewhere as they stand (found by GitHub's run of
+   22 Nov 26: the changes window's and the Leave War Days window's browser tests). The gate judges every save by the role
+   in force all the same. */
+const asAdminInForce = (acct: any) => levelAcct(acct, 'admin')
 export const maySchedEditPage = (iso?: string): boolean => mayEditSched() && adminOfPage('schedule', iso)
+/* STEP A's FOUR KINDS OF "MAY HE EDIT" (the second-half plan §2 item 1; the inventory in docs/data-schema.md §Edit rights
+   by squadron, held by state/edit-rights-readers.test.ts):
+   - schedule — a control on the schedule in view (Edit Schedule, the board, View-only Sched, Logic, the templates, the
+     saved plans, the changes window, Admin → Squadron config — D2317, Admin → Data's clears): maySchedEditPage, read
+     through auth.ts canEditSched / lgCanEdit / HOOKS.editMode;
+   - own — a control on his own squadron's page (Inputs, Medical, SANS, Quals, the OIL list, the Leave War, the Tracker,
+     Admin → Users): mayEditOwnPage (auth.ts canEditOwn) — for a View holder his home, so a pick of 149 changes nothing
+     there; for a Plan holder or a master admin the squadron picked (pageUnit('own'));
+   - named squadron — a control acting on a squadron of its own (the Inputs, SANS and Calendar settings windows, the
+     late cut-off, the OIL list): adminOfUnit(u);
+   - role — a question about the person, not a squadron (the member-view switch, a tab's visibility): isAdmin, kept. */
+export const mayEditOwnPage = (iso?: string): boolean => mayEditSched() && adminOfPage('own', iso)
+/* AN ADMIN OF THAT SQUADRON, THE ROLE IN FORCE (D2336: its own admins, a Plan holder of it, a master admin; the member
+   view is never an admin's, D292). A session with no account behind it (a hand-made test session) answers for the
+   page's own squadron only, as adminOfPage does. */
+export function adminOfUnit(unit: string, iso: string = todayIso()): boolean {
+  if (!mayEditSched()) return false
+  const acct: any = ACCOUNTS_LIST.find(a => a.id === SESSION.user)
+  return acct ? levelOfAccount(asAdminInForce(acct), unit, iso) === 'admin' : unit === pageUnit('own', iso)
+}
 /* PD1 (the Plan audit — dormant until step 5): a person added by the signed-in admin is made the page's squadron's
    (Admin → Users follows the pick for a master admin or a Plan holder), else his own — handed to units.ts putNewHome,
    which imports nothing of this file */
@@ -626,6 +766,8 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   'lw.grades': op(T.setting, 'U'),
   'lw.balLock': op(T.setting, 'U'),
   'lw.seen': op(T.lwseen, 'U', 'required'),
+  /* a press of one of his bell's squadron buttons (state/bellsqn.ts): the signed-in person's OWN row only */
+  'bell.squadrons': op(T.bellsqn, 'U', 'required'),
   'lw.clear': op(T.bid, 'U', 'optional', [[T.award, 'D']]),
   /* the Tracker: everyone with access edits it (D121) */
   'trk.marks': op(T.tracker, 'U'), 'trk.dates': op(T.tracker, 'U'), 'trk.roster': op(T.tracker, 'U'),
@@ -645,7 +787,9 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   'access.decline': op(T.accessreq, 'D'),
   'access.approve': op(T.accessreq, 'D', 'never', [[T.user, 'C']]),
   'account.add': op(T.user, 'C', 'never', [[T.accessreq, 'D']]),
-  'account.update': op(T.user, 'U', 'never', [[T.accessreq, 'D']]),
+  /* (…and every door that changes a man's access tells him, a Notice created in the same command — batch 1's second half
+     §7 item 6, his D2251, state/acctlines.ts; the gate's acctLineViolation judges each line) */
+  'account.update': op(T.user, 'U', 'never', [[T.accessreq, 'D'], [T.notice, 'C']]),
   /* (`guestview.set`, the guest switch's command, went with the guest view — D2239: no row, so the gate refuses it) */
   /* a new person ([ACCOUNTS-NEW-PERSON], D214, D217) — made only on Admin → Users: alone (a
      blank sign-in), with his account, or by approving his sign-up; and the admins' bell's
@@ -674,32 +818,49 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   /* he's back — Restore (Admin → Users, D310), Restore under another callsign (D284, D286, D295): the person restored (and
      renamed), his sign-in enabled, a new stint opened; never a member's own-row write. (Undo post out on the posting's own
      archive runs the same body as the POSTING command, `lw.postout` below — [DRAFT-PENDING], Astra's read of the fixes, 02) */
-  'person.restore': op(T.person, 'U', 'never', [[T.user, 'U'], [T.profile, 'U']]),
+  'person.restore': op(T.person, 'U', 'never', [[T.user, 'U'], [T.profile, 'U'], [T.notice, 'C']]),
   /* [ONE-DOOR] (D309, D310, D323): Archive on Admin → Users — the person archived, his account suspended, his war stint
      closed (leavewar/sync.ts archivePerson); the man's own "welcome back" seen — his OWN row only (D305) */
-  'person.archive': op(T.person, 'U', 'never', [[T.user, 'U'], [T.profile, 'U']]),
+  /* (…and every View and Plan his sign-in holds dropped in the same command — his D2311; so too an Overseas Sqn posting,
+     run at once or by the pass, below) */
+  'person.archive': op(T.person, 'U', 'never', [[T.user, 'U'], [T.profile, 'U'], [T.grant, 'D'], [T.notice, 'C']]),
   'person.backSeen': op(T.person, 'U', 'required'),
   /* a posting written with a take-back of what the posting made (its archive, its suspension, its SANS tick) — and its
      Undo, before or after it ran (leavewar/sync.ts takeBack, and restoreBody's undo mode on the posting's own archive) */
   /* …and its Undo takes back the posting's bell lines ([NOTICE-UNDO-RETRACT], D1693, D1699): each admin's line removed (D), and
      one he had read replaced by its "taken back" line (C) */
-  'lw.postout': op(T.profile, 'U', 'never', [[T.person, 'U'], [T.user, 'U'], [T.notice, 'C'], [T.notice, 'D']]),
+  'lw.postout': op(T.profile, 'U', 'never', [[T.person, 'U'], [T.user, 'U'], [T.notice, 'C'], [T.notice, 'D'], [T.grant, 'D']]),
   /* the posting pass on its date — a reconciler (the system actor); every table an outcome writes is named (D200) */
   /* …and each admin's bell line saying it ran ([POSTOUT-RUN-NOTICE], D1547 — a Notice created; so too a posting made today,
      run inside `lw.postout` above) */
-  'lw.postoutRun': op(T.profile, 'U', 'never', [[T.person, 'U'], [T.person, 'D'], [T.user, 'U'], [T.user, 'D'], [T.sched, 'U'], [T.amendment, 'C'], [T.input, 'D'], [T.input, 'U'], [T.bid, 'D'], [T.award, 'D'], [T.notice, 'C']]),
+  'lw.postoutRun': op(T.profile, 'U', 'never', [[T.person, 'U'], [T.person, 'D'], [T.user, 'U'], [T.user, 'D'], [T.sched, 'U'], [T.amendment, 'C'], [T.input, 'D'], [T.input, 'U'], [T.bid, 'D'], [T.award, 'D'], [T.notice, 'C'], [T.grant, 'D']]),
 }
 /* THE UNITS (multi-squadron batch 1, step 1 — state/units.ts; the master mark, state/accounts.ts setMaster). The type
    says only that an admin may run it; which unit's admin is the commit gate's, read from each row (unitRowViolation) */
 Object.assign(COMMAND_OPS, {
-  'unit.add': op(T.unit, 'C', 'never', [[T.unitplace, 'C'], [T.grant, 'C']]),
-  'unit.place': op(T.unitplace, 'C'),
+  /* (…with a new place made in the same command — "+ New place…" inside the form, one Undo step: batch 1's second half
+     §6 items 2 and 4, R-O8b) */
+  'unit.add': op(T.unit, 'C', 'never', [[T.unitplace, 'C'], [T.grant, 'C'], [T.place, 'C'], [T.notice, 'C']]),
+  'unit.place': op(T.unitplace, 'C', 'never', [[T.place, 'C']]),
   'place.set': op(T.place, 'U', 'never', [[T.place, 'C']]),
-  'grant.set': op(T.grant, 'U', 'never', [[T.grant, 'C']]),
-  'grant.remove': op(T.grant, 'D'),
+  'grant.set': op(T.grant, 'U', 'never', [[T.grant, 'C'], [T.notice, 'C']]),
+  'grant.remove': op(T.grant, 'D', 'never', [[T.notice, 'C']]),
   /* (a move drops every right the man held in another squadron — his D2203 — inside the same command) */
   'home.set': op(T.home, 'U', 'never', [[T.home, 'C'], [T.grant, 'D']]),
-  'account.master': op(T.user, 'U'),
+  'account.master': op(T.user, 'U', 'never', [[T.notice, 'C']]),
+  /* Admin → Users' one Save (batch 1's second half, plan §4 item 5 — accounts.ts saveAccess): the account row (role, master
+     mark) and the rights of that account in other squadrons, given, changed or taken — and, made a master admin, every
+     right he held dropped (R-O10). Which squadron's admin may write each row is unitRowViolation's, as for grant.set.
+     The sign-in name rides in it too (the final reads, R4), and a rename onto a waiting request answers it, as
+     account.update's does — the request row deleted (who may: requestRowViolation, §15 D12) */
+  'account.access': op(T.user, 'U', 'never', [[T.grant, 'C'], [T.grant, 'U'], [T.grant, 'D'], [T.accessreq, 'D'], [T.notice, 'C']]),
+  /* the app's own line that a move has taken effect (batch 1's second half §15 D11, §16 D11′ — leavewar/sync.ts
+     runMoveLines): the system actor, a Notice created, nothing else (acctLineViolation's own section) */
+  'account.told': op(T.notice, 'C'),
+  /* the app's own line that a posting could not run (batch 1's second half §7 item 7, §15 D10, §16 D10′ — leavewar/sync.ts
+     tellPostingFailed): the system actor, a Notice created to each of his squadron's admins, nothing else
+     (postingFailedViolation's own section) */
+  'posting.failed': op(T.notice, 'C'),
 } satisfies Record<string, CommandOp>)
 for (const k of SETTINGS_KEYS_ALL) COMMAND_OPS[`settings.${k}`] = op(T.setting, 'U')
 /* COMMANDS ONLY AN ADMIN RUNS, though the table they write grants a member the same letter for his own change: the war's
@@ -1318,20 +1479,22 @@ export function postingPassViolation(env: CommitEnvelope): string | null {
      (state/sched-commit.ts tellPass — the app's act, with no name, R12), each about an input this changeset changes and
      none of the war's or a posting's kinds. At the database step the pass's service account writes exactly these. */
   /* …addressed to one of that posting's squadron's admins on the run's day, read after the outcomes (the reshape plan §6.2
-     step 6 — accounts.ts adminsOf: at home there, or a plain admin holding Plan of it; a master through his home only; an
+     step 6 — accounts.ts adminLineAudience since §7 item 2: at home there, a plain admin holding Plan of it, or a master admin; an
      admin archived by this very pass not told), whichever war holds the posting (step 7) */
   const audience = new Map<string, Set<string>>()
   const adminOfPosting = (who: string, to: string): boolean => {
     const u = postUnit(who)
     let s = audience.get(u)
-    if (!s) { s = new Set(adminsOf(u, today)); audience.set(u, s) }
+    /* (…and every master admin who can sign in — the one audience, accounts.ts adminLineAudience, §7 item 2) */
+    if (!s) { s = new Set(adminLineAudience(u, today)); audience.set(u, s) }
     return s.has(to)
   }
   const told = new Set<string>()
   const deletes = [...posted.values()].includes('delete')
   const inputsChanged = new Set(env.changes.filter(c => c.collection === 'inputs').map(c => String(c.id)))
   for (const c of env.changes) {
-    if (c.collection !== 'notices') continue
+    /* (his own account's line — judged whole by acctLineViolation, asked right after this) */
+    if (c.collection !== 'notices' || acctChange(c)) continue
     const n: any = c.op === 'delete' ? null : c.after
     if (c.before != null || !n || n.by != null || !Array.isArray(n.what) || !n.what.length) return refuse(c)
     const parts: any[] = n.what
@@ -1340,6 +1503,8 @@ export function postingPassViolation(env: CommitEnvelope): string | null {
       const ok = parts.length === 1 && p.k === 'po' && posted.has(who) && p.o === posted.get(who)
         && (p.acct === undefined || (p.acct === true && p.o === 'overseas'))
         && n.iid === '' && n.day === postedOn.get(who) && String(n.to) !== who && adminOfPosting(who, String(n.to))
+        /* (stamped with the posting's squadron — §7 item 1) */
+        && n.u === postUnit(who)
         && !told.has(`${n.to}|${who}`)
       if (!ok) return refuse(c)
       told.add(`${n.to}|${who}`)
@@ -1357,13 +1522,24 @@ export function postingPassViolation(env: CommitEnvelope): string | null {
   /* the rest of the pass's settings rows: for a Delete, the request waiting under his account's sign-in name, his bell's
      row and every right his sign-in holds in another squadron (the delete's own body drops them — units.ts
      dropGrantsOfAccount, fix read 11's E — and a right left naming a sign-in gone is G5's), all removed; nothing else */
+  /* …and for an Overseas Sqn posting, which archives him, every View and Plan his sign-in holds in another squadron, removed
+     (his D2311 — batch 1's second half, plan §4 item 8, R-O1, R-A4: archived or posted overseas, View and Plan end; the
+     pass drops them, accounts.ts endRightsOfArchived), whether or not this pass changes his account row (an account
+     suspended by hand before keeps its row) — the posted man read from the verified posting above, his sign-in from the
+     list before the command */
+  const wB = worldsOf(env)
+  const overseasAcct = new Set<string>()
+  for (const [pid, o] of posted) {
+    if (o !== 'overseas') continue
+    for (const x of (wB ? wB.acctB : ACCOUNTS_LIST)) if (String(x.pid) === pid) overseasAcct.add(x.id)
+  }
   for (const c of env.changes) {
     if (c.collection !== 'settings' || String(c.id).startsWith('account:')) continue
     const b: any = c.before, id = String(c.id)
     const ok = (c.op === 'delete' && (
       (id.startsWith('accessreq:') && !!b && [...accounts.values()].some(a => a.name === b.name))
       || (id.startsWith('reqseen:') && accounts.has(id.slice('reqseen:'.length)))))
-      || (id.startsWith(GRANT_PFX) && !!b && (c.op === 'delete' || c.after == null) && gone.has(String(b.account)))
+      || (id.startsWith(GRANT_PFX) && !!b && (c.op === 'delete' || c.after == null) && (gone.has(String(b.account)) || overseasAcct.has(String(b.account))))
     if (!ok) return refuse(c)
   }
   /* G5 holds for the pass too (fix read 12, fault A (2)): no account row goes while a right still names it */
@@ -1730,6 +1906,13 @@ export const lwUnitNow = (): string | null => (LW_UNIT ? LW_UNIT() : null)
 type LwPostingSaved = (pid: string, p: unknown) => boolean
 let LW_POSTING: LwPostingSaved | null = null
 export function setLwPostingProbe(fn: LwPostingSaved | null): void { LW_POSTING = fn }
+/* HAS THIS MAN'S POSTING FAILED NOW (batch 1's second half §16 D10′ — R3-O11, R3-F7): the runner's own record — its
+   command refused after its retry alone, or held for any reason but the last-admin lock (leavewar/sync.ts
+   postingFailedNow) — with his squadron and the posting's key; null where it would run, is not due, or ran. Installed by
+   leavewar/sync.ts; none installed, no posting-failed line passes */
+type PostingFailed = (pid: string) => { unit: string; key: string } | null
+let PO_FAILED: PostingFailed | null = null
+export function setPostingFailedProbe(fn: PostingFailed | null): void { PO_FAILED = fn }
 /* …AND IN ANOTHER SQUADRON'S STORED WAR (the reshape plan §6.2 A5, step 7 — core, phase 1): is this posting record his
    posting exactly as THAT squadron's stored profile row holds it? Installed by leavewar/sync.ts with the pass over every
    squadron (helper "war"). On a built site (the saved copy wired) a posting run through the second store is refused
@@ -1779,6 +1962,16 @@ function removesOnly(c: Change): boolean {
 /* Admin → Users' doors, the only commands that write the second store (leavewar/sync.ts foreignOf's callers: Archive,
    Restore and Restore as — one type — and Delete) */
 const LWX_DOORS = new Set(['person.archive', 'person.restore', 'person.delete'])
+/* …and the three adds (batch 1's second half §4 item 7 — R-A3: the Home squadron Add a person names), which write there
+   only the FIRST window of the man the command makes, in the squadron his new home names — never another man's, never
+   a record beside it. Who may add to that squadron is homeUnitViolation's (an admin of the new man's home). */
+const LWX_ADDS = new Set(['person.add', 'account.addNew', 'access.approveNew'])
+function newManFirstWindow(env: CommitEnvelope, c: Change): boolean {
+  if (c.collection !== 'lwx.profile' || c.before != null || c.op === 'delete' || c.after == null) return false
+  const { unit, local } = split(String(c.id))
+  const made = env.changes.some(p => p.collection === 'people' && p.before == null && String(p.id) === local)
+  return made && !!unit && homeBefore(local, todayIso(), unitRowsBefore([])) === unit
+}
 function warUnitViolation(env: CommitEnvelope): string | null {
   const a = env.actor
   if (!a || a.role === 'system') return null
@@ -1790,7 +1983,8 @@ function warUnitViolation(env: CommitEnvelope): string | null {
   const u = lwUnitNow()
   /* (a member is refused every `lwx` row by section 7 — an admin's record — and is told so there) */
   for (const c of a.role === 'admin' ? fx : []) {
-    if (!LWX_DOORS.has(env.type)) return `another squadron's stored war written outside Admin → Users' doors, through the second store (${c.collection}/${c.id})`
+    const door = LWX_DOORS.has(env.type) || (LWX_ADDS.has(env.type) && newManFirstWindow(env, c))
+    if (!door) return `another squadron's stored war written outside Admin → Users' doors, through the second store (${c.collection}/${c.id})`
     if (u && unitOf(String(c.id)) === u) return `the war loaded written through the second store (${c.collection}/${c.id})`
   }
   /* A7 — leave a war approved goes onto no day that is not that war's squadron's (the probe above) */
@@ -1847,7 +2041,7 @@ function warUnitViolation(env: CommitEnvelope): string | null {
 }
 /* 7f. A SQUADRON'S TRACKER IS CHANGED ONLY BY ITS OWN PEOPLE (the second fix read, 18 Nov 26 — Fable's plan, still open 3).
    Each squadron keeps a Tracker of its own (D2167), but its record ids name none (`v3:<course>:<syllabus>:…` — the unit is
-   added by its storage door, tracker/storage.js, bound once to the signed-in person's own squadron), so the gate never knew
+   added by its storage door, tracker/storage.js, on the squadron of his own pages), so the gate never knew
    whose Tracker a change was to. A doorway bound to another squadron's — the console's bindStorageUnit before the Tracker
    loads, as the Leave War's swap was for H2 — let 142's people change 149's. The Tracker tells the gate which squadron's
    is open (setTrkUnitProbe, installed by boot.ts from the doorway's own bound unit; none bound, nothing asked); every
@@ -1868,14 +2062,15 @@ function trkUnitViolation(env: CommitEnvelope): string | null {
   const lv = levelInForce(a, u, todayIso(), unitRowsBefore(env.changes))
   const ok = a.role === 'admin' ? lv === 'admin' : lv === 'member' || lv === 'admin'
   if (!ok) return `a change to another squadron's Tracker (${u}) by one with ${lv ? `${lv} rights` : 'no rights'} there`
-  /* THE TRACKER KEPT FROM BEFORE HIS MOVE TAKES NOTHING (fix read 2 — Astra 3's F3; his D2243 Q7, "nothing typed saved into
-     either squadron"): a Tracker once loaded keeps its squadron until the next sign-in (state/typing-hold.ts), and its band
-     says "This can't be saved in 142's Tracker" — but a moved MASTER admin is an admin of 142 still, so the line above let
-     his changes into it under that band. A change by the person signed in on this page is refused while the Tracker bound
-     is not the page's own squadron today (pageUnit('own') — the very test the band is drawn by, store.ts publishBands),
-     master admins included. A Tracker he opened on purpose is the page's own squadron (the pick of a master admin or a
-     Plan holder — D2197; enterSquadron binds it), so his ordinary editing there passes. Another session's change arriving
-     here is not this page's and is not asked. */
+  /* A TRACKER THAT IS NOT THE PAGE'S OWN SQUADRON TAKES NOTHING (fix read 2 — Astra 3's F3; his D2243 Q7, "nothing typed
+     saved into either squadron"): the Tracker follows his pages (D2395), but stands on its old squadron while a move is
+     running or chart work holds it (tracker/app/core.js followUnit; the midnight band says "This can't be saved in 142's
+     Tracker") — and a moved MASTER admin is an admin of 142 still, so the line above let his changes into it under that
+     band. A change by the person signed in on this page is refused while the Tracker bound is not the page's own squadron
+     today (pageUnit('own') — the very test the band is drawn by, store.ts publishBands), master admins included: nothing
+     still running on the squadron being left can write once the pick is made. A Tracker on the page's own squadron (the
+     pick of a master admin or a Plan holder — D2197) passes. Another session's change arriving here is not this page's and
+     is not asked. */
   if (SESSION && a.id === SESSION.user && env.origin !== 'remote' && u !== pageUnit('own', todayIso()))
     return `a change to a Tracker (${u}) that is not the page's own squadron today (${pageUnit('own', todayIso())})`
   return null
@@ -1926,6 +2121,21 @@ function personDeletedHere(env: CommitEnvelope, pid: string | null, adminOfHome:
   if (!b || b.deleted === true || !f || f.deleted !== true || f.archived !== true || f.archivedBy !== 'del') return false
   const w = worldsOf(env)
   if (!w || [...w.rawA.values()].some(x => x && String(x.pid) === pid)) return false
+  const u = homeBefore(pid, todayIso(), rows)
+  return !u || adminOfHome(u)
+}
+/* DOES THIS COMMAND ITSELF ARCHIVE THAT PERSON (his D2311 — batch 1's second half, plan §4 item 8, R-O1, R-A4): its own
+   people change of him, not archived before and archived after (Archive on Admin → Users, or an Overseas Sqn posting run
+   at once inside the posting command), made by an admin of his squadron as section 8 reads it (his home today over the
+   rows before; no home known — nothing to judge). Read from the command's own records, never its label. */
+function personArchivedHere(env: CommitEnvelope, pid: string | null, adminOfHome: (unit: string) => boolean, rows: UnitRows): boolean {
+  if (!pid) return false
+  const c = env.changes.find(x => x.collection === 'people' && String(x.id) === pid)
+  if (!c) return false
+  const b: any = c.before, f: any = c.op === 'delete' ? null : c.after
+  /* (a delete marks him archived too — its rights are judged by personDeletedHere alone, which also asks that no sign-in
+     is left naming him: the archive's exception let fix read 12's forged delete with a new sign-in through) */
+  if (!b || b.archived === true || !f || f.archived !== true || f.deleted === true || b.deleted === true) return false
   const u = homeBefore(pid, todayIso(), rows)
   return !u || adminOfHome(u)
 }
@@ -2021,6 +2231,39 @@ const ACCOUNT_LIKE = (p: any) => JSON.stringify(p == null ? null : [p.cs, !!p.ar
    a right that changes hands is a right given today. */
 export const grantKept = (b: any, n: any): boolean => b != null && n != null && b.account === n.account && b.unit === n.unit && b.level === n.level
 export const masterKept = (was: any, is: any): boolean => !!was && !!is && was.master === true && is.master === true && String(was.pid) === String(is.pid)
+/* A RIGHT'S MOMENT (batch 1's second half, plan §16 D1′): a moment written now — the clock's slack the bell lines' own
+   (notices.ts AT_SLACK_MS) */
+const momentNow = (x: unknown): boolean => typeof x === 'number' && Number.isFinite(x) && Math.abs(x - Date.now()) <= AT_SLACK_MS
+const keptKey = (k: unknown): string => (k && typeof k === 'object' ? JSON.stringify(Object.entries(k).sort(([x], [y]) => (x < y ? -1 : 1))) : '')
+/* the moments of one account row a command writes (G2c, in accountShapeAndMasterViolation): the reason it is refused, or
+   null. `was` the row before (none: a new account), `relinked` the row now naming another man (a right that changes hands
+   is a right begun now) */
+function momentsViolation(was: any, is: any, relinked: boolean, env: CommitEnvelope): string | null {
+  const adminBegun = !was || relinked || was.role !== 'admin' || was.adminOf !== is.adminOf || was.adminFrom !== is.adminFrom
+  if (is.role !== 'admin') { if (is.adminAt !== undefined) return "an admin role's moment on an account that is not an admin's" }
+  else if (adminBegun) { if (!momentNow(is.adminAt)) return 'an admin role not dated now' }
+  else if (is.adminAt !== was.adminAt) return "an admin role's moment changed"
+  if (is.master !== true) {
+    if (is.masterAt !== undefined || is.kept !== undefined) return "the master mark's moment without the mark"
+    return null
+  }
+  if (!was || relinked || was.master !== true) {
+    if (!momentNow(is.masterAt)) return 'the master mark not dated now'
+    if (is.kept === undefined) return null
+    if (!is.kept || typeof is.kept !== 'object' || Array.isArray(is.kept) || !Object.keys(is.kept).length) return 'kept squadrons that will not read'
+    /* each one a squadron he held Plan of before this command, with that Plan's own moment (0: one from before moments) */
+    const rows = unitRowsBefore(env.changes), today = todayIso()
+    const holder = accountHolder(env, String(is.id), 'b')
+    for (const [u, v] of Object.entries(is.kept)) {
+      const g = grantBefore(holder, u, today, rows)
+      if (!g || g.level !== 'admin' || v !== (Number.isFinite(g.fromAt) ? g.fromAt : 0)) return 'a squadron kept that he held no Plan of'
+    }
+    return null
+  }
+  if (is.masterAt !== was.masterAt) return "the master mark's moment changed"
+  if (keptKey(is.kept) !== keptKey(was.kept)) return 'kept squadrons changed'
+  return null
+}
 /* …and the restore writes it so: an Undo or Redo whose image turns a right on dates it today (installed in
    undo-wire.ts as the timeline's `redate` hook, before the restore is named for verifiedReplay, so the image the
    timeline vouches for IS the one written); one that leaves a right standing keeps the day it has now. */
@@ -2315,11 +2558,21 @@ function accountShapeAndMasterViolation(env: CommitEnvelope): string | null {
       const wantLink = relinked ? today : !was ? (is.pidFrom === undefined ? undefined : today) : was.pidFrom
       if (is.pidFrom !== wantLink) return `an account's link to its person not dated today (${c.id})`
     }
+    /* G2c — THE MOMENTS ARE THE MOMENTS THE RIGHTS BEGAN (batch 1's second half, plan §16 D1′, D1′a — his D2310, D2218,
+       D2198): the bell shows a squadron's admin line only where the right its reader holds there began no later than the
+       line (notices.ts rightStart), so a back-dated moment would bring back the lines of a right taken away. The home
+       admin role begun now (made an admin, its record written anew, a re-link, a new admin account) carries now; unchanged,
+       its moment; not an admin, none. The mark the same. `kept` only with the mark: written with the mark set now, each
+       entry one squadron he held Plan of before this command, with that Plan's own moment; the mark unchanged, as it
+       was. A restore's verified replay puts back its image whole (an Undo of the take-away brings the lines back). Asked
+       last, after the days, so a row refused for its days is refused in those words first. */
+    const moments = replayed ? null : momentsViolation(was, is, relinked, env)
     /* (fix read 10, fault E): a mark put back on the same person, off since a moment with no move of his since, keeps its
        recorded day — the restore writes it so (restoreRedated); the gate asks the same of the same moment */
     if (replayed && (is.master !== true || kept || back || markBackHolds(was, is, OFFAT?.(env), w.rowsB.homes))) continue
     const want = is.master !== true ? undefined : kept ? was.masterFrom : today
     if (is.masterFrom !== want) return `the master mark not dated today (${c.id})`
+    if (moments) return `${moments} (${c.id})`
   }
   const droppedB = droppedKeys(w.rawB, w.acctB, w.personB)
   for (const k of droppedKeys(w.rawA, w.acctA, w.personA)) if (!droppedB.has(k)) return `an account row the app would not load (${k})`
@@ -2498,6 +2751,14 @@ function unitRowViolation(env: CommitEnvelope): string | null {
         if (after.grants.filter(g => g.account === n.account && g.unit === n.unit && grantRowHolds(hA, g, today, after)).length > 1) return `two rights holding for one account in one unit (${id})`
         /* PLAN IS AN ADMIN'S (the Plan audit's PA2 — D2201, D785): never on an account whose role is not admin */
         if (n.level === 'admin' && String(who.role) !== 'admin') return `Plan on an account that is not an admin's (${id})`
+        /* NO RIGHT GIVEN ON A MASTER ADMIN'S ACCOUNT (batch 1's second half, plan §15 D14 — R2-O14): he acts in every
+           squadron, his row reads "Full access" with no buttons (R4), so a row given him would be hidden and come back when
+           the mark comes off. Units.ts setGrant and accounts.ts saveAccess refuse it at the door. A restore too (the fix
+           read's A1): an Undo of a right taken away, or a Redo of one given, after another master admin made that man
+           one since, put it back hidden — no right stands on a master admin's account after ANY command (§15 D14); the
+           Undo's own check refuses it first, naming who wrote what blocks it (D148 — state/undo-wire.ts
+           masterRightRefusal, over accounts.ts masterRightLeft) */
+        if (who.master === true && grantRowHolds(hA, n, today, after)) return `a right on a master admin's account (${id})`
         /* ITS DAY IS THE DAY IT WAS GIVEN (fix read 8, fault G — Fable's 1, the security read's SEC8-3, the fresh Opus
            read's 3): the bell's move-day test counts a grant from its `from` (notices.ts adminThen, his D2218, D2223),
            and a grant with no day, or back-dated, put by a plain admin brought back a line a man's move had retired. A
@@ -2533,7 +2794,9 @@ function unitRowViolation(env: CommitEnvelope): string | null {
       /* (the reshape plan §4.3 — Fable 6: a right that holds nothing on today names nothing a person can use, and no door
          removes one, so it never blocks the Undo of "+ New squadron") */
       if (after.unitplaces.some(x => x.unit === key) || after.homes.some(x => x.unit === key)
-        || after.grants.some(x => x.unit === key && grantRowHolds(holderA(x.account), x, today, after))) return `a unit removed while still named (${id})`
+        || after.grants.some(x => x.unit === key && grantRowHolds(holderA(x.account), x, today, after))
+        /* (and a request waiting to join it — §5 item 4, R-O11) */
+        || requestsNaming(key)) return `a unit removed while still named (${id})`
     } else if (id.startsWith(PLACE_PFX)) {
       if (after.unitplaces.some(x => x.place === key)) return `a place removed while a unit is there (${id})`
     }
@@ -2567,6 +2830,11 @@ function unitRowViolation(env: CommitEnvelope): string | null {
          change the account itself (an admin of his own squadron, at home or by Plan, or a master admin), the last-admin
          lock the squadron he held it of (D2247) */
       if (id.startsWith(GRANT_PFX) && b && n == null && b.level === 'admin' && accountMadeMember(env, String(b.account))) continue
+      /* ARCHIVED, HIS VIEW AND PLAN END (his D2311 — batch 1's second half, plan §4 item 8, R-O1, R-A4): Archive, or an
+         Overseas Sqn posting run at once, drops every right his sign-in holds in the same command (accounts.ts
+         endRightsOfArchived) — a removal that passes where the command's own records archive that account's man, made by
+         an admin of his own squadron (personArchivedHere); a forged removal beside an unrelated archive stays refused */
+      if (id.startsWith(GRANT_PFX) && b && n == null && personArchivedHere(env, accountPidBefore(env, String(b.account)), adminOf, before)) continue
       /* PLAN IS A MASTER ADMIN'S TO GIVE, RAISE, LOWER OR TAKE (the Plan audit's PA1 — D2199, D2211): a grant row whose
          level is `admin` on either side — and that holds there (a row holding nothing is no Plan a person can use) — needs a
          master admin; a person delete's drop (above) and a verified replay excepted */
@@ -2574,6 +2842,17 @@ function unitRowViolation(env: CommitEnvelope): string | null {
         const planB = !!b && b.level === 'admin' && grantRowHolds(holderB(String(b.account)), b, today, before)
         const planA = !!n && n.level === 'admin' && grantRowHolds(holderA(String(n.account)), n, today, after)
         if (planB || planA) return `Plan given, changed or taken by one who is not a master admin (${id})`
+      }
+      /* A PLAN'S MOMENT IS THE MOMENT IT BECAME PLAN (batch 1's second half, plan §16 D1′ — his D2310, D2218): the bell
+         shows a squadron's admin line only where the right began no later than the line (notices.ts rightStart), so a
+         back-dated moment would bring back the lines of a right taken away. Plan unchanged keeps its moment; Plan given or
+         raised now carries now; a View row carries none. A restore's verified replay puts back the row whole, its moment
+         with it (an Undo of the take-away brings the lines back — D1′). Asked after who may change it, so a plain admin's
+         Plan is refused in those words first. */
+      if (id.startsWith(GRANT_PFX) && n && !(env.origin === 'restore' && REPLAY && REPLAY(env)?.(c))) {
+        if (n.level !== 'admin') { if (n.fromAt !== undefined) return `a moment on a right that is not Plan (${id})` }
+        else if (grantKept(b, n)) { if (n.fromAt !== b.fromAt) return `a Plan's moment changed (${id})` }
+        else if (!momentNow(n.fromAt)) return `a Plan not dated now (${id})`
       }
       /* K4 — A MOVE NEVER ASKS THE SQUADRON JOINED (his D2160, the transfer: "both squadrons' admins told when it is set and
          on the date, the new one never asked"): a home row of a man who has a squadron today is judged by the one check
@@ -2586,8 +2865,23 @@ function unitRowViolation(env: CommitEnvelope): string | null {
       if (!moved) for (const img of [b, n]) if (img && !adminOf(String(img.unit))) return `not an admin of ${img.unit} (${id})`
     } else if (id.startsWith(UNIT_PFX)) {
       if (!master) return `only a master admin makes or changes a unit (${id})`
-    } else if (id.startsWith(PLACE_PFX) && b != null && !master) {
-      if (!before.units.some(u => placeIdOn(before, u.id, today) === key && adminOf(u.id))) return `not an admin of a unit at that place (${id})`
+    } else if (id.startsWith(PLACE_PFX) && !master) {
+      /* A PLACE'S SQUADRONS, TODAY OR LATER (batch 1's second half §6 item 3 — D2196, D2336, PG1; §15 D13, §16 D13′): an
+         existing place changed (or removed) needs an admin of EVERY squadron at it — today or from a later day, as the rows
+         stood before the command and after it (units-model.ts unitsAtPlace, the door's one body) — and one no squadron is
+         at, a master admin. A NEW place passes only where the same command writes a squadron's place row naming it (+ New
+         squadron, a squadron's move — one command each); alone, it is a master admin's. ("Or by the admin who made it" is
+         dropped — a place row keeps no maker.) */
+      /* (an existing place is one the rows before hold — a seeded place has no stored row, so `b` alone cannot say) */
+      if (b != null || placeIn(before, key)) {
+        const at = new Set([...unitsAtPlace(before, key, today), ...unitsAtPlace(after, key, today)])
+        if (!at.size) return `a place no squadron is at, changed by one who is not a master admin (${id})`
+        for (const u of at) if (!adminOf(u)) return `not an admin of every unit at that place (${u} — ${id})`
+      } else if (n != null) {
+        const named = env.changes.some(x => x.collection === 'settings' && String(x.id).startsWith(UNITPLACE_PFX)
+          && x.op !== 'delete' && (x.after as any)?.place === key)
+        if (!named) return `a new place made alone by one who is not a master admin (${id})`
+      }
     }
   }
 
@@ -2650,11 +2944,21 @@ function unitRowViolation(env: CommitEnvelope): string | null {
   }
 
   if (masterMoved) {
-    if (env.type !== 'account.master' && !(env.type === 'undo.restore' && env.origin === 'restore')) return 'the master mark changes only by its own command'
+    /* (…or Admin → Users' one Save, which carries the role, the mark and the squadron lines together — batch 1's second
+       half, plan §4 item 5, R-O3, R-A5; accounts.ts saveAccess) */
+    if (env.type !== 'account.master' && env.type !== 'account.access' && !(env.type === 'undo.restore' && env.origin === 'restore')) return 'the master mark changes only by its own command'
     if (!master) return 'only a master admin sets the master mark'
     for (const c of masterCh) {
       const img: any = c.after ?? c.before
       if (String(c.id) === ACCOUNT_ROW + a.id || (img && a.personId != null && String(img.pid) === String(a.personId))) return 'never his own master mark'
+      /* MADE A MASTER ADMIN, HE KEEPS NO RIGHT (R-O10): every View and Plan he holds goes in the same command — a kept row
+         would be hidden behind "Full access" and come back when the mark comes off. Whichever command sets the mark — the
+         one Save, the mark's own `account.master`, an Undo or Redo (§15 D14; the second half's final reads, R3: it was
+         asked of the one Save only, and the mark's own command kept a Plan) */
+      if (c.after != null && (c.after as any).master === true) {
+        const id = String(c.id).slice(ACCOUNT_ROW.length), h = holderA(id)
+        if (after.grants.some(g => g.account === id && grantRowHolds(h, g, today, after))) return `a right left on an account made a master admin (${c.id})`
+      }
     }
     /* (only an admin's account counts as a master admin left — D2260) */
     if (!(w ? w.acctA : readAccounts(accountImagesNow())).some(x => x.master === true && x.role === 'admin')) return 'one master admin must be left'
@@ -2745,8 +3049,8 @@ function homeUnitViolation(env: CommitEnvelope): string | null {
    squadron's schedulers only; the reshape plan §7, A4, with the Plan audit's PB3): it was kept crossing while a holiday
    reached every squadron at the place (D2184 R32), skipping these checks; it now takes them as any admin line does — to his
    own squadron's people, or to a reader in adminsOf of a squadron he is an admin of (PC1, below) — and the war-line check
-   below asks it is the holiday's own. `accessreq:` rows carry no squadron yet (Request access asking the squadron, D2111,
-   is not built), so there is nothing to judge them by — filed.
+   below asks it is the holiday's own. `accessreq:` rows name their squadron since batch 1's second half §5 (D2111) and
+   are judged by it in their own section (8b, requestRowViolation).
    ONE LINE IS NOT JUDGED BY ITS READER'S SQUADRON: the telling of an input this very command changed (state/sched-commit.ts
    tellPass — whoever is in it and whoever filed it is told). That input is judged by its own people's squadrons
    (7c above), and its filer may be of another squadron (a master who filed for a 149 man, who is then told when 149's
@@ -2863,7 +3167,35 @@ function lineRewritten(c: Change, replayed: ((c: Change) => boolean) | null): bo
   const b: any = c.before, n: any = c.after
   if (c.op !== 'put' || !b || typeof b !== 'object' || !n || typeof n !== 'object') return false
   if (replayed && replayed(c)) return false
-  return String(b.to) !== String(n.to) || String(b.iid ?? '') !== String(n.iid ?? '') || b.at !== n.at || !deepEqual(b.fu, n.fu)
+  /* (…nor its squadron's stamp — §7 item 1) */
+  return String(b.to) !== String(n.to) || String(b.iid ?? '') !== String(n.iid ?? '') || b.at !== n.at || !deepEqual(b.fu, n.fu) || !deepEqual(b.u, n.u)
+}
+/* A NEW LINE'S STAMP IS THE SQUADRON THE COMMAND ACTS IN (batch 1's second half, plan §7 item 1 — state/notices.ts
+   Notice.u): an input's line its input's squadron as this command leaves it (engine/inputs.ts inputUnitOf — the body the
+   pass stamps with), a holiday's its holiday part's, a posting's or its take-back's the man's home before the command, a
+   war line the war loaded's. The bell's switch, its grey mark and its tap read the stamp, so a line stamped with another
+   squadron would hide from the switch it belongs to, or land a tap elsewhere. A line the command cannot be judged by (an
+   input it does not change, a war line with no war door) is left to the checks that judge it; a restore's verified replay
+   puts back its own. Both sections ask it. */
+function lineStampOwed(env: CommitEnvelope, n: any): string | null | undefined {
+  if (n.iid) {
+    const ch = env.changes.find(x => x.collection === 'inputs' && String(x.id) === String(n.iid))
+    const img: any = !ch ? null : ch.op === 'delete' ? ch.before : (ch.after ?? ch.before)
+    return img ? inputUnitOf(img) : undefined
+  }
+  const p: any = Array.isArray(n.what) ? n.what[0] : null
+  const k = String(p?.k)
+  if (k === 'oilhol') return typeof p.u === 'string' && p.u ? p.u : null
+  if (k === 'po' || k === 'poback') return p.who != null ? homeBefore(String(p.who), todayIso(), unitRowsBefore(env.changes)) ?? null : undefined
+  if (k === 'lw' || k === 'lwopen' || k === 'lwback') return lwUnitNow() ?? undefined
+  return undefined
+}
+function lineStampWrong(env: CommitEnvelope, c: Change, replayed: ((c: Change) => boolean) | null): boolean {
+  const n: any = c.after
+  if (c.op !== 'put' || c.before != null || !n || typeof n !== 'object') return false
+  if (replayed && replayed(c)) return false
+  const want = lineStampOwed(env, n)
+  return want !== undefined && (typeof n.u === 'string' ? n.u : null) !== want
 }
 /* A NEW LINE IS DATED NOW (fix read 7, fault T — the security read's SEC7-2). A line leaves a moved man's bell from the
    first move day after the day it was written (state/notices.ts noticeLeftBell), so a line dated in 2099 was never
@@ -3056,7 +3388,8 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
   const ownsLine = (n: any, pid: string): boolean => {
     if (ownsHome(pid)) return true
     const x = lineSquadron(n)
-    return !!x && levelInForce(a, x, today!, rows!) === 'admin' && adminsOf(x, today!, rows!).includes(pid)
+    /* (the one audience — a master admin among them, §7 item 2) */
+    return !!x && levelInForce(a, x, today!, rows!) === 'admin' && adminLineAudience(x, today!, rows!).includes(pid)
   }
   const changedInputs = new Set(env.changes.filter(c => c.collection === 'inputs').map(c => String(c.id)))
   let replayed: ((c: Change) => boolean) | null | undefined
@@ -3066,6 +3399,8 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
   for (const c of env.changes) {
     const where = `${c.collection}/${c.id}`
     if (c.collection === 'notices') {
+      /* (his own account's line — judged whole, first, by acctLineViolation: §16 D6′) */
+      if (acctChange(c)) continue
       /* (fault M: no line already written is rewritten — before every door below) */
       if (c.op === 'put') {
         if (replayed === undefined) replayed = env.origin === 'restore' && REPLAY ? REPLAY(env) : null
@@ -3125,6 +3460,20 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
                rode beside it) */
             if (ref && !followed.has(ref)) { followed.add(ref); continue }
           }
+        }
+        /* A POSTING'S LINE TAKEN AWAY WITH ITS POSTING, SHOWN OR HIDDEN (batch 1's second half, plan §16 D1′c — R3-O7):
+           "Undo post out" takes every stored line of the run, a line its reader's bell now hides among them (he lost the
+           Plan that brought it — notices.ts rightHolds), so a later Undo giving the right back shows none about a posting
+           taken back. Only a removal, only of a posting line stamped with a squadron the actor is an admin of in force,
+           only where this command takes that man's posting back — his posting record changed, not merely re-saved as it
+           ran (and so owed by the war, warLinesOwed) — and never a line that has left a moved man's bell (his D2218: no
+           squadron's command touches another's bell; fix read 4, Astra §1). */
+        const poRec = n === c.before && Array.isArray(n.what) && n.what.length === 1 && n.what[0]?.k === 'po'
+          ? env.changes.find(x => x.collection === 'lw.postouts' && String(x.id) === String(n.what[0].who)) : undefined
+        if (to !== self && poRec && poRec.before != null && !deepEqual(poRec.before, poRec.op === 'delete' ? null : poRec.after)
+          && (c.op === 'delete' || c.after == null) && typeof n.u === 'string' && n.u && !noticeLeftBell(n) && !!WAR_OWED?.(env.changes, n)) {
+          if (today == null) { today = todayIso(); rows = unitRowsBefore(env.changes) }
+          if (levelInForce(a, n.u, today, rows!) === 'admin') continue
         }
         if (to !== self && !ownsLine(n, to)) return `a bell line of another squadron's man (${where})`
         /* (fault M: the own-man fallback no longer lets through an input line the pass would not write) */
@@ -3186,10 +3535,14 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
       }
       /* (fault T: a new line is dated now — asked last, so a line refused on another count keeps its own words) */
       if (lineNotNow(c, replayed ?? null)) return `a bell line not dated now (${where})`
+      /* (§7 item 1: its squadron's stamp — after the date, so a line refused on another count keeps its own words) */
+      if (lineStampWrong(env, c, replayed ?? null)) return `a bell line not as the pass writes it (${where})`
       continue
     }
     if (c.collection !== 'settings') continue
-    const id = String(c.id)
+    /* the name with its squadron split off (§15 D14): the Approvals moment is a row of the war's squadron since R2,
+       `u149@apprseen:<pid>` (state/apprseen.ts) — read as its plain name, it is judged as every read record is */
+    const id = split(String(c.id)).local
     /* (job 2, 19 Nov 26 — the security read's SEC-1: an admin's Approvals moment, `apprseen:<pid>`, and his record of
        the access requests he has seen, `reqseen:<account>`, are read records too — 142's plain admin set 149's admin's) */
     /* (a bell's read record, `noticeseen:<pid>`, is no longer asked here: it is its owner's alone whoever writes, asked
@@ -3448,6 +3801,199 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
   if (!why && stored) env.changes = stored
   return why
 }
+/* 8b. A WAITING REQUEST IS ITS SQUADRON'S (batch 1's second half §5 — D2111, D2094; §15 D12, his D2324). A request
+   (`accessreq:<id>`) names the squadron he asks to join: a row written must name a squadron in the store; and a change
+   of one by an admin — answering it (approve, decline, an account added or renamed under its name, a delete taking his
+   account) or putting it back (an Undo) — needs him an admin of that squadron (its own admin, a Plan holder of it, a
+   master admin), as the rows stood before the command; a row moved to another squadron needs both. The pending
+   person's own request is held by its own rule (section 7, below); the app's own posting pass, which runs as the app,
+   is not asked. A row of before §5 has no squadron and reads as the boot squadron's (D56 — accounts.ts reqsLoad). */
+const REQ_ROW = 'accessreq:'
+const reqUnit = (v: any): string => (v && typeof v.unit === 'string' && v.unit ? v.unit : BOOT_UNIT)
+/* …AND AN ACCOUNT ADDED OR RENAMED ONTO A WAITING REQUEST'S NAME ANSWERS IT, its row touched or not (the second half's
+   final reads, R5 — the security read's 1): the loader drops a request whose sign-in name has an account (accounts.ts),
+   so a hand-made `account.add`, `account.addNew` or `account.update` rename under a 149 requester's name, the request row
+   left alone, answered it — the newcomer in as a 142 admin of the 142 admin's choosing. So every account row a command
+   writes under a name it did not carry before, where a request waited under that name before the command, needs an
+   admin of that request's squadron, as the rows stood before the command (§15 D12, "whatever path"). An admin actor only,
+   as above. */
+function requestAnsweredByAccount(env: CommitEnvelope): string | null {
+  const a = env.actor
+  if (!a || a.role !== 'admin') return null
+  const accts = env.changes.filter(c => c.collection === 'settings' && String(c.id).startsWith(ACCOUNT_ROW) && c.op !== 'delete' && c.after != null)
+  if (!accts.length) return null
+  const nm = (s: unknown): string => String(s ?? '').trim().toLowerCase()
+  /* the requests waiting BEFORE the command: those stored now, with each this command changed put back as it stood */
+  const waiting = new Map<string, any>()
+  for (const k of store.keys(REQ_ROW)) { const v: any = store.get(k, null); if (v) waiting.set(k, v) }
+  for (const c of env.changes) {
+    if (c.collection !== 'settings' || !String(c.id).startsWith(REQ_ROW)) continue
+    if (c.before == null) waiting.delete(String(c.id)); else waiting.set(String(c.id), c.before)
+  }
+  if (!waiting.size) return null
+  const unitOfName = new Map<string, string>()
+  for (const v of waiting.values()) if (v && v.name) unitOfName.set(nm(v.name), reqUnit(v))
+  const before = unitRowsBefore(env.changes), today = todayIso()
+  for (const c of accts) {
+    const id = String(c.id).slice(ACCOUNT_ROW.length)
+    const was: any = accountBefore(id, c.before), name = nm((c.after as any).name)
+    if (!name || (was && nm(was.name) === name)) continue
+    const u = unitOfName.get(name)
+    if (u && levelInForce(a, u, today, before) !== 'admin') return `a request to join ${u} answered by one who is not its admin (${c.collection}/${c.id})`
+  }
+  return null
+}
+function requestRowViolation(env: CommitEnvelope): string | null {
+  const answered = requestAnsweredByAccount(env)
+  if (answered) return answered
+  const reqs = env.changes.filter(c => c.collection === 'settings' && String(c.id).startsWith(REQ_ROW))
+  if (!reqs.length) return null
+  const after = unitRowsBefore([])
+  for (const c of reqs) {
+    const n: any = c.op === 'delete' ? null : c.after
+    if (n != null && JSON.stringify(c.before ?? null) !== JSON.stringify(n)
+      && (typeof n.unit !== 'string' || !after.units.some(u => u.id === n.unit))) return `a request naming no squadron in the store (${c.collection}/${c.id})`
+  }
+  const a = env.actor
+  if (!a || a.role !== 'admin') return null
+  const before = unitRowsBefore(env.changes), today = todayIso()
+  for (const c of reqs) {
+    const b: any = c.before ?? null, n: any = c.op === 'delete' ? null : c.after ?? null
+    if (JSON.stringify(b) === JSON.stringify(n)) continue
+    for (const u of new Set([b, n].filter(Boolean).map(reqUnit))) {
+      if (levelInForce(a, u, today, before) !== 'admin') return `a request to join ${u} answered by one who is not its admin (${c.collection}/${c.id})`
+    }
+  }
+  return null
+}
+/* the squadrons the waiting requests name, as stored after the command (the gate reads the store once the command has
+   written it) — a squadron one names is never removed under it (§5 item 4, R-O11) */
+function requestsNaming(unit: string): boolean {
+  for (const k of store.keys(REQ_ROW)) { const v: any = store.get(k, null); if (v && reqUnit(v) === unit) return true }
+  return false
+}
+const BELL_ROW = 'bellsqn:'
+function bellSqnRowViolation(env: CommitEnvelope): string | null {
+  const rows = env.changes.filter(c => c.collection === 'settings' && String(c.id).startsWith(BELL_ROW))
+  if (!rows.length) return null
+  const a = env.actor
+  const units = new Set(unitRowsBefore([]).units.map(u => u.id))
+  for (const c of rows) {
+    const where = `${c.collection}/${c.id}`
+    if (env.type !== 'bell.squadrons' || !a || a.role === 'system' || a.personId == null || c.id !== `${BELL_ROW}${a.personId}`) return `another person's bell switch (${where})`
+    const n: any = c.op === 'delete' ? null : c.after
+    if (n == null) return `a bell switch removed (${where})`
+    if (typeof n !== 'object' || Array.isArray(n) || Object.entries(n).some(([k, v]) => !units.has(k) || typeof v !== 'boolean')) return `a bell switch that will not read (${where})`
+  }
+  return null
+}
+/* HIS OWN ACCOUNT'S LINES (batch 1's second half, plan §7 item 6, §15 D5, D7, D11, §16 D6′, D7′, D11′ — his D2251, D2309,
+   D2319): a line of the `acct` kind reaches only the man whose access the command changed, in words matching the change
+   exactly — part for part what state/acctlines.ts accessParts owes over this command's own rows before and after (the
+   one body the doors' writer asks), each owed part once; signed by the actor, or by no one where the app did it
+   (acctByApp — an archive's ended right, an Overseas posting's suspension); dated today, now; about no input, with no
+   squadron stamp or filer's mark. An Undo or Redo is judged the same over the rows it restores (§16 D7′): the step's
+   own line taken away or put back by its verified replay, and its opposite line — or a Redo's fresh one — owed by the
+   restore's own change. The app's own writer (`account.told`, the system actor) has a section of its own (D11, D11′):
+   a move's line, its fixed id, on the day his squadron changed, for a right held the day before and not that day. A
+   line refused here never reaches the checks below; one passed here is skipped by them (ownsLine, "a bell line about
+   nothing the command changed", the posting pass's own). Asked first, as §16 D6′ places it. */
+export const acctChange = (c: Change): boolean =>
+  c.collection === 'notices' && (isAcctNotice(c.before) || (c.op !== 'delete' && isAcctNotice(c.after)))
+function acctLineViolation(env: CommitEnvelope): string | null {
+  const ch = env.changes.filter(acctChange)
+  if (!ch.length) return null
+  const a = env.actor
+  const today = todayIso(), now = Date.now()
+  let replayed: ((c: Change) => boolean) | null | undefined
+  const shape = (n: any): boolean => !lineMalformed(n) && n.what.length === 1 && n.what[0].k === 'acct' && n.iid === ''
+    && n.u === undefined && n.fu === undefined && typeof n.to === 'string' && Number.isFinite(n.at) && Math.abs(n.at - now) <= AT_SLACK_MS
+    && String(n.name) === String((PEOPLE as any)[String(n.to)]?.cs ?? n.to)
+  if (env.type === 'account.told') {
+    if (!a || a.role !== 'system' || env.changes.some(c => !acctChange(c))) return 'an account line the app did not owe (account.told)'
+    const rows = unitRowsAfter(env.changes)
+    for (const c of ch) {
+      const n: any = c.op === 'delete' ? null : c.after
+      const where = `${c.collection}/${c.id}`
+      if (c.before != null || !n || !shape(n) || n.by != null || String(n.id) !== String(c.id)) return `an account line the app did not owe (${where})`
+      const p: AcctPart = n.what[0], d = String(n.day)
+      const acct = ACCOUNTS_LIST.find(x => String(x.pid) === String(n.to))
+      if (!acct || p.why !== 'moved' || !(d <= today && d > addDays(today, -MOVES_TOLD_DAYS)) || movedLineId(acct.id, d, p) !== String(n.id)
+        // eslint-disable-next-line react-doctor/js-set-map-lookups -- one look in a list worked out afresh for this line's own man and day, never the same list twice
+        || !homeChangesBefore(String(n.to), addDays(d, -1), d, rows).includes(d)
+        || !movedParts(accessIn(acct, rows, addDays(d, -1)), accessIn(acct, rows, d)).some(x => deepEqual(x, p))) return `an account line the app did not owe (${where})`
+    }
+    return null
+  }
+  const self = a?.personId == null ? null : String(a.personId)
+  /* what this command's own change owes each man, part by part — each once */
+  const w = buildWorlds(env)
+  const owed = new Map<string, Array<{ p: AcctPart; app: boolean } | null>>()
+  /* (each account by its id, before and after — the first row of an id, as find gave it) */
+  const byId = (rows: typeof w.acctB): Map<string, (typeof w.acctB)[number]> => {
+    const m = new Map<string, (typeof w.acctB)[number]>()
+    for (const x of rows) if (!m.has(x.id)) m.set(x.id, x)
+    return m
+  }
+  const acctB = byId(w.acctB), acctA = byId(w.acctA)
+  for (const id of new Set([...acctB.keys(), ...acctA.keys()])) {
+    const b = acctB.get(id), f = acctA.get(id)
+    if (!b || !f) continue
+    const pid = String(f.pid)
+    const why = w.personB(pid)?.archived !== true && w.personA(pid)?.archived === true ? 'archived' as const : undefined
+    const parts = accessParts(accessIn(b, w.rowsB, today), accessIn(f, w.rowsA, today), why)
+    if (parts.length) owed.set(pid, [...(owed.get(pid) ?? []), ...parts.map(p => ({ p, app: acctByApp(p, f) }))])
+  }
+  for (const c of ch) {
+    const where = `${c.collection}/${c.id}`
+    if (replayed === undefined) replayed = env.origin === 'restore' && REPLAY ? REPLAY(env) : null
+    /* (the step's own line, taken away by its Undo or put back by its Redo, image for image) */
+    if (replayed && replayed(c)) continue
+    const n: any = c.op === 'delete' ? null : c.after
+    if (c.before != null || !n) return `an account line no change of his access owes (${where})`
+    if (!shape(n) || String(n.day) !== today) return `a bell line not as the pass writes it (${where})`
+    const list = owed.get(String(n.to)) ?? []
+    const i = list.findIndex(x => !!x && deepEqual(x.p, n.what[0]) && (n.by ?? null) === (x.app ? null : self))
+    if (i < 0) return `an account line no change of his access owes (${where})`
+    list[i] = null
+  }
+  return null
+}
+/* A POSTING THAT COULD NOT RUN — ITS LINE ONLY WHERE IT DID NOT (batch 1's second half, plan §7 item 7, §15 D10, §16 D10′
+   — his D2214): a line of the `pofail` kind is written only by the app's own `posting.failed` command, which writes nothing
+   else; each line new, from the app (no one's name), about no input, dated the posting's day, stamped with the squadron the
+   runner's record names, to an admin of that squadron today (the one audience, accounts.ts adminLineAudience) but never the
+   man himself, its id the posting's and that admin's (notices.ts poFailedLineId) — and only where the posting has failed
+   NOW by the runner's own record (setPostingFailedProbe: refused after its retry alone, or held for a reason other than
+   the last-admin lock). A correctly shaped line for a posting that would run, or ran, is refused. Any other command that
+   writes one is refused: the line is never a person's to write. */
+const poFailChange = (c: Change): boolean => c.collection === 'notices' && c.op !== 'delete'
+  && Array.isArray((c.after as any)?.what) && (c.after as any).what.some((p: any) => p && p.k === 'pofail')
+function postingFailedViolation(env: CommitEnvelope): string | null {
+  const mine = env.type === 'posting.failed'
+  if (!mine) {
+    const c = env.changes.find(poFailChange)
+    return c ? `a posting-failed line only the app writes (${c.collection}/${c.id})` : null
+  }
+  const a = env.actor
+  if (!a || a.role !== 'system') return 'a posting-failed line only the app writes (posting.failed)'
+  const today = todayIso(), now = Date.now()
+  for (const c of env.changes) {
+    const where = `${c.collection}/${c.id}`
+    const n: any = c.op === 'delete' ? null : c.after
+    if (!poFailChange(c) || c.before != null || !n) return `a posting-failed line not as the app writes it (${where})`
+    const p: any = n.what[0]
+    if (n.what.length !== 1 || n.by != null || n.iid !== '' || n.fu !== undefined || typeof n.to !== 'string' || String(n.id) !== String(c.id)
+      || !Number.isFinite(n.at) || Math.abs(n.at - now) > AT_SLACK_MS || typeof p.who !== 'string' || String(n.to) === String(p.who)
+      || String(n.name) !== String((PEOPLE as any)[String(p.who)]?.cs ?? p.who)) return `a posting-failed line not as the app writes it (${where})`
+    const f = PO_FAILED ? PO_FAILED(String(p.who)) : null
+    const key = `${p.who}@${n.day}:${p.o}`
+    if (!f || f.key !== key || n.u !== f.unit || String(n.id) !== poFailedLineId(key, String(n.to))
+      // eslint-disable-next-line react-doctor/js-set-map-lookups -- one look in the audience of this line's own squadron, worked out afresh for it
+      || !adminLineAudience(f.unit, today).includes(String(n.to))) return `a posting-failed line for a posting that did not fail (${where})`
+  }
+  return null
+}
 function ownershipChecks(env: CommitEnvelope): string | null {
   const a = env.actor
   const asNew = writtenAsNewViolation(env)
@@ -3472,6 +4018,8 @@ function ownershipChecks(env: CommitEnvelope): string | null {
   if (dayBad) return dayBad
   const homeBad = homeUnitViolation(env)
   if (homeBad) return homeBad
+  const reqBad = requestRowViolation(env)
+  if (reqBad) return reqBad
   const inputBad = inputUnitViolation(env)
   if (inputBad) return inputBad
   const sansDayBad = sansDayViolation(env)
@@ -3503,6 +4051,25 @@ function ownershipChecks(env: CommitEnvelope): string | null {
       if (env.type !== 'lw.seen' || a.personId == null || c.id !== `lwseen:${a.personId}`) return `another person's last visit (${c.collection}/${c.id})`
     }
   }
+  /* WHICH SQUADRONS' LINES HIS BELL SHOWS (batch 1's second half §7 item 3, §15 D6 — R2-O12): his own row, by its one
+     command, for every role — no admin sets another man's switch, nor the app; the row only squadron ids of the store
+     against on / off (state/bellsqn.ts) */
+  const bellBad = bellSqnRowViolation(env)
+  if (bellBad) return bellBad
+  /* THE POSTING PASS CHANGES ONLY THE MEN IT POSTS OUT — its rows, judged here before the account lines (below, where its
+     story is), so a pass refused for its own change keeps that refusal's words, as the next comment asks */
+  if (a && a.role === 'system' && env.type === 'lw.postoutRun') {
+    const bad = postingPassViolation(env)
+    if (bad) return bad
+  }
+  /* A POSTING THAT COULD NOT RUN (§7 item 7): its line only where it did not, and only the app's (above) */
+  const failBad = postingFailedViolation(env)
+  if (failBad) return failBad
+  if (env.type === 'posting.failed') return null
+  /* HIS OWN ACCOUNT'S LINES (§16 D6′): before ownsLine and "a bell line about nothing" (adminOwnerViolation), after every
+     check of the rows themselves, so a command refused for its own change keeps that refusal's words */
+  const acctBad = acctLineViolation(env)
+  if (acctBad) return acctBad
   /* 7e. an admin's bell lines and read records only for his own squadron's people (below) */
   const ownerBad = adminOwnerViolation(env)
   if (ownerBad) return ownerBad
@@ -3523,11 +4090,8 @@ function ownershipChecks(env: CommitEnvelope): string | null {
      alone, ANY change to a man's posting record vouched for ANY change to his person, and the pass's account rows were not
      asked at all. Now (postingPassViolation): the posting change must be that posting's own done mark, its date come; his
      person may differ only in that outcome's own fields, its marks set; and the pass's settings rows are only the posted
-     men's accounts (and, for a Delete, the request and bell row that go with his account). */
-  if (a && a.role === 'system' && env.type === 'lw.postoutRun') {
-    const bad = postingPassViolation(env)
-    if (bad) return bad
-  }
+     men's accounts (and, for a Delete, the request and bell row that go with his account). Asked above, just before the
+     account lines (batch 1's second half). */
   if (!a || a.role === 'system' || a.role === 'admin') return null
   let replayed: ((c: Change) => boolean) | null | undefined
   let warRestore: ((c: Change) => boolean) | null | undefined
@@ -3555,8 +4119,10 @@ function ownershipChecks(env: CommitEnvelope): string | null {
          to someone else; his own Undo of that change takes away the notices it made (a Redo puts them back the same
          way). Nobody rewrites a notice, and nobody removes another person's. */
       case 'notices': {
+        /* (his own account's line — judged whole by acctLineViolation, before this section) */
+        if (acctChange(c)) break
         const b: any = c.before, n: any = c.after
-        const rides = (iid: any) => env.changes.some(x => x.collection === 'inputs' && x.id === String(iid))
+        const rides =(iid: any) => env.changes.some(x => x.collection === 'inputs' && x.id === String(iid))
         /* A LEAVE WAR LINE IS NEVER A MEMBER'S (M4; the security read's finding 4): "Your leave · LL refused", bidding
            opened or closed, "… taken back" are written only by an admin's war command (state/notices.ts noticeWar, the
            `lw.notice` follow-up) — a member's notice riding his own input may carry none of them */
@@ -3576,6 +4142,8 @@ function ownershipChecks(env: CommitEnvelope): string | null {
           /* (fix read 7, fault T: dated now — lineNotNow above; his Redo's verified replay puts back its own time) */
           if (replayed === undefined) replayed = env.origin === 'restore' && REPLAY ? REPLAY(env) : null
           if (lineNotNow(c, replayed)) return `a bell line not dated now (${where})`
+          /* (§7 item 1: stamped with the input's squadron, as the pass stamps it) */
+          if (lineStampWrong(env, c, replayed)) return `a bell line not as the pass writes it (${where})`
           break
         }
         /* FIX READ 7, FAULT U: his Undo of his own step takes his own line with it. Judged afresh, the restore's images
@@ -3678,6 +4246,12 @@ function ownershipChecks(env: CommitEnvelope): string | null {
         /* when he last opened his own person window on the Leave War (M5a, finding 10c) — his OWN row, by its one command */
         if (c.id.startsWith('lwseen:') && env.type === 'lw.seen') {
           if (c.id !== `lwseen:${pid}`) return `another person's last visit (${where})`
+          break
+        }
+        /* which squadrons' lines his bell shows (batch 1's second half §7 item 3) — his OWN row, by its one command
+           (bellSqnRowViolation, before this section, holds the rest) */
+        if (c.id.startsWith('bellsqn:') && env.type === 'bell.squadrons') {
+          if (c.id !== `bellsqn:${pid}`) return `another person's bell switch (${where})`
           break
         }
         return `an admin's record (${where})`

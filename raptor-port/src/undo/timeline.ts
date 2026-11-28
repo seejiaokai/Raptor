@@ -76,6 +76,7 @@ export interface UndoHooks {
   /* (`entry` — the step itself, as deadRefusal has it: a posting out's refusal tells a war step's approval by its module —
      state/person-delete.ts postingRestoreProblem) */
   restoreRefusal?(changes: Change[], dir: 'undo' | 'redo', entry?: UndoEntry): string | null
+  squadronRefusal?(entry: UndoEntry, dir: 'undo' | 'redo'): string | null
   /* [POST-OUT-OUTCOMES] (the plan's Round 2, Astra round-2 2, Fable round-2 1): a step whose restore would put a DELETED
      man back (state/person-delete.ts deletedRestoreProblem) can NEVER be taken — a delete is final — so the dispatcher
      passes over it when it chooses the next step (it stays in the list, still guarding older steps that share its
@@ -236,7 +237,10 @@ function ingest(env: CommitEnvelope): void {
          from the repaint of whatever command came first on the posting's date, so its envelope chains to that command —
          and folded in, a Quals tick would carry an archive, a suspension and a war record, and vanish from Undo (D350)
          or, undone, bring a posted man back. It sets a barrier that names the app instead. */
-      if (env.type === 'lw.postoutRun') { outOfBand(env); break }
+      /* (…and so is the app's own line that a move has taken effect — batch 1's second half §16 D11: written beside the pass,
+         never part of the step of whoever's press woke it) */
+      /* (…and the app's own line that a posting could not run — §7 item 7, §15 D10: never part of the press that woke it) */
+      if (env.type === 'lw.postoutRun' || env.type === 'account.told' || env.type === 'posting.failed') { outOfBand(env); break }
       const root = resolveRoot(env)
       if (root != null) foldProjection(root, env)   // a tracked causal child
       else if (causedByRestoreOrSeed(env)) advanceExpectedNoBarrier(env)
@@ -269,7 +273,7 @@ function ingest(env: CommitEnvelope): void {
    access (he has no Undo door). Their revisions are still tracked, so nothing reads as out-of-band. */
 /* (…and the Leave War's "taken back" follow-up after an Undo or a Redo — M4 9.3: the line says what the Undo did, and is
    no step of its own) */
-const NOT_STEPS = new Set<string>(['changes.seen', 'notices.seen', 'access.seen', 'person.backSeen', 'access.request', 'lw.ack', 'lw.notice', 'lw.apprseen', 'lw.seen'])
+const NOT_STEPS = new Set<string>(['changes.seen', 'notices.seen', 'access.seen', 'person.backSeen', 'access.request', 'lw.ack', 'lw.notice', 'lw.apprseen', 'lw.seen', 'bell.squadrons'])
 
 /* A seen mark written INTO a record a step also holds (his welcome note on his own roster record, "OK, seen" on a Leave
    War day's list, the admins' bell on the requests) — the older step's before- and after-images still hold it unseen,
@@ -495,6 +499,12 @@ function trackExpectation(env: CommitEnvelope): void {
 function writerOf(key: string, rev: number): CommitEnvelope | undefined {
   const s = commandStream()
   for (let i = s.length - 1; i >= 0; i--) if (s[i].revs && s[i].revs![key] === rev) return s[i]
+  return undefined
+}
+/* …and the newest envelope that wrote `key` and made the change `by` asks for (outOfBandWords' `by`, above) */
+function writerWhere(key: string, by: (env: CommitEnvelope) => boolean): CommitEnvelope | undefined {
+  const s = commandStream()
+  for (let i = s.length - 1; i >= 0; i--) if (s[i].revs && s[i].revs![key] != null && by(s[i])) return s[i]
   return undefined
 }
 function liveRevision(key: string): number {
@@ -812,12 +822,18 @@ function dayKeysOf(entry: UndoEntry): string[] {
 /* D148 — the refusal for a change made OUTSIDE his line of steps on the same thing, naming who made it: another person
    (his callsign), the app's own posting pass, or — when nothing names it — today's words. */
 const OUT_OF_BAND = 'Something else changed this after your action — it can’t be undone now.'
-function outOfBandWords(key: string): string {
-  let a = BARRIER_BY.get(key)
-  if (!a) { const w = writerOf(key, liveRevision(key)); if (w && w.origin !== 'user' && w.origin !== 'restore') a = w.actor }
+/* (exported for a refusal the wiring finds by its own rule on a record another person changed — state/undo-wire.ts
+   masterRightRefusal, the fix reads' A4 and their third round — so it names him by this one body.) `by`: where the thing
+   that blocks is one CHANGE of the record rather than its last write — the master mark set on an account whose name was
+   changed since by someone else — the newest command that wrote the record AND made that change is the one named, never
+   the row's later writer of another field; his own step in this line (origin 'user') names nobody, as here always. */
+export function outOfBandWords(key: string, by?: (env: CommitEnvelope) => boolean): string {
+  const writer = (): CommitEnvelope | undefined => (by ? writerWhere(key, by) : writerOf(key, liveRevision(key)))
+  let a = by ? undefined : BARRIER_BY.get(key)
+  if (!a) { const w = writer(); if (w && w.origin !== 'user' && w.origin !== 'restore') a = w.actor }
   if (!a) return OUT_OF_BAND
   if (a.role === 'system') {
-    const w = writerOf(key, liveRevision(key))
+    const w = writer()
     return w && w.type === 'lw.postoutRun'
       ? 'The app changed this after your action (a posting out ran) — it can’t be undone now.'
       : 'The app changed this after your action — it can’t be undone now.'
@@ -1168,6 +1184,7 @@ export function globalUndo(): UndoResult {
   if (ruleU) return { ok: false, reason: ruleU }
   // C7(b) — refuse an unrestorable closure BEFORE the view-snap moves anything.
   if (missingStores(entry.inverse).length) return { ok: false, reason: plainRestoreReason() }
+  const sq = hooks.squadronRefusal ? hooks.squadronRefusal(entry, 'undo') : null; if (sq) return { ok: false, reason: sq }
   snap(entry, 'undo')
   // N11 — loadContext's loadWeek can emit orphan projections that bump revisions
   // AFTER the pre-check, so re-run the conflict check now that the target week is
@@ -1200,6 +1217,7 @@ export function globalRedo(): UndoResult {
   const ruleR = hooks.restoreRefusal ? hooks.restoreRefusal(entry.forward, 'redo', entry) : null   // W3-F8
   if (ruleR) return { ok: false, reason: ruleR }
   if (missingStores(entry.forward).length) return { ok: false, reason: plainRestoreReason() }
+  const sq = hooks.squadronRefusal ? hooks.squadronRefusal(entry, 'redo') : null; if (sq) return { ok: false, reason: sq }
   snap(entry, 'redo')
   // N11 — see globalUndo: re-check after the view-snap loaded the target week.
   const postConflict = redoConflictOf(entry)

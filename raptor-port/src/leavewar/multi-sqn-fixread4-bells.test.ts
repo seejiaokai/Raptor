@@ -303,8 +303,9 @@ describe('D2223 — input lines after a move', () => {
       { collection: 'inputs', id: IID, op: 'put', before: { ...r }, after: { ...r, remarks: 'by Outlaw' } },
       { collection: 'notices', id: 'nfr5g', op: 'put', before: null, after: { id: 'nfr5g', to: 'prowler', by: 'casper', at: Date.now(), iid: IID, name: 'LL', day: '2026-07-25', what: [{ k: 'rmk' }] } }] }
     expect(ownershipViolation(env) ?? 'allowed').toMatch(/bell line of another squadron/)
-    /* …while the same line to Ranger, named in it, rides as ever */
-    const env2: any = { ...env, changes: [env.changes[0], { ...env.changes[1], after: { ...env.changes[1].after, to: 'bane' } }] }
+    /* …while the same line to Ranger, named in it, rides as ever (stamped with the input's squadron, as the pass stamps it
+       — batch 1's second half, §7 item 1) */
+    const env2: any = { ...env, changes: [env.changes[0], { ...env.changes[1], after: { ...env.changes[1].after, to: 'bane', u: 'u142' } }] }
     expect(ownershipViolation(env2)).toBeNull()
   })
   it('a master filer is still told: Saber files for Ranger, moves to 149, Hunter changes it', () => {

@@ -20,6 +20,8 @@ import { todayIso } from '../engine/editlog'
 import { fmt, sansRefusal, sansRunTrim } from './inputedit'
 import { HOOKS } from '../engine/hooks'
 import { setInpEdit } from './pops'
+import { pageIsHome } from '../state/inputsqn'
+import { unitById } from '../state/units'
 
 const TYPE = 'SANS Availability'
 /* (a SANS man — SANS today, or by a SANS posting saved for a date ahead: he may be filed for from the moment it is saved,
@@ -28,10 +30,35 @@ const TYPE = 'SANS Availability'
 const isSans = (id: string | null | undefined, iso?: string): boolean =>
   !!id && !!PEOPLE[id] && (iso ? sansOnP(PEOPLE[id], iso) : sansFiler(PEOPLE[id]))
 
-export const maySansAdd = (iso?: string): boolean => isAdmin() || isSans(me(), iso)
+const offered = (id: string) => !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].special
+
+/* ANOTHER SQUADRON'S SANS CALENDAR OFFERS ONLY ITS OWN SANS AIRCREW (the guard rail's plan §18.7, his D2628 C3, D2655 D11,
+   D2729 Q6): where the page stands on a squadron that is not his home that day (a master admin's or a Plan holder's,
+   following his pick), the window opens on that squadron's first SANS man — never on himself, SANS or not; with none,
+   "+ Commitment" is greyed with its reason under it, and a drag across days says the reason and opens nothing. */
+const otherCrew = (iso: string): string[] => rosterOf(pageUnit('own'), iso).filter(id => isSans(id, iso) && offered(id))
+/** the reason "+ Commitment" is greyed on another squadron's day with no SANS aircrew — "150 has no SANS aircrew."
+ *  (words.mjs noSansAircrew, drawn and seen: D2655 D11, D2729); null on his own squadron, or where it has some */
+const noneWhy = (u: string): string => `${unitById(u)?.num ?? u} has no SANS aircrew.`
+export function noSansAircrew(iso: string): string | null {
+  return pageIsHome() || otherCrew(iso).length ? null : noneWhy(pageUnit('own'))
+}
+
+export const maySansAdd = (iso?: string): boolean => (isAdmin() || isSans(me(), iso)) && !(iso && noSansAircrew(iso))
+
+/* (another squadron's: its first SANS man on the first day, else the first whose SANS date the run reaches — never the
+   presser; none, the reason said where the calendar says a refused drag's, and nothing opens) */
+function openOtherSansAdd(iso: string, end: string | undefined): boolean {
+  const u = pageUnit('own')
+  const reaches = (id: string): boolean => !!end && !!sansRunTrim(id, iso, end)
+  const who = otherCrew(iso)[0] ?? rosterOf(u, iso).find(id => reaches(id) && offered(id))
+  if (!who) { HOOKS.toast(noneWhy(u), 'warn'); return false }
+  return openSeeded(who, iso, end)
+}
 
 export function openSansAdd(from: string, until?: string): boolean {
   const [iso, end] = until && until < from ? [until, from] : [from, until]
+  if (!pageIsHome()) return openOtherSansAdd(iso, end)
   /* A RUN THAT REACHES HIS SANS DATE IS HIS TO FILE (his D2388, 23 Nov 26): the window opens on the run he picked, and the
      save takes the days from his date on and says which it left out (ui/inputedit.tsx sansCut) — every way of picking
      days comes through here or through that save. */
@@ -49,12 +76,14 @@ export function openSansAdd(from: string, until?: string): boolean {
     return false
   }
   const mine = me()
-  const offered = (id: string) => !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].special
   const who = isSans(mine, iso) || reaches(mine) ? mine
     /* (a SANS man of the page's own squadron — the SANS calendar stays on his own, D2132; the reshape plan §3.2 A-ii) */
     : rosterOf(pageUnit('own'), iso).find(id => isSans(id, iso) && offered(id))
       /* (…or, on a run no man is SANS at the start of, the first whose date it reaches — D2388) */
       ?? rosterOf(pageUnit('own'), iso).find(id => reaches(id) && offered(id))
+  return openSeeded(who, iso, end)
+}
+function openSeeded(who: string | null | undefined, iso: string, end: string | undefined): boolean {
   const single = !end || end === iso
   setInpEdit({
     _new: true, _calendar: true, _ctx: 's', person: who, type: TYPE,

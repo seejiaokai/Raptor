@@ -30,9 +30,14 @@ function oldSwitchStored() {
   for (const k of ['guestview', 'u142@guestview', 'u149@guestview']) mem['sqn142_' + k] = 'true'
   accountsLoad()
 }
+/* Admin → Users drawn whole: the add form opened too (since the guard rail's K2a it opens under the page's top row on
+   "+ Add a person" — his D2652 N13 i, D2729 Q10), so every word the page can show is read for the switch */
 async function adminUsers(): Promise<HTMLElement> {
   const { container } = render(<UsersPanel shown />)
   await act(async () => { await Promise.resolve() })
+  const open = container.querySelector<HTMLElement>('#accAddOpen')
+  expect(open, '(control) "+ Add a person" is drawn').toBeTruthy()
+  await act(async () => { open!.click() })
   return container
 }
 

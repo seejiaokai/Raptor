@@ -42,8 +42,9 @@ import { notify } from '../state/store'
 import { calNow, calUnit, writeCal } from './owncal'
 import { CALMONTH, setCalMonth, matchesHiSet, INPREVEAL, clearInpReveal, PLANREVEAL, clearPlanReveal } from '../state/view'
 import { HL_GROUPS } from './hlchips-model'
-import { canEditSched } from '../state/auth'
+import { canEditOwn } from '../state/auth'
 import { isMe, mayDeleteInput, viewerId, me, pageUnit } from '../state/perms'
+import { listReach } from '../state/inputsqn'
 import { rosterOf } from '../engine/roster'
 import { addDays } from '../state/flyplan-model'
 import { HOOKS } from '../engine/hooks'
@@ -97,7 +98,7 @@ const isoToday = () => {
    chip tests can drive a day directly instead of steering the whole page
    through the DOM to get there. */
 /* the calendar's rows, before its filters — the List's own (one body, so the two can never disagree) */
-const calRows = (): any[] => inputsListed(pageUnit('own'), me())
+const calRows = (): any[] => inputsListed(pageUnit('own'), me(), undefined, listReach())
 // eslint-disable-next-line react-doctor/only-export-components -- one day's inputs as the month and the List both filter them, read with the page's own window helpers (ui/inputedit.tsx); a model file importing those would draw the input window's whole module graph into the pure models, and the tests that drive a day directly import it from here
 export function dayEntries(iso: string, f: { fPerson: string, fType: string, fSearch: string }, mode?: 'member') {
   const label = fmt(iso)
@@ -726,7 +727,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
     const revealed=!!saved&&!itemsOn(iso,items).some(it=>it.rows.includes(saved))
     const titles = calNow().titles
     const hasRmk = !!titles[iso]
-    const sched = canEditSched()
+    const sched = canEditOwn()
     /* Enter commits by handing off to the SAME blur handler that already
        commits (rather than a second copy of the write), so there is exactly
        one place per field that decides what "commit" means. */

@@ -16,7 +16,7 @@
    is BACK in a new form (D292, 27 Sep 26 — replacing D166 (3)'s "no preview as a member"):
    the session also keeps `acct`, the account's own role, which the switch never changes
    (state/perms.ts mayViewAsMember). WHO MAY DO WHAT is decided in ONE place, state/perms.ts. */
-import { mayEditSched } from './perms'
+import { maySchedEditPage, mayEditOwnPage } from './perms'
 
 export let SESSION: any = null
 export let LGEDIT: any = false                 // Logic-tab edit mode; reset on login/logout
@@ -37,6 +37,11 @@ export const DEFAULT_ME = 'bane'
 export let ME: any = DEFAULT_ME
 export function setMe(id: any) { ME = id }
 export function setLgEdit(on: any) { LGEDIT = !!on }
-/* kept as the name ~160 call sites use; the rule is perms.ts's */
-export function canEditSched() { return mayEditSched() }
-export const lgCanEdit = () => LGEDIT && mayEditSched()
+/* kept as the name ~160 call sites use; the rule is perms.ts's. STEP A (the second-half plan §2): THE SCHEDULE IN VIEW —
+   the role in force AND an admin of the squadron picked (perms.ts maySchedEditPage), so a View holder of 149 with 149
+   picked is offered none of its edit controls. Every caller is in docs/data-schema.md §Edit rights by squadron, by
+   kind, held by state/edit-rights-readers.test.ts; a caller on his own squadron's page asks canEditOwn below. */
+export function canEditSched() { return maySchedEditPage() }
+export const lgCanEdit = () => LGEDIT && maySchedEditPage()
+/* his own squadron's page (perms.ts mayEditOwnPage — step A's "own" kind) */
+export function canEditOwn() { return mayEditOwnPage() }

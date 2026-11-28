@@ -19,15 +19,17 @@ import { roleStore, invalidateRoleTargets } from './mission-roles'
 import { decodeRoleId } from '../engine/mission-role'
 import { peopleStore, settingsStore } from './people-settings-commit'
 import { rosterRestoreProblem } from './roster-restore'
-import { seedAccounts, levelIn, accountById, isMasterAccount, ACCOUNT_PFX, signedInAccount, adminNow } from './accounts'
-import { unitRows, homeOn, unitRowsBefore } from './units'
+import { seedAccounts, levelIn, accountById, isMasterAccount, ACCOUNT_PFX, signedInAccount, adminNow, masterRightLeft, accountsAfter, ACCOUNTS_LIST } from './accounts'
+import { unitRows, homeOn, unitRowsBefore, unitRowsAfter, unitById } from './units'
+import { setDescribeUnits } from '../undo/describe'
 import { store } from '../engine/hooks'
 import { deletedRestoreProblem, postingRestoreProblem } from './person-delete'
 import {
   installUndo, registerUndoStore, setCutoverModules, setUndoHooks, setDescribeNames,
 } from '../undo'
-import { verifiedReplay, verifiedWarRestore, restoreOffAt, restoreDir, applyingRestore } from '../undo/timeline'
-import { filedForOther, ownPart, setInputReplayCheck, lwClosedKeys, setLwRestoreCheck, restoreRedated, restoreStood, setRestoreOffAt, setRestoreDir, lwUnitNow, trkUnitNow, pageUnit, isAdmin, restoreLeavesOut, setRestoreGrantCtx, madeAsAdmin, inputWhoProblem, type RestoreGrantCtx } from './perms'
+import { verifiedReplay, verifiedWarRestore, restoreOffAt, restoreDir, applyingRestore, outOfBandWords } from '../undo/timeline'
+import { filedForOther, ownPart, setInputReplayCheck, lwClosedKeys, setLwRestoreCheck, restoreRedated, restoreStood, setRestoreOffAt, setRestoreDir, lwUnitNow, trkUnitNow, pageUnit, isAdmin, restoreLeavesOut, setRestoreGrantCtx, madeAsAdmin, inputWhoProblem, pageOffered, myUnit, type RestoreGrantCtx } from './perms'
+import { refuse, saidNote, UNSAID, closeShown } from './guard'
 import type { RecordCtx, UndoEntry } from '../undo/types'
 import type { Change } from '../command'
 import { deriveActor } from '../command'
@@ -35,9 +37,9 @@ import { setRecordKeyHook } from '../command/commit'
 import { weekOf, dayKeyOf, recordKeyIn, stampOf } from '../undo/derive'
 import { todayIso } from './units'
 import { schedStore, schedPostRestore } from './sched-commit'
-import { weekstashStore, loadWeek } from './store'
+import { weekstashStore, loadWeek, stepPage } from './store'
 import { HIST } from './history'
-import { armDrop, prunePreviews, SBDAY, CURPAGE, setPage, setBoardDay, focusQualsRow, requestAdminUsers, setSecDefOffer, setInpView, setInpMode, setCalMonth, INPVIEW, CALMONTH, clearInpReveal, requestInpReveal, requestPlanReveal } from './view'
+import { armDrop, prunePreviews, SBDAY, CURPAGE, setBoardDay, focusQualsRow, requestAdminUsers, requestAdminSquadrons, setSecDefOffer, setInpView, setInpMode, setCalMonth, INPVIEW, CALMONTH, clearInpReveal, requestInpReveal, requestPlanReveal } from './view'
 import { canEditSched, SESSION } from './auth'
 import { bringDayIntoView } from '../ui/highlights'
 import { boardTab } from '../ui/board'
@@ -47,11 +49,11 @@ import { CURWEEK } from '../engine/waves'
 import { PEOPLE } from '../engine/people'
 import { parseVerId, dayIso } from '../engine/verid'
 import { lwStore, LW_COLLS, selectWar, focusDay, bumpLwHistEpoch, restoreBlocker } from '../leavewar/state/store'
-import { restoreAbsencesOf, warNoticesReversed, warDayRefusal } from '../leavewar/sync'
+import { restoreAbsencesOf, warNoticesReversed, acctNoticesReversed, warDayRefusal } from '../leavewar/sync'
 import { warCounts } from '../leavewar/absences'
 import { DATES, inputCoversDate, isSansAvail } from '../engine/inputs'
-import { UNIT_ROW_PREFIXES, GRANT_PFX, UNIT_PFX, UNITPLACE_PFX } from './units-model'
-import { noticeLeftBell, type Notice } from './notices'
+import { UNIT_ROW_PREFIXES, GRANT_PFX, UNIT_PFX, UNITPLACE_PFX, PLACE_PFX } from './units-model'
+import { noticeLeftBell, isAcctNotice, type Notice } from './notices'
 import { UNIT } from '../engine/unitview'
 import { split, localOf, qualify } from '../storage/unitid'
 import { storedPlan } from './plan-foreign'
@@ -218,7 +220,15 @@ function landingOf(entry: UndoEntry, dir:'undo'|'redo'): Landing | null {
     const ids = fwd.filter(c => c.collection === 'settings').map(c => localOf(c.id))
     /* …and the squadrons' rows (multi-squadron batch 1, step 1 — units, places, homes, rights: Admin's, where step 3
        draws them; until then Admin → Users, where every account change already lands) */
-    if (ids.some(k => k.startsWith('account:') || k.startsWith('accessreq:') || UNIT_ROW_PREFIXES.some(p => k.startsWith(p)))) { primary = 'admin'; then = () => requestAdminUsers(false) }
+    if (ids.some(k => k.startsWith('account:') || k.startsWith('accessreq:') || UNIT_ROW_PREFIXES.some(p => k.startsWith(p)))) {
+      primary = 'admin'
+      /* A STEP OF SQUADRONS AND PLACES IS THE SQUADRONS PANEL'S (the second half's walk, F3; the fix read's A3, D672):
+         "+ New squadron" or a squadron's place undone or redone lands on Admin → Squadrons, where it shows — from another
+         page, and from another Admin panel; pressed on Squadrons it stays there (the panel is already the one asked for).
+         Asking for Users here put the squadron's going out of sight. Every other step of these rows opens Users. */
+      const squadrons = ids.some(k => k.startsWith(UNIT_PFX) || k.startsWith(PLACE_PFX) || k.startsWith(UNITPLACE_PFX))
+      then = squadrons ? () => requestAdminSquadrons() : () => requestAdminUsers(false)
+    }
     else if (ids.includes('rules') || ids.includes('insights')) {
       primary = 'logic'
       /* A LATE CUT-OFF IS SET BEHIND A CALENDAR'S OWN GEAR TOO (D639 — one setting, two ways in), so the Inputs page
@@ -276,7 +286,13 @@ function snapView(entry: UndoEntry, dir: 'undo' | 'redo'): void {
   const boardWas = BOARD_WAS; BOARD_WAS = null
   const land = landingOf(entry,dir)
   /* not when the change already shows on the page you are on (an input filed on Inputs, undone there) */
-  if (land && land.primary && CURPAGE !== land.primary && !land.also.includes(CURPAGE)) setPage(land.primary)
+  /* …THROUGH THE PAGE DOOR, ON ITS ANSWER (step K6 — the guard rail's plan §4.1 row 13, §4.5): no button reaches a landing
+     on one of his own pages while a squadron he only views is picked, so the door is the belt; where it does not go (a
+     refusal, or the Tracker's question), the landing's own `then` and the rest of the view-snap are not run — only on
+     'went' */
+  /* …THE STEP'S OWN DOOR, stepPage (step K7b): the same question, but the page set with no notify of its own, so his own
+     squadron is entered on the step's own notify, AFTER its writes — never here, ahead of them (store.ts stepPage) */
+  if (land && land.primary && CURPAGE !== land.primary && !land.also.includes(CURPAGE) && stepPage(land.primary) !== 'went') return
   if (land && land.then) land.then()
   if (land && land.primary === 'leavewar') {
     const date = lwDateOf(entry) ?? flyDateOf(entry)
@@ -462,6 +478,28 @@ function grantLeftOut(c: Change, dir: 'undo' | 'redo', entry: UndoEntry, changes
   const ctx = grantCtx(c, dir, entry, changes)
   return !!ctx && restoreLeavesOut(c, ctx)
 }
+/* HIS OWN ACCOUNT'S LINE FOLLOWS THE RIGHT IT TELLS OF (batch 1's second half, plan §16 D7′, beside Piece B's guardrails):
+   the step's line about a squadron's right ("View of 150 ended") is taken away by its Undo, or put back by its Redo, only
+   with that right — where the guardrails leave out every row of that right the step holds (his man moved since, the
+   sign-in re-linked, a Plan by one who is not a master admin), the line is left out too. Kept, it would say his right
+   came back, or ended again, when nothing of it changed — and a step the guardrails empty would not be empty, so the
+   Undo went through taking only the line, and was never blocked in today's words. A line with no squadron (the master
+   mark, his role at home, his sign-in) rides with its account row, which no guardrail leaves out. */
+function acctLineLeftOut(c: Change, dir: 'undo' | 'redo', entry: UndoEntry, changes: Change[]): boolean {
+  if (c.collection !== 'notices') return false
+  const n: any = c.op === 'delete' ? c.before : (c.after ?? c.before)
+  if (!isAcctNotice(n)) return false
+  const u = n.what?.[0]?.u
+  if (!u) return false
+  const to = String(n.to)
+  const pidOf = (acc: string) => String(entry.holders?.[acc]?.pid ?? accountById(acc)?.pid ?? '')
+  const rows = changes.filter(x => {
+    if (!isGrantRow(x)) return false
+    const g: any = x.after ?? x.before
+    return !!g && String(g.unit) === String(u) && pidOf(String(g.account ?? '')) === to
+  })
+  return rows.length > 0 && rows.every(x => grantLeftOut(x, dir, entry, changes))
+}
 /* GUARDRAIL 1 (§4.3): a restore that puts an account on another man while a right stands on that sign-in — given since, to
    the man then on it — would carry the right to the other man: the record key of that right (any row naming the account
    that the restore itself does not take away), so the timeline blocks the step naming who wrote it */
@@ -578,12 +616,80 @@ function inputStuck(changes: Change[], entry: UndoEntry): boolean {
 /** tests only — the landing, driven with a made-up entry */
 export const _snapView = (e: UndoEntry, d: 'undo' | 'redo'): void => snapView(e, d)
 
+/* AN UNDO OR REDO THAT WOULD CHANGE THE SQUADRON IN VIEW IS ASKED OF THE GUARD BEFORE ITS STEP (step K8 — the guard rail's
+   plan §4.1 rows 13 and 21; his D2654 E7). Asked by undo/timeline.ts globalUndo / globalRedo as the last of their
+   refusals, just ahead of the view-snap, so a refusal moves nothing and writes nothing — never half way, as a refusal at
+   the landing's page door (stepPage, inside snapView) would be: the step's writes come after the view-snap. Either road
+   brings his own squadron into view by itself, after the step:
+   - row 21: the step's own changes — its inverse for an Undo, its forward for a Redo — remove or change the row of the
+     squadron in view (`unit:<id>`, its UNIT_PFX row; any image other than the one it holds now, its going included), so
+     the pick stands on nothing and the next notify enters his home (store.ts maybeReenter) — the Undo of "+ New
+     squadron" while that squadron is picked (pressed, P4 1c);
+   - row 13: the step's landing (landingOf) is a page the squadron in view does not offer, so the landing enters his own
+     squadron to show it (store.ts landOnOfferedPage) — read exactly as snapView reads it.
+   Then the guard is asked as a door: refused while a window that counts is open, a row or form holds a change or a save
+   has failed — and only then; with nothing open the step goes on as today. Refused, the seam says the note under the Undo
+   button and the reason handed back is the words said (UNSAID for a Redo, whose ending is not his yet — the K8 report),
+   so the engine that pressed it says nothing more (ui/topstate.ts). The squadron it would enter: his own, today. With this
+   ask ahead of the step, stepPage's own refusal is no longer reached from an Undo or Redo (the state cannot change between
+   the two asks but by the view-snap's own week load); it stays the landing's door, a belt. */
+/* LET THROUGH ON ROW 21, IT CLOSES WHAT THE GUARD CLOSES — HERE, BEFORE THE STEP'S WRITES (step K8c; question 27's words
+   check, P1; his D2596, D2597, D2627 A4). Row 21's squadron change comes later, by the store's own re-entry
+   (store.ts maybeReenter, on the step's notify), which closes nothing — the same road as his own move at midnight, which
+   must close nothing (A14, A15) — so the closing step cannot live there; it runs here, the one place that knows his press
+   is changing the squadron. Here, not after the writes: Logic's mode ends by writing a value still waiting its beat
+   (LogicPage.tsx flushRuleApply), and only while 151 is in view does that write go to 151, as its own step; the step this
+   Undo takes is already chosen ("+ New squadron"), so the value's step is never the one taken back. Left out, the value
+   landed on 142's rules a beat after the Undo. Row 13 closes nothing here: its landing enters his own squadron through the
+   page door's landing, which closes the windows itself after the Tracker's question (store.ts landOwn), so a Stay there
+   still closes nothing. */
+function squadronRefusal(entry: UndoEntry, dir: 'undo' | 'redo'): string | null {
+  const changes = dir === 'undo' ? entry.inverse : entry.forward
+  const row = UNIT_PFX + UNIT
+  const takesUnit = changes.some(c => c.collection === 'settings' && String(c.id) === row
+    && !sameImage(c.before, c.op === 'delete' ? null : c.after))
+  const land = takesUnit ? null : landingOf(entry, dir)
+  const awayToLand = !!land && !!land.primary && CURPAGE !== land.primary && !land.also.includes(CURPAGE) && !pageOffered(land.primary)
+  if (!takesUnit && !awayToLand) return null
+  if (refuse(dir, myUnit(todayIso()), { from: 'bar' })) return saidNote() ?? UNSAID
+  if (takesUnit) closeShown()
+  return null
+}
+/** tests only — the hook, asked of a made-up step */
+export const _squadronRefusal = (e: UndoEntry, d: 'undo' | 'redo'): string | null => squadronRefusal(e, d)
+
+/* NO RIGHT LEFT ON A MASTER ADMIN'S ACCOUNT BY AN UNDO OR REDO (§15 D14 — the fix read's A1), and the refusal SAYS WHO wrote
+   what blocks it (D148 — the fix reads' A4 and their third round, the shape of undo/timeline.ts standingConflict: a record
+   key, named through outOfBandWords). The account the restore would leave a right holding on, and that right
+   (accounts.ts masterRightLeft, over the accounts and squadron rows the restore would leave):
+   - the step puts the RIGHT back (it writes that right's row) — what blocks it is the mark set since: the newest command
+     that set the mark on that account is named, never a later writer of another field of the row (a name changed); his
+     own step in this line names nobody ("Something else changed this…"), his other session "You changed this…";
+   - the step puts the MARK back (it writes the account's row) — what blocks it is the right given since: that right's
+     row's writer is named.
+   Today's anonymous words only where nothing names the writer. Asked only of a step that changes an account or a
+   squadron row. */
+function masterRightRefusal(changes: readonly Change[]): string | null {
+  const touches = changes.some(ch => ch.collection === 'settings' && (String(ch.id).startsWith(ACCOUNT_PFX) || UNIT_ROW_PREFIXES.some(p => String(ch.id).startsWith(p))))
+  if (!touches) return null
+  const left = masterRightLeft(accountsAfter(changes) ?? ACCOUNTS_LIST, unitRowsAfter(changes as any))
+  if (!left) return null
+  const acctRow = ACCOUNT_PFX + left.account
+  const writesRight = changes.some(ch => ch.collection === 'settings' && String(ch.id) === GRANT_PFX + left.grant)
+  if (!writesRight) return outOfBandWords(`settings/${GRANT_PFX}${left.grant}`)
+  const setsMark = (env: { changes: readonly Change[] }) => env.changes.some(ch => ch.collection === 'settings' && String(ch.id) === acctRow
+    && (ch.after as any)?.master === true && (ch.before as any)?.master !== true)
+  return outOfBandWords(`settings/${acctRow}`, setsMark)
+}
+
 export function installGlobalUndo(): void {
   installUndo()
   /* A-v — the stamp and the one record key, in the command layer's revision counter */
   setRecordKeyHook({ stamp: (changes) => stampOf(changes, worldNow), key: (c, stamp) => recordKeyIn(c, stamp) })
   /* the words name a man by his callsign (describe.ts — the Leave War's records carry his id) */
   setDescribeNames((pid) => ((PEOPLE as any)[pid] ? String((PEOPLE as any)[pid].cs) : null), (k) => (k === 'accounts' ? seedAccounts() : null))
+  /* (Admin → Users' one Save — "Plan of 149 given · Hunter", D2326: the squadron's number and the account's man) */
+  setDescribeUnits(u => unitById(u)?.num ?? null, id => { const a = accountById(id); const p = a ? (PEOPLE as any)[a.pid] : null; return p ? String(p.cs) : null })
   registerUndoStore(schedStore, SCHED_COLLS)
   registerUndoStore(lwStore, LW_COLLS as unknown as string[])
   registerUndoStore(weekstashStore, ['weekstash'])
@@ -605,6 +711,8 @@ export function installGlobalUndo(): void {
       /* M4 9.3 (D1216): a Leave War line the member had read leaves "taken back"; a Redo after it, a fresh line — the step's
          own notices, as it made them (its forward images) */
       warNoticesReversed(entry.forward as any, dir)
+      /* …and a change of a man's own access he had read: the opposite line, or a Redo's fresh one (§16 D7′) */
+      acctNoticesReversed(entry.forward as any, dir)
     },
     reinstallLocks,
     resolvePublishDay,
@@ -617,11 +725,15 @@ export function installGlobalUndo(): void {
        postingRestoreProblem) */
     /* …and A7 (the reshape plan §6.2): an entry put back on a man's day now another squadron's says war's sentence before
        anything is written — a removal, of one entry of two or of the last, still passes (leavewar/sync.ts warDayRefusal) */
+    /* …and A1 / A4 (the fix reads): no right left on a master admin's account, refused naming who made him one (D148) */
     restoreRefusal: (changes, dir, entry) => restoreBlocker(changes as any, dir, restoreAbsencesOf(changes as any)) || rosterRestoreProblem(changes as any, dir)
+      || masterRightRefusal(changes as any)
       || postingRestoreProblem(changes as any, dir, entry?.scope?.module) || warDayRefusal(changes as any),
     /* [POST-OUT-OUTCOMES]: a step that would put a deleted man back is passed over, never taken (person-delete.ts) */
     /* the direction and the step's module: a war step's Redo is judged by the leave it adds (person-delete.ts) */
     deadRefusal: (changes, dir, entry) => deletedRestoreProblem(changes as any, dir, entry?.scope?.module),
+    /* step K8: an Undo or Redo that would change the squadron in view, asked of the guard before its step (above) */
+    squadronRefusal,
     /* D148 — the refusal says who: the callsign he goes by (a rename moves nothing, so it is read live) */
     seenOverlay,
     nameOf: (a) => (a.personId != null && (PEOPLE as any)[a.personId] ? String((PEOPLE as any)[a.personId].cs) : null),
@@ -639,7 +751,9 @@ export function installGlobalUndo(): void {
        a right put back only on the man the step recorded, never after his move since its start, never by a re-link's Undo
        or Redo, a Plan only by a master admin's restore (his D2250), and no removal of a right not stored */
     leaveOut: (c, dir, entry, changes) => (c.collection === 'notices' && c.op === 'put' && !!c.after && noticeLeftBell(c.after as Notice))
-      || (!!entry && grantLeftOut(c, dir, entry, changes ?? [])),
+      || (!!entry && grantLeftOut(c, dir, entry, changes ?? []))
+      /* …and his own account's line about a right those guardrails left out goes with it (acctLineLeftOut, above) */
+      || (!!entry && acctLineLeftOut(c, dir, entry, changes ?? [])),
     holdersAtStep: (changes) => holdersOf(changes),
     standingKey: (changes) => standingRightKey(changes),
     /* fix read 9, fault A (Fable 1, the fresh Opus read's O9-2; his D2218, D2223): a grant or the master mark an Undo or

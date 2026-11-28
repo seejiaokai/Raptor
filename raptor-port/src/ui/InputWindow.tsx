@@ -11,7 +11,7 @@ import { placedLineOf } from './placedline'
 import { PeoplePick, PlaceholderGroup } from './PeoplePick'
 import { pickProblem, sansFor } from './peoplepick-model'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { inputUnitOf, INPUTS, TITLE_MAX, titledKind, titleOf, DATES, inpId, inpType, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, baseYear, remarksTyped, tillOfISO, tillDefaultISO, shortYear, idsOf, leadOf, holds, isPlaceholderInput, isOther, isFly } from '../engine/inputs'
+import { inputUnitOf, inputSquadrons, INPUTS, TITLE_MAX, titledKind, titleOf, DATES, inpId, inpType, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, baseYear, remarksTyped, tillOfISO, tillDefaultISO, shortYear, idsOf, leadOf, holds, isPlaceholderInput, isOther, isFly } from '../engine/inputs'
 import { upchitEffects, medClashes } from '../engine/medical'
 import { UpchitConfirm } from './UpchitConfirm'
 import { MedClashConfirm } from './MedClashConfirm'
@@ -22,14 +22,15 @@ import { ClipIcon, PenIcon, UploadIcon } from './icons'
 import { PEOPLE, isSpecial } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { stampChanged } from '../state/inputstamp'
-import { notify } from '../state/store'
-import { canEditSched } from '../state/auth'
-import { me, isMe, mayEditInput, mayMovePlace, pageUnit } from '../state/perms'
+import { notify, heldWindowBand, switchRoleView } from '../state/store'
+import { canEditOwn } from '../state/auth'
+import { me, isMe, mayEditInput, mayMovePlace, pageUnit, adminOfUnit, pageOffered, heldByMemberView } from '../state/perms'
 import { todayIso } from '../engine/editlog'
 import { UNIT } from '../engine/unitview'
-import { schedMoveBand } from '../state/typing-hold'
 import { MoveBandView } from './MoveBand'
+import { holdReadOnly } from './heldro'
 import { INPEDIT, INPEDIT_REFOUND, setInpEdit, OILASK, OILOWN, setOilAsk, setDocView } from './pops'
+import { inputDlgDrawn } from './windrawn'
 import { CURPAGE, INPVIEW, revealInput, revealMedInput } from '../state/view'
 import { toastHeld } from './toast'
 import { noteUnlessSeen } from './seen'
@@ -38,7 +39,7 @@ import { RangeCal } from './RangeCal'
 import { DateBox } from './DateBox'
 import { TypeLegend } from './TypeLegend'
 import { clickedOutside } from './outside'
-import { useSheetFocus, topSheet } from './sheetfocus'
+import { useSheetFocus, topSheet, escListTop } from './sheetfocus'
 import { AskCard } from './AskCard'
 import { lastPressed } from './lastpress'
 import { rosterOptions, archivedOptions, fmt, fmtDay, unfmt, hasHalf, spanOf, spanFields, SPANS, SANS_ROWS, sansRefusal, isoOrd, ordISO, applyMedPlan, medKeptSegments, mintMedSegments, typeOptions, draftOf, normalizeInputDraft, docGate, oilGate, oilAnswered, oilUnansweredDay, oilSummary, oilDayLabel, TYPE_ALLOW, protectedInput, medPlanProtected, medicalLocked, medSegmentsProtected, placeholderRefused, placeholderWhy, commitNewInput, commitInputEdit, medAskFor, saveBatchX, saveBatch, giveBackCuts, askOilIfPending, removeInput, upchitDeleteAsk, sharedRefusal, inputWho, howMany, commitInput, WIN_FIELDS, draftChanges, fieldSame, fieldPart, fieldSay, progOf, offersFor, whoDoorRefusal, draftImage } from './inputedit'
@@ -49,6 +50,11 @@ import type { Span } from './inputedit'
    WIN_FIELDS alone missed the last two, so a window holding only a new "Goes to" or "To" closed at once and lost it
    (found beside Fable's Inputs F1/F2, 22 Nov 26). */
 const unsavedFields = (draft: any, saved: any): boolean => draftChanges(draft, saved).length > 0
+/* THE ROLE CHIP'S SWITCH BACK (the guard rail's plan §4.1 row 5): the held window's own way back to the admin view, so the
+   window it is drawn on — the Input window's two rows — is left out of the guard's count, every other row still asked; it
+   stands where the badge stands, so a refusal's note hangs there. No press reaches a window the member view holds after
+   Build 1 (B16), and Build 2 removes the chip */
+const CHIP_SWITCH = { skip: ['inputedit', 'inputdlg'], from: 'bar' as const }
 /* THE FIELDS THE WINDOW FOLLOWS when its record changes behind it (the calendar plan §3.7): every window field, and the
    two it draws apart from them — an Attach's "To" and an Other's "Goes to" (Astra's code read of 22 Nov 26, F1: an Undo
    pressed behind the open window put the input back on the programme, and the remark saved next wrote "Unavailable"
@@ -105,7 +111,10 @@ function viewDocFile(row: any, ids: readonly string[], id: string): void {
   setDocView({ row: { ...row, docId: undefined, docIds: [...ids] }, readOnly: true, docId: id })
   notify()
 }
-export function DocField({ ids, onIds, viewRow }: { ids: string[], onIds: (ids: string[]) => void, viewRow: () => any }) {
+/* A DOCUMENT CHOSEN LATE (the guard rail's plan §5.4 — the one write that did not stop on `held`): `locked` — the window is
+   held (his move at midnight, a right ended) — so a file chosen in a chooser opened before is not stored and changes no
+   list; the file box is cleared as before. */
+export function DocField({ ids, onIds, viewRow, locked }: { ids: string[], onIds: (ids: string[]) => void, viewRow: () => any, locked?: boolean }) {
   const ref = useRef<HTMLInputElement>(null)
   const have = ids || []
   return <span className="docfield">
@@ -113,7 +122,7 @@ export function DocField({ ids, onIds, viewRow }: { ids: string[], onIds: (ids: 
       onChange={e => {
         const fs = e.target.files ? [...e.target.files] : []
         e.target.value = ''
-        if (!fs.length) return
+        if (locked || !fs.length) return
         const fresh: string[] = []
         fs.forEach(f => {
           const { id, why } = docAdd(f)
@@ -195,12 +204,53 @@ export function InputEditor() {
      own window) or the schedule in view's; once that page shows another (his own move taking effect at midnight) the
      window stays as it stood, its Person list still the squadron it opened on, with the band across its top and "Close",
      and its Add, Save, Delete and "Take me out" do nothing. */
-  const ownPage = !!r && (isNew ? !!(r._calendar || ctx === 'i' || ctx === 'up') : win)
+  /* the kind of page it was OPENED on is kept with it: a landing that moves the page under it (D2381 — a squadron he only
+     views lands on its View-only Sched) must not make his own page's window judge itself by the schedule's squadron and
+     come back live (Fable's read of 23 Nov 26, finding 1) */
+  const ownNow = !!r && (isNew ? !!(r._calendar || ctx === 'i' || ctx === 'up') : win)
+  /* …AND HELD WHEN ITS OWN PAGE IS NO LONGER OFFERED (the fix rounds' read of 23 Nov 26, the fresh Opus reader's 2 — that
+     fix's own gap): a VIEW holder's own pages never leave his squadron, so at a pick of a squadron he only views the
+     squadron above stays the same while the page under his window becomes 149's View-only Sched (D2381) — and the window
+     stood live over it, no band. A window of his own pages opened while they were offered is held for as long as the
+     squadron in view does not offer them (state/perms.ts pageOffered); his own squadron picked again gives it back. */
+  const offeredNow = pageOffered('inputs')
+  /* THE NOTE STAYS FOR AS LONG AS THE WINDOW SHOWS THE SAME INPUT — judged by the input's id, never by the object (the
+     second fix round's fresh Opus read of 23 Nov 26; the third time a held window came back live, D2233). The note used
+     to be taken afresh whenever the record became a new object, and an Undo, a Redo and a refused command all put the
+     list back as new objects, which the window follows (below, "the record behind the window"): the fresh note read the
+     squadron in view NOW and whether the page is offered NOW, so a window held at a pick stood live again over the
+     squadron he had picked — Save and the rest working. A new input has no id yet and is never followed, so it is still
+     known by its seed object. A fresh note is taken only when a different input is opened or the window closes.
+     …AND NOT FOR THE ONE PAINT ANOTHER INPUT IS ASKED FOR (`was`): over unsaved work the window keeps the first input
+     and puts it back ("one editor at a time", below), but for that paint the other one IS its record — the note was
+     taken afresh for it and again for the first, and the hold was lost the same way. The note it had is kept aside until
+     the other input is taken up for good (the seed step drops it), and comes back with the first. */
+  type Opened = { key: unknown; unit: string; own: boolean; offered: boolean }
+  const [openedOn, setOpenedOn] = useState<(Opened & { was: Opened | null }) | null>(null)
+  const openKey: unknown = !r ? null : (isNew || r.iid == null) ? r : String(r.iid)
+  const kept = open && openedOn && openedOn.key === openKey ? openedOn : null
+  const ownPage = kept ? kept.own : ownNow
   const pageSqn = open ? (ownPage ? pageUnit('own', todayIso()) : UNIT) : ''
-  const [openedOn, setOpenedOn] = useState<{ r: any; unit: string } | null>(null)
-  if (open ? (!openedOn || openedOn.r !== r) : !!openedOn) setOpenedOn(open ? { r, unit: pageSqn } : null)
-  const openedSqn = open && openedOn && openedOn.r === r ? openedOn.unit : pageSqn
-  const held = open && openedSqn !== pageSqn
+  if (!open) { if (openedOn) setOpenedOn(null) }
+  else if (!openedOn) setOpenedOn({ key: openKey, unit: pageSqn, own: ownNow, offered: offeredNow, was: null })
+  else if (!kept) {
+    const { was, ...had } = openedOn
+    setOpenedOn(was && was.key === openKey ? { ...was, was: null } : { key: openKey, unit: pageSqn, own: ownNow, offered: offeredNow, was: had })
+  }
+  const openedSqn = kept ? kept.unit : pageSqn
+  const held = open && (openedSqn !== pageSqn || (!!kept && kept.own && kept.offered && !offeredNow))
+  /* …HELD BY A PICK (batch 1's second half §16 D2; his D2323 — the drawing f7b): where his pick in the Schedules menu (or a
+     bell tap) moved the page, the band reads "This is 142's. You picked 149 — close this to go on." (state/store.ts
+     heldWindowBand) and the whole window under it is read only, every control greyed — its title strip with the ✕ (and the
+     ✕'s own question), and the band's Close, still working (ui/heldro.ts); picking 142 again gives it back as it was. Held
+     any other way (his own move at midnight) it keeps the words and the controls it had. */
+  const heldBand = held ? heldWindowBand(openedSqn) : null
+  const heldRo = !!heldBand?.ro
+  useLayoutEffect(() => {
+    const b = box.current
+    if (!heldRo || !b) return
+    return holdReadOnly((b.closest('.floatwin') as HTMLElement | null) ?? b, '.win-bar, .airpop-head, .saveband.moveband, .inped-xask-at, .inped-rolechip')
+  }, [heldRo, win])
   /* OPENED FROM THE SCHEDULE IT TAKES AND KEEPS THE KEYBOARD ([WINDOWS-KEEP-KEYS], reader D2's second pass, 6 Oct 26): Tab
      used to walk on into the schedule behind the dialog, where a box saved on leaving. On the Inputs page it is a window
      the page behind still works with (D641), so it holds nothing there. Its question sheets stack on top (ui/sheetfocus.ts). */
@@ -227,6 +277,13 @@ export function InputEditor() {
   /* Escape over unsaved work asks first (F2 of the 3 Nov 26 re-check) */
   const [escAsk, setEscAsk] = useState(false)
   const swapOk = useRef(false)
+  /* THE QUESTION IS ABOUT AN INPUT OF THE SQUADRON IT WAS ASKED ON, AND GOES WITH A PICK (the night of 24 Nov 26, the
+     re-walk's C1; his D2323 — ui/msq-pick-swap-question.test.tsx). Left up across a pick, its "Discard and open" took up
+     the other input — 142's — as the window's own with 149 in view: the note above was taken for it then, on the squadron
+     picked, so it stood live with no band and its Save and Delete changed 142's record under a bar saying 149. The
+     squadron the page showed when it asked is kept with it; once the page shows another the question is gone (below, with
+     the question whose control went) and its answer opens nothing. The window keeps the first input, held, his words in it. */
+  const swapOn = useRef('')
   /* WHO IT IS FOR (owner D654–D656; the plan §3.13). On the Inputs page the Person field is the people picker
      (ui/PeoplePick.tsx): `ppl` in the order picked, `several` its switch. The editor holds the input's ONE record,
      which carries its people (engine/inputs.ts idsOf — D756; until the one-rule build an "entry" worked out on read
@@ -311,6 +368,7 @@ export function InputEditor() {
     if (win && other && !swapOk.current && draft && base.current && (pplTouched || unsavedFields(draft, base.current))) {
       /* hung from the other input as a whole — its bar, its list row — where the press landed inside one */
       { const p = lastPressed(); swapAt.current = (p?.closest('[data-iid]') as HTMLElement | null) || p }
+      swapOn.current = pageSqn
       setSwap(r); keepDraft.current = true; setInpEdit(prev); notify()
       /* ...AND IT ASKS FROM THE FRONT (`[TITLE-CHECK-SEEN]` 4, 10 Oct 26). The press that asked for the other input landed
          on another window first — a card of the opened day — and that window took the front, as any pressed window
@@ -323,12 +381,15 @@ export function InputEditor() {
     }
     swapOk.current = false
     shown.current = r
+    /* this record is the window's own now: the note kept aside for the input before it (above, `was`) goes */
+    setOpenedOn(o => (o && o.was ? { ...o, was: null } : o))
     base.current = r ? draftOf(r) : null
     madeOver.current = {}
     setClash([]); setSwap(null); setEscAsk(false)   // the unsaved question goes with the record it asked about (the code read of 3 Nov 26, F-A4)
     setDraft(r ? draftOf(r) : null); setUpConf(null); setMedConf(null); setOilConf(null); setDocConf(null)
     /* who it is for: a saved input's own list; a new one's seed names its one person */
-    const p0 = !r ? [] : r._new ? [String(r.person ?? '')] : idsOf(r).map(String)
+    /* (…naming nobody where its seed names nobody — another squadron's page, §18.6: the list starts on "Pick…") */
+    const p0 = !r ? [] : r._new ? (r.person == null || r.person === '' ? [] : [String(r.person)]) : idsOf(r).map(String)
     setPpl(p0); setSeveral(p0.length > 1); basePpl.current = p0; entryIds.current = r && !r._new ? [r.iid] : []
     setDelAll(false); setTakeOut(false); setMidPick(false); setDatesPicked(false); setCalKey(k => k + 1)
     if (r && !r._new && OILASK && r.iid === OILASK) {
@@ -451,6 +512,16 @@ export function InputEditor() {
       /* as a window it does not own the page: Escape typed in a box on the page BEHIND it is that box's own (a cell
          being edited puts its text back on Escape) — the shell's own rule, ui/FloatWindow.tsx */
       if (win) {
+        /* A MENU OPENED OVER IT ANSWERS FIRST (the night of 24 Nov 26, the re-walk's C2 — ui/msq-sqnlist-escape-over-input
+           .test.tsx; the design guide §2: Escape closes what opened last). With the top bar's squadron list open over this
+           window, Escape closed the WINDOW and left the list up — or, over typed words, asked "Close it and lose them?"
+           for a press meant for the list. This listener stands beside the one Escape list (ui/sheetfocus.ts), which the
+           list's menus join, and whichever was added to the page first took the key. Where that list has something up
+           that is not inside this window, the key is left to it; the next Escape is this window's. Not under one of
+           this window's own sheets (the OIL, upchit, medical or document question): those block the page, top bar
+           included, and answer first as they always did. */
+        const over = docConf || upConf || medConf || oilConf ? null : escListTop()
+        if (over && !box.current?.closest('.floatwin')?.contains(over)) return
         const a = document.activeElement as HTMLElement | null
         const mine = !!a && !!box.current && !!box.current.closest('.floatwin')?.contains(a)
         if (!mine && a && a !== document.body && (/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) || a.isContentEditable)) return
@@ -635,7 +706,8 @@ export function InputEditor() {
      the draft as the first and mint the rest, all one undo step */
   const doMedSave = (choices: string[], keepTail: any[]) => HOOKS.toastBatch(() => medSaveNow(choices, keepTail))
   const medSaveNow = (choices: string[], keepTail: any[]) => {
-    if (undecided()) return
+    /* (held across a pick with the medical question up — it is drawn outside the window's lock: nothing saved, as `save`) */
+    if (held || undecided()) return
     const segs = medKeptSegments(medConf.a, medConf.b, medConf.clashes, choices)
     if (!segs.length) return          // toasted; the form stays open, unwritten
     if (medSegmentsProtected({ ...draft, yr: isNew ? baseYear() : r.yr }, segs, keepTail, medConf.b, isNew ? null : r)) return medicalLocked()
@@ -675,6 +747,10 @@ export function InputEditor() {
        question and every sheet ([INPUT-ALL-AVAIL]) */
     if (draft && placeholderRefused(several && picker ? { ...draft, person: ppl.find(p => isSpecial(p)) ?? draft.person } : draft)) return
     if (picker && draft) {
+      /* A NEW INPUT NAMING NOBODY — opened on another squadron's page, where its Person box starts on "Pick…" (the guard
+         rail's plan §18.6) — is refused in the app's own words for an empty choice (ui/inputedit.ts commitInput, the
+         "Several people" save's), never filed for whoever the window would fall back on */
+      if (isNew && !ppl.some(p => !!p)) { HOOKS.toast('Pick at least one person', 'warn'); return }
       /* nothing is substituted for what he picked: people he may not file this kind for refuse the save, in the
          picker's own sentence */
       const pb = pickProblem(ppl, several, draft.type, phWhy)
@@ -789,7 +865,9 @@ export function InputEditor() {
   /* THE DELETE SPEAKS IN ONE BATCH WITH ITS RULES, as a save does (doSave): leave a give-back now covers is cut by the Leave
      War's rules inside the same command, and their warning must not be wiped out by "Input deleted" (the fresh read of
      18 Oct 26, finding 1 — D1022) */
-  const delNow = () => HOOKS.toastBatch(() => { if (removeInput(r)) { HOOKS.toast('Input deleted', 'ok'); close() } else stay() })
+  /* (…and never from a held window: the upchit's own question, drawn outside the window's lock, can be up across a pick —
+     the night of 24 Nov 26, C1's sibling doors; a belt, as every other write here stops on `held`) */
+  const delNow = () => HOOKS.toastBatch(() => { if (held) return; if (removeInput(r)) { HOOKS.toast('Input deleted', 'ok'); close() } else stay() })
   const delEntry = () => {
     if (held) return
     const n = howMany(recPpl)
@@ -806,7 +884,49 @@ export function InputEditor() {
      when pressed. The write path's own rule (perms.ts mayEditInput), asked before the form is drawn: he may still
      READ it (D211 — type, remarks, documents), with nothing offered that he cannot use. */
   const canAll = rows.length ? mayEditInput(r) : true
-  const readOnly = !isNew && !!r && !mayEditInput(r)
+  /* …AND AN ADMIN READS ANOTHER SQUADRON'S INPUT READ ONLY (step A — the second-half plan §2): Hunter, 142's admin with View
+     of 149, opening Osprey's input on 149's View-only Sched was offered Save and Delete, each refused at the save door.
+     Where the input's own squadron (engine/inputs.ts inputUnitOf — the squadron its save is judged in first) is one he is
+     not an admin of, and it is not his own input, nothing is offered. A leave of 142's man running into 149 stays his to
+     try — its refusal has its approved words (D2240, the save door). A member's window is unchanged (canEditOwn false). */
+  /* (…"stays his to try" for an admin of EITHER side of the move: the full unit run of chat 142 found Kestrel, 149's admin,
+     opening Saber's 142 leave of Ranger running into Ranger's 149 days read only — the C6 test wants the editable window
+     and its approved refusal. So the squadrons asked are the input's own and every squadron a man named in it is in on
+     any of its days — engine/inputs.ts inputSquadrons, the gate's own reading; foreign only where he is an admin of none
+     of them.) */
+  const foreign = !isNew && !!r && canEditOwn() && !(idsOf(r).length <= 1 && isMe(leadOf(r)))
+    && (() => {
+      const u = inputUnitOf(r)
+      if (u == null) return false
+      return ![u, ...inputSquadrons(r)].some(x => adminOfUnit(x))
+    })()
+  const roNow = !isNew && !!r && (!mayEditInput(r) || foreign)
+  /* HELD BY THE SWITCH TO THE MEMBER VIEW IT KEEPS THE FORM IT HAD (his D2389, D2400 — the drawing
+     docs/mock/2026-11-24-msq-new-words/img/i1-*.png: every box, Save and Delete there, greyed by the band). The role in force
+     is a member's now, and on another man's input that would swap the form for a member's plainer read-only one under the
+     band; the switch back would swap it again. What it had before the switch is noted on each render while not so held
+     ("adjust state while rendering"); nothing can be pressed under the band, and every write above still stops on `held`. */
+  const [roKept, setRoKept] = useState<boolean | null>(null)
+  const heldMv = held && heldByMemberView(openedSqn)
+  if (!heldMv && roKept !== roNow) setRoKept(roNow)
+  const readOnly = heldMv && roKept != null ? roKept : roNow
+  /* THE WAY BACK STAYS PRESSABLE (the night of 24 Nov 26, the walk's F3): the band says "Switch back to the admin view", but
+     this dialog's shade stands over the top bar, so the role chip could not be pressed or reached by Tab, and a press there
+     closed the window and lost his words. While so held the same chip is drawn at its own place above the shade, in the
+     dialog's Tab order — no new control to see, the chip itself lifted. Where the bar shows no chip (a phone) nothing is. */
+  const [chipAt, setChipAt] = useState<{ left: number; top: number; width: number; height: number; text: string } | null>(null)
+  const liftChip = heldMv && !win
+  useLayoutEffect(() => {
+    if (!liftChip) return
+    const read = () => {
+      const c = document.getElementById('roleBadge')
+      const b = c?.getBoundingClientRect()
+      setChipAt(c && b && b.width > 0 ? { left: b.left, top: b.top, width: b.width, height: b.height, text: c.textContent ?? '' } : null)
+    }
+    read()
+    window.addEventListener('resize', read)
+    return () => { window.removeEventListener('resize', read); setChipAt(null) }
+  }, [liftChip])
   /* WHERE IT GOES IS A SCHEDULER'S once he has moved it (his D1388): the member's window shows where it stands, picked,
      and offers neither button — as a rejected one already does (G5) */
   const goesLocked = !isNew && !!r && !mayMovePlace(r)
@@ -873,7 +993,7 @@ export function InputEditor() {
     return WIN_FIELDS.every(f => fieldSame(f, draft, saved)) && String(draft.to ?? '') === String(saved.to ?? '')
       && (!('goes' in draft) || draft.goes === saved.goes) && who.length === inIt.size && who.every(id => inIt.has(id))
   }
-  const archivedHere = win && (!isNew || ctx === 'i') && canEditSched() && ctx !== 's' && !(draft && isSansAvail(draft.type)) ? archivedOptions(pickUnit, firstDay).filter(id => !offers || offers(id)) : []
+  const archivedHere = win && (!isNew || ctx === 'i') && canEditOwn() && ctx !== 's' && !(draft && isSansAvail(draft.type)) ? archivedOptions(pickUnit, firstDay).filter(id => !offers || offers(id)) : []
   /* the first day whose OIL question nobody has answered, for the line that says so (below); '' where there is none */
   /* …asked of the input's ONE record, which carries everyone in it (the one-rule build, D756). Before it, of EVERY record
      of the entry, not of the one the window happened to be opened on (walker C's find, 10 Oct 26 — Astra's scenario 69:
@@ -912,7 +1032,7 @@ export function InputEditor() {
               opening their own input never reaches this dialog at all today
               (the buttons that open it only render in an admin's edit mode),
               but the gate is repeated here anyway rather than trusted to
-              that — canEditSched() is the same check every other
+              that — canEditOwn() is the same check every other
               admin-only control in this dialog's callers already uses. */}
           {/* the upchit context comes FROM a pending card, so its person is a
               value, not a choice — the fixed-type idiom below, one row up */}
@@ -924,7 +1044,7 @@ export function InputEditor() {
             : picker
             /* ON THE INPUTS PAGE: the people picker — one person from the list, or several as pucks (D656) */
             ? <PeoplePick people={ppl} several={several} type={draft.type} sansOnly={ctx === 's' || isSansAvail(draft.type)} unit={pickUnit} iso={firstDay} offers={offers}
-              lockOne={!isNew && !canEditSched()} readOnly={readOnly}
+              lockOne={!isNew && !canEditOwn()} readOnly={readOnly}
               /* THE POSTED-OUT / ARCHIVED PEOPLE, for an admin changing a SAVED input ([INPUT-LIST-AS-DAY-CARD], 10 Oct 26 —
                  Astra's scenario 57). The List's pencil offered them in its own Person list (clearing leave is filed
                  for a man who has posted out — [ARCH-STACK] step 4, H5) and the pencil is gone (D718): without this
@@ -934,7 +1054,8 @@ export function InputEditor() {
               moreIds={archivedHere.length ? archivedHere : undefined}
               phWhy={phWhy}
               onChange={(p, s) => { setPpl(p); setSeveral(s); if (p.length === 1 && draft.person !== p[0]) setDraft({ ...draft, person: p[0] }) }} />
-            : canEditSched() && <label className="inped-f">
+            /* (held by the member view it keeps the line it had, as drawn — i1-desk-input-window.png; the band's lock holds it) */
+            : (canEditOwn() || heldMv) && <label className="inped-f">
               <span className="inped-k">Person</span>
               <select id="inpEditPerson" aria-label="Person" value={draft.person}
                 onChange={e => setDraft({ ...draft, person: e.target.value })}>
@@ -1031,7 +1152,7 @@ export function InputEditor() {
               <div className="goespick" role="group" aria-label="Goes to">
                 {([['g', 'Ground Programme'], ['u', 'Unavailable']] as const).map(([k, words]) => (
                   <button key={k} type="button" className={`goesbtn goes-${k}${(draft.goes ?? 'g') === k ? ' on' : ''}`} data-testid={`inpEdit-goes-${k}`}
-                    aria-pressed={(draft.goes ?? 'g') === k} disabled={readOnly || goesLocked || (draft.goes === 'r' && !canEditSched())} onClick={() => setDraft({ ...draft, goes: k })}>{words}</button>
+                    aria-pressed={(draft.goes ?? 'g') === k} disabled={readOnly || goesLocked || (draft.goes === 'r' && !canEditOwn())} onClick={() => setDraft({ ...draft, goes: k })}>{words}</button>
                 ))}
               </div>
               {/* …a rejected one says so and picks neither; only a scheduler moves it (G5) */}
@@ -1097,7 +1218,7 @@ export function InputEditor() {
             <span className="inped-k">Document</span>
             {/* a chip opens its file (D1292, D1159 — the one Document button everywhere): the page the window's own fields
                 name now, a file not yet saved included; who placed it, from the saved entry */}
-            <DocField ids={draft.docIds} onIds={ids => setDraft({ ...draft, docIds: ids })}
+            <DocField ids={draft.docIds} onIds={ids => setDraft({ ...draft, docIds: ids })} locked={held}
               viewRow={() => ({
                 person: draft.person, type: draft.type, allday: draft.allday, date: fmt(draft.start),
                 ...(draft.end && fmt(draft.end) !== fmt(draft.start) ? { endDate: fmt(draft.end) } : {}),
@@ -1229,7 +1350,7 @@ export function InputEditor() {
               ? recPpl.length > 1 ? (recPpl.some(p => isSpecial(p)) ? `Date changes apply to ${howMany(recPpl)}.` : `Date changes apply to all ${recPpl.length}.`) : ''
             : isSansAvail(draft.type)
               ? 'To change its dates, delete it and add it again on the SANS calendar.'
-            : canEditSched()
+            : canEditOwn() || heldMv
               ? 'The dates are changed on the Inputs page.'
               : 'The person and the dates are changed on the Inputs page.')}
         </div>}
@@ -1337,9 +1458,11 @@ export function InputEditor() {
   /* the control the swap's question hangs from gone with its window (the opened day closed under it): the question goes
      too — never left standing where nobody can see it, to take the next Escape ("adjust state while rendering") */
   if (swap && swapAt.current && !swapAt.current.isConnected) setSwap(null)
+  /* …and gone with a pick: it asked about an input of the squadron the page showed then (above, `swapOn`) */
+  else if (swap && swapOn.current !== pageSqn) setSwap(null)
   /* the band of a window held across his squadron change (above) — the Leave War windows' own band and look
      (ui/MoveBand.tsx); "Close" closes the window, nothing saved */
-  const moveBand = held ? <MoveBandView band={schedMoveBand()} onClose={close} testid="inped-moveband" closeClass="abtn" /> : null
+  const moveBand = heldBand ? <MoveBandView band={heldBand} onClose={close} testid="inped-moveband" closeClass="abtn" /> : null
   if (win) return (<>
     <FloatWin id="inputedit" title={(isNew ? 'New input' : who) + (when ? ' · ' + when : '')} testid="win-inputedit" className="inpedwin" onClose={askClose}
       mark={cxMark || undefined}>
@@ -1352,7 +1475,7 @@ export function InputEditor() {
           <AskCard at={swapAt.current} portal testid="inped-swap" label="Unsaved changes"
             question={<>This input has unsaved changes. Open {swap._new ? 'a new input' : `${inputWho(swap) || 'the other'}’s input`} and lose them?</>}>
             <button type="button" className="abtn danger" data-testid="inped-swap-go"
-              onClick={() => { const to = swap._new ? swap : (INPUTS.find((x: any) => x.iid === swap.iid) || null); swapOk.current = true; setSwap(null); setInpEdit(to); notify() }}>Discard and open</button>
+              onClick={() => { if (swapOn.current !== pageSqn) { setSwap(null); return } const to = swap._new ? swap : (INPUTS.find((x: any) => x.iid === swap.iid) || null); swapOk.current = true; setSwap(null); setInpEdit(to); notify() }}>Discard and open</button>
             <button type="button" className="abtn primary" data-testid="inped-swap-stay" autoFocus onClick={() => setSwap(null)}>Keep editing</button>
           </AskCard>
         )}
@@ -1401,9 +1524,11 @@ export function InputEditor() {
     </FloatWin>
     {sheets}
   </>)
+  /* the dialog's second shape, off the Inputs page: drawn while inputDlgDrawn() — !!INPEDIT && CURPAGE !== 'inputs', the
+     one predicate the guard reads too (ui/windrawn.ts); here `win` is false, so it is `open` exactly as before */
   return (
     // eslint-disable-next-line react-doctor/no-static-element-interactions -- a press on the veil around the schedule's pop-up closes it (a click outside, D1 of the pop-up rule); the keyboard closes it with Escape; moved whole from inputedit.tsx on 3 Nov 26 with this finding already on it (D1534: the area's findings ride with its batch)
-    <div className="airpop" id="inpEditPop" hidden={!open} ref={pop}
+    <div className="airpop" id="inpEditPop" hidden={!inputDlgDrawn()} ref={pop}
       onClick={e => { if (clickedOutside(e, 'inpEditPop')) close() }}>
       <div className="airpop-box inpedbox" ref={box} tabIndex={-1} style={{ outline: 'none' }}>
         <div className="airpop-head">
@@ -1411,6 +1536,11 @@ export function InputEditor() {
           {cxMark}
           <button className="x" id="inpEditClose" aria-label="Close" onClick={close}>✕</button>
         </div>
+        {chipAt && (
+          <button type="button" className="abtn rolechip tgl inped-rolechip" data-testid="inped-rolechip" title="Back to the admin view"
+            style={{ position: 'fixed', left: chipAt.left, top: chipAt.top, width: chipAt.width, height: chipAt.height, margin: 0 }}
+            onClick={() => { void switchRoleView(CHIP_SWITCH) }}>{chipAt.text}</button>
+        )}
         {moveBand}
         {inner}
       </div>

@@ -68,7 +68,7 @@ import { toPeople } from '../engine/inputown'
 import { ridWriteKey, posKey } from '../engine/rowids'
 import { lastFilled, slotVal } from '../engine/slots'
 import { CmdRefused } from '../command'
-import { canEditSched } from '../state/auth'
+import { canEditOwn } from '../state/auth'
 import { me } from '../state/perms'
 import { stampChanged } from '../state/inputstamp'
 import { notify } from '../state/store'
@@ -248,7 +248,7 @@ export function rowPut(key: any, id: any, seat?: SeatTake, oil?: Oil): RowAnswer
   const p = placeOf(key)
   const pid = String(id || '')
   if (!p || !pid || !PEOPLE[pid]) return 'none'
-  if (!canEditSched()) return 'refused'
+  if (!canEditOwn()) return 'refused'
   const ids = people(p.inp)
   if (ids.includes(pid)) { HOOKS.toast(alreadyOn(pid), 'warn'); return 'refused' }
   /* a placeholder never replaces anyone — it joins, where the input may hold one (the input's own save says why where
@@ -323,7 +323,7 @@ function leave(p: Place, then?: () => boolean | void, said?: string): boolean {
 export function rowTake(key: any): RowAnswer {
   const p = placeOf(key)
   if (!p || !p.at) return p ? 'refused' : 'none'
-  if (!canEditSched()) return 'refused'
+  if (!canEditOwn()) return 'refused'
   if (!leave(p)) return 'refused'
   notify()
   return 'done'
@@ -337,7 +337,7 @@ export function rowTake(key: any): RowAnswer {
 export function rowLeaveTo(fromKey: any, toKey: any, write: () => boolean | void): 'none' | 'refused' | { landed: string } {
   const p = placeOf(fromKey)
   if (!p || !p.at) return 'none'
-  if (!canEditSched()) return 'refused'
+  if (!canEditOwn()) return 'refused'
   let at = ridWriteKey(String(toKey), DAYS)
   const ok = leave(p, () => {
     if (write() === false) return false
@@ -356,7 +356,7 @@ export function rowLeaveTo(fromKey: any, toKey: any, write: () => boolean | void
 export function rowMove(fromKey: any, toKey: any, oil?: Oil): RowAnswer {
   const a = placeOf(fromKey), b = placeOf(toKey)
   if (!a || !a.at || !b || a.inp === b.inp) return 'none'
-  if (!canEditSched()) return 'refused'
+  if (!canEditOwn()) return 'refused'
   const pid = a.at
   if (people(b.inp).includes(pid)) { HOOKS.toast(alreadyOn(pid), 'warn'); return 'refused' }
   /* both rows and the man by what they are — found again each time the move is run ([OIL-ASK-NOTIFY]; `gated`, above:
@@ -398,7 +398,7 @@ export function rowMove(fromKey: any, toKey: any, oil?: Oil): RowAnswer {
 export function rowMark(key: any, what: 'cx' | 'flag' | 'info', on: boolean, reason?: string): RowAnswer {
   const p = placeOf(key)
   if (!p) return 'none'
-  if (!canEditSched()) return 'refused'
+  if (!canEditOwn()) return 'refused'
   const inp = p.inp
   /* TAKING THE CANCEL — OR THE INFORMATION-ONLY MARK — OFF PUTS THE OIL QUESTION FIRST (owner D816, 13 Oct 26 — "taking
      the cancel off an input that has no OIL answer for a non-working day puts the OIL question first, as 'Accept' does —
@@ -428,7 +428,7 @@ export function rowMark(key: any, what: 'cx' | 'flag' | 'info', on: boolean, rea
       const again = (): RowAnswer => {
         const x = find()
         if (!x || !x[mark]) return 'none'
-        if (!canEditSched()) return 'refused'
+        if (!canEditOwn()) return 'refused'
         const g2 = gateOf(x)
         if (g2 && g2.kind === 'ask') { hold(x, g2); return 'asked' }
         const a = unmark(x, mark)

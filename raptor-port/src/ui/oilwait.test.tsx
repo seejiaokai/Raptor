@@ -1327,7 +1327,9 @@ describe('taking the cancel off an input with no OIL answer waits on the OIL que
     cancel()
     expect(rowMark(rowKey(), 'cx', false)).toBe('asked')
     leaveOilWait()
-    const spy = vi.spyOn(auth, 'canEditSched').mockReturnValue(false)
+    /* (rewritten for the reads, batch 1's second half step A: a request row's mark is the input's own squadron's to
+       change, so its door asks canEditOwn — state/edit-rights-readers.test.ts lists it; the rule tested is unchanged) */
+    const spy = vi.spyOn(auth, 'canEditOwn').mockReturnValue(false)
     try { oilBarAgain() } finally { spy.mockRestore() }
     expect(view.OILWAIT, 'nobody who cannot edit the schedule is asked').toBeNull()
     expect(rec().cx, 'still cancelled').toBe(true)

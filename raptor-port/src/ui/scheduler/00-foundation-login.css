@@ -193,6 +193,12 @@ img,a{-webkit-user-drag:none;user-drag:none}
   background:var(--accent);color:var(--accent-ink);border:none;font-size:14px;font-weight:700;
   padding:12px;border-radius:10px;cursor:pointer;margin:5px 0 0;letter-spacing:.04em}   /* margin in full: the schedule's `.go` (a flying-wave block) gives 10px sides, which pushed this button 10px right and past the card's edge — on the sign-in and Request access cards alike (26 Sep 26) */
 .login .go:hover{filter:brightness(1.06)}
+/* A SIGN-IN HELD WHILE THE LAST CHANGE SAVES (batch 1's second half §8 — step G; his D2205, D2322; pictures 10, f6a, f6b):
+   the button greyed in the app's disabled look (.abtn[disabled]'s .42 — the drawing's), and the card's quiet small print,
+   one line under the button while it waits, or under the kept name after the reload */
+.login .go:disabled{opacity:.42;cursor:default;filter:none}
+.login .lnote{text-align:center;font-size:10.5px;line-height:1.6;color:var(--ink-3);margin:10px 0 0}
+.login .lnote.kept{margin:6px 0 10px}
 /* the error line takes no room until there is one to print */
 .login .err{color:#FBB4B9;font-size:12px;margin:0 0 8px}
 .login .err:empty{display:none;margin:0}

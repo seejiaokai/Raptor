@@ -1037,6 +1037,7 @@ untouched high-risk code, or the fault count's fall says nothing about what was 
 **Issue:** the background script pushed and detached the checkout between the chat's stop request and its next commit; the new commit landed on a detached head and had to be moved back by hand (switch to the branch, fast-forward to the stray commit).
 **Suggested improvement:** in "Release the branch", when the push must wait: the waiting script pushes only if the branch tip is still the commit it was started for, and never detaches by itself — the chat releases in the foreground once it has the push result; and after any new message from the owner, check `git branch --show-current` before committing.
 **Principle:** an irreversible last step queued in the background must check that nothing moved since it was queued, or be left for the foreground.
+- met again 25 Nov 26 (chat 187, from the other side): the INCOMING chat switched the shared folder to the branch while the outgoing chat (176) was still finishing; 176 then committed and released (detached), so the incoming chat's first three commits landed on a detached head, moved back by hand. Guard proposed: the opening line's switch is followed by a check, before the first commit, that `git branch --show-current` still names the branch (or a commit hook in a job folder refuses a commit on a detached head with a one-line "switch back first"); the outgoing chat releases only when no other live chat has switched to the folder since.
 
 ### Observation 993: A ruling that lifts a refusal was filed with two of the four places that enforce it
 
@@ -1559,6 +1560,503 @@ sides.
 **Suggested improvement:** In the session-handoff skill, before writing "Next chat number", take the highest of: the merged handoff, every remote branch's commit subjects (`git log --all --since=7.days --format=%s | grep -o '^Chat [0-9]*'`) and the open session titles (list_sessions); a new chat re-checks the same three before naming itself.
 **Principle:** A counter shared by parallel workers must be read from every place they write, not from the one that is merged.
 
+### Observation 1004: A drawing helper's script checked button rows but not text cut off inside a select
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** Chat 137, batch 1's second-half mock-up page — opening the row-redesign pictures a helper drew (numbered past 1002–1003, held by other branches)
+**Skill:** New skill candidate: mockups-on-the-real-app (`.claude/skills/brainstorming/mockups-on-the-real-app.md`)
+**Type:** open-source
+**Phase/Area:** the premise checks a drawing script runs before it takes the picture
+
+**Issue:** The helper's script asserted that each row of buttons stayed on one line, but the phone picture of its recommended option showed the Role drop-down cutting its words off mid-word ("Admin — schedule…"). The helper did not report it; the host found it only by opening the picture.
+**Suggested improvement:** In the guide's premise checks, add: for every input or select a transform touches or puts beside new content, assert its text is not cut off (`scrollWidth <= clientWidth + 1`) at each picture size, and print the result.
+**Principle:** A drawing's automatic checks cover overflow in every control it changes, not only the layout it meant to change; a picture is opened by the host whatever the checks say.
+
+### Observation 1009: A plan called a point open that an earlier step had already answered in the code's own notes
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** writing batch 1's second-half technical plan (chat 138); numbered past 1008, held on another open branch
+**Skill:** writing-plans
+**Type:** open-source
+**Phase/Area:** before listing a plan's open points
+
+**Issue:** The plan wrote "a spike: find out whether the Tracker can be re-read in place" as an open point. The module's own comment, written by an earlier step's read of its load path, already answered it: it cannot be re-read cleanly, and it listed the caches. The host found this only after the plan was written and sent to readers, so the plan went out with a question already settled.
+**Suggested improvement:** In writing-plans, before an item is written as "to be found out", search the earlier plans' open-points sections and the code comments of the files concerned for an answer, and cite it, or say none was found.
+**Principle:** An open point in a plan is a claim that nobody has answered it; check the earlier work and the code's own notes before making that claim.
+
+### Observation 1010: A plan's red team was given the older two-reader rule, not the newer risk rule that adds Fable
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** batch 1's second-half plan (chat 138); numbered past 1008, held on another open branch
+**Skill:** claudex-loop
+**Type:** internal
+**Phase/Area:** choosing the readers of a plan's red team
+
+**Issue:** The host sent the plan to Astra and a fresh Opus reader only ("an important plan's red team: two readers"), though the newer ruling D2255 (21 Nov 26) has high-risk work read by Fable beside the others, and the build's earlier plan had three readers. He had to ask "should we also ask an independent fable reviewer?". Fable, added in round 2, found the plan's shape fault (the pick laid over three things that keep their own squadron) the other two had missed.
+**Suggested improvement:** Before sending any red team or code read, list the reader rulings that apply by date and risk (how-we-work §Models and readers), newest first, and name in the brief which one sets the readers.
+**Principle:** When several rules set who reads, the newest that covers the case decides; read the list by date each time instead of from memory.
+
+### Observation 1011: A drawing helper marks every drawn part New unless the brief says which parts are approved
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** chat 139 — drawing ten small questions (F1–F10) on the real app for the owner's look, by a helper
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** the brief handed to a drawing helper; the New / Approved marks
+
+**Issue:** The helper redrew an already-approved row design around one new line and tagged the whole row "New"; the host caught it on opening the pictures and sent four pictures back. The brief had listed what to draw but not which of the drawn parts the owner had already approved.
+**Suggested improvement:** In the method's helper-brief section, require the brief to name, per picture, the parts already approved (blue mark) and the parts new this round (pink mark); the helper's report lists the marks it used per picture.
+**Principle:** A picture that marks approved work as new asks the reviewer to decide it again; tell the drawer what is already settled, not only what to draw.
+
+### Observation 1013: A new standing check breaks old tests that forge the state it now forbids
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** batch 1's second half, step A — a check run on every repaint that moves an admin off Edit Schedule where he may not edit the squadron in view (number past 1012, held by another branch)
+**Skill:** New skill candidate: guard-rollout
+**Type:** open-source
+**Phase/Area:** adding an always-on invariant to a shared refresh path
+
+**Issue:** The new check was written over "anyone signed in"; a dozen existing tests deliberately put a member on the edit page (a forged state) to prove the edit guards hold behind it, and the check moved him away first — the tests failed for a reason unrelated to what they prove. The fix was to narrow the check to the one question it owns (the squadron, for an admin), leaving the role's own landing where it was.
+**Suggested improvement:** When adding a check to a shared refresh path, first search the tests for ones that forge the state the check forbids, and scope the check to the exact question it owns rather than a wider condition that happens to include it.
+**Principle:** A standing invariant should own one question; a broader condition silently takes over other rules' territory and breaks the tests that exercise those rules' fallbacks.
+
+### Observation 1014: "The related tests are green" missed three faults the whole suite found
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** batch 1's second half, phase 2 — the whole unit suite, owed by the chat that built step A (it had run "the 131 test files that name the changed helpers"), run under the lock at the next chat's start
+**Skill:** verification-before-completion
+**Type:** open-source
+**Phase/Area:** choosing which tests to run after a change, before the whole suite
+
+**Issue:** Step A changed which edit question many doors ask. The previous chat ran the test files that NAME the changed helpers and reported them green; the whole suite then found three faults none of those files covered: a test that faked the OLD helper (a spy on a function the door no longer calls, so it stopped testing anything and failed on the real answer), a type check over a folder no named file touched, and a window that turned read-only for a case its own code comment said must stay editable. Selecting tests by "names the changed function" misses a test that names the function the code moved AWAY from, and every test whose subject is the screen rather than the helper.
+**Suggested improvement:** When a change swaps which helper a caller asks, select the related tests by the OLD name as well as the new (a spy or a mock of the old one is now testing nothing), and treat "related files green" as a provisional result until the whole suite has run — say so in the handoff rather than "green".
+**Principle:** A test that fakes a dependency silently stops testing once the code stops depending on it; test selection by name must include the names the change removed.
+
+### Observation 1016: A test written first but never seen red per test can pass for the wrong reason
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** chat 143 — multi-squadron batch 1 second half, phase 2 step D (requests by squadron); numbered past 1015, which another branch holds
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** RED — verify the test fails for the reason it names
+
+**Issue:** The new tests were written before the code, but their first run failed only because the file could not import a function not yet written, so no single test was ever seen failing. Proving the gate tests afterwards by switching each new rule off showed one ("the Undo of a new squadron is refused while a request names it") still passing with its rule off: it was refused for another reason — the test signed in as the person asking, and signing in as someone else clears the first person's Undo list, so the Undo failed with nothing to undo. Rewritten (the request arrives as if from another device, plus a control that the same Undo goes through without the request), it then failed with the rule off and passed with it on.
+**Suggested improvement:** In RED, a file-level failure (an import, a missing export) is not a red: each test must be seen failing on its own assertion. Where the code cannot be stubbed first, prove it afterwards by disabling the one line under test and running again, and add a control case showing the same steps succeed when only that line's condition is absent.
+**Principle:** A refusal test proves the rule only if the same steps succeed once the rule's one condition is removed; a whole-file failure proves nothing about any single test.
+
+### Observation 1017: A seeded record has no stored row, so "no row before" does not mean "new"
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** chat 143 — step E's place rule at the commit gate
+**Skill:** New skill candidate: raptor-gate-rules (or the executor rules, `.claude/rules/raptor-executor.md`)
+**Type:** internal
+**Phase/Area:** writing a commit-gate rule that tells a created record from a changed one
+
+**Issue:** The new gate rule treated a place row with no "before" image as a new place (a master admin's alone), so a Plan holder changing the demo's Home base — a seeded place that was never stored as a row — was refused as "a new place made alone". The fix asks whether the rows before the command hold it (the seeded rows included).
+**Suggested improvement:** Add to the executor rules: in a gate rule, "created" is "not in the rows before the command" (the loader's reading, seeds included), never `before == null` alone — a seeded record's first write has no before image.
+**Principle:** Judge creation against the model's view of what existed, not against the storage layer's record of what was written.
+
+### Observation 1071: A test's sign-in switch silently empties the Undo list, so an Undo test fails for the wrong reason
+
+**Status:** OPEN
+**Date:** 2026-11-22
+**Session context:** chat 145, multi-squadron batch 1 step F (D1′) — tests of a bell line coming back with an Undo of a right's take-away
+**Skill:** test-driven-development
+**Type:** internal
+**Phase/Area:** writing a red-first test that presses Undo or Redo
+
+**Issue:** The first red run had every Undo test fail with "Undo did nothing" before the rule under test was even reached: the test world's `signInAs` (and any helper that calls it — "post him out as Kestrel", "read Hunter's bell as Hunter") resets the session, and a sign-in clears the signed-in person's Undo list (D148). The tests looked red for the right reason only after one sign-in carried the whole step-then-Undo sequence (a second master admin made first, so one person could give, post and undo).
+**Suggested improvement:** In the project's test-writing notes (raptor-executor rules, the tests section): a test that presses Undo or Redo keeps ONE sign-in from the step to the Undo — no helper in between that signs in — and reads other people's bells without signing in as them; and a red-first run is read for WHY each test failed (the assertion's message), never only for "it is red".
+**Principle:** A red test proves the gap only when it fails at the assertion that names the gap; read the failure's reason before believing the red.
+
+### Observation 1020: A gate-refusal test must save the forged record the way a real writer does
+
+**Status:** OPEN
+**Date:** 2026-11-22
+**Session context:** chat 146 — multi-squadron batch 1's second half, step F: the own-account bell lines and their commit-gate check (numbered past 1019, the highest on any branch)
+**Skill:** New skill candidate: gate-test-writing (or the project's test-writing notes, raptor-executor rules)
+**Type:** open-source
+**Phase/Area:** writing a test that a forged record is refused by a commit check
+
+**Issue:** Four "a forged line is refused" tests passed the gate (the command came back ok) although the check was correct. The hand-built commands pushed the forged line into memory but skipped the store's own end-of-command step, so the line never entered the command's list of changes — the check had nothing to judge, and the line sat unsaved in memory. A one-off probe that printed the command's changes showed it; with the end step added, every forgery was refused for the right reason.
+**Suggested improvement:** In the test-writing notes: a forgery test builds its command exactly as the real writer does (every store enlisted and every end step run), and asserts the refusal's own words, not only "not ok" — and when a refusal test unexpectedly passes, print the command's change list before doubting the check.
+**Principle:** A test of a guard only proves something if the forged input actually reaches the guard; check what the guard was handed before concluding it let something through.
+
+### Observation 1021: a "next load" test must load the same saved data, or it proves nothing
+
+**Status:** OPEN
+**Date:** 2026-11-22
+**Session context:** chat 147 — multi-squadron batch 1's second half, step F §7 item 7: the "posting could not run" line, tested across three loads of the app
+**Skill:** New skill candidate: gate-test-writing (or the project's test-writing notes, raptor-executor rules)
+**Type:** open-source
+**Phase/Area:** writing a test that simulates the app being opened again
+
+**Issue:** The test's "open the app again" helper gave the reload a brand-new empty store for one half of the data. The saved posting was gone after the reload, so "it runs on the next load once the cause is gone" failed for a reason that had nothing to do with the code. Only reading the failure ("it did not run at all") against the helper showed it.
+**Suggested improvement:** In the test-writing notes: a reload helper re-reads the SAME stored data the earlier steps wrote — keep each store in one variable made fresh per test, never inside the helper — and a "survives a reload" test asserts first that the saved record is still there after the reload.
+**Principle:** A simulated restart must keep what a real restart keeps; check the saved state survived before judging behaviour after it.
+
+### Observation 1072: A handoff's "Pick up here" named the next phase, not the next step
+
+**Status:** OPEN
+**Date:** 2026-11-22
+**Session context:** chat 135, carrying on a handoff whose "Pick up here" said "then the next multi-squadron batch per the batch plan"
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** the "Pick up here" line and the next chat's reading of it (numbered past 999 and 1000, held on other branches) — renumbered from 1001 at chat 148's merge of main (22 Nov 26): main holds another note 1001
+
+**Issue:** The handoff said "the next batch per the batch plan". The next chat read it as the plan's batch 2 and put that to the owner, who said go; only on reading the plan did it find batch 1's last two steps (every screen of it) unbuilt and a prerequisite of batch 2. The owner had to answer twice.
+**Suggested improvement:** In the handoff step that writes "Pick up here", name the exact next step by the plan's own numbering and say what of the previous phase is still unbuilt ("batch 1 steps 5–6, then batch 2"); in the opening read, check a named phase's prerequisites are built (one search of the code for its screens) before proposing it to the owner.
+**Principle:** "The next phase" is ambiguous once a phase was split across two pull requests; a handoff names the step, and a reader verifies the step before offering it.
+
+### Observation 1023: A pull request that cannot run hides every browser-test failure until it can
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** Chat 149, the multi-squadron screens branch, phase 3 — the first GitHub run the branch ever had, after `main` was brought in
+**Skill:** session-handoff (and the bug-check order's gates step)
+**Type:** open-source
+**Phase/Area:** the handoff's "Gates" line; the gates step before a phase is called done
+
+**Issue:** Two phases were built and handed off while the pull request clashed with `main`, so GitHub never ran it; on the developer's PC only the unit tests ran. The first real run found 35 browser-test failures from phase 1's permission change (a test-only shortcut that sets the role in force stopped opening edit controls). Each handoff's "Gates" line said "Not run: browser tests", which read as a small gap, not as "this phase has never been checked in a browser".
+**Suggested improvement:** In the handoff skill's gates line, when the pull request ran no checks (clashing, stacked or not opened), say so as its own line ("GitHub's run has never passed on this branch — N phases unchecked in a browser") and make the next chat's first step bringing `main` in and getting one green run before building more; in the bug-check order's gates step, a phase that changes permissions runs the browser tests of the pages it guards locally before it is called done.
+**Principle:** A check that did not run is not a pass; a handoff must name an absent check as loudly as a failed one, and the next builder settles it before stacking more work on top.
+
+
+### Observation 1025: Mock-up "new part" rings were read as part of the design
+
+**Status:** OPEN
+**Date:** 23 Nov 26
+**Session context:** chat 149 — drawing D2381's View-only top bar and ☰ menu for the owner on his iPhone (numbered past 1024, held on another branch)
+**Skill:** impeccable
+**Type:** open-source
+**Phase/Area:** mock-ups put to a non-designer for approval
+
+**Issue:** Each proposed picture had a 2px accent-coloured ring drawn around every new part, to show what changed. The owner, looking on his phone, asked whether it "would look nicer without that blue cyan outer box" — he took the marker for part of the proposed look. A redraw with clean pictures was needed.
+**Suggested improvement:** In the mock-up guidance, show each proposed screen clean first, exactly as it would ship; put any change markers on a second, separate copy labelled as markers (or say in words what is new). Never let the only proposed picture carry annotation in the product's own accent colour.
+**Principle:** An annotation drawn in the product's own visual language is read as product; the picture a person approves must be the thing itself, with the explanation kept outside it.
+
+### Observation 1026: A fresh chat opened on the same task while the old chat still worked in the same folder
+
+**Status:** OPEN
+**Date:** 23 Nov 26
+**Session context:** chat 150, opened with the handoff's opening line while chat 149 (82% full) was still busy in the same working folder on the same job
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** the opening line, and the new chat's first step
+
+**Issue:** the opening line told the new chat to switch and pull in a shared working folder; the old chat had uncommitted edits written a minute earlier. Only a check of the folder's uncommitted files and their times caught the clash before anything was overwritten.
+**Suggested improvement:** the new chat's first step, before any switch or pull: list the live chats, check the working folder for uncommitted changes and their times, and message any busy chat on the same branch; the opening line says "if the folder has uncommitted changes, stop and ask".
+**Principle:** before taking over a shared working copy, prove nobody else is writing in it.
+
+### Observation 1073: a reader allowed single test files ran them while the full suite held the lock — one false failure
+
+**Status:** OPEN
+**Date:** 23 Nov 26
+**Session context:** chat 151, the FULL bug check of D2381–D2384 (multi-squadron branch): a fresh Opus fix-round reader ran beside the locked unit suite
+**Skill:** New skill candidate: reader-brief (the code-read briefs of the bug-check order §4)
+**Type:** open-source
+**Phase/Area:** the reader's brief — what it may run
+
+**Issue:** the reader's brief let it run single unit-test files to prove a claim. The host then started the whole unit suite under the PC's checks lock while that reader was still running its files. The suite ended with one timing-sensitive Leave War test failing; alone it passed three times out of three. The lock guards whole runs only, so nothing stopped the clash, and the host lost a cycle proving the failure false.
+**Suggested improvement:** a reader started while a locked run is going, or that may still be running when one starts, gets "run no tests" in its brief; or the host holds the full suite until every helper allowed to run tests has reported.
+**Principle:** anything that runs tests on the same machine counts against the "one test run at a time" rule, including a helper's small proofs.
+
+### Observation 1028: the stop-time code check reads the chat's home folder, not the copy the chat works in
+
+**Status:** OPEN
+**Date:** 23 Nov 26
+**Session context:** chat 151, working in a second copy (Raptor-msq) while the chat's home folder held another chat's branch
+**Skill:** New skill candidate: the code-check Stop hook (.claude/hooks/code-check-stop.mjs)
+**Type:** internal
+**Phase/Area:** which checkout the hook reads
+
+**Issue:** the Stop hook showed him "24 new problems in the code this branch changes". The count was for the home folder's branch (the SANS chat's, with work in progress), not this chat's branch. Run by hand, both copies read zero. He asked whether it would be fixed automatically — a false alarm that cost his attention.
+**Suggested improvement:** the hook names the branch and folder it read in its line ("Code check on allavail-152: …"), or reads the copy the chat last committed in.
+**Principle:** an automatic check's message names what it checked, so a reader can tell whose result it is.
+
+### Observation 1047: A helper's transcript file is empty here; its report lives only in its hand-back
+
+**Status:** OPEN
+**Date:** 24 Nov 26
+**Session context:** chat 153's overnight run (numbered past 1041, the highest on any branch)
+**Skill:** overnight
+**Type:** open-source
+**Phase/Area:** Part 2, "A helper's report"
+
+**Issue:** The guide says a report can be recovered from the helper's transcript. On this machine every background helper's output file was empty, so a recovery script found nothing, and each report had to be saved by hand, word for word, from the hand-back message the moment it arrived.
+**Suggested improvement:** In Part 2, say: save the report from the hand-back message at once, verbatim, to the scratch folder (or the repo once the blind readers are all in); do not plan on reading it back from the transcript.
+**Principle:** When a tool's side channel is unreliable, capture the result from the one place it is certain to appear, at the moment it appears.
+
+### Observation 1043: A check lead fanned out walkers without the checks lock, until the brief made the lock a command
+
+**Status:** OPEN
+**Date:** 24 Nov 26
+**Session context:** chat 153's overnight run, the FULL walk and its two re-walks
+**Skill:** overnight
+**Type:** open-source
+**Phase/Area:** Part 2, each job's brief to a helper
+
+**Issue:** The first walk's lead ran three walkers side by side without the shared checks lock, though the rules require it, while another chat used the same PC. The two later briefs named the exact take, beat and release commands, said "mandatory" and asked for the release in the report, and both leads took and released it.
+**Suggested improvement:** The overnight guide's brief list should require the lock commands written out in every walk or full-check brief, and a "lock released at" line in the helper's report, checked by the coordinator.
+**Principle:** A shared-resource rule a delegate must follow belongs in the delegate's brief as the exact commands, with proof of it asked for in the report.
+
+### Observation 1044: A questions page went to the owner with facts nobody checked against the app
+
+**Status:** OPEN
+**Date:** 24 Nov 26
+**Session context:** chat 153, after its overnight run, at 62–72% full
+**Skill:** New skill candidate: questions-page
+**Type:** open-source
+**Phase/Area:** putting questions to a non-technical owner
+
+**Issue:** A page of nine questions was drawn from the night's notes, not from the app. A reviewer's edit added a false fact ("a member cannot save a chart") and the host published it unchecked. Pictures were reused from the walk and did not show the cases they sat beside. The owner said the questions were getting worse and the mistakes more, then added "clarity as well": the questions were also hard to follow.
+**Suggested improvement:** A questions page is built by a fixed routine: each case pressed on the app and read in the code; one "today" picture of exactly that case and a drawing of the proposal; recommendations checked against the rulings; then the host re-reads every sentence against the app before publishing, and marks anything unconfirmed. A reviewer's edits are checked like the first draft. Late in a long chat, hand this to a fresh chat instead.
+**Principle:** Every fact on a page put to a decision-maker is checked against the source at the time of writing, including the facts a reviewer added; notes and earlier reports are leads, not evidence.
+
+### Observation 1048: A helper was refused its report file again — closed note 915 met again; the brief asks for a short hand-back and FACT lines
+
+**Status:** OPEN
+**Date:** 24 Nov 26
+**Session context:** chat 162 (logged by chat 166 at his word): four helpers in a row were told to write their report to a scratchpad file
+**Skill:** overnight
+**Type:** open-source
+**Phase/Area:** Part 2, "A helper's report"; every helper brief
+
+**Issue:** Observation 915 (ACTIONED 20 Nov 26) already said a helper's write of its own report file is refused. A later handoff note advised the opposite (have the helper write its report to a scratchpad file), and on 24 Nov 26 four helpers were refused in a row; each pasted a long report into its hand-back, and saving each reader's report into the repo meant retyping it (about 2,500 tokens each). The rule was written down but a brief template still asked for a file.
+**Suggested improvement:** Guard it in the brief template, not in prose: every helper brief ends with a fixed "Your hand-back" block — a final message of at most N words; every fact as a `FACT` line printed by a script the helper leaves in the repo (re-runnable by the host); the script's raw output saved by the script into the repo's scratch folder. Never "write your report to <file>". Astra alone writes its own report (`codex exec -o`).
+**Principle:** When a delegate cannot persist a document, have it persist a re-runnable script whose output carries the facts, and keep its prose hand-back short; a rule that a template contradicts needs the template fixed.
+
+### Observation 1049: The publishing tool reads only from the chat's own folder or scratchpad
+
+**Status:** OPEN
+**Date:** 24 Nov 26
+**Session context:** chat 162 (logged by chat 166 at his word): publishing the rebuilt questions page, which lives in another worktree
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** showing a mock-up or questions page to him as a published page
+
+**Issue:** The page and its pictures sat in the worktree the chat worked in (not the chat's own session folder). The publish tool refused them: it reads only from the chat's own working folder or its scratchpad.
+**Suggested improvement:** In the mock-up guide's publishing step: before publishing, copy the page and every picture it references into the scratchpad, keeping their relative paths, and publish from there with `files`; check each referenced path exists in the copy first.
+**Principle:** A publishing tool's reach can be narrower than the shell's; stage what you publish inside the tool's own allowed folders first, and verify the staged copy is complete.
+
+### Observation 1050: A question for him is established by a script that prints what the screen said, re-run by the host, before any recommendation is written
+
+**Status:** OPEN
+**Date:** 24 Nov 26
+**Session context:** chat 162 (logged by chat 166 at his word): the questions page rebuilt after round 1 carried facts nobody had checked
+**Skill:** New skill candidate: questions-page
+**Type:** open-source
+**Phase/Area:** before a question and its recommendation are written
+
+**Issue:** Facts behind questions (what a window says, which button saves, whether a case can happen at all) were taken from notes or a helper's prose; some were false (one question's case could not happen in today's app). Chat 162 rebuilt the page with helpers whose scripts print `FACT` lines of what the screen said, and the host re-ran each script before writing anything.
+**Suggested improvement:** The questions-page routine (Observation 1044) gains a fixed first step: each question's case is pressed by a script that prints `FACT` lines of the screen's own words and states; the host re-runs it and reads the output; only then is the question and its recommendation written. A question whose script was not re-run by the host does not go on the page.
+**Principle:** Establish the facts of a decision from a reproducible observation the presenter has re-run, before drafting the recommendation, so the recommendation cannot shape the facts.
+
+### Observation 1055: A handoff's opening line tests "this folder" for another chat's changes, but the job's folder is a different one
+
+**Status:** OPEN
+**Date:** 24 Nov 26
+**Session context:** chat 171 opening from chat 166's handoff line for the guard-rail job (numbered past 1051–1053, seen on other open branches)
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** the ready-to-paste opening line — the clause that sends a continuing chat to a second worktree
+
+**Issue:** The line said: if where you are shows changes you did not make, make a second worktree; otherwise work in the job's own folder. Every chat starts in the main folder, which held another chat's unsaved changes, so the clause fired by its letter — though the job's own folder, a separate worktree, had been released clean and no live chat worked in it. Followed literally it would have made a second full copy for nothing; the chat used the job's folder and named the difference to the owner.
+**Suggested improvement:** In the opening-line template for a job that lives in its own worktree, the test names that folder: "if <the job's folder> has uncommitted changes or a live chat works in it, make a second worktree; otherwise work there". The starting folder is tested only where the job is to run in it.
+**Principle:** A guard condition in a handoff must test the resource the next worker will actually use, not the place the worker happens to start.
+
+### Observation 1057: A check that says "could not compare" — read the tool's own report for a skipped part before hunting the base
+
+**Status:** OPEN
+**Date:** 25 Nov 26
+**Session context:** Chat 175's night — `main` brought into the guard rail's branch; GitHub's code check went red with "React Doctor could not read origin/main's side, so it compared nothing". (Numbered past 1056, which another open branch holds.)
+**Skill:** New skill candidate: reading a red gate (or a section of `gates-and-deploy.md`'s traps)
+**Type:** open-source
+**Phase/Area:** After a gate goes red on a merge of the main branch
+
+**Issue:** The message named the base branch, so the first suspects were the base (a shallow copy, a moved `main`, the raw-byte cause met on 20 Nov). The real cause was in the tool's own JSON report: one part of its check was skipped for a size limit (more than 5,000 code files), and the wrapper script rightly refused a report with a skipped part — but printed the same sentence for every way of not comparing. Twenty minutes went to the tool's source before the report's `skippedCheckReasons` was read.
+**Suggested improvement:** In the wrapper script, print the skipped part's own reason when there is one, instead of the one sentence; in the gates guide's traps, a line: "compared nothing" → run the tool by hand with its JSON output and read the skipped checks and their reasons first. A count-based limit in a tool is measured against the project's growth when the tool is adopted (how many files now, how many a month).
+**Principle:** When a wrapper reports one message for several failures, read the wrapped tool's raw report before reasoning from the message; and when adopting a tool, look for its hard limits and note how far the project is from each.
+
+### Observation 1074: A questions page written beside a plan's fold drifted from the plan's own recommendations
+
+**Status:** OPEN
+**Date:** 25 Nov 26
+**Session context:** chat 176 — folding his answers into a build plan while, in parallel, composing the next round of the questions page for him
+**Skill:** New skill candidate: questions-page round (the guard rail's question pages)
+**Type:** open-source
+**Phase/Area:** composing the recommendations on a page of questions that a plan's switch points also answer
+
+**Issue:** The host wrote the page's recommendations from the pressing results while a helper was rewriting the plan's switch-point table. Two blind readers then found the page and the plan recommending opposite answers on five questions (a held window, a hidden Tracker window, an Undo, who is told, unseen windows), and the plan building one of them as if already answered.
+**Suggested improvement:** Before publishing a questions page, check each question against the plan's switch-point table (a code-to-code map: page code, plan code, the step it blocks), and either carry the plan's recommendation or change the plan in the same commit; the map goes into the plan.
+**Principle:** When two documents both recommend an answer to the same open question, one of them must be derived from the other at publish time, or they drift and the reader answers one while the builder follows the other.
+
+### Observation 1078: Parallel drawers drew one shared screen part two different ways
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** Chat 188, round 6 of a mock-up questions page: two drawer helpers ran in parallel (one for an admin page's postings, one for an "It's him" path), both ending on the same posting sheet. (Number taken past 1077, held on another branch.)
+**Skill:** brainstorming (mockups-on-the-real-app), dispatching-parallel-agents
+**Type:** open-source
+**Phase/Area:** briefing parallel helpers who draw overlapping parts
+
+**Issue:** Each brief described the shared sheet in its own words; one drawer made its new "To" line a drop-down, the other a row of chips. Only the later words review caught it, and fixing it cost a second round of messages to both drawers (and one reversal when the reviewer's reason for the drop-down turned out better).
+**Suggested improvement:** When two parallel briefs touch the same screen part, name ONE owner for that part in both briefs; the other drawer copies the owner's finished picture (or waits for it), and its brief says so. Add to the parallel-dispatch checklist: "list the parts more than one helper will draw; give each a single owner".
+**Principle:** Parallel workers given overlapping scope diverge on the overlap; assign each shared piece a single owner up front rather than reconciling afterwards.
+
+### Observation 1080: A caption written while a picture was being redrawn described the old picture
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** chat 191, the multi-squadron coordinator — four section mock-up pages built by helpers while drawers redrew pictures under the same file names (1079 is taken on another branch; numbered past it)
+**Skill:** New skill candidate: mock-up page pipeline (draw → words review → page → page review → publish)
+**Type:** open-source
+**Phase/Area:** assembling a page from pictures that are still being changed
+
+**Issue:** A drawer redrew a phone picture so a note no longer covered the buttons it named, under the same file name. The page reviewer, working at the same time, recut the picture and wrote a caption saying the note "lies over the form's own Cancel and Save" — true of the old picture, false of the new one. The host caught it only by opening the final picture before publishing.
+**Suggested improvement:** In the pipeline, a picture redrawn after a page was built is listed by name to the page reviewer and the host; the host opens every such picture beside its caption as the last step before publishing. Prefer a new file name for a redraw that changes what the picture shows.
+**Principle:** When an asset is replaced in place while other workers describe it, every description written in that window must be re-checked against the final asset; a changed meaning deserves a new name.
+
+### Observation 1084: A chat started by another chat ran on the wrong model until it checked itself
+
+**Status:** OPEN
+**Date:** 2026-11-26
+**Session context:** Chat 194, section 1 (the guard rail) of the multi-squadron build, started by the coordinator chat. Numbered past 1083, the highest on every branch when written (other open branches write the log too).
+**Skill:** session-handoff (and any brief that starts a side chat)
+**Type:** open-source
+**Phase/Area:** starting a side chat from a brief that names its model
+
+**Issue:** The brief said "you are the latest Fable, high thinking, as orchestrator", but the chat it started ran on a different, weaker model. Nothing in the start step set the model, and nothing in the brief told the new chat to check which model it was. The new chat noticed only because its own system text names its model; it stopped before reading anything and asked, and the owner switched it by hand.
+**Suggested improvement:** In the handoff / start-a-chat steps: (1) the starter passes the model in the call that starts the chat, where the call takes one; (2) every brief that names a model ends its first paragraph with "first check which model you are; if it differs from the one named here, say so and wait before reading or building anything".
+**Principle:** A role assigned in words is not a setting. When a brief depends on which model or tool runs it, the started worker verifies that fact first, before spending anything, and the starter sets it mechanically where it can.
+Met again 26 Nov 26: section chat S2 (chat 205) — started by the coordinator for the latest Fable, it came up on Opus; the brief's "first check which model you are" caught it before any work, and the coordinator switched it.
+
+### Observation 1086: A helper's report held hostage by a shared lock it only needed for its last step
+
+**Status:** OPEN
+**Date:** 2026-11-26
+**Session context:** Chat 199, the multi-squadron build's section 2 orchestrator (Admin → Users); three Opus helpers started at once, each told to run `npm run build` under the checks lock at the end. (Numbered past 1085, the highest on any open branch.)
+**Skill:** dispatching-parallel-agents
+**Type:** open-source
+**Phase/Area:** Writing a helper's brief — the verification step
+
+**Issue:** Another chat held the machine's one checks lock for the whole afternoon. Two builders had finished their work in ten minutes but sat for 35–45 minutes waiting for the lock before reporting, and a drawing helper whose whole run needed the lock produced no pictures. The orchestrator learned the work was done only by looking at the working tree itself.
+**Suggested improvement:** In a brief, any step that needs a shared lock comes AFTER the report is written and handed back: "write the report and reply first; then try the locked check for at most N minutes and add its result as a last line, or say NOT RUN". A job that cannot start without the lock (a served build, a drawing run) checks the lock before anything else and returns at once if it is held, so the orchestrator can queue it instead of spending a helper on waiting.
+**Principle:** A helper's findings should never queue behind a resource only its final check needs. Report first, then wait — and a job that needs the scarce resource from its first step tests for it before doing anything else.
+
+### Observation 1087: Opening one picture loaded three whole rule files into the orchestrator's context
+
+**Status:** OPEN
+**Date:** 2026-11-26
+**Session context:** Chat 199, the same session; the orchestrator opened one approved drawing (a PNG under `raptor-port/docs/mock/`) with the Read tool to know the layout its builders would be held to.
+**Skill:** New skill candidate: orchestrator-context-budget
+**Type:** internal
+**Phase/Area:** What an orchestrator reads itself and what it sends a helper to read
+
+**Issue:** The one Read of a mock-up picture matched the `paths:` of the screen-design rulings, the scheduler rulings and the interface guide's loader, and all three were loaded whole — about 40,000 tokens, 7% of the window, for one picture. The scheduler's page was not needed for the job at all.
+**Suggested improvement:** An orchestrating chat does not open drawings or source files itself when a helper will be held to them anyway: the builder's brief names the drawings, and the orchestrator reviews the diff and the helper's own account of each departure. Where it must look, it asks a helper to describe the picture, or looks only after the area's rules are already loaded for another reason. Worth checking whether the scheduler rulings' `paths:` should match `docs/mock/**` at all.
+**Principle:** Path-triggered context is charged to whoever opens the file. A coordinator that only needs a conclusion about a file should have a worker open it.
+
+### Observation 1088: An orchestrating chat that opens source files loads every area's rule pages and fills itself
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** chat 198, the Fable orchestrator of the multi-squadron guard rail (section S1): briefing Opus builders, reviewing their diffs, landing steps. Numbered past 1085–1087, which other open branches hold.
+**Skill:** New skill candidate: orchestrating builders from one chat (subagent-driven-development is the nearest)
+**Type:** open-source
+**Phase/Area:** the orchestrator's review step; what the orchestrator reads itself
+
+**Issue:** The orchestrator reviewed a builder's work by opening three new source files and two pictures with the Read tool. Each first read of a file in a new area loaded that area's whole rule page into the chat by itself (four pages, tens of thousands of tokens each), so the chat went from 43% to 74% full across one small step and one review, and had to hand off after landing a single pass. The same review done through `git diff` in the shell loads nothing.
+**Suggested improvement:** In an orchestrator's brief and in the skill: the orchestrator reviews by `git diff` and by running tests, and reads a builder's report file — it opens a source file or a picture with the file tool only when the diff cannot answer, knowing each new area costs its rule page. Builders, whose context is spent once and thrown away, do the reading of source. Measure the chat's fullness after the first review, not at 80%.
+**Principle:** Where reading a file has a side cost (rules, context or hooks that load with it), the long-lived coordinating context should take the cheapest view that answers its question, and leave the expensive reading to short-lived workers.
+
+### Observation 1089: Parallel chats each took the next free number of a shared counter and clashed
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** chat 202, the multi-squadron coordinator, taking over from chat 193
+**Skill:** New skill candidate: coordinating parallel section chats
+**Type:** open-source
+**Phase/Area:** shared counters across parallel chats (question numbers on one shared page, chat numbers)
+
+**Issue:** Two counters shared by many chats clashed on the same day. On the one questions page, one chat published its three questions as 10-12 while another was drawing its own three as 10-12 (each read "last used: 9"). And two chats both called themselves 202, each having read the next chat number from a different branch's notes.
+**Suggested improvement:** The coordinator hands out blocks of each shared counter in advance (e.g. question numbers 13-15 to one chat, 16-18 to the next), the same way ruling-number ranges are already handed out; a chat that needs a number outside its block asks the coordinator. For chat numbers, the next free number is kept in one place every chat reads (not per branch).
+**Principle:** Any counter that several parallel workers draw from by "read the highest, add one" will collide; give each worker a pre-assigned range, or one owner who issues numbers.
+
+### Observation 1091: A test that waits before it checks cannot tell a write made at once from one made a beat late
+
+**Status:** OPEN
+**Date:** 2026-11-26
+**Session context:** Chat 204, the multi-squadron guard rail (S1), step K1b — the orchestrator's review of a builder's tests. Numbered past 1090, which another open branch holds.
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** Seeing a test fail first; tests of ordering ("written before the next step runs")
+
+**Issue:** The rule under test was "a value still waiting is written BEFORE the mode ends", because the very next step changes which record a late write would land in. The builder's test called the closing function, awaited the page settling, then read the value. It passed with the new code taken out: the old code writes the same value on a zero-delay timer, and the wait let that timer run. The builder reported honestly that the test "could not fail first", but had no fix. The fix was one line: assert the value on the line right after the call, inside the same synchronous block, before any await or timer.
+**Suggested improvement:** In the skill's section on watching a test fail, add: when the requirement is about ORDER or about "at once", the assertion must sit before any await, timer flush or settle helper; a test that settles first proves only the end state. And: "this test cannot fail first" is a finding about the test, to be resolved by asking what observable differs between old and new code at the earliest moment, never accepted as a pin.
+**Principle:** To test that something happens before something else, observe it at the moment in between; an end-state check cannot fail for ordering.
+
+### Observation 1093: A helper told to write its report to a file its tool refuses — and the host's "go round it" was itself refused
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** Multi-squadron build, section S2 (Admin → Users) — an orchestrator running builders and blind readers as helpers. Numbered past 1092, which another open branch holds.
+**Skill:** dispatching-parallel-agents
+**Type:** open-source
+**Phase/Area:** Writing a helper's brief — how its result comes back
+
+**Issue:** Helpers were briefed to save their report as a Markdown file. Their file tool declined report files, so reports came back only as the final reply and the host retyped or saved them. The host then added "if the tool refuses, write the file by shell instead" to the next brief — and that launch was refused outright by the permission layer, as an instruction to go round a control. Four rounds of four readers each depended on these reports.
+**Suggested improvement:** In the skill's section on what a helper returns, add: ask for the report AS THE FINAL REPLY (the host saves it), and for proofs or data as files of the kind the helper may write (test files, outputs) in a named hand-back folder; never brief a helper to bypass a refused write by another route — say "if your file tool declines, put the whole report in your reply".
+**Principle:** Design a helper's hand-back around what its tools allow by default; an instruction to work around a refusal is itself likely to be refused, and costs the whole launch.
+
+### Observation 1094: A check that could not run locally hid a file-shape finding until it could
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** Multi-squadron section 1 (the guard rail), chat 204: fixing three code-check findings named by the coordinator, the local run then reported 57 (numbered past 1092 and 1093, taken on other branches).
+**Skill:** subagent-driven-development
+**Type:** open-source
+**Phase/Area:** The builder's brief — its list of checks; the orchestrator's review of a new file
+
+**Issue:** A shared test-helper file was created as a component-type file (markup extension) holding only helper exports. The static code check reads such a file as a component file and reported one finding per export (54). No step had run that check, because it could not run in the working copy at the time and the remote run was read only for the three findings someone named, so the file's shape went through a build, a review and a merge unseen.
+**Suggested improvement:** In the builder's brief template, list the static code check beside the tests and the build as a required check of every step, with "could not run" reported as NOT RUN and carried in the handoff as owed until it runs. In the orchestrator's review of any NEW file, ask what kind of file its extension declares and whether the checks treat that kind differently.
+**Principle:** A check that cannot run is a debt to record and repay at the first chance, not a check passed; and a new file's type is a decision the linters read, so pick it by what the file exports.
+
+
+### Observation 1097: A census test that counts call sites fails far from the change, so the step's re-run missed it
+
+**Status:** OPEN
+**Date:** 2026-11-27
+**Session context:** multi-squadron section 1 (the guard rail), step K5 — the view switch's door; numbered past 1095–1096 on other branches
+**Skill:** subagent-driven-development
+**Type:** open-source
+**Phase/Area:** The builder's brief — its list of checks; the orchestrator's re-run of "the touched files"
+
+**Issue:** The step added two calls of a role question to a store file. A test elsewhere counts, per file, how often each role question is asked, and fails on a count it does not list. Neither the builder's batches ("the touched and census files") nor the orchestrator's own re-run of the touched files included that test, because it lives in no file the step touched. It went red on the shared batch branch and another section found it.
+**Suggested improvement:** In a builder's brief template, beside "the touched files", name the repo's census tests — the ones that read the source and count call sites or callers of a guarded function (here: the role-question readers, the settings readers, the roll-call) — as a standing batch of every step that adds or moves such a call. In the orchestrator's review, grep the diff for the guarded function names and run each census test that lists them.
+**Principle:** A test that reads the source to count call sites belongs to the functions it counts, not to the file it sits in; choose re-runs by what the diff calls, not only by which files it touched.
+
+### Observation 1098: A failing-first run must list which new tests PASSED on the old code, not just the count
+
+**Status:** OPEN
+**Date:** 2026-11-27
+**Session context:** Guard rail step K6 (bell and page door) — new tests seen failing first by the patch-file method
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** "Verify RED" — watching the new tests fail before the code
+
+**Issue:** The red run on the old code reported "66 failed, 72 passed". The default reporter names only the failing tests, so the 72 looked like the older tests in the same files. Comparing against a verbose green run showed 22 new tests had passed on the old code. Nine were named pins or controls, but 13 were not named so: they proved behaviour the old code already had. They would have been reported as "seen failing first".
+**Suggested improvement:** In "Verify RED", add: run the red pass with a reporter that names every test (or diff the red failures against a verbose green list), and for each new test that passed on the old code either name it a pin/control in its title or rewrite it until it fails for the missing behaviour.
+**Principle:** A red count is not evidence per test; only a per-test list shows which new tests actually guard the change.
+
 ### Observation 1085: A helper agent may be refused writing its report to a file
 
 **Status:** OPEN
@@ -1572,7 +2070,7 @@ sides.
 **Suggested improvement:** A reader brief asks for the report both ways — written to the named file where the tool allows it, and returned whole in the final message — and the host saves the returned copy when the file is missing. The working note that says helper reports are written to a file gets the same line.
 **Principle:** When a delegated worker's output must survive, ask for it on two channels and check which one arrived, since a tool can refuse one of them without warning.
 
-### Observation 1091: A walker resumed after the app restarts loses its file writes — the host saves its report
+### Observation 1100: A walker resumed after the app restarts loses its file writes — the host saves its report
 
 **Status:** OPEN
 **Date:** 26 Nov 26
@@ -1605,3 +2103,16 @@ recheck every standing resource (locks, loops, write rights) after a restart, be
 **Issue:** A figure was made to read "Not typed" (empty boxes) instead of a count from 0, but the count kept running underneath. The first save of the main figure copied a companion part (the carried-forward days) from that hidden count, so a first entry silently saved a value nobody saw or typed. Both blind code readers caught it; the build's own red tests, all about what the screen shows, did not.
 **Suggested improvement:** when a test list is written for a new "not yet set" state over a value still computed underneath, add one red test per save door: the FIRST real entry into the blank state writes only what the person typed, and every companion part saved with it comes from what was shown (blank → its zero), never from the hidden computed value.
 **Principle:** hiding a computed default on screen does not remove it from the save path; test that the first write after a blank state takes nothing the person could not see.
+
+### Observation 1104: Question cards for a non-technical owner — draft in the short shape first
+
+**Status:** OPEN
+**Date:** 27 Nov 26
+**Session context:** the multi-squadron coordinator putting a round of questions on the one questions page (numbered past 1103 on another branch)
+**Skill:** New skill candidate: owner-question-cards
+**Type:** open-source
+**Phase/Area:** writing decision questions for a non-technical decision-maker
+
+**Issue:** a long "how it will look" card — today-versus-later pairs, who-may-edit detail, the agent's readings — lost the owner completely; he restated the whole point in three lines himself. Cut to one example, what each screen shows, one decision and one-line choices, every card was answered within minutes, and he asked for that shape every time.
+**Suggested improvement:** a short skill or checklist for question pages: title = the question; one named example with roles in brackets; what he sees (at most two pictures); A (recommended) and B, one line each; internals only when they ARE the choice; a self-test "could he say it back in three lines?" before publishing; a writer helper's brief carries the shape.
+**Principle:** a decision-maker answers what he can restate; detail that is not the choice belongs in the record, not the question.

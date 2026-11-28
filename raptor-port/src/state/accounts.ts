@@ -28,12 +28,14 @@
                   on load with a logged line (a seeded account, with none, is the oldest).
                   NO ROWS AT ALL = the seeded list, in memory (as a missing record was): the first
                   write then stores every account of the list it leaves, so none is lost.
-   - `accessreq:<id>` { id, name, cs, ini, seat, cat, at }: the
+   - `accessreq:<id>` { id, name, cs, ini, seat, cat, at, unit }: the
                   signed-in principal who asked (from the session, never a typed field);
                   what he typed — the displayed callsign/name, initials, pilot / WSO /
                   personnel, CAT (text only: approving with New person makes the person
                   from it, with the admin's corrections — [ACCOUNTS-NEW-PERSON], D214);
-                  when.
+                  when; the squadron he asks to join (`unit` — batch 1's second half §5, D2111:
+                  only its admins see and answer it; one stored before has none and reads as
+                  the boot squadron's, D56).
    - `reqseen:<accountId>` { userId, seenRequestIds } — which requests that admin has had on
                   screen (the bell — D216, D227); his own row, removed with his account. In
                   memory each request still carries `seenBy` (every admin who has seen it), read
@@ -64,18 +66,21 @@
 import { elogNow, type LinePos } from '../engine/editlog'
 import { store } from '../engine/hooks'
 import { PEOPLE } from '../engine/people'
+import { rosterOf } from '../engine/roster'
+import { BOOT_UNIT } from '../engine/unitview'
 import { SESSION } from './auth'
-import { isAdmin, mayManageAccounts, mayManageRoster, mayRequestAccess, me, roleOf } from './perms'
+import { isAdmin, mayManageAccounts, mayManageRoster, mayRequestAccess, me, roleOf, pageUnit } from './perms'
 import { commitSettingsIntent, commitPeopleSettingsIntent, commitPeopleIntent } from './people-settings-commit'
 import {
   MAX_CS, MAX_INITIALS, SEATS, catsFor, seatLabel, tidyPerson, newPersonProblem, putNewPerson, addRosterPerson, saidOf,
-  postInProblem, type NewPerson,
+  postInProblem, newHomeProblem, type NewPerson,
 } from './roster-add'
 import { HOOKS } from '../engine/hooks'
-import { putNewHome, dropGrantsOfAccount, dropGrantRows, levelOfAccount, levelBefore, homeBefore, todayIso, homeOn, units, unitById, unitRows, grantOfOn, lockBreach, rowsDraft } from './units'
-import type { UnitRows } from './units-model'
+import { putNewHome, dropGrantsOfAccount, dropGrantRows, levelOfAccount, levelBefore, homeBefore, todayIso, homeOn, units, unitById, unitRows, grantOfOn, grantRowHolds, lockBreach, rowsDraft, putGrantLine, PLAN_MASTER_ONLY } from './units'
+import { moveFrom, type UnitRows, type Grant, type GrantLevel } from './units-model'
 import type { LockBreach } from './lastadmin'
 import { noticeDay } from './notices'
+import { accessWas, tellAccess } from './acctlines'
 import { isUnitId, type UnitLevel, type LevelAccount } from './units-model'
 import { validIso } from './flyplan-model'
 
@@ -102,16 +107,76 @@ export type AccountRole = 'admin' | 'main'
    home only there, only while his squadron has not changed since. Written only where the plain reading (no record: the
    squadron of his first home row, from always) would not make him an admin of the squadron he is in — a man made an admin
    after a move (adminRecFor below). Only on an admin's row; they go when the role does. */
-export interface Account { id: string; name: string; role: AccountRole; pid: string; on: boolean; offBy?: 'po'; seenFrom?: LinePos; createdAt?: number; master?: true; masterFrom?: string; pidFrom?: string; adminOf?: string; adminFrom?: string }
+/* `adminAt`, `masterAt`, `kept` (batch 1's second half, plan §16 D1′ and D1′a — his D2310, D2218, D2198): the MOMENTS
+   (ms) the home admin role and the master mark began — the bell shows a squadron's admin line only where the right its
+   reader holds there began no later than the line (notices.ts rightStart), so a right taken and given back later brings
+   none of the old lines back. Written by the one row writer (writeAccounts → stampMoments): `adminAt` whenever the home
+   role becomes admin (made an admin, an admin's record written anew, a re-link), `masterAt` whenever the mark is set (or
+   the account re-linked); kept while unchanged; they go with the role and the mark. `kept` — made a master admin, the
+   squadrons he held Plan of then, each with that Plan's own moment (0: one from before moments were kept): for those his
+   right counts from the Plan's start, and his bell's default for them reads "on" (state/bellsqn.ts bellDefault); written
+   by the door that sets the mark (saveAccess, setMaster), it goes with the mark. An Undo restores the row whole. Absent on
+   a row from before they were kept (D56): from always. The gate holds every one (perms.ts accountShapeAndMasterViolation). */
+export interface Account { id: string; name: string; role: AccountRole; pid: string; on: boolean; offBy?: 'po'; seenFrom?: LinePos; createdAt?: number; master?: true; masterFrom?: string; pidFrom?: string; adminOf?: string; adminFrom?: string; adminAt?: number; masterAt?: number; kept?: Record<string, number> }
 /* the master mark as a row keeps it — the mark, and its day where it has one; and the day of the link, where it has one;
-   and where the admin role was given, where that is recorded */
-const masterOf = (x: { master?: true; masterFrom?: string; pidFrom?: string; role?: string; adminOf?: string; adminFrom?: string }) => ({
-  ...(x.master ? { master: true as const, ...(x.masterFrom ? { masterFrom: x.masterFrom } : {}) } : {}), ...(x.pidFrom ? { pidFrom: x.pidFrom } : {}),
+   and where the admin role was given, where that is recorded; and the moments (§16 D1′) */
+const masterOf = (x: { master?: true; masterFrom?: string; pidFrom?: string; role?: string; adminOf?: string; adminFrom?: string; adminAt?: number; masterAt?: number; kept?: Record<string, number> }) => ({
+  ...(x.master ? { master: true as const, ...(x.masterFrom ? { masterFrom: x.masterFrom } : {}), ...(Number.isFinite(x.masterAt) ? { masterAt: x.masterAt } : {}), ...(x.kept ? { kept: { ...x.kept } } : {}) } : {}), ...(x.pidFrom ? { pidFrom: x.pidFrom } : {}),
   ...(x.role === 'admin' && x.adminOf ? { adminOf: x.adminOf, ...(x.adminFrom ? { adminFrom: x.adminFrom } : {}) } : {}),
+  ...(x.role === 'admin' && Number.isFinite(x.adminAt) ? { adminAt: x.adminAt } : {}),
 })
+/* a stored `kept` as the loader takes it: squadron id → a moment; anything else is none */
+const keptOf = (v: any): Record<string, number> | undefined => {
+  if (!v || typeof v !== 'object' || Array.isArray(v)) return undefined
+  const out: Record<string, number> = {}
+  for (const [k, x] of Object.entries(v)) if (isUnitId(k) && Number.isFinite(x)) out[k] = +(x as number)
+  return out
+}
+/* THE MOMENTS, STAMPED BY THE ONE ROW WRITER (§16 D1′): `prev` the row as it stood, `a` as the door leaves it */
+export function stampMoments(prev: Account | undefined, a: Account, now: number = Date.now()): Account {
+  const out: Account = { ...a }
+  const relinked = !prev || String(prev.pid) !== String(a.pid)
+  if (out.role !== 'admin') delete out.adminAt
+  else if (relinked || prev!.role !== 'admin' || prev!.adminOf !== out.adminOf || prev!.adminFrom !== out.adminFrom) out.adminAt = now
+  else if (prev!.adminAt === undefined) delete out.adminAt
+  else out.adminAt = prev!.adminAt
+  if (out.master !== true) { delete out.masterAt; delete out.kept }
+  /* (`kept` as the door wrote it — but never carried to another man by a re-link: those Plans were the old man's) */
+  else if (relinked || prev!.master !== true) { out.masterAt = now; if (relinked && prev) delete out.kept }
+  else {
+    if (prev!.masterAt === undefined) delete out.masterAt; else out.masterAt = prev!.masterAt
+    if (prev!.kept === undefined) delete out.kept; else out.kept = { ...prev!.kept }
+  }
+  return out
+}
+/* made a master admin: the squadrons he holds Plan of today, each with that Plan's moment (§16 D1′a) */
+function keptPlans(a: Account): Record<string, number> | undefined {
+  const today = todayIso(), acct = levelAcct(a)
+  const out: Record<string, number> = {}
+  for (const g of unitRows().grants) {
+    if (g.account !== a.id || g.level !== 'admin' || grantOfOn(acct, g.unit, today)?.id !== g.id) continue
+    out[g.unit] = Number.isFinite(g.fromAt) ? g.fromAt! : 0
+  }
+  return Object.keys(out).length ? out : undefined
+}
+/* THE MASTER MARK SET OR CLEARED, AND THE RIGHTS THAT GO WITH A CHANGE OF MARK OR ROLE — ONE body for the mark's own door
+   (setMaster) and Admin → Users' one Save (saveAccess) (the second half's final reads, R3: setMaster had its own copy,
+   which dropped nothing, so a Plan holder made a master admin by it kept his Plan, hidden behind "Full access" and back
+   when the mark came off — R-O10). `markWith` writes the mark on `next` — its day, and, made one, the Plans he holds
+   with each one's moment (§16 D1′a); `rightsDropped` names the rows the same command drops: made a master admin, every
+   right holding today; made a member, his Plan holding today (PA2 — D2250). */
+function markWith(next: Account, a: Account, on: boolean, today: string): void {
+  if (on) { next.master = true; next.masterFrom = today; const k = keptPlans(a); if (k) next.kept = k; else delete next.kept }
+  else { delete next.master; delete next.masterFrom; delete next.kept }
+}
+function rightsDropped(a: Account, masterAfter: boolean, roleAfter: AccountRole): Grant[] {
+  const today = todayIso(), acct = levelAcct(a)
+  const holds = (g: Grant) => g.account === a.id && grantOfOn(acct, g.unit, today)?.id === g.id
+  return unitRows().grants.filter(g => holds(g) && (masterAfter && !a.master ? true : a.role === 'admin' && roleAfter !== 'admin' ? g.level === 'admin' : false))
+}
 /* `seat` 'FCP' | 'RCP' | 'GND' (never '' on a request made now — the card refuses it; an
    old stored one reads '' and the admin picks at approval); `cat` '' for personnel */
-export interface AccessRequest { id: string; name: string; cs: string; ini: string; seat: string; cat: string; at: number; seenBy: string[] }
+export interface AccessRequest { id: string; name: string; cs: string; ini: string; seat: string; cat: string; at: number; seenBy: string[]; unit: string }
 
 /* the intent commands (perms.ts COMMAND_OPS decides who may run each) */
 /* (`guestview.set`, the guest switch's command, went with the guest view — D2239) */
@@ -127,7 +192,16 @@ export const ACCOUNT_TYPES = ['access.request', 'access.decline', 'access.approv
   /* [ONE-DOOR]: Archive on Admin → Users (leavewar/sync.ts archivePerson); the man's own "welcome back" seen (D305) */
   'person.archive', 'person.backSeen',
   /* multi-squadron batch 1, step 1: the master mark set or cleared (setMaster below) — a master's alone */
-  'account.master'] as const
+  'account.master',
+  /* batch 1's second half, plan §4 item 5: Admin → Users' one Save — the role, the master mark and every squadron's line
+     of one account in one command (saveAccess below) */
+  'account.access',
+  /* batch 1's second half, plan §7 item 6 (§15 D11, §16 D11′): the app's own line on a man's bell on the day his move
+     takes effect (state/acctlines.ts writeMoveLines) — the system actor; perms.ts acctLineViolation has its own section */
+  'account.told',
+  /* …and §7 item 7 (§15 D10, §16 D10′): the app's own line that a posting could not run (leavewar/sync.ts
+     tellPostingFailed) — the system actor; perms.ts postingFailedViolation has its own section */
+  'posting.failed'] as const
 
 /* ---- the seeds (demo data, D56 — wiped with everything else before the database) ----
    `us` stays Ranger (bane), as "View as" left every member test before; `ad` is Saber
@@ -188,7 +262,7 @@ let ACCOUNTS_STORED = false
 /* an account as its row stores it */
 const accountRow = (a: Account) => ({ id: a.id, name: a.name, role: a.role, pid: a.pid, on: a.on, ...(a.offBy ? { offBy: a.offBy } : {}), ...(a.seenFrom ? { seenFrom: a.seenFrom } : {}), ...(a.createdAt != null ? { createdAt: a.createdAt } : {}), ...masterOf(a) })
 /* a request as its row stores it — who has seen it is not on it (reqseen rows) */
-const reqRow = (r: AccessRequest) => ({ id: r.id, name: r.name, cs: r.cs, ini: r.ini, seat: r.seat, cat: r.cat, at: r.at })
+const reqRow = (r: AccessRequest) => ({ id: r.id, name: r.name, cs: r.cs, ini: r.ini, seat: r.seat, cat: r.cat, at: r.at, unit: r.unit })
 
 /* the accounts a list of stored images would load as — the loader's own reading (dedupe, the older of two for one
    person, a deleted man's never), without the lock-out repair. `why` hears each image dropped. Pure. `person` — the
@@ -214,9 +288,10 @@ export function readAccounts(images: any[], why?: (text: string) => void, person
       ...(x.on === false && x.offBy === 'po' ? { offBy: 'po' as const } : {}),
       ...(isPos(x.seenFrom) ? { seenFrom: { at: +x.seenFrom.at, lineId: x.seenFrom.lineId } } : {}),
       ...(Number.isFinite(x.createdAt) ? { createdAt: +x.createdAt } : {}),
-      ...(x.master === true ? masterOf({ master: true, ...(validIso(x.masterFrom) ? { masterFrom: String(x.masterFrom) } : {}) }) : {}),
+      ...(x.master === true ? masterOf({ master: true, ...(validIso(x.masterFrom) ? { masterFrom: String(x.masterFrom) } : {}), ...(Number.isFinite(x.masterAt) ? { masterAt: +x.masterAt } : {}), ...(keptOf(x.kept) ? { kept: keptOf(x.kept) } : {}) }) : {}),
       ...(validIso(x.pidFrom) ? { pidFrom: String(x.pidFrom) } : {}),
       ...(x.role === 'admin' && isUnitId(x.adminOf) ? { adminOf: String(x.adminOf), ...(validIso(x.adminFrom) ? { adminFrom: String(x.adminFrom) } : {}) } : {}),
+      ...(x.role === 'admin' && Number.isFinite(x.adminAt) ? { adminAt: +x.adminAt } : {}),
     })
   }
   return out
@@ -269,6 +344,8 @@ export function accountsLoad(): void {
       id: x.id, name, cs: String(x.cs ?? '').slice(0, MAX_CS), ini: String(x.ini ?? '').toUpperCase().slice(0, MAX_INITIALS),
       seat, cat, at: Number(x.at) || 0,
       seenBy: seenByReq.get(x.id) || [],
+      /* the squadron he asked to join; none stored (a request of before §5) — the boot squadron's (D56) */
+      unit: typeof x.unit === 'string' && x.unit ? x.unit : bootRequestUnit(),
     })
   }
   ACCESS_REQS = reqs
@@ -279,7 +356,35 @@ export const accountByName = (name: any): Account | undefined => ACCOUNTS_LIST.f
 export const accountById = (id: any): Account | undefined => ACCOUNTS_LIST.find(a => a.id === id)
 export const accountOfPid = (pid: any): Account | undefined => ACCOUNTS_LIST.find(a => a.pid === pid)
 export const requestByName = (name: any): AccessRequest | undefined => ACCESS_REQS.find(r => r.name === normName(name))
-export const waitingCount = (): number => ACCESS_REQS.length
+/* ---- WHO A REQUEST IS FOR (batch 1's second half §5 — D2111, D2094; §15 D3, D12) ----
+   A request is its squadron's: the admins of that squadron — its own, a Plan holder of it, a master admin (the one
+   answer, levelOfAccount — "an admin of 149", D2336) — see it, are told of it and answer it, and nobody else.
+   `requestsFor` — every request an account is an admin of the squadron of (the bell: every squadron of his; the
+   bell's squadron switch, D2198, is step F's); `waitingHere` — those of the page's squadron (`pageUnit('own')`),
+   which the Waiting list shows and the Admin tab's and the drawer's badges count, so every badge has a row behind it. */
+export const adminOfRequest = (a: Account | undefined, r: AccessRequest, iso: string = todayIso()): boolean =>
+  !!a && a.role === 'admin' && (a.master === true || levelOfAccount(levelAcct(a), r.unit, iso) === 'admin')
+export const requestsFor = (a: Account | undefined, iso: string = todayIso()): AccessRequest[] =>
+  ACCESS_REQS.filter(r => adminOfRequest(a, r, iso))
+const signedInAdmin = (): Account | undefined => { const id = currentAdminAccountId(); return id ? accountById(id) : undefined }
+/* THE BOOT SQUADRON a request with none named belongs to — a request of before §5 (D56), or one asked with none: the
+   demo's first squadron where the store has it, else the store's first (a shared store whose first squadron is 149) */
+export const bootRequestUnit = (): string => (unitById(BOOT_UNIT) ? BOOT_UNIT : units()[0]?.id ?? BOOT_UNIT)
+export const waitingHere = (): AccessRequest[] => {
+  const u = pageUnit('own')
+  return requestsFor(signedInAdmin()).filter(r => r.unit === u)
+}
+export const waitingCount = (): number => waitingHere().length
+/* THE ONE REFUSAL FOR ANSWERING A REQUEST OF A SQUADRON NOT HIS (§15 D12, his D2324 — F8's words): approving, declining,
+   linking, and every other door that would answer it — an account added, or a sign-in renamed, under its name */
+export function requestNotHis(r: AccessRequest | undefined): string | null {
+  if (!r) return null
+  const a = SESSION ? accountById(SESSION.user) : undefined
+  /* no account behind the session (a probe's or a test's) — the gate judges */
+  if (!a || adminOfRequest(a, r)) return null
+  const num = unitById(r.unit)?.num ?? r.unit
+  return `He asked to join ${num} — only an admin of ${num} can answer it.`
+}
 /* what he gave, in one line — "JKB · Pilot · CAT C" / "BC · Personnel" — Admin → Users reads this one body (a blank
    part drops out); the waiting screen shows the same parts as the pass's fields since D1656 (ui/AccessScreen.tsx) */
 export function requestSummary(r: AccessRequest): string {
@@ -295,9 +400,14 @@ export function accountCallsign(a: Account | undefined): string {
    ALL AVAIL placeholders, and without an account (`keep` is the one already linked — kept
    even when he has since been ARCHIVED: posting out keeps his account, and the editor's
    picker must show who it belongs to, not a blank "Pick…" over a hidden value — Astra's
-   fix check #2; pidProblem already lets an account keep its archived person) */
-export function linkablePeople(keep?: string): string[] {
-  return Object.keys(PEOPLE).filter(id => {
+   fix check #2; pidProblem already lets an account keep its archived person).
+   BY SQUADRON (batch 1's second half §4 item 1 — O3): the page's squadron's men only (`pageUnit('own')` — his own, or
+   the one picked for a master admin or a Plan holder of it), read through rosterOf, the one walk; `keep` stays whatever
+   his squadron, for the same reason as above. */
+export function linkablePeople(keep?: string, unit: string = pageUnit('own')): string[] {
+  const ids = rosterOf(unit, todayIso())
+  if (keep && (PEOPLE as any)[keep] && !ids.includes(keep)) ids.push(keep)
+  return ids.filter(id => {
     const p = (PEOPLE as any)[id]
     return p && !p.special && (id === keep || (!p.archived && !accountOfPid(id)))
   }).sort((a, b) => String((PEOPLE as any)[a].cs).localeCompare(String((PEOPLE as any)[b].cs)))
@@ -319,7 +429,7 @@ export const isAdminAccount = (a: Account | undefined) => adminNow(a)
    run's day, today, read after the outcomes. Who: an account that can sign in as an admin (admin role, switched on, its
    man on the roster — not archived, deleted or a placeholder) that is (a) at home in that squadron that day, or (b) not
    a master admin and holding Plan of it that day by a right (D2202: "while an admin holds Plan of another squadron, his
-   bell carries that squadron's admin lines, on by default"). A master admin counts through his home only (D2198: his
+   bell carries that squadron's admin lines, on by default"). Here a master admin counts through his home only — the bell's lines go to adminLineAudience below, which holds every master admin (§7 item 2; D2198: his
    other squadrons' lines are off by default); a View holder never. Person ids, as a bell line is addressed. */
 /* (`rows` — the unit rows to read: the commit gate hands in the rows as they stood before the command, so a command can
    never widen the audience it writes to; the passes read the live rows) */
@@ -333,6 +443,23 @@ export function adminsOf(unit: string, iso: string = todayIso(), rows?: UnitRows
       && (rows ? levelBefore(acct, unit, iso, rows) : levelOfAccount(acct, unit, iso)) === 'admin'
     const plan = !home && !a.master && (rows ? levelBefore(acct, unit, iso, rows) : levelOfAccount(acct, unit, iso)) === 'admin'
     if (home || plan) out.push(String(a.pid))
+  }
+  return out
+}
+/* WHO IS TOLD A SQUADRON'S ADMIN LINES — ONE AUDIENCE, USED EVERYWHERE IT IS READ (batch 1's second half, plan §7 item 2
+   — R-O2; D2198, D2202): adminsOf above, and every master admin who can sign in. A master admin is an admin of every
+   squadron, so the lines of each reach his bell; whether he sees those of a squadron not his home is his bell's switch
+   (notices.ts noticeLive — D2198: off by default), never who is written to. The five places that must agree read this
+   one body: the posting runner's audience (leavewar/sync.ts postingAdmins), the holiday's (holidayTodo), the posting
+   pass's gate (perms.ts adminOfPosting), the line rule's own-squadron door (perms.ts ownsLine, PC1) and a request's
+   admins (adminOfRequest) — widening one alone would refuse the command that writes the line, or write nothing.
+   An account that can sign in (admin role, switched on, its man on the roster) whose level in that squadron that day is
+   admin — at home there as its admin, a plain admin holding Plan of it, or the master mark (units-model.ts levelFrom). */
+export function adminLineAudience(unit: string, iso: string = todayIso(), rows?: UnitRows): string[] {
+  const out: string[] = []
+  for (const a of ACCOUNTS_LIST) {
+    if (a.role !== 'admin' || !a.on || !a.pid || !personOk(a.pid) || (PEOPLE as any)[a.pid].archived) continue
+    if ((rows ? levelBefore(levelAcct(a), unit, iso, rows) : levelOfAccount(levelAcct(a), unit, iso)) === 'admin') out.push(String(a.pid))
   }
   return out
 }
@@ -508,12 +635,18 @@ export function sessionFor(r: SignIn): any {
 function commitIntent(type: typeof ACCOUNT_TYPES[number], meta: any, fn: () => void): string | null {
   /* never the command layer's own words on screen — they name records, not people; a
      refusal raised inside (CmdRefused) keeps its own reason (roster-add.ts saidOf) */
-  return saidOf(commitSettingsIntent(type, meta, fn))
+  /* …and every account command tells each man whose access it changed, inside it (batch 1's second half §7 item 6 — his
+     D2251, D2309): his access before the writes against after, one body for the writer and the gate (state/acctlines.ts) */
+  return saidOf(commitSettingsIntent(type, meta, txn => { const was = accessWas(); fn(); tellAccess(txn, was) }))
 }
 /* a write stores EXACTLY the rows this command's list edit changed — the list before it against the list after (plan
    §2.2: never inferred from storage, so a stale client never removes what it has not read); the very first write on a
    store still holding the seeded list stores every account it leaves, so no seeded account is lost */
-function writeAccounts(next: Account[]) {
+function writeAccounts(next0: Account[]) {
+  /* (the moments, stamped here for every door at once — §16 D1′: a right begun is dated now, one unchanged keeps its own) */
+  const prevById = new Map(ACCOUNTS_LIST.map(a => [a.id, a]))
+  const now = Date.now()
+  const next = next0.map(a => stampMoments(prevById.get(a.id), a, now))
   const before = new Map(ACCOUNTS_LIST.map(a => [a.id, JSON.stringify(accountRow(a))]))
   for (const a of next) {
     const row = accountRow(a)
@@ -564,7 +697,7 @@ const ownAccount = (a: Account) => (SESSION && SESSION.user === a.id) || (me() !
 export function addAccount(nameIn: any, pid: string, role: AccountRole): string | null {
   if (!mayManageAccounts()) return 'Only an admin can add an account'
   const name = normName(nameIn)
-  const bad = nameProblem(name) || pidProblem(pid) || otherSquadronProblem(pid) || (isAccountRole(role) ? null : 'Pick member or admin')
+  const bad = requestNotHis(requestByName(name)) || nameProblem(name) || pidProblem(pid) || otherSquadronProblem(pid) || (isAccountRole(role) ? null : 'Pick member or admin')
   if (bad) return bad
   return commitIntent('account.add', null, () => {
     writeAccounts([...ACCOUNTS_LIST, adminRecFor({ id: newAccountId(), name, role, pid, on: true, ...newAccountStamp() })])
@@ -589,7 +722,8 @@ export function updateAccount(id: string, patch: { name?: any; role?: AccountRol
   const other = otherSquadronProblem(a.pid) || (patch.pid !== undefined ? otherSquadronProblem(patch.pid) : null)
   if (other) return other
   const next: Account = { ...a }
-  if (patch.name !== undefined) { const n = normName(patch.name); const bad = nameProblem(n, a.id); if (bad) return bad; next.name = n }
+  /* (a rename onto a waiting request's name answers it — only an admin of its squadron, §15 D12) */
+  if (patch.name !== undefined) { const n = normName(patch.name); const bad = (n !== a.name ? requestNotHis(requestByName(n)) : null) || nameProblem(n, a.id); if (bad) return bad; next.name = n }
   if (patch.pid !== undefined) { const bad = pidProblem(patch.pid, a.id); if (bad) return bad; next.pid = patch.pid }
   /* RE-LINKED: A RIGHT THE ACCOUNT HOLDS CHANGES HANDS TODAY (fix read 10, fault D — O10-4, F10-3, F10-4). The link is
      dated today, and the master mark with it (a right that changes hands is a right given today — perms.ts masterKept);
@@ -659,16 +793,121 @@ export function setMaster(id: string, on: boolean): { ok: boolean; message?: str
   if (on && a.role !== 'admin') return { ok: false, message: 'This change could not be saved.' }
   const next: Account = { ...a }
   /* (its day with it — fault P: a line his move retired stays retired however the mark comes later) */
-  if (on) { next.master = true; next.masterFrom = todayIso() } else { delete next.master; delete next.masterFrom }
+  /* (and, made one, the squadrons he holds Plan of with each Plan's moment — §16 D1′a; writeAccounts dates the mark) */
+  markWith(next, a, on, todayIso())
+  /* (made one, every View and Plan he holds today goes in this same command, as the one Save drops them — R-O10, R3) */
+  const drops = rightsDropped(a, on, a.role)
+  const dropIds = new Set(drops.map(g => g.id))
   const list = ACCOUNTS_LIST.map(x => (x.id === a.id ? next : x))
   /* (only an admin's account counts as a master admin left — D2260) */
   if (!list.some(x => x.master && x.role === 'admin')) return { ok: false, message: 'At least one master admin must be left' }
   /* a master admin counts only at home (Piece C): marking a squadron's only Plan admin a master leaves it none — said in
-     the lock's words, as every other door says it (Fable's blind read, 2) */
-  const locked = lockProblem(list)
+     the lock's words, as every other door says it (Fable's blind read, 2) — over the rows the command leaves */
+  const locked = lockProblem(list, undefined, drops.length ? rowsDraft(unitRows(), { dropGrants: g => dropIds.has(g.id) }) : undefined)
   if (locked) return { ok: false, message: locked }
-  const bad = commitIntent('account.master', null, () => writeAccounts(list))
+  const bad = commitIntent('account.master', null, () => { writeAccounts(list); if (drops.length) dropGrantRows(drops.map(g => g.id)) })
   return bad ? { ok: false, message: bad } : { ok: true }
+}
+
+/* ---- ADMIN → USERS' ONE SAVE (batch 1's second half, plan §4 item 5 — D2303, R-O3, R-A5, R-O10) ----
+   The opened row's changes — the role, the master admin mark, every other squadron's line ("149 None · View · Plan") —
+   saved together, as one `account.access` command and one Undo step. Each check only for the part it governs:
+   - the role or the mark changed → the account's own checks (updateAccount's and setMaster's): not his own account, a
+     master admin's account only by a master admin, the mark a master admin's alone to set or clear, the role an admin's
+     of his own squadron (otherSquadronProblem); a row where only another squadron's line changed asks none of these
+     (Kestrel giving Hunter View of 149 — R-O3b);
+   - each squadron's line → setGrant / removeGrant's for that squadron: Plan given, changed or taken only by a master admin
+     (PA1); View given or taken by an admin of that squadron (R5 — D2336's words); Plan only on an admin's account, judged
+     on the role AFTER the Save (Member → Admin with Plan in one Save passes — R-O3c); never his own squadron; never one
+     given between a move saved and its day; never on a master admin's account (R4: "Full access", no buttons);
+   - the last-admin and last-master locks once, over the whole state the Save leaves.
+   Picking Member for a master admin is the mark off and the role down in this one command (D2303), a master admin's
+   alone. Made a master admin, every View and Plan he holds today is dropped in the same command (R-O10 — the agent's
+   decision, technical, told to him: a kept row would be hidden behind "Full access" and come back when the mark comes
+   off). Made a member, the Plan he holds today goes (PA2 — D2250, as updateAccount does). The first refusal is the one
+   said; nothing of the Save is committed. The commit gate checks the same rows by the same rules (perms.ts).
+   THE SIGN-IN NAME RIDES IN THE SAME COMMAND (`name` — the second half's final reads, R4): the row's Save ran the access
+   here and then a rename through updateAccount, two commands — a refused rename left the access saved, a good one took
+   two Undos. A rename is checked here with updateAccount's own checks (a master admin's account a master admin's, an
+   admin of his own squadron's, a request waiting under the new name only an admin of its squadron's — §15 D12 — and the
+   name free) before anything is written, and answers that request in this command, as updateAccount's rename does. */
+export type AccessLine = 'none' | 'view' | 'plan'
+export interface AccessSave { role?: AccountRole; master?: boolean; grants?: Readonly<Record<string, AccessLine>>; name?: any }
+const lineLevel = (l: AccessLine): GrantLevel | null => (l === 'plan' ? 'admin' : l === 'view' ? 'view' : null)
+export function saveAccess(id: string, want: AccessSave): string | null {
+  if (!mayManageAccounts()) return 'Only an admin can change an account'
+  const a = accountById(id)
+  if (!a) return 'That account is gone'
+  if (ownAccount(a)) return "You can't change your own account — ask another admin"
+  const today = todayIso()
+  const mine = signedInAccount()
+  const actorMaster = mine?.master === true
+  const roleAfter: AccountRole = want.role ?? a.role
+  if (!isAccountRole(roleAfter)) return 'Pick member or admin'
+  /* (only an admin carries the mark — D2260; picking Member is taking it off, D2303) */
+  if (want.master === true && roleAfter !== 'admin') return 'This change could not be saved.'
+  const masterAfter = roleAfter === 'admin' && (want.master ?? a.master === true)
+  /* (Admin picked for an admin who moved squadron — a member of the one he joined while his account still stores "admin"
+     (K3, D2160) — is a change too, recorded for the squadron he is in today, as updateAccount does: the fix read 2 case,
+     msq-fix2-users-moved-admin.test.tsx, found when Admin → Users' Save moved onto this door) */
+  const remade = want.role === 'admin' && a.role === 'admin' && !adminNow(a)
+  const roleCh = roleAfter !== a.role || remade, masterCh = masterAfter !== (a.master === true)
+  const acct = levelAcct(a)
+  const lines: Array<{ unit: string; to: GrantLevel | null; had: Grant | undefined }> = []
+  for (const [unit, l] of Object.entries(want.grants ?? {})) {
+    const to = lineLevel(l), had = grantOfOn(acct, unit, today)
+    if ((had?.level ?? null) !== to) lines.push({ unit, to, had })
+  }
+  const nameAfter = want.name !== undefined ? normName(want.name) : a.name
+  const nameCh = nameAfter !== a.name
+  if (!roleCh && !masterCh && !nameCh && !lines.length) return null
+  /* the account's own part */
+  if (roleCh || masterCh || nameCh) {
+    const masterOnly = masterChangeProblem(a.pid)
+    if (masterOnly) return masterOnly
+    if (masterCh && !actorMaster) return MASTER_ONLY_WORDS
+    if (roleCh || nameCh) { const other = otherSquadronProblem(a.pid); if (other) return other }
+  }
+  /* (a rename onto a waiting request's name answers it — only an admin of its squadron, §15 D12; as updateAccount) */
+  if (nameCh) { const bad = requestNotHis(requestByName(nameAfter)) || nameProblem(nameAfter, a.id); if (bad) return bad }
+  const next: Account = { ...a, role: roleAfter, name: nameAfter }
+  /* (made one, the Plan rows the Save drops below are kept on his account, each with its moment — §16 D1′a: for those
+     squadrons his right counts from the Plan's start, and his bell's default reads "on"; his own bell choices still win) */
+  if (masterCh) markWith(next, a, masterAfter, today)
+  const next0 = roleCh ? adminRecFor(next) : next
+  /* the squadrons' part */
+  for (const ln of lines) {
+    const u = unitById(ln.unit)
+    if (!u) return 'That squadron is gone'
+    if (homeOn(a.pid, today) === ln.unit) return 'That is his own squadron — his role there is set on his account'
+    if (masterAfter && ln.to) return 'This change could not be saved.'
+    const plan = ln.to === 'admin' || ln.had?.level === 'admin'
+    if (plan && !actorMaster) return PLAN_MASTER_ONLY
+    if (!plan && !(mine && levelOfAccount(levelAcct(mine, 'admin'), ln.unit, today) === 'admin')) return `Only an admin of ${u.num} can give access to ${u.num}.`
+    if (ln.to === 'admin' && roleAfter !== 'admin') return 'Plan is for admins only.'
+    if (ln.to === 'admin' && !adminNow(next0)) return 'This change could not be saved.'
+    const gives = !ln.had || (ln.had.level === 'view' && ln.to === 'admin')
+    if (ln.to && gives && homeOn(a.pid, moveFrom(today)) !== homeOn(a.pid, today)) return 'He moves squadron tomorrow — give this after the move'
+  }
+  /* what the Save drops with it: made a master admin, every right holding today; made a member, his Plan holding today */
+  const drops = rightsDropped(a, masterAfter, roleAfter)
+  const dropIds = new Set(drops.map(g => g.id))
+  const laid: Grant[] = []
+  for (const ln of lines) if (ln.to) laid.push({ id: ln.had && !dropIds.has(ln.had.id) ? ln.had.id : `~${ln.unit}`, account: a.id, unit: ln.unit, level: ln.to, from: today })
+  const gone = new Set([...dropIds, ...lines.filter(ln => !ln.to && ln.had).map(ln => ln.had!.id)])
+  const list = ACCOUNTS_LIST.map(x => (x.id === a.id ? next0 : x))
+  if (masterCh && !list.some(x => x.master && x.role === 'admin')) return 'At least one master admin must be left'
+  const rowsA = rowsDraft(unitRows(), { dropGrants: g => gone.has(g.id), grants: laid })
+  const locked = lockProblem(list, undefined, rowsA)
+  if (locked) return locked
+  const accountCh = roleCh || masterCh || nameCh
+  const answered = nameCh && !!requestByName(nameAfter)
+  return commitIntent('account.access', null, () => {
+    if (accountCh) writeAccounts(list)
+    if (answered) writeReqs(ACCESS_REQS.filter(r => r.name !== nameAfter))
+    if (drops.length) dropGrantRows(drops.map(g => g.id))
+    for (const ln of lines) if (!(ln.to == null && ln.had && dropIds.has(ln.had.id))) putGrantLine(a.id, ln.unit, ln.to)
+  })
 }
 
 /* the admin approves a request: the account AND the request cleared, one command */
@@ -676,6 +915,12 @@ export function approveRequest(reqId: string, pid: string, role: AccountRole): s
   if (!mayManageAccounts()) return 'Only an admin can approve a request'
   const rq = ACCESS_REQS.find(r => r.id === reqId)
   if (!rq) return 'That request is gone'
+  /* only an admin of the squadron he asked to join, and only to a man of that squadron (§5 — linking offers that
+     squadron's men only; the Waiting list's picker is the page's squadron's, which is the request's) */
+  const notHis = requestNotHis(rq)
+  if (notHis) return notHis
+  const h = homeOn(pid, todayIso())
+  if (h && h !== rq.unit) return 'That did not save'
   const bad = nameProblem(rq.name) || pidProblem(pid) || otherSquadronProblem(pid) || (isAccountRole(role) ? null : 'Pick member or admin')
   if (bad) return bad
   /* linked to a man already on the roster, he keeps the squadron he has — no home is written here: a new home row moved
@@ -688,7 +933,10 @@ export function approveRequest(reqId: string, pid: string, role: AccountRole): s
 }
 export function declineRequest(reqId: string): string | null {
   if (!mayManageAccounts()) return 'Only an admin can decline a request'
-  if (!ACCESS_REQS.some(r => r.id === reqId)) return 'That request is gone'
+  const rq = ACCESS_REQS.find(r => r.id === reqId)
+  if (!rq) return 'That request is gone'
+  const notHis = requestNotHis(rq)
+  if (notHis) return notHis
   return commitIntent('access.decline', null, () => writeReqs(ACCESS_REQS.filter(r => r.id !== reqId)))
 }
 /* (setGuestView — the Admin "Guest view" switch's door — went with the guest view, D2239) */
@@ -699,8 +947,11 @@ export function declineRequest(reqId: string): string | null {
    initials (asked, never required — D225), pilot / WSO / personnel (D220), CAT — refused
    with its reason when a pick is missing or the name is over 14 letters (D226). Never
    whether a callsign is taken: a person not yet let in may not read the roster. */
-export function requestAccess(npIn: NewPerson): string | null {
+/* `unit` — the squadron he asks to join (§5, picture 4: asked first on the card); none named, the boot squadron's, as a
+   request of before §5 reads */
+export function requestAccess(npIn: NewPerson, unit: string = bootRequestUnit()): string | null {
   if (!mayRequestAccess()) return 'You cannot ask for access from here'
+  if (!unitById(unit)) return 'That did not save'
   const name = normName(SESSION && SESSION.name)
   if (!name) return 'Sign in first'
   if (accountByName(name)) return 'This sign-in already has an account — sign out and in again'
@@ -711,7 +962,7 @@ export function requestAccess(npIn: NewPerson): string | null {
   return commitIntent('access.request', { owner: name }, () =>
     writeReqs([...ACCESS_REQS, {
       id: 'rq' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), name,
-      cs: np.cs, ini: np.ini, seat: np.seat, cat: np.cat, at: Date.now(), seenBy: [],
+      cs: np.cs, ini: np.ini, seat: np.seat, cat: np.cat, at: Date.now(), seenBy: [], unit,
     }]))
 }
 
@@ -778,6 +1029,19 @@ export function suspendForArchive(pid: string): 'done' | 'none' | 'lock' {
   if (lockProblem(list)) return 'lock'
   writeAccounts(list)
   return 'done'
+}
+/* ARCHIVED OR POSTED OVERSEAS, HIS VIEW AND PLAN END (his D2311 — batch 1's second half, plan §4 item 8, R-O1, R-A4):
+   every right his sign-in holds today in another squadron is dropped INSIDE the archive's own command — Archive on Admin →
+   Users, an Overseas Sqn posting run at once or by the pass — even where his account was already suspended by hand (the
+   suspension helpers above return early there). Restore does not put them back; a hand Suspend leaves them. The commit
+   gate lets these removals through only where the same command archives that account's man (perms.ts
+   personArchivedHere, and the pass's own rule in postingPassViolation). Mutations only. */
+export function endRightsOfArchived(pid: string): void {
+  const a = accountOfPid(pid)
+  if (!a) return
+  const today = todayIso(), acct = levelAcct(a)
+  const ids = unitRows().grants.filter(g => g.account === a.id && grantOfOn(acct, g.unit, today)?.id === g.id).map(g => g.id)
+  if (ids.length) dropGrantRows(ids)
 }
 export function enableForRestore(pid: string): boolean {
   const a = accountOfPid(pid)
@@ -897,6 +1161,24 @@ export function requestsAfter(changes: readonly any[] | null | undefined): any[]
 /* the account an account row's image names, before a step — an unsaved seeded account (no row yet) reads as the seed */
 export const accountBefore = (id: string, image: any): any => image ?? (SEEDS_ON ? SEED.find(a => a.id === id) : null) ?? null
 
+/* NO RIGHT STANDS ON A MASTER ADMIN'S ACCOUNT AFTER A RESTORE (§15 D14 — the fix read's A1): an Undo of a right taken
+   away, or a Redo of one given, after another master admin made that man one since, would put the right back hidden under
+   "Full access" — back again the day the mark comes off; and an Undo of the mark taken off, or a Redo of it given, after
+   someone gave him a right since, would hide that right the same way. The account such a restore would leave a right
+   holding on, with that right's id, or null. The Undo refuses it naming whoever wrote what blocks it — the right, or the
+   mark (D148 — state/undo-wire.ts masterRightRefusal, the fix reads' A4 and their third round); the gate refuses the same
+   (perms.ts unitRowViolation). */
+export function masterRightLeft(list: readonly any[], rows: UnitRows): { account: string; grant: string } | null {
+  const today = todayIso()
+  for (const a of list) {
+    if (!a || a.master !== true) continue
+    const h = { id: String(a.id), pid: String(a.pid), pidFrom: a.pidFrom }
+    const g = rows.grants.find(x => x.account === a.id && grantRowHolds(h, x, today, rows))
+    if (g) return { account: String(a.id), grant: String(g.id) }
+  }
+  return null
+}
+
 /* ---- WHAT AN UNDO OR REDO MAY PUT BACK ON THE ACCOUNTS (the change-recording re-test B5, 28 Sep 26) ----
    Once the one Undo takes settings steps ([UNDO-ROSTER-SETTINGS]), an account change taken back or redone must obey the
    SAME guards the write path does — never accountsLoad's forgiving repair, which would quietly drop a duplicate or re-add
@@ -970,18 +1252,20 @@ export function storedAccountNamed(nameIn: any): boolean {
    rolls both back and still says why). A blank sign-in makes a roster-only person (D217 —
    someone who will not use the app): the people command alone. */
 /* `postIn` — his post-in date (D308, [ONE-DOOR]): written on the war in the same command (HOOKS.warPostIn) */
-export function addPersonAndAccount(nameIn: any, np: NewPerson, role: AccountRole, postIn?: string): string | null {
+/* `unit` — his home squadron (Add a person's "Home squadron", batch 1's second half §4 item 7 — R-A3): his home row and
+   his first stint both that squadron's, in this one command (roster-add.ts newHomeProblem; leavewar/sync.ts postInNewPerson) */
+export function addPersonAndAccount(nameIn: any, np: NewPerson, role: AccountRole, postIn?: string, unit?: string): string | null {
   const name = normName(nameIn)
-  if (!name) return addRosterPerson(np, postIn)
+  if (!name) return addRosterPerson(np, postIn, unit)
   if (!mayManageAccounts() || !mayManageRoster()) return 'Only an admin can add a person'
-  const bad = nameProblem(name) || newPersonProblem(np) || (isAccountRole(role) ? null : 'Pick member or admin')
+  const bad = newHomeProblem(unit, 'Only an admin can add a person') || requestNotHis(requestByName(name)) || nameProblem(name) || newPersonProblem(np) || (isAccountRole(role) ? null : 'Pick member or admin')
     || (postIn !== undefined ? postInProblem(postIn) : null)
   if (bad) return bad
   return saidOf(commitPeopleSettingsIntent('account.addNew', null, txn => {
     const pid = putNewPerson(np)
     /* his home unit, in the same command — the adder's own by default (D2094); written BEFORE the war's post-in, which
        finds him in the projection of the war's own squadron (the second fix read, 18 Nov 26 — Astra 4) */
-    putNewHome(pid, me())
+    putNewHome(pid, me(), unit)
     if (postIn !== undefined) HOOKS.warPostIn(txn, pid, postIn)
     writeAccounts([...ACCOUNTS_LIST, { id: newAccountId(), name, role, pid, on: true, ...newAccountStamp() }])
     if (requestByName(name)) writeReqs(ACCESS_REQS.filter(r => r.name !== name))
@@ -989,16 +1273,20 @@ export function addPersonAndAccount(nameIn: any, np: NewPerson, role: AccountRol
 }
 /* approving with New person: the person from what he gave, with the admin's corrections,
    his account, and the request answered — one command */
+/* the new man is the squadron's he asked to join (§5 — `putNewHome(pid, rq.unit)`), his first stint in its war */
 export function approveRequestNew(reqId: string, np: NewPerson, role: AccountRole, postIn?: string): string | null {
   if (!mayManageAccounts() || !mayManageRoster()) return 'Only an admin can approve a request'
   const rq = ACCESS_REQS.find(r => r.id === reqId)
   if (!rq) return 'That request is gone'
+  const notHis = requestNotHis(rq)
+  if (notHis) return notHis
+  const unit = rq.unit
   const bad = nameProblem(rq.name) || newPersonProblem(np) || (isAccountRole(role) ? null : 'Pick member or admin')
     || (postIn !== undefined ? postInProblem(postIn) : null)
   if (bad) return bad
   return saidOf(commitPeopleSettingsIntent('access.approveNew', null, txn => {
     const pid = putNewPerson(np)
-    putNewHome(pid, me())   // his home unit, before the war's post-in (Astra 4) — the approving admin's own by default (D2094)
+    putNewHome(pid, me(), unit)   // his home unit, before the war's post-in (Astra 4) — the squadron he asked to join (§5)
     if (postIn !== undefined) HOOKS.warPostIn(txn, pid, postIn)
     writeAccounts([...ACCOUNTS_LIST, { id: newAccountId(), name: rq.name, role, pid, on: true, ...newAccountStamp() }])
     writeReqs(ACCESS_REQS.filter(r => r.id !== reqId))
@@ -1017,19 +1305,25 @@ export function currentAdminAccountId(): string | null {
 }
 export function unseenRequests(): AccessRequest[] {
   const id = currentAdminAccountId()
-  return id ? ACCESS_REQS.filter(r => !r.seenBy.includes(id)) : []
+  return id ? requestsFor(accountById(id)).filter(r => !r.seenBy.includes(id)) : []
 }
 /* what lights the bell for access: an admin with a request he has not had on screen */
 export const accessAlert = (): boolean => unseenRequests().length > 0
 /* the waiting list was on screen for this admin (Admin → Users — on a phone, drilled in):
    ONE command marking every waiting request seen by him; nothing when nothing is new */
-export function markRequestsSeen(): string | null {
+/* (since §5 — R-O9, R-A8: the requests SHOWN, the page's squadron's Waiting list, merged with the ones he had already
+   seen that still wait — never the whole list, so opening 142's leaves 149's new) */
+export function markRequestsSeen(shownIds?: string[]): string | null {
   const id = currentAdminAccountId()
-  if (!id || !unseenRequests().length) return null
+  if (!id) return null
+  const shown = new Set(shownIds ?? waitingHere().map(r => r.id))
+  const fresh = unseenRequests().filter(r => shown.has(r.id))
+  if (!fresh.length) return null
   /* his OWN row only — the requests waiting now (one he saw that has since gone is no longer kept) */
-  const seen = ACCESS_REQS.map(r => r.id)
+  const seen = ACCESS_REQS.filter(r => r.seenBy.includes(id) || shown.has(r.id)).map(r => r.id)
+  const now = new Set(seen)
   return commitIntent('access.seen', { owner: me() }, () => {
     store.set(REQSEEN_PFX + id, { userId: id, seenRequestIds: seen })
-    ACCESS_REQS = ACCESS_REQS.map(r => r.seenBy.includes(id) ? r : { ...r, seenBy: [...r.seenBy, id] })
+    ACCESS_REQS = ACCESS_REQS.map(r => r.seenBy.includes(id) || !now.has(r.id) ? r : { ...r, seenBy: [...r.seenBy, id] })
   })
 }

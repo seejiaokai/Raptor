@@ -1,0 +1,153 @@
+<title>Squadrons, second half</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one reading column; questions first, then each picture pair (desktop, then phone). Batch 1's page look. */
+:root{--bg:#f4f6f8;--card:#ffffff;--fg:#14202b;--muted:#5a6b78;--line:#d9e0e6;--accent:#0b7fa3;--new:#d81b7a;--rec:#0f7a4a;--ok:#0e7fa6;
+ --sans:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;--head:"Space Grotesk","Inter",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e141a;--card:#16202a;--fg:#e6edf2;--muted:#9aabb8;--line:#273642;--accent:#3cc0e6;--new:#ff5fae;--rec:#4fd08f;--ok:#4cc3e6;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e141a;--card:#16202a;--fg:#e6edf2;--muted:#9aabb8;--line:#273642;--accent:#3cc0e6;--new:#ff5fae;--rec:#4fd08f;--ok:#4cc3e6;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:16px;line-height:1.5}
+.wrap{max-width:860px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 64px}
+h1{font-family:var(--head);font-size:28px;margin:0 0 4px;text-wrap:balance}
+h2{font-family:var(--head);font-size:20px;margin:36px 0 12px;text-wrap:balance}
+.sub{color:var(--muted);margin:0 0 20px}
+.q{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:grid;gap:6px;margin-bottom:10px}
+.q b.n{color:var(--accent);margin-right:6px}
+.rec{color:var(--rec);font-weight:600}
+.q a,.told a{color:var(--accent)}
+ul{padding-left:20px;margin:6px 0}
+li{margin:4px 0}
+.told{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px}
+.pic{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:14px 0;display:grid;gap:10px;scroll-margin-top:16px}
+.pic h3{font-family:var(--head);font-size:17px;margin:0}
+.pic p{margin:0;color:var(--muted)}
+.pair{display:grid;grid-template-columns:2fr 1fr;gap:10px;align-items:start}
+.pair.even{grid-template-columns:1fr 1fr}
+@media (max-width:620px){.pair{grid-template-columns:1fr}}
+.pair figure{margin:0;min-width:0}
+.pair img{width:100%;border-radius:6px;border:1px solid var(--line);cursor:zoom-in;display:block}
+figcaption{font-size:13px;color:var(--muted);margin-top:4px}
+.new{color:var(--new);font-weight:700}
+.okk{color:var(--ok);font-weight:700}
+.zoom{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;align-items:flex-start;justify-content:center;overflow:auto;z-index:20;
+ padding:max(12px,env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) 12px max(12px,env(safe-area-inset-left,0px))}
+.zoom img{max-width:none;width:min(1600px,200%);cursor:zoom-out}
+@media (max-width:620px){.zoom img{width:200%}}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+<div class="wrap">
+<h1>Squadrons, the second half: ten small things</h1>
+<p class="sub">You approved the second half's design on 22 Nov. Writing the build plan, and three readers checking it, turned up ten small things you have not seen. Each is drawn here on the real app. <span class="new">Pink "New"</span> marks what is new. <span class="okk">Blue "Approved"</span> marks what you have already approved. Tap a picture to see it full size. Nothing is built until you answer.</p>
+
+<h2>Look at now</h2>
+
+<div class="q"><div><b class="n">1</b>Admin → Squadron config with 149 picked (<a href="#f1">pictures 1a, 1b</a>). Its day, wave and duty templates belong to the squadron in view.</div>
+<div class="rec">Recommended: it follows the squadron picked, as Logic does. Only an admin of that squadron can change it; anyone else sees it greyed, with "This is 149's set-up. Only an admin of 149 can change it."</div></div>
+
+<div class="q"><div><b class="n">2</b>The Tracker after you pick another squadron (<a href="#f2">pictures 2a to 2d</a>). Once open, the Tracker stays on the squadron it opened with until you sign out.</div>
+<div class="rec">Recommended: as drawn, four cases.</div>
+<ul><li>2a: you may still change that squadron's Tracker. It shows, greyed: "This is 149's Tracker. Pick 149 to change it. To open 142's, sign out and in."</li>
+<li>2b: you can no longer open it (your Plan of 149 was taken). It hides: "You can't open 149's Tracker any more. Sign out and in to open 142's."</li>
+<li>2c: you tapped to the member view. It hides: "This is 149's Tracker. Leave the member view to open it."</li>
+<li>2d: you pick another squadron with chart changes not yet saved. It asks first: "Save them before switching to 142?" with Stay, Discard them, Save them.</li>
+<li>What it costs: a master admin or a Plan holder working in two squadrons' Trackers signs out between them. Letting the Tracker change squadron in place would mean rebuilding its core, which I recommend against for this batch.</li></ul></div>
+
+<div class="q"><div><b class="n">3</b>The bell lines when your own account changes, every wording (<a href="#f3">pictures 3a, 3b</a>). You approved the shape on 22 Nov ("Given Plan of 149: full access to 149 · Saber"); these are the rest.</div>
+<div class="rec">Recommended: as drawn.</div>
+<ul><li>Changed by someone: "Made an admin of 142", "Made a member", "Suspended" (read once he can sign in again), "Enabled", "Given View of 149", "View of 149 ended", "Plan of 149 ended", "Made a master admin", "Master admin taken off", each ending "· Saber".</li>
+<li>Changed by the app itself, with no name: "View of 149 ended: you moved to 150", "Plan of 149 ended: archived", "Made a member: you moved to 149" (an admin who moves is a member of his new squadron), and "Suspended" (when posted overseas).</li></ul></div>
+
+<div class="q"><div><b class="n">4</b>Someone with no sign-in, opened on Admin → Users (<a href="#f4">picture 4</a>). Access belongs to a sign-in, so he has none to give.</div>
+<div class="rec">Recommended: 149's buttons greyed, with "Give him a sign-in first to give access."</div></div>
+
+<div class="q"><div><b class="n">5</b>Eight squadrons on your iPhone (<a href="#f5">pictures 5a to 5d</a>).</div>
+<div class="rec">Recommended: the bell's Show buttons stay in one row that slides sideways. A person's squadron lines, the filter's Squadron ticks and the Schedules menu each grow a row per squadron.</div></div>
+
+<div class="q"><div><b class="n">6</b>Signing in on a shared computer, two moments you have not seen (<a href="#f6">pictures 6a, 6b</a>).</div>
+<div class="rec">Recommended: as drawn.</div>
+<ul><li>6a: after the last person's change saves, the page reloads so the next person starts clean. His name stays typed in; he presses Sign in once more: "Saved. Press Sign in again."</li>
+<li>6b: the change does not save, for example with no connection: "The last change has not saved yet — check the connection. Sign in waits until it saves."</li></ul></div>
+
+<div class="q"><div><b class="n">7</b>A Leave War window or an Input window left open when you pick another squadron (<a href="#f7">pictures 7a, 7b</a>). Today it shows "This change could not be saved." though nothing was tried.</div>
+<div class="rec">Recommended: "This is 142's. You picked 149 — close this to go on." Its buttons greyed, Close and ✕ still work.</div>
+<ul><li>The greying is new: today a held window looks normal and simply does nothing when pressed.</li></ul></div>
+
+<div class="q"><div><b class="n">8</b>A request to join 149 can only be answered by 149's admins (<a href="#f8">picture 8</a>). Example: Jett asked to join 149, and Hunter, 142's admin, types Jett's sign-in onto a 142 man.</div>
+<div class="rec">Recommended: refused, with "He asked to join 149 — only an admin of 149 can answer it."</div></div>
+
+<div class="q"><div><b class="n">9</b>Tapping an access request from another squadron in the bell (<a href="#f9">picture 9</a>). Example: Hunter, in 142, holds Plan of 149; Jett asks to join 149.</div>
+<div class="rec">Recommended: one tap moves him to 149 and opens Admin → Users there, with "1 waiting for access to 149".</div></div>
+
+<div class="q"><div><b class="n">10</b>The words after Undo of an access change (<a href="#f10">picture 10</a>).</div>
+<div class="rec">Recommended: "Undid: Plan of 149 given · Hunter", in the bubble the app shows after every Undo.</div></div>
+
+<h2>Told, not asked</h2>
+<div class="told"><ul>
+<li><b>Losing a right clears the bell, whatever the way.</b> As you ruled, 149's lines leave Hunter's bell the moment his Plan of 149 ends. This now also holds when it ends by an Undo, by archiving or by an overseas posting. An Undo that gives the right back gives its lines back. A right given back later brings none of the old lines back, with one exception: a posting dated that same day shows again, because the app keeps a posting's day, not its time.</li>
+<li><b>An admin made a member</b> loses his own squadron's admin lines too, not only the other squadron's.</li>
+<li><b>Made a master admin,</b> his View and Plan buttons go, since "Full access" replaces them. He keeps the bell lines of the squadrons he planned, and those squadrons stay switched on in his bell.</li>
+<li><b>"+ New squadron"'s first-admin list</b> leaves out master admins, who already have full access, and anyone moving squadron the next day.</li>
+<li><b>Archive stays outside Undo,</b> as today.</li>
+<li><b>About the pictures:</b> nobody in the demo holds only View of 149, so picture 1a was drawn on Kestrel's sign-in with the name at the top changed to Hunter. Picture 8's role box shows today's long words; the short ones you approved come with this build. Picture 2b hides the whole Tracker, its bar too.</li>
+<li><b>The approved design</b> (pictures 1 to 10, R and M of 22 Nov) is unchanged and stays in the project.</li>
+</ul></div>
+
+<section class="pic" id="f1"><h3>1 · Squadron config with another squadron picked</h3>
+<p>1a: Hunter, who holds View of 149, with 149 picked: greyed. 1b: the same page with 142 picked: his to change.</p>
+<div class="pair"><figure><img src="img/f1a-d.png" alt="Desktop: Squadron config 149, greyed"><figcaption>1a, desktop.</figcaption></figure><figure><img src="img/f1a-p.png" alt="iPhone: Squadron config 149, greyed"><figcaption>1a, iPhone.</figcaption></figure></div>
+<div class="pair"><figure><img src="img/f1b-d.png" alt="Desktop: Squadron config 142, editable"><figcaption>1b, desktop.</figcaption></figure><figure><img src="img/f1b-p.png" alt="iPhone: Squadron config 142"><figcaption>1b, iPhone.</figcaption></figure></div></section>
+
+<section class="pic" id="f2"><h3>2 · The Tracker after a pick</h3>
+<p>2a: Saber opened 149's Tracker, then picked 142. 2b: Hunter's Plan of 149 was taken while his Tracker held 149. 2c: Hunter tapped to the member view. 2d: unsaved chart changes when he picks 142.</p>
+<div class="pair"><figure><img src="img/f2a-d.png" alt="Desktop: the Tracker greyed with the amber line"><figcaption>2a, desktop.</figcaption></figure><figure><img src="img/f2a-p.png" alt="iPhone: the Tracker greyed"><figcaption>2a, iPhone.</figcaption></figure></div>
+<div class="pair"><figure><img src="img/f2b-d.png" alt="Desktop: the Tracker hidden"><figcaption>2b, desktop.</figcaption></figure><figure><img src="img/f2b-p.png" alt="iPhone: the Tracker hidden"><figcaption>2b, iPhone.</figcaption></figure></div>
+<div class="pair"><figure><img src="img/f2c-d.png" alt="Desktop: the member view, the Tracker hidden"><figcaption>2c, desktop.</figcaption></figure><figure><img src="img/f2c-p.png" alt="iPhone: the member view"><figcaption>2c, iPhone.</figcaption></figure></div>
+<div class="pair"><figure><img src="img/f2d-d.png" alt="Desktop: Save them before switching to 142?"><figcaption>2d, desktop.</figcaption></figure><figure><img src="img/f2d-p.png" alt="iPhone: the question"><figcaption>2d, iPhone.</figcaption></figure></div></section>
+
+<section class="pic" id="f3"><h3>3 · Your own account's lines</h3>
+<p>Hunter's bell. 3a: the lines with the name of whoever changed it. 3b: the app's own lines, with no name, above three older ones. These lines carry no squadron mark and stay with him wherever he moves.</p>
+<div class="pair"><figure><img src="img/f3a-d.png" alt="Desktop: own-account lines with a name"><figcaption>3a, desktop.</figcaption></figure><figure><img src="img/f3a-p.png" alt="iPhone: own-account lines"><figcaption>3a, iPhone.</figcaption></figure></div>
+<div class="pair"><figure><img src="img/f3b-d.png" alt="Desktop: the app's own lines"><figcaption>3b, desktop.</figcaption></figure><figure><img src="img/f3b-p.png" alt="iPhone: the app's own lines"><figcaption>3b, iPhone.</figcaption></figure></div></section>
+
+<section class="pic" id="f4"><h3>4 · Someone with no sign-in</h3>
+<p>Hunter opens Ace, a 142 pilot with no sign-in, on the row you approved (design B).</p>
+<div class="pair"><figure><img src="img/f4-d.png" alt="Desktop: Ace's row, 149 greyed with the line"><figcaption>4, desktop.</figcaption></figure><figure><img src="img/f4-p.png" alt="iPhone: Ace's row"><figcaption>4, iPhone.</figcaption></figure></div></section>
+
+<section class="pic" id="f5"><h3>5 · Eight squadrons, iPhone</h3>
+<p>Squadrons 150 to 155 are drawn in for the picture. 5a: Saber's bell, the Show row sliding off the right edge. 5b: a person's eight squadron lines. 5c: the filter's Squadron ticks. 5d: the Schedules menu.</p>
+<div class="pair even"><figure><img src="img/f5a-p.png" alt="iPhone: the bell's Show row of eight"><figcaption>5a.</figcaption></figure><figure><img src="img/f5b-p.png" alt="iPhone: eight squadron lines"><figcaption>5b.</figcaption></figure></div>
+<div class="pair even"><figure><img src="img/f5c-p.png" alt="iPhone: eight Squadron ticks"><figcaption>5c.</figcaption></figure><figure><img src="img/f5d-p.png" alt="iPhone: the Schedules menu with eight rows"><figcaption>5d.</figcaption></figure></div></section>
+
+<section class="pic" id="f6"><h3>6 · Signing in after a save</h3>
+<p>6a: after the reload, his name kept. 6b: a save that does not land.</p>
+<div class="pair"><figure><img src="img/f6a-d.png" alt="Desktop: Saved. Press Sign in again."><figcaption>6a, desktop.</figcaption></figure><figure><img src="img/f6a-p.png" alt="iPhone: Saved. Press Sign in again."><figcaption>6a, iPhone.</figcaption></figure></div>
+<div class="pair"><figure><img src="img/f6b-d.png" alt="Desktop: the last change has not saved yet"><figcaption>6b, desktop.</figcaption></figure><figure><img src="img/f6b-p.png" alt="iPhone: not saved yet"><figcaption>6b, iPhone.</figcaption></figure></div></section>
+
+<section class="pic" id="f7"><h3>7 · A window left open when you pick another squadron</h3>
+<p>7a: Saber's Leave War window on Ranger's Wed 25 Nov. 7b: a new input on Inputs. Both opened in 142, then 149 picked.</p>
+<div class="pair"><figure><img src="img/f7a-d.png" alt="Desktop: the Leave War window with the amber line"><figcaption>7a, desktop.</figcaption></figure><figure><img src="img/f7a-p.png" alt="iPhone: the Leave War window"><figcaption>7a, iPhone.</figcaption></figure></div>
+<div class="pair"><figure><img src="img/f7b-d.png" alt="Desktop: the Input window with the amber line"><figcaption>7b, desktop.</figcaption></figure><figure><img src="img/f7b-p.png" alt="iPhone: the Input window"><figcaption>7b, iPhone.</figcaption></figure></div></section>
+
+<section class="pic" id="f8"><h3>8 · A request only 149's admins can answer</h3>
+<p>Hunter, 142's admin, types Jett's sign-in onto Ace and presses Give sign-in. The refusal shows where this page's refusals always show.</p>
+<div class="pair"><figure><img src="img/f8-d.png" alt="Desktop: He asked to join 149"><figcaption>8, desktop.</figcaption></figure><figure><img src="img/f8-p.png" alt="iPhone: He asked to join 149"><figcaption>8, iPhone.</figcaption></figure></div></section>
+
+<section class="pic" id="f9"><h3>9 · An access request from another squadron</h3>
+<p>Hunter taps the request in his bell. In the demo the request is 142's, so the list behind is 142's; with 149's request it would be 149's.</p>
+<div class="pair"><figure><img src="img/f9-d.png" alt="Desktop: 1 waiting for access to 149"><figcaption>9, desktop.</figcaption></figure><figure><img src="img/f9-p.png" alt="iPhone: 1 waiting for access to 149"><figcaption>9, iPhone.</figcaption></figure></div></section>
+
+<section class="pic" id="f10"><h3>10 · Undo of an access change</h3>
+<p>Saber gave Hunter Plan of 149, then pressed Undo. Before the press, the Undo button's hover reads "Undo — Plan of 149 given · Hunter".</p>
+<div class="pair"><figure><img src="img/f10-d.png" alt="Desktop: Undid: Plan of 149 given · Hunter"><figcaption>10, desktop.</figcaption></figure><figure><img src="img/f10-p.png" alt="iPhone: the Undo bubble"><figcaption>10, iPhone.</figcaption></figure></div></section>
+</div>
+<script>
+document.addEventListener('click', e => {
+ const z = document.querySelector('.zoom')
+ if (z) { z.remove(); return }
+ const img = e.target.closest('.pair img'); if (!img) return
+ const d = document.createElement('div'); d.className = 'zoom'
+ const big = document.createElement('img'); big.src = img.src; big.alt = img.alt
+ d.appendChild(big); document.body.appendChild(d)
+})
+document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelector('.zoom')?.remove() })
+</script>

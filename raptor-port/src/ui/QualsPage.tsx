@@ -23,6 +23,7 @@ import { notify } from '../state/store'
 import { persistPeople } from '../state/people-settings-commit'
 import { DEFAULT_QUAL_COLS, MGMT_KEY, SCHED_KEY, qualColsOf, setQualColsOf } from '../engine/qualcols'
 import { useVersion } from './useStore'
+import { useGuardCloses, useGuardWork } from './guard'
 /* ONE LIFT, EVERY DRAG (owner, 6 Sep 26) — the shared drag decoration every
    surface in the app wears. A column is a COMPOSITE thing (a heading and a
    cell per person), so it takes the overlay frame rather than a class. */
@@ -497,6 +498,20 @@ export function QualsPage() {
      person`, which puts someone on the roster, and EDIT QUALS, which decides
      which qualifications the whole squadron's LoX carries. */
   const canEditQuals = () => admin && qEditing && qualsEdit
+  /* THE GUARD RAIL (ui/guard.ts). Words in "Add qualification" are saved only by Add or Enter, so while its box is drawn and
+     holds words they count, as a row being edited (D2729 Q2 — §3.2 (i)). The edit mode itself is handed over while it is on,
+     for a door to end at its last step (D2627 A4 — §18.1): editing off, "Edit quals" off, an armed ✕ disarmed — never the
+     words in the box, and never Done's own "Quals saved". */
+  useGuardWork('qualsnew', canEditQuals() && newQual.trim() !== '')
+  useGuardCloses('qedit', qEditing, () => { setEditing(false); setQualsEdit(false); setArmDel('') })
+  /* WORDS LEFT HIDDEN IN THE BOX ARE DROPPED WHEN THE SQUADRON IN VIEW CHANGES (the orchestrator's call at K0 — §21.1, "K0 —
+     done"; nothing new is drawn): Done, or "✕ Edit quals", hides the box and keeps what was typed in it, and on the same
+     squadron it comes back as before — but the page stays mounted across a pick, and those words, typed for 142, came back
+     in 149's box. Put right while the page is drawn for the new squadron, never an effect a frame late. A box in sight
+     keeps its words: that is the `qualsnew` row's to refuse. */
+  const qualsSqn = qualsPageUnit()
+  const [wordsSqn, setWordsSqn] = useState(qualsSqn)
+  if (wordsSqn !== qualsSqn) { setWordsSqn(qualsSqn); if (!canEditQuals()) setNewQual('') }
   /* THE TABLE IS DRAWN AGAIN ONLY WHEN WHAT IT SHOWS CHANGED ([KEYBOARD-SCROLL] walker A's A12, 19 Oct 26): React sets a
      `dangerouslySetInnerHTML` again whenever its OBJECT is a new one — not only when the markup differs (probed on the built
      app: the same 48,350 characters set again) — so every repaint of the page, the pinned heading coming and going as

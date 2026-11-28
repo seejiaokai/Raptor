@@ -607,6 +607,19 @@ describe('D910 — on the narrowest phones the dates button’s words are shorte
     expect($('#inRangePop'), 'the pop-up is up').toBeTruthy()
     expect($('#inFilters')!.classList.contains('open'), 'and the fields closed').toBe(false)
   })
+  /* his D2401: a filter that is on looks switched on, the app's chip recipe, keeping its small number */
+  it('a phone: the filter button is lit while a filter is set, its small number kept; cleared, plain again', async () => {
+    await open(false)
+    const btn = () => $('#inFiltersBtn')!
+    expect(btn().classList.contains('on'), 'nothing set: plain').toBe(false)
+    await click(btn())
+    const box = $('#inFSearch') as HTMLInputElement
+    await act(async () => { Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(box, 'findme'); box.dispatchEvent(new Event('input', { bubbles: true })) })
+    expect(btn().classList.contains('on'), 'a filter set: lit').toBe(true)
+    expect(btn().querySelector('.inputs-filter-count')?.textContent, 'the small number stays').toBe('1')
+    await click($('#inFiltersClear'))
+    expect(btn().classList.contains('on'), 'cleared: plain').toBe(false)
+  })
   it('a phone: the page reads the two buttons before the switch, as the screen draws them (Tab and a screen reader)', async () => {
     await open(false)
     const order = [...$('.inputs-top')!.querySelectorAll('#inNew, #inRangeBtn, #inListBtn, #inFiltersBtn, #inGear')].map(e => e.id)

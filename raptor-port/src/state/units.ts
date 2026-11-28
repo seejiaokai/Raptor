@@ -14,17 +14,18 @@ import { store } from '../engine/hooks'
 import { newId } from '../engine/newid'
 import { isCommitting, type CommitResult } from '../command'
 import { commitSettingsIntent } from './people-settings-commit'
+import { accessWas, tellAccess } from './acctlines'
 import { setHomeResolver, needDay } from '../engine/roster'
 import { setSchedTickAt } from '../engine/publish'
 import { PEOPLE } from '../engine/people'
 import { DEMO_149_PEOPLE } from './demoseed'
 /* the last-admin lock's words for a step's draft (accounts.ts imports this file; the call is at run time, never at load) */
-import { lockProblemFor, accountById, masterChangeProblem, signedInAccount, otherSquadronPersonProblem, adminNow } from './accounts'
+import { lockProblemFor, accountById, masterChangeProblem, signedInAccount, otherSquadronPersonProblem, adminNow, levelAcct, MASTER_ONLY_WORDS } from './accounts'
 import { lastAdminBreach, type LockWorld, type LockBreach } from './lastadmin'
 import {
   UNIT_PFX, PLACE_PFX, UNITPLACE_PFX, GRANT_PFX, HOME_PFX, UNIT_ROW_PREFIXES,
   rowsFrom, placeIdOn, homeUnitOn, homeChangesIn, stintsIn, grantOn, grantHolds, datedRowsBreach, unitIn, placeIn, levelFrom, moveFrom, schedTickHolds,
-  validUnitNum, validTz, MAX_PLACE_NAME,
+  validUnitNum, validTz, MAX_PLACE_NAME, unitsAtPlace,
   type UnitRows, type Unit, type Place, type Grant, type GrantLevel, type GrantHolder, type UnitLevel, type LevelAccount, type Stint,
   type DatedBreach,
 } from './units-model'
@@ -185,7 +186,9 @@ function put(k: string, v: unknown): void {
 }
 function save(type: string, meta: unknown, fn: () => string | void): UnitSave {
   let id: string | undefined
-  const r = said(commitSettingsIntent(type, meta, () => { const got = fn(); if (got) id = got; ROWS = null }))
+  /* (a right given, changed or taken — "+ New squadron"'s first admin among them — tells its man, inside: batch 1's second
+     half §7 item 6, state/acctlines.ts) */
+  const r = said(commitSettingsIntent(type, meta, txn => { const was = accessWas(); const got = fn(); if (got) id = got; ROWS = null; tellAccess(txn, was) }))
   ROWS = null
   return r.ok && id ? { ...r, id } : r
 }
@@ -195,11 +198,13 @@ const no = (message: string): UnitSave => ({ ok: false, message })
    roster-add.ts and accounts.ts): the adder's own home unit by default (D2094), from today. Nothing when the adder has no
    home (a shared store whose rows are not made yet) — the gate's own check then has nothing to judge. Mutations only. */
 /* (PD1 — the page's squadron where the signed-in adder runs it: installed by perms.ts, which this file never imports) */
+/* (`named` — the Home squadron Add a person names, batch 1's second half §4 item 7, R-A3: it wins over both defaults; the
+   door has checked it is there and the adder's to give — roster-add.ts newHomeProblem — and the gate checks it again) */
 let NEW_HOME_UNIT: ((adderPid: string | null) => string | null) | null = null
 export function setNewHomeUnit(fn: ((adderPid: string | null) => string | null) | null): void { NEW_HOME_UNIT = fn }
-export function putNewHome(pid: string, adderPid: string | null): void {
+export function putNewHome(pid: string, adderPid: string | null, named?: string): void {
   if (!isCommitting()) throw new Error('A home is written only inside the command that makes the person')
-  const unit = (NEW_HOME_UNIT && NEW_HOME_UNIT(adderPid)) || (adderPid ? homeOn(adderPid, todayIso()) : fallbackHome())
+  const unit = named || (NEW_HOME_UNIT && NEW_HOME_UNIT(adderPid)) || (adderPid ? homeOn(adderPid, todayIso()) : fallbackHome())
   if (!unit) return
   const id = newId('h')
   /* written as the accounts write theirs — no read-back: this row rides inside ANOTHER module's command, and a world
@@ -211,11 +216,17 @@ export function putNewHome(pid: string, adderPid: string | null): void {
 
 /* unit.add — a master makes a unit at a place, and names its first admin (D2184 Q10): in step 1 an existing account,
    given an 'admin' grant there (step 3 of the batch adds a new person as he would be added anywhere) */
-export function addUnit(numIn: string, placeId: string, firstAdmin?: string): UnitSave {
+/* (`place` — a place's id, or a NEW place, its name and time zone, made in the same command: "+ New place…" inside
+   "+ New squadron", one Undo step — batch 1's second half §6 item 4, D2308, R-O8b) */
+export function addUnit(numIn: string, place: string | NewPlace, firstAdmin?: string): UnitSave {
   const num = String(numIn ?? '').trim()
   if (!validUnitNum(num)) return no('Type the squadron number — letters and digits, at most 12')
   if (units().some(u => u.num === num)) return no(`Squadron ${num} is already set up`)
-  if (!placeById(placeId)) return no('Pick the place the squadron is at')
+  const np = typeof place === 'string' ? null : place
+  const npBad = np ? newPlaceProblem(np) : null
+  if (npBad) return no(npBad)
+  if (!np && !placeById(place as string)) return no('Pick the place the squadron is at')
+  const placeId = np ? newId('p') : (place as string)
   /* its first admin's Plan is a right given today (R5 — the reshape plan §4.4): said at the door in setGrant's own words,
      never the gate's reason — not between his move saved and its day, and only an admin's sign-in (PA2) */
   /* NEVER A SQUADRON WITH NO ADMIN (B6 — D2191, D2184 Q10; the reshape plan §5.2): its first admin is required, and he must
@@ -223,9 +234,8 @@ export function addUnit(numIn: string, placeId: string, firstAdmin?: string): Un
      a first admin whose move away is saved for a later day leaves it none from then. Those two say the generic words
      until "+ New squadron" has its screen, drawn for him (D1625). */
   if (!firstAdmin) return no("Name the squadron's first admin.")
-  const fa = accountById(firstAdmin)
-  if (fa && homeOn(String(fa.pid), moveFrom(todayIso())) !== homeOn(String(fa.pid), todayIso())) return no('He moves squadron tomorrow — give this after the move')
-  if (fa && !adminNow(fa)) return no('This change could not be saved.')
+  const faBad = firstAdminProblem(firstAdmin)
+  if (faBad) return no(faBad)
   const id = newId('u'), up = newId('up'), g = newId('g')
   const draft = rowsDraft(unitRows(), {
     units: [{ id, num, kind: 'sqn' }], unitplaces: [{ id: up, unit: id, place: placeId, from: todayIso() }],
@@ -233,37 +243,102 @@ export function addUnit(numIn: string, placeId: string, firstAdmin?: string): Un
   })
   if (lockProblemFor({ rows: draft })) return no('This change could not be saved.')
   return save('unit.add', null, () => {
+    if (np) put(PLACE_PFX + placeId, { id: placeId, name: np.name.trim(), tz: np.tz })
     put(UNIT_PFX + id, { id, num, kind: 'sqn' })
     put(UNITPLACE_PFX + up, { id: up, unit: id, place: placeId, from: todayIso() })
     /* (dated the day it is given, as setGrant's: the commit gate refuses a new right not dated today — fix read 8, fault G) */
     /* (`first` — K3: the squadron's named first admin moves into it as its admin, units-model.ts adminRoleHolds; every
        other man who moves squadron joins as a member, D2160) */
-    put(GRANT_PFX + g, { id: g, account: firstAdmin, unit: id, level: 'admin', from: todayIso(), first: true })
+    put(GRANT_PFX + g, { id: g, account: firstAdmin, unit: id, level: 'admin', from: todayIso(), first: true, fromAt: Date.now() })
     return id
   })
 }
 
+/* WHO MAY BE A NEW SQUADRON'S FIRST ADMIN — the door's own checks, one body: addUnit asks it, and Admin → Squadrons'
+   first-admin list (ui/squadrons-model.ts) offers only the accounts it passes, so the list never offers a man the door
+   would refuse (§15 D14 — the agent's narrowing of D2308's words, told to him). An account that is gone passes here: the
+   gate judges it. */
+export function firstAdminProblem(account: string): string | null {
+  const fa = accountById(account)
+  if (!fa) return null
+  if (homeOn(String(fa.pid), moveFrom(todayIso())) !== homeOn(String(fa.pid), todayIso())) return 'He moves squadron tomorrow — give this after the move'
+  if (!adminNow(fa)) return 'This change could not be saved.'
+  /* never a master admin (§15 D14): he acts in every squadron already, so Plan gives him nothing and the last-admin rule
+     would not count him (state/lastadmin.ts) — the first-admin list leaves him out; no right is ever given his account */
+  if (fa.master) return 'This change could not be saved.'
+  return null
+}
+
+/* MAY THE SIGNED-IN ACCOUNT MOVE THIS SQUADRON — the move door's own check (moveUnit below), read by Admin → Squadrons to
+   open a squadron's row only for an admin of it (§6 item 2) */
+export const mayMoveUnit = (unit: string): boolean => signedInAdminOf(unit)
+
 /* unit.place — a unit moves: a new row from tomorrow (D2119), its past places kept; a second move typed for the same
    date replaces that date's row */
-export function moveUnit(unit: string, placeId: string): UnitSave {
+/* (`place` — a place's id, or a NEW place made in the same command: "+ New place…" in the squadron's Place list, one
+   Undo step — §6 item 2, R-O8b; by an admin of that squadron, held at the gate too) */
+export function moveUnit(unit: string, place: string | NewPlace): UnitSave {
   if (!unitById(unit)) return no('That squadron is gone')
-  if (!placeById(placeId)) return no('Pick the place the squadron is moving to')
+  const np = typeof place === 'string' ? null : place
+  const npBad = np ? newPlaceProblem(np) : null
+  if (npBad) return no(npBad)
+  if (!np && !placeById(place as string)) return no('Pick the place the squadron is moving to')
+  if (!signedInAdminOf(unit)) return no('This change could not be saved.')
+  const placeId = np ? newId('p') : (place as string)
   const from = moveFrom(todayIso())
   if (placeIdOn(unitRows(), unit, from) === placeId) return no('The squadron is already there')
   const same = unitRows().unitplaces.find(x => x.unit === unit && x.from === from)
   return save('unit.place', null, () => {
+    if (np) put(PLACE_PFX + placeId, { id: placeId, name: np.name.trim(), tz: np.tz })
     const id = same ? same.id : newId('up')
     put(UNITPLACE_PFX + id, { id, unit, place: placeId, from })
     return id
   })
 }
 
+/* A NEW PLACE, made inside the command that puts a squadron there (+ New squadron, a squadron's move) or alone by a
+   master admin — its name and time zone, the same checks as setPlace */
+export interface NewPlace { name: string; tz: string }
+function newPlaceProblem(p: NewPlace): string | null {
+  const name = String(p.name ?? '').trim()
+  if (!name || name.length > MAX_PLACE_NAME) return `Type the place's name — at most ${MAX_PLACE_NAME} characters`
+  if (!validTz(p.tz)) return 'Pick the place’s time zone'
+  return null
+}
+/* the signed-in account an admin of that squadron today — its own admin, a Plan holder, a master admin (D2336); no
+   account behind the session (a probe's or a test's) — the gate judges */
+function signedInAdminOf(unit: string): boolean {
+  const me = signedInAccount()
+  if (!me) return true
+  /* (levelOfAccount reads the role with the level: a member is no squadron's admin; a master admin is every one's) */
+  return levelOfAccount(levelAcct(me), unit, todayIso()) === 'admin'
+}
+/* WHO MAY CHANGE A PLACE (§6 item 3 — D2196, D2336, PG1; §15 D13, §16 D13′): an admin of EVERY squadron at it, today or
+   from a later day (units-model.ts unitsAtPlace), a master admin always; a place no squadron is at, and a new place on
+   its own, a master admin's. The drawn words for two (D2336); for three or more they name every one, by the same rule
+   (§9 — the agent's reading); for one, the drawn "Only an admin of 149 can change it." */
+const COUNT = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve']
+export function placeChangeProblem(placeId: string | undefined): string | null {
+  const me = signedInAccount()
+  if (!me || me.master) return null
+  if (!placeId) return MASTER_ONLY_WORDS
+  const at = unitsAtPlace(unitRows(), placeId, todayIso())
+  if (!at.length) return MASTER_ONLY_WORDS
+  if (at.every(u => signedInAdminOf(u))) return null
+  const nums = at.map(u => unitById(u)?.num ?? u).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
+  if (nums.length === 1) return `Only an admin of ${nums[0]} can change it.`
+  if (nums.length === 2) return `Only an admin of both ${nums[0]} and ${nums[1]} can change the time zone: both squadrons are here.`
+  const list = `${nums.slice(0, -1).join(', ')} and ${nums[nums.length - 1]}`
+  return `Only an admin of ${list} can change the time zone: all ${COUNT[nums.length] ?? nums.length} squadrons are here.`
+}
 /* place.set — a place made, or its name or time zone changed */
 export function setPlace(p: { id?: string; name: string; tz: string }): UnitSave {
   const name = String(p.name ?? '').trim()
   if (!name || name.length > MAX_PLACE_NAME) return no(`Type the place's name — at most ${MAX_PLACE_NAME} characters`)
   if (!validTz(p.tz)) return no('Pick the place’s time zone')
   if (p.id && !placeById(p.id)) return no('That place is gone')
+  const who = placeChangeProblem(p.id)
+  if (who) return no(who)
   return save('place.set', null, () => {
     const id = p.id || newId('p')
     put(PLACE_PFX + id, { id, name, tz: p.tz })
@@ -286,6 +361,10 @@ export function setGrant(account: string, unit: string, level: GrantLevel, accou
      given Plan; its words wait for the first screen that gives a right, drawn then — §14 of the plan) */
   if ((level === 'admin' || had?.level === 'admin') && notMaster()) return no(PLAN_MASTER_ONLY)
   if (level === 'admin' && acct && !adminNow(acct)) return no('This change could not be saved.')
+  /* NO RIGHT ON A MASTER ADMIN'S ACCOUNT (batch 1's second half, plan §15 D14 — R2-O14): he acts in every squadron, his row
+     reads "Full access" with no buttons (R4), so a row given him would be hidden and come back when the mark comes off.
+     The generic words: no screen offers it. Held at the gate too (perms.ts unitRowViolation). */
+  if (acct?.master) return no('This change could not be saved.')
   /* NOT BETWEEN A MOVE SAVED AND ITS DAY (Fable's sample review, 1 — his D2203; the plan §4.3, Fable 4, Opus L3): a right
      ends at the start of his move day, so one given or raised in the rest of the day it is saved would last that day
      only. A lowering passes — whatever it leaves ends at midnight by the rule. Held at the gate too (perms.ts
@@ -299,8 +378,9 @@ export function setGrant(account: string, unit: string, level: GrantLevel, accou
   }
   return save('grant.set', null, () => {
     const id = had ? had.id : newId('g')
-    /* (its day — fault P: notices.ts adminThen counts it only from then, so a line his move retired stays retired) */
-    put(GRANT_PFX + id, { id, account, unit, level, from: todayIso() })
+    /* (its day — fault P: notices.ts adminThen counts it only from then, so a line his move retired stays retired; and,
+       made Plan, its moment — §16 D1′: a level written here always differs from the one it had) */
+    put(GRANT_PFX + id, { id, account, unit, level, from: todayIso(), ...(level === 'admin' ? { fromAt: Date.now() } : {}) })
     return id
   })
 }
@@ -325,6 +405,18 @@ export function removeGrant(account: string, unit: string): UnitSave {
 export function dropGrantsOfAccount(accountId: string): void {
   if (!isCommitting()) throw new Error('dropGrantsOfAccount runs only inside a command')
   for (const g of unitRows().grants.filter(x => x.account === accountId)) put(GRANT_PFX + g.id, null)
+}
+/* ONE SQUADRON'S LINE OF A PERSON'S ACCESS, written INSIDE Admin → Users' one Save (accounts.ts saveAccess — batch 1's
+   second half, plan §4 item 5): the right that holds today set to `level`, or taken away (null). As setGrant writes it —
+   the same row raised or lowered, dated today; where none holds, a new row (an ended row is never re-dated). The door
+   has judged it; the commit gate judges every row again. */
+export function putGrantLine(account: string, unit: string, level: GrantLevel | null): void {
+  if (!isCommitting()) throw new Error('putGrantLine runs only inside a command')
+  const had = grantOn(unitRows(), holderOf(account), unit, todayIso(), fallbackHome())
+  if (level == null) { if (had) put(GRANT_PFX + had.id, null); return }
+  if (had && had.level === level) return
+  const id = had ? had.id : newId('g')
+  put(GRANT_PFX + id, { id, account, unit, level, from: todayIso(), ...(level === 'admin' ? { fromAt: Date.now() } : {}) })
 }
 /* named rights, dropped INSIDE another command (a Plan holder made a member — accounts.ts updateAccount, PA2) */
 export function dropGrantRows(ids: readonly string[]): void {

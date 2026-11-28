@@ -26,6 +26,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { SESSION } from '../state/auth'
 import { roleOf } from '../state/perms'
 import { requestAccess, requestByName } from '../state/accounts'
+import { units } from '../state/units'
 import { SEATS, catsFor, seatLabel, MAX_CS, MAX_INITIALS, SIGNUP_CALLSIGN_LABEL, CS_TOO_LONG } from '../state/roster-add'
 import { notify } from '../state/store'
 import { logOut } from './logout'
@@ -120,10 +121,18 @@ export function AccessScreen() {
   const [ini, setIni] = useState('')
   const [seat, setSeat] = useState('')
   const [cat, setCat] = useState('')
+  /* THE SQUADRON HE ASKS TO JOIN (batch 1's second half §5 item 1 — D2094, D2111; picture b1-5): the card's first choice,
+     the squadrons by number; the request goes to that squadron's admins only. With one squadron there is nothing to
+     choose, so no box (as Add a person's Home squadron and the Schedules menu, D2132).
+     IT STARTS ON "Pick…" (his D2396 (f), D2400 — the drawings docs/mock/2026-11-24-msq-new-words/img/f1-*.png, f2-*.png), as
+     the two boxes below it do: started on the first squadron, a newcomer who did not look asked that squadron's admins,
+     and his own never saw it. Request access sends nothing until he has chosen and says "Pick your squadron" in the card's
+     own error line. Admin → Users' "Add a person" keeps its own start: the admin knows where he is. */
+  const [sqn, setSqn] = useState('')
   const [err, setErr] = useState('')
   /* a refusal is about what was sent: once he changes a field, it goes (the walk, 26 Sep 26 — "Pick pilot, WSO or
      personnel" stayed up after he had picked) */
-  useEffect(() => { setErr('') }, [cs, ini, seat, cat])
+  useEffect(() => { setErr('') }, [sqn, cs, ini, seat, cat])
   const name = String((SESSION && SESSION.name) || '')
   /* a save that failed shows on these screens too, across the top, the screen moved down under it (owner D1657): his
      request may be the very thing that did not save, and the waiting screen must not read as if it had gone */
@@ -141,6 +150,9 @@ export function AccessScreen() {
   const req = requestByName(name)
   const signOut = <button type="button" className="acc-out" id="accOut" onClick={() => { void logOut() }}>Sign out</button>
   const who = <p className="acc-who">Signed in as <b id="accName">{name}</b></p>
+  const sqns = units().slice().sort((a, b) => a.num.localeCompare(b.num, undefined, { numeric: true }))
+  /* (a squadron chosen and since gone goes back to "Pick…", never quietly to another; one squadron is simply it) */
+  const sqnNow = sqns.length > 1 ? (sqns.some(u => u.id === sqn) ? sqn : '') : (sqns[0]?.id ?? '')
 
   if (off) return screen('accessOff',
     <div className="login-card acc-card">
@@ -163,7 +175,8 @@ export function AccessScreen() {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
-    const bad = requestAccess({ cs, ini, seat, cat })
+    if (sqns.length > 1 && !sqnNow) { setErr('Pick your squadron'); return }
+    const bad = requestAccess({ cs, ini, seat, cat }, sqnNow || undefined)
     if (bad) { setErr(bad); return }
     setErr('')
     notify()
@@ -173,6 +186,13 @@ export function AccessScreen() {
           <h2 className="acc-h">Request access</h2>
           {who}
           <p className="acc-p">You're not on the squadron's list yet. Tell the admins who you are and they'll give you access.</p>
+          {sqns.length > 1 && <>
+            <label htmlFor="accSqn">Squadron</label>
+            <select id="accSqn" value={sqnNow} onChange={e => setSqn(e.target.value)}>
+              <option value="">Pick…</option>
+              {sqns.map(u => <option key={u.id} value={u.id}>{u.num}</option>)}
+            </select>
+          </>}
           {/* no maxLength on this box (D226): a longer name is SAID, never quietly cut */}
           <label htmlFor="accCs">{SIGNUP_CALLSIGN_LABEL}</label>
           {/* eslint-disable-next-line react-doctor/no-autofocus -- the request card is the whole page a newcomer meets after signing in, and the callsign its first box: the caret waits there so he types straight away, as the sign-in card's username does (Login.tsx) */}

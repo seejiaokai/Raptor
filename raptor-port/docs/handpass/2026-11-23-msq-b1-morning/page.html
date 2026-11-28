@@ -1,0 +1,164 @@
+<title>Two Squadrons, Night Report</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one reading column; questions first as answerable rows, then what was built as picture cards. */
+:root{
+  --bg:#f4f6f8; --panel:#ffffff; --fg:#14202b; --muted:#5b6b78; --line:#d9e0e6;
+  --accent:#0e7fa6; --accent-soft:#e3f2f8; --ok:#1f7a4d; --warn:#9a5b00;
+  --font-text:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --font-head:"Space Grotesk","Inter",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0d1217; --panel:#151d24; --fg:#e6edf2; --muted:#9aaab6; --line:#26323c;
+  --accent:#4cc3ea; --accent-soft:#12303c; --ok:#5fd49a; --warn:#f0b35a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0d1217; --panel:#151d24; --fg:#e6edf2; --muted:#9aaab6; --line:#26323c;
+  --accent:#4cc3ea; --accent-soft:#12303c; --ok:#5fd49a; --warn:#f0b35a; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-text);font-size:15px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+.wrap{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1,h2,h3{font-family:var(--font-head);text-wrap:balance;margin:0}
+h1{font-size:26px;line-height:1.2}
+h2{font-size:19px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+h3{font-size:15px}
+p{margin:0}
+.muted{color:var(--muted)}
+.lead{display:flex;flex-direction:column;gap:8px}
+.now{background:var(--accent-soft);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.now ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+.link{font-family:ui-monospace,Consolas,monospace;font-size:13px;word-break:break-all;color:var(--accent)}
+section{display:flex;flex-direction:column;gap:14px}
+.q{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:grid;
+  grid-template-columns:2.2em 1fr;gap:4px 10px}
+.q .n{font-family:var(--font-head);font-weight:700;color:var(--accent);font-size:17px;grid-row:span 3}
+.q .rec{color:var(--ok);font-weight:600}
+.q .rec span{font-weight:400;color:var(--fg)}
+.q .tag{font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--warn);font-weight:600}
+.thumbs{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.thumbs button{border:1px solid var(--line);border-radius:6px;padding:0;background:none;cursor:zoom-in;line-height:0}
+.thumbs img{width:150px;height:auto;border-radius:6px;display:block}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.card button{border:0;padding:0;background:none;cursor:zoom-in;line-height:0}
+.card img{width:100%;height:auto;display:block;border-bottom:1px solid var(--line)}
+.card .t{padding:10px 12px;display:flex;flex-direction:column;gap:4px}
+ul.plain{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+#lb{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;z-index:20;
+  padding:max(12px,env(safe-area-inset-top,0px)) 12px max(12px,env(safe-area-inset-bottom,0px));overflow:auto}
+#lb img{max-width:100%;max-height:100%;object-fit:contain;cursor:zoom-out}
+#lb.big{align-items:flex-start;justify-content:flex-start}
+#lb.big img{max-width:none;max-height:none;width:200%}
+#lbclose{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:calc(12px + env(safe-area-inset-right,0px));
+  background:#fff;color:#000;border:0;border-radius:18px;padding:6px 14px;font-weight:700;cursor:pointer;z-index:21}
+</style>
+
+<div class="wrap">
+  <div class="lead">
+    <h1>Two squadrons: the night's work</h1>
+    <p class="muted">The rest of batch 1's second half, built and checked overnight on 22–23 Nov. Nothing is live yet: it waits for your look and your "merge live".</p>
+  </div>
+
+  <div class="now">
+    <h3>What to look at now</h3>
+    <ol>
+      <li>Answer the 16 questions below. Each has my recommendation; "as recommended" answers them all.</li>
+      <li>Have a look on your iPhone at the preview, signed in as <b>ad</b> (Saber): <span class="link">https://raptor-git-claude-msq-b1-screens-135-kai-e2f5.vercel.app</span></li>
+      <li>Fable's final read of the whole half is still to do. Call it when your Fable allowance allows (it is at 93%).</li>
+    </ol>
+  </div>
+
+  <section>
+    <h2>Questions for you</h2>
+    <p class="muted">Tap a picture to see it full size; tap again to zoom in. The place each question is about is ringed in red.</p>
+    <div id="qs"></div>
+  </section>
+
+  <section>
+    <h2>Built tonight</h2>
+    <div class="grid" id="built"></div>
+  </section>
+
+  <section>
+    <h2>Faults found by the checks, and fixed</h2>
+    <div class="box">
+      <p>The drawing check, the walks and the code readers found these. Each fix began with a test that failed first and passes now. All fixes were walked again on the real app, at desktop and phone size.</p>
+      <ul class="plain">
+        <li>On a phone, the ☰ menu offered Edit Schedule to someone who can only view 149.</li>
+        <li>Undo of "+ New squadron" jumped Admin to the Users panel. It now lands on Squadrons, where the change shows.</li>
+        <li>The bell's Show buttons could stop working for good after a new squadron was undone.</li>
+        <li>Leave War Approvals' "New" mark was one for all squadrons. It is now one per squadron.</li>
+        <li>With Approvals open, picking the other squadron left the old squadron's requests on the page.</li>
+        <li>Making someone master admin the old way kept his Plan, hidden under "Full access". An Undo could also put a Plan back under the mark. Both are now refused, and the refusal names who made the change.</li>
+        <li>An Admin → Users Save that was refused for a taken sign-in name still saved the access. Now one Save is all or nothing, with one Undo.</li>
+        <li>A 142 admin could answer a request to join 149 by a hand-made save the screen refuses. The save is now refused.</li>
+        <li>Squadron config did not follow the pick. The phone board clipped the day's name. The holiday window was missing its line.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>Checks</h2>
+    <div class="box">
+      <ul class="plain">
+        <li>A full walk of the app: 250 pictures. Then two re-walks of the fixes: 171 and 119 pictures. All passed; nothing is left open.</li>
+        <li>Code reads: Astra, a fresh Opus reader and a security reader on the whole half, then Astra and Opus on each round of fixes.</li>
+        <li>GitHub's full check passed on every pushed fix round.</li>
+        <li>Fable read nothing tonight, as you asked. Its read of the whole half is yours to call.</li>
+      </ul>
+    </div>
+  </section>
+</div>
+
+<div id="lb" hidden><button id="lbclose" type="button">Close</button><img id="lbimg" alt=""></div>
+
+<script>
+const Q=[
+ ["The roles table says an admin of 142 with View of 149 cannot open 149's Admin page (“—”). In fact he can, read only: he sees 149's Squadron config but cannot change it.","Change that cell to “read”.",["q-a-roles-table-view-admin-cell"]],
+ ["In 142's Users filter, the Role chip reads “Plans 142”. It finds the people who hold Plan of this page's squadron. The drawing had “Admin + Plan of 149”.","Keep “Plans 142”.",["q-b-filter-role-plans-142"]],
+ ["The roles table's two lines keep the drawing's words: “View and Plan give access to another squadron.” and “✓ can change · read: can see, not change · — cannot open”.","Keep the drawn words.",["q-c-roles-table-two-lines"]],
+ ["While a Leave War day window is open, its shade covers “142 ▾”, so you close the window before picking another squadron.","Leave it. Closing the window first is the natural order.",["q-d-war-window-shade-over-142"]],
+ ["The Tracker's cover says “To open 149's, sign out and in.” That does not fit a master admin, whose Tracker holds his home squadron. He would pick 149 before opening the Tracker.","Keep the drawn words for now. I draw a master admin's wording if you want one.",["q-e-tracker-cover-words-master"]],
+ ["Request access starts on squadron 142. A newcomer who leaves it asks 142's admins.","Start on “Pick…”, so he must choose. I draw it for you first.",["q-f-request-access-starts-on-142"]],
+ ["Five small helper words appear in no drawing: “Change 142's place”, “Only an admin of 149 can change its place.”, “Change Home base”, “Saved together: 150 and its new place.” and “1 person”. (The first is a hover text, which a picture cannot show.)","Keep them.",["q-g-hover-change-142-place"]],
+ ["On a desktop, the day board's day buttons start a little further right than drawn. The day's title box was widened so the full day name and the squadron number always fit.","Keep it.",["q-h-board-day-chips-start"]],
+ ["Hunter holds only View of 149. With 149 picked, Admin → Data's two clear buttons are lit, and pressing them does nothing.","Grey them out, with a short line saying why. That is new on screen, so I draw it for you first.",["q-i-data-clears-view-holder-149"]],
+ ["On 142's Admin → Users, Saber ticks Squadron “149” in the filter. The heading then reads “People · 10”, and the tick stays after he picks another squadron.","The heading keeps 142's own count, and the tick clears when another squadron is picked.",["q-j-filter-149-people-10"]],
+ ["An Inputs settings window open on 142 closes when 149 is picked. The plan said it would stay open as 142's.","Keep it open, as 142's.",["q-k-inputs-settings-before-pick","q-k-inputs-settings-after-pick"]],
+ ["After Undo of the master admin mark, the bubble reads “Undid: the master admin mark” without the person's name.","Add the name: “… · Hunter”.",["q-l-undo-master-mark"]],
+ ["If a press on the bell's Show buttons is refused, which now happens only with two tabs open, nothing changes and nothing is said.","Show the app's usual “This change could not be saved.” under the row. That is new on screen, so I draw it for you first.",["q-m-bell-show-row"]],
+ ["Hunter holds Plan of 149. Saber makes him master admin, then admin again. His bell says “Made a master admin”, then “Master admin taken off”, but no line says his Plan of 149 went.","Leave it. While he is master he has more access, and “Master admin taken off” tells him it went.",["q-n-hunter-bell-master-and-back"]],
+ ["One Save changed Hunter's sign-in name and gave him Plan of 149. One Undo takes back both, but its bubble names only the Plan.","Name both. These are new words, so I draw them for you first.",["q-o-undo-rename-and-plan"]],
+ ["On a desktop, Escape does not close an opened person's row on Admin → Users; Cancel does. This was so before tonight.","Escape closes it, as Cancel does.",["q-p-users-row-opened-desktop"]]
+];
+const B=[
+ ["a1-schedules-menu-desktop","The Schedules menu","Press “142 ▾” at the top left to see your squadrons, each marked Your squadron, Full access or View only, and pick one."],
+ ["a1-schedules-menu-phone","The Schedules menu on a phone","The same menu opens as a sheet."],
+ ["a2-users-person-row","A person's row on Admin → Users","Role, then one line per squadron: Home squadron, or None, View or Plan."],
+ ["a2-users-filter-open","The Users filter","Tick chips for seat, CAT, role and, for a master admin, squadron."],
+ ["a3-squadrons-new-squadron-open","Admin → Squadrons","“+ New squadron”: its number, its place and its first admin."],
+ ["a4-request-access-squadron","Request access","A newcomer now says which squadron he is joining."],
+ ["a5-bell-show-and-squadron-mark","The bell","Show buttons per squadron, and a grey squadron number on another squadron's lines."],
+ ["a6-board-squadron-number","The day board","The picked squadron's number after the day's title."],
+ ["a7-tracker-cover-after-pick","The Tracker after a pick","It stays your squadron's Tracker and says so, read only."],
+ ["a8-approvals-after-pick","Leave War Approvals after a pick","It shows the picked squadron's requests at once."],
+ ["a9-squadron-config-149","Squadron config follows the pick","“Squadron config · 149”, read only unless you are 149's admin."]
+];
+const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+const qs=document.getElementById("qs");
+qs.style.display="flex";qs.style.flexDirection="column";qs.style.gap="10px";
+Q.forEach((q,i)=>{const d=document.createElement("div");d.className="q";
+ d.innerHTML=`<div class="n">${i+1}</div><p>${esc(q[0])}</p><p class="rec">Recommended: <span>${esc(q[1])}</span></p>`+
+ `<div class="thumbs">${q[2].map(f=>`<button type="button" data-src="p/${f}.png" aria-label="Open picture"><img src="p/${f}.png" alt="Picture for question ${i+1}" loading="lazy"></button>`).join("")}</div>`;
+ qs.appendChild(d)});
+const g=document.getElementById("built");
+B.forEach(b=>{const d=document.createElement("div");d.className="card";
+ d.innerHTML=`<button type="button" data-src="p/${b[0]}.png" aria-label="Open picture"><img src="p/${b[0]}.png" alt="${esc(b[1])}" loading="lazy"></button><div class="t"><h3>${esc(b[1])}</h3><p class="muted">${esc(b[2])}</p></div>`;
+ g.appendChild(d)});
+const lb=document.getElementById("lb"),li=document.getElementById("lbimg");
+document.addEventListener("click",e=>{const b=e.target.closest("button[data-src]");if(b){li.src=b.dataset.src;lb.classList.remove("big");lb.hidden=false}});
+li.addEventListener("click",()=>lb.classList.toggle("big"));
+document.getElementById("lbclose").addEventListener("click",()=>{lb.hidden=true});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")lb.hidden=true});
+</script>

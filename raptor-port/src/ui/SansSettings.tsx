@@ -20,7 +20,7 @@
    from the draft, so he sees what a choice means before he saves it. ("How this works" on the calendar states the rule
    only, D646; the date an entry missed is said by its LATE tag.) */
 import { useEffect, useState } from 'react'
-import { isAdmin } from '../state/perms'
+import { adminOfUnit } from '../state/perms'
 import { notify } from '../state/store'
 import { getTones, saveTones, type FlySave } from '../state/flyplan'
 import { validTones } from '../state/flyplan-model'
@@ -32,11 +32,12 @@ import { SANSSET, setDaysWin, setSansSet } from './pops'
 import { CutFields } from './CutFields'
 import { cutDraftOf, cutRuleOf } from './cutdraft'
 import { useVersion } from './useStore'
+import { useGuardWork } from './guard'
 
 export function SansSettings({ unit }: { unit?: string } = {}) {
   useVersion()
   /* …and it goes with its page's squadron (state/cutoff.ts winStale — the fix round of 22 Nov 26) */
-  const refused = SANSSET && (!isAdmin() || (unit === undefined && winStale('sans')))
+  const refused = SANSSET && (!adminOfUnit(unit ?? winUnit('sans')) || (unit === undefined && winStale('sans')))
   useEffect(() => { if (refused) setSansSet(false) }, [refused])
   /* THE SQUADRON IT EDITS (the reshape plan §3.2 A-ii; the host's ruling of 21 Nov 26): the page it was opened from —
      `unit` when handed in, else what its door named (state/cutoff.ts openWinFor: a calendar's gear its own squadron),
@@ -58,8 +59,13 @@ function Body({ unit }: { unit: string }) {
   const [amber, setAmber] = useState(String(tones.amberFrom))
   const [red, setRed] = useState(String(tones.redFrom))
   /* the cut-off's draft and its fields are one body with the Inputs calendar's window (ui/CutFields.tsx) */
-  const [cutDraft, setCutDraft] = useState(() => cutDraftOf(cut))
+  const [cutDraft0] = useState(() => cutDraftOf(cut))
+  const [cutDraft, setCutDraft] = useState(cutDraft0)
   const [err, setErr] = useState('')
+  /* ANYTHING CHANGED SINCE IT OPENED: the guard counts the window then; unchanged, it closes by itself at a pick with the
+     Calendar (ui/guard.ts — his D2654 E1) */
+  useGuardWork('sansset', yellow !== String(tones.yellowFrom) || amber !== String(tones.amberFrom) || red !== String(tones.redFrom)
+    || JSON.stringify(cutDraft) !== JSON.stringify(cutDraft0))
 
   const close = () => { setSansSet(false); notify() }
   const rule: CutRule = cutRuleOf(cutDraft)

@@ -24,8 +24,21 @@
    (the calendar UI) wraps the call in writeInputs, the same funnel every
    other Inputs-page write already goes through, so history and repaint
    happen exactly once, in one place. */
-import { canEditSched } from './auth'
+import { adminOfUnit } from './perms'
+import { UNIT } from '../engine/unitview'
 import { newId } from '../engine/newid'
+
+/* WHOSE CALENDAR A VERB WRITES (step A — the second-half plan §2 item 1, its "named squadron" kind): the loaded one is the
+   schedule picked's (UNIT); the Inputs calendar of another squadron lends its stored records to these verbs for their
+   length (ui/owncal.ts lent), naming that squadron here. Every verb below asks "an admin of THAT calendar's squadron" —
+   so a View holder of 149 with 149 picked still writes his own 142 calendar's notes, and never 149's. */
+let CAL_UNIT: string | null = null
+export function withPlanCalUnit<T>(unit: string, fn: () => T): T {
+  const was = CAL_UNIT
+  CAL_UNIT = unit
+  try { return fn() } finally { CAL_UNIT = was }
+}
+const mayWriteCal = (): boolean => adminOfUnit(CAL_UNIT ?? UNIT)
 import { PEOPLE } from '../engine/people'
 
 /* one SECTION dropped on a day, addressed by its own id rather than its
@@ -58,7 +71,7 @@ function nextPuckId() { return newId('pp') }
    "there is a remark, and it says nothing" to any caller that just checks
    the key's presence, which is not the same as "no remark filed". */
 export function setDayRemark(iso: string, text: string) {
-  if (!canEditSched()) return false
+  if (!mayWriteCal()) return false
   const t = String(text == null ? '' : text).trim()
   const had = Object.prototype.hasOwnProperty.call(DAYRMK, iso)
   if (!t) {
@@ -116,7 +129,7 @@ export function planMoveBlock(id: string, iso: string): string | null {
    a man twice. Unshifts, in the LATE-arriving-first-in-the-list convention the rest of the app uses (engine/inputs.ts's
    own add()). */
 export function addPlanPuck(iso: string, text: string, ids?: string[]) {
-  if (!canEditSched()) return false
+  if (!mayWriteCal()) return false
   const t = String(text == null ? '' : text).trim()
   const who = [...new Set((ids || []).filter(Boolean))].filter(x => !goneOn(x, iso))
   if (!t && !who.length) return false
@@ -128,7 +141,7 @@ export function addPlanPuck(iso: string, text: string, ids?: string[]) {
    removePlanPuck's job, a distinct verb with a distinct undo step, not a side door this one falls into. A note WITH
    people may lose its words and stay, as its people alone (D695 — "the pencil adds words later"). */
 export function editPlanPuck(id: string, text: string) {
-  if (!canEditSched()) return false
+  if (!mayWriteCal()) return false
   const p = PLANPUCKS.find((x: any) => x.id === id)
   if (!p) return false
   const t = String(text == null ? '' : text).trim()
@@ -140,7 +153,7 @@ export function editPlanPuck(id: string, text: string) {
 
 /* drag/redate a puck onto a different day */
 export function movePlanPuck(id: string, iso: string) {
-  if (!canEditSched()) return false
+  if (!mayWriteCal()) return false
   const p = PLANPUCKS.find((x: any) => x.id === id)
   if (!p) return false
   if (p.date === iso) return false
@@ -150,7 +163,7 @@ export function movePlanPuck(id: string, iso: string) {
 }
 
 export function removePlanPuck(id: string) {
-  if (!canEditSched()) return false
+  if (!mayWriteCal()) return false
   const ix = PLANPUCKS.findIndex((x: any) => x.id === id)
   if (ix < 0) return false
   PLANPUCKS.splice(ix, 1)
@@ -162,7 +175,7 @@ export function removePlanPuck(id: string) {
 /* add SEVERAL people to a note in one write (the picker's OK) — only those not already on it, so re-adding is a
    no-op rather than a duplicate. Returns whether anything landed. */
 export function addPuckPeople(id: string, personIds: string[]) {
-  if (!canEditSched()) return false
+  if (!mayWriteCal()) return false
   const p = PLANPUCKS.find((x: any) => x.id === id)
   if (!p) return false
   const ids = idsOf(p)
@@ -183,7 +196,7 @@ export function addPuckPeople(id: string, personIds: string[]) {
    THE LAST MAN OFF A NOTE WITH NO WORDS TAKES THE NOTE WITH HIM (D695's reading: a note with neither words nor people
    is not kept) — the old pucks row stayed as an empty band for the scheduler to delete; there is nothing to keep. */
 export function togglePuckPerson(id: string, personId: string) {
-  if (!canEditSched()) return false
+  if (!mayWriteCal()) return false
   const p = PLANPUCKS.find((x: any) => x.id === id)
   if (!p || !personId) return false
   const ids = idsOf(p)
@@ -201,7 +214,7 @@ export function togglePuckPerson(id: string, personId: string) {
    there (the blank rides back to the vacated slot). Trailing blanks are trimmed after, exactly as a removal does, so
    moving the last puck earlier doesn't leave a dangling empty cell — internal gaps still hold their place. */
 export function movePuckPerson(id: string, from: number, to: number) {
-  if (!canEditSched()) return false
+  if (!mayWriteCal()) return false
   const p = PLANPUCKS.find((x: any) => x.id === id)
   if (!p) return false
   const ids = idsOf(p)
@@ -218,7 +231,7 @@ export function movePuckPerson(id: string, from: number, to: number) {
    on the GLOBAL array but computes its target from the day's own sequence,
    so sections of other days are never disturbed. */
 export function movePlanSection(id: string, beforeId: string | null) {
-  if (!canEditSched()) return false
+  if (!mayWriteCal()) return false
   const p = PLANPUCKS.find((x: any) => x.id === id)
   if (!p || id === beforeId) return false
   const before = beforeId ? PLANPUCKS.find((x: any) => x.id === beforeId) : null

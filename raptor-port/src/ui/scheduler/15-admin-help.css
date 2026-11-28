@@ -60,6 +60,9 @@
 #page-admin .adm-2col input[type=date]{width:100%;box-sizing:border-box}
 #page-admin #admConfig .abtn{display:block;width:100%;text-align:left;margin-top:2px}
 #page-admin #admConfig .adm-note{margin-bottom:12px}
+/* the read-only line at the panel's top (his D2317 — the drawing f1a, draw-f.mjs: margin 0 0 12px), for anyone who is
+   not an admin of the squadron in view */
+#page-admin #admConfig .adm-note.adm-cfg-ro{margin:0 0 12px}
 /* Admin → Users ([ACCOUNTS], D166, D204): the requests waiting and the accounts, one row
    each — sign-in name over callsign, the role pill at the right; a tapped row opens its
    editor underneath (never on your own account) */
@@ -98,6 +101,61 @@
 #page-admin .adm-note.acc-note{margin:-2px 0 12px}
 #page-admin .acc-edit{flex:1 1 100%;padding:10px 0 4px}
 #page-admin .acc-edit .mfield select,#page-admin .acc-edit .mfield input{width:100%;box-sizing:border-box}
+/* A PERSON'S SQUADRON LINES (his D2303, design B — the drawing draw-row.mjs `.mqb-sq`, pictures rB1–rB4; ui/UserAccess.tsx):
+   under Sign-in and Role, the squadron's number in the field labels' look in a 34px column, then "Home squadron", "Full
+   access" or the editor's own None · View · Plan buttons, one row; a line's grey reason under its buttons.
+   THE FOOT AS draw-roles.mjs DREW IT (the k pictures — the roles fold always follows the lines): the lines' 4px bottom
+   margin meets the fold's 4px top in one, and a grey line keeps 2px under it, so the fold sits 6px under a grey line —
+   the drawing check of 23 Nov 26 measured it 6px lower with the lines' old 12px foot (e2e/users-fit.spec.ts) */
+#page-admin .acc-sq{display:grid;grid-template-columns:34px 1fr;column-gap:10px;row-gap:8px;align-items:center;margin:12px 0 4px}
+#page-admin .acc-sq-n{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+#page-admin .acc-sq-home{font-size:12px;color:var(--ink-2)}
+#page-admin .acc-sq .acc-acts{margin:0;flex-wrap:nowrap}
+#page-admin .acc-sq .abtn:disabled{opacity:.42}
+#page-admin .acc-sq-note{grid-column:2;margin:-2px 0 2px}
+#page-admin .acc-edit :is(input,select,.abtn):disabled{opacity:.42}
+/* ADMIN → SQUADRONS (ui/SquadronsPanel.tsx; pictures b1-3, b1-4, b1-9, b1-10, p7 — drawn from Users' own parts): a form's
+   line in the row's grey-line look, a sentence that wraps (b1-4's "Saved at once…", b1-9's first admin line); a refusal
+   in the note's look under the boxes (p7); "+ New squadron" under the squadrons; the Places a little apart */
+#page-admin .acc-sub.sq-note{display:block;margin:2px 0 10px;white-space:normal}
+#page-admin .adm-note.sq-why{margin:6px 0 12px}
+#page-admin .sq-add{margin:10px 0 4px}
+#page-admin .sq-places{margin-top:14px}
+/* a man of another squadron on this list: his squadron's grey number by his name (the role chip's look, picture rB2) */
+#page-admin .acc-sqn{display:inline-block;margin-left:6px;vertical-align:1px;font-family:'Barlow Condensed','Inter Tight',sans-serif;
+  font-size:8.5px;font-weight:800;letter-spacing:.08em;line-height:1.35;padding:0 5px;border-radius:3px;color:var(--ink-2);
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);font-style:normal}
+/* "▸ WHAT EACH ROLE ALLOWS" (his D2302, D2305 — built as drawn 22 Nov: draw-roles.mjs `.mqk`, picture k2; ui/UserAccess.tsx
+   RolesFold): the Logic page's "How it works" fold (01-logic.css .lghow) word for word in size and colour; inside, the
+   label, the grid — its column heads the field labels' small grey caps, a tick in the accent, "read" grey, a dash dimmer —
+   the key and the numbered notes; on a phone flush with the row's left edge, the cells narrower, so the grid fits 402 */
+#page-admin .acc-roles{margin:4px 0 12px}
+#page-admin .acc-roles summary{font-size:12px;font-weight:600;color:var(--accent);cursor:pointer;list-style:none;min-height:28px;
+  display:flex;align-items:center;width:max-content}
+#page-admin .acc-roles summary::-webkit-details-marker{display:none}
+#page-admin .acc-roles summary::before{content:'▸';width:14px}
+#page-admin .acc-roles[open] summary::before{content:'▾'}
+#page-admin .acc-roles summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+#page-admin .acc-roles .acc-rt-lab{font-size:12px;color:var(--ink-2);margin:4px 0 6px 14px}
+#page-admin .acc-roles .acc-rt-key{font-size:12px;color:var(--ink-3);margin:6px 0 2px 14px}
+#page-admin .acc-roles table.acc-rt{border-collapse:collapse;margin-left:14px;font-size:12px;line-height:1.3}
+#page-admin .acc-rt th{text-align:left;font-weight:600;color:var(--ink-1,#e8edf2);padding:5px 12px 5px 0;white-space:nowrap}
+#page-admin .acc-rt thead th{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);text-align:center;
+  padding:0 6px 6px;vertical-align:bottom;white-space:normal}
+#page-admin .acc-rt td{text-align:center;padding:5px 6px;border-top:1px solid var(--edge,rgba(255,255,255,.08));white-space:nowrap}
+#page-admin .acc-rt thead td{border-top:none;padding:0}
+#page-admin .acc-rt tbody th{border-top:1px solid var(--edge,rgba(255,255,255,.08))}
+#page-admin .acc-rt td.y{color:var(--accent);font-weight:700}
+#page-admin .acc-rt td.r{color:var(--ink-2)}
+#page-admin .acc-rt td.n{color:var(--ink-3)}
+#page-admin .acc-rt sup{font-size:9px;margin-left:1px;color:var(--ink-2);font-weight:600}
+#page-admin .acc-roles ol.acc-rt-notes{margin:6px 0 2px 14px;padding-left:16px;font-size:12px;line-height:1.5;color:var(--ink-2)}
+@media (max-width:600px){
+  #page-admin .acc-roles table.acc-rt,#page-admin .acc-roles .acc-rt-lab,#page-admin .acc-roles .acc-rt-key,
+  #page-admin .acc-roles ol.acc-rt-notes{margin-left:0}
+  #page-admin .acc-rt th{white-space:normal;padding-right:6px}
+  #page-admin .acc-rt td{padding:5px 3px}
+}
 #page-admin #admUsers .mfield select,#page-admin #admUsers .mfield input{width:100%;box-sizing:border-box}
 /* (the guest switch's row, .acc-switch, went with the guest view — his D2239, 20 Nov 26) */
 /* (the Admin + Wave show/hide list was removed 29 Aug 26 pt.3 — show/hide/delete

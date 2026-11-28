@@ -1,0 +1,552 @@
+{
+ "b1-1-d.png": {
+  "item": "b1-1",
+  "size": "desktop",
+  "caption": "Round 3's approved \"Schedules\" button redrawn for batch 1, as Saber (142) sees it on Edit Schedule: the TALON mark's small number reads \"142 ▾\"; its menu lists only 142 (picked, ●) and 149 — no detachment line (detachments are batch 2)."
+ },
+ "b1-1-p.png": {
+  "item": "b1-1",
+  "size": "phone",
+  "caption": "Round 3's approved \"Schedules\" button redrawn for batch 1, as Saber (142) sees it on Edit Schedule: the TALON mark's small number reads \"142 ▾\"; its menu lists only 142 (picked, ●) and 149 — no detachment line (detachments are batch 2). On a phone the menu opens as a sheet from the top: the full width, hung from the top bar, the page under it dimmed."
+ },
+ "b1-10-d.png": {
+  "item": "b1-10",
+  "size": "desktop",
+  "caption": "The same row with \"+ New place…\" picked from its Place list (his \"yes\"): the place's name and its time zone open right there in the form, no going somewhere else first. Save makes 150 and its new place together; the place then shows on the Places list for every squadron."
+ },
+ "b1-10-p.png": {
+  "item": "b1-10",
+  "size": "phone",
+  "caption": "The same row with \"+ New place…\" picked from its Place list (his \"yes\"): the place's name and its time zone open right there in the form, no going somewhere else first. Save makes 150 and its new place together; the place then shows on the Places list for every squadron."
+ },
+ "b1-2-d.png": {
+  "item": "b1-2",
+  "size": "desktop",
+  "caption": "Round 4's approved mark redrawn on 142's own Scheduler Board: a small grey \"142\" beside the day title in the board's own bar (nothing in the bar moves, measured). Nothing of a shared wave is drawn — that is batch 3."
+ },
+ "b1-2-p.png": {
+  "item": "b1-2",
+  "size": "phone",
+  "caption": "Round 4's approved mark redrawn on 142's own Scheduler Board: a small grey \"142\" beside the day title in the board's own bar (nothing in the bar moves, measured). Nothing of a shared wave is drawn — that is batch 3."
+ },
+ "b1-3-d.png": {
+  "item": "b1-3",
+  "size": "desktop",
+  "caption": "Admin → Squadrons, as a master admin sees it: the two squadrons, 142 and 149, both at Home base, \"Perth · GMT+8\" in each row's grey line (round 7's approved rows). No detachment sections — they come in batch 2 — so the category's grey line reads \"Places\". New (pink): \"+ New squadron\", the Users editor's own button re-lettered, shown only to a master admin."
+ },
+ "b1-3-p.png": {
+  "item": "b1-3",
+  "size": "phone",
+  "caption": "Admin → Squadrons, as a master admin sees it: the two squadrons, 142 and 149, both at Home base, \"Perth · GMT+8\" in each row's grey line (round 7's approved rows). No detachment sections — they come in batch 2 — so the category's grey line reads \"Places\". New (pink): \"+ New squadron\", the Users editor's own button re-lettered, shown only to a master admin."
+ },
+ "b1-4-d.png": {
+  "item": "b1-4",
+  "size": "desktop",
+  "caption": "The same page, 149's row opened on its place (round 4's approved place row): PLACE \"Home base\", and beside it round 7's approved TIME ZONE select, \"Perth · GMT+8\". The line under them reads \"Saved at once; counts from tomorrow.\" — the approved card's line without its promise that the squadrons can plan each other's people (that comes in batch 3). \"+ New squadron\" (pink) as on the picture before."
+ },
+ "b1-4-p.png": {
+  "item": "b1-4",
+  "size": "phone",
+  "caption": "The same page, 149's row opened on its place (round 4's approved place row): PLACE \"Home base\", and beside it round 7's approved TIME ZONE select, \"Perth · GMT+8\". The line under them reads \"Saved at once; counts from tomorrow.\" — the approved card's line without its promise that the squadrons can plan each other's people (that comes in batch 3). \"+ New squadron\" (pink) as on the picture before."
+ },
+ "b1-5-d.png": {
+  "item": "b1-5",
+  "size": "desktop",
+  "caption": "Round 2's approved \"Request access\" card: \"Squadron\" is its first choice, reading 142 (choices 142 and 149), the real CAT choice cloned. The request goes to that squadron's admins only."
+ },
+ "b1-5-p.png": {
+  "item": "b1-5",
+  "size": "phone",
+  "caption": "Round 2's approved \"Request access\" card: \"Squadron\" is its first choice, reading 142 (choices 142 and 149), the real CAT choice cloned. The request goes to that squadron's admins only."
+ },
+ "b1-6-d.png": {
+  "item": "b1-6",
+  "size": "desktop",
+  "caption": "Admin → Users, Saber's row opened (round 7's approved picture): \"Other squadrons\", its one choice \"149 · View\". New (pink): the line \"Home squadron · 142\" above it, in the row's own grey-line look — shown, not chosen here: a man's home squadron changes only by a transfer."
+ },
+ "b1-6-p.png": {
+  "item": "b1-6",
+  "size": "phone",
+  "caption": "Admin → Users, Saber's row opened (round 7's approved picture): \"Other squadrons\", its one choice \"149 · View\". New (pink): the line \"Home squadron · 142\" above it, in the row's own grey-line look — shown, not chosen here: a man's home squadron changes only by a transfer."
+ },
+ "b1-7-d.png": {
+  "item": "b1-7",
+  "size": "desktop",
+  "caption": "Admin → Users, the \"Add a person\" form at the foot of the list. New (pink): \"Home squadron\", a choice of 142 or 149, the admin's own squadron (142) picked to start; the form's own Pilot / WSO choice cloned. Everything else as built."
+ },
+ "b1-7-p.png": {
+  "item": "b1-7",
+  "size": "phone",
+  "caption": "Admin → Users, the \"Add a person\" form at the foot of the list. New (pink): \"Home squadron\", a choice of 142 or 149, the admin's own squadron (142) picked to start; the form's own Pilot / WSO choice cloned. Everything else as built."
+ },
+ "b1-8-d.png": {
+  "item": "b1-8",
+  "size": "desktop",
+  "caption": "Leave War → settings → Calendar → Holidays → \"+ Add\", as 149's admin (the top bar's \"142\" re-lettered \"149\"), Fri 7 Aug picked on the window's own calendar; round 7's approved amber warning before Save, naming both squadrons' published days. New (pink): a quiet line at the right of the KIND label, \"Off days stay each squadron's own\" — the two squadrons at one place share their public holidays (the warning above names both), each keeping its own Off days."
+ },
+ "b1-8-p.png": {
+  "item": "b1-8",
+  "size": "phone",
+  "caption": "Leave War → settings → Calendar → Holidays → \"+ Add\", as 149's admin (the top bar's \"142\" re-lettered \"149\"), Fri 7 Aug picked on the window's own calendar; round 7's approved amber warning before Save, naming both squadrons' published days. New (pink): a quiet line at the right of the KIND label, \"Off days stay each squadron's own\" — the two squadrons at one place share their public holidays (the warning above names both), each keeping its own Off days."
+ },
+ "b1-9-d.png": {
+  "item": "b1-9",
+  "size": "desktop",
+  "caption": "\"+ New squadron\" pressed, as Saber, the master admin: a new row opens under 142 and 149 (as \"+ New detachment\" opened its fields). New (pink): the squadron's number, a faded \"150\" showing what to type; its place; and its first admin, picked from the admins of the squadrons there are — he gets Plan of the new squadron, so it never starts with no admin."
+ },
+ "b1-9-p.png": {
+  "item": "b1-9",
+  "size": "phone",
+  "caption": "\"+ New squadron\" pressed, as Saber, the master admin: a new row opens under 142 and 149 (as \"+ New detachment\" opened its fields). New (pink): the squadron's number, a faded \"150\" showing what to type; its place; and its first admin, picked from the admins of the squadrons there are — he gets Plan of the new squadron, so it never starts with no admin."
+ },
+ "n1a-d.png": {
+  "piece": "n1",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Admin → Users as Hunter, 142's admin: 142's people only. New: the filter row under the search — Pilots · WSOs · Personnel · All (Quals' own switch), then CAT and Role. The list stays A to Z. Measured: the row 37px high."
+ },
+ "n1a-p.png": {
+  "piece": "n1",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Admin → Users as Hunter, 142's admin: 142's people only. New: the filter row under the search — Pilots · WSOs · Personnel · All (Quals' own switch), then CAT and Role. The list stays A to Z. Measured: the row 82px high."
+ },
+ "n1b-d.png": {
+  "piece": "n1",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "The same list with Pilots and Role \"Admin\" picked: only 142's pilots who are admins show (1 here), still A to Z. A filter only hides rows; it never reorders them."
+ },
+ "n1b-p.png": {
+  "piece": "n1",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "The same list with Pilots and Role \"Admin\" picked: only 142's pilots who are admins show (1 here), still A to Z. A filter only hides rows; it never reorders them."
+ },
+ "n1c-d.png": {
+  "piece": "n1",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "The same list further down: the 149 group under its own heading, each of its people marked with the grey \"149\"."
+ },
+ "n1c-p.png": {
+  "piece": "n1",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "The same list further down: the 149 group under its own heading, each of its people marked with the grey \"149\"."
+ },
+ "n1c0-d.png": {
+  "piece": "n1",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Admin → Users as Saber, the master admin. New: his row starts \"142 · All squadrons\" (142 is the squadron picked in his Schedules menu); All squadrons picked, the people grouped under each squadron, each group A to Z."
+ },
+ "n1c0-p.png": {
+  "piece": "n1",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Admin → Users as Saber, the master admin. New: his row starts \"142 · All squadrons\" (142 is the squadron picked in his Schedules menu); All squadrons picked, the people grouped under each squadron, each group A to Z."
+ },
+ "n3-d.png": {
+  "piece": "n3",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Hunter's own bell. New: a line whenever his account changes — here Plan of 149 given, and earlier made an admin of 142 — each naming who did it. A tap opens nothing: his own row on Admin → Users is never his to open. The third line is today's kind, for scale."
+ },
+ "n3-p.png": {
+  "piece": "n3",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Hunter's own bell. New: a line whenever his account changes — here Plan of 149 given, and earlier made an admin of 142 — each naming who did it. A tap opens nothing: his own row on Admin → Users is never his to open. The third line is today's kind, for scale."
+ },
+ "nfa-d.png": {
+  "piece": "nf",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Admin → Users as Hunter, 142's admin: 142's 61 people. New: one \"Filter\" button beside the search, nothing filtered."
+ },
+ "nfa-p.png": {
+  "piece": "nf",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Admin → Users as Hunter, 142's admin: 142's 61 people. New: one \"Filter\" button beside the search, nothing filtered."
+ },
+ "nfb-d.png": {
+  "piece": "nf",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "The panel open: Seat, CAT and Role, each a row of tick chips. Pilots and Admin ticked, so the button reads \"Filter · 2\" in blue and the line over the list \"Showing 1 of 61 · Clear\". Several ticks in one group mean any of them; groups combine."
+ },
+ "nfb-p.png": {
+  "piece": "nf",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "The panel open: Seat, CAT and Role, each a row of tick chips. Pilots and Admin ticked, so the button reads \"Filter · 2\" in blue and the line over the list \"Showing 1 of 61 · Clear\". Several ticks in one group mean any of them; groups combine."
+ },
+ "nfc-d.png": {
+  "piece": "nf",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "As Saber, the master admin: the panel has a fourth group, Squadron. 142 and 149 both ticked: everyone, grouped under each squadron (the 149 group further down, its people marked \"149\")."
+ },
+ "nfc-p.png": {
+  "piece": "nf",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "As Saber, the master admin: the panel has a fourth group, Squadron. 142 and 149 both ticked: everyone, grouped under each squadron (the 149 group further down, its people marked \"149\")."
+ },
+ "nfd-d.png": {
+  "piece": "nf",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "The panel closed with Pilots and Admin still ticked: \"Filter · 2\" stays blue, and the line \"Showing 1 of 61 · Clear\" sits over the list, so a short list never looks like missing people. \"Clear\" takes every tick off."
+ },
+ "nfd-p.png": {
+  "piece": "nf",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "The panel closed with Pilots and Admin still ticked: \"Filter · 2\" stays blue, and the line \"Showing 1 of 61 · Clear\" sits over the list, so a short list never looks like missing people. \"Clear\" takes every tick off."
+ },
+ "p10-d.png": {
+  "piece": "p10",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Saber's bell (a 142 admin). Outlaw's posting out was due Fri 20 Nov and the app could not run it. New: the top line — \"Outlaw · Fri 20 Nov / Posting out could not run. See his row on Admin → Users.\" — rung once, the first time it fails, to 142's admins only (Outlaw is 142's, so no squadron mark); a tap opens his row, where the amber line of picture 8 says what to do. The two lines under it are today's kind, for scale."
+ },
+ "p10-p.png": {
+  "piece": "p10",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Saber's bell (a 142 admin). Outlaw's posting out was due Fri 20 Nov and the app could not run it. New: the top line — \"Outlaw · Fri 20 Nov / Posting out could not run. See his row on Admin → Users.\" — rung once, the first time it fails, to 142's admins only (Outlaw is 142's, so no squadron mark); a tap opens his row, where the amber line of picture 8 says what to do. The two lines under it are today's kind, for scale."
+ },
+ "p1a-d.png": {
+  "piece": "p1",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Saber, the master admin, has opened Hunter's row (an admin of 142) on Admin → Users. New: the \"Other squadrons\" ladder under Sign-in and Role, Plan 149 picked, its one line saying what Plan means. Every rung is Saber's to set. Measured: ladder 584px wide in a 584px editor, 1 row(s)."
+ },
+ "p1a-p.png": {
+  "piece": "p1",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Saber, the master admin, has opened Hunter's row (an admin of 142) on Admin → Users. New: the \"Other squadrons\" ladder under Sign-in and Role, Plan 149 picked, its one line saying what Plan means. Every rung is Saber's to set. Measured: ladder 328px wide in a 328px editor, 2 row(s)."
+ },
+ "p1b-d.png": {
+  "piece": "p1",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Kestrel, 149's admin, has opened Ranger's row (a member of 142, found by search; his row marked with the grey \"142\"). New: the ladder with View 149 picked; Plan 149 and Master admin greyed, the line under them saying why; everything else on Ranger's row greyed, since it stays 142's; Save saves the ladder only. Measured: 1 row(s), 5 controls greyed."
+ },
+ "p1b-p.png": {
+  "piece": "p1",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Kestrel, 149's admin, has opened Ranger's row (a member of 142, found by search; his row marked with the grey \"142\"). New: the ladder with View 149 picked; Plan 149 and Master admin greyed, the line under them saying why; everything else on Ranger's row greyed, since it stays 142's; Save saves the ladder only. Measured: 2 row(s), 5 controls greyed."
+ },
+ "p1c-d.png": {
+  "piece": "p1",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Hunter, 142's own admin, has opened Ranger's row. New: the ladder greyed whole, None lit, the line saying who may give access to 149."
+ },
+ "p2a-d.png": {
+  "piece": "p2",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Admin → Users as Saber, the master admin (his list is 142's). Hunter holds Plan of 149. New: \"· also plans 149\" at the end of his line under the callsign, in that line's own grey — the same on 142's list and on 149's."
+ },
+ "p2a-p.png": {
+  "piece": "p2",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Admin → Users as Saber, the master admin (his list is 142's). Hunter holds Plan of 149. New: \"· also plans 149\" at the end of his line under the callsign, in that line's own grey — the same on 142's list and on 149's."
+ },
+ "p2b-d.png": {
+  "piece": "p2",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Admin → Users as Kestrel, 149's admin (149's list). Hunter holds Plan of 149. New: \"· also plans 149\" at the end of his line under the callsign, in that line's own grey — the same on 142's list and on 149's."
+ },
+ "p3a-d.png": {
+  "piece": "p3",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Saber's bell, the master admin. New: \"Show 142 149\" at the list's foot, the filter chip's own look; 142 (his own squadron) on, 149 off as it starts. Only 142's lines show. The lines are drawn in the bell's own line markup (today's demo has none for Saber)."
+ },
+ "p3a-p.png": {
+  "piece": "p3",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Saber's bell, the master admin. New: \"Show 142 149\" at the list's foot, the filter chip's own look; 142 (his own squadron) on, 149 off as it starts. Only 142's lines show. The lines are drawn in the bell's own line markup (today's demo has none for Saber)."
+ },
+ "p3b-d.png": {
+  "piece": "p3",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "The same bell after Saber taps 149. New: 149's lines in among 142's, newest first, each with the grey \"149\" mark after its name — the same grey badge already approved for another squadron's line on the schedule. His own squadron's lines carry no mark."
+ },
+ "p3b-p.png": {
+  "piece": "p3",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "The same bell after Saber taps 149. New: 149's lines in among 142's, newest first, each with the grey \"149\" mark after its name — the same grey badge already approved for another squadron's line on the schedule. His own squadron's lines carry no mark."
+ },
+ "p3c-d.png": {
+  "piece": "p3",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Hunter's bell, 142's admin who holds Plan of 149: the same chips, 149 on as it starts (his to switch off), 149's admin lines marked \"149\"."
+ },
+ "p5-d.png": {
+  "piece": "p5",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "The sign-in screen on a shared tab: Saber signed out a moment ago and his last change is still saving. Kestrel has pressed Sign in. New: the button reads \"Signing in…\" and waits, greyed, with one line under it; once the save lands he is signed in by himself. If that save fails, the \"Not saved\" band already built shows on this screen, with its Retry, and Kestrel stays on this screen until Retry saves it."
+ },
+ "p5-p.png": {
+  "piece": "p5",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "The sign-in screen on a shared tab: Saber signed out a moment ago and his last change is still saving. Kestrel has pressed Sign in. New: the button reads \"Signing in…\" and waits, greyed, with one line under it; once the save lands he is signed in by himself. If that save fails, the \"Not saved\" band already built shows on this screen, with its Retry, and Kestrel stays on this screen until Retry saves it."
+ },
+ "p7-d.png": {
+  "piece": "p7",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Admin → Squadrons as Hunter, 142's admin — the Squadrons page drawn in round 4, not built yet, made here from Admin → Users' own parts. Home base is shared by 142 and 149. New: its Time zone greyed for him, one line under it saying why. A place only 142 sits on stays his to set; Saber, the master, sees it ordinary. The Squadrons tile's map pin is drawn here too, so it does not share Users' icon."
+ },
+ "p7-p.png": {
+  "piece": "p7",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Admin → Squadrons as Hunter, 142's admin — the Squadrons page drawn in round 4, not built yet, made here from Admin → Users' own parts. Home base is shared by 142 and 149. New: its Time zone greyed for him, one line under it saying why. A place only 142 sits on stays his to set; Saber, the master, sees it ordinary. The Squadrons tile's map pin is drawn here too, so it does not share Users' icon."
+ },
+ "p8-d.png": {
+  "piece": "p8",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Admin → Users as Saber. Outlaw's posting out was due Fri 20 Nov and the app could not run it for a reason nobody foresaw. New: the line under his row, in the amber the app already uses there for a posting held by the last-admin rule (\"…The posting waits until 149 has another admin.\"). His \"posted out from\" tag re-lettered for the drawing."
+ },
+ "p8-p.png": {
+  "piece": "p8",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Admin → Users as Saber. Outlaw's posting out was due Fri 20 Nov and the app could not run it for a reason nobody foresaw. New: the line under his row, in the amber the app already uses there for a posting held by the last-admin rule (\"…The posting waits until 149 has another admin.\"). His \"posted out from\" tag re-lettered for the drawing."
+ },
+ "f1a-d.png": {
+  "piece": "f1",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Admin → Squadron config with 149 picked, by Hunter (142's admin) holding View of 149 — drawn on Kestrel's session (149's admin), so the set-up shown is 149's own; the demo gives nobody View of 149, so the top bar's number and the signed-in name are re-lettered as Hunter's with 149 picked. New: the heading \"Squadron config · 149\", one line under it, and every control read only (28 greyed, in the app's own disabled look)."
+ },
+ "f1b-d.png": {
+  "piece": "f1",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "The same page with 142 picked, as Hunter, 142's admin: the heading \"Squadron config · 142\", every control his to change as today."
+ },
+ "f1a-p.png": {
+  "piece": "f1",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Admin → Squadron config with 149 picked, by Hunter (142's admin) holding View of 149 — drawn on Kestrel's session (149's admin), so the set-up shown is 149's own; the demo gives nobody View of 149, so the top bar's number and the signed-in name are re-lettered as Hunter's with 149 picked. New: the heading \"Squadron config · 149\", one line under it, and every control read only (28 greyed, in the app's own disabled look)."
+ },
+ "f1b-p.png": {
+  "piece": "f1",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "The same page with 142 picked, as Hunter, 142's admin: the heading \"Squadron config · 142\", every control his to change as today."
+ },
+ "f2a-d.png": {
+  "piece": "f2",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "The Tracker as Saber, the master admin: he opened it on 149, then picked 142 in the Schedules menu (the bar reads \"142 ▾\"). He is still an admin of 149 (here by the master mark; home or Plan alike), so it stays in view, read only. Drawn on Kestrel's session so the Tracker under the veil is 149's own; the bar's number and the signed-in name re-lettered. New: the band across the Tracker's top in the app's own band look (the one an open window carries when his squadron changes under it), \"This is 149's Tracker. Pick 149 to change it. To open 142's, sign out and in.\", and the page under a light veil — visible, no control live. The band is 36px high."
+ },
+ "f2b-d.png": {
+  "piece": "f2",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "The Tracker as Hunter (142's admin): it held 149's when his Plan of 149 was lowered to View (the bar reads \"142 ▾\" — View still gives him the menu). New: everything of the Tracker hidden — its bar, chart and panel, nothing to press — and the band alone across the top: \"You can't open 149's Tracker any more. Sign out and in to open 142's.\" Drawn on his real session (142's Tracker, hidden)."
+ },
+ "f2a-p.png": {
+  "piece": "f2",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "The Tracker as Saber, the master admin: he opened it on 149, then picked 142 in the Schedules menu (the bar reads \"142 ▾\"). He is still an admin of 149 (here by the master mark; home or Plan alike), so it stays in view, read only. Drawn on Kestrel's session so the Tracker under the veil is 149's own; the bar's number and the signed-in name re-lettered. New: the band across the Tracker's top in the app's own band look (the one an open window carries when his squadron changes under it), \"This is 149's Tracker. Pick 149 to change it. To open 142's, sign out and in.\", and the page under a light veil — visible, no control live. The band is 47px high."
+ },
+ "f2b-p.png": {
+  "piece": "f2",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "The Tracker as Hunter (142's admin): it held 149's when his Plan of 149 was lowered to View (the bar reads \"142 ▾\" — View still gives him the menu). New: everything of the Tracker hidden — its bar, chart and panel, nothing to press — and the band alone across the top: \"You can't open 149's Tracker any more. Sign out and in to open 142's.\" Drawn on his real session (142's Tracker, hidden)."
+ },
+ "f3a-d.png": {
+  "piece": "f3",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Hunter's own bell (142's admin): changes to his account set by someone, each in the bell's usual line shape — his name · the day, then what changed · who did it; the newest unread. New: these seven lines (outlined), newest first: made an admin of 142, made a member, suspended, enabled, given View of 149, View of 149 ended, given Plan of 149. They carry no squadron mark; a tap opens nothing. (Ten lines scroll the list, so the other three are in the next picture.)"
+ },
+ "f3b-d.png": {
+  "piece": "f3",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "The same kind of bell, another time: on top, newest first and the newest unread, the four lines the app writes by itself, with no one's name (a move, an archive, an Overseas posting's suspension record no one who set them); under them, older, the last three named lines: Plan of 149 ended, made a master admin, master admin taken off. New: all seven lines (outlined); no squadron mark."
+ },
+ "f3a-p.png": {
+  "piece": "f3",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Hunter's own bell (142's admin): changes to his account set by someone, each in the bell's usual line shape — his name · the day, then what changed · who did it; the newest unread. New: these seven lines (outlined), newest first: made an admin of 142, made a member, suspended, enabled, given View of 149, View of 149 ended, given Plan of 149. They carry no squadron mark; a tap opens nothing. (Ten lines scroll the list, so the other three are in the next picture.)"
+ },
+ "f3b-p.png": {
+  "piece": "f3",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "The same kind of bell, another time: on top, newest first and the newest unread, the four lines the app writes by itself, with no one's name (a move, an archive, an Overseas posting's suspension record no one who set them); under them, older, the last three named lines: Plan of 149 ended, made a master admin, master admin taken off. New: all seven lines (outlined); no squadron mark."
+ },
+ "f4-d.png": {
+  "piece": "f4",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Admin → Users as Hunter, 142's admin, with Ace opened — a 142 pilot with no sign-in (his row's editor offers \"Give sign-in\"). Approved (blue, design B of 22 Nov): the Role list Member · Admin · Master admin, the squadron lines \"142 Home squadron\" / \"149 None · View · Plan\", the \"What each role allows\" fold. New (pink): the 149 buttons greyed, with one line under them: \"Give him a sign-in first to give access.\""
+ },
+ "f4-p.png": {
+  "piece": "f4",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Admin → Users as Hunter, 142's admin, with Ace opened — a 142 pilot with no sign-in (his row's editor offers \"Give sign-in\"). Approved (blue, design B of 22 Nov): the Role list Member · Admin · Master admin, the squadron lines \"142 Home squadron\" / \"149 None · View · Plan\", the \"What each role allows\" fold. New (pink): the 149 buttons greyed, with one line under them: \"Give him a sign-in first to give access.\""
+ },
+ "f5a-p.png": {
+  "piece": "f5",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Saber's bell, the master admin, with eight squadrons. New: the \"Show\" buttons, 142 · 149 · 150 · 151 · 152 · 153 · 154 · 155, in one row that scrolls sideways — cut off at the right edge (72px more to the right), so it reads as more to see. Only 142 on as it starts. The squadrons past 149 are drawn (the demo has two)."
+ },
+ "f5b-p.png": {
+  "piece": "f5",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Saber, the master admin, opens Hunter's row (142's admin) with eight squadrons. Approved (blue, design B of 22 Nov): the Role box, the squadron lines' look, the fold. New (pink): the lines for 150 to 155 — eight squadrons, one line each, each on one row of the iPhone (7 lines measured, every one a single row). The editor grows to 463px tall; the fold stays closed."
+ },
+ "f5c-p.png": {
+  "piece": "f5",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Admin → Users as Saber, the master admin, the filter open. Approved (blue, picture nf): the Filter button and its Squadron group. New (pink): the chips 150 to 155 — eight squadrons on 2 row(s) — and the count: 142 and 149 ticked, so the button reads \"Filter · 2\" (with two squadrons, picture nf counted both ticked as one, since both meant everyone; with eight, two ticks are a filter of two). The list behind is not redrawn for the ticks; the open panel covers it."
+ },
+ "f5d-p.png": {
+  "piece": "f5",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "The Schedules menu (\"142 ▾\", option A as he chose it) for Saber, the master admin, with eight squadrons: 142 \"Your squadron\" ticked, 149 to 155 \"Full access\". Approved (blue): the menu, option A as he chose it. New (pink): the rows 150 to 155 — eight rows, each 38 high (question B's recommendation), the sheet ending 396px down the iPhone's 874."
+ },
+ "f6a-d.png": {
+  "piece": "f6",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "The sign-in screen on a shared tab, after the page reloaded once the last person's change saved. Kestrel had typed his sign-in and pressed Sign in while it waited (picture 10). New: his name kept in the Username box (\"ad9\", the demo's sign-in name for Kestrel), the password empty, and one line under the name: \"Saved. Press Sign in again.\""
+ },
+ "f6b-d.png": {
+  "piece": "f6",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Picture 10's held sign-in — Kestrel pressed Sign in while the last person's change was still saving — after that save has not landed for a while. New: its one line now reads \"The last change has not saved yet — check the connection. Sign in waits until it saves.\"; the button still \"Signing in…\", greyed."
+ },
+ "f6a-p.png": {
+  "piece": "f6",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "The sign-in screen on a shared tab, after the page reloaded once the last person's change saved. Kestrel had typed his sign-in and pressed Sign in while it waited (picture 10). New: his name kept in the Username box (\"ad9\", the demo's sign-in name for Kestrel), the password empty, and one line under the name: \"Saved. Press Sign in again.\""
+ },
+ "f6b-p.png": {
+  "piece": "f6",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Picture 10's held sign-in — Kestrel pressed Sign in while the last person's change was still saving — after that save has not landed for a while. New: its one line now reads \"The last change has not saved yet — check the connection. Sign in waits until it saves.\"; the button still \"Signing in…\", greyed."
+ },
+ "f8-d.png": {
+  "piece": "f8",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Admin → Users as Hunter, 142's admin. He opened Ace's row (no sign-in) and pressed \"Give sign-in\" with \"jett@mail\" — a sign-in that is waiting in a request to join 149. The app answers every refusal at this door in its warning toast (reached here by the real refusal of an empty box, \"Type the sign-in name (the defence mail address)\", its words then changed). New: the toast reads \"He asked to join 149 — only an admin of 149 can answer it.\" The same toast answers \"Add person\" and a renamed sign-in."
+ },
+ "f8-p.png": {
+  "piece": "f8",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Admin → Users as Hunter, 142's admin. He opened Ace's row (no sign-in) and pressed \"Give sign-in\" with \"jett@mail\" — a sign-in that is waiting in a request to join 149. The app answers every refusal at this door in its warning toast (reached here by the real refusal of an empty box, \"Type the sign-in name (the defence mail address)\", its words then changed). New: the toast reads \"He asked to join 149 — only an admin of 149 can answer it.\" The same toast answers \"Add person\" and a renamed sign-in."
+ },
+ "f2c-d.png": {
+  "piece": "f2",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "The Tracker as Hunter, 142's admin holding Plan of 149, his Tracker bound to 149, after he tapped his badge into the member view (the real tap: the badge at the bar's right reads \"HUNTER · MEMBER\"). New: the Tracker hidden as in the picture before, and the band: \"This is 149's Tracker. Leave the member view to open it.\" The bar reads \"142 ▾\" (the member view keeps 149 in his menu, view only). Drawn on his real session (142's Tracker, hidden)."
+ },
+ "f2d-d.png": {
+  "piece": "f2",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "The Tracker as Hunter with an unsaved chart edit (a real one: Edit chart layout, + Test), at the moment he picks 142 in the Schedules menu while it holds 149's. The question is the app's own — the one Logout asks today, reached here by pressing Logout, its buttons as built (Stay · Discard them · Save them). New: its words — \"You have unsaved chart edits on “2026”. Save them before switching to 142?\" in place of \"…Save them before logging out?\"."
+ },
+ "f2c-p.png": {
+  "piece": "f2",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "The Tracker as Hunter, 142's admin holding Plan of 149, his Tracker bound to 149, after he tapped his badge into the member view (on the iPhone the badge sits in the side menu, so the bar does not show it). New: the Tracker hidden as in the picture before, and the band: \"This is 149's Tracker. Leave the member view to open it.\" The bar reads \"142 ▾\" (the member view keeps 149 in his menu, view only). Drawn on his real session (142's Tracker, hidden)."
+ },
+ "f2d-p.png": {
+  "piece": "f2",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "The Tracker as Hunter with an unsaved chart edit (a real one: Edit chart layout, + Test), at the moment he picks 142 in the Schedules menu while it holds 149's. The question is the app's own — the one Logout asks today, reached here by pressing Logout, its buttons as built (Stay · Discard them · Save them). New: its words — \"You have unsaved chart edits on “2026”. Save them before switching to 142?\" in place of \"…Save them before logging out?\"."
+ },
+ "f7a-d.png": {
+  "piece": "f7",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Saber on 142's Leave War with a window open (Ranger's Wed 25 Nov, opened by pressing his day), at the moment the Schedules menu picks 149 (the bar reads \"149 ▾\"). Today, with nothing tried, this band reads \"This change could not be saved.\" New: it reads \"This is 142's. You picked 149 — close this to go on.\", in the band's own look with its Close; the window under it read only (20 controls greyed); nothing saved."
+ },
+ "f7b-d.png": {
+  "piece": "f7",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Saber on 142's Inputs with an Input window open (a new input, from Wed 25 Nov's \"+ Input\"), at the moment the Schedules menu picks 149 (the bar reads \"149 ▾\"). Today its band reads \"This change could not be saved.\" New: \"This is 142's. You picked 149 — close this to go on.\", in the band's own look with its Close; the window under it read only (50 controls greyed); nothing saved."
+ },
+ "f7a-p.png": {
+  "piece": "f7",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Saber on 142's Leave War with a window open (Ranger's Wed 25 Nov, opened by pressing his day), at the moment the Schedules menu picks 149 (the bar reads \"149 ▾\"). Today, with nothing tried, this band reads \"This change could not be saved.\" New: it reads \"This is 142's. You picked 149 — close this to go on.\", in the band's own look with its Close; the window under it read only (20 controls greyed); nothing saved."
+ },
+ "f7b-p.png": {
+  "piece": "f7",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Saber on 142's Inputs with an Input window open (a new input, from Wed 25 Nov's \"+ Input\"), at the moment the Schedules menu picks 149 (the bar reads \"149 ▾\"). Today its band reads \"This change could not be saved.\" New: \"This is 142's. You picked 149 — close this to go on.\", in the band's own look with its Close; the window under it read only (50 controls greyed); nothing saved."
+ },
+ "f9-d.png": {
+  "piece": "f9",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Hunter (142's admin, holding Plan of 149), 142 picked (the bar reads \"142 ▾\"), taps his lit bell for a request waiting to join 149. Reached for real: a newcomer asked for access on the Request access card, then Hunter tapped his bell — the app opened Admin → Users and said \"1 waiting for access — opening Admin → Users\". Approved (blue outline): the toast, in its place as today. New (pink): its words, \"1 waiting for access to 149\". (The demo's request is 142's; the list behind is 142's — in the build the tap enters 149 and opens 149's list.)"
+ },
+ "f9-p.png": {
+  "piece": "f9",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Hunter (142's admin, holding Plan of 149), 142 picked (the bar reads \"142 ▾\"), taps his lit bell for a request waiting to join 149. Reached for real: a newcomer asked for access on the Request access card, then Hunter tapped his bell — the app opened Admin → Users and said \"1 waiting for access — opening Admin → Users\". Approved (blue outline): the toast, in its place as today. New (pink): its words, \"1 waiting for access to 149\". (The demo's request is 142's; the list behind is 142's — in the build the tap enters 149 and opens 149's list.)"
+ },
+ "f10-d.png": {
+  "piece": "f10",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Admin → Users as Saber, the master admin, just after pressing the top bar's Undo (outlined) on a change of Hunter's access. The label shows in the app's Undo bubble — its toast after an Undo, which today begins \"Undid: \" (reached for real: Saber suspended Ranger and pressed Undo; it said \"Undid: suspending Ranger’s sign-in\"). New: the label \"Plan of 149 given · Hunter\". The same label is the Undo button's hover before the press: \"Undo — Plan of 149 given · Hunter\" (today: \"Undo — suspending Ranger’s sign-in\" — a hover cannot be pictured)."
+ },
+ "f10-p.png": {
+  "piece": "f10",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Admin → Users as Saber, the master admin, just after pressing the top bar's Undo (outlined) on a change of Hunter's access. The label shows in the app's Undo bubble — its toast after an Undo, which today begins \"Undid: \" (reached for real: Saber suspended Ranger and pressed Undo; it said \"Undid: suspending Ranger’s sign-in\"). New: the label \"Plan of 149 given · Hunter\". The same label is the Undo button's hover before the press: \"Undo — Plan of 149 given · Hunter\" (today: \"Undo — suspending Ranger’s sign-in\" — a hover cannot be pictured)."
+ }
+}

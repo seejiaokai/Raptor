@@ -26,6 +26,7 @@
    its staying until tapped are as ruled (D783); where a save has also failed, "Not saved" is the line above it. */
 import { useEffect, useLayoutEffect, useRef, useSyncExternalStore } from 'react'
 import { OILWAIT, OILBAR } from '../state/view'
+import { oilWaitDrawn } from './windrawn'
 import { OilConfirm } from './OilConfirm'
 import { WAIT_WORDS, answerOilWait, leaveOilWait, oilBarAgain, oilBarOk } from './oilwait'
 import { useVersion } from './useStore'
@@ -35,7 +36,7 @@ import { SplitWords } from './SaveStatus'
 export function OilWait() {
   useVersion()
   const w = OILWAIT
-  if (!w) return null
+  if (!oilWaitDrawn() || !w) return null   // !!OILWAIT — the one predicate the guard reads too (ui/windrawn.ts)
   const words = WAIT_WORDS[w.kind]
   return <OilConfirm who={w.gate.who} typeLabel={w.gate.typeLabel} plan={w.gate.plan} prev={w.gate.prev}
     lead={w.lead} noLabel={words.no} yesLabel={words.yes}

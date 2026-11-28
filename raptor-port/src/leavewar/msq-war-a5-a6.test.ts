@@ -12,7 +12,7 @@ import { worldUnit, setCell, inOneWarCommand } from './state/store'
 import { postOut, runPoOutcomes, postingHeldNote, runForeignPostings } from './sync'
 import { unitsLoad, setGrant, setHome } from '../state/units'
 import { useMsqWorld, signInAs as msqSignIn, worlds } from '../test-support/msq-world'
-import { onCommit } from '../command'
+import { onCommit, setConflictChecker } from '../command'
 import { NOTICES } from '../state/notices'
 import { HOOKS } from '../engine/hooks'
 import { notify as raptorNotify } from '../state/store'
@@ -89,12 +89,15 @@ describe('A5 — the pass over every squadron, as the plan §6.4 lists it', () =
     runPoOutcomes()
     expect(lines('kes9', 'osp9').length, 'not run again when 149’s war loads').toBe(1)
   })
-  it('the audience: 149’s admin of today told; the master at home in 142, and 142’s plain admin, not', () => {
+  /* REWRITTEN TO §7 ITEM 2 (batch 1's second half — R-O2; D2198): it asserted "the master at home in 142, not" told. The
+     one audience now holds every master admin who can sign in; whether he SEES the 149 line is his bell's switch, off by
+     default (D2198) — the switch's own tests. 142's plain admin is still never told. */
+  it('the audience: 149’s admin of today and the master admin at home in 142 told; 142’s plain admin not', () => {
     post149('osp9', 'overseas')
     day16()
     signInAs('ad', 'a')
     expect(lines('kes9', 'osp9').length).toBe(1)
-    expect(lines('stiff', 'osp9').length, 'Saber (master, 142) not told').toBe(0)
+    expect(lines('stiff', 'osp9').length, 'Saber (master, 142) told (§7 item 2)').toBe(1)
     expect(lines('prowler', 'osp9').length, 'Hunter (142) not told').toBe(0)
   })
   it('PC1 through a real line: an admin holding Plan of 149 is told, and the gate takes the line', () => {
@@ -179,5 +182,31 @@ describe('A6 — the held posting’s amber line shows whichever war is loaded',
     signInAs('ad', 'a')
     expect(worldUnit()).toBe('u142')
     expect(postingHeldNote('kes9') ?? '(no line)', 'the amber line on the 149 man’s row').toMatch(/last admin/)
+  })
+})
+
+/* batch 1's second half, plan §7 item 7 (§15 D10, §16 D10′ — his D2214): a 149 posting that could not run, with 142's war
+   loaded — its save refused (the commit layer's test switch), tried once more on the next run, then given up: 149's
+   admins are told once, the line stamped 149; 142's plain admin is not; the amber line on his row; a later load, none */
+describe('§7 item 7 — another squadron’s posting that could not run', () => {
+  it('149’s admins told once, stamped 149, with 142 loaded; 142’s plain admin not; three loads, still once', () => {
+    post149('osp9', 'overseas')
+    setConflictChecker(ch => ch.some(c => c.collection === 'people' && String(c.id) === 'osp9') ? 'refused for the test' : null)
+    try {
+      day16()
+      signInAs('ad', 'a')
+      runForeignPostings()
+      expect((PEOPLE as any).osp9.archived, 'it did not run').toBeFalsy()
+      const fail = (to: string) => NOTICES.filter(n => !BEFORE.has(n.id) && n.to === to && (n.what || []).some((p: any) => p.k === 'pofail' && p.who === 'osp9'))
+      expect(fail('kes9').map(n => n.u), 'Kestrel, 149’s').toEqual(['u149'])
+      expect(fail('stiff').length, 'Saber, a master admin — the one audience').toBe(1)
+      expect(fail('prowler').length, 'Hunter, 142’s plain admin').toBe(0)
+      expect(postingHeldNote('osp9') ?? '', 'the amber line on his row').toMatch(/^This posting could not run\./)
+      signInAs('ad', 'a'); runForeignPostings(); runForeignPostings()
+      signInAs('ad9', 'a9'); runPoOutcomes()
+      expect(fail('kes9').length, 'still once').toBe(1)
+    } finally {
+      setConflictChecker(null)
+    }
   })
 })

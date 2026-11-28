@@ -65,7 +65,8 @@ describe('Astra 4 — a new 149 man keeps his post-in date on 149’s war', () =
   })
   it('approving an access request as New person', () => {
     signInAs('joinreq@mail')
-    expect(requestAccess(NP('FixReq'))).toBeNull()
+    /* (since batch 1's second half §5, D2111: the request names 149, the squadron whose admin answers it) */
+    expect(requestAccess(NP('FixReq'), 'u149')).toBeNull()
     signInAs('ad9', 'a9')
     const rq = ACCESS_REQS.find(r => r.name === 'joinreq@mail')
     expect(rq).toBeTruthy()

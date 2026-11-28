@@ -46,6 +46,7 @@ import { DownloadIcon, UploadIcon } from './icons'
 import { RangePicker, type Range } from '../leavewar/ui/RangePicker'
 import { addDays, validIso, weekdayOf } from '../state/flyplan-model'
 import { MONTHS, WD, isoToday, sayDate } from './daysfmt'
+import { useGuardWork } from './guard'
 
 type Kind = 'ph' | 'off'
 const KIND_SAID: Record<Kind, string> = { ph: 'public holiday', off: 'Off day' }
@@ -131,6 +132,9 @@ export function HolidaysPanel({ year, setYear, onOpen }: {
   const [why, setWhy] = useState('')
   /* an import being looked at: the file's name, its lines, and a refusal at Add */
   const [pv, setPv] = useState<{ file: string; lines: PvLine[]; err: string } | null>(null)
+  /* a sheet read in and not yet added is typed work no frame holds: the guard counts it, and the Calendar stays open for
+     it (ui/guard.ts — his D2654 E1) */
+  useGuardWork('holimport', !!pv)
   /* the lines just added by an import, ringed with the app's just-added mark for its six seconds (D850, D860) */
   const [fresh, setFresh] = useState<Set<string>>(() => new Set())
   useEffect(() => {
@@ -298,11 +302,18 @@ export function HolidayForm({ line, year, onClose }: {
   const from = range ? range.from : ''
   const [err, setErr] = useState('')
   const [saved, setSaved] = useState('')
+  /* ANYTHING TYPED OR CHANGED in it since it opened (or since "Save and add another" saved what it held): the guard
+     counts the form then, and the Calendar stays open for it (ui/guard.ts — his D2654 E1); a holiday refused because no
+     leave period covers it is still held here, waiting, so it still counts */
+  const [touched, setTouched] = useState(false)
   /* refused because no leave period covers its first day: it is kept, and saved by itself once one does */
   const [waiting, setWaiting] = useState(false)
+  /* …and what the guard's note says of it (ui/guard.ts guardLead — K3): a new one, a changed one, or a new one kept waiting
+     for a leave period ("cancel the new holiday, or create its leave period" — D2729) */
+  useGuardWork('holiday', touched, line ? 'changed' : waiting ? 'noleave' : 'new')
   /* any edit takes the last complaint — and the last "Saved" note — down: they were about what the form held then. And
      it ends a wait: what is saved by itself is only ever what the form held when he pressed Save */
-  const edit = () => { setErr(''); setSaved(''); setWaiting(false) }
+  const edit = () => { setErr(''); setSaved(''); setWaiting(false); setTouched(true) }
   /* what a save would hold, or the sentence that says what is missing */
   const draft = (): HolidayDraft | string => {
     if (!range) return 'Pick its day — or its first and last day — on the calendar.'
@@ -328,7 +339,7 @@ export function HolidayForm({ line, year, onClose }: {
        name and its short form are cleared */
     const next = addDays(d.to, 1)
     setErr(''); setSaved(`Saved: ${name.trim() || holidayWord(kind)}, ${when(d.from, d.to)}.`)
-    setName(''); setShort(''); setShortTouched(false); setRange(null); setAnchor(next); setCalKey(k => k + 1)
+    setName(''); setShort(''); setShortTouched(false); setRange(null); setAnchor(next); setCalKey(k => k + 1); setTouched(false)
   }
   /* eslint-enable react-doctor/no-adjust-state-on-prop-change */
   const remove = () => { if (line && !refused(holidayRemove(line))) onClose() }
@@ -352,8 +363,14 @@ export function HolidayForm({ line, year, onClose }: {
 
   return (
     <FloatWin id="holiday" title={line ? 'Change a holiday' : 'Add a holiday'} testid="win-holiday" className="everywin holwin" onClose={onClose}>
-      <div className="every-lab" id="holKindLab">Kind</div>
-      <div className="every-seg two" role="group" aria-labelledby="holKindLab">
+      {/* "OFF DAYS STAY EACH SQUADRON'S OWN" (his D2190 point 2 — the approved drawing b1-8, redraw-b1.mjs b8): at the
+          right of the Kind label, on its own row so the window grows no taller, in the Days window's hint look; an Off
+          day stays a dated entry of one squadron's. The label's word alone names the group; the line describes it. */}
+      <div className="every-lab hol-kind-lab">
+        <span id="holKindLab">Kind</span>
+        <span className="hol-kind-hint" id="holKindHint" data-testid="hol-kind-hint">Off days stay each squadron's own</span>
+      </div>
+      <div className="every-seg two" role="group" aria-labelledby="holKindLab" aria-describedby="holKindHint">
         {(['ph', 'off'] as const).map(k => (
           <button
             key={k}

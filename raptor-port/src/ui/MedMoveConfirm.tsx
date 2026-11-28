@@ -15,6 +15,7 @@ import { INPUTS } from '../engine/inputs'
 import { HOOKS } from '../engine/hooks'
 import { notify } from '../state/store'
 import { MEDMOVE, setMedMove } from './pops'
+import { medMoveDrawn } from './windrawn'
 import { MedClashConfirm } from './MedClashConfirm'
 import { UpchitConfirm } from './UpchitConfirm'
 import { commitEditMedChoices, commitEditUpchit, fmtDay, ordISO, removeInput } from './inputedit'
@@ -24,7 +25,7 @@ import { useVersion } from './useStore'
 export function MedMoveConfirm() {
   useVersion()
   const m = MEDMOVE
-  if (!m) return null
+  if (!medMoveDrawn() || !m) return null   // !!MEDMOVE — the one predicate the guard reads too (ui/windrawn.ts)
   const done = () => { setMedMove(null); notify() }
   /* re-resolved at Save by its iid — an undo under the open sheet may have reminted the rows */
   const row = () => INPUTS.find((x: any) => x.iid === m.iid)

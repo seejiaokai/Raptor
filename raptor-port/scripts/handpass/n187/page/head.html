@@ -1,0 +1,96 @@
+<title>Guard rail round 5</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Space+Grotesk:wght@600&display=swap">
+<style>
+/* Layout: one reading column for a phone. Top: how to answer, the cast in one line, then every question as one tappable row (code, what it is, the recommendation in green). Each question: the recommendation in short under its heading, when it happens, today with its picture, the full recommendation, the other choice, then a way back and a "Differently" button that builds the reply in the bar at the foot. Amber marks only what the second review changed; everything on the page is new this round, so "new" is said once at the top and never marked. Wide desktop pictures are cut on the page itself (.cut) to the part the question is about, so the words in them are readable at a phone's width; a tap still opens the whole picture. */
+:root{
+  --bg:#f4f6f8; --panel:#ffffff; --ink:#151b22; --muted:#55606e; --edge:#d6dde5; --accent:#0a6f8a; --rec:#0b6b45; --new:#8a5a0f; --newbg:#fbf3e2;
+  --display:"Space Grotesk",system-ui,sans-serif; --body:"Inter",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c0f13;--panel:#151a21;--ink:#e6ebf0;--muted:#97a3b0;--edge:#27303b;--accent:#38c6e8;--rec:#4fd39a;--new:#e9b04f;--newbg:#231c0f;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0c0f13;--panel:#151a21;--ink:#e6ebf0;--muted:#97a3b0;--edge:#27303b;--accent:#38c6e8;--rec:#4fd39a;--new:#e9b04f;--newbg:#231c0f;color-scheme:dark}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1.5;margin:0;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px calc(96px + env(safe-area-inset-bottom,0px))}
+main{max-width:760px;margin:0 auto;display:grid;gap:28px}
+header{display:grid;gap:6px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0}
+h1{font-size:1.45rem;line-height:1.2}
+h2{font-size:1.15rem;line-height:1.25}
+h3{font-size:1.3rem;margin-top:20px;padding-top:12px;border-top:2px solid var(--edge)}
+p{margin:0;max-width:68ch}
+a{color:var(--accent)}
+.lede{color:var(--muted)}
+.rec{color:var(--rec);font-weight:600}
+.top{background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:14px 12px;display:grid;gap:10px}
+.top .how{font-size:1rem}
+.top .count,.top .cast{font-size:.9rem;color:var(--muted)}
+.top .cast b{color:var(--ink)}
+.top h2.g{font-size:1rem;margin-top:8px;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.top h2.g span{font-family:var(--body);font-weight:400;font-size:.85rem;color:var(--muted);white-space:nowrap}
+.top ol{margin:0;padding:0;list-style:none}
+.top li{border-top:1px solid var(--edge)}
+.top li a{display:grid;grid-template-columns:2.5em 1fr;gap:6px;padding:9px 2px;min-height:44px;text-decoration:none;color:var(--ink)}
+.top li a>b{font-variant-numeric:tabular-nums}
+.top li a>span{display:grid}
+.top li .t{font-weight:600;font-size:.95rem}
+.top li .r{color:var(--rec);font-size:.92rem}
+.top li.chg a{background:var(--newbg);box-shadow:-10px 0 0 var(--newbg),10px 0 0 var(--newbg)}
+.tag{font-style:normal;font-weight:600;font-size:.78rem;color:var(--new);white-space:nowrap}
+.top li.done a{opacity:.6}
+.top li.done a>b::after{content:" ✎"}
+details>summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:600;color:var(--accent)}
+details.who{font-size:.92rem}
+details.who p{margin-bottom:8px;color:var(--muted)}
+details#gb{display:block}
+details#gb>summary{font-family:var(--display);font-size:1.15rem;border-top:2px solid var(--edge);margin-top:20px;padding-top:8px}
+details#gb>section{margin-top:28px}
+section{display:grid;gap:12px;scroll-margin-top:12px}
+.short{color:var(--rec);font-weight:600;font-size:1.02rem}
+.label{font-size:.85rem;font-weight:600;color:var(--muted)}
+.pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;align-items:start}
+figure{margin:0;display:grid;gap:6px;min-width:0}
+figure img{width:100%;border:1px solid var(--edge);border-radius:6px;cursor:zoom-in}
+figure.tall img{max-height:520px;width:auto;max-width:100%;justify-self:center}
+/* a wide picture cut to the part that matters: the frame hides the rest, the picture inside is drawn larger and shifted (sizes written on each one) */
+.cut{display:block;overflow:hidden;border:1px solid var(--edge);border-radius:6px;background:#0c0f13}
+.cut img{display:block;max-width:none;border:0;border-radius:0}
+figcaption{font-size:.94rem;color:var(--muted)}
+figcaption b{color:var(--ink)}
+/* the films of the squadron number: only the end of the top bar that holds the number, at about its real size */
+.film{display:block;overflow:hidden;border:1px solid var(--edge);border-radius:6px;background:#000}
+.film video{display:block;max-width:none;height:auto}
+.film.d{aspect-ratio:3/1}
+.film.d video{width:400%;aspect-ratio:1536/128}
+.film.p{aspect-ratio:804/230}
+.film.p video{width:100%;aspect-ratio:804/1748}
+button.play{justify-self:start}
+.words{background:var(--panel);border:1px solid var(--edge);border-radius:8px;padding:10px 12px;font-size:.95rem;display:grid;gap:8px}
+.note{font-size:.94rem;color:var(--muted)}
+.when{border-left:3px solid var(--edge);padding-left:10px}
+.told{background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:14px 14px;display:grid;gap:8px}
+.told ul{margin:0;padding-left:1.2em;display:grid;gap:6px}
+p.chg,div.chg{background:var(--newbg);border-radius:8px;padding:10px 12px;font-size:.95rem;max-width:none}
+p.chg>b:first-child,div.chg>p>b:first-child,.told.chg .label{color:var(--new)}
+div.chg{display:grid;gap:8px}
+.told.chg{background:var(--newbg);border-color:transparent}
+p.was{border-left:3px solid var(--edge);padding-left:10px;font-size:.95rem;color:var(--muted);max-width:none}
+/* the small readings: one short block each, its own Differently */
+.rd{background:var(--panel);border:1px solid var(--edge);border-radius:8px;padding:10px 12px;display:grid;gap:8px;scroll-margin-top:12px}
+.rd p{font-size:.96rem}
+.rd .eg{color:var(--muted)}
+.rd button{justify-self:end}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:12px;max-width:none;flex-wrap:wrap}
+.nav a{display:inline-flex;align-items:center;min-height:44px}
+.nav .ch{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+button{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--edge);border-radius:8px;min-height:44px;padding:0 14px;cursor:pointer}
+button.diff[aria-pressed="true"]{border-color:var(--new);color:var(--new);font-weight:600}
+.end{color:var(--muted)}
+.reply{position:fixed;left:0;right:0;bottom:0;display:flex;gap:10px;align-items:center;justify-content:space-between;background:var(--panel);border-top:1px solid var(--edge);padding:8px max(16px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));z-index:10;font-size:.92rem}
+.reply span{min-width:0;overflow-wrap:anywhere;max-height:4.5em;overflow:auto}
+.zoom{position:fixed;inset:0;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;padding:max(12px,env(safe-area-inset-top,0px)) 12px max(12px,env(safe-area-inset-bottom,0px));z-index:20;overflow:auto}
+.zoom img{max-width:100%;max-height:100%;object-fit:contain}
+.zoom.big{align-items:flex-start;justify-content:flex-start}
+.zoom.big img{max-width:none;max-height:none}
+.zoom .x{position:fixed;top:max(10px,env(safe-area-inset-top,0px));right:10px;min-width:44px;background:#151a21;color:#e6ebf0;border-color:#445}
+</style>

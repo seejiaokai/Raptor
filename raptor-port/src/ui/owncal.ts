@@ -21,7 +21,7 @@
    loaded calendar put back exactly as it stood (the same objects, in the same order) before the command's end — so the
    schedule store, enlisted beside, sees no change of its own, and what the verb did is written to the stored half as
    the records it changed. Nothing reads the two between (the verb is synchronous, inside the command). */
-import { PLANPUCKS, DAYRMK } from '../state/plan'
+import { PLANPUCKS, DAYRMK, withPlanCalUnit } from '../state/plan'
 import { keptPlan, storedCalendar, storedPlan, type PlanCalendar, type StoredPlan } from '../state/plan-foreign'
 import { writeInputs, writeInputsBatchWith } from '../state/store'
 import { pageUnit } from '../state/perms'
@@ -91,7 +91,8 @@ function lent<T>(pucks: any[], titles: Record<string, string>, fn: () => T): { o
   }
   fill(pucks, titles)
   try {
-    const out = fn()
+    /* the verbs ask "an admin of the calendar written" — this one's squadron, not the pick's (state/plan.ts, step A) */
+    const out = withPlanCalUnit(calUnit(), fn)
     mintOrd(PLANPUCKS, puckIdOf)
     return { out, cal: { pucks: PLANPUCKS.slice(), titles: { ...DAYRMK } } }
   } finally { fill(ownP, ownT) }

@@ -162,7 +162,8 @@ describe('home.set — the squadron he leaves, and never today', () => {
 describe('approving a request', () => {
   it("linked to a man already on the roster, he keeps his squadron — no home is written", () => {
     signInAs('n@mail', 'x')
-    expect(requestAccess({ cs: 'Newbie', ini: 'NB', seat: 'FCP', cat: 'C' })).toBe(null)
+    /* (since batch 1's second half §5, D2111: the request names 149, the squadron whose admin answers it) */
+    expect(requestAccess({ cs: 'Newbie', ini: 'NB', seat: 'FCP', cat: 'C' }, 'u149')).toBe(null)
     signInAs('ad9', 'a9')
     const homesBefore = unitRows().homes.length
     const req = Object.keys(mem).find(k => k.includes('accessreq:'))
@@ -174,7 +175,8 @@ describe('approving a request', () => {
   })
   it("a NEW man approved by 149's admin is 149's", () => {
     signInAs('n2@mail', 'x')
-    expect(requestAccess({ cs: 'Newbie', ini: 'NB', seat: 'FCP', cat: 'C' })).toBe(null)
+    /* (since batch 1's second half §5, D2111: the request names 149) */
+    expect(requestAccess({ cs: 'Newbie', ini: 'NB', seat: 'FCP', cat: 'C' }, 'u149')).toBe(null)
     signInAs('ad9', 'a9')
     const req = Object.keys(mem).find(k => k.includes('accessreq:'))
     const rid = JSON.parse(mem[req!]!).id

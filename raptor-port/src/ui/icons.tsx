@@ -157,6 +157,18 @@ export function UsersIcon() {
   )
 }
 
+/** A map pin — the Squadrons category (the places the squadrons are at): the 19 Nov drawing's own tile icon, drawn
+    again in pictures b1-3 and p7, so it never shares Users' people (one thing, one icon — D1134). */
+export function MapPinIcon() {
+  return (
+    <svg className="btnglyph" viewBox="0 0 24 24" aria-hidden="true" fill="none"
+      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z" />
+      <circle cx="12" cy="10" r="2.4" />
+    </svg>
+  )
+}
+
 /** Three sliders — the Squadron-configuration category (templates & policy). */
 export function SlidersIcon() {
   return (
@@ -260,14 +272,17 @@ export function PenIcon({ solo = false, className = 'pen-ic' }: { solo?: boolean
 
 /* The squadron's mark at the left of the top bar (Shell.tsx) — made one drawing on 8 Nov 26 (React Doctor's
    duplicate-jsx-subtree) when the guest page's bar drew it too; that page went with the guest view (D2239). Its
-   number is handed in — the schedule in view's, never a written-in "142" (ui/topbits.tsx SqnMark). */
-export function TalonMark({ num }: { num: string }) {
-  return (
-    <div className="mark">
-      <svg className="rglyph" viewBox="0 -2 60 64" aria-hidden="true"><path d="M3 8 Q4.9 38.3 24 62 Q11.5 35.8 3 8 Z M16 0 Q17.4 35.0 42 60 Q26.6 31.0 16 0 Z M31 -2 Q36.4 23.5 58 38 Q42.9 19.1 31 -2 Z" /></svg>
-      <span className="tx"><span className="k">{num}</span><span className="v">TALON</span></span>
-    </div>
-  )
+   number is handed in — the schedule in view's, never a written-in "142" (ui/topbits.tsx SqnMark). `menu`: the mark is
+   the Schedules menu's button (ui/SquadronMenu.tsx) — its number reads "142 ▾", the ▾ drawn by the style sheet so the
+   number's own text stays the number; a span then, as a button holds no block. */
+function MarkInner({ num }: { num: string }) {
+  return <>
+    <svg className="rglyph" viewBox="0 -2 60 64" aria-hidden="true"><path d="M3 8 Q4.9 38.3 24 62 Q11.5 35.8 3 8 Z M16 0 Q17.4 35.0 42 60 Q26.6 31.0 16 0 Z M31 -2 Q36.4 23.5 58 38 Q42.9 19.1 31 -2 Z" /></svg>
+    <span className="tx"><span className="k">{num}</span><span className="v">TALON</span></span>
+  </>
+}
+export function TalonMark({ num, menu }: { num: string; menu?: boolean }) {
+  return menu ? <span className="mark menu"><MarkInner num={num} /></span> : <div className="mark"><MarkInner num={num} /></div>
 }
 /** The Inputs calendar's expand and compact (D1792 (b)): arrows out, arrows in. */
 export const ExpandIcon = () => <Drawn inner={EXPAND_INNER} />

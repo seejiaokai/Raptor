@@ -1,0 +1,76 @@
+
+
+<div class="reply" role="region" aria-label="Your reply">
+  <span id="replytext">As recommended for all.</span>
+  <button type="button" id="copy">Copy</button>
+</div>
+
+<script>
+// Pictures: tap to see the whole picture fitted to the screen; tap again for a readable size (half the picture's own pixels, pan by scrolling); tap again or Close to leave.
+document.addEventListener('click', function (e) {
+  var z = document.querySelector('.zoom'), t = e.target;
+  if (z) {
+    var zi = z.querySelector('img');
+    if (t === zi && !z.classList.contains('big')) { z.classList.add('big'); zi.style.width = Math.max(zi.naturalWidth / 2, window.innerWidth - 24) + 'px'; return; }
+    z.remove(); return;
+  }
+  if (t.tagName === 'IMG' && t.closest('figure')) {
+    var d = document.createElement('div'); d.className = 'zoom';
+    var i = document.createElement('img'); i.src = t.src; i.alt = t.alt;
+    var x = document.createElement('button'); x.className = 'x'; x.type = 'button'; x.textContent = 'Close';
+    d.appendChild(i); d.appendChild(x); document.body.appendChild(d);
+  }
+});
+document.addEventListener('keydown', function (e) { var z = document.querySelector('.zoom'); if (z && e.key === 'Escape') z.remove(); });
+
+// The films: a tap on the film or on Play runs it from the start.
+document.addEventListener('click', function (e) {
+  var f = e.target.closest && e.target.closest('figure'); if (!f) return;
+  var v = f.querySelector('video'); if (!v) return;
+  if (e.target === v || (e.target.classList && e.target.classList.contains('play'))) {
+    try { v.currentTime = 0; var p = v.play(); if (p && p.catch) p.catch(function () {}); } catch (err) {}
+  }
+});
+
+// A link into the folded Group B opens the fold first.
+function openFor(hash) {
+  if (!hash || hash.length < 2) return;
+  var el = document.getElementById(hash.slice(1)); if (!el) return;
+  var d = el.closest('details'); if (d && !d.open) { d.open = true; el.scrollIntoView(); }
+}
+window.addEventListener('hashchange', function () { openFor(location.hash); });
+openFor(location.hash);
+
+// "Differently" and the named other choices build the reply. One choice a question: a second button of the same question replaces the first. Kept on this phone only; the page reads the same if that is blocked.
+var KEY = 'guard-q6-differently', picked = [];
+try { picked = JSON.parse(localStorage.getItem(KEY) || '[]') || []; } catch (err) { picked = []; }
+function qOf(k) { return k.split('|')[0]; }
+function keyOf(b) { return b.dataset.q + (b.dataset.say ? '|' + b.dataset.say : ''); }
+function parts(q) { var m = /^([A-Z])(\d+)([a-z]?)$/.exec(q) || [0, 'Z', '0', '']; return [ 'EDB'.indexOf(m[1]), parseInt(m[2], 10), m[3] ]; }
+function order(a, b) { var x = parts(qOf(a)), y = parts(qOf(b)); return x[0] - y[0] || x[1] - y[1] || (x[2] < y[2] ? -1 : x[2] > y[2] ? 1 : 0); }
+function show() {
+  picked.sort(order);
+  document.querySelectorAll('button.diff').forEach(function (b) { b.setAttribute('aria-pressed', picked.indexOf(keyOf(b)) >= 0 ? 'true' : 'false'); });
+  document.querySelectorAll('.top li').forEach(function (li) {
+    var a = li.querySelector('a'); if (!a) return;   // the "Told" box's rows are not links
+    var code = a.getAttribute('href').slice(1).toUpperCase();
+    li.classList.toggle('done', picked.some(function (k) { var q = qOf(k); return q === code || q.replace(/[a-z]$/, '') === code; }));
+  });
+  var said = picked.map(function (k) { var p = k.split('|'); return p[0] + (p[1] ? ' ' + p[1] : ''); });
+  document.getElementById('replytext').textContent = picked.length ? 'As recommended for all, except ' + said.join(', ') + ': ' : 'As recommended for all.';
+}
+document.addEventListener('click', function (e) {
+  var b = e.target.closest && e.target.closest('button.diff'); if (!b) return;
+  var k = keyOf(b), had = picked.indexOf(k) >= 0;
+  picked = picked.filter(function (p) { return qOf(p) !== b.dataset.q; });
+  if (!had) picked.push(k);
+  try { localStorage.setItem(KEY, JSON.stringify(picked)); } catch (err) {}
+  show();
+});
+document.getElementById('copy').addEventListener('click', function () {
+  var text = document.getElementById('replytext').textContent, btn = this;
+  function done(ok) { btn.textContent = ok ? 'Copied' : 'Hold the words to copy'; setTimeout(function () { btn.textContent = 'Copy'; }, 2500); }
+  try { navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(false); }); } catch (err) { done(false); }
+});
+show();
+</script>

@@ -19,11 +19,12 @@
 
 import { useSyncExternalStore } from 'react'
 import { toPeople, pieceOf } from '../engine/inputown'
-import { inputOnDay, goesOnProg, inputLines, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, oilSilent, inpLabel, placeholderOf, remarksTyped, tillShown, tillDefault, inputCoversDate, nowStamp, idsOf, onlyNamed, leadOf, isPlaceholderInput, inputSilent, filingOf } from '../engine/inputs'
+import { inputOnDay, goesOnProg, inputLines, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, oilSilent, inpLabel, placeholderOf, remarksTyped, tillShown, tillDefault, inputCoversDate, nowStamp, idsOf, onlyNamed, leadOf, isPlaceholderInput, inputSilent, filingOf, inputUnitOf } from '../engine/inputs'
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { shortDate } from './ui/dates'
-import { mayManageRoster, viewerId, me, mayEditInput, setLwDayOpenProbe, setLwBalanceProbe, setLwUnitProbe, setLwPostingProbe, setFollowUpsProbe, setWarLinesOwed, setHolidayLinesOwed } from '../state/perms'
+import { mayManageRoster, viewerId, me, mayEditInput, setLwDayOpenProbe, setLwBalanceProbe, setLwUnitProbe, setLwPostingProbe, setPostingFailedProbe, setFollowUpsProbe, setWarLinesOwed, setHolidayLinesOwed, pageUnit } from '../state/perms'
+import { openWinFor } from '../state/cutoff'
 import { rosterOf, homeUnitOf, unitPeople } from '../engine/roster'
 import { UNIT } from '../engine/unitview'
 import { qualify } from '../storage/unitid'
@@ -34,7 +35,7 @@ import { UNIT_ROW_PREFIXES } from '../state/units-model'
 import { onCommit as cmdOnCommit } from '../command'
 import type { Change } from '../command/types'
 import { isBalKind, readTypedBalShape, sameSnapshot, type SnapEntry } from './engine/leaveyear'
-import { SESSION, canEditSched } from '../state/auth'
+import { SESSION, canEditOwn } from '../state/auth'
 /* [ARCH-STACK] phase 3: the command-routed persistPeople (the cross-seam roster
    writers — PO-archive, restore — emit a people change too). */
 import { persistPeopleProjection, commitPeopleEdit } from '../state/people-settings-commit'
@@ -167,14 +168,17 @@ import type { StorageBackend } from './state/storage'
 import { HOOKS } from '../engine/hooks'
 import { deferEffect as cmdDeferEffect, commitProjection as cmdCommitProjection, commit as cmdCommit, CmdRefused, isInReducer, isCommitting as cmdIsCommitting, activeEnvelope, isQueued, isOk, type CommitResult, type Txn } from '../command'
 /* [POST-OUT-OUTCOMES] (27 Sep 26): the posting's outcomes cross the seam HERE, the one place the war meets Raptor */
-import { suspendForPosting, enableAfterPosting, lastAdminIfGone, lastAdminLock, masterDeleteProblem, masterChangeProblem, otherSquadronPersonProblem, accountOfPid, suspendForArchive, enableForRestore, ACCOUNTS_LIST, isAdminAccount, adminsOf } from '../state/accounts'
-import { markBack, clearBack, CURPAGE, setPage } from '../state/view'
+import { suspendForPosting, enableAfterPosting, lastAdminIfGone, lastAdminLock, masterDeleteProblem, masterChangeProblem, otherSquadronPersonProblem, accountOfPid, suspendForArchive, enableForRestore, ACCOUNTS_LIST, isAdminAccount, adminLineAudience, endRightsOfArchived } from '../state/accounts'
+import { accessWas, tellAccess, writeMoveLines, acctFollowUps } from '../state/acctlines'
+import { markBack, clearBack, CURPAGE } from '../state/view'
+/* every page change by a press goes through the page door (step K6 — the guard rail's plan §4.5, R5 (b)) */
+import { setPage, ownPageRefused } from '../state/store'
 import { askNewWar } from './ui/warask'
 import { applyDelete, deleteCutoff, effectiveToday, stashPreflight } from '../state/person-delete'
 import { peopleStore, settingsStore, finishPeopleWrite, revertUnsavedPeople } from '../state/people-settings-commit'
 import { schedStore, schedApplyEnd, resyncBeforeEnlist, commitInputs, SCHED_TYPES } from '../state/sched-commit'
 import { sansUnfiledLines, sansLineBack, sansTakeBack, sansPostedFrom, sansBackCovered, sansBackOwed, sansUntickOwed, wireSansBackBefore, sansUndoToldNow, sansRetractUndoTold, type SansBackOwed } from './sansunfiled'
-import { noticeHoliday, noticeWar, noticePosting, noticePostingBack, noticeSansBack, setHolidayLeft, setHolidaySpan, setDerivedNotices, isWarNotice, noticeAboutHim, noticeLeftBell, warLineName, NOTICES, type Notice, type NoticePart, type PoOutcome } from '../state/notices'
+import { noticeHoliday, noticeWar, noticePosting, noticePostingBack, noticeSansBack, setHolidayLeft, setHolidaySpan, setDerivedNotices, isWarNotice, noticeAboutHim, noticeLeftBell, warLineName, NOTICES, noticeAccount, noticePostingFailed, poFailedLineId, type Notice, type NoticePart, type PoOutcome } from '../state/notices'
 import { askLw, askRing, setApprMode, setBalancesUp } from './ui/lwnav'
 import { ringCell } from './ui/cellring'
 import { hasRead, hasReadSaved, forgetRead } from '../state/noticeseen'
@@ -342,6 +346,8 @@ export function installAbsenceDoor(): void {
   /* WHAT A POSTING IS AS SAVED (perms.ts setLwPostingProbe — fix read 13, item B): the posting pass is judged against the
      war's stored profile row, never memory's copy, which a change outside every command rewrites in place */
   setLwPostingProbe(postOutIsSaved)
+  /* …and whether a posting failed now, for its posting-failed line (perms.ts postingFailedViolation — §16 D10′) */
+  setPostingFailedProbe(id => { const f = postingFailedNow(id); return f ? { unit: f.unit, key: f.d.key } : null })
   /* A7 — A WAR TAKES A MAN'S DAY ONLY WHERE IT IS ITS SQUADRON'S (the reshape plan §6.2; his D2243 Q3), installed with A1 as
      one change: the war's own door asks his home on the day (store.ts notThisWarsDay — only while each squadron has a world
      of its own, as the unit probe above), and the gate's 7b backstop reads `(pid, day)` off a war cell's change
@@ -874,7 +880,7 @@ function askFiledOil(iids: string[], from: string, to: string): void {
   const open = oilOpenOn(from, to).filter(o => mine.has(o.iid))
   if (!open.length) return
   const raise = () => {
-    if (open.length > 1 && canEditSched()) {
+    if (open.length > 1 && canEditOwn()) {
       const days = open.flatMap(o => o.days).sort()
       setOilList({ from: days[0]!, to: days[days.length - 1]!, name: '', plain: true })
     } else {
@@ -1384,7 +1390,8 @@ export function isNonWorkingISO(date: string): boolean {
    inputDates does, same 400-day cap. */
 export function oilAskPlan(row: { person?: unknown; date: string; endDate?: string; yr?: unknown; allday?: unknown; s?: unknown; e?: unknown }): { iso: string; amt: 0.5 | 1 }[] {
   const out: { iso: string; amt: 0.5 | 1 }[] = []
-  const amt = inputOilAmt(row.allday, row.s, row.e)
+  /* its own squadron's threshold, whichever squadron is picked (§15 D4 — engine/oil.ts inputOilAmt) */
+  const amt = inputOilAmt(row.allday, row.s, row.e, inputUnitOf(row))
   if (amt == null) return out
   const start = labelToISO(row.date, row.yr)
   if (!start) return out
@@ -1538,10 +1545,13 @@ export function holidayOwnName(iso: string): string { const n = dayFacts(iso).na
    its bell lines go to that squadron's admins only, never the other squadron's (each admin's Admin → Users lists his own
    squadron, D2191); the posted man's squadron is the war's, since each squadron's Leave War holds only its own people */
 /* ONE AUDIENCE (the reshape plan §6.2 A5, step 6; D2202, D2198; PB1, PB2): a posting's lines go to the squadron's admins
-   of TODAY (accounts.ts adminsOf — at home there, or a plain admin holding Plan of it; a master through his home only),
+   of TODAY (accounts.ts adminLineAudience since §7 item 2 — at home there, a plain admin holding Plan of it, or a master admin),
    the same set the gate checks every posting line against (perms.ts postingPassViolation). The pass reads it after its
    outcomes, so an admin archived by his own posting is not told. */
-const postingAdmins = (unit: string): string[] => adminsOf(unit, effectiveToday())
+/* …AND EVERY MASTER ADMIN WHO CAN SIGN IN (batch 1's second half, plan §7 item 2 — R-O2): the one audience,
+   accounts.ts adminLineAudience, read at all five places that must agree; whether a master admin sees a squadron's lines
+   other than his home's is his bell's switch (D2198), never who is written to */
+const postingAdmins = (unit: string): string[] => adminLineAudience(unit, effectiveToday())
 const ownSchedulerIds = (): string[] => postingAdmins(worldUnit())
 /* …and a man the war tells of its bidding or of a decision is one at home in the war's own squadron today (job 2, 19 Nov
    26 — the Opus read's F1; D2194): a man posted out of it stays a row of its war while his posting window runs (state/
@@ -1597,9 +1607,10 @@ function holidayTodo(runs: readonly HolidayRun[]): (HolidayRun & { name: string;
      squadron's schedulers only"; D2202: while an admin holds Plan of another squadron his bell carries that squadron's
      admin lines — the Plan audit's PB3, which found Hunter, holding Plan of 149, never told of 149's holiday; it replaces
      step 4's "every squadron at the place, each for its own", D2184 R32). accounts.ts adminsOf — at home there, or a
-     plain admin holding Plan of it; a master admin through his home only (D2198) — the one audience the posting lines
+     plain admin holding Plan of it; every master admin since §7 item 2, his bell's switch deciding what he sees (D2198) — the one audience the posting lines
      use and the gate checks an admin's line against (perms.ts 7e, PC1). The one who made it is among them. */
-  const told = adminsOf(unit, effectiveToday())
+  /* (…every master admin who can sign in with them — the one audience, accounts.ts adminLineAudience, §7 item 2) */
+  const told = adminLineAudience(unit, effectiveToday())
   /* (and each line carries that squadron — notices.ts noticeHoliday's `u`, PB4) */
   return todo.map(h => ({ ...h, told, unit }))
 }
@@ -1687,11 +1698,27 @@ function tellBidding(tells: OpenTell[]): void {
    open" for dates long gone. So where he holds a line about the stretch, it is listed however old, dated just after
    the newest of them. */
 const ENDED_DAYS = 14
+/* the war's audience (warAudience) for a squadron not loaded: a man with a sign-in, not a special, archived or deleted
+   person (noticeWar's own leave-outs) */
+function storedAudienceHas(pid: string): boolean {
+  const p = (PEOPLE as Record<string, { special?: unknown; archived?: unknown; deleted?: unknown } | undefined>)[pid]
+  if (!p || p.special || p.archived || p.deleted) return false
+  return ACCOUNTS_LIST.some(a => a && a.pid != null && String(a.pid) === pid)
+}
+/* …READ FROM HIS OWN SQUADRON'S WAR, WHICHEVER IS LOADED (batch 1's second half, §16 D4′ — R3-O12, R3-F8): a master
+   admin's or Plan holder's pick loads the picked squadron's war, and the line read the loaded one — his own war's line
+   left his bell, and the unread count moved with the pick. The loaded war where it is his home's (its audience as
+   before); else his home's stored war (storedWorld — its stretches only), for a man with a sign-in on no special,
+   archived or deleted person. */
 function endedLines(pid: string): Notice[] {
-  if (!warAudience().includes(pid)) return []
+  const home = homeUnitOf(pid, effectiveToday())
+  const loaded = home === worldUnit()
+  if (loaded ? !warAudience().includes(pid) : !storedAudienceHas(pid)) return []
+  const periods: Period[] = loaded ? rawState().wars.map(w => w.period) : (home ? storedWorld(home).periods : [])
   const today = memberToday(), since = addDays(today, -ENDED_DAYS)
   const out: Notice[] = []
-  for (const w of rawState().wars) for (const o of w.period.open) {
+  for (const period of periods) for (const o of period.open) {
+    const w = { period }
     if (!(o.to < today)) continue
     let told = 0
     for (const n of NOTICES) {
@@ -1701,7 +1728,7 @@ function endedLines(pid: string): Notice[] {
     if (!told && o.to < since) continue
     const end = addDays(o.to, 1)
     const at = Math.max(new Date(+end.slice(0, 4), +end.slice(5, 7) - 1, +end.slice(8, 10)).getTime(), told + 1)
-    out.push({ id: `lwend:${w.period.id}:${o.from}:${o.to}`, to: pid, by: null, at, iid: '', name: 'Leave War', day: o.from, what: [{ k: 'lwopen', a: o.from, b: o.to, open: false, end: true }] })
+    out.push({ id: `lwend:${w.period.id}:${o.from}:${o.to}`, to: pid, by: null, at, iid: '', name: 'Leave War', day: o.from, what: [{ k: 'lwopen', a: o.from, b: o.to, open: false, end: true }], ...(home ? { u: home } : {}) })
   }
   return out
 }
@@ -1721,11 +1748,12 @@ function postedLines(pid: string): Notice[] {
   for (const u of WORLD_DOOR ? unitList().map(x => x.id) : [here]) {
     // eslint-disable-next-line react-doctor/js-set-map-lookups -- each pass reads a different squadron's admin list, built fresh and looked in once: a Set would cost more than the one lookup
     if (!postingAdmins(u).includes(pid)) continue
-    out.push(...postedLinesOf(pid, u === here ? getState().postOuts : storedPostings(u)))
+    out.push(...postedLinesOf(pid, u === here ? getState().postOuts : storedPostings(u), u))
   }
   return out
 }
-function postedLinesOf(pid: string, posts: Readonly<Record<string, Person>>): Notice[] {
+/* (`u` — the postings' squadron, stamped on each line — §7 item 1) */
+function postedLinesOf(pid: string, posts: Readonly<Record<string, Person>>, u: string): Notice[] {
   /* (an admin is never told of his own posting — as the pass's lines, above) */
   const today = effectiveToday(), since = addDays(today, -ENDED_DAYS)
   const out: Notice[] = []
@@ -1743,7 +1771,7 @@ function postedLinesOf(pid: string, posts: Readonly<Record<string, Person>>): No
        he holds for this man and date, so it comes back unread (the scenario designer's 12, 5 Nov 26). An admin never told
        (he had not read it, or pressed the Undo himself) keeps the plain id — unread, or his own act */
     const backs = NOTICES.filter(n => { const q = (n.what || [])[0]; return n.to === pid && n.day === poDate && q?.k === 'poback' && q.who === id }).length
-    out.push({ id: `po:${id}:${poDate}${backs ? `:${backs}` : ''}`, to: pid, by: null, at, iid: '', name: String(body.cs), day: poDate, what: [{ k: 'po', who: id, o: 'none' }] })
+    out.push({ id: `po:${id}:${poDate}${backs ? `:${backs}` : ''}`, to: pid, by: null, at, iid: '', name: String(body.cs), day: poDate, what: [{ k: 'po', who: id, o: 'none' }], u })
   }
   return out
 }
@@ -1753,6 +1781,9 @@ function postedLinesOf(pid: string, posts: Readonly<Record<string, Person>>): No
  *  (LeaveWarPage.tsx). A man with no row on the grid (a SANS man while SANS is off the war — B12) is shown his person
  *  window instead. Approvals is left (the bell is another way out of it). */
 export function openWarAt(iso: string, personId?: string | null): void {
+  /* (asks first, step K6 — the plan §4.5: it selects the war, puts Approvals and Balances away and asks for the ring
+     before the page; refused by the page door, none of it is done) */
+  if (ownPageRefused('leavewar')) return
   const war = warHolding(rawState().wars, iso)
   if (war && war.period.id !== rawState().currentId) selectWar(war.period.id)
   setApprMode('off')
@@ -2020,6 +2051,18 @@ export function warNoticesReversed(changes: ReadonlyArray<{ collection: string; 
     }
     wrote += sansRetractUndoTold(retract, by != null ? String(by) : null)
   })
+  return wrote
+}
+/* …AND HIS OWN ACCOUNT'S LINES (batch 1's second half §16 D7′): the opposite line to a man who had read the line the Undo
+   took away, a fresh one where a Redo follows an opposite line he read — written inside the restore, as the war's are
+   (its envelope; the gate proves each over the restore's own rows, state/perms.ts acctLineViolation), by whoever pressed
+   it; no separate step, so nothing new enters the Undo list (state/acctlines.ts acctFollowUps) */
+export function acctNoticesReversed(changes: ReadonlyArray<{ collection: string; id: string; op: string; before?: unknown; after?: unknown }>, dir: 'undo' | 'redo'): number {
+  const made = acctFollowUps(changes, dir, hasRead)
+  if (!made.length) return 0
+  const by = me(), at = Date.now(), day = todayIso()
+  let wrote = 0
+  commitInputs('lw.notice', () => { for (const f of made) if (noticeAccount(f.to, by != null ? String(by) : null, f.part, day, at, undefined, f.ref)) wrote++ })
   return wrote
 }
 
@@ -3061,7 +3104,9 @@ export function postingPendingTag(id: string): string | null {
 export function postingHeldNote(id: string): string | null {
   const u = foreignHome(id)
   const d = poDueOf(id, u ? storedPostings(u)[id] : getState().postOuts[id], effectiveToday())
-  return d ? poHeldReason(id, d.outcome, d.poDate) : null
+  if (!d) return null
+  /* (…or that it could not run — the runner gave it up this session: his D2214, D2306's words, picture p8) */
+  return poHeldReason(id, d.outcome, d.poDate) || (poRefused(d, u ?? worldUnit()) ? PO_FAILED_ROW : null)
 }
 /* would a posting dated `poDate` run NOW — on the pass's own clock (poDueNow: today on or after the date)? The Post out
    sheet asks before it saves a Delete's date that answers yes (D1102 — [PO-MOVE-DATE-DELETE-ASK]) */
@@ -3070,7 +3115,59 @@ export function postingRunsBy(poDate: string): boolean { return poDate <= effect
    whole pass only, never one posting's retry — every other squadron's, from its stored war (runForeignPostings, below) */
 export function runPoOutcomes(only?: string): void {
   runLoadedPostings(only)
-  if (only === undefined) runForeignPostings()
+  if (only === undefined) { runForeignPostings(); runMoveLines() }
+}
+/* A MOVE TELLS HIM ON ITS DAY (batch 1's second half, plan §7 item 6, §15 D11, §16 D11′): a move saved today ends his
+   rights from tomorrow, so the line is written when it takes effect — by the app itself, with no one's name, at the first
+   load on or after that day and at the midnight wake (both run this pass), each line its fixed id (a second load writes
+   nothing; a move cancelled first owes nothing). A command of its own, out of band — never inside another, never part of
+   anyone's Undo step (undo/timeline.ts). Refused, it is not tried again that day. */
+let MV_REFUSED_DAY = ''
+function runMoveLines(): void {
+  if (SYNCING) return
+  if (isInReducer() || cmdIsCommitting()) { if (isInReducer()) cmdDeferEffect(() => runMoveLines()); return }
+  const today = todayIso()
+  if (MV_REFUSED_DAY === today) return
+  let res: CommitResult | undefined
+  writeMoveLines((type, apply) => (res = cmdCommitProjection({ type, scope: { module: 'inputs' }, apply })))
+  if (res && !isQueued(res) && !isOk(res)) MV_REFUSED_DAY = today
+}
+/* A POSTING THE APP COULD NOT RUN (batch 1's second half, plan §7 item 7, §15 D10, §16 D10′ — his D2214: "Bell the
+   admins"): once the runner gives a posting up — its command refused after its one retry of it alone (PO_REFUSED; another
+   squadron's, FX_REFUSED), or held for any reason but the last-admin lock, which keeps its own words — each admin of his
+   squadron is told once: "Ranger · Mon 20 Jul / Posting out could not run. See his row on Admin → Users.", by the app, a
+   tap opening his row. Written by a command of its own, `posting.failed`, out of band (a line inside the refused command
+   would roll back with it — R-A7, R-O15), each line's id the posting's (state/notices.ts poFailedLineId): a later load,
+   which tries the posting again, finds them and writes nothing. The gate passes it only where this same proof holds now
+   (perms.ts postingFailedViolation, through setPostingFailedProbe — D10′). */
+const PO_FAILED_ROW = 'This posting could not run. The app tries again the next time it opens. If this line is still here after that, report it with “Report a problem” on the Help page.'
+const poRefused = (d: PoDue, unit: string): boolean => (unit === worldUnit() && PO_REFUSED.has(d.key)) || FX_REFUSED.has(`${unit}:${d.key}`)
+/** has this man's posting failed now — the runner's own record, or a hold that is not the last-admin lock: his squadron
+ *  (whose admins are told) and the posting, or null */
+export function postingFailedNow(id: string): { unit: string; d: PoDue } | null {
+  const fu = foreignHome(id)
+  const unit = fu ?? worldUnit()
+  const d = poDueOf(id, fu ? storedPostings(fu)[id] : getState().postOuts[id], effectiveToday())
+  if (!d) return null
+  if (poRefused(d, unit)) return { unit, d }
+  return poHeldReason(id, d.outcome, d.poDate) && !lastAdminLock(id) ? { unit, d } : null
+}
+/* told this session (a fresh wiring forgets, and the lines' own ids keep a later load from writing twice) */
+const PO_FAILED_TOLD = new Set<string>()
+function tellPostingFailed(d: PoDue, unit: string): void {
+  const k = `${unit}:${d.key}`
+  if (PO_FAILED_TOLD.has(k)) return
+  /* never inside another command: straight after it */
+  if (isInReducer() || cmdIsCommitting()) { if (!cmdDeferEffect(() => tellPostingFailed(d, unit))) queueMicrotask(() => tellPostingFailed(d, unit)); return }
+  PO_FAILED_TOLD.add(k)
+  const to = postingAdmins(unit).filter(t => t !== d.id)
+  if (to.every(t => NOTICES.some(n => n.id === poFailedLineId(d.key, t)))) return
+  cmdCommitProjection({ type: 'posting.failed', scope: { module: 'inputs' }, apply: (txn: Txn) => {
+    HOOKS.bellEnlist(txn)
+    noticePostingFailed(to, d.key, d.id, d.outcome as PoOutcome, d.poDate, unit)
+    HOOKS.bellEnd()
+  } })
+  raptorNotify()
 }
 /* A POSTING WHOSE MAN IS NOT AT HOME IN ITS SQUADRON TODAY IS SKIPPED BY BOTH PASSES (§6.2 A5, step 2): the gate would
    refuse it (perms.ts postingPassViolation: his home before the pass must be the war's); skipped, it is neither run, nor
@@ -3097,7 +3194,7 @@ function runLoadedPostings(only?: string): void {
     if (!d || PO_INFLIGHT.has(d.key) || PO_REFUSED.has(d.key) || (typeof only === 'string' && d.key !== only)) continue
     if (awayFrom(id, worldUnit(), today)) continue
     const held = poHeldReason(id, d.outcome, d.poDate)
-    if (held) { tellOnce(d.key, held); continue }
+    if (held) { tellOnce(d.key, held); if (!lastAdminLock(id)) tellPostingFailed(d, worldUnit()); continue }
     due.push(d)
   }
   if (!due.length) return
@@ -3144,6 +3241,7 @@ function runLoadedPostings(only?: string): void {
           /* the scheduler store too, every time: the admins' bell lines are its records ([POSTOUT-RUN-NOTICE], below) — and a
              delete's days (no saved week is written for a delete — [DB-READINESS] group A, phase 6 (d)) */
           txn.enlist(schedStore)
+          const accessBefore = accessWas()
           const told: Array<[string, string]> = []
           /* each posting that RAN, for the admins' bells: a held one changed nothing and tells nothing new (D306's note
              already speaks); `acct` — an archived man held a sign-in, read before it is suspended */
@@ -3157,7 +3255,8 @@ function runLoadedPostings(only?: string): void {
             const body = rosterBody(d.id)!   // (poDueNow just found his body)
             ran.push({ id: d.id, poDate: d.poDate, outcome: d.outcome as PoOutcome, acct: !!accountOfPid(d.id) })
             if (d.outcome === 'overseas') {
-              if (!body.archived) { body.archived = true; body.archivedBy = 'po'; body.archivedOn = d.poDate }   // D329: when
+              /* (archived, his View and Plan of other squadrons end in the same command — his D2311) */
+              if (!body.archived) { body.archived = true; body.archivedBy = 'po'; body.archivedOn = d.poDate; endRightsOfArchived(d.id) }   // D329: when
               suspendForPosting(d.id)
             } else if (d.outcome === 'sans') {
               /* SANS FROM THE POSTING'S DATE (D283, D2313): the tick and its first day, so every reader of a day asks
@@ -3187,8 +3286,11 @@ function runLoadedPostings(only?: string): void {
             const to = ownSchedulerIds(), now = Date.now(), rank: Record<string, number> = { overseas: 0, delete: 1, sans: 2 }
             const cs = (id: string) => String(rosterBody(id)?.cs ?? id)
             ;[...ran].sort((a, b) => (a.poDate < b.poDate ? 1 : a.poDate > b.poDate ? -1 : 0) || (rank[a.outcome] ?? 3) - (rank[b.outcome] ?? 3) || cs(a.id).localeCompare(cs(b.id)))
-              .forEach((r, i) => noticePosting(to.filter(t => t !== r.id), r.id, r.outcome, r.poDate, r.acct, now - i))
+              .forEach((r, i) => noticePosting(to.filter(t => t !== r.id), r.id, r.outcome, r.poDate, r.acct, now - i, worldUnit()))
           }
+          /* (an Overseas posting tells the man himself: "Suspended", and each right it ended "…: archived" — no one's name,
+             read once he is restored; §7 item 6, state/acctlines.ts) */
+          tellAccess(txn, accessBefore)
           validate()
           finishPeopleWrite()
           /* the schedule's own save step — the bell's lines; for a delete the loaded week filed too (person-delete.ts deletePerson) */
@@ -3216,7 +3318,9 @@ function runLoadedPostings(only?: string): void {
     for (const d of due) PO_RETRIED.add(d.key)
     if (fresh) { runLoadedPostings(only); return }
     for (const d of due) PO_REFUSED.add(d.key)
-    if (due.length < 2) return
+    /* (given up alone — after its one retry, or alone after a group's: his squadron's admins are told, §7 item 7; a
+       group's failure tells nobody, so a posting that then runs alone rings for none) */
+    if (due.length < 2) { for (const d of due) tellPostingFailed(d, worldUnit()); return }
     for (const d of due) { PO_REFUSED.delete(d.key); runLoadedPostings(d.key) }
   }
 }
@@ -3305,7 +3409,9 @@ export function runForeignPostings(): void {
         if (!d) continue
         const fxKey = `${u.id}:${d.key}`
         if (FX_REFUSED.has(fxKey) || FX_INFLIGHT.has(fxKey) || awayFrom(id, u.id, today)) continue
-        if (poHeldReason(id, d.outcome, d.poDate)) continue          // held: nothing now, nothing said (A6's note says it)
+        /* held: nothing now, nothing said on screen (A6's note says it) — but a hold for any reason but the last-admin lock
+           rings that squadron's admins once (§7 item 7) */
+        if (poHeldReason(id, d.outcome, d.poDate)) { if (!lastAdminLock(id)) tellPostingFailed(d, u.id); continue }
         due.push({ ...d, unit: u.id, fxKey })
       }
     }
@@ -3329,13 +3435,15 @@ function runForeignPosting(d: FxDue): void {
         revertUnsavedPeople()                     // the roster as saved: nothing but this posting rides in (the loaded pass's rule)
         resyncBeforeEnlist()
         txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(schedStore); txn.enlist(fw)
+        const accessBefore = accessWas()
         /* asked again as the command runs: still due, still his squadron's, not held */
         const now = poDueOf(d.id, fw.post(d.id), effectiveToday())
         const body = rosterBody(d.id)
         if (now && now.key === d.key && body && !awayFrom(d.id, d.unit, effectiveToday()) && !poHeldReason(d.id, now.outcome, now.poDate)) {
           const acct = !!accountOfPid(d.id)
           if (now.outcome === 'overseas') {
-            if (!body.archived) { body.archived = true; body.archivedBy = 'po'; body.archivedOn = now.poDate }
+            /* (archived, his View and Plan of other squadrons end in the same command — his D2311) */
+            if (!body.archived) { body.archived = true; body.archivedBy = 'po'; body.archivedOn = now.poDate; endRightsOfArchived(d.id) }
             suspendForPosting(d.id)
           } else if (now.outcome === 'sans') {
             if (!body.san) { sansStart(body, now.poDate, true); body.sanBy = 'po' }   // SANS from the posting's date (D2313), apart from his own earlier days
@@ -3350,8 +3458,10 @@ function runForeignPosting(d: FxDue): void {
              his window removed by deleteOnForeign: nothing left to mark, and he is deleted, so never due again) */
           const after = fw.post(d.id)
           if (after) fw.setPost(d.id, { ...after, poDone: now.poDate })
-          noticePosting(postingAdmins(d.unit).filter(t => t !== d.id), d.id, now.outcome as PoOutcome, now.poDate, acct, Date.now())
+          noticePosting(postingAdmins(d.unit).filter(t => t !== d.id), d.id, now.outcome as PoOutcome, now.poDate, acct, Date.now(), d.unit)
           if (now.outcome === 'delete') cmdDeferEffect(() => { HOOKS.reflow(); HOOKS.histPush() })
+          /* (the man himself told, as the loaded pass tells him — §7 item 6) */
+          tellAccess(txn, accessBefore)
         }
         validate()
         finishPeopleWrite()
@@ -3364,6 +3474,7 @@ function runForeignPosting(d: FxDue): void {
   const refusedNow = (): void => {
     if (!FX_RETRIED.has(d.fxKey)) { FX_RETRIED.add(d.fxKey); FX_DIRTY = true; return }   // tried once more on the next run
     FX_REFUSED.add(d.fxKey)                                                            // then given up for the session
+    tellPostingFailed(d, d.unit)                                                       // …and his squadron's admins told (§7 item 7)
   }
   const landed = (): void => { FX_INFLIGHT.delete(d.fxKey); FX_POSTS.delete(d.unit) }
   if (res && isQueued(res)) { res.done.then(r => { landed(); if (!isOk(r)) refusedNow() }, () => { landed(); refusedNow() }); return }
@@ -3577,6 +3688,8 @@ function restoreBody(id: string, rename: string | null, postIn?: string): boolea
       const lines = postIn === undefined ? postingLinesOf(id) : []
       if (lines.length) { resyncBeforeEnlist(); txn.enlist(schedStore) }
       txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(fw ?? lwStore)
+      /* (his sign-in enabled again tells him — batch 1's second half §7 item 6, state/acctlines.ts) */
+      const was = accessWas()
       if (rename != null && !renameCallsign(id, rename)) { ok = false; return }
       if (postIn === undefined) setPostOut(id, null)
       body.archived = false
@@ -3601,6 +3714,7 @@ function restoreBody(id: string, rename: string | null, postIn?: string): boolea
         body.back = true
       }
       if (lines.length) forget = retractPostingLines(lines)
+      tellAccess(txn, was)
       validate()
       finishPeopleWrite()
       if (lines.length) schedApplyEnd()
@@ -3820,7 +3934,12 @@ export function archivePerson(id: string): { bad: string | null; said: string } 
     type: 'person.archive', scope: { module: 'people' }, meta: null,
     apply: (txn: Txn) => {
       txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(fw ?? lwStore)
+      /* (his sign-in suspended and his rights ended tell him, read once he is restored — §7 item 6, state/acctlines.ts) */
+      const was = accessWas()
       if (suspendForArchive(id) === 'lock') throw new CmdRefused(archiveLockWords(id, body.cs) ?? `${body.cs} is the last admin who can sign in — he can't be archived until another admin can`)
+      /* his View and Plan of other squadrons end with the archive, in this command — Restore does not put them back (his
+         D2311); even where his sign-in was suspended by hand before */
+      endRightsOfArchived(id)
       body.archived = true
       body.archivedBy = 'admin'
       body.archivedOn = today                                           // D329: how and when — who, by his person id
@@ -3842,6 +3961,7 @@ export function archivePerson(id: string): { bad: string | null; said: string } 
           replaced = done.replaced
         }
       } else replaced = closeStintOnArchive(id, today, keepHidden).replaced
+      tellAccess(txn, was)
       validate()
       finishPeopleWrite()
     },
@@ -3857,8 +3977,25 @@ export function archivePerson(id: string): { bad: string | null; said: string } 
 }
 /* A NEW PERSON'S POST-IN DATE (D308, [ONE-DOOR]) — the war half of the one add, inside its command: the war's store
    enlisted, his war identity taken from the projection (the war has not re-projected him yet), his first stint opened on
-   the date. Refused whole (the add rolls back) if the war cannot take it. */
+   the date. Refused whole (the add rolls back) if the war cannot take it.
+   HIS HOME SQUADRON'S WAR, NOT ALWAYS THE ONE LOADED (batch 1's second half §4 item 7 — R-A3): Add a person names his
+   home squadron, written just before this in the same command (state/units.ts putNewHome). When it is another squadron
+   than the war loaded, his first stint goes to THAT squadron's stored war through the second store (state/foreign.ts),
+   as Restore's does (restoreBody) — never into the war loaded, which would count a 149 man in 142's war, and never
+   lost, which the old refusal did. A new man has nothing stored there yet, so nothing is loaded first. The gate takes
+   this second-store write only for the man the command makes, and only his first window (state/perms.ts
+   warUnitViolation). */
 function postInNewPerson(txn: Txn, id: string, date: string): void {
+  const fu = foreignHome(id)
+  if (fu) {
+    const fw = foreignWar(fu)
+    txn.enlist(fw)
+    const person = foreignPerson(null, fu, id)
+    const next = person ? stintOpened(person, date) : null
+    if (!next) throw new CmdRefused(person ? 'Pick the post-in date' : 'That did not save')
+    fw.setPost(id, next)
+    return
+  }
   txn.enlist(lwStore)
   const identity = projectPeople(true).find(p => p.id === id)
   /* no identity with a war loaded means the add would lose his date in silence (the second fix read, 18 Nov 26 —
@@ -3951,12 +4088,13 @@ function postingLinesOf(id: string): Notice[] {
      left his bell on his first move day for good (D2218, noticeLeftBell). The newest run is still found from EVERY stored
      line of this posting (`last`, above) — only then is each retired line left out: neither deleted nor told. The worked-out
      "off the manpower" line the same, by its posting date. */
-  /* PB1 (the Plan audit, §19 — with §6.2 step 6): "whoever would be told of it today" is the squadron's admins of today
-     (postingAdmins — a plain admin holding Plan of it among them, D2202), never the reader's home alone */
-  /* (…and a man at home here today as before: a suspended admin, whom adminsOf leaves out, still has his line taken back
-     — the fixes' read 1 below) */
-  const told = new Set(postingAdmins(worldUnit()))
-  const stored = mine.filter(n => n.at === last && (told.has(String(n.to)) || atWarHome(n.to) || noticeAboutHim(n)) && !noticeLeftBell(n))
+  /* (PB1 — who is TOLD of the take-back, the squadron's admins of today, a Plan holder among them, D2202: asked in
+     retractPostingLines below, beside a suspended admin at home here, the fixes' read 1) */
+  /* …AND THE LINES THE BELL HIDES TOO (batch 1's second half, plan §16 D1′c — R3-O7): a line whose reader has lost the
+     right that brought it (Plan taken, made a member) is hidden, never deleted (state/notices.ts rightHolds), so a later
+     Undo giving the right back would show it — about a posting taken back since. Every stored line of the run is taken
+     here, shown or hidden, save one that has left a moved man's bell (D2218); who is told is retractPostingLines's. */
+  const stored = mine.filter(n => n.at === last && !noticeLeftBell(n))
   const derived = ownSchedulerIds().flatMap(pid => postedLines(pid)).filter(n => { const p = n.what[0]; return p?.k === 'po' && p.who === id && !noticeLeftBell(n) })
   return [...stored, ...derived, ...sansUnfiledLines(id)]   // (and the man's own SANS-days line — sansunfiled.ts, D2338)
 }
@@ -3974,15 +4112,17 @@ function retractPostingLines(lines: readonly Notice[]): string[] {
   const told = new Set(postingAdmins(worldUnit()))
   for (const n of lines) {
     /* (a line held by a man since moved to another squadron is neither removed nor told — above, D2218) */
-    if (!(told.has(String(n.to)) || atWarHome(n.to) || noticeAboutHim(n)) || noticeLeftBell(n)) continue
+    if (noticeLeftBell(n)) continue
     const ix = NOTICES.findIndex(x => x.id === n.id)
     if (ix >= 0) NOTICES.splice(ix, 1)
+    /* (a line the bell hides — its reader no longer holds the right that brought it, §16 D1′c — goes, and tells nobody) */
+    if (!(told.has(String(n.to)) || atWarHome(n.to) || noticeAboutHim(n))) continue
     if (n.to === by) { if (by && hasRead(by, n)) forget.push(n.id); continue }
     if (sansLineBack(n)) continue   // (the man's own SANS-days line goes; what he is told is sansTakeBack's — sansunfiled.ts, D2338, D2341)
     if (!hasRead(n.to, n) || !admins.has(n.to)) continue
     const p = n.what[0]
     if (p?.k !== 'po') continue
-    noticePostingBack(n.to, by, p.who, p.o, n.day, !!p.acct, at)
+    noticePostingBack(n.to, by, p.who, p.o, n.day, !!p.acct, at, n.u ?? worldUnit())
   }
   return forget
 }
@@ -4006,6 +4146,8 @@ function takeBack(id: string, write: () => boolean, keep: { archive?: boolean; s
       const tells = lines.length > 0 || !!sans
       if (tells) { resyncBeforeEnlist(); txn.enlist(schedStore) }
       txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(lwStore)
+      /* (a posting run at once, or taken back, tells him what it did to his sign-in — §7 item 6, state/acctlines.ts) */
+      const was = accessWas()
       ok = write()
       if (!ok || !body) return
       if (!keep.archive && body.archived && body.archivedBy === 'po') { body.archived = false; delete body.archivedBy; delete body.archivedOn }
@@ -4015,6 +4157,7 @@ function takeBack(id: string, write: () => boolean, keep: { archive?: boolean; s
       /* HIS ONE LINE (sansunfiled.ts sansTakeBack): his live SANS-days line struck where he had read it, and the SANS
          availability this change hid (owner D2341 — "show like it's deleted … But counts again if it's undone") */
       if (sans) sansTakeBack(id, sans, me() != null ? String(me()) : null, Date.now())
+      tellAccess(txn, was)
       validate()
       finishPeopleWrite()
       if (tells) schedApplyEnd()
@@ -4185,7 +4328,7 @@ function sansAheadOf(p: unknown): string | null {
 
 export function wireLeaveWarSync(): void {
   /* a fresh wiring (a boot) tries every refused posting again (the fix read, 18 Nov 26 — Opus 1) */
-  PO_REFUSED.clear(); PO_RETRIED.clear()
+  PO_REFUSED.clear(); PO_RETRIED.clear(); PO_FAILED_TOLD.clear()
   setSansAhead(sansAheadOf)
   /* the days each man's SANS-days line named when a command began — what its struck line must keep (sansunfiled.ts) */
   wireSansBackBefore()
@@ -4597,6 +4740,8 @@ export function manningRedDays(dates: readonly string[], verdicts: Record<string
  *  with no screen behind it) — the war imports no scheduler screen. */
 export function openDays(iso: string): void {
   if (!validIso(iso)) return
+  /* the war is his own squadron's page: the window is that squadron's, stamped as it opens (step A, R-O5) */
+  openWinFor('days', pageUnit('own'))
   setDaysWin(iso)
   raptorNotify()
 }
@@ -4700,9 +4845,13 @@ export function replacedCarry(personId: string, n: { remarks?: string; docIds?: 
 export function openInputWindow(iid: string): boolean {
   const row = warInputs().find(r => String(r.iid) === String(iid))
   if (!row) return false
-  if (CURPAGE !== 'inputs') setPage('inputs')
-  setInpEdit(row)
-  raptorNotify()
+  /* THE WINDOW ON THE PAGE DOOR'S `then` (step K6 — the plan §4.5): it opens only once Inputs is the page shown, the
+     input found afresh, so none opens behind a refusal; the tap was taken, whatever the door answers */
+  setPage('inputs', {}, () => {
+    const now = warInputs().find(r => String(r.iid) === String(iid))
+    if (now) setInpEdit(now)
+    raptorNotify()
+  })
   return true
 }
 
@@ -4724,6 +4873,8 @@ export function openInputsPage(): void {
  *  front — the sheet is the war's, drawn on its page — and the scheduler's screens are told. The sheet still checks
  *  everything itself (a name, an admin, no overlap): the ask grants nothing. */
 export function openNewPeriod(from: string, to: string): void {
+  /* (asks first, step K6 — the plan §4.5: the new-period ask is left before the page; refused, it is not left) */
+  if (ownPageRefused('leavewar')) return
   if (!validIso(from) || !validIso(to) || to < from) return
   askNewWar({ from, to })
   if (CURPAGE !== 'leavewar') setPage('leavewar')

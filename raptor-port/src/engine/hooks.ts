@@ -121,6 +121,15 @@ export const HOOKS = {
      command — one step, all or nothing (round 1, Fable F11 / Astra 6), with no import from state/ into the war. Unset
      (a headless run with no war wired), nothing is written. */
   warPostIn: (_txn: any, _id: string, _date: string): void => {},
+  /* THE BELL JOINS ANOTHER STORE'S COMMAND (batch 1's second half, plan §7 item 6 — a man told his own account changed,
+     state/acctlines.ts tellAccess): the bell's lines are the scheduler store's records, so a settings or people command
+     that owes one enlists that store in the same command, its starting point brought up to memory first (state/
+     sched-commit.ts installs it — resyncBeforeEnlist; enlisting twice is harmless). Unset (a headless run with no
+     scheduler store), the line is memory only, as every unsaved line is. */
+  bellEnlist: (_txn: any): void => {},
+  /* …and, its lines written, the scheduler store's own apply-end (the baseline moved to the live bell, as every command that
+     enlisted it ends — state/sched-commit.ts schedApplyEnd; idempotent) */
+  bellEnd: (): void => {},
   isPhone: (): boolean => false,
   editMode: (): boolean => false,
   /* who is making this edit, for the edit log (editlog.ts). It arrives as a

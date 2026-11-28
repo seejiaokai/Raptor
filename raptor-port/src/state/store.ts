@@ -47,12 +47,14 @@ import { afterSchedMutate } from './view'
 import * as view from './view'
 import { histPush, histInit, histSnap, histRestore, schedFields } from './history'
 import { setSession as authSetSession, canEditSched, SESSION, setMe, DEFAULT_ME, setLgEdit } from './auth'
-import { me, roleOf, isAdmin, mayViewAsMember, switchRoleInForce, pageUnit, lwUnitNow, trkUnitNow, pickStandsOn } from './perms'
-import { holdNow, setBands, setHoldRelease, type MoveBand, type HoldKind } from './typing-hold'
+import { me, roleOf, isAdmin, mayViewAsMember, switchRoleInForce, pageUnit, lwUnitNow, trkUnitNow, pickStandsOn, maySchedEditPage, trackerCoverKind, pageOffered, myUnit, heldByMemberView } from './perms'
+import { holdNow, setBands, warBand, setHoldRelease, setEnteredByPick, enteredByPick, pickBand, memberViewBand, schedMoveBand, type MoveBand, type HoldKind, type TrkCover } from './typing-hold'
 import { endUndoSession } from '../undo/timeline'
 import { setRole as lwSetRole } from '../leavewar/state/store'
-import { endTrackerSession } from '../tracker/role.js'
-import { rebindStorageUnit } from '../tracker/storage.js'
+import { endTrackerSession, trackerSwitchAsk, trackerSwitchNeeds } from '../tracker/role.js'
+import { refuse, closeShown, checkEntry, rawOnPurpose, type GuardOpts } from './guard'
+import { saveGoing, waitForSave, dropDoorWait } from './doorwait'
+import { rebindStorageUnit, storageHeld } from '../tracker/storage.js'
 import { isHydrated, hydratePlan, hydrateRolesFor, persistWb } from './persist'
 import { deferEffect, CmdRefused, setPermissionResolver, commitProjection, onPipelineBegin, deriveActor, definePermission, anyone, activeEnvelope, isCommitting } from '../command'
 /* internal wiring may raise a command as a named person (command/index.ts — commitAs stays off the public surface) */
@@ -83,7 +85,206 @@ export function getVersion() { return VERSION }
    the gate (loadWeek, initStore, toggleRole, …) — deferEffect returns false and
    notify runs inline exactly as before, so behaviour is unchanged. */
 export function notify() { if (deferEffect(realNotify)) return; realNotify() }
-function realNotify() { maybeReenter(); publishBands(); VERSION++; listeners.forEach(f => f()) }
+function realNotify() { maybeReenter(); landOffEditSched(); landOnOfferedPage(); publishBands(); VERSION++; listeners.forEach(f => f()) }
+/* THE PAGES A SQUADRON HE ONLY VIEWS OFFERS (his D2381 — its View-only Sched and Help alone; perms.ts viewOnlyPick,
+   pageOffered), a standing check on every notify, beside the Edit Schedule landing above:
+   - the squadron in view moved, or his rights did, under a page it does not offer (a pick — enterSquadron below lands
+     the pick itself; a Plan lowered; the member view switched on) → its View-only Sched;
+   - he opened one of his own pages from elsewhere — a bell line, a link, the OIL list, "Check my quals" — while it was
+     picked (the page moved, the squadron did not) → his own squadron comes back into view, the page opened: those pages
+     are always his own squadron's for a View holder (perms.ts pageUnit 'own'), and landing him on 149's schedule
+     instead would drop the tap. */
+let LANDED = { unit: '', page: '' }
+/* an open Leave War window holds the landing while it is up — its words and its band stay in sight (D2243, D2323); once
+   the last one goes the page is told, band or no band (the release handed to typing-hold.ts, at this file's
+   setHoldRelease), and the landing runs then (the fresh Opus read of 23 Nov 26, F1; the fix rounds' read, Astra 1) */
+const warHeld = (): boolean => view.CURPAGE === 'leavewar' && holdNow() === 'war'
+function landOnOfferedPage(): void {
+  /* (an Undo's or Redo's page, set by stepPage below, is spent here, on the first notify after it — the step's own) */
+  const step = STEP && STEP.page === view.CURPAGE ? { door: STEP.door, opts: STEP.opts } : null
+  STEP = null
+  const opened = view.CURPAGE !== LANDED.page && UNIT === LANDED.unit
+  if (!pageOffered(view.CURPAGE) && !warHeld()) {
+    if (opened && !ENTERING) landOnOwnPage(step)
+    else view.setPage('viewsched')
+  }
+  LANDED = { unit: UNIT, page: view.CURPAGE }
+}
+/* HIS OWN SQUADRON COMES BACK FOR THE PAGE HE OPENED — but where the Tracker is held on the squadron in view for his
+   unsaved chart edits (the member view), entering would drop them, so it asks first, the pick's own question over the page
+   he is on (his D2318, D2637; the night of 24 Nov 26, Opus F1, Fable F1). He stays where he was until he answers: Save or
+   Discard opens the page he tapped; Stay, or a Save the gate refuses, leaves him there with the draft. */
+/* THROUGH THE PAGE DOOR (step K6 — the guard rail's plan §4.2 steps 5 and 6, §4.5 steps 3 and 5): a landing a door's press
+   made (`kept` — the door and its opts, handed over by setPage below) ends the windows that only show things and the two
+   edit modes in the run that enters his own squadron, never earlier: after the Tracker's question, so a Stay closed
+   nothing; and after that question is answered Save or Discard it asks the guard again with the door it kept — a window
+   or a failed save may have arrived while the question stood — and waits again for a save still going. Refused: nothing is
+   entered, the page stays as it was, and the press's `then` never runs. A landing no door made (a test's raw page change)
+   is as before. `want` — the page he opened; null for a press that opens no page (ownSquadronFirst). */
+function landOnOwnPage(step: KeptDoor | null): void {
+  const asked = landOwn(view.CURPAGE, KEPT ?? step)
+  if (asked) LANDASK = asked
+}
+function landOwn(want: string | null, kept: KeptDoor | null): Promise<boolean> | null {
+  const home = myUnit(todayIso())
+  const trk = trkUnitNow()
+  const asked = storageHeld() && trk && trk !== home ? trackerSwitchAsk(String(unitById(home)?.num ?? home)) : null
+  if (!asked) { if (kept) closeShown(); enterSquadron(home, holdNow() === 'war', true); return null }
+  if (want != null) view.setPage(pageOffered(LANDED.page) ? LANDED.page : 'viewsched')
+  const done: Promise<boolean> = asked.then(go => {
+    if (LANDASK === done) LANDASK = null
+    return go ? landAfterAsk(want, kept, home) : false
+  })
+  return done
+}
+function landAfterAsk(want: string | null, kept: KeptDoor | null, home: string): boolean | Promise<boolean> {
+  if (kept && refuse(kept.door, home, kept.opts)) return false
+  if (kept && saveGoing()) return waitForSave().then(r => r === 'go' && landAfterAsk(want, kept, home))
+  if (kept) closeShown()
+  enterSquadron(home, holdNow() === 'war', true)
+  if (want != null) view.setPage(want)
+  notify()
+  return true
+}
+/* …AND A TAP THAT OPENS A WINDOW ON THAT PAGE WAITS WITH IT (the night of 24 Nov 26, the re-walk's B1 — a bell line's
+   input): while the question above is up this is its answer still to come — true once Save or Discard has opened the page
+   he tapped, false after Stay or a refused Save; null with nothing asked. The window opened before the page was there
+   stood under the question, noted as opened on the squadron he was leaving (ui/topstate.ts openInputOnPage). */
+let LANDASK: Promise<boolean> | null = null
+export const landingAsk = (): Promise<boolean> | null => LANDASK
+
+/* ---- THE PAGE DOOR (step K6 — the guard rail's plan §4.1 rows 7–13 and 22, §4.2, §4.5; his D2403, D2590, D2627 A8, A9,
+   A11, A19, D2621, D2729 Q7) ----
+   A press that opens one of his own pages while a squadron he only views is picked brings his own squadron back (the
+   landing above, landOnOwnPage). Before this step nothing was asked: the bar went to 142 with a window open, a row
+   changed or a save failed, and whatever the press opened after its page — an input's window, its OIL question, its
+   toast — opened all the same, a window standing live beside the "Blocked:" note when only the page was refused. So
+   every page change by a press comes through setPage below, the door, which asks the guard where the page is one the
+   squadron in view does not offer — exactly what the landing itself acts on (pageOffered) — and RUNS WHAT THE PRESS
+   OPENS AFTER ITS PAGE (`then`), so nothing can open behind a refusal: `then` runs in one state only, the page asked for
+   is the page shown. Its three answers: 'went' (the page is there, `then` has run), 'asked' (the Tracker's question, or a
+   save still going: `then` runs once that is answered and the page is there), 'refused' (the note said, nothing changed,
+   `then` dropped). ownSquadronFirst is the same door for a press that opens a window and no page (the holiday's line);
+   ownPageRefused and ownSquadronRefused are its test alone, for a caller that sets something before the page (a line
+   read, an intent, a tab and month) and so must ask first.
+   The two rules for a caller (§4.5): what it sets before the page, it asks about first; what it opens after the page, it
+   hands to the door as `then`. Inside this file the landings, the entry and the session reset keep calling view.setPage:
+   the app's own moves, never a press (§4.1 row 20). */
+export type PageGo = 'went' | 'asked' | 'refused'
+/** a door's opts at the page door: which door the press came by (its note's ending and place — 'line', 'bell', 'card'; a
+ *  plain page change 'page') with the guard's own opts (the pressed line, the rows it leaves out) */
+export type PageOpts = GuardOpts & { door?: string }
+type KeptDoor = { door: string; opts: GuardOpts }
+/* the door and opts a passing press is going through, kept for the landing's second ask (§4.5 step 3) */
+let KEPT: KeptDoor | null = null
+/* THE PRESS THIS TURN WENT THROUGH (the kept door's source when a caller names none): a caller that asks first with its own
+   door — a bell line ('line', its line), the bell ('bell') — then reaches a function of its own that asks again and
+   changes the page with no door named (openAdminUsers, openWarAt). The second ask passes in the same turn; this keeps
+   the first ask's door, so a refusal after the Tracker's question still says the line's or the bell's own ending, at its
+   own control, never the page door's silence. Good for the synchronous turn it was set in. */
+let PRESSED: KeptDoor | null = null
+function pressDoor(door: string | undefined, opts: GuardOpts | undefined): KeptDoor {
+  if (door === undefined && PRESSED) return PRESSED
+  const k: KeptDoor = { door: door ?? 'page', opts: opts ?? {} }
+  if (!PRESSED) { PRESSED = k; queueMicrotask(() => { PRESSED = null }) }
+  return k
+}
+const doorOf = (o: PageOpts): { door: string | undefined; opts: GuardOpts | undefined } => {
+  if (!o || Object.keys(o).length === 0) return { door: undefined, opts: undefined }
+  const { door, ...g } = o
+  return { door, opts: g }
+}
+/* the squadron in view is not his own pages' (a squadron he only views, or the member view's schedule of another) */
+const awayFromOwn = (): boolean => UNIT !== pageUnit('own')
+/* the door's ask, its note, and — where `again` is handed over — the wait for a save still going, the press run again
+   once the saver has answered (§4.2 step 3; state/doorwait.ts, the doors' one wait) */
+function ownRefused(k: KeptDoor, again?: () => void): boolean {
+  if (refuse(k.door, myUnit(todayIso()), k.opts)) return true
+  if (again && saveGoing()) { void waitForSave().then(r => { if (r === 'go') again() }); return true }
+  return false
+}
+/** would the page door refuse `p` — asking, saying the note, changing nothing; a caller that sets something before the
+ *  page calls it as its first statement and returns on true. `again` (the press run again) lets it wait for a save */
+export function ownPageRefused(p: string, door?: string, opts?: GuardOpts, again?: () => void): boolean {
+  if (p === view.CURPAGE || pageOffered(p)) return false
+  return ownRefused(pressDoor(door, opts), again)
+}
+/** the same test for a press that brings his own squadron back without a page (the holiday's line) */
+export function ownSquadronRefused(door?: string, opts?: GuardOpts, again?: () => void): boolean {
+  if (!awayFromOwn()) return false
+  return ownRefused(pressDoor(door, opts), again)
+}
+/** THE PAGE DOOR — every page change by a press */
+export function setPage(p: string, o: PageOpts = {}, then?: (waited: boolean) => void): PageGo {
+  if (p === view.CURPAGE || pageOffered(p)) {
+    view.setPage(p)
+    if (then) { notify(); then(false) }
+    return 'went'
+  }
+  const { door, opts } = doorOf(o)
+  return ownFirst(p, pressDoor(door, opts), () => { setPage(p, o, then) }, then)
+}
+/** THE SAME DOOR FOR A PRESS THAT OPENS A WINDOW AND NO PAGE (the holiday's bell line, D2627 A19): on his own pages'
+ *  squadron `then` runs at once; on another, his own squadron comes back first — the guard, the wait, the Tracker's
+ *  question and the second ask — and `then` only once it is in view */
+export function ownSquadronFirst(o: PageOpts, then: (waited: boolean) => void): PageGo {
+  if (!awayFromOwn()) { then(false); return 'went' }
+  const { door, opts } = doorOf(o)
+  return ownFirst(null, pressDoor(door, opts), () => { ownSquadronFirst(o, then) }, then)
+}
+/* THE UNDO'S AND REDO'S OWN PAGE DOOR (step K7b): an Undo or a Redo whose step lands on a page — undo-wire.ts snapView —
+   asks this, never setPage. It asks the page door's question first, as setPage does, and a refusal changes nothing; but
+   where the page goes, it is set with NO notify of its own, so the landing (landOnOfferedPage, his own squadron back for
+   a page the squadron in view does not offer) runs on the step's own notify, AFTER the step's writes — as before K6.
+   Why: snapView runs BEFORE the step writes (undo/timeline.ts globalUndo / globalRedo → snap → applyRestore), and K6's
+   setPage notified at once, so 142 was entered inside snapView, ahead of the Undo: the saved row was put back while the
+   kept copy of 142's calendar (state/plan-foreign.ts keptPlan), entered too early, still held the edit — the Undo half
+   applied (K7's report, finding 1; ui/msq-inputscal-own-calendar.test.tsx). The door it asked through is kept (STEP) for
+   that landing alone, so the landing still closes the windows that only show things and asks again after the Tracker's
+   question, as the door's own landing does; it is spent on the first notify after it, whatever that notify lands.
+   A save still going: the door's own wait, the page asked for again once the saver has answered (ownFirst's `again`),
+   as K6 left it. Its answers are the door's: 'went' (the page set, the landing to come on the step's notify), 'asked',
+   'refused' (the note said, nothing changed). */
+let STEP: (KeptDoor & { page: string }) | null = null
+export function stepPage(p: string): PageGo {
+  if (p === view.CURPAGE || pageOffered(p)) { view.setPage(p); return 'went' }
+  const k = pressDoor(undefined, undefined)
+  if (refuse(k.door, myUnit(todayIso()), k.opts)) return 'refused'
+  if (saveGoing()) { void waitForSave().then(r => { if (r === 'go') setPage(p) }); return 'asked' }
+  STEP = { ...k, page: p }
+  view.setPage(p)
+  return 'went'
+}
+/* one body for both (§4.5: the page door is ownSquadronFirst plus view.setPage, so the two can never differ) */
+function ownFirst(p: string | null, k: KeptDoor, again: () => void, then?: (waited: boolean) => void): PageGo {
+  if (refuse(k.door, myUnit(todayIso()), k.opts)) return 'refused'
+  if (saveGoing()) { void waitForSave().then(r => { if (r === 'go') again() }); return 'asked' }
+  const was = LANDASK
+  let asked: Promise<boolean> | null
+  if (p != null) {
+    KEPT = k
+    try { view.setPage(p); notify() } finally { KEPT = null }
+    asked = LANDASK !== was ? LANDASK : null
+  } else {
+    asked = landOwn(null, k)
+    if (asked) LANDASK = asked
+    else notify()
+  }
+  if (asked) { void asked.then(go => { if (go) then?.(true) }); return 'asked' }
+  /* (the page asked for is the page shown — or, with no page, his own squadron is in view — before `then` runs) */
+  if (p != null ? view.CURPAGE !== p : awayFromOwn()) return 'refused'
+  then?.(false)
+  return 'went'
+}
+/* THE LANDING IS A STANDING CHECK (the second-half plan §2 item 3, §15 D8; D2253): wherever the page is Edit Schedule and
+   he is not an admin of the squadron in view (perms.ts maySchedEditPage) — a pick of a squadron he holds View of, R6's
+   re-entry, a Plan lowered while he is on the page — he lands on View-only Sched. Run after every enterSquadron and on
+   every notify. The Admin page's half (refreshAccess, switchRoleView below) keeps asking the role. */
+function landOffEditSched(): void {
+  /* the squadron's question only: the role in force is an admin's (a member's landing is the role's, refreshAccess and
+     switchRoleView below; nobody signed in — a headless test — is no one's page) */
+  if (view.CURPAGE === 'editsched' && isAdmin() && !maySchedEditPage()) view.setPage('viewsched')
+}
 /* Day-to-day board navigation is view-only. Give the board a narrow repaint
    lane so a swipe does not wake every mounted store consumer (most notably
    EditWeek's seven large dayHTML calculations) while ordinary mutations still
@@ -439,6 +640,7 @@ export function resetSession(s: any) {
   authSetSession(s)
   view.bumpNav()                  // a session change invalidates a pending day-template-apply confirm (P2-REV2-07)
   view.setPage('viewsched')
+  LANDED = { unit: '', page: '' } // the landing's last page and squadron are the person's who signed in (Fable's read, 23 Nov 26)
   view.setBoardDay(null)          // also disarms a slot armed on the outgoing session's day
   view.selDrop()                  // SELID, SELSEEN, SELPREV, PFOCUS, WFOCUS, DWOPEN
   view.clearOtherHL()             // HLSET, SEARCH (and SELID again — harmless)
@@ -480,6 +682,8 @@ export function resetSession(s: any) {
      home by the midnight check. */
   HOME_AT_ENTRY = s && s.pid ? sessionUnit(s.pid) : null
   ENTRY_TRIED = ''
+  /* a sign-in is no pick: a window held from here on reads its own words, not a pick's (state/typing-hold.ts) */
+  setEnteredByPick(false)
   enterSquadron(sessionUnit(s && s.pid))
   /* the undo list is per sign-in (13 Sep 26; D148 — "the list clears when they sign
      out"): the global undo never cleared it, so an admin signing in after a member
@@ -553,10 +757,11 @@ export function refreshAccess(s: any) {
   }
   lwSetRole(isAdmin() ? 'admin' : 'member')
 }
-export function switchRoleView() {
-  if (!mayViewAsMember()) return
+/* THE SWITCH ITSELF — the body the switch had before it asked anything (above): true once the role in force has moved */
+function switchRoleBody(): boolean {
+  if (!mayViewAsMember()) return false
   const toMember = isAdmin()
-  if (!switchRoleInForce(toMember ? 'main' : 'admin')) return
+  if (!switchRoleInForce(toMember ? 'main' : 'admin')) return false
   view.bumpNav()                  // a role change invalidates a pending day-template-apply confirm (P2-REV2-07)
   if (toMember) {
     if (view.CURPAGE === 'editsched' || view.CURPAGE === 'admin') view.setPage('viewsched')
@@ -565,7 +770,73 @@ export function switchRoleView() {
     view.clearAdminOpen()
   }
   lwSetRole(isAdmin() ? 'admin' : 'member')
+  return true
+}
+/** THE RAW SWITCH — the body alone, then notify(), asking nothing and closing nothing: the switch exactly as it was before
+ *  the guard rail. No control calls it. Tests that need a state no press reaches since D2403 and D2627 A20 (a draft held in
+ *  the member view, a window the member view holds) make it with this, as the raw pick is enterSquadron — the checker's
+ *  allow-list names it (step K7): it tells the checker so itself, for the turn it runs in (state/guard.ts rawOnPurpose — a
+ *  no-op in the app) */
+export function switchRoleViewRaw(): void {
+  rawOnPurpose()
+  if (switchRoleBody()) notify()
+}
+/** the view switch would ask the Tracker's question: unsaved chart edits, whichever squadron — both ways, on his own
+ *  squadron too (his D2627 A20) */
+export const viewSwitchAsks = (): boolean => trackerSwitchNeeds()
+/* THE SWITCH'S LAST STEP (§4.2 step 6, §4.4 steps 4–6): the windows that only show things close (D2596, D2597) and Logic's
+   and Quals' edit modes end (D2627 A4, §18.1 — the guard's closeShown runs each mode's end()), then the switch, the two in
+   one synchronous run and never earlier: a Stay, or a refusal after the question, has closed nothing. WHERE THE SWITCH MOVES
+   HIS OWN PAGES — a Plan holder or a master admin with another squadron in view, whose pages are that squadron's in the
+   admin view and his home's in the member view — they are entered at once, as his own press (byPick): the Tracker follows
+   them and a chart editor open with nothing unsaved closes, as at a pick (his D2654 E3). Left to the check notify() runs,
+   that entry was not his press, and the Tracker waited under the member view's cover for the open editor — the state his
+   D2403 says his own switch must not leave. */
+function enterRoleView(): void {
+  closeShown()
+  const iso = todayIso()
+  const ownWas = pageUnit('own', iso)
+  if (!switchRoleBody()) return
+  if (pageUnit('own', iso) !== ownWas) { enterSquadron(UNIT, false, true); markEntryTried() }
   notify()
+}
+/* THE VIEW SWITCH'S DOOR — the name badge, the ☰ menu's "Switch to the member view" / "Back to the admin view", and the
+   Input window's own "Back to the admin view" chip (the guard rail's plan §4.1 rows 3–5, §4.2, §4.4; his D2403, D2590,
+   D2627 A9, A10, A20). In this order, each check made again after anything that waited — the pick's door's order
+   (state/pick.ts):
+   1. a person who may not switch → nothing, as today;
+   2. the guard: a window that counts open, a row or form holding a change, a failed save → refused, its "Blocked:" note
+      said by the seam ("…then switch to the member view." / "…then switch back to the admin view."), the press ending
+      having changed nothing. The chip passes `skip` — the Input window it is drawn on — and still asks every other row;
+   3. a save still going → the doors' one wait (state/doorwait.ts — the saver's own answer, never a timer, D87), then start
+      again from 1; dropped by his next press;
+   4. the Tracker's question, ALWAYS where there are unsaved chart edits, both ways, on his own squadron too (D2627 A20):
+      "…Save them before switching to the member view?" / "…before switching back to the admin view?" — Stay: nothing;
+      Discard them: the chart back to its last save, then the switch; Save them: saved, then the switch; a Save that does
+      not take: he stays;
+   5. after Save or Discard, 1 and 2 again — a window or a failed save may have arrived while the question stood — and 3
+      again if a save is then going;
+   6. the switch (enterRoleView).
+   With nothing to refuse, wait for or ask, the switch stays synchronous, as before: the role has moved when this returns. */
+export function switchRoleView(opts: GuardOpts = {}): void | Promise<void> {
+  /* a press of a door drops a press still waiting for a save (the plan's reading, named for him) */
+  dropDoorWait()
+  return switchFrom(opts)
+}
+function switchFrom(opts: GuardOpts): void | Promise<void> {
+  if (!mayViewAsMember()) return
+  const toMember = isAdmin()
+  if (refuse(toMember ? 'toMember' : 'toAdmin', '', opts)) return
+  if (saveGoing()) return waitForSave().then(r => { if (r === 'go') return switchFrom(opts) })
+  const ask = viewSwitchAsks() ? trackerSwitchAsk(toMember ? 'the member view' : 'the admin view', !toMember) : null
+  if (!ask) { enterRoleView(); return }
+  return ask.then(go => { if (go) return afterSwitchAsk(toMember, opts) })
+}
+function afterSwitchAsk(toMember: boolean, opts: GuardOpts): void | Promise<void> {
+  if (!mayViewAsMember() || isAdmin() !== toMember) return
+  if (refuse(toMember ? 'toMember' : 'toAdmin', '', opts)) return
+  if (saveGoing()) return waitForSave().then(r => { if (r === 'go') return afterSwitchAsk(toMember, opts) })
+  enterRoleView()
 }
 
 /* ---- PER-WEEK SESSION STASH (the other half of the .wk selector) ----
@@ -913,19 +1184,27 @@ function sessionUnit(pid: string | null | undefined): string {
    his home today, as nothing picks yet). resetSession enters at sign-in; the midnight check below enters again when his
    own move takes effect (A2) — it does NOT reset the page or clear the Undo list: his steps in the old squadron wait
    there, by their stamp (A-v).
-   THE TRACKER moves only where it has not loaded (tracker/storage.js rebindStorageUnit — §14.3: once loaded its records
-   sit in module caches that cannot be re-read in place, so it keeps its squadron until the next sign-in). The answer is
-   handed back, so a caller can tell. */
-export type TrackerEntry = 'none' | 'same' | 'later' | 'bound' | 'kept'
+   THE TRACKER FOLLOWS (his D2395 — tracker/storage.js rebindStorageUnit, tracker/app/core.js followUnit): once loaded it
+   leaves this squadron and reads the next on its own, after this returns ('moved'), or waits where chart work is open that
+   cannot be asked about — his own move at midnight or the member view ('held'; trkMayHold, below). A pick has asked
+   already (state/pick.ts). The answer is handed back, so a caller can tell. */
+export type TrackerEntry = 'none' | 'same' | 'later' | 'bound' | 'kept' | 'moved' | 'held'
 export interface Entered { unit: string; own: string; tracker: TrackerEntry }
 let ENTERING = false
 /* `holdWar` (phase 3 — the plan §3.2 A-iv "Typed work at the swap"; state/typing-hold.ts): an open Leave War window holds
    the WAR'S step only, so nothing typed in it is ever saved into the new squadron; the schedule in view and the Tracker
    still move. The war is entered once the window goes (the check below finds the war not the page's own squadron). */
-export function enterSquadron(scheduleUnit: string, holdWar = false): Entered {
+/* `byPick` (§16 D2, his D2323): the entry is his own pick in the Schedules menu or a bell tap (state/pick.ts,
+   state/belltap.ts) — recorded only when the schedule in view changes, so the re-entry the check below makes for the same
+   pick (the war held by a window) keeps it, and his midnight move or a right ended clears it */
+export function enterSquadron(scheduleUnit: string, holdWar = false, byPick = false): Entered {
   if (ENTERING) return { unit: UNIT, own: pageUnit('own', todayIso()), tracker: 'none' }
+  /* an entry by his press: the test set-ups' entry checker asks the guard again first (§3.4 — step K7; a no-op in the
+     app). An entry with `byPick` false (his move at midnight, maybeReenter) is not seen by it — its limit */
+  if (byPick) checkEntry('enter', scheduleUnit)
   ENTERING = true
   try {
+    if (scheduleUnit !== UNIT) setEnteredByPick(byPick)
     switchUnit(scheduleUnit)
     const own = pageUnit('own', todayIso())
     if (!holdWar) {
@@ -936,8 +1215,19 @@ export function enterSquadron(scheduleUnit: string, holdWar = false): Entered {
          was a member in his new squadron's war after midnight and every admin change there was refused */
       if (lwUnitNow() !== before) lwSetRole(isAdmin() ? 'admin' : 'member')
     }
-    return { unit: UNIT, own, tracker: rebindStorageUnit(own) as TrackerEntry }
+    landOffEditSched()
+    /* a squadron he only views, entered on a page it does not offer, lands on its View-only Sched (D2381) */
+    if (!pageOffered(view.CURPAGE) && !warHeld()) view.setPage('viewsched')
+    return { unit: UNIT, own, tracker: rebindStorageUnit(own, !byPick && trkMayHold()) as TrackerEntry }
   } finally { ENTERING = false }
+}
+/* MAY THE TRACKER WAIT ON THE SQUADRON IT IS ON, for chart work still open there (his D2395, with D2243 and D2253): his own
+   move taking effect today, whose band across the chart editor says it can't be saved; or the member view, which leaving
+   gives back. A right taken away never waits: he is no longer to be shown that squadron's chart. */
+function trkMayHold(): boolean {
+  const trk = trkUnitNow(), m = me()
+  if (!trk || !m) return false
+  return !!moveWords(trk, 'Tracker', m, todayIso()) || !!trackerCoverKind()
 }
 
 /* HIS HOME AT ENTRY — recorded by resetSession, never the pick (Opus L2); null nobody signed in (or a sign-in with no
@@ -950,8 +1240,8 @@ export const homeAtEntry = (): string | null => HOME_AT_ENTRY
 let ENTRY_TRIGGER = true
 export function setEntryTrigger(on: boolean): void { ENTRY_TRIGGER = !!on }
 /* THE HOLD (state/typing-hold.ts): an open Leave War window holds the war's swap, whatever is typed in it (Astra 7,
-   Fable F9). A test may hand its own; `null` puts the app's own back. 'tracker' holds nothing of its own: the Tracker
-   cannot be re-read in place once loaded (§14.3), so it never moves under an open editor. */
+   Fable F9). A test may hand its own; `null` puts the app's own back. 'tracker' holds nothing of its own here: the
+   Tracker's chart work holds its own door (his D2395 — trkMayHold, above). */
 export type EntryHold = HoldKind
 let ENTRY_HOLD: () => EntryHold = holdNow
 export function setEntryHold(fn: (() => EntryHold) | null): void { ENTRY_HOLD = fn || holdNow }
@@ -976,9 +1266,9 @@ function pickAfterMove(pick: string, oldHome: string, newHome: string, iso: stri
      the pick has no readable right behind it today (perms.ts pickStandsOn — a View or Plan taken away or ended while he
      is on that squadron's pages) → his home, entered again; the page's own squadron is not the Leave War's loaded one —
      a right lowered, removed or raised mid-day, or a war held by a window that has since gone — → the same pick, entered
-     again; or not the Tracker's bound one → the same pick, entered again, the Tracker moving only where it has not yet
-     loaded (tracker/storage.js rebindStorageUnit: a loaded one is kept until the next sign-in, its band saying so, and the
-     key in maybeReenter stops a second try). */
+     again; or not the Tracker's bound one → the same pick, entered again, the Tracker following it (his D2395 —
+     tracker/storage.js rebindStorageUnit; where chart work holds it, core.js moves it itself once that is gone, and the
+     key in maybeReenter stops a second try meanwhile). */
 function entryDue(): string | null {
   const m = me()
   if (!m || HOME_AT_ENTRY == null) return null
@@ -994,6 +1284,17 @@ function entryDue(): string | null {
   if (trk && trk !== own) return UNIT
   return null
 }
+/* the try the check records — the day, the squadron due, his pages' squadron, the war's and the Tracker's, who, the hold */
+function entryKey(to: string, held: boolean): string {
+  const iso = todayIso()
+  return `${iso}|${to}|${pageUnit('own', iso)}|${lwUnitNow() ?? ''}|${trkUnitNow() ?? ''}|${me() ?? ''}|${held ? 'held' : ''}|${trkMayHold() ? 'mayhold' : ''}`
+}
+/* THE VIEW SWITCH'S OWN ENTRY COUNTS AS THIS CHECK'S TRY (step K5, B14 — found by the test, against the plan §4.4 step 5's
+   "unproved" note): the switch enters his pages' squadron by his own press, the Tracker sent after them; its move waits a
+   beat before it leaves (core.js runFollow), so the check the same notify runs still saw the Tracker off his pages, entered
+   once more — not his press — and, the member view's cover allowing it, held the Tracker for the chart editor still open,
+   undoing the move. Recorded as tried, that same entry is not made again; anything else due is, as before. */
+function markEntryTried(): void { ENTRY_TRIED = entryKey(UNIT, ENTRY_HOLD() === 'war') }
 /* run from realNotify — never inside a command (a swap loads a week and a war, which are no one's command), never while
    entering; an open war window holds the war's step (above). The midnight wake (leavewar/sync.ts installPostingClock)
    calls notify() at 00:00:01 and whenever the page is shown or focused on a new day, so the swap needs no click (Fable
@@ -1003,18 +1304,26 @@ function maybeReenter(): void {
   const to = entryDue()
   if (to == null) return
   const held = ENTRY_HOLD() === 'war'
-  const key = `${todayIso()}|${to}|${lwUnitNow() ?? ''}|${trkUnitNow() ?? ''}|${me() ?? ''}|${held ? 'held' : ''}`
+  /* the page's own squadron is part of the try: back from the member view over a held draft the door has not moved, so
+     without it the key matched the last try, and the Leave War stayed on his home under the squadron picked, its Approve
+     writing there (the night's security read, F1). Whether the Tracker may hold is too: a right lowered during the hold
+     must release it (trkMayHold). */
+  const key = entryKey(to, held)
   if (key === ENTRY_TRIED) return
   ENTRY_TRIED = key
   const m = me()
+  /* a re-entry that keeps the squadron in view leaves the page to the two landings run next in this same notify: its own
+     landing would swallow a page he has just opened, the tap landOnOfferedPage is there to answer (the night's Opus F1) */
+  const unitWas = UNIT, pageWas = view.CURPAGE
   enterSquadron(to, held)
+  if (UNIT === unitWas && view.CURPAGE !== pageWas) view.setPage(pageWas)
   if (m) HOME_AT_ENTRY = sessionUnit(m)
 }
 
 /* THE BAND (state/typing-hold.ts; D2243 Q7 — the approved drawing's words, D1478): while the world a page holds is not
-   the page's own squadron — the war under a window that held its swap, or the Tracker, which keeps the squadron it loaded
-   until the next sign-in (§14.3) — its open window or chart editor says so. Written after every check, so a surface reads
-   the band of the page as it stands. */
+   the page's own squadron — the war under a window that held its swap, or the Tracker where chart work holds it at his
+   own move (his D2395) — its open window or chart editor says so. Written after every check, so a surface reads the band
+   of the page as it stands. */
 const isoDayBefore = (iso: string): string => {
   const [y, m, d] = iso.split('-').map(Number)
   const t = new Date(y!, m! - 1, d! - 1)
@@ -1025,13 +1334,42 @@ const unitNum = (u: string): string => unitById(u)?.num ?? u
    today. This can't be saved in 142's Leave War." (or "…in 142's Tracker."). Any other way the world stopped being his
    page's own (R6: a right ended mid-day — dormant) has no approved words, so it reads the app's generic "This change could
    not be saved." (the phase-2 helpers' brief, named in the report). */
-function bandWords(world: string, page: 'Leave War' | 'Tracker', pid: string, iso: string): MoveBand {
+function moveWords(world: string, page: 'Leave War' | 'Tracker', pid: string, iso: string): MoveBand {
   const home = homeOn(pid, iso)
   const was = homeOn(pid, isoDayBefore(iso))
   if (home && was && home !== was && world === was) {
     return { lead: `You are ${unitNum(home)}'s from today.`, rest: `This can't be saved in ${unitNum(world)}'s ${page}.` }
   }
-  return { lead: 'This change could not be saved.', rest: '' }
+  return null
+}
+/* (batch 1's second half §16 D2, his D2323 — the drawing f7a): a Leave War window open when HIS PICK (or a bell tap) took
+   the page to another squadron reads "This is 142's. You picked 149 — close this to go on.", its controls greyed
+   (typing-hold.ts pickBand) — in place of the generic words, which said a change had failed when nothing was tried */
+/* "You picked 149" only where the pick is what moved the window off its squadron — the squadron in view, reached by his
+   pick, is not the window's own; a right lowered under a window on the squadron he picked (R6) keeps the generic words */
+const heldByPick = (world: string): boolean => enteredByPick() && UNIT !== world
+/* …and his D2389: a window on the squadron in view that the switch to the member view left behind reads "Member view."
+   (typing-hold.ts memberViewBand; perms.ts heldByMemberView says when) — one body for the Leave War's and the Input's */
+const heldWords = (world: string): NonNullable<MoveBand> =>
+  heldByPick(world) ? pickBand(unitNum(world), unitNum(UNIT)) : heldByMemberView(world) ? memberViewBand() : schedMoveBand()
+function bandWords(world: string, page: 'Leave War' | 'Tracker', pid: string, iso: string): MoveBand {
+  return moveWords(world, page, pid, iso) ?? heldWords(world)
+}
+/** the band of an Input window held across a change of squadron (ui/InputWindow.tsx): a pick's words where his pick (or
+ *  a bell tap) moved the page — `opened`, the squadron the window opened on — the member view's where the switch to it
+ *  did (D2389), else the generic words, as before */
+export function heldWindowBand(opened: string): NonNullable<MoveBand> {
+  return heldWords(opened)
+}
+/* THE TRACKER'S ONE COVER LEFT (his D2395 took away D2318's two bands; state/perms.ts trackerCoverKind): the member view
+   over his unsaved edits, only while the door is held for them — during an ordinary move the page shows its own
+   "Loading…". His own move taking effect at midnight keeps the band drawn for it across the chart editor (D2243 Q7, above)
+   and no cover. */
+function coverWords(): TrkCover {
+  if (!storageHeld()) return null
+  const c = trackerCoverKind()
+  if (!c) return null
+  return { kind: 'member', lead: `This is ${unitNum(c.bound)}'s Tracker.`, rest: 'Leave the member view to open it.' }
 }
 function publishBands(): void {
   const m = me()
@@ -1039,10 +1377,20 @@ function publishBands(): void {
   const iso = todayIso()
   const own = pageUnit('own', iso)
   const war = lwUnitNow(), trk = trkUnitNow()
-  setBands(war && war !== own ? bandWords(war, 'Leave War', m, iso) : null, trk && trk !== own ? bandWords(trk, 'Tracker', m, iso) : null)
+  const trkMove = trk && trk !== own ? moveWords(trk, 'Tracker', m, iso) : null
+  /* …AND A WAR WINDOW LEFT OPEN OVER A SQUADRON HE ONLY VIEWS (D2323, D2381 — the fix rounds' read of 23 Nov 26, the twin
+     of its Input-window finding): a View holder's war is his own squadron's before and after a pick, so "the war loaded
+     is not his pages' squadron" never said his window was left behind — it stood live under 149's number. While the
+     squadron in view does not offer the Leave War, a window still open on it wears the band too (a war window opens
+     only on the Leave War page, so it was open before the page stopped being offered). */
+  const warBehind = !!war && (war !== own || !pageOffered('leavewar'))
+  setBands(warBehind ? bandWords(war, 'Leave War', m, iso) : null, trkMove, trk && trk !== own && !trkMove ? coverWords() : null)
 }
-/* a window that held the war's swap goes: the check runs again at once (typing-hold.ts warWindowGone) */
-setHoldRelease(() => notify())
+/* the last war window goes (typing-hold.ts warWindowGone): the check runs again at once where the window held something —
+   the war's swap (a band was up over it), or the landing off a page the squadron in view does not offer (warHeld above:
+   a View holder's own pages and war never move at a pick, so no band says it — the fix rounds' read of 23 Nov 26,
+   Astra 1). An ordinary close holds neither and repaints nothing. */
+setHoldRelease(() => { if (warBand() || !pageOffered(view.CURPAGE)) notify() })
 /** the planning calendars kept for units left this session — cleared with the session (tests and sign-out) */
 export function forgetUnitPlans(): void { forgetKeptPlans() }
 /* the stored half of another squadron's planning calendar reads its rows from the whiteboard this app saves to (none
@@ -1343,5 +1691,6 @@ export {
 export { protectedDates }
 export { inputProtected, stashProtected } from '../engine/quarantine'
 export { undo, redo, histInit, histApply, HIST } from './history'
-export { armSlot, disarmSlot, armedKey, placeArmed, selectPerson, selKeep, selRestore, selClear, selDrop, setBoardDay, setPage, afterSchedMutate } from './view'
+export { armSlot, disarmSlot, armedKey, placeArmed, selectPerson, selKeep, selRestore, selClear, selDrop, setBoardDay, afterSchedMutate } from './view'
+/* (setPage is no longer view.ts's re-exported here: it is the page door above, step K6) */
 export { setSession, canEditSched, LGEDIT, setLgEdit } from './auth'

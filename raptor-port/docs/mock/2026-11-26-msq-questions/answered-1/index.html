@@ -1,0 +1,197 @@
+<title>Multi-squadron open questions</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+/* Layout: one column of question cards, the list of questions on top, an answer line builder at the foot. Dark-first, like the app. */
+:root {
+  --bg: #0f1216; --panel: #171b21; --line: #2a313b; --fg: #e6e9ee; --muted: #9aa4b2;
+  --accent: #3cc3e6; --accent-ink: #062530; --rec: #7fd6a8; --warn: #e8c35a;
+  --display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --body: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) {
+  --bg: #f4f6f8; --panel: #ffffff; --line: #d9dee5; --fg: #14181d; --muted: #5a6573;
+  --accent: #0e8fb3; --accent-ink: #ffffff; --rec: #1d7a4c; --warn: #8a6a10; color-scheme: light; } }
+:root[data-theme="light"] {
+  --bg: #f4f6f8; --panel: #ffffff; --line: #d9dee5; --fg: #14181d; --muted: #5a6573;
+  --accent: #0e8fb3; --accent-ink: #ffffff; --rec: #1d7a4c; --warn: #8a6a10; color-scheme: light; }
+body { background: var(--bg); color: var(--fg); font: 16px/1.55 var(--body); }
+.wrap { max-width: 760px; margin: 0 auto; padding-block: 24px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 28px; }
+h1 { font: 700 1.6rem/1.2 var(--display); margin: 0; text-wrap: balance; }
+h2 { font: 700 1.2rem/1.3 var(--display); margin: 0; text-wrap: balance; }
+.lead { color: var(--muted); margin: 6px 0 0; }
+.eyebrow { font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.toc { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.toc a { display: grid; grid-template-columns: 2rem 1fr; gap: 10px; padding: 12px 14px; border: 1px solid var(--line);
+  border-radius: 10px; background: var(--panel); color: inherit; text-decoration: none; }
+.toc a:focus-visible, .toc a:hover { border-color: var(--accent); outline: none; }
+.toc .n { font: 700 1.05rem var(--display); color: var(--accent); }
+.toc .t { font-weight: 600; display: block; }
+.toc .r { color: var(--rec); font-size: .92rem; display: block; }
+.toc em { font-style: normal; font-size: .75rem; font-weight: 700; color: var(--accent-ink); background: var(--accent); border-radius: 999px; padding: 1px 7px; margin-left: 6px; vertical-align: 2px; }
+section.q { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px;
+  display: flex; flex-direction: column; gap: 12px; scroll-margin-top: 16px; }
+.q p { margin: 0; }
+.lbl { font-weight: 700; }
+.rec { color: var(--rec); }
+.other { color: var(--muted); }
+figure { margin: 0; display: flex; flex-direction: column; gap: 6px; }
+figure img { border-radius: 8px; border: 1px solid var(--line); width: 100%; height: auto; }
+figcaption { color: var(--muted); font-size: .9rem; }
+.pics { display: grid; grid-template-columns: 1fr; gap: 14px; }
+@media (min-width: 640px) { .pics.two { grid-template-columns: 1fr 1fr; } }
+.choices { display: flex; flex-wrap: wrap; gap: 8px; }
+.choices label { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border: 1px solid var(--line);
+  border-radius: 999px; cursor: pointer; font-weight: 500; }
+.choices input { accent-color: var(--accent); }
+.choices label:has(input:checked) { border-color: var(--accent); }
+.answer { position: sticky; bottom: env(safe-area-inset-bottom, 0px); background: var(--panel); border: 1px solid var(--accent);
+  border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.answer output { font: 600 1rem var(--body); word-break: break-word; }
+.answer button { align-self: flex-start; background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 8px;
+  padding: 10px 16px; font: 700 1rem var(--body); cursor: pointer; }
+.answer button:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+.note { color: var(--warn); font-size: .92rem; }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Multi-squadron build · 26 Nov 26 · from the coordinator, chat 193</div>
+    <h1>Questions waiting on you</h1>
+    <p class="lead">Tap a question to jump to it. Pick an answer under each one; the line at the foot builds your reply. Copy it and paste it into the coordinator chat.</p>
+  </header>
+
+  <ul class="toc">
+    <li><a href="#q7"><span class="n">7</span><span><span class="t">On a phone, the Calendar over SANS calendar settings: which note? <em>new</em></span><span class="r">Recommended: name the Calendar first, as for Inputs</span></span></a></li>
+    <li><a href="#q6"><span class="n">6</span><span><span class="t">Which Leave War windows close by themselves when you pick another squadron? <em>new</em></span><span class="r">Recommended: two close, three refuse for everyone</span></span></a></li>
+    <li><a href="#q2"><span class="n">2</span><span><span class="t">Start the Admin → Users chat?</span><span class="r">Recommended: go</span></span></a></li>
+    <li><a href="#q3"><span class="n">3</span><span><span class="t">A leave bid before a man's post-in date: what does a tap on that day open?</span><span class="r">Recommended: the bid</span></span></a></li>
+    <li><a href="#q4"><span class="n">4</span><span><span class="t">A save that never answers: build the give-up now or with the database?</span><span class="r">Recommended: with the database</span></span></a></li>
+    <li><a href="#q5"><span class="n">5</span><span><span class="t">"Delete Cinch now?" card: the dashed grey Delete too?</span><span class="r">Recommended: yes</span></span></a></li>
+  </ul>
+
+  <section class="q" id="q7">
+    <h2>7. On a phone, the Calendar over SANS calendar settings: which note?</h2>
+    <p><span class="lbl">When it happens:</span> a few times a month, on a phone. Saber changes the late cut-off in SANS calendar settings, opens the Calendar from there without saving, then picks 149.</p>
+    <p><span class="lbl">What you chose already:</span> for Inputs calendar settings on a phone, where the Calendar fills the screen and hides the settings, the note reads "Blocked: close the Calendar, save or cancel Inputs calendar settings, then pick 149."</p>
+    <p><span class="lbl">What we found:</span> SANS calendar settings hides under the Calendar in exactly the same way, with its change not saved, still underneath.</p>
+    <div class="pics two">
+      <figure><img src="img/sans1.png" alt="Phone: SANS calendar settings, the late cut-off changed to a weekday, Wednesday, 2 weeks before, not saved"><figcaption>The change made in SANS calendar settings, not saved.</figcaption></figure>
+      <figure><img src="img/sans2.png" alt="Phone: the Calendar filling the screen over the SANS calendar settings"><figcaption>The Calendar opened from there fills the screen and hides the settings.</figcaption></figure>
+    </div>
+    <p class="rec"><span class="lbl">Recommended:</span> the same note with that window's name: "Blocked: close the Calendar, save or cancel SANS calendar settings, then pick 149." On a desktop, where the two stand side by side, the plain "Blocked: save or cancel SANS calendar settings, then pick 149."</p>
+    <p class="other"><span class="lbl">The other choice:</span> the desktop's words on a phone too.</p>
+    <div class="choices" role="radiogroup" aria-label="Question 7">
+      <label><input type="radio" name="a7" id="a7-cal" value="Calendar first, as for Inputs" checked> Calendar first</label>
+      <label><input type="radio" name="a7" id="a7-plain" value="desktop words on a phone"> Desktop's words</label>
+    </div>
+  </section>
+
+  <section class="q" id="q6">
+    <h2>6. Which Leave War windows close by themselves when you pick another squadron?</h2>
+    <p><span class="lbl">When it happens:</span> now and then. Hunter is on 142's Leave War with one of these windows open and picks 149. Or he presses his name badge for the member view, or a bell line of another squadron.</p>
+    <p><span class="lbl">What you ruled already:</span> a window that only shows things closes by itself at a pick. A window where something can be typed, ticked or left half done refuses the pick with the grey "Blocked:" note. These five were never shown to you one by one. Today each stays open over the other squadron's Leave War.</p>
+    <div class="pics two">
+      <figure><img src="img/w1.png" alt="Phone: Quill Tue 14 Jul LL approved, filed on the Inputs page, so it is already approved, change it there, not here"><figcaption><b>1. Leave filed on the Inputs page.</b> Only shows; nothing to press but ✕.</figcaption></figure>
+      <figure><img src="img/w2.png" alt="Phone: an OIL award window for Ranger"><figcaption><b>2. An OIL award.</b> Only shows; nothing to press but ✕.</figcaption></figure>
+      <figure><img src="img/w3.png" alt="Desktop: Open for bidding, the months with locks, December open"><figcaption><b>3. "Open for bidding".</b> A member only sees the months; an admin opens and closes months and can leave days half picked.</figcaption></figure>
+      <figure><img src="img/w4.png" alt="Phone: a person's window, Drifter, his leave figures and leave"><figcaption><b>4. A person's window.</b> Another man's only shows; an admin, or a member on his own while the figures are unlocked, can type figures.</figcaption></figure>
+      <figure><img src="img/w5.png" alt="Phone: the OIL TRACKER window, names, balances and credits"><figcaption><b>5. "OIL TRACKER".</b> A member only sees it; an admin can open a credit's Days, Reason and Given by boxes and leave them half typed.</figcaption></figure>
+    </div>
+    <p class="rec"><span class="lbl">Recommended:</span> 1 and 2 close by themselves at a pick. 3, 4 and 5 refuse for everyone: "Blocked: close the open window, then pick 149." Each window then behaves the same whoever is looking, and nothing an admin typed can be lost to a rule that depends on who he is. Cost: a member with one of the three open must close it before picking.</p>
+    <p class="other"><span class="lbl">The other choice:</span> 3, 4 and 5 close by themselves for a member and refuse for an admin.</p>
+    <div class="choices" role="radiogroup" aria-label="Question 6">
+      <label><input type="radio" name="a6" id="a6-rec" value="two close, three refuse for everyone" checked> Two close, three refuse</label>
+      <label><input type="radio" name="a6" id="a6-other" value="three close for a member, refuse for an admin"> Close for a member</label>
+    </div>
+  </section>
+
+  <section class="q" id="q2">
+    <h2>2. Start the Admin → Users chat?</h2>
+    <p><span class="lbl">What it builds:</span> Admin → Users across squadrons, as you approved on its page. Another squadron's people shown in a short row. Plan given only by a squadron's own admins. The Outgoing and Incoming groups. The jump buttons on a phone. One search over every group.</p>
+    <p><span class="lbl">Why now:</span> it was waiting for "+ Add a person" to move to the top row of Admin → Users. That is now built and on the build branch.</p>
+    <p class="rec"><span class="lbl">Recommended:</span> go. Fable runs it, Opus helpers build, and a security reader reads it because it changes who may give a right.</p>
+    <p class="note">The weekly allowance was at 99% when last read. You said you'd reset it at 100%.</p>
+    <div class="choices" role="radiogroup" aria-label="Question 2">
+      <label><input type="radio" name="a2" id="a2-go" value="go" checked> Go</label>
+      <label><input type="radio" name="a2" id="a2-wait" value="wait"> Wait</label>
+    </div>
+  </section>
+
+  <section class="q" id="q3">
+    <h2>3. A leave bid before a man's post-in date: what does a tap on that day open?</h2>
+    <p><span class="lbl">When it happens:</span> an admin tidies the Leave War for a man joining the squadron. Cinch is posted in from Mon 14 Dec. A leave bid sits on Thu 10 Dec, before he arrives, placed before his post-in was set or by Cinch himself. Rare, but it happens to every incoming man who bids early.</p>
+    <p><span class="lbl">What happens now:</span> the admin's tap on 10 Dec opens only "Cinch Post in". Nothing on it reaches the bid's Approve, Refuse, Move or Delete. The way through used to be "Place leave or OIL here instead…", which you ruled away. Approvals, a drag across the day, or Cinch's own tap still reach the bid.</p>
+    <div class="pics two">
+      <figure><img src="img/postin-grid.png" alt="Phone: the Leave War grid, Cinch's LL bid on Thu 10 Dec ringed, inside the hatched days before his post-in"><figcaption>Cinch's bid on Thu 10 Dec (ringed), in the hatched days before he is posted in.</figcaption></figure>
+      <figure><img src="img/postin-tap.png" alt="Phone: the Cinch Post in sheet, PI from Mon 14 Dec, a note, Undo post in; no way to the bid"><figcaption>What a tap on 10 Dec opens: only "Cinch Post in". No way to the bid.</figcaption></figure>
+    </div>
+    <p><span class="lbl">The other end already works:</span> a day after a man's post-out date that has something on it opens that thing's own window.</p>
+    <p class="rec"><span class="lbl">Recommended:</span> the same before a post-in. A day before his post-in that holds a bid or an input opens it. An empty day still opens "Cinch Post in". Nothing new to draw.</p>
+    <p class="other"><span class="lbl">The other choice:</span> leave it as built. The bid is reached only from approvals, a drag, or Cinch himself.</p>
+    <div class="choices" role="radiogroup" aria-label="Question 3">
+      <label><input type="radio" name="a3" id="a3-yes" value="yes, opens the bid" checked> Opens the bid</label>
+      <label><input type="radio" name="a3" id="a3-leave" value="leave it as built"> Leave as built</label>
+    </div>
+  </section>
+
+  <section class="q" id="q4">
+    <h2>4. A save that never answers: build the give-up now, or with the database?</h2>
+    <p><span class="lbl">What you approved:</span> if a save gets no answer, the app stops waiting and shows "Not saved" with Retry. A squadron pick is then refused until you press Retry.</p>
+    <figure><img src="img/notsaved.png" alt="Desktop: the Not saved band with Retry under the top bar, and the note Blocked: press Retry to save your changes, then pick 149"><figcaption>The look you approved: "Not saved" with Retry, and the pick refused with its note.</figcaption></figure>
+    <p><span class="lbl">What we found:</span> today a save can't hang. The app saves inside your browser, and each save finishes the instant it's made. A save can only hang once the shared database comes in, at the end of the project. The page's "as when the connection drops mid-save" was wrong for today's app.</p>
+    <p class="rec"><span class="lbl">Recommended:</span> build now what you'll use: a squadron pick, the member-view switch and a bell line wait for a save, then go ahead, or are refused with the Retry note. Today that wait ends at once. The "give up after 20 seconds" part is filed with the database step, with its tests written down. That's where the real store decides how a late answer is treated.</p>
+    <p class="other"><span class="lbl">The other choice:</span> build the 20-second give-up now. Only tests could prove it, you couldn't see it before the database step, and it changes the saving code for no effect today.</p>
+    <div class="choices" role="radiogroup" aria-label="Question 4">
+      <label><input type="radio" name="a4" id="a4-file" value="file the give-up with the database" checked> File it with the database</label>
+      <label><input type="radio" name="a4" id="a4-now" value="build it all now"> Build it all now</label>
+    </div>
+  </section>
+
+  <section class="q" id="q5">
+    <h2>5. "Delete Cinch now?" card: the dashed grey Delete too?</h2>
+    <p><span class="lbl">When it happens:</span> an admin has set Cinch to be deleted on a date, then moves that date to today or earlier. The app asks "Delete Cinch now?" on a card just like the "Delete Cinch?" card below.</p>
+    <figure><img src="img/delete-grey.png" alt="Phone: the Delete Cinch? card with Delete in the dashed grey look, ringed, and Cancel in blue"><figcaption>The card you approved, "Delete Cinch?", with Delete in dashed grey (ringed). "Delete Cinch now?" has the same card and buttons, with a different title and line. It is not drawn.</figcaption></figure>
+    <p class="rec"><span class="lbl">Recommended:</span> yes, the same dashed grey. Every Delete on the Leave War's cards would then look the same.</p>
+    <p class="other"><span class="lbl">The other choice:</span> keep today's reddish Delete on that one card.</p>
+    <div class="choices" role="radiogroup" aria-label="Question 5">
+      <label><input type="radio" name="a5" id="a5-yes" value="yes, same grey" checked> Yes, same grey</label>
+      <label><input type="radio" name="a5" id="a5-keep" value="keep it as today"> Keep as today</label>
+    </div>
+  </section>
+
+  <div class="answer" aria-live="polite">
+    <div class="eyebrow">Your reply</div>
+    <output id="line"></output>
+    <button type="button" id="copy">Copy reply</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  var out = document.getElementById('line');
+  function build() {
+    var parts = [];
+    for (var i = 1; i <= 8; i++) {
+      if (!document.querySelector('input[name="a' + i + '"]')) continue;
+      var c = document.querySelector('input[name="a' + i + '"]:checked');
+      parts.push(i + ' ' + (c ? c.value : '?'));
+    }
+    out.textContent = parts.join(', ');
+  }
+  document.addEventListener('change', function (e) { if (e.target.matches('input[type=radio]')) build(); });
+  build();
+  var btn = document.getElementById('copy');
+  btn.addEventListener('click', function () {
+    var t = out.textContent;
+    function selectIt() { var r = document.createRange(); r.selectNodeContents(out); var s = getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = 'Selected — copy it'; }
+    try {
+      navigator.clipboard.writeText(t).then(function () { btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = 'Copy reply'; }, 1500); }, selectIt);
+    } catch (e) { selectIt(); }
+  });
+})();
+</script>

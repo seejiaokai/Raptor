@@ -3,7 +3,8 @@
    of one reads pending where it would write anyone's OIL record (amount or worked times) differently, until the day is
    published again: D592 (4), D2044, oilev.ts oilRuleShift): rules.ts ruleNow, which is VCONF outside a day judged by its kept settings */
 import { ruleNow } from './rules'
-import { oilAsks } from './inputs'
+import { oilAsks, inputUnitOf } from './inputs'
+import { UNIT } from './unitview'
 import { parseHM } from './time'
 import { isStandalone, saExemptKind, saFlies, saAnyFlies, saDeskFlies } from './waves'
 import { PEOPLE, realP, whoId, isSpecial } from './people'
@@ -103,13 +104,20 @@ export function uniformOil(min:number,full?:number|null){
 }
 /* an INPUT's own standing under the same law (the ask-flow's suggestion):
    all-day is a full day (owner, 28 Aug 26 — "ask as FO"), a timed record by
-   its length, unreadable times ask nothing. */
-export function inputOilAmt(allday:any,s:any,e:any){
+   its length, unreadable times ask nothing.
+   …BY THE INPUT'S OWN SQUADRON'S THRESHOLD (batch 1's second half, §15 D4 / §16 D4′): `unit` the input's squadron
+   (engine/inputs.ts inputUnitOf); the loaded one's is VCONF's (ruleNow), another's its stored rules (state/cutoff.ts
+   installs the reader, as it does the cut-off's — engine/inputs.ts cutBackFor) — so Hunter, a View holder of 149 with
+   149 picked, is asked of his own 142 input what 142's threshold gives. No unit: the loaded squadron's, as before. */
+let RULE_OF:((unit:string,key:string)=>number)|null=null;
+export function setRuleOfUnit(fn:((unit:string,key:string)=>number)|null){RULE_OF=fn;}
+const ruleFor=(k:string,unit?:any)=>unit&&unit!==UNIT&&RULE_OF?RULE_OF(String(unit),k):ruleNow(k);
+export function inputOilAmt(allday:any,s:any,e:any,unit?:any){
   if(allday)return 1;
   if(s==null||e==null)return null;
   let en=e; if(en<s)en+=1440;
   const d=en-s;
-  return d<=0?null:(d>=ruleNow('oilFullMin')?1:0.5);
+  return d<=0?null:(d>=ruleFor('oilFullMin',unit)?1:0.5);
 }
 /* THE ANSWERS A CHANGE LEAVES STANDING — the voiding rule as ONE function (the Inputs / SANS redesign, plan §3.13).
    The rule is the owner's of 28 Aug 26 and lived inline in the editor's save: the answers belong to the commitment as
@@ -124,7 +132,7 @@ export function voidedOil(before:any,after:any):Record<string,number>|undefined{
   const was=before&&before.oil;
   if(!was||!after)return undefined;
   if(!oilAsks(after.type)||after.person!==before.person)return undefined;
-  const now=inputOilAmt(after.allday,after.s,after.e), out:Record<string,number>={};
+  const now=inputOilAmt(after.allday,after.s,after.e,inputUnitOf(after)), out:Record<string,number>={};
   for(const k of Object.keys(was)){ if(was[k]>0&&was[k]!==now)continue; out[k]=was[k]; }
   return Object.keys(out).length?out:undefined;
 }
@@ -140,7 +148,7 @@ export function repricedOil(before:any,after:any):Record<string,number>|undefine
   const was=before&&before.oil;
   if(!was||!after)return undefined;
   if(!oilAsks(after.type)||after.person!==before.person)return undefined;
-  const now=inputOilAmt(after.allday,after.s,after.e), out:Record<string,number>={};
+  const now=inputOilAmt(after.allday,after.s,after.e,inputUnitOf(after)), out:Record<string,number>={};
   for(const k of Object.keys(was))out[k]=(was[k]>0&&now!=null)?now:was[k];
   return Object.keys(out).length?out:undefined;
 }

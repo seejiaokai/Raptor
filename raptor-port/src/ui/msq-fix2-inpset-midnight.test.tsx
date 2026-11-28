@@ -34,7 +34,9 @@ describe('opus1 — Inputs settings window across Hunter\'s midnight', () => {
     const before142 = JSON.stringify(unitSetting('u142', 'rules', null))
     const c = saveCut('inputs', { mode: 0, lead: 9, wd: 0, weeks: 1 }, u)
     expect(JSON.stringify(unitSetting('u142', 'rules', null)), 'nothing stored in 142').toBe(before142)
-    expect(c, 'the refused cut-off says so').toEqual({ ok: false, message: 'This change could not be saved.' })
+    /* (step A, the second-half plan §2: the door now asks "an admin of 142" itself — refused before the gate, in the door's
+       own words; nothing stored, as before) */
+    expect(c, 'the refused cut-off says so').toEqual({ ok: false, message: 'Only an admin can change the late cut-off.' })
     const sw149 = unitSetting('u149', 'memberfile', null)
     const r = setMembersFile(!membersFileOf(u), u)
     expect(r.ok, "142's switch is not his to flip any more").toBe(false)

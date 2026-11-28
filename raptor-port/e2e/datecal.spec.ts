@@ -31,6 +31,9 @@ async function world(browser: Browser, baseURL: string | undefined, viewport: Si
 }
 const rect = (page: Page, sel: string) => page.locator(sel).first().evaluate(el => { const b = el.getBoundingClientRect(); return { l: b.left, t: b.top, r: b.right, b: b.bottom, w: b.width, h: b.height } })
 const boxValue = (page: Page, sel: string) => page.locator(sel).first().getAttribute('data-value')
+/* Admin → Users' add form is folded behind "+ Add a person" in the page's top row (the guard rail's K2a — his D2652 N13 i,
+   D2729 Q10): a test that uses its Post in box opens the form first, by the button, as a person does */
+const openAddForm = async (page: Page) => { await page.locator('#accAddOpen').click(); await page.waitForSelector('#accAddPostIn') }
 
 /** a date box: inside the screen and inside the form that holds it */
 async function boxFits(page: Page, sel: string, holder: string, what: string) {
@@ -214,6 +217,7 @@ for (const [what, viewport, touch] of [['a phone', PHONE, true], ['a desktop', D
   test(`${what}: Admin — a new person's Post in, and the dates of the two clearing forms`, async ({ browser, baseURL }) => {
     const { context, page, errs, press } = await world(browser, baseURL, viewport, touch)
     await adminPanel(page, 'Users')
+    await openAddForm(page)
     await page.locator('#accAddPostIn').scrollIntoViewIfNeeded()
     await boxFits(page, '#accAddPostIn', '#admUsers', 'Post in')
     const today = await page.evaluate(() => { const n = new Date(); return `${n.getFullYear()}-${String(n.getMonth() + 1).padStart(2, '0')}-${String(n.getDate()).padStart(2, '0')}` })
@@ -369,7 +373,9 @@ test('a sideways phone (844 × 390): the whole calendar is on the screen', async
 test('a desktop: the mouse wheel does not scroll the page behind an open calendar, and still scrolls its lists', async ({ browser, baseURL }) => {
   const { context, page, press } = await world(browser, baseURL, { width: 1280, height: 640 }, false)
   await adminPanel(page, 'Users')
-  await page.locator('#accAddPostIn').evaluate(e => { const r = e.getBoundingClientRect(); window.scrollBy(0, r.top - 320) })
+  await openAddForm(page)
+  /* (the form now opens near the page's top — K2a: at least 120 down, so the wheel can still scroll the page UP) */
+  await page.locator('#accAddPostIn').evaluate(e => { const r = e.getBoundingClientRect(); window.scrollBy(0, Math.max(r.top - 320, 120)) })
   const scrolled = () => page.evaluate(() => Math.round(document.scrollingElement!.scrollTop + [...document.querySelectorAll<HTMLElement>('#page-admin, #page-admin *')].reduce((a, e) => a + e.scrollTop, 0)))
   /* the page CAN scroll here — or "it did not scroll" would prove nothing */
   const y0 = await scrolled()
@@ -430,6 +436,7 @@ async function atRest(page: Page, sel: string) {
 test('a desktop: a mouse pressed and dragged moves the month and year lists, as a finger does, and picks nothing', async ({ browser, baseURL }) => {
   const { context, page, errs, press } = await world(browser, baseURL, DESK, false)
   await adminPanel(page, 'Users')
+  await openAddForm(page)
   await press('#accAddPostIn')
   await calendarOnTop(page, 'Post in')
   const v0 = await boxValue(page, '#accAddPostIn')
@@ -494,6 +501,7 @@ test('a desktop: the drag ends with the press, and a key or a finger during a gl
   page.on('pageerror', e => errs.push(String(e)))
   await login(page)
   await adminPanel(page, 'Users')
+  await openAddForm(page)
   await page.locator('#accAddPostIn').click()
   await calendarOnTop(page, 'Post in')
   await page.locator('[data-testid="dcal-title"]').click()
@@ -611,6 +619,7 @@ async function openLists(browser: Browser, baseURL: string | undefined) {
   page.on('pageerror', e => errs.push(String(e)))
   await login(page)
   await adminPanel(page, 'Users')
+  await openAddForm(page)
   await page.locator('#accAddPostIn').click()
   await calendarOnTop(page, 'Post in')
   await page.locator('[data-testid="dcal-title"]').click()
@@ -734,6 +743,7 @@ test('a phone: a finger slid up the year list still moves it, and it rests on a 
   const { context, page, errs, press } = await world(browser, baseURL, PHONE, true)
   const cdp = await context.newCDPSession(page)
   await adminPanel(page, 'Users')
+  await openAddForm(page)
   await press('#accAddPostIn')
   await calendarOnTop(page, 'Post in')
   await press('[data-testid="dcal-title"]')
@@ -791,8 +801,12 @@ test('a phone turned on its side and back with the calendar up: the calendar is 
 test('a desktop: where there is no room under its box, the calendar opens above it — still on the screen', async ({ browser, baseURL }) => {
   const { context, page, press } = await world(browser, baseURL, { width: 1280, height: 640 }, false)
   await adminPanel(page, 'Users')
+  await openAddForm(page)
   /* the box at the foot of the screen */
-  await page.locator('#accAddPostIn').evaluate(e => { const r = e.getBoundingClientRect(); window.scrollBy(0, r.bottom - innerHeight + 24) })
+  /* (K2a: the form opens under the page's top row, so no scroll can bring the box to the foot — the screen is cut to end
+     24px under it instead; where the page can still be scrolled there, it is, as before) */
+  const under = await page.locator('#accAddPostIn').evaluate(e => { const r = e.getBoundingClientRect(); const by = r.bottom - innerHeight + 24; if (by > 0) window.scrollBy(0, by); return by > 0 ? 0 : Math.round(r.bottom) + 24 })
+  if (under) await page.setViewportSize({ width: 1280, height: under })
   const b = await rect(page, '#accAddPostIn')
   expect(page.viewportSize()!.height - b.b, 'the box is not at the foot of the screen').toBeLessThan(120)
   await press('#accAddPostIn')

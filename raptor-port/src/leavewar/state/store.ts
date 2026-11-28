@@ -1242,7 +1242,11 @@ export function initStore(b?: StorageBackend, opts: {
   /* the committed world is this one: a command the test hook below runs diffs against it, not the last world */
   LW_BASELINE = state
 
-  version = 0
+  /* a fresh store starts its count at 0; a world loaded IN PLACE (keepListeners — sync.ts swapWarWorld, a squadron's war
+     after a pick or a sign-in) moves it on instead: the page redraws when the count moves, and one started again at 0
+     could, a few changes later, read the very number it read before the swap — the Approvals page then kept drawing the
+     old squadron's war under the new one's number (the second half's re-walk N1, the fix read's A2) */
+  version = opts.keepListeners ? version + 1 : 0
   if (!opts.keepListeners) listeners.clear()
   MERGED = null
   // [ARCH-STACK] step 4 — the Leave War suite's setup files the seed's

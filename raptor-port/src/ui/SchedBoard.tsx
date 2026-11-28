@@ -23,6 +23,7 @@ import { withDaySnap, withVersionFlags, refreshWaveReports } from './html'
 import { glyphSvg, EYE_INNER } from './glyphs'
 import { holdingPlace, swapKidsAround, kidsOfHTML, owesBeside, type PanelKids } from './dayswap'
 import { useSheetFocus, useEscClose, locate, pressedByKeys, menuItems, escCloses } from './sheetfocus'
+import { cxDrawn, sortAllDrawn } from './windrawn'
 import { wireBoardEscape } from './boardescape'
 import { reconcileMissionRoleOffer } from './mission-role-offer'
 import { notify } from '../state/store'
@@ -37,6 +38,7 @@ import { useBoardVersion, useVersion, useUndoVersion } from './useStore'
 import { UndoPair, SyncChip, BellButton } from './topbits'
 import { globalUndoEngine } from './topstate'
 import { SaveBand } from './SaveStatus'
+import { sqnNum } from './export'
 import { OilBand } from './OilWaitSheet'
 import { clickedOutside } from './outside'
 import { wirePinch } from './pinchzoom'
@@ -579,6 +581,11 @@ export function SchedBoard() {
           <b id="sbDay">{d ? d.dow.slice(0, 3) : ''}<span className="bl">{d ? d.dow.slice(3) : ''}</span></b> <span className="mono" id="sbDate">{d ? shortYear(d.dt) : ''}</span>
           {d && d.today ? <i className="sb-today" title="today" /> : null}
           <span className="bl"> · scheduler board</span>
+          {/* THE SQUADRON IN VIEW'S NUMBER (batch 1's second half §3 item 8, the approved drawing b1-2 —
+              docs/mock/2026-11-22-msq-b1-screens/img/b1-2-d.png, -p.png): a small grey number after the day title, the
+              schedule in view's (ui/export.ts sqnNum — never a written-in "142"), shown for every squadron as drawn.
+              Inside the title, so the bar's buttons do not move; on a phone it rides the title's ellipsis. */}
+          <span className="sb-sqn">{sqnNum('schedule')}</span>
         </div>
         {/* ARROWS AT THE EDGES, AND NO SWIPE (owner, 12 Aug 26 — "remove the
             swipe for the mobile scheduler board too. Just put arrows at the
@@ -898,7 +905,7 @@ export function CxDialog() {
   const addRef = useRef<HTMLInputElement>(null)
   const [editing, setEditing] = useState(false)
   const [armReset, setArmReset] = useState(false)
-  const open = CXT != null
+  const open = cxDrawn()   // CXT != null — the one predicate the guard reads too (ui/windrawn.ts)
   const on = open && !!CXT.o.cx
   const what = open ? (CXT.label || 'this line') : ''
   const canEdit = canEditSched()
@@ -992,8 +999,8 @@ export function CxDialog() {
 export function SortAllDialog() {
   useVersion()
   const di = SORTALL
-  const open = di != null
-  const d = open ? DAYS[di] : null
+  const open = sortAllDrawn()   // SORTALL != null — the one predicate the guard reads too (ui/windrawn.ts)
+  const d = open && di != null ? DAYS[di] : null
   const close = () => cancelSortAll()
   /* the dialog takes the keyboard when it opens and keeps it (RF2 — ui/sheetfocus.ts) — and Escape closes it, as Cancel, ✕
      and a press outside do (owner D1646, 5 Nov 26 — [BOARD-KEYS-LEFT] (5); heard before the board's own Escape, which waits

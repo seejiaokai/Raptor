@@ -40,8 +40,8 @@ const ALLOWED: Record<string, { n: number; why: string }> = {
   'state/demoseed.ts': { n: 6, why: 'the demo seed: picks its seeded men out of the demo\'s one squadron by callsign and seat, before the second squadron\'s people are seeded — and, seeding 149 (step 4, seedDemo149), puts the placeholders back last in the people\'s key order' },
   'ui/peoplepick-model.ts': { n: 1, why: 'the two placeholders (ALL AVAIL, ALL) — on every squadron\'s schedule, nobody\'s own' },
   'probe-bridge.ts': { n: 1, why: 'the developer\'s test bridge hands the browser tests the whole record' },
-  'state/accounts.ts': { n: 1, why: 'who an account can be linked to (linkablePeople): Admin → Users\' squadron of its own — whose people an admin links and sees — is batch 1\'s step 5 (the plan §3.6; O3), not this step' },
-  'ui/UsersPanel.tsx': { n: 1, why: 'Admin → Users\' list of everyone: his own squadron\'s people only, the other\'s found by search, is batch 1\'s step 5 (the plan §3.6; O3)' },
+  /* (state/accounts.ts linkablePeople and ui/UsersPanel.tsx's list left this list in batch 1's second half, §4 item 1:
+     both read the page's squadron through rosterOf — ui/userslist-model.ts) */
 }
 
 const counts = countAll(SRC, WALK)

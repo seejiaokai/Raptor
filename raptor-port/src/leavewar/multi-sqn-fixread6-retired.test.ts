@@ -8,7 +8,7 @@
    Hunter (142's admin) files LL for Ranger (142) on 15 Jul; Saber's change that day tells Hunter as its filer; Hunter's
    move to 149 from 16 Jul. Harness as leavewar/multi-sqn-fixread4-bells.test.ts. */
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
-import { storeBackend, HOOKS } from '../engine/hooks'
+import { storeBackend, HOOKS, store } from '../engine/hooks'
 import { PEOPLE, indexCallsigns } from '../engine/people'
 import { initStore as raptorInitStore, notify as raptorNotify, resetSession, writeInputsBatch } from '../state/store'
 import { accountsLoad, signIn, sessionFor } from '../state/accounts'
@@ -21,8 +21,8 @@ import { wireLeaveWarSync, setWarWorldDoor } from './sync'
 import { homeOn, unitsLoad } from '../state/units'
 import { HOME_PFX } from '../state/units-model'
 import { INPUTS } from '../engine/inputs'
-import { NOTICES, noticesFor, type Notice } from '../state/notices'
-import { unreadFor, noticeSeenLoad } from '../state/noticeseen'
+import { NOTICES, noticesFor, allNoticesFor, isAcctNotice, type Notice } from '../state/notices'
+import { noticeSeenLoad, isUnread } from '../state/noticeseen'
 import { installGlobalUndo } from '../state/undo-wire'
 import { _resetTimeline } from '../undo/timeline'
 import { rosterToday } from '../engine/roster'
@@ -31,6 +31,9 @@ const mem: Record<string, string> = {}
 let PEOPLE0 = ''
 const signInAs = (name: string, pass = 'x') => { resetSession(sessionFor(signIn(name, pass))); raptorNotify() }
 let worlds: Record<string, any> = {}
+/* his unread squadron lines — every line on his bell but those about his own account: since batch 1's second half a move
+   itself tells him on his own bell (his D2251), a line his, not his old squadron's, which these tests are not about */
+const unreadSqn = (pid: string) => allNoticesFor(pid).filter(n => !isAcctNotice(n) && isUnread(n, pid)).length
 
 beforeAll(() => {
   vi.useFakeTimers({ toFake: ['Date'] })
@@ -72,6 +75,10 @@ const homes = (pid: string, key: string, rows: [string, string][]) => {
 const on = (d: number) => { vi.setSystemTime(new Date(2026, 6, d, 9, 0, 0)); unitsLoad() }
 const readIt = (pid: string, l: Notice) => { mem[`sqn142_noticeseen:${pid}`] = JSON.stringify({ upto: 0, ids: [l.id] }); noticeSeenLoad() }
 const shown = (pid: string, id: string) => noticesFor(pid).some(n => n.id === id)
+/* (HIS BELL'S SWITCH — batch 1's second half §7 item 3, §16 D5′; D2198: once a master admin's home is 149, 142's lines not
+   about him are off on his bell by default. These tests are about the move's rule, so the old squadron is switched on, as
+   he would switch it, before the line is looked for) */
+const bellOn = (pid: string, u: string) => { const k = `bellsqn:${pid}`; const v: any = store.get(k, null) || {}; store.set(k, { ...v, [u]: true }) }
 /* Hunter files for Ranger; Saber's change on 15 Jul tells him (filer only); answers that line */
 const hunterLine = (): Notice => {
   signInAs('ad2', 'a2'); fileFor('bane', 'prowler')
@@ -89,12 +96,12 @@ describe('fault C — a retired filer line stays retired', () => {
       homes('prowler', 'hc', [['u142', '2026-07-15'], ['u149', '2026-07-16']]); on(17)
       signInAs('ad2', 'a2')
       expect(shown('prowler', l.id), 'off his bell on the 17th').toBe(false)
-      expect(unreadFor('prowler')).toBe(0)
+      expect(unreadSqn('prowler')).toBe(0)
       signInAs('ad', 'a'); del()
       expect(NOTICES.some(n => n.to === 'prowler' && n.iid === IID && n.id !== l.id), 'not told of the delete').toBe(false)
       signInAs('ad2', 'a2')
       expect(shown('prowler', l.id), 'still off after the delete').toBe(false)
-      expect(unreadFor('prowler'), 'the bell stays dark').toBe(0)
+      expect(unreadSqn('prowler'), 'the bell stays dark').toBe(0)
     })
     it(`(Opus P3, ${rd}) away to 149 and back to 142: the line stays off`, () => {
       const l = hunterLine(); if (read) readIt('prowler', l)
@@ -102,14 +109,14 @@ describe('fault C — a retired filer line stays retired', () => {
       on(16); signInAs('ad2', 'a2'); expect(shown('prowler', l.id), 'off on his move day').toBe(false)
       on(17); expect(homeOn('prowler', rosterToday())).toBe('u142')
       expect(shown('prowler', l.id), 'still off, back home').toBe(false)
-      expect(unreadFor('prowler')).toBe(0)
+      expect(unreadSqn('prowler')).toBe(0)
     })
     it(`(Astra, ${rd}) two round trips: the line stays off`, () => {
       const l = hunterLine(); if (read) readIt('prowler', l)
       homes('prowler', 'hc', [['u142', '2026-07-15'], ['u149', '2026-07-16'], ['u142', '2026-07-17'], ['u149', '2026-07-18'], ['u142', '2026-07-19']])
       on(19); signInAs('ad2', 'a2'); expect(homeOn('prowler', rosterToday())).toBe('u142')
       expect(shown('prowler', l.id)).toBe(false)
-      expect(unreadFor('prowler')).toBe(0)
+      expect(unreadSqn('prowler')).toBe(0)
     })
     it(`(security, ${rd}) the named man moves into the filer's squadron after the line retired: it stays off`, () => {
       const l = hunterLine(); if (read) readIt('prowler', l)
@@ -117,7 +124,7 @@ describe('fault C — a retired filer line stays retired', () => {
       homes('bane', 'hb', [['u142', '2026-07-15'], ['u149', '2026-07-17']])
       on(17); signInAs('ad2', 'a2'); expect(homeOn('bane', rosterToday())).toBe('u149')
       expect(shown('prowler', l.id)).toBe(false)
-      expect(unreadFor('prowler')).toBe(0)
+      expect(unreadSqn('prowler')).toBe(0)
     })
   }
 })
@@ -134,6 +141,7 @@ describe('fault C — controls: lines that stay', () => {
     on(17); expect(shown('bane', own.id), 'back home').toBe(true)
   })
   it('a master filer’s line stays: Saber files, Hunter changes it, Saber moves to 149, the input is deleted', () => {
+    bellOn('stiff', 'u142')
     signInAs('ad', 'a'); fileFor('bane', 'stiff')
     signInAs('ad2', 'a2'); rmk('changed by Hunter')
     const l = NOTICES.find(n => n.to === 'stiff' && n.iid === IID)!
@@ -162,7 +170,8 @@ describe('fault C — the gate: a filer-only line carries its mark', () => {
     /* unmarked, a forger's line would never leave his bell */
     expect(ownershipViolation(env([ch, ln({})])) ?? 'allowed').toMatch(/bell line of another squadron/)
     expect(ownershipViolation(env([ch, ln({ fu: ['u149'] })])) ?? 'allowed').toMatch(/bell line of another squadron/)
-    expect(ownershipViolation(env([ch, ln({ fu: ['u142'] })]))).toBeNull()
+    /* (…and stamped with the input's squadron, as the pass stamps it — batch 1's second half, §7 item 1) */
+    expect(ownershipViolation(env([ch, ln({ fu: ['u142'], u: 'u142' })]))).toBeNull()
     /* …and the pass writes it so */
     rmk('by Hunter, for real')
     const l: any = NOTICES.find(n => n.to === 'stiff' && n.iid === IID)

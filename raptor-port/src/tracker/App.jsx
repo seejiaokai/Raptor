@@ -66,7 +66,7 @@ function ViewTabs({ tab, setTab }) {
    listeners below must switch OFF while another tab is up: Escape on the Edit
    Schedule must not close a Tracker pop-up, and Delete in a Raptor text box
    must never reach the chart editor. */
-export default function App({ active = true }) {
+export default function App({ active = true, locked = false }) {
   useSyncExternalStore(core.subscribe, core.getVersion);
   const [tab, setTab] = useState('flow');
   const [sideZoom, setSideZoom] = useState(1);
@@ -84,20 +84,26 @@ export default function App({ active = true }) {
      7 Sep 26 "no chart after re-login" case). */
   /* ...and LANDS it, as a pick does ([TRK-REMOUNT-LANDING], 17 Oct 26): the same person signing out and in again came
      back to the chart's top corner, because this redraw never asked where to land (core.landChart) */
+  /* (his D2395: a move to another squadron takes `ready` down and up again, so this also draws the squadron just read;
+     landed now if the tab is on screen, and when it is next shown if it is not — core.landIfOwed. `active` is read as it
+     stands when `ready` turns: a tab shown later is the effect below) */
   // eslint-disable-next-line react-hooks/exhaustive-deps -- core.ready is a live module binding the async boot flips from false to true; it is the trigger that draws the board once
-  useEffect(() => { if (core.ready && !core.bootError && !core.resumeForPerson()) { core.renderBoard(); core.notify(); core.landChart(); } }, [core.ready]);
+  useEffect(() => { if (core.ready && !core.bootError && !core.resumeForPerson()) { core.renderBoard(); core.notify(); if (!core.landIfOwed(active)) core.landChart(); } }, [core.ready]);
   /* ...and when the FIRST course arrives on a Tracker that had none ([DB-READINESS] group A, phase 5 — D463): the board's
      box mounts only with it, empty, so it is drawn once it is there */
   const hasCourse = core.COURSES.length > 0;
   useEffect(() => { if (core.ready && !core.bootError && hasCourse) { core.renderBoard(); core.notify(); } }, [hasCourse]);
   /* ...and every time the tab is shown again: the person signed in may have changed
      while it sat hidden (D376 — each person reopens on their own course and student) */
-  useEffect(() => { if (active && core.ready && !core.bootError) core.resumeForPerson(); }, [active]);
+  useEffect(() => { if (active && core.ready && !core.bootError) { core.resumeForPerson(); core.landIfOwed(true); } }, [active]);
 
   /* Which tab is showing is React state, but the search has to reach it: on the
      Info tab the board is display:none, so scrolling to a found event would be
      measuring a hidden element and would land nowhere. */
   useEffect(() => { core.setTabSink(setTab); return () => core.setTabSink(null); }, []);
+  /* …and the guard rail reads it too: a window of the Info panel sits behind the Flow chart tab on the phone layout
+     (core.js TRK_WINDOWS, `behind: 'info'`) */
+  useEffect(() => { core.setTabShown(tab); }, [tab]);
 
   /* The details bubble belongs to the chart that raised it: gone when the
      phone switches to its other half, and when the Tracker tab leaves the
@@ -128,20 +134,28 @@ export default function App({ active = true }) {
       core.closePop();
     };
     const unload = e => { if (core.sylDirty) { e.preventDefault(); e.returnValue = ''; } };
-    document.addEventListener('keydown', esc);
-    document.addEventListener('keydown', del);
-    document.addEventListener('keydown', undo);
-    document.addEventListener('click', clickAway);
+    /* LOCKED — the Tracker page covered in the member view while it holds his unsaved edits (Raptor's TrackerPage.tsx; his
+       D2395, D2318): hidden, so no key reaches the chart (Delete, Undo, Escape) and no press outside closes a pop-up; the
+       warning before leaving the page with unsaved edits stays, since those edits are kept */
+    const keys = !locked;
+    if (keys) {
+      document.addEventListener('keydown', esc);
+      document.addEventListener('keydown', del);
+      document.addEventListener('keydown', undo);
+      document.addEventListener('click', clickAway);
+    }
     window.addEventListener('beforeunload', unload);
     return () => {
-      document.removeEventListener('keydown', esc);
-      document.removeEventListener('keydown', del);
-      document.removeEventListener('keydown', undo);
-      document.removeEventListener('click', clickAway);
+      if (keys) {
+        document.removeEventListener('keydown', esc);
+        document.removeEventListener('keydown', del);
+        document.removeEventListener('keydown', undo);
+        document.removeEventListener('click', clickAway);
+      }
       window.removeEventListener('beforeunload', unload);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- core.ready is a live module binding that changes when the boot ends; the page's key and click handlers must bind then
-  }, [active, core.ready]);
+  }, [active, locked, core.ready]);
 
   /* The phone's Flow / Info switch (was a class on <body>) rides the .tr-root
      div's className — never the page section above it. The section's className

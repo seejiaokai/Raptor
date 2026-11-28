@@ -11,12 +11,12 @@ import { DEFAULT_LAYOUTS } from '../data/layouts.js';
 import { EVENT_INFO, EVENT_INFO_BY_SYL } from '../data/eventInfo.js';
 import { shippedDetails, diffDetails, scrubBlock, mergeBlock, realFlatEdits, blockFromFlat, isDetailsTable } from './eventDetails.js';
 import { SEED_STATE, SEED_STAMP } from '../data/seedState.js';
-import { storage, flushNow, loadLatest, saveHealth, onSaveHealth, storageKept, markStorageLoaded, storageUnit } from '../storage.js';
+import { storage, flushNow, loadLatest, saveHealth, onSaveHealth, storageKept, markStorageLoaded, storageUnit, onStorageFollow, moveStorageDoor, setStorageHeld, storageHeld, pageOwnUnit } from '../storage.js';
 import * as FMT from './fileFormat.js';
 import * as FS from './fileStore.js';
 import { normalizeImport as normalizeFile, STUDENT_GUARD_MSG, STUDENT_CHART_MSG, sameDef, remapStudentsSyl } from './fileTransfer.js';
 import { findEvents } from './eventOrder.js';
-import { onTrackerSessionEnd, onBeforeTrackerLogout, trackerIsAdmin } from '../role.js';
+import { onTrackerSessionEnd, onBeforeTrackerLogout, onBeforeTrackerSwitch, trackerIsAdmin, onTrackerWindows, onTrackerAsking, onTrackerCloseShown } from '../role.js';
 /* Raptor's one edge feel (D899) */
 import { edgePan } from '../../ui/edgescroll';
 import { getPeople, onPeople, whoami, whoamiId, getGonePeople, onGonePeople, getMedInputs, onMedInputs } from '../people.js';
@@ -78,7 +78,7 @@ const refreshCourses = notify;
    An unsaved chart edit is ASKED ABOUT before the Logout ever gets here (D129,
    onBeforeTrackerLogout above); on any other session end it is kept behind
    ✓ Save changes, never thrown away without a word. */
-onTrackerSessionEnd(() => endSession());
+onTrackerSessionEnd(() => { parkedHist.clear(); endSession(); });
 /* BEFORE the logout, not after (owner, 23 Sep 26 — D129): unsaved chart edits
    ask Save / Discard / Stay, over the Tracker tab (`show`), so the next person
    never lands on someone else's half-done chart. Save writes them (✓ Save
@@ -91,11 +91,123 @@ onBeforeTrackerLogout(async show => {
   if (dlg) { if (show) show(); return false; }
   if (!sylDirty) return true;
   if (show) show();
-  const c = await uiChoice('You have unsaved chart edits on “' + curSylName() + '”.\n\nSave them before logging out?', 'Save them', 'Discard them', 'Stay');
-  if (c === 'cancel') return false;
-  if (c === 'ok') await persistSyl();
-  else { clearDirty(); if (arrangeMode) toggleArrange(); await loadCourse(course); refreshSyl(); renderBoard(); renderSide(); }
-  return true;
+  /* asked over the page he is on where the Tracker cannot come forward: in the member view it is hidden, held on another
+     squadron for these edits (the night of 24 Nov 26, Opus F1). A Save that did not take keeps him here, with the draft. */
+  switchAsking = true; notify();
+  try {
+    const c = await uiChoice('You have unsaved chart edits on “' + curSylName() + '”.\n\nSave them before logging out?', 'Save them', 'Discard them', 'Stay');
+    if (c === 'cancel') return false;
+    cancelGestures();
+    if (c === 'ok') return await saveForQuestion();
+    await discardChartEdits();
+    return true;
+  } finally { switchAsking = false; notify(); }
+});
+/* "Save them" in either question. A refusal is said here, in the app's own words, and waited for: raised from inside the
+   save it would outlive the question and stand unseen inside a hidden Tracker, where it blocked every later pick (the
+   walk's F2, Opus F3). In the member view the gate always refuses: the door is not his page's squadron. */
+async function saveForQuestion() {
+  const ok = await trkQuietly(() => persistSyl());
+  if (!ok) await uiAlert(NOT_SAVED);
+  return !!ok && !sylDirty;
+}
+/* "Discard them" — the sign-out's and the pick's: the chart reloaded from the store, and the bar's words put back to its
+   resting "● saved" (the chart on screen is the stored one), as a course switch puts back its own: left alone they still
+   said "● unsaved flow edits — hit “Save changes”" about the edits just dropped (the re-walk of 23 Nov 26, chat 151, N2) */
+async function discardChartEdits(keepEditor = false) {
+  clearDirty(); if (arrangeMode && !keepEditor) toggleArrange(); await loadCourse(course); refreshSyl(); renderBoard(); renderSide();
+  setSaveStatus('', 'ok');
+}
+/* BEFORE A PICK TAKES THE TRACKER TO ANOTHER SQUADRON (multi-squadron batch 1's second half §16 D2′; his D2318, kept by
+   D2395 — the drawing f2d): the same question as the logout's, its last line "Save them before switching to 142?" — asked
+   where he is, never jumping to the Tracker tab first: while it is up `switchAsking` is set and the Tracker's page seam
+   (tracker/TrackerPage.tsx) shows this question alone over whatever page he is on. Save writes them into this Tracker
+   (✓ Save changes) before the pick goes on — and where the save did not take (refused, failed), he stays; Discard reloads
+   the chart from the store, as the logout's does; Stay keeps everything and the pick does not happen. A question already
+   up (another of the Tracker's) is answered first: the pick waits.
+   THE VIEW SWITCH ASKS THE SAME QUESTION (his D2627 A20 — step K5): `to` is "the member view", or "the admin view" with
+   `back`, so its last line reads "…before switching to the member view?" or "…before switching back to the admin view?";
+   a pick's stays "…before switching to 142?", byte for byte. */
+export let switchAsking = false;
+onBeforeTrackerSwitch({
+  needs: () => !!sylDirty,
+  ask: async (to, back) => {
+    if (dlg) return false;
+    switchAsking = true; notify();
+    try {
+      const c = await uiChoice('You have unsaved chart edits on “' + curSylName() + '”.\n\nSave them before switching ' + (back ? 'back to ' : 'to ') + to + '?', 'Save them', 'Discard them', 'Stay');
+      if (c === 'cancel') return false;
+      cancelGestures();
+      if (c === 'ok') return await saveForQuestion();
+      await discardChartEdits();
+      return true;
+    } finally { switchAsking = false; notify(); }
+  },
+});
+/* THE GUARD RAIL'S VIEW OF THIS TRACKER'S WINDOWS (the guard rail's plan, docs/superpowers/plans/
+   2026-11-25-msq-pick-guard-build1.md §3.1 "The Tracker's windows", §3.2 (g) — K1c). Raptor's guard asks "is anything
+   open?" before a pick, the member-view switch or a bell line changes the squadron or the view (his D2403); it cannot
+   import this file, so the answer crosses on role.js. ONE READ-ONLY TABLE, each window state of this module with what it
+   counts — 'window' refuses the press; 'closes' only shows things and is closed at the press (his D2596, D2597, D2654);
+   'no' is a mode, in the table so the list is whole — and `panel: 'info'` on the four the Info panel draws
+   (components/SidePanel.jsx), which a screen 1050 wide or less hides while its Flow chart tab shows (tracker.css). Each
+   `open` reads the very state its component draws from. endSession() below is left as it is: it does more than null these
+   (it answers every waiting question, ends the gestures and the Undo lists); the roll-call (ui/msq-guard-rollcall.test.ts
+   R4) ties every state it resets to an id here, or to its own list of what is not a window.
+   - `bubble`: an event's details — the ⓘ bubble the Details mode and the Info panel's chips raise (one element on the page
+     body, showDetailBubble) — closes by itself (his D2597: "a Tracker event's details (the ⓘ bubble, which already goes at
+     a pick)").
+   - `infoId` is NOT that: it is "✎ Edit details" — the event info editor (components/Modals.jsx InfoModal), with boxes to
+     type in and its own Save and Cancel — so it refuses, as every window with a box to type in does (his D2403).
+   - `pop`: the marking window closes, as today (his D2654 E2). `downLog`, `failLog`: Down days and Failures close by
+     themselves, in sight or behind the Flow chart tab (D2654 E4). `lullPick`, `lullCopy`: the two lull pop-ups hold a choice
+     not yet saved — a first day picked, students ticked — so they refuse (D2654 E4).
+   - Show All refuses (it was never put to him singly, and a refusal loses nothing); its inline editor holds typing. */
+export const TRK_WINDOWS = Object.freeze([
+  { id: 'dlg', open: () => !!dlg, counts: 'window' },
+  { id: 'pop', open: () => !!pop, counts: 'closes' },
+  { id: 'bubble', open: () => detailBubbleShown(), counts: 'closes' },
+  { id: 'infoId', open: () => infoId != null, counts: 'window' },
+  { id: 'editId', open: () => editId != null, counts: 'window' },
+  { id: 'sylModalOpen', open: () => !!sylModalOpen, counts: 'window' },
+  { id: 'ordMode', open: () => !!ordMode, counts: 'window' },
+  { id: 'copyOpen', open: () => !!copyOpen, counts: 'window' },
+  { id: 'flexWinOpen', open: () => !!flexWinOpen, counts: 'window' },
+  { id: 'showAllOpen', open: () => !!showAllOpen, counts: 'window' },
+  { id: 'downLog', open: () => !!downLog, counts: 'closes', panel: 'info' },
+  { id: 'failLog', open: () => !!failLog, counts: 'closes', panel: 'info' },
+  { id: 'lullPick', open: () => !!lullPick, counts: 'window', panel: 'info' },
+  { id: 'lullCopy', open: () => !!lullCopy, counts: 'window', panel: 'info' },
+  { id: 'arrangeMode', open: () => !!arrangeMode, counts: 'no' },
+  { id: 'showDetails', open: () => !!showDetails, counts: 'no' },
+  { id: 'toolsOpen', open: () => !!toolsOpen, counts: 'no' },
+]);
+/* which half the phone layout shows — App.jsx hands its Flow chart / Info tab here as it changes (N12) */
+let tabShown = 'flow';
+export function setTabShown(t) { tabShown = t === 'info' ? 'info' : 'flow'; }
+/* the stylesheet's own width for the phone layout (tracker.css `@media(max-width:1050px)`), read the same way */
+function phoneLayout() {
+  try { return typeof window !== 'undefined' && typeof window.matchMedia === 'function' && window.matchMedia('(max-width:1050px)').matches; } catch (_) { return false; }
+}
+/* NONE UNLESS THE TRACKER IS DRAWN — App.jsx's three gates: the boot error card and "Loading…" draw no window, and with no
+   course only the question box (DlgModal) is drawn. A panel window sits behind the Info tab while the phone layout shows the
+   Flow chart: drawn, and hidden by the style rule. */
+onTrackerWindows(() => {
+  if (!ready || bootError) return [];
+  const noCourse = !COURSES.length;
+  const behind = tabShown === 'flow' && phoneLayout() ? 'info' : null;
+  return TRK_WINDOWS
+    .filter(w => w.counts !== 'no' && (!noCourse || w.id === 'dlg') && w.open())
+    .map(w => ({ id: w.id, counts: w.counts, behind: w.panel === 'info' ? behind : null }));
+});
+onTrackerAsking(() => switchAsking && !!dlg);
+/* THE ONE CLOSER of the windows that only show things — each by its own way of closing, as a press outside or ✕ closes it;
+   `id` one of them, or none for all. A door calls it only once its change is going through (ui/guard.ts closeShown). */
+onTrackerCloseShown(id => {
+  if ((!id || id === 'bubble') && detailBubbleShown()) hideDetailBubble();
+  if ((!id || id === 'pop') && pop) closePop();
+  if ((!id || id === 'downLog') && downLog) closeDownLog();
+  if ((!id || id === 'failLog') && failLog) closeFailLog();
 });
 /* bumped at every session end: a job that asks more than one question (an import) stops
    between them once its session has ended, so the next person never gets the next one
@@ -103,6 +215,7 @@ onBeforeTrackerLogout(async show => {
 let sessionSerial = 0;
 function endSession() {
   sessionSerial++;
+  cancelGestures();
   /* a pinch running at the sign-out ends here, laid out nowhere: its lift would otherwise mark the zoom as the next
      person's ([TRK-PINCH-MORE-EDGES] (3)) */
   if (endPinchForSession) endPinchForSession();
@@ -126,6 +239,171 @@ function endSession() {
   hintFlash = null;
   searchHit = null; searchQ = ''; searchCount = 0; searchAt = 0; searchHits = [];
   notify();
+}
+
+/* ---------- THE TRACKER FOLLOWS THE SQUADRON PICKED (his D2395, 23 Nov 26 — [MSQ-TRK-FOLLOWS-PICK]) ----------
+   It replaces D2318's "keeps the squadron it opened with until sign-out". This module holds one squadron's records in
+   memory, so a move runs in a fixed order, and THE ORDER IS THE SAFETY:
+   1. LEAVE (leaveSquadron), the door still on the old squadron. The page shows "Loading…" (`ready` off: no chart, no
+      control), the session's windows and modes end, every question is answered "cancelled" and any new one too
+      (`unitLeaving`), and everything still running — the load queue, a job past its last question — runs out. A write it
+      makes lands in the OLD squadron's records, or is refused by the gate's 7f, which refuses this page's changes the
+      moment the door is not the page's own squadron. Nothing of it can reach the new one.
+   2. EMPTY (emptyForMove): every record of the old squadron out of memory.
+   3. MOVE the door (storage.js moveStorageDoor), then READ the new squadron through the one boot path (bootFromStore).
+   Picks made meanwhile are not queued: `unitWant` is the last one, and the run goes round until the door is on it.
+   HELD (`mayHold`, the door's 'held'): where the chart work open cannot be asked about — his own move at midnight (D2243,
+   its band across the chart editor) or the switch to the member view — the door stays until that work is gone
+   (followIfHeld). A right taken away is not held: the Tracker never stands on a squadron he has lost; his draft of it
+   cannot be saved by anyone, so it goes, and the corner says so in the words the app already has for a save that did not
+   take (NOT_SAVED). */
+let unitWant = null;       /* the squadron the page's own pages are on, while the door is not there yet */
+let unitRun = null;        /* the move running (its promise) */
+let unitLeaving = false;   /* from the first step of a move to the end of its read: no question may be asked */
+let firstBoot = null;      /* init's own run: a move waits for it, so the first load finishes on the door it began on */
+let landOwed = false;      /* moved while the Tracker tab was not on screen: it lands when next shown (App.jsx) */
+/* AN UNDO STEP WAITS FOR ITS SQUADRON, as the app's one Undo treats a step of a squadron no longer in view (A-v, state/
+   undo-wire.ts): each squadron's steps are put aside at the move and given back when it is entered again on the same
+   course and chart — never applied to another squadron's chart, which holds none of them. A sign-out clears them. */
+const parkedHist = new Map();
+onStorageFollow({
+  follow(to, mayHold) {
+    unitWant = to;
+    /* A PRESS HELD ACROSS THE HOLD ENDS HERE, as at a move (the night of 24 Nov 26, the blind Opus read's F2 —
+       msq-night-press-held.test.tsx): the Tracker is covered while held, but a drag stayed alive under the cover; its
+       lift saved the layout, the gate refused it, and "This change could not be saved." went up unseen inside the
+       hidden Tracker with Logout and every pick dead behind it. The press never happened (cancelGestures). */
+    const hadPress = cancelGestures();
+    if (mayHold && (sylDirty || arrangeMode)) { setStorageHeld(true); if (hadPress) { renderBoard(); notify(); } return 'held'; }
+    setStorageHeld(false);
+    startFollow();
+    return 'moved';
+  },
+  stay() { unitWant = null; setStorageHeld(false); },
+});
+/* the chart work that held the door has gone (saved, discarded, or the editor closed with nothing left unsaved). Where his
+   pages are NOW is asked again: back from the member view they may be on this very squadron, and the door stays. */
+function followIfHeld() {
+  if (!storageHeld() || sylDirty || arrangeMode) return;
+  setStorageHeld(false);
+  const own = pageOwnUnit();
+  if (!own || own === storageUnit()) { unitWant = null; return; }
+  unitWant = own;
+  startFollow();
+}
+function startFollow() {
+  if (unitRun) return;
+  unitRun = runFollow().finally(() => {
+    unitRun = null;
+    /* a pick that came as the last run was finishing */
+    if (unitWant && unitWant !== storageUnit() && !storageHeld()) startFollow();
+  });
+}
+/** resolves once no move of squadron is running */
+export function whenUnitSettled() { return unitRun || Promise.resolve(); }
+async function runFollow() {
+  let dropped = false, moved = false, left = false;
+  try {
+    if (firstBoot) { try { await firstBoot; } catch (_) { /* a failed boot is the page's panel: the move still reads afresh */ } }
+    while (unitWant && unitWant !== storageUnit() && !storageHeld()) {
+      const to = unitWant;
+      dropped = (await leaveSquadron()) || dropped;
+      left = true;
+      if (unitWant !== to) continue;
+      emptyForMove();
+      moveStorageDoor(to);
+      moved = true;
+      /* eslint-disable-next-line react-doctor/async-await-in-loop -- one squadron's whole load at a time, by design */
+      await readSquadron();
+    }
+    /* wanted back before its memory was emptied (Fable's lead, the night of 24 Nov 26): a draft dropped on the way out goes
+       from the chart too, or it stands drawn with nothing marked unsaved, looking saved */
+    if (dropped && !moved) await loadCourse(course);
+  } catch (_) {
+    if (!bootError) bootError = 'The Tracker could not finish upgrading your data — the browser did not keep what was written. Reload to try again.';
+  } finally {
+    unitLeaving = false;
+    if (!storageHeld()) unitWant = null;
+    if (left) {
+      /* (a pick back onto the squadron he was leaving comes here with its records untouched) */
+      if (!bootError) ready = true;
+      giveBackHist();
+      /* the corner starts clean on the squadron just read (its first read may have written its upgrade flags, which is no
+         save of his) — unless his draft could not be kept */
+      saveStat = dropped ? { text: '● ' + NOT_SAVED, cls: 'err' } : { text: '', cls: '' };
+      if (dropped) refusedLatch = true;
+      landOwed = true;
+      if (ready) {
+        /* the chart drawn here as well as by App's effect, which runs only if React saw `ready` go down: never the old
+           squadron's picture left standing in the board */
+        renderBoard(); renderSide();
+        landChart();
+      }
+      notify();
+    }
+  }
+}
+/* 1. LEAVE — answers whether unsaved chart edits were dropped */
+async function leaveSquadron() {
+  cancelGestures();   /* before the draft is judged and the history parked */
+  unitLeaving = true;
+  ready = false;
+  { const pk = placeKey(); if (pk && course != null) prefSet(pk, course); }   /* his place on this squadron (placeKey) */
+  const dropped = !!sylDirty;
+  if (dropped) { sylDirty = false; undoStack = []; redoStack = []; }
+  else if (undoStack.length || redoStack.length) parkedHist.set(storageUnit(), { course, syl: curSylId(), undo: undoStack, redo: redoStack });
+  undoStack = []; redoStack = [];
+  endSession();
+  /* a press still under way on the chart ends here: its lift must not save anything into the squadron coming */
+  drag = null; groupDrag = null; marquee = null; lineDrag = null; pan = null; drawing = null;
+  for (;;) {
+    const c = loadChain;
+    await c;
+    await new Promise(r => setTimeout(r, 0));   /* a macrotask: every job that was only waiting on the store has now run out */
+    if (c === loadChain) break;
+  }
+  return dropped;
+}
+/* 2. EMPTY — nothing of the old squadron stays in memory, so none of it can be drawn or saved as the new one's */
+function emptyForMove() {
+  TRK_COMMANDS = false;
+  memEpoch++;
+  for (const k of Object.keys(mem)) { delete mem[k]; bumpMemGen(k); }
+  TRK_SIG++;
+  COURSES = []; course = null; active = null; DELCOURSES = [];
+  SYL = []; byid = {}; roster = []; marks = {}; dates = {}; plan = {}; lulls = {}; lastEdit = {}; pace = {};
+  eventInfo = {}; customDefs = {}; SYLS = []; SYL_ORDER = DEFAULT_SYL_ID_ORDER.slice(); SYL_HIDDEN = []; SYL_TOMB = {};
+  FLEX = { on: true, from: FLEX_DEFAULT_FROM.slice() };
+  layout = {}; AUTO = {}; BORROW = null; edgeMeta = {}; merges = new Set(); unmerges = new Set();
+  selEdge = null; mergeFirst = null; selBalls = new Set(); alignGuides = []; selLine = null; connectSrc = null;
+  lastPush = null; undoStack = []; redoStack = []; sylDirty = false; rosterHeld = false;
+  kbdId = null; copyPick = {}; popMsg = null; pickOwner = null; view = { x: 0, y: 0, k: 1 };
+  refusedLatch = false; saveStat = { text: '', cls: '' };
+  bootError = null;
+}
+/* 3. READ — the whole boot path, on the new door; the page is shown again by runFollow */
+async function readSquadron() {
+  const ok = await bootFromStore();
+  if (!ok) return false;
+  await trkHydrateMem();
+  /* (a first boot that failed never got this far: the move may be the first good read of this page's life) */
+  trkRegisterCommands();
+  TRK_COMMANDS = true;
+  wirePageOnce();
+  return true;
+}
+function giveBackHist() {
+  const p = parkedHist.get(storageUnit());
+  if (!p) return;
+  parkedHist.delete(storageUnit());
+  if (p.course === course && p.syl === curSylId()) { undoStack = p.undo; redoStack = p.redo; }
+}
+/** the Tracker tab came on screen: a move made while it was hidden lands the chart now. True where it landed. */
+export function landIfOwed(shown) {
+  if (!landOwed || !shown || !ready || bootError) return false;
+  landOwed = false;
+  refitAfterShow(); landChart();
+  return true;
 }
 
 export const DEFAULT_SYLLABUS = SYLLABI[DEFAULT_SYL_NAME];
@@ -267,6 +545,9 @@ let TRK_SIG = 0;
    tombstone). bumpMemGen fires wherever mem changes through trkWrite/trkDelete. */
 const memGen = new Map();
 function bumpMemGen(k) { memGen.set(k, (memGen.get(k) || 0) + 1); }
+/* bumped when the Tracker moves to another squadron (emptyForMove): a read begun on the old squadron's door, for a key this
+   copy never held, has no generation to tell it apart — it must never be mirrored into the new squadron's records */
+let memEpoch = 0;
 /* [CMDL-FINISH] §4 (GU-004) — while a gesture is open this holds the keys it
    wrote (key→value), so their storage flush can be deferred to ONE boundary
    effect. Non-null ⇒ sSet records instead of persisting inline. A key whose
@@ -359,15 +640,16 @@ function doorSet(L, k, v) {
   return run();
 }
 async function sGetOne(k) {
-  const gen = memGen.get(k);
+  const gen = memGen.get(k), epoch = memEpoch;
   try {
     const r = await storage.get(k);
     /* C2 — mirror the read into mem so a later before-image / cross-course delete
        is correct. R3-004 — but ONLY if no write/delete landed during the await
        (the gen is unchanged): otherwise the live mem is newer and must win, and a
        key deleted mid-read stays dropped rather than being resurrected. A read is
-       not a mutation, so it never bumps the gen. */
-    if (memGen.get(k) === gen && r) mem[k] = r.value;
+       not a mutation, so it never bumps the gen. (D2395: nor from a squadron the
+       Tracker has since left.) */
+    if (epoch === memEpoch && memGen.get(k) === gen && r) mem[k] = r.value;
     return r ? r.value : null;
   } catch (e) { return mem[k] ?? null; }
 }
@@ -376,12 +658,14 @@ async function sGetOne(k) {
    before-image (an un-hydrated key would emit no change on delete / no before on
    edit). Runs once in init(), after the boot loads, before TRK_COMMANDS. */
 async function trkHydrateMem() {
+  const epoch = memEpoch;
   try {
     const { keys } = await storage.list();
     /* Read together (reads only), then mirrored in key order, stopping at the first key that could not be read —
        exactly where the one-by-one loop used to stop. */
     const want = keys.filter(k => trkCollectionOf(k));
     const got = await Promise.allSettled(want.map(k => storage.get(k)));
+    if (epoch !== memEpoch) return;   /* the Tracker has moved to another squadron since these were read (D2395) */
     for (let i = 0; i < want.length; i++) {
       if (got[i].status === 'rejected') break;
       const r = got[i].value;
@@ -457,9 +741,9 @@ function trkCollectionOf(k) {
   // out through metaWrite (below), in a saved group of their own.
   return null;
 }
-/* A SAVE THE COMMAND GATE REFUSES SAYS SO (the reshape walk's W3-F4, 22 Nov 26). After a man's squadron move the Tracker
-   keeps the squadron it loaded until his next sign-in (storage.js rebindStorageUnit), and the gate refuses his changes to
-   it (state/perms.ts 7f). Every write here threw the command's answer away: a grade in an event's pop-up was refused
+/* A SAVE THE COMMAND GATE REFUSES SAYS SO (the reshape walk's W3-F4, 22 Nov 26). While the Tracker stands on a squadron
+   that is not his pages' own — held at his move's midnight for chart work, or for the moment a move takes (D2395,
+   followUnit above) — the gate refuses his changes to it (state/perms.ts 7f). Every write here threw the command's answer away: a grade in an event's pop-up was refused
    with no word, a refused Undo likewise, and "✓ Save changes" went on to clear the edit and read "● syllabus … saved"
    with nothing stored. Now every command of this page goes through `trkCommit`, and a refused one:
    - says "This change could not be saved." in the Tracker's own box — the app's generic words (the midnight band's own
@@ -822,6 +1106,25 @@ function prefSet(k, v) { try { localStorage.setItem(PP + k, v); } catch (e) {} }
    (nobody signed in as a person — a pending account, or a test with nothing wired — as before). The boot converters that
    rewrite OLD unprefixed keys are left as they are (D120). */
 export function pickKey(k) { const w = whoamiId(); return w ? 'who:' + w + ':' + k : k; }
+/* HIS PLACE IS PER SQUADRON TOO (his D2395): the course he was on in 142's Tracker is not a course of 149's, so a visit to
+   149 must not cost him his place on 142. The plain key stays his latest course, wherever it was; as he leaves a squadron
+   its course is noted under that squadron, and is read only where the plain key names no course of the squadron being
+   opened. An answer naming none falls to the first course, as it always did. */
+const placeKey = () => { const u = storageUnit(); return u ? pickKey('lastCourse@' + u) : null; };
+/* HIS CHART AND STUDENT ON A COURSE ARE PER SQUADRON TOO (the night of 24 Nov 26, the walk's F1): an Export from 142 and an
+   Import into 149 keeps the course's id, so filed by course alone a student chosen on 142's copy reopened 149's copy on him,
+   where a next mark would go on the wrong man unless he read the name. No squadron bound (a test with no door): the plain key. */
+const placePick = k => { const u = storageUnit(); return pickKey(u ? k + '@' + u : k); };
+/* the plain key is his latest course anywhere: it answers first only where that load was on this squadron (`lastCourseAt`).
+   On a copied course it would otherwise name one of this squadron's too and cost him his place here (Opus's lead, the same
+   night); from another squadron, this squadron's own note comes first. */
+function lastCoursePref() {
+  const here = id => !!id && COURSES.some(x => isCourseEntry(x) && x.id === id);
+  const latest = prefGet(pickKey('lastCourse'));
+  const k = placeKey(), noted = k ? prefGet(k) : null;
+  if ((!k || prefGet(pickKey('lastCourseAt')) === storageUnit()) && here(latest)) return latest;
+  return here(noted) ? noted : latest;
+}
 
 /* The toolbar hides on demand so the chart gets the whole column (owner phone
    ask, 9 Sep 26 — "have the option to hide this bar so that the space can be
@@ -910,7 +1213,7 @@ export function resumeForPerson() {
   notify();
   onChain(async () => {
     const w = whoamiId();
-    const want = prefGet(pickKey('lastCourse'));
+    const want = lastCoursePref();
     const c = (want && COURSES.some(x => isCourseEntry(x) && x.id === want)) ? want : (COURSES[0] && COURSES[0].id);
     if (c) await loadCourseNow(c, true);
     pickOwner = w;
@@ -2021,6 +2324,7 @@ async function loadCourseNow(c, restoreLastSyllabus) {
   /* One site covers init, switchCourse, addCourse, renCourse and delCourse.
      Raw and synchronous, so unlike sSet it never flickers the save status. */
   prefSet(pickKey('lastCourse'), c);
+  { const u = storageUnit(); if (u) prefSet(pickKey('lastCourseAt'), u); }
   /* A ring left over from another syllabus would re-light the moment the user
      came back to it. Cleared without redrawing: every caller renders anyway. */
   searchHit = null; searchQ = ''; searchCount = 0; searchAt = 0; searchHits = [];
@@ -2067,7 +2371,7 @@ async function loadCourseNow(c, restoreLastSyllabus) {
     plan.sylId = firstSylId();
     await savePlan(); __src = sylSource(plan.sylId) || DEFAULT_SYLLABUS;
   }
-  if (whoamiId()) prefSet(pickKey('lastSyl:' + c), plan.sylId);   /* this person's chart here (F2) */
+  if (whoamiId()) prefSet(placePick('lastSyl:' + c), plan.sylId);   /* this person's chart here (F2) */
   /* THE COURSE'S PLAN NAMES THE COURSE'S CHART, NEVER ONE PERSON'S ([DB-READINESS] group A, phase 5b — the finding filed
      in phase 4). This used to save the chart on screen as the course's chart too, so that a later reload read it back;
      but the plan is one record for the whole course, so on a shared store whoever opened the course last moved everyone
@@ -2116,7 +2420,7 @@ async function loadCourseNow(c, restoreLastSyllabus) {
      (kLastStudent), then whoever is at the top. The roster is per syllabus, so
      the membership guard quietly handles remembering someone who is not on the
      syllabus being opened. */
-  const __myS = prefGet(pickKey('lastCrew:' + c));
+  const __myS = prefGet(placePick('lastCrew:' + c));
   const onRoster = id => !!id && roster.some(r => r.id === id);
   active = onRoster(__myS) ? __myS : (onRoster(__lastS2) ? __lastS2 : (roster[0] ? roster[0].id : null));
   await loadLayout();
@@ -2152,14 +2456,14 @@ async function savePlan() { await sSet(kPlan(course), JSON.stringify(plan)); }
    nobody signed in as a person (a pending account, or a test with nothing wired), when he has none yet, or when his chart has since gone. */
 function mySylOn(c) {
   if (!whoamiId() || c == null) return null;
-  const s = prefGet(pickKey('lastSyl:' + c));
+  const s = prefGet(placePick('lastSyl:' + c));
   return (s && sylSource(s)) ? s : null;
 }
 /* Open another chart on the course on screen: a signed-in person's own place; with nobody signed in as a person, the
    course's plan, as it was always kept. Runs on the chain, with the load that follows. */
 async function openSylHere(id) {
   plan.sylId = id;
-  if (whoamiId()) prefSet(pickKey('lastSyl:' + course), id);
+  if (whoamiId()) prefSet(placePick('lastSyl:' + course), id);
   else await savePlan();
 }
 async function loadStudent() {
@@ -2221,6 +2525,8 @@ function _dlgOpen(shape, res) { _dlgRes = res; dlg = shape; dlgSerial++; notify(
    answer; the box writes into it through setDlgDate. Without it the dialog is as it was. */
 function _dlgShow(msg, { input = false, def = '', cancel = true, cancelLabel = 'Cancel', ok = 'OK', alt = null, list = null, listFn = null, filter = false, placeholder = '', listTitle = '', date = null } = {}) {
   const shape = { msg, input, def, cancel, cancelLabel, ok, alt, list, listFn, filter, placeholder, listTitle, date };
+  /* the Tracker is moving to another squadron (D2395): a job of the old one asks nothing more, over either */
+  if (unitLeaving) return Promise.resolve(_dlgCancelled(shape));
   return new Promise(res => {
     if (dlg || _dlgQueue.length) { _dlgQueue.push({ shape, res }); return; }
     _dlgOpen(shape, res);
@@ -3155,7 +3461,7 @@ function restoreSnap(u) {
 }
 function applyMarkHistData(u) {
   const s = u.who;
-  if (active !== s) { active = s; prefSet(pickKey('lastCrew:' + course), s); }
+  if (active !== s) { active = s; prefSet(placePick('lastCrew:' + course), s); }
   restoreSnap(u);
 }
 /* The snapshot that a step's reverse pushes onto the other stack: the SAME
@@ -3228,8 +3534,11 @@ function step(from, to, dir) {
   else { renderBoard(); renderSide(); }
   notify(); return true;
 }
-export async function doUndo() { return step(undoStack, redoStack, 'undo'); }
-export async function doRedo() { return step(redoStack, undoStack, 'redo'); }
+/* (a press still held ends first, and never happened — cancelGestures, "a press never outlives its gesture"; the lists
+   are read after it, since it puts them back as they stood before the press) */
+const endPressForStep = () => { if (cancelGestures()) { renderBoard(); notify(); } };
+export async function doUndo() { endPressForStep(); return step(undoStack, redoStack, 'undo'); }
+export async function doRedo() { endPressForStep(); return step(redoStack, undoStack, 'redo'); }
 /* Ctrl/⌘+Z undoes, Ctrl+Y and Ctrl/⌘+Shift+Z redo — everywhere on the tab
    EXCEPT inside a text box (the box's own undo is what the user means there)
    and under a question dialog (the answer comes first; App.jsx binds this to
@@ -3308,6 +3617,8 @@ export function renderBoard() {
   let svgW = W, svgH = H;
   if (arrangeMode) { const cv = canvasSize(board); svgW = cv.w; svgH = cv.h; }
   else { view = { x: 0, y: 0, k: 1 }; }
+  /* a press held on a ball, a group or the box ends with the element this removes (endPressesOnRedraw) */
+  endPressesOnRedraw();
   board.innerHTML = `<div class="flowwrap"><svg id="flowSvg" width="${svgW}" height="${svgH}" viewBox="0 0 ${svgW} ${svgH}" class="${arrangeMode ? 'arrange' : ''}">
    <defs><marker id="arr" markerWidth="8" markerHeight="8" refX="5.5" refY="3" orient="auto-start-reverse"><path d="M0,0 L6,3 L0,6 Z" fill="#5a6172"/></marker></defs>
    <g id="viewport"><g id="bandLayer"></g><g id="edgeLayer">${buildEdges()}</g><g id="nodeLayer">${nodes}</g><g id="overlayLayer">${buildOverlay()}</g></g></svg></div>`;
@@ -3502,7 +3813,7 @@ function wireBoard() {
         const bend = ev2 => { const pt = svgPtOnChart(ev2); edgeMeta[key] = { ...(edgeMeta[key] || {}), mid: { x: Math.round(pt.x), y: Math.round(pt.y) } }; lh.setAttribute('x', (pt.x - 6).toFixed(1)); lh.setAttribute('y', (pt.y - 6).toFixed(1)); schedDragPaint(); };
         const fe = followEdge(e, bend);
         const mv = ev2 => { if (ev2.pointerId !== pid) return; fe.point(ev2); bend(ev2); };
-        const stop = () => { fe.stop(); window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cancel); };
+        const stop = () => { gestureEnded(stop); fe.stop(); window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cancel); };
         /* drawn again, not wired again (the night's code read, F1): wireBoard added a second listener to this same square
            on every release, so each later drag ran two, four, eight copies — each its own edge pan, at that many times the speed */
         const up = ev2 => { if (ev2.pointerId !== pid) return; if (fingerStop === stop) fingerStop = null; stop(); markDirty(); saveLayout(); renderBoard(); };
@@ -3516,7 +3827,7 @@ function wireBoard() {
           else { const i = undoStack.lastIndexOf(mine); if (i >= 0) undoStack.splice(i, 1); }
           notify(); renderBoard();
         };
-        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', cancel); if (e.pointerType !== 'mouse') fingerStop = stop;
+        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', cancel); gestureBegan(stop); if (e.pointerType !== 'mouse') fingerStop = stop;
       });
     }
     /* drag a line end onto a blue N/E/S/W point to snap / reconnect */
@@ -3529,11 +3840,11 @@ function wireBoard() {
         const fe = followEdge(e, carry);
         /* each of the four handle drags hears its own pointer only (round two's R2): a second finger's cancel or lift is not its */
         const mv = ev2 => { if (ev2.pointerId !== pid) return; fe.point(ev2); carry(ev2); };
-        const stop = () => { fe.stop(); window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cancel); };
+        const stop = () => { gestureEnded(stop); fe.stop(); window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cancel); };
         const up = ev2 => { if (ev2.pointerId !== pid) return; if (fingerStop === stop) fingerStop = null; stop(); applyEndSnap(end, svgPtOnChart(ev2)); };
         /* a cancelled touch snaps nothing (its place can read 0,0): the end goes back where it was (F3) */
         const cancel = ev2 => { if (ev2.pointerId !== pid) return; if (fingerStop === stop) fingerStop = null; stop(); renderBoard(); };
-        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', cancel); if (e.pointerType !== 'mouse') fingerStop = stop;
+        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', cancel); gestureBegan(stop); if (e.pointerType !== 'mouse') fingerStop = stop;
       });
     });
     document.querySelectorAll('#flowSvg .linehit').forEach(h => {
@@ -3571,7 +3882,7 @@ function wireBoard() {
         };
         const fe = followEdge(e, shape);
         const mv = ev2 => { if (ev2.pointerId !== pid) return; fe.point(ev2); shape(ev2); };
-        const stop = () => { fe.stop(); window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cancel); };
+        const stop = () => { gestureEnded(stop); fe.stop(); window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cancel); };
         /* a cancelled touch puts the line back as it was (F3) */
         const cancel = ev2 => { if (ev2.pointerId !== pid) return; if (fingerStop === stop) fingerStop = null; stop(); L.pts = P0.map(p => ({ x: p.x, y: p.y })); renderBoard(); };
         const up = ev2 => {
@@ -3579,7 +3890,7 @@ function wireBoard() {
           if (fingerStop === stop) fingerStop = null; stop();
           if (moved) { pushUndo(); markDirty(); saveLayout(); } renderBoard();
         };
-        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', cancel); if (e.pointerType !== 'mouse') fingerStop = stop;
+        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', cancel); gestureBegan(stop); if (e.pointerType !== 'mouse') fingerStop = stop;
       });
     });
     document.querySelectorAll('#flowSvg .lend').forEach(h => {
@@ -3603,7 +3914,7 @@ function wireBoard() {
         };
         const fe = followEdge(e, carry);
         const mv = ev2 => { if (ev2.pointerId !== pid) return; fe.point(ev2); carry(ev2); };
-        const stop = () => { fe.stop(); window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cancel); };
+        const stop = () => { gestureEnded(stop); fe.stop(); window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cancel); };
         /* a cancelled touch puts the line and its end's link back as they were (F3) */
         const cancel = ev2 => { if (ev2.pointerId !== pid) return; if (fingerStop === stop) fingerStop = null; stop(); L.pts = pts0; L[key] = was; renderBoard(); };
         const up = ev2 => {
@@ -3618,13 +3929,17 @@ function wireBoard() {
           markDirty(); saveLayout(); renderBoard(); renderSide();
           flashHint(made.length ? ('Linked ' + made.join(', ')) : (sn ? 'End connected.' : 'End left loose — nothing linked yet.'));
         };
-        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', cancel); if (e.pointerType !== 'mouse') fingerStop = stop;
+        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', cancel); gestureBegan(stop); if (e.pointerType !== 'mouse') fingerStop = stop;
       });
     });
   } else if (svgFresh) {
     svg.addEventListener('pointerdown', e => { if (!e.target.closest('.ball')) hideDetailBubble(); });
   }
   if (arrangeMode && svgFresh) {
+    svg.addEventListener('pointerdown', e => {
+      if (unitLeaving) { e.stopPropagation(); e.preventDefault(); return; }
+      notePress();
+    }, true);
     /* arrange: pan the viewport transform, wheel to zoom */
     svg.addEventListener('pointerdown', e => {
       if (pinching) return;   /* the second finger of a pinch: no pan, no box, no line end */
@@ -3747,6 +4062,53 @@ function placeCanvasPoint(c, cx, cy, o = canvasOrigin()) { view.x = cx - o.x - c
    undo it (Astra's final read #2). The snapshot also names its chart, and is
    never laid over another. */
 let firstFinger = null, fingerStop = null;
+/* ONE CANCEL FOR EVERY PRESS UNDER WAY ON THE CHART (the night of 24 Nov 26, Astra's read 1). A drag held while another
+   squadron is picked (by the keyboard, or a question answered with the mouse still down) outlived the move: its window
+   listeners and edge pan stayed alive, and its lift changed and saved the NEXT squadron's layout. Each press that goes on
+   after its pointerdown (a ball, a group, the selection box, the four line handles) names its stop here; the chart as it
+   stood before the press is noted by the canvas's capture listener (wireBoard), before any of them runs. cancelGestures
+   stops them all and puts the chart, both Undo lists and the unsaved mark back: an unfinished press never happened. It
+   runs before the departing squadron's history is parked or its memory emptied, at a session end, and once a question
+   about the unsaved edits is answered, so what is saved or discarded is never a half-done drag. */
+/* …AND A PRESS NEVER OUTLIVES ITS GESTURE (the night of 24 Nov 26, the two reads of the nine fixes — Opus F1, Astra 2;
+   msq-night-press-undo.test.tsx). Undo or Redo pressed with the mouse still down did not end the press. A ball's, a
+   group's and the selection box's listeners sit on an element the redraw removes: their lift never came, their stop
+   stayed in the list for good, and every later press kept the first one's note. A line handle's listeners (on the window)
+   lived through the Undo. A later "Save them", or the squadron move, then cancelled that "press" and laid its old note
+   over everything done since — the chart of before the Undo was what got saved, or the Undo lists came back with the
+   undone step in them. So:
+   - Undo and Redo end every press first, as a pick does (doUndo, doRedo): it never happened, and its note is gone;
+   - a redraw ends a press whose element it removes (renderBoard — each such press names its element here): what it had
+     done stands, as at a lift, and once no press is left the note goes with it. */
+const liveGestures = new Map();
+let pressSnap = null;
+function gestureBegan(stop, el = null) { liveGestures.set(stop, el); }
+function gestureEnded(stop) { liveGestures.delete(stop); }
+function notePress() {
+  if (liveGestures.size) return;
+  pressSnap = { syl: JSON.stringify(SYL), lay: JSON.stringify(layout), course, sylId: curSylId(),
+    undo: undoStack.slice(), redo: redoStack.slice(), dirty: sylDirty };
+}
+/* (true where a press was under way and has been ended — the caller redraws) */
+function cancelGestures() {
+  const live = [...liveGestures.keys()], s = pressSnap;
+  liveGestures.clear(); pressSnap = null;
+  firstFinger = null; fingerStop = null; pan = null;
+  if (!live.length) return false;
+  for (const stop of live) { try { stop(); } catch (_) { /* the next one still stops */ } }
+  alignGuides = [];
+  if (!s || s.course !== course || s.sylId !== curSylId()) return true;
+  SYL = JSON.parse(s.syl); byid = {}; SYL.forEach(e => byid[e.id] = e);
+  layout = JSON.parse(s.lay); loadEdgeMeta();
+  undoStack = s.undo; redoStack = s.redo; sylDirty = s.dirty; lastPush = null;
+  return true;
+}
+/* the presses whose element a redraw is about to remove (renderBoard, above) */
+function endPressesOnRedraw() {
+  if (!liveGestures.size) return;
+  for (const [stop, el] of [...liveGestures]) if (el) { try { stop(); } catch (_) { /* the next one still stops */ } liveGestures.delete(stop); }
+  if (!liveGestures.size) pressSnap = null;
+}
 function holdFirstFinger() {
   firstFinger = { syl: JSON.stringify(SYL), lay: JSON.stringify(layout), course, sylId: curSylId(),
     undo: undoStack.slice(), redo: redoStack.slice(), dirty: sylDirty,
@@ -4306,8 +4668,9 @@ function startMarquee(e, svg) {
     const gl = document.getElementById('bandLayer'); if (gl) gl.innerHTML = `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="rgba(59,198,232,.12)" stroke="${PAL.accent}" stroke-width="0.8" stroke-dasharray="4 3"/>`;
   };
   const fe = followEdge(e, draw);
-  const off = () => { fe.stop(); svg.removeEventListener('pointermove', mv); svg.removeEventListener('pointerup', up); svg.removeEventListener('pointercancel', cancel); };
+  const off = () => { gestureEnded(stop); fe.stop(); svg.removeEventListener('pointermove', mv); svg.removeEventListener('pointerup', up); svg.removeEventListener('pointercancel', cancel); };
   const stop = () => { off(); marquee = null; const gl = document.getElementById('bandLayer'); if (gl) gl.innerHTML = ''; };
+  gestureBegan(stop, svg);
   if (e.pointerType !== 'mouse') fingerStop = stop;
   const mv = ev => { if (ev.pointerId !== pid) return; fe.point(ev); draw(ev); };
   /* a cancelled touch (a call, the system) selects nothing and leaves the selection as it was — and stops the pan, which
@@ -4331,7 +4694,10 @@ function startGroupDrag(ev) {
   groupDrag = { px: p.x, py: p.y, start, moved: false, snap: { syl: JSON.stringify(SYL), lay: JSON.stringify(layout) }, pushed: false }; try { g.setPointerCapture(ev.pointerId); } catch (e) {}
   groupDrag.fe = followEdge(ev, moveGroup);
   g.addEventListener('pointermove', onGroupDrag); g.addEventListener('pointerup', endGroupDrag); g.addEventListener('pointercancel', endGroupDrag);
-  groupDrag.stop = () => { groupDrag.fe.stop(); g.removeEventListener('pointermove', onGroupDrag); g.removeEventListener('pointerup', endGroupDrag); g.removeEventListener('pointercancel', endGroupDrag); groupDrag = null; perfOff(); };
+  /* (its own press by name, so a stop run late — by a redraw, after another press began — ends this one only) */
+  const gd = groupDrag;
+  gd.stop = () => { gestureEnded(gd.stop); gd.fe.stop(); g.removeEventListener('pointermove', onGroupDrag); g.removeEventListener('pointerup', endGroupDrag); g.removeEventListener('pointercancel', endGroupDrag); if (groupDrag === gd) { groupDrag = null; perfOff(); } };
+  gestureBegan(gd.stop, g);
   if (ev.pointerType !== 'mouse') fingerStop = groupDrag.stop;
 }
 function onGroupDrag(ev) { if (groupDrag) groupDrag.fe.point(ev); moveGroup(ev); }
@@ -4348,7 +4714,7 @@ function moveGroup(ev) {
   schedDragPaint();
 }
 function endGroupDrag(ev) {
-  if (!groupDrag) return; const g = ev.currentTarget; if (fingerStop === groupDrag.stop) fingerStop = null; groupDrag.fe.stop();
+  if (!groupDrag) return; const g = ev.currentTarget; gestureEnded(groupDrag.stop); if (fingerStop === groupDrag.stop) fingerStop = null; groupDrag.fe.stop();
   g.removeEventListener('pointermove', onGroupDrag); g.removeEventListener('pointerup', endGroupDrag); g.removeEventListener('pointercancel', endGroupDrag);
   const moved = groupDrag.moved; groupDrag = null; flushDragPaint(); perfOff(); if (moved) { saveLayout(); renderBoard(); }
 }
@@ -4359,7 +4725,9 @@ function startDrag(ev) {
   drag.fe = followEdge(ev, moveBall);
   g.addEventListener('pointermove', onDrag); g.addEventListener('pointerup', endDrag); g.addEventListener('pointercancel', endDrag);
   /* only a finger's gesture is the pinch's to stop — a mouse drag carries on (Fable F4) */
-  drag.stop = () => { drag.fe.stop(); g.removeEventListener('pointermove', onDrag); g.removeEventListener('pointerup', endDrag); g.removeEventListener('pointercancel', endDrag); drag = null; alignGuides = []; perfOff(); };
+  const d = drag;
+  d.stop = () => { gestureEnded(d.stop); d.fe.stop(); g.removeEventListener('pointermove', onDrag); g.removeEventListener('pointerup', endDrag); g.removeEventListener('pointercancel', endDrag); if (drag === d) { drag = null; alignGuides = []; perfOff(); } };
+  gestureBegan(d.stop, g);
   if (ev.pointerType !== 'mouse') fingerStop = drag.stop;
 }
 function onDrag(ev) { if (drag) drag.fe.point(ev); moveBall(ev); }
@@ -4383,7 +4751,7 @@ function drawGuides() {
   gl.innerHTML = alignGuides.map(g => g.v ? `<line x1="${g.p}" y1="0" x2="${g.p}" y2="${bd.H}" stroke="${PAL.accent}" stroke-width="0.7" stroke-dasharray="4 4"/>` : `<line x1="0" y1="${g.p}" x2="${bd.W}" y2="${g.p}" stroke="${PAL.accent}" stroke-width="0.7" stroke-dasharray="4 4"/>`).join('');
 }
 function endDrag(ev) {
-  if (!drag) return; const g = drag.g; if (fingerStop === drag.stop) fingerStop = null; drag.fe.stop();
+  if (!drag) return; const g = drag.g; gestureEnded(drag.stop); if (fingerStop === drag.stop) fingerStop = null; drag.fe.stop();
   g.removeEventListener('pointermove', onDrag); g.removeEventListener('pointerup', endDrag); g.removeEventListener('pointercancel', endDrag);
   /* wired again for the lines the drag redrew — and only those (wireOnce, [TRK-WIREBOARD-REPEAT]) */
   const moved = drag.moved; drag = null; alignGuides = []; flushDragPaint(); const gl = document.getElementById('bandLayer'); if (gl) gl.innerHTML = ''; perfOff(); if (moved) { saveLayout(); wireBoard(); }
@@ -5266,6 +5634,8 @@ function settleLastFlown(s) {
    hides it when the phone switches half and when the Tracker tab goes off
    screen; the session end hides it at a logout ([HUMAN-RETEST] w3-F1). */
 export function hideDetailBubble() { const b = document.getElementById('detailBubble'); if (b) b.style.display = 'none'; }
+/* the bubble is up — its one element on the page body, shown by showDetailBubble (the guard's `bubble`, TRK_WINDOWS) */
+function detailBubbleShown() { if (typeof document === 'undefined') return false; const b = document.getElementById('detailBubble'); return !!b && b.style.display === 'block'; }
 function showDetailBubble(id, anchorEl, html) {
   let b = document.getElementById('detailBubble');
   if (!b) { b = document.createElement('div'); b.id = 'detailBubble'; document.body.appendChild(b); }
@@ -5457,7 +5827,7 @@ export async function addStudent() {
     });
     /* the student just added is the one on screen, so it is this person's pick too —
        it never was, and the next visit reopened on the one before (Fable A13) */
-    if (active) prefSet(pickKey('lastCrew:' + course), active);
+    if (active) prefSet(placePick('lastCrew:' + course), active);
   });
 }
 export async function removeStudent(v) {
@@ -5500,7 +5870,7 @@ async function removeStudentNow(v) {
        pacing they still need on another. */
     if (!elsewhere) { delKey(kPace(c, v)); delKey(kLulls(c, v)); delete pace[v]; delete lulls[v]; }
     if (wasLastStudent) delKey(kLastStudent(c));
-    if (prefGet(pickKey('lastCrew:' + c)) === v) prefSet(pickKey('lastCrew:' + c), '');
+    if (prefGet(placePick('lastCrew:' + c)) === v) prefSet(placePick('lastCrew:' + c), '');
     if (active === v) active = roster[0] ? roster[0].id : null;
     refreshActive(); renderBoard(); renderSide();
   });
@@ -5573,7 +5943,7 @@ async function leaveRunningCoursesNow(gone) {
       }
       if (lastS && leaving.has(lastS)) delKey(kLastStudent(c));
     });
-    if (c === course && leaving.has(prefGet(pickKey('lastCrew:' + c)))) prefSet(pickKey('lastCrew:' + c), '');
+    if (c === course && leaving.has(prefGet(placePick('lastCrew:' + c)))) prefSet(placePick('lastCrew:' + c), '');
     left += leaving.size;
   }
   if (left && course) {
@@ -5672,7 +6042,7 @@ export function setActive(v, opts) {
   else go();
   /* Merely looking at someone counts. Before this, only grading was remembered,
      so picking a crew member and coming back tomorrow forgot them. */
-  prefSet(pickKey('lastCrew:' + course), v);
+  prefSet(placePick('lastCrew:' + course), v);
 }
 
 /* ---- syllabus display order (ids since 1B-ii) ---- */
@@ -5792,16 +6162,28 @@ async function reconcileBuiltins() {
    that chart from storage. Switching SYLLABUS asked before doing so; switching
    or adding a COURSE did not, so the edits vanished without a word and the
    unsaved flag stayed lit over a chart that had nothing unsaved. Every route
-   that loads another chart asks through this one door. */
-async function leaveFlowEdits(what) {
+   that loads another chart asks through this one door.
+   ITS "DISCARD" REALLY DROPS THEM ([TRK-LEAVEFLOW-DISCARD], chat 151's fresh reader, 23 Nov 26): adding or renaming a
+   course, deleting one, adding a syllabus and an import each ask something more after this door, and may stop there. The
+   door only cleared the unsaved mark, so a next prompt cancelled left the dropped edits drawn, now marked saved. So it
+   reloads the chart as the sign-out's and the pick's Discard do (discardChartEdits). `loadsNext` — a switch of syllabus or
+   course, which loads the other chart at once with nothing asked between — needs only the mark cleared. He stays in Edit
+   chart layout (the night of 24 Nov 26, Opus F4): only the edits are given up, and the question may yet be cancelled. */
+async function leaveFlowEdits(what, loadsNext = false) {
   if (!sylDirty) return true;
   if (!await uiConfirm('You have unsaved flow edits on “' + curSylName() + '”.\n' + what)) return false;
-  clearDirty(); return true;
+  /* THE PICKS GO WITH THE EDITS (the night of 24 Nov 26, the blind Opus read's F3 — msq-night-press-held.test.tsx): the
+     night's fix 8 keeps him in Edit chart layout after the Discard, and leaving the editor was what cleared Connect's
+     first ball, the merge's first line, a half-drawn line and the selections. Left set, the next click made a ball just
+     dropped another's prerequisite. The switch of chart or course below carried the same stale picks. */
+  connectSrc = null; mergeFirst = null; drawing = null; selBalls = new Set(); selLine = null; selEdge = null;
+  if (loadsNext) clearDirty(); else await discardChartEdits(true);
+  return true;
 }
 export async function switchSyllabus(v) {
   /* v is a syllabus ID (the dropdown's option value since 1B-ii). */
   const nm = sylName(v) || v;
-  if (!await leaveFlowEdits('Discard them and switch to “' + nm + '”?')) { refreshSyl(); return; }
+  if (!await leaveFlowEdits('Discard them and switch to “' + nm + '”?', true)) { refreshSyl(); return; }
   /* the id flip rides the chain with the load: kMarks/kDates key on curSylId(),
      so a flip landing inside a roster write's tail re-keyed its saves */
   await onChain(async () => { await openSylHere(v); await loadCourseNow(course); });
@@ -5886,7 +6268,7 @@ export async function switchCourse(v) {
   const nm = courseName(v) || v;
   /* refreshCourses on refusal: the dropdown already shows the new name, and
      only a re-render puts the current course back into it. */
-  if (!await leaveFlowEdits('Discard them and switch to course “' + nm + '”?')) { refreshCourses(); return; }
+  if (!await leaveFlowEdits('Discard them and switch to course “' + nm + '”?', true)) { refreshCourses(); return; }
   /* Picking a different course is like opening the app on it, so it does
      restore that course's last-marked syllabus. Picking a syllabus does not. */
   await loadCourse(v, true); refreshCourses(); refreshSyl(); refreshActive(); renderBoard(); renderSide();
@@ -6022,6 +6404,8 @@ function clearDirty() {
      it); once it is saved or discarded, the person now signed in gets their own (Astra's
      final read, F3 — the only door is an admin changing his own account's person) */
   if (ready && !bootError && whoamiId() !== pickOwner) resumeForPerson();
+  /* …and on the last squadron (D2395): the door held for this chart work goes on to the squadron his pages are on */
+  followIfHeld();
 }
 
 export async function persistSyl() {
@@ -6425,6 +6809,7 @@ export function toggleArrange() {
     if (sylDirty) setSaveStatus('unsaved flow edits — hit “Save changes”', 'saving');
   }
   notify();
+  followIfHeld();   /* the editor closed with nothing left unsaved: the door held for it moves on (D2395, D2243) */
 }
 export function fitViewClick() { if (arrangeMode) fitView(); }
 /* Escape finishes an in-progress line */
@@ -7046,7 +7431,7 @@ export async function applyStudents(students, links, version) {
     /* the chart the file's course is on is the one the person bringing it in now sees there: the course's plan takes the
        file's chart, and so does HIS OWN place on that course (D376) — no one else's ([DB-READINESS] group A, phase 5b:
        his chart is no longer the course's plan, so the reload below would otherwise keep him where he was) */
-    if (whoamiId() && block.plan && block.plan.sylId && sylSource(block.plan.sylId)) prefSet(pickKey('lastSyl:' + c), block.plan.sylId);
+    if (whoamiId() && block.plan && block.plan.sylId && sylSource(block.plan.sylId)) prefSet(placePick('lastSyl:' + c), block.plan.sylId);
     /* One label per enrolment across the course (the rule renameStudent keeps):
        the name the file brought in goes onto every chart it did NOT write too,
        or the charts would disagree and findEnrolment would read two students. */
@@ -7156,20 +7541,30 @@ export async function saveCopyClick() {
   const opts = { ...copyOpts };
   const name = FMT.suggestedFileName(opts, savedAt);
   let handle = null;
+  /* THE EXPORT BELONGS TO THE SESSION AND SQUADRON IT STARTED ON (the night of 24 Nov 26, Astra's read 2): the save picker
+     can stand open across a pick or his move at midnight, and the records were gathered after it, so the choices made on
+     142 wrote 149's records, perhaps called a full backup. Checked after every wait and before writing; gone, it stops. */
+  const serial = sessionSerial, door = storageUnit(), gone = () => serial !== sessionSerial || door !== storageUnit();
   /* The save picker is the Open picker's twin: Playwright cannot drive it and
      the module's exports cannot be patched, so a test hands in a fake handle
      through window.__pickSaveForTests (the smoke reads the file it wrote). */
   const pickSave = (typeof window !== 'undefined' && window.__pickSaveForTests) || null;
-  if (pickSave) { handle = await pickSave(name); if (!handle) return; }
-  else if (FS.canWriteInPlace()) { handle = await FS.pickSave(name); if (!handle) return; }
-  const text = JSON.stringify(FMT.buildFile({
-    charts: opts.charts ? await collectCharts(ids, { deleted: ids.length === orderedSylIds().length }) : null,
-    students: opts.students ? await collectStudents() : null, savedAt }), null, 2);
+  if (pickSave) { handle = await pickSave(name); if (!handle || gone()) return; }
+  else if (FS.canWriteInPlace()) { handle = await FS.pickSave(name); if (!handle || gone()) return; }
+  if (gone()) return;
+  const charts = opts.charts ? await collectCharts(ids, { deleted: ids.length === orderedSylIds().length }) : null;
+  if (gone()) return;
+  const students = opts.students ? await collectStudents() : null;
+  if (gone()) return;
+  const text = JSON.stringify(FMT.buildFile({ charts, students, savedAt }), null, 2);
   try {
-    if (handle) await FS.writeTo(handle, text); else FS.downloadInstead(name, text);
+    /* (the writer asks too, before it writes and before it closes: gone, it aborts and the file stays as it was) */
+    if (handle) await FS.writeTo(handle, text, gone); else FS.downloadInstead(name, text);
   } catch (err) {
+    if (gone()) return;
     closeCopy(); setSaveStatus('copy NOT saved — ' + ((err && err.message) || err), 'err'); notify(); return;
   }
+  if (gone()) return;
   closeCopy();
   setSaveStatus('', 'ok'); notify();
   /* "A full backup" only when it IS one: every chart AND the students. A file
@@ -7203,9 +7598,10 @@ export async function importClick() {
      namespace cannot be patched (its exports are getters), so the smoke suite
      hands a file in through window.__pickOpenForTests instead. */
   const pick = (typeof window !== 'undefined' && window.__pickOpenForTests) || FS.pickOpen;
-  const picked = await pick();                 /* no await before this — gesture */
-  if (!picked) return;
+  /* the session as the press found it: a move to another squadron while the file picker was up ends the import (D2395) */
   const serial = sessionSerial, ended = () => serial !== sessionSerial;
+  const picked = await pick();                 /* no await before this — gesture */
+  if (!picked || ended()) return;
   /* An import reloads the chart on screen from the store, so its unsaved flow
      edits were lost — and the orange Save changes stayed lit over a chart with
      nothing left to save ([HUMAN-RETEST] Fable #3). Asked AFTER the pick: the
@@ -7369,9 +7765,10 @@ export async function saveChangesClick() { await persistSyl(); }
 /* ---------- init ---------- */
 export let ready = false;
 let initStarted = false;
+let pageWired = false;
 /* THE TEST RESET HOOK for the one-shot init ([DB-READINESS] group A, phase 5.4 — Astra R2-09 fix 5): a test that boots
    the Tracker under one policy and then another, in one module instance, lets init() run again. Never called by the app. */
-export function resetInitForTests() { initStarted = false; ready = false; bootError = null; }
+export function resetInitForTests() { initStarted = false; pageWired = false; ready = false; bootError = null; }
 /* TWO MORE TEST HOOKS ([DB-READINESS] group A, phase 5b), never called by the app:
    - a record read back from the STORE through the row door — the student list, the course list, a chart record, as the
      Tracker reads it — or null when none of it is stored (a test that used to read the one stored record by its key);
@@ -7389,11 +7786,15 @@ export async function rehydrateForTests() {
   for (const k of Object.keys(mem)) { delete mem[k]; bumpMemGen(k); }
   await trkHydrateMem();
 }
-export async function init() {
-  if (initStarted) return; initStarted = true;
-  /* WHOSE TRACKER (multi-squadron batch 1, step 4): the doorway binds the signed-in person's own squadron now, before
-     the first read — every record below is that squadron's (storage.js) */
-  markStorageLoaded();
+export function init() {
+  if (initStarted) return firstBoot || Promise.resolve();
+  initStarted = true;
+  firstBoot = bootFirst();
+  return firstBoot;
+}
+/* ONE SQUADRON'S RECORDS, FROM THE STORE INTO MEMORY — the first boot's, and every move's (D2395): each upgrade reads and
+   writes through the door as it stands. False where it failed closed (bootError set: the page shows its panel). */
+async function bootFromStore() {
   /* every stored record into the mirror FIRST ([DB-READINESS] group A, phase 5b): the row door compares each write with
      the rows this copy of the Tracker has read, and the boot's own upgrades write through it too */
   await trkHydrateMem();
@@ -7414,7 +7815,7 @@ export async function init() {
        rejections; without this the App would sit on its loading placeholder for
        good (review Fable F1). Fail closed with a message either way. */
     if (!bootError) setBootError('The Tracker could not finish upgrading your data — the browser did not keep what was written. Reload to try again.');
-    return;
+    return false;
   }
   /* Syllabus NAMES → syllabus IDS ([TRK-CSID] 1B-ii), AFTER course ids are
      settled (the student-layer keys the reset clears are v3:<courseId>:…) and
@@ -7424,7 +7825,7 @@ export async function init() {
   if (!smig) {
     loading = false;
     if (!bootError) setBootError('The Tracker could not finish upgrading your syllabus data — the browser did not keep what was written. Reload to try again.');
-    return;
+    return false;
   }
   /* Every course, not just the one about to open: an export must never meet a
      course nobody has opened since the upgrade and find stale records. (After
@@ -7436,7 +7837,7 @@ export async function init() {
      (add newly-shipped built-ins, repoint base on a shipped rename, respect a
      user relabel) and the id order — all BEFORE loadCourse reads a syllabus. */
   await loadSylCat();
-  if (bootError) { loading = false; return; }   /* loadSylCat fails closed on an invalid stored id (CSID-B07) */
+  if (bootError) { loading = false; return false; }   /* loadSylCat fails closed on an invalid stored id (CSID-B07) */
   await reconcileBuiltins();
   await loadSylOrder();
   /* After loadCourses + course-id migration, which fill COURSES with {id,name}
@@ -7448,11 +7849,18 @@ export async function init() {
      write, like the upgrades above; the deletes that come while it is open go through the commands (onGonePeople). */
   if (getGonePeople().length) await leaveRunningCoursesNow(new Set(getGonePeople()));
   const __who = whoamiId();
-  const __want = prefGet(pickKey('lastCourse'));
+  const __want = lastCoursePref();
   await loadCourse((__want && COURSES.some(c => isCourseEntry(c) && c.id === __want)) ? __want : (COURSES[0] && COURSES[0].id), true);
   pickOwner = __who;
   await loadEventInfo();
   await loadFlex();   /* the flex settings (D1006) — the defaults when none is stored */
+  return true;
+}
+async function bootFirst() {
+  /* WHOSE TRACKER (multi-squadron batch 1, step 4): the doorway binds the squadron of his own pages now, before the first
+     read — every record below is that squadron's (storage.js) */
+  markStorageLoaded();
+  if (!(await bootFromStore())) return;
   ready = true;
   /* [ARCH-STACK] phase 5: enable command routing now that every boot migration
      and load has run its raw seed/migration writes. Post-boot user edits emit the
@@ -7467,6 +7875,12 @@ export async function init() {
   /* After the first paint, so the balls exist to measure. No last mark → the
      chart's first event, the same landing a crew pick makes. */
   landChart();
+  wirePageOnce();
+}
+/* what a page life wires once, after its first good read of a squadron's records (the first boot's, or a move's) */
+function wirePageOnce() {
+  if (pageWired) return;
+  pageWired = true;
   /* Unsaved flow edits must not vanish quietly when the tab closes — the one
      kind of work that waits for the Save button. */
   if (typeof window !== 'undefined')

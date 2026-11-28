@@ -90,7 +90,7 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - The amber edge down the left of each cut line on the upchit sheet stays — the app's own warning-row mark, not a stripe to remove — and the design checker keeps skipping it there [D1025].
 - "Delete" in an input's own window deletes at once and asks nothing, as built, Undo bringing it back — except an upchit whose delete gives a downchit its days back, which asks first on the upchit sheet [D792, D1022].
 - No calendar is folded to a dates line: an input's window, and SANS "+ Commitment", keep their calendar showing; nothing else is folded, and the design guide carries no such rule [D916].
-- An Attach keeps what D1374 built: under the schedule's Unavailable list by itself, counting him out on the Leave War (1, or 0.5 for half a day), with its "To" box — more than a new name for "Fly with", which never counted on the war [D1377, D1374]; the row made by itself from another squadron's plan never counts him out [D2160, D2165, D2184, D2195].
+- An Attach keeps what D1374 built: under the schedule's Unavailable list by itself, counting him out on the Leave War (1, or 0.5 for half a day), with its "To" box — more than a new name for "Fly with", which never counted on the war [D1377, D1374]; the row made by itself from another squadron's plan never counts him out [D2160, D2846, D2842, D2165, D2184, D2195].
 
 ## Built, stated here: their tests hold only part
 
@@ -191,6 +191,7 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - Built, held by tests (each named by a test that holds it whole; the detail is in the app and its full row): D572, D675, D685, D732, D768, D773, D879, D999, D1022, D1023, D1581.
 
 ## From other areas (each stated on its own area's file)
+- People and accounts' — a pick goes through with an Input window open, closing it, and is stopped only while a change is "Not saved"; where the squadron changes without his press the app asks for a refresh, the greyed window gone: D2403, D2596, D2597, D2594, D2405, D2323, D2825.
 - The Leave War's Other — on the Ground Programme or under Unavailable as its filer picks on the Inputs page, straight under Unavailable when filed from the war, where it stands a scheduler's alone once he has moved it, counting him out only under Unavailable: D1356, D1365, D1388, D1357, D1398, D1390, D1381, D1372, D1374, D1393, D1389.
 - The scheduler's one rule of a row that came from an input, and its people: D755, D756, D757, D776.
 - The schedule's one row for a shared input — its pucks, time, remark and window: D734, D735, D736, D737, D739, D740, D742, D743, D748, D776.
@@ -198,7 +199,7 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - One row on the schedule, the changes window, the Unavailable list: D661, D662, D663, D736.
 - What an input is filed for — ALL, ALL AVAIL, Event, Personal, its title: D702, D711, D713, D714, D716, D717, D778.
 - A cancelled input's look on its card, the list and the month's bar: D767.
-- The small choices of these pages, answered "yes to all": D731, D762.
+- The small choices of these pages, answered "yes to all": D731, D762, D2627.
 - The scheduler's other rulings that reach these pages: D189, D660, D682, D753, D762.
 - The late mark: the scheduler's Settled section, the cut-off itself on this page.
 - OIL asked and answered on these pages: D781, D782, D783, D793, D470.

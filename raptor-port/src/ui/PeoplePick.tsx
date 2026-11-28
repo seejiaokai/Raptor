@@ -19,7 +19,7 @@
 import { useEffect, useLayoutEffect, useRef, type ReactNode } from 'react'
 import { PEOPLE, isSpecial } from '../engine/people'
 import { placeholderKind, placeholderProblem } from '../engine/inputs'
-import { canEditSched } from '../state/auth'
+import { canEditOwn } from '../state/auth'
 import { mayFileGroup } from '../state/perms'
 import { puck } from './html'
 import { edgeAutoScroll, findScroller } from './edgescroll'
@@ -85,7 +85,7 @@ export function PeoplePick({ people, several, type, sansOnly, lockOne, readOnly,
   const offerPh = !sansOnly
   /* the switch shows where a group may be filed — and stays while several ARE picked, so a kind that no longer allows
      it never hides what he chose */
-  const showSwitch = (mayFileGroup(type) && (!sansOnly || canEditSched())) || several
+  const showSwitch = (mayFileGroup(type) && (!sansOnly || canEditOwn())) || several
   const problem = readOnly ? null : pickProblem(people, several, type, phWhy)
   /* THE TWO PLACEHOLDERS, IN "SEVERAL PEOPLE" (D750, D753): one of them, beside the people. `phBar` — why this input
      cannot hold one ('' where it can); one already picked stays lit and can be let go whatever the bar says. */
@@ -219,7 +219,10 @@ export function PeoplePick({ people, several, type, sansOnly, lockOne, readOnly,
           {!several && (others
             ? <select id="inpEditPerson" aria-label="Person" value={first ?? ''} onChange={e => onChange([e.target.value], false)}>
               {/* a man no longer on the list (archived since) still reads as himself, never as the first name on it */}
-              {first != null && !roster.includes(first) && !isSpecial(first) && (more ? !!moreIds && !moreIds.includes(first) : true) && <option value={first}>{cs(first)}</option>}
+              {/* nobody picked yet — a new input on another squadron's page (the guard rail's plan §18.6): "Pick…", the
+                  app's own word for an empty choice, as drawn (D2729, the section page's group 3) */}
+              {(first == null || first === '') && <option value="">Pick…</option>}
+              {first != null && first !== '' && !roster.includes(first) && !isSpecial(first) && (more ? !!moreIds && !moreIds.includes(first) : true) && <option value={first}>{cs(first)}</option>}
               {offerPh && <PlaceholderGroup type={type} current={first} />}
               {roster.map(id => <option key={id} value={id}>{cs(id)}</option>)}
               {more}

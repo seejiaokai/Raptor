@@ -42,6 +42,47 @@
 .mark .k{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);white-space:nowrap}
 .mark .v{font-size:19px;font-weight:800;letter-spacing:.12em}
 .mark .rglyph{width:22px;height:22px}
+/* ---- THE SCHEDULES MENU (ui/SquadronMenu.tsx — his D2301, D2304; the drawing docs/mock/2026-11-22-msq-b1-screens/img
+   mA1-d.png, mA1-p.png). The mark is its button, nothing about it moving: "142 ▾" (the ▾ drawn here, so the number's
+   own text stays the number), a pale fill round the whole mark while open or under the pointer, as a page tab lights.
+   The panel is the app's own small menu (.sb-moremenu / .sb-moreitem, 18-oil-board.css), hung 12px under the bar at the
+   mark's left; on a phone a sheet from the bar's foot, the full width, its bottom corners round, the page under it
+   dimmed. Rows 38 high on both (D2304). ---- */
+.sqm-wrap{display:inline-flex;position:relative;flex:0 0 auto}
+.sqm-btn{display:inline-flex;align-items:center;padding:0;margin:0;background:none;border:0;color:inherit;font:inherit;
+  text-align:left;cursor:pointer}
+/* (the pale fill reaches 6px past the mark, as drawn — a fill behind it, never a band of light round it: no mark glows,
+   D880–D887, ui/noglow-css.test.ts) */
+.sqm-btn .mark{position:relative}
+.sqm-btn:hover .mark::before,.sqm-btn.on .mark::before{content:"";position:absolute;inset:-6px;border-radius:8px;
+  background:rgba(255,255,255,.07);pointer-events:none}
+.sqm-btn:focus{outline:none}
+.sqm-btn:focus-visible .mark{outline:2px solid var(--accent);outline-offset:6px}
+.mark.menu .k::after{content:" \25BE"}
+.sb-moremenu.sqm-panel{position:fixed;z-index:490;min-width:268px}
+/* the list's 490 counts only inside the top bar (its own layer, 60): with a window open (410) the list opened behind it and
+   a press on a row landed on the window (the night of 24 Nov 26, the walk's F4). The bar rises only while the list is open. */
+.topbar:has(#sqnMenu){z-index:490}
+.sb-moremenu.sqm-panel.sheet{left:0;right:0;width:auto;min-width:0;max-width:none;box-sizing:border-box;margin:0;
+  padding:4px 8px 10px;border-top:0;border-radius:0 0 16px 16px}
+.sqm-dim{position:fixed;left:0;right:0;bottom:0;z-index:489;background:rgba(0,0,0,.55)}
+.sqm-head{margin:0;padding:8px 11px 5px;font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;
+  letter-spacing:.1em;font-size:10px;font-weight:700;color:var(--ink-3)}
+.sqm-row{width:100%}
+.sqm-row .bi{display:inline-flex;justify-content:center;align-items:center;flex:none;color:var(--accent)}
+.sqm-num{font-weight:700;font-variant-numeric:tabular-nums}
+.sqm-lbl{margin-left:auto;padding-left:24px;font-size:12px;font-weight:500;color:var(--ink-3)}
+@media (max-width:820px){
+  .sqm-head{padding:10px 11px 6px;font-size:11px}
+  .sb-moreitem.sqm-row{font-size:15px}
+  .sqm-lbl{font-size:13px}
+}
+/* the ☰ menu's head (ui/Drawer.tsx DrawerSquadron — his D2382–D2384, the drawing d1–d5): the top bar's mark at the same
+   size (09-week-responsive.css), its list in the small menu's look sitting in the menu's flow, the grey line under it */
+/* two classes, so it wins over the small menu's own hung place (.sb-moremenu, 18-oil-board.css, later in the sheet) — with
+   one, the list hung 880px down, under Logout (the walk of 23 Nov 26, F1) */
+.sb-moremenu.drawer-sqlist{position:static;width:100%;min-width:0;margin:12px 0 0;box-sizing:border-box}
+.drawer-sqline{margin:8px 0 0}
 .nav{display:flex;gap:2px;margin-left:6px;flex-wrap:wrap}
 .nav a{padding:7px 13px;border-radius:10px;color:var(--ink-2);text-decoration:none;font-size:12.5px;font-weight:500;
   white-space:nowrap;border:1px solid transparent;cursor:pointer}
@@ -186,6 +227,27 @@
 .bl-foot{flex:none;display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-top:4px;padding:6px 7px 3px;border-top:1px solid var(--edge)}
 .bl-more{margin-right:auto;padding-left:4px;font-size:12px;color:var(--ink-3);white-space:nowrap}
 .bl-empty{padding:18px 11px;text-align:center;font-size:12.5px;color:var(--ink-3)}
+/* THE "SHOW" BUTTONS (batch 1's second half §7 item 3; his D2198, D2202, D2321 — the approved pictures p3a, p3c, f5a,
+   docs/mock/2026-11-22-msq-b1-screens/redraw-pieces.mjs bellLines, draw-f.mjs f5): "Show" in the foot's small grey words,
+   then a filter chip (.fchip) per squadron, 6px apart, at the foot's left. Many squadrons: ONE row that slides sideways,
+   never wrapping (f5a — cut off at the list's edge, so it reads as more to see); the chips keep their size. Pushed to the
+   left by itself only when no "↓ 3 more" follows it (.last), else the counter keeps the push and sits beside it. */
+.bl-sqns{display:inline-flex;align-items:center;gap:6px;flex:0 1 auto;min-width:0;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;overscroll-behavior-x:contain}
+.bl-sqns::-webkit-scrollbar{display:none}
+.bl-sqns.last{margin-right:auto}
+.bl-sqns .bl-more{margin-right:0}
+.bl-sqns .fchip{flex:0 0 auto}
+/* (the row gives way, never "Mark all read" beside it — measured 23 Nov 26: squeezed by eight squadrons on his iPhone's
+   width it broke onto two lines and the foot grew 6px) */
+.bl-sqns ~ .abtn{flex:none;white-space:nowrap}
+/* (inside the sliding row a ring outside the chip would be cut off by the row's edge: drawn just inside it) */
+.bl-sqns .fchip:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+/* THE GREY SQUADRON MARK after a line's name (§7 item 3, 8b — picture p3b): the grey badge already approved for another
+   squadron's line — the role chip's recipe (.sarole) in neutral grey, as Admin → Users' grey number by a name
+   (15-admin-help.css #page-admin .acc-sqn), 6px after the name */
+.bl-sqn{display:inline-block;margin-left:6px;vertical-align:1px;font-family:'Barlow Condensed','Inter Tight',sans-serif;
+  font-size:8.5px;font-weight:800;letter-spacing:.08em;line-height:1.35;padding:0 5px;border-radius:3px;color:var(--ink-2);
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);font-style:normal;white-space:nowrap}
 
 /* ============ PAGE SHELL ============ */
 .page{display:none}

@@ -20,7 +20,7 @@ import { projectPeople } from './state/raptorRoster'
 import { wireLeaveWarSync, setWarWorldDoor } from './sync'
 import { homeOn, unitsLoad, setGrant } from '../state/units'
 import { HOME_PFX } from '../state/units-model'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, inputUnitOf } from '../engine/inputs'
 import { NOTICES, noticesFor } from '../state/notices'
 import { noticeSeenLoad } from '../state/noticeseen'
 import { installGlobalUndo } from '../state/undo-wire'
@@ -113,7 +113,8 @@ describe('fault A — the security read’s three proofs (a plain 142 admin, a f
     expect(ownershipViolation(env([ch2, { collection: 'notices', id: 'nf6a4', op: 'put', before: null, after: line('nf6a4', 'osp9', 'kes9') }])) ?? 'allowed').toMatch(/bell line of another squadron|an input of another squadron \(u149\)/)
     /* control: the same line to Saber signed by Outlaw himself rides as the pass writes it — told only as its filer, so
        marked with the input's squadron, 142 (fault C, Notice.fu) */
-    expect(ownershipViolation(env([ch, { collection: 'notices', id: 'nf6a5', op: 'put', before: null, after: { ...line('nf6a5', 'stiff', 'casper'), fu: ['u142'] } }]))).toBeNull()
+    /* (…and stamped with the input's squadron, as the pass stamps it — batch 1's second half, §7 item 1) */
+    expect(ownershipViolation(env([ch, { collection: 'notices', id: 'nf6a5', op: 'put', before: null, after: { ...line('nf6a5', 'stiff', 'casper'), fu: ['u142'], u: inputUnitOf(ch.after) } }]))).toBeNull()
   })
   it('control: the same forged input naming a 142 man (Ranger) is refused, as today', () => {
     asOutlawAdmin()

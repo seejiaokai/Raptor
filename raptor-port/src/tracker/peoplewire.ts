@@ -8,9 +8,9 @@
 import { HOOKS } from '../engine/hooks'
 import { inputsTouching, isDownchit, isUpchit, inpType, leadOf } from '../engine/inputs'
 import { unitPeople, rosterToday } from '../engine/roster'
-import { storageUnit } from './storage.js'
+import { storageUnit, onStorageDoorMoved } from './storage.js'
 import { medStartOrd, medEndOrd, firstEndOrd, firstEndIso, ordShift } from '../engine/medical'
-import { subscribe } from '../state/store'
+import { subscribe, notify as raptorNotify } from '../state/store'
 import { setPeople, setWhoami, setWhoamiId, setGonePeople, setMedInputs } from './people.js'
 import { setTrackerAdmin } from './role.js'
 import { roleOf, pageUnit } from '../state/perms'
@@ -125,5 +125,10 @@ export function wireTrackerPeople(): void {
     setPeople(projectForTracker(people)); setGonePeople(deletedForTracker(people)); setMedInputs(medForTracker(inputsTouching(unit)))
   }
   subscribe(push)
+  /* the door moved to another squadron (his D2395): its roster, down days and gone men at once, before its records are
+     read — never the last squadron's list under the next squadron's charts */
+  /* …and Raptor's bands are told too: they are worked out on its own notify, from where the door is (state/store.ts
+     publishBands), and a door moved by itself once chart work let it go would otherwise leave a band standing. */
+  onStorageDoorMoved(() => { push(); raptorNotify() })
   push()
 }

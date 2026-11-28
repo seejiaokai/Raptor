@@ -54,6 +54,10 @@ export function DateBox(p: {
   value: string
   /** a date was picked — always a real date, and only when it differs from the one held */
   onChange: (iso: string) => void
+  /** a date was picked — on EVERY pick, the day already held included, and before `onChange` (Admin → Users' two Post in
+   *  boxes, the plan docs/superpowers/plans/2026-11-27-msq-s2-open-work-judge.md §1.3: a deliberate pick of the day shown
+   *  is his pick, and `onChange` alone never heard it). Every other box passes none and behaves as before. */
+  onSelect?: (iso: string) => void
   id?: string
   testid?: string
   /** the look of the form it stands in, beside `datebox` */
@@ -126,7 +130,7 @@ export function DateBox(p: {
         <Layer
           label={p.label} name={p.cardName || p.label} value={has ? p.value : ''} min={p.min} max={p.max} markWd={p.markWd}
           at={p.at || (validIso(p.today) ? p.today : validIso(p.min) ? p.min : undefined)} today={p.today} box={box.current}
-          onPick={(iso, at) => { close(at); if (iso !== p.value) p.onChange(iso) }}
+          onPick={(iso, at) => { close(at); p.onSelect?.(iso); if (iso !== p.value) p.onChange(iso) }}
           onClose={close}
         />, document.body)}
       {patchNode}

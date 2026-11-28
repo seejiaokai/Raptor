@@ -28,6 +28,7 @@ import { useFloatWin, frontWin, makeEscWaits, openKey, BOARD_BAR } from './float
 import { useEscWindow } from './sheetfocus'
 import { forward, gone } from './winorder'
 import { closeAvailWin } from './availopen'
+import { availDrawn } from './windrawn'
 import { placeToast } from './toast'
 import { notify } from '../state/store'
 import { PEOPLE } from '../engine/people'
@@ -75,7 +76,7 @@ export function AvailWindow() {
   })
   /* a note already up when the window opens moves off it, as the changes window's does (ChangesWindow.tsx — the
      look-and-keys walk, 21 Oct 26); a note raised while it is up is placed by toast() itself */
-  const isOpen = !!open
+  const isOpen = availDrawn()   // !!AVAILWIN — the one predicate the guard reads too (ui/windrawn.ts)
   useEffect(() => { if (isOpen) placeToast() }, [isOpen])   // as it opens — never as it closes, mid-read
   /* ESCAPE CLOSES IT WHEN IT WAS THE LAST THING OPENED OR PRESSED ([ALLAVAIL-ESCAPE], 17 Nov 26 — the design guide §2): it
      floats beside the schedule without holding the keys (D38, D41), so Escape did nothing with it up. It joins the one
@@ -86,7 +87,7 @@ export function AvailWindow() {
   useEscWindow(el, isOpen ? openKey('avail') : false, closeAvailWin, { id: 'avail', makeWaits: makeEscWaits })
   useEffect(() => { if (!isOpen) return; return () => { if (gone('avail')) notify() } }, [isOpen])
 
-  if (!open) return <div className="availwin" hidden />
+  if (!isOpen || !open) return <div className="availwin" hidden />
 
   const { di, item, ver, ofw, name, when, tab } = open
   const mode = oilModeOn(di)

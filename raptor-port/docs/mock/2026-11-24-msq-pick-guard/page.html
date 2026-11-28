@@ -1,0 +1,155 @@
+<title>Squadron switch guard rail</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one reading column; each question a block — its line, recommendation, pictures side by side (today | after), stacking on a phone */
+:root{
+  --bg:#f4f6f8; --panel:#ffffff; --ink:#151b22; --muted:#5a6573; --edge:#d6dde5; --accent:#0e8fb0; --rec:#0d7a4f; --new:#b7791f;
+  --display:"Space Grotesk",system-ui,sans-serif; --body:"Inter",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c0f13;--panel:#151a21;--ink:#e6ebf0;--muted:#97a3b0;--edge:#27303b;--accent:#38c6e8;--rec:#4fd39a;--new:#e9b04f;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0c0f13;--panel:#151a21;--ink:#e6ebf0;--muted:#97a3b0;--edge:#27303b;--accent:#38c6e8;--rec:#4fd39a;--new:#e9b04f;color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1.5;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 48px}
+main{max-width:1100px;margin:0 auto;display:grid;gap:28px}
+h1,h2{font-family:var(--display);text-wrap:balance;margin:0}
+h1{font-size:1.7rem}
+h2{font-size:1.2rem}
+p{margin:0;max-width:70ch}
+.lede{color:var(--muted)}
+.top{background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:16px 18px;display:grid;gap:10px}
+.top ol{margin:0;padding-left:1.3em;display:grid;gap:8px}
+.top a{color:var(--accent)}
+.rec{color:var(--rec);font-weight:600}
+section{display:grid;gap:12px;scroll-margin-top:16px}
+.label{font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+figure{margin:0;display:grid;gap:6px;min-width:0}
+figure img{width:100%;border:1px solid var(--edge);border-radius:6px;cursor:zoom-in;background:#000}
+figcaption{font-size:.85rem;color:var(--muted)}
+figcaption b{color:var(--ink)}
+.words{background:var(--panel);border:1px solid var(--edge);border-radius:8px;padding:10px 14px;font-size:.92rem;display:grid;gap:4px}
+.note{font-size:.88rem;color:var(--muted)}
+.newmark{color:var(--new);font-weight:600}
+.newline{border-left:3px solid var(--new);padding-left:10px}
+.isnew img{border-color:var(--new);border-width:2px}
+.zoom{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;padding:max(12px,env(safe-area-inset-top,0px)) 12px;z-index:20}
+.zoom img{max-width:100%;max-height:100%;object-fit:contain}
+</style>
+
+<main>
+  <header style="display:grid;gap:8px">
+    <h1>The guard rail at a squadron switch</h1>
+    <p class="lede">Your rulings: while a window is open, picking another squadron or switching to or from the member view is refused, with a note to close the window first. When the squadron in view or your rights change without your press, the app stops under one note with a Refresh button. Every picture is the real app. "Today" is what happens now; "After" is the note drawn on top. Tap a picture to enlarge it.</p>
+  </header>
+
+  <div class="top">
+    <div class="label">To answer now, newest first</div>
+    <ol>
+      <li><a href="#q1">The refusal note</a>: "<b>Blocked:</b> close the open window, then pick 149.", drawn under the control you pressed. <span class="rec">Recommended: as redrawn.</span></li>
+      <li><a href="#q2">The refresh note</a>: a card in the middle, one Refresh button. <span class="rec">Recommended: as drawn.</span></li>
+      <li><a href="#q3">Logout with a window open</a>: <span class="newmark">recommendation changed</span>. <span class="rec">Recommended: Logout is not refused; it asks the window's own question first, then the Tracker's, one at a time.</span></li>
+      <li><a href="#q4">Undo after picking another squadron</a>: today it undoes 142's change while you are on 149. <span class="rec">Recommended: Undo reaches only the squadron you are looking at.</span> <span class="newmark">A simpler choice added.</span></li>
+      <li><a href="#q5">A change that did not save, then a pick</a>: today Retry on 149 saves 142's change. <span class="rec">Recommended: refuse the pick until Retry has saved it.</span> <span class="newmark">Its cost and its reach added.</span></li>
+      <li><a href="#q6"><span class="newmark">New</span>: typing on Admin → Users, then a pick</a>: today the words are lost without asking. <span class="rec">Recommended: the guard refuses the pick, as for a window.</span></li>
+    </ol>
+    <p class="newline note">New since you last looked: each question now says first when it happens in real life (your ruling of today on another chat, D2439). A fresh Fable checked every recommendation against all your rulings, the newest included, and found none overturned. It found the costs and cases now added below.</p>
+  </div>
+
+  <section id="q1">
+    <h2>1. The refusal note</h2>
+    <p class="newline"><b>When this happens</b>: an admin who also holds rights in a second squadron (a Plan of 149, or a master admin) is in the middle of an input, a Leave War window or another window, and picks the other squadron or switches to the member view without closing it first. It touches only people with rights in two squadrons. For them it can happen any day they work across both.</p>
+    <p>Example: an input of Drifter's is open with words typed in it, and you pick 149. Today the window greys out and says "This is 142's. You picked 149 — close this to go on." After: nothing changes and the window stays live with your words in it. The app's usual grey note appears right under what you pressed.</p>
+    <p class="note">Redrawn as you asked. On a desktop the note now drops down under the control you pressed, not at the foot of the screen. On a phone it stays at the foot, near your thumb. It is a passing note that fades after a few seconds. While it shows, it covers what is under it: the Inputs tabs in the first picture, and the top edge of the open window in the second. The window's ✕ stays clear.</p>
+    <div class="words">
+      <div>Pick a squadron: <b>Blocked:</b> close the open window, then pick 149.</div>
+      <div>Switch to the member view: <b>Blocked:</b> close the open window, then switch to the member view. (Back: "…then switch back to the admin view.")</div>
+      <div>A bell line that leads to the other squadron: <b>Blocked:</b> close the open window, then press this line again.</div>
+    </div>
+    <div class="pair">
+      <figure><img src="drawn/p1-d-today-crop.png" alt="Today: the input window greyed with the band after a pick"><figcaption><b>Today</b>: desktop, an input open, 149 picked.</figcaption></figure>
+      <figure><img src="drawn/p1b-d-after-crop.png" alt="After: the grey Blocked note just under the squadron picker"><figcaption><b>After</b>: still on 142, the window live, the note under the squadron picker.</figcaption></figure>
+      <figure><img src="drawn/p2b-d-after-crop.png" alt="After: the note just under the role badge"><figcaption><b>After</b>: the badge pressed for the member view. The note sits under the badge, touching the window's top edge.</figcaption></figure>
+      <figure><img src="drawn/p4b-d-after-crop.png" alt="After: the note just under the bell list"><figcaption><b>After, bell line</b>: the note is wider than the bell list, so it sits just under the list.</figcaption></figure>
+      <figure><img src="drawn/p3-p-after-crop.png" alt="After on a phone: the note across the foot"><figcaption><b>After, phone</b>: My leave open, 149 picked from the ☰ list. The note runs across the foot.</figcaption></figure>
+      <figure><img src="drawn/p1-d-after-crop.png" alt="Round 1: the note at the foot of a desktop screen"><figcaption><b>Round 1, set aside</b>: the note at the foot of the screen, far from the picker.</figcaption></figure>
+    </div>
+    <p class="note">Words drafted by Opus and adjusted by a fresh Fable. The note says "the open window" rather than naming it: an input's title ("Drifter · 1 Jan") reads badly in a sentence, and the window is right in front of you. On a phone an input window covers the squadron control, so the note will mostly appear on a desktop.</p>
+    <figure style="max-width:560px"><img src="drawn/p5-d-after-crop.png" alt="The Tracker's question at the member-view switch"><figcaption><b>Also coming, already ruled (not a question)</b>: unsaved Tracker chart edits are now asked about at the member-view switch too. Today nothing is asked there.</figcaption></figure>
+  </section>
+
+  <section id="q2">
+    <h2>2. The refresh note</h2>
+    <p class="newline"><b>When this happens</b>: rarely. (1) A man posted to another squadron has the app open as midnight passes on the day his posting starts: once a posting, and only if the app is open at that moment. (2) An admin takes away one of his rights (a Plan, the master admin switch) while he has the app open: now and then. (3) The Tracker fails partway through a switch: a fault, not a normal day.</p>
+    <p>Example: you are moved to 149 at midnight while an input is open. Today the window greys out and says only "This change could not be saved." After: the whole app dims, and one card in the middle asks you to refresh. It has one button, Refresh. Anything not saved is lost, and the card says so.</p>
+    <div class="words">
+      <div>Your own move at midnight: <b>You are 149's from today</b>. "Your move to 149 took effect at midnight. Refresh and sign in again to carry on. Anything you hadn't saved is lost."</div>
+      <div>A right taken away: <b>Your access has changed</b>. "An admin changed what you can do here. Refresh and sign in again to carry on. Anything you hadn't saved is lost."</div>
+      <div>The Tracker failing partway through a switch: <b>The switch to 149 didn't finish</b>. "The Tracker stopped partway. Refresh and sign in again. Anything you hadn't saved is lost."</div>
+    </div>
+    <div class="pair">
+      <figure><img src="drawn/p6-d-today-crop.png" alt="Today: after midnight, the window greyed, This change could not be saved"><figcaption><b>Today</b>: after midnight, the input greyed with "This change could not be saved."</figcaption></figure>
+      <figure><img src="drawn/p6-d-after-crop.png" alt="After: the refresh card over the dimmed app"><figcaption><b>After</b>: the card over the dimmed app.</figcaption></figure>
+      <figure><img src="drawn/p6-p-after-crop.png" alt="After on a phone: the refresh card"><figcaption><b>After, phone</b></figcaption></figure>
+      <figure><img src="drawn/p8-d-after-crop.png" alt="After: the Tracker switch failed, the refresh card"><figcaption><b>After, Tracker</b>: today's page has no button at all. The "Reload to try again" behind the card goes once this is built.</figcaption></figure>
+    </div>
+    <p class="note">"Sign in again" is there because in this build a refresh brings back the sign-in screen. Once the app is in Power Apps there is no sign-in, and the words become "Refresh to carry on." A right taken away in another tab is not noticed in this build until a reload. It will be once the database is in.</p>
+  </section>
+
+  <section id="q3">
+    <h2>3. Logout with a window open</h2>
+    <p class="newline"><b>When this happens</b>: anyone at the end of a session presses Logout with an input or Leave War window still open, often on a shared desk computer at the end of a shift. It can happen any day, to members and admins alike. Unsaved chart edits as well are rarer: only a Tracker editor.</p>
+    <p>Example: an input is open and the Tracker has unsaved chart edits. You press Logout. Today the app moves to the Tracker and asks "Save them before logging out?", but the input window is drawn on top of that question, so you cannot press Discard until you cancel the window. On a phone the ☰ menu is under the window, so Logout cannot be reached at all.</p>
+    <p class="newline"><span class="newmark">Recommendation changed.</span> Last round I recommended refusing Logout with the grey note. The check found two costs. First, your guard-rail ruling said Logout keeps today's handling. Second, the note fades in a few seconds: a man who presses Logout and walks away from a shared computer is left signed in, believing he is out.</p>
+    <p><span class="rec">Recommended now: Logout is not refused. It asks the open window's own question first ("Close it and lose them?", the one ✕ and Escape already ask, D1622), then the Tracker's question, one at a time and never one on top of the other.</span> A question stays on screen until it is answered, so a man who walks away sees that he is not yet logged out when he comes back. On a phone, Logout gets a way to be reached with a window open, which today it lacks.</p>
+    <p>The other ways: (a) refuse Logout with the grey note, my earlier recommendation, with the walk-away cost above; (b) Logout closes the window and loses its words without asking. That is quickest, but it throws typing away.</p>
+    <div class="pair">
+      <figure><img src="today/E4-d-1-after-logout-press.png" alt="Today: the input window on top of the Tracker's logout question"><figcaption><b>Today</b>: desktop. Logout pressed, and the input window stands over the Tracker's question.</figcaption></figure>
+      <figure><img src="today/E4-p-1-menu-covered.png" alt="Today on a phone: the menu under the window"><figcaption><b>Today, phone</b>: the ☰ menu is under the window.</figcaption></figure>
+    </div>
+    <p class="note">If yes, the note's words are drafted and checked, then drawn, before it is built.</p>
+  </section>
+
+  <section id="q4">
+    <h2>4. Undo after picking another squadron</h2>
+    <p class="newline"><b>When this happens</b>: someone with rights in two squadrons changes something on 142, picks 149, and then presses Undo, perhaps meaning a 149 change or forgetting he moved. Rare: only people with rights in two squadrons, and only in that order.</p>
+    <p>Example: on 142 you change Drifter's OL, then pick 149. On 149 the Undo button still offers that 142 change. Pressing it undoes 142's record while you look at 149, and the bubble says only "Undid: Drifter's OL". Drifter's row even appeared in 149's list afterwards.</p>
+    <p><span class="rec">Recommended: Undo and Redo reach only the squadron you are looking at.</span> Your 142 steps wait, and are there again when you pick 142. On 149, while you have made no change there, Undo is greyed. <span class="newmark">Its words say why: "Your 142 changes are on 142's Undo."</span> (Those words are a draft, checked before they are built.) <span class="newmark">A change to someone's access, such as "Plan of 149 given · Hunter", belongs to the squadron it was made on.</span></p>
+    <p>The other ways: (a) <span class="newmark">simpler: the Undo list empties when you pick another squadron, as it does at Logout and after a reload.</span> It is the fewest moving parts, but your 142 changes can no longer be undone when you come back. (b) Keep one list and name the squadron ("Undid: Drifter's OL · 142"). But then you undo something you cannot see.</p>
+    <p class="note newline">Not yet pressed: the Tracker's own Undo after a pick. It is part of the build's walk.</p>
+    <div class="pair">
+      <figure><img src="today/F-d-f3-1-on149-undo.png" alt="Today: on 149, Undo offering 142's step"><figcaption><b>Today</b>: on 149, before Undo.</figcaption></figure>
+      <figure><img src="today/F-d-f3-2-after-undo.png" alt="Today: after Undo on 149, 142's change taken back"><figcaption><b>Today</b>: after Undo on 149. Drifter's 142 row shows in 149's list.</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="q5">
+    <h2>5. A change that did not save, then a pick</h2>
+    <p class="newline"><b>When this happens</b>: a save fails, which today happens only when the browser refuses to store. Once the database is in, it will happen when the connection drops. The person then picks another squadron before pressing Retry. Rare: someone with rights in two squadrons, at the moment a save has failed.</p>
+    <p>Example: you save a 142 input, the save fails, and the band says "Not saved — keep this page open" with Retry. You pick 149 anyway. The band and its Retry follow you to 149, and Retry there saves 142's change.</p>
+    <p><span class="rec">Recommended: refuse the pick while a change is not saved, with the grey note asking you to press Retry first.</span> That keeps the unsaved change and the squadron it belongs to together. Today the save does reach the right record, but nothing on 149 says it is 142's.</p>
+    <p class="newline"><span class="newmark">Its reach</span>: the switch to or from the member view and a bell line to the other squadron are refused the same way. Logout asks, as in question 3: "This change isn't saved. Log out and lose it?" (a draft). The "Not kept" band, shown in a browser that stores nothing at all, has no Retry and never blocks anything. <span class="newmark">Its cost</span>: if Retry keeps failing, you cannot leave 142 until a save gets through or you refresh, which loses the change. That is what the band's own words already ask: "keep this page open". The note will not say "Not saved", since those words are the band's alone.</p>
+    <div class="pair">
+      <figure><img src="today/D-d-d2-2-after-pick.png" alt="Today: on 149 with 142's Not saved band"><figcaption><b>Today</b>: on 149, with 142's "Not saved" band and Retry.</figcaption></figure>
+      <figure><img src="today/D-d-d2-3-after-retry.png" alt="Today: after Retry on 149"><figcaption><b>Today</b>: after Retry on 149. 142's change is saved.</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="q6">
+    <h2>6. <span class="newmark">New</span>: typing on Admin → Users, then a pick</h2>
+    <p class="newline"><b>When this happens</b>: an admin with rights in two squadrons opens a person's row on Admin → Users, starts changing the sign-in name, and picks the other squadron before saving. Rare.</p>
+    <p>Today the row closes and the typed words are lost, with nothing asked. Not a window, so the guard as ruled does not cover it.</p>
+    <p><span class="rec">Recommended: the guard treats an opened row with typing the same as an open window: the pick is refused with the grey note ("Blocked: close the open row, then pick 149.", a draft).</span> The other way is to leave it as today.</p>
+  </section>
+
+  <section>
+    <h2>Also found when every case was pressed</h2>
+    <p class="note">These need no answer now. A SANS day window stays open after a pick and quietly shows 149's figures under the same date; the guard will refuse that pick. A day's note typed on Edit Schedule and then a pick keeps the words in 142's note box, where they were typed. <span class="newmark">With a Plan taken away in another tab, the open tab never notices and can still save on 149. This build has no live link between tabs. Once the database is in, the refresh card in question 2 covers it. The bell's OIL line opening another squadron's input is a fault already filed, with its own fix in this batch.</span> Coming next, in its own round: the Tracker drag questions, drawn first.</p>
+  </section>
+</main>
+
+<div class="zoom" id="zoom" hidden><img id="zoomImg" alt=""></div>
+<script>
+const z=document.getElementById('zoom'),zi=document.getElementById('zoomImg');
+document.querySelectorAll('figure img').forEach(i=>i.addEventListener('click',()=>{zi.src=i.src;zi.alt=i.alt;z.hidden=false}));
+z.addEventListener('click',()=>{z.hidden=true});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')z.hidden=true});
+</script>

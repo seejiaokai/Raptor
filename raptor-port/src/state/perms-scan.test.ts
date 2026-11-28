@@ -28,6 +28,9 @@ const ALLOW: Record<string, string> = {
   /* multi-squadron batch 1, step 1: an account RECORD's role read as its level in its home unit (levelFrom) — data, as
      accounts.ts's; perms.ts asks it at the commit gate, and the session's role in force stays perms.ts's own check */
   'state/units-model.ts': 'an ACCOUNT record\'s role as its level in its home unit (levelFrom) — data, not the session',
+  /* batch 1's second half, plan §7 item 6: the access an account RECORD held on a day, read to word the line on his own
+     bell — it tells him, it decides nothing; who may make the change stays perms.ts's */
+  'state/acctlines.ts': 'an ACCOUNT record\'s role read to word the line on his bell (accessIn) — data, it decides nothing',
 }
 /* the Leave War is a second app with its own store: its `role` and `viewer` are the war's,
    written ONLY by resetSession (the one seam), and its writers are held to §11 by

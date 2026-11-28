@@ -118,9 +118,10 @@ describe("SEC-3 — a member's bell line to another squadron's man", () => {
 describe("SEC-1 — another squadron's admin's Approvals moment and access-request seen record", () => {
   it("Hunter (142's plain admin) cannot set Kestrel's (149's admin) Approvals moment", () => {
     signInAs('ad2', 'a2')
-    const r = commitSettingsIntent('lw.apprseen', { owner: 'prowler' }, () => { store.set('apprseen:kes9', { at: Date.now() + 365 * 86400000 }) }) as any
+    /* (one row per squadron since batch 1's second half, R2 — `u149@apprseen:kes9`, 149's Approvals: state/apprseen.ts) */
+    const r = commitSettingsIntent('lw.apprseen', { owner: 'prowler' }, () => { store.set('u149@apprseen:kes9', { at: Date.now() + 365 * 86400000 }) }) as any
     expect(r.ok).toBe(false)
-    expect(apprSeenAt('kes9')).toBe(0)
+    expect(apprSeenAt('kes9', 'u149')).toBe(0)
   })
   it("…nor Kestrel's record of which access requests he has seen", () => {
     signInAs('ad2', 'a2')
@@ -129,6 +130,6 @@ describe("SEC-1 — another squadron's admin's Approvals moment and access-reque
   })
   it('…while his own still goes through', () => {
     signInAs('ad2', 'a2')
-    expect((commitSettingsIntent('lw.apprseen', { owner: 'prowler' }, () => { store.set('apprseen:prowler', { at: Date.now() }) }) as any).ok).toBe(true)
+    expect((commitSettingsIntent('lw.apprseen', { owner: 'prowler' }, () => { store.set('u142@apprseen:prowler', { at: Date.now() }) }) as any).ok).toBe(true)
   })
 })

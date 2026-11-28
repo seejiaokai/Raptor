@@ -155,7 +155,10 @@ describe('fault A — the posting pass\'s Delete of a man whose sign-in holds a 
     expect(rangerState()).toEqual({ deleted: true, account: false, grants: 0 })
     expect((PEOPLE as any).casper.san, 'the other posting ran in the same pass').toBe(true)
   })
-  it('an Overseas Sqn posting removes no right: his sign-in is suspended, his right stands', () => {
+  /* (rewritten by his D2311, 22 Nov 26 — batch 1's second half, plan §4 item 8: "archived or posted overseas, View and Plan
+     end". Before it, the Overseas posting suspended his sign-in and left his right standing; the pass now drops it in the
+     same command, judged by the pass's own rule) */
+  it('an Overseas Sqn posting ends his rights (D2311): his sign-in is suspended, his right goes in the pass', () => {
     saveAccounts()
     rangerRight('view')
     signInAs('ad', 'a')
@@ -164,7 +167,7 @@ describe('fault A — the posting pass\'s Delete of a man whose sign-in holds a 
     expect(passTypes()).toContain('lw.postoutRun')
     accountsLoad(); unitsLoad()
     expect({ archived: !!(PEOPLE as any).bane.archived, on: ACCOUNTS_LIST.find(a => a.id === 'acus')?.on, grants: grantsOf('acus').length })
-      .toEqual({ archived: true, on: false, grants: 1 })
+      .toEqual({ archived: true, on: false, grants: 0 })
   })
   it('a pass that also removes a right of a man it does NOT post out is refused', () => {
     saveAccounts()

@@ -34,7 +34,7 @@ import { FloatWin } from './FloatWindow'
 import { bringForward, openBeside } from './winorder'
 import { puck } from './html'
 import { setDaysWin, setInpEdit } from './pops'
-import { maySansAdd, openSansAdd } from './sansadd'
+import { maySansAdd, openSansAdd, noSansAircrew } from './sansadd'
 import { sansNextDay } from './inputedit'
 import { isoDayWords } from '../engine/weekstash'
 import { dayWord, sansDayGroups, type SansEntry } from './sanscal-model'
@@ -78,8 +78,9 @@ export function SansDay({ iso, hi, onClose }: {
   const a = flyOwn(iso), facts = factsOwn(iso), u = pageUnit('own', todayIso()), com = sansCommittedOn(iso, undefined, unitPeople(u, iso)), g = sansDayGroups(iso, inputsOnDay(u, iso), unitPeople(u, iso))
   const canAdd = maySansAdd(iso)   // (on a day he is SANS — D2340)
   /* WHY HIS "+ COMMITMENT" IS GREY (his D2394 Q4, D2421): on his own days before his SANS date, from when he can file; a
-     member who is not SANS keeps the general words. An admin's is never grey, so he has no version. */
-  const mine = me(), hisNext = !canAdd && mine ? sansNextDay(mine, iso) : ''
+     member who is not SANS keeps the general words. An admin's is never grey, so he has no version — but on another
+     squadron's calendar with no SANS aircrew that day (ui/sansadd.ts noSansAircrew — the guard rail's plan §18.7). */
+  const mine = me(), noneWhy = noSansAircrew(iso), hisNext = !canAdd && !noneWhy && mine ? sansNextDay(mine, iso) : ''
   const avail = { p: facts.availP, w: facts.availW }
 
   const reqText = (s: 'p' | 'w') => a.reqFrom[s] === 'nf' ? 'NF' : a.req[s] === null ? '–' : String(a.req[s])
@@ -157,7 +158,9 @@ export function SansDay({ iso, hi, onClose }: {
               onClick={() => { openWinFor('days', pageUnit('own')); openBeside('days', 'sansday'); setDaysWin(iso); notify(); bringForward('days') }}>Calendar…</button>
           )}
         </div>
-        {!canAdd && <p className="sd-note" data-testid="sd-addwhy">{hisNext ? `You're SANS from ${isoDayWords(hisNext)}.` : 'SANS aircrew add their availability here.'}</p>}
+        {/* (on another squadron's calendar with no SANS aircrew that day: "150 has no SANS aircrew." — the guard rail's
+            plan §18.7, his D2628 C3, D2655 D11; drawn and seen, D2729) */}
+        {!canAdd && <p className="sd-note" data-testid="sd-addwhy">{noneWhy ?? (hisNext ? `You're SANS from ${isoDayWords(hisNext)}.` : 'SANS aircrew add their availability here.')}</p>}
       </div>
       <div className="sd-list" data-testid="sd-list">
         {!any && <p className="sd-empty" data-testid="sd-empty">No commitments yet.</p>}

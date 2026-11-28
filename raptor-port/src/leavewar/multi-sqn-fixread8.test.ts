@@ -4,7 +4,7 @@
    code the readers read (71fdfbfd5). Hunter (142's plain admin, `ad2`) files LL for Ranger (142, `us`) on 15 Jul; Saber
    is the master (`ad`); Kestrel and Osprey are 149's (`ad9`, `us9`). Harness as leavewar/multi-sqn-fixread7.test.ts. */
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
-import { storeBackend, HOOKS } from '../engine/hooks'
+import { storeBackend, HOOKS, store } from '../engine/hooks'
 import { PEOPLE, indexCallsigns } from '../engine/people'
 import { initStore as raptorInitStore, notify as raptorNotify, resetSession, writeInputsBatch } from '../state/store'
 import { accountsLoad, signIn, sessionFor, setMaster, updateAccount, ACCOUNTS_LIST } from '../state/accounts'
@@ -71,6 +71,10 @@ const lineTo = (pid: string): Notice | undefined => NOTICES.find(n => n.to === p
 const env = (changes: any[], origin = 'user', type = 'inputs.batch'): any => ({ type, origin, actor: deriveActor(), changes })
 const readIt = (pid: string, l: Notice) => { mem[`sqn142_noticeseen:${pid}`] = JSON.stringify({ upto: 0, ids: [l.id] }); noticeSeenLoad() }
 const shown = (pid: string, id: string) => noticesFor(pid).some(n => n.id === id)
+/* (HIS BELL'S SWITCH — batch 1's second half §7 item 3, §16 D5′; D2198: once a master admin's home is 149, 142's lines not
+   about him are off on his bell by default. These tests are about the move's rule, so the old squadron is switched on, as
+   he would switch it, before the line is looked for) */
+const bellOn = (pid: string, u: string) => { const k = `bellsqn:${pid}`; const v: any = store.get(k, null) || {}; store.set(k, { ...v, [u]: true }) }
 /* Outlaw (`casper`) as a plain 142 admin — as the gate reads an actor (fix read 7's harness) */
 const outlaw = { id: 'acoutlaw', role: 'admin', personId: 'casper', session: null }
 const asOutlaw = (changes: any[], type = 'inputs.batch'): any => ({ type, origin: 'user', actor: outlaw, changes })
@@ -141,6 +145,7 @@ describe('fault D — a right given ON the move day never brings the retired lin
   /* (§4.5 of the reshape plan, rewrite 4 — the master-mark half kept: a master admin's reach is no right and is not ended
      (D2203's reading); a Plan held before his move day ends with it — his D2203, D2243 (Q4) — so its line is retired) */
   it('(control) the master mark set the day before his move keeps the line; Plan held from then ends with the move', () => {
+    bellOn('prowler', 'u142')
     const l = hunterLine()
     signInAs('ad', 'a'); expect(setMaster('acad2', true).ok).toBe(true)
     hunterMovesOn16(); on(17)
@@ -211,7 +216,8 @@ describe('fault N — a line dated past midnight, written in the last minutes be
   it('(SEC8-1) Outlaw at 23:57 on 15 Jul: a plain line and a marked filer line dated 00:01 on the 16th are refused', () => {
     hunterLine(); hunterMovesOn16(); on(15, 23, 57)
     const plain = { id: 'nfr8-p', to: 'prowler', by: 'casper', iid: '', name: '142 words', day: '2026-07-25', what: [{ k: 'rmk' }] }
-    const marked = { id: 'nfr8-m', to: 'prowler', by: 'casper', iid: IID, name: 'LL', day: '2026-07-25', what: [{ k: 'rmk' }], fu: ['u142'] }
+    /* (stamped with the input's squadron, as the pass stamps it — batch 1's second half, §7 item 1) */
+    const marked = { id: 'nfr8-m', to: 'prowler', by: 'casper', iid: IID, name: 'LL', day: '2026-07-25', what: [{ k: 'rmk' }], fu: ['u142'], u: 'u142' }
     /* (the plain line, naming no input, is refused since fix read 10's fault A whatever its date — no change of the war owes
        it; the marked line still pins the date) */
     expect(ownershipViolation(asOutlaw([put({ ...plain, at: at(16, 0, 1) })])) ?? 'allowed').toMatch(/about nothing the command changed/)
@@ -226,13 +232,14 @@ describe('fault N — a line dated past midnight, written in the last minutes be
     signInAs('us', 'us')
     const now = { ...theInput() }
     const ch = { collection: 'inputs', id: IID, op: 'put', before: now, after: { ...now, remarks: 'Ranger words' } }
-    const toHunter = { id: 'nfr8-mh', to: 'prowler', by: 'bane', iid: IID, name: 'LL', day: '2026-07-25', what: [{ k: 'rmk' }], fu: ['u142'] }
+    /* (each stamped with its input's squadron, as the pass stamps it — batch 1's second half, §7 item 1) */
+    const toHunter = { id: 'nfr8-mh', to: 'prowler', by: 'bane', iid: IID, name: 'LL', day: '2026-07-25', what: [{ k: 'rmk' }], fu: ['u142'], u: 'u142' }
     expect(ownershipViolation(env([ch, put({ ...toHunter, at: at(16, 0, 1) })])) ?? 'allowed').toMatch(/not dated now/)
     expect(ownershipViolation(env([ch, put({ ...toHunter, at: at(15, 23, 57) })]))).toBeNull()
     /* Ranger's Training for Ace, its remark changed, his line to Ace (named in it: no mark) */
     const tr = { person: 'dj', date: 'Jul 25', yr: 2026, s: '09:00', e: '10:00', type: 'Training', remarks: 'for Ace', by: 'bane', at: Date.now(), iid: 'ipd-fr8t', ord: 99982 }
     const ch2 = { collection: 'inputs', id: 'ipd-fr8t', op: 'put', before: tr, after: { ...tr, remarks: 'new words' } }
-    const toAce = { id: 'nfr8-ma', to: 'dj', by: 'bane', iid: 'ipd-fr8t', name: 'Training', day: '2026-07-25', what: [{ k: 'rmk' }] }
+    const toAce = { id: 'nfr8-ma', to: 'dj', by: 'bane', iid: 'ipd-fr8t', name: 'Training', day: '2026-07-25', what: [{ k: 'rmk' }], u: 'u142' }
     expect(ownershipViolation(env([ch2, put({ ...toAce, at: at(16, 0, 1) })])) ?? 'allowed').toMatch(/not dated now/)
     expect(ownershipViolation(env([ch2, put({ ...toAce, at: at(15, 23, 57) })]))).toBeNull()
   })

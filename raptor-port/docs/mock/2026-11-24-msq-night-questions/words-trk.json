@@ -1,0 +1,11 @@
+{
+  "_note": "Drawn words for the Tracker's member-view question (N1). Read by draw-trk.mjs; change the words here, not in the script. Drafted by an Opus helper, then adjusted by a fresh Fable reader (D2441, 24 Nov 26, chat 162): c1 holds the adjusted words put to him; c2 repeats c1's pick so the script's desk-only second case still runs. The Opus drafts: (1) \"They can only be saved in the admin view. Discard them before switching to 142?\", (2) \"Member view. Switch back to the admin view to save them, or discard them to switch to 142.\" thirdLabel must equal the app's own words for the way back from the member view (the script checks it against the desktop chip's hover title and the phone ☰ line, and stops if they differ).",
+  "thirdLabel": "Back to the admin view",
+  "c1": {
+    "pick": "You have unsaved chart edits on “2026”.\n\nMember view. Switch back to the admin view to save them first, or discard them to switch to 142.",
+    "logout": "You have unsaved chart edits on “2026”.\n\nMember view. Switch back to the admin view to save them first, or discard them to log out."
+  },
+  "c2": {
+    "pick": "You have unsaved chart edits on “2026”.\n\nMember view. Switch back to the admin view to save them first, or discard them to switch to 142."
+  }
+}

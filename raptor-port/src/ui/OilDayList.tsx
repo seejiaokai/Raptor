@@ -18,10 +18,13 @@
    this window's own, until Save; Later, ✕ and Escape throw the picks away and write nothing — what is left stays on the
    schedulers' bells. Save writes the picks as one command (ui/oilday.ts) and closes. */
 import { useEffect, useState } from 'react'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, inpById } from '../engine/inputs'
+import { enterForLine } from '../state/belltap'
+import { inputSqn } from '../state/inputsqn'
 import { me, pageUnit } from '../state/perms'
 import { NOTICES, noticeRun, noticeSpan, noticeLive, holidayLineAny } from '../state/notices'
-import { notify, setPage } from '../state/store'
+import { notify } from '../state/store'
+import { openInputOnPage } from './topstate'
 import { todayIso } from '../state/units'
 import { oilOpenOn, useWarFacts } from '../leavewar/sync'
 import { FloatWin } from './FloatWindow'
@@ -30,7 +33,7 @@ import { cardOf, cardWhen } from './inputcard-model'
 import { monthItems } from './inputscal-model'
 import { adminOfList, saveOilDay, type OilPick } from './oilday'
 import { holdLater, holdSave, holdSaid, holdStands, type SignHold } from './oilsign'
-import { OILLIST, setInpEdit, setOilList } from './pops'
+import { OILLIST, setOilList } from './pops'
 import { useVersion } from './useStore'
 
 /* THE SQUADRON THE LIST IS FOR (the Plan audit's PB4, the blind read's R3 — the reshape plan §19, §19b): as it was opened
@@ -122,7 +125,23 @@ function Body({ from, to, unit, name, fresh, plain, hold }: { from: string; to: 
      on its own day and plan, the box is shown again. */
   const held = hold && rows.length && holdStands(hold, from, unit) ? holdSaid(hold) : null
   /* the input's own window, where everything else about it is (the day's cards open it the same way) */
-  const openInput = (r: any) => { setInpEdit(r); setPage('inputs'); notify() }
+  /* …THROUGH THE PAGE DOOR, ITS PAGE FIRST (step K6 — the guard rail's plan §4.1 row 10, §5.3; security F1): the window
+     opens only once Inputs is the page shown (ui/topstate.ts openInputOnPage, the door's `then`), never before it — so
+     never behind a refusal. Its door is the card's own ('card'), and it leaves out the list it sits in (`skip`), the whole
+     way: the page door, the landing's second ask.
+     …AND THE INPUT'S OWN SQUADRON BEFORE ITS PAGE (step K9 — the plan §5.3, his D2403, D2621; state/inputsqn.ts
+     INPUT_DOORS 'oilcard'): the card's squadron, its page, then the window, the list left out the whole way. Refused (a
+     window open, a change not saved) or waiting for the Tracker's question or a save, nothing opens; once answered, the
+     card is pressed again (`again`, the input found afresh). Where his pages may never be its squadron, the window opens
+     where he is, as before. */
+  const openInput = (r: any) => {
+    const o = { skip: ['oilday'] }
+    const iid = String(r.iid)
+    const again = () => { const x = inpById(iid); if (x) openInput(x) }
+    const w = enterForLine(inputSqn(r, pageUnit('own')), again, 'card', o)
+    if (w === 'asked' || w === 'refused') return
+    openInputOnPage(iid, undefined, undefined, { door: 'card', ...o })
+  }
   return (
     <FloatWin id="oilday" title={`OIL — ${noticeRun(from, to)}`} sub={plain ? undefined : name ? `Public holiday · ${name}` : 'Public holiday'}
       testid="win-oilday" className="oildaywin" onClose={close}>

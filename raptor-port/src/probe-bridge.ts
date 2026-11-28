@@ -42,13 +42,15 @@ import { HOOKS } from './engine/hooks'
 import * as view from './state/view'
 import { setLgEdit, setEffectiveRole as setRoleOnly, setMe, SESSION } from './state/auth'
 import { roleOf } from './state/perms'
-import { notify, loadWeek, moveSection, moveSectionTo, writeInputs } from './state/store'
+import { notify, loadWeek, moveSection, moveSectionTo, writeInputs, setPage } from './state/store'
 import { globalUndo, globalRedo } from './undo'
 import { secOrder, SECTIONS, secDefault, setSecDefault, moveSecDefault } from './engine/order'
 import { setMemberTodayForTests as lwSetMemberToday, landingOf as lwLandingOf, memberToday as lwMemberToday } from './leavewar/engine'
 import { setRole as lwSetRole, selectWar as lwSelectWar, loadWars as lwLoadWars, setCell as lwSetCell, setPostOut as lwSetPostOut, saveManningRule as lwSaveManningRule, getState as lwGetState, setDayEvent as lwSetDayEvent, createWar as lwCreateWar, setTypedBalance as lwSetTypedBalance } from './leavewar/state/store'
 import { pinViewer, carryViewerPin, dayFacts as lwDayFacts, flyAnswer } from './leavewar/sync'
 import { setFlyDays, setFlyRun, setFlyRule } from './state/flyplan'
+import { addUnit, placeOfOn, todayIso } from './state/units'
+import { UNIT } from './engine/unitview'
 
 /* the hosts the bridge is installed on ([ACCOUNTS], 26 Sep 26): this PC only — the
    e2e suite, the probes, the Tracker smoke and the hand-pass drivers all serve the
@@ -148,7 +150,8 @@ export function installProbeBridge() {
      scheduler board open on a role/page combination no click path can ever
      reach (a squadron member's Edit Schedule link doesn't exist to click),
      the same way w.openScheduler already forces SBDAY open with no click. */
-  w.setPage = (p: string) => { view.setPage(p); notify() }
+  /* (through the page door, as every page change is — step K6, R5 (b)) */
+  w.setPage = (p: string) => { setPage(p); notify() }
   /* Shell.tsx and ui-contracts already claim this mirror exists — make it true */
   w.openWarns = (sev: any) => { view.openWarns(sev); notify() }
   /* the Leave War role, same precedent as w.setPage (this PC only, like the whole
@@ -192,6 +195,15 @@ export function installProbeBridge() {
        fresh demo world — bug-check order §7.7). It replaces the one e2e step that
        drove the retired "View as" picker. */
     w.raptorMe = (pid: string | null) => { setMe(pid); notify() }
+    /* batch 1's second half (§11 — eight squadrons): a squadron made through the REAL door "+ New squadron" will use
+       (state/units.ts addUnit, held by its own checks and the commit gate — a master admin's alone), at the place of the
+       squadron in view, its first admin the account named. The browser tests and the drawing's measurements make 150 to
+       155 with it while Admin → Squadrons is not yet on screen. */
+    w.raptorAddUnit = (num: string, firstAdmin?: string) => {
+      const r = addUnit(num, placeOfOn(UNIT, todayIso())?.id ?? '', firstAdmin)
+      notify()
+      return r
+    }
   }
   /* the Leave War VIEWER — the person the war scopes a member to (canEditRow).
      Production mirrors the SIGNED-IN person onto it through the sync (D166 (4)); the

@@ -31,14 +31,15 @@
    (state/noticeseen.ts): were reading to write to the notice, the maker's Undo of his change would be refused —
    "Ranger changed this after your action" — by the read of the very person it told. */
 import { PEOPLE, sansOnP } from '../engine/people'
-import { odOut, isOD, dateOrd, inpLabel, isFly, titleOf, toOf, isUnavail, namedOf, placeholderOf, remarksTyped, tillTurned, inputSpanIso, inputSquadrons } from '../engine/inputs'
+import { odOut, isOD, dateOrd, inpLabel, isFly, titleOf, toOf, isUnavail, namedOf, placeholderOf, remarksTyped, tillTurned, inputSpanIso, inputSquadrons, inputUnitOf } from '../engine/inputs'
 import { homeHandle } from '../engine/roster'
 import { hhmm } from '../engine/time'
-import { mayEditSched } from './perms'
+import { mayEditSched, lwUnitNow } from './perms'
 import { todayIso, homeOn, homeChangesOn, unitRows, levelOfAccount, grantOfOn } from './units'
 import { isAdminRole } from './units-model'
 /* (accounts.ts reaches this module through perms.ts; each side calls the other only at run time, never at load) */
 import { accountOfPid, isAdminAccount, levelAcct } from './accounts'
+import { bellShows } from './bellsqn'
 import { activeEnvelope } from '../command'
 
 export type NoticePart =
@@ -115,6 +116,25 @@ export type NoticePart =
      `hid` — his SANS availability the change HID, today on (D2341). `back` — this line is the "taken back" of an untick
      line he had read, its Undo pressed (D1693, D1699). A line with no `how` was written before D2391 (demo data only). */
   | { k: 'sansback'; days: string[]; hid?: string[]; how?: SansBackHow; to?: string; back?: true; over?: string[]; kept?: true; again?: true; ref?: string; ended?: true }
+  /* A POSTING OUT THE APP COULD NOT RUN (batch 1's second half, plan §7 item 7, §15 D10, §16 D10′ — his D2214: "Bell the
+     admins"): "Ranger · Mon 20 Jul / Posting out could not run. See his row on Admin → Users." — to each of his squadron's
+     admins once, by the app (no one's name), in a command of its own after the posting's was refused (leavewar/sync.ts
+     tellPostingFailed); its id fixed by the posting (a later load finds it and writes nothing); a tap opens his row.
+     `who`, `o` — the posting; `day` its date; stamped with its squadron (`u`), an admin line like the posting's own. */
+  | { k: 'pofail'; who: string; o: PoOutcome }
+  /* HIS OWN ACCOUNT CHANGED (batch 1's second half, plan §7 item 6, §15 D5, D11, §16 D5′–D7′ — his D2251, D2309, D2319):
+     a line to the man himself, about no input (`iid` is ''), `name` his callsign, `day` the day it took effect. `c` what
+     changed; `u` the squadron it names (a role at home, a View or a Plan), `num` that squadron's number as it was written
+     (a line about "+ New squadron" still says 150 once the squadron is undone — D7′); `why` where the app itself did it,
+     with no one's name: `moved` (`mv` the squadron he moved to) or `archived`; `master`, a View or Plan that being made a
+     master admin ended, is signed by whoever made him one (D2396 (n)). One body says what a change owes, for the
+     writer and the gate alike (state/acctlines.ts accessParts); the line carries no squadron stamp of its own (D5), so
+     neither the bell's switch, the grey mark nor the rights rule touches it, and a move keeps it. */
+  | { k: 'acct'; c: AcctChange; u?: string; num?: string; why?: 'moved' | 'archived' | 'master'; mv?: string }
+
+/** what changed on his account: made an admin of his squadron or a member, suspended or enabled, given or losing View or
+ *  Plan of another squadron, made or unmade a master admin */
+export type AcctChange = 'admin' | 'member' | 'off' | 'on' | 'view' | 'viewEnd' | 'plan' | 'planEnd' | 'master' | 'masterEnd'
 
 /** what a posting out did on its date, for the admins' bells ([POSTOUT-RUN-NOTICE]) */
 export type PoOutcome = 'overseas' | 'delete' | 'sans' | 'none'
@@ -139,7 +159,19 @@ export interface Notice {
    *  his home while he has not moved since the input was filed, and any he holds a right in). Absent: he was named in it. Written once, by the pass, so the line's leaving his
    *  bell after a move (noticeLeftBell) never has to ask the input as it stands today. */
   fu?: string[]
+  /** THE SQUADRON THE LINE IS OF (batch 1's second half, plan §7 item 1 — D2198, D2202): written where the line is made —
+   *  an input's line its input's squadron (engine/inputs.ts inputUnitOf), a war line (`lw`, `lwopen`, `lwback`) the
+   *  war's, a posting's (`po`, `poback`) the posting's, a holiday's the holiday's (its part's `u` too). Read by the
+   *  bell's switch, its grey mark and its tap (noticeLive, ui/topstate.ts). The gate refuses a new line whose stamp is
+   *  not the squadron the command acts in, and a line rewritten to another (state/perms.ts lineStampWrong,
+   *  lineRewritten). A line stored before it was carried has none, and reads as its reader's home (lineUnit — D56). */
+  u?: string
+  /** ON AN UNDO'S OPPOSITE LINE ABOUT HIS OWN ACCOUNT (batch 1's second half §16 D7′): the step's own line it answers, read
+   *  by a later Redo to know he had been told the opposite (state/acctlines.ts acctFollowUps) */
+  ref?: string
 }
+/** the squadron a line is of — its stamp; a line stored before the stamp (D56: demo data) its reader's home today */
+export const lineUnit = (n: Pick<Notice, 'u' | 'to'>): string | null => (typeof n.u === 'string' && n.u ? n.u : homeOn(String(n.to), todayIso()))
 
 /* the live list — restored IN PLACE by the snapshot (state/history.ts), like the inputs and the planning notes */
 export const NOTICES: Notice[] = []
@@ -542,7 +574,9 @@ export function noticePass(before: ReadonlyMap<string, any>, live: readonly any[
     /* (the bids of his this input replaced on the Leave War — said on this one line, M4 9.3a) */
     const rb = o.replaced?.get(String(r.iid))?.get(to)
     if (rb && rb.length) what = [...what, ...rb.map(c => ({ k: 'rbid' as const, c }))]
-    NOTICES.push({ id: mint(at), to, by, at, iid: String(r.iid), name: String(inpLabel(r)), day: firstDay(r), what, ...(fu ? { fu } : {}) })
+    /* (the input's squadron — §7 item 1; the gate reads the same body, state/perms.ts lineStampWrong) */
+    const u = inputUnitOf(r)
+    NOTICES.push({ id: mint(at), to, by, at, iid: String(r.iid), name: String(inpLabel(r)), day: firstDay(r), what, ...(fu ? { fu } : {}), ...(u ? { u } : {}) })
     made++
   }
   const split = new Map<string, string>()             // old input id → the man split out of it, told under his new one
@@ -641,7 +675,7 @@ export function noticeHoliday(to: readonly string[], by: string | null, name: st
   for (const p of new Set(to.map(String))) {
     if (!here(p)) continue
     const id = mint(at)
-    NOTICES.push({ id, to: p, by, at, iid: '', name, day: a, what: [{ k: 'oilhol', a, b, ...(unit ? { u: unit } : {}) }] })
+    NOTICES.push({ id, to: p, by, at, iid: '', name, day: a, what: [{ k: 'oilhol', a, b, ...(unit ? { u: unit } : {}) }], ...(unit ? { u: unit } : {}) })
     noteHolMade(id)
     made++
   }
@@ -708,12 +742,14 @@ export function noticeAboutHim(n: Pick<Notice, 'to' | 'iid' | 'what' | 'fu'>): b
     return !Array.isArray(n.fu)
   }
   const p: any = (n.what || [])[0]
+  /* (his own account's line is about him — §15 D5) */
+  if (p && p.k === 'acct') return true
   /* (a line with no part says nothing about him — fix read 10, fault A (e), Fable F10-1: read as his, a made-up line with
      no parts followed a moved man to his new squadron) */
   if (!p) return false
   if (p.k === 'lw') return true
   if (p.k === 'lwback') return p.d !== 'open' && p.d !== 'close'
-  if (p.k === 'po' || p.k === 'poback') return String(p.who) === String(n.to)
+  if (p.k === 'po' || p.k === 'poback' || p.k === 'pofail') return String(p.who) === String(n.to)
   /* HIS OWN SANS AVAILABILITY TAKEN BACK (D2338 with his D2218: a line about himself stays and follows him on a move): the
      struck line is a stored record of his own SANS days, always to him (sansunfiled.ts sansBackCovered). His live SANS-days
      line (`sansdue`) is NOT asked here and stays false: it is never stored, but worked out from his home squadron's
@@ -778,9 +814,72 @@ export function noticeLeftBell(n: Pick<Notice, 'to' | 'at' | 'iid' | 'what' | 'f
     }
     return false
   }
-  const moved = homeChangesOn(to, wrote, today).length > 0
+  const moves = homeChangesOn(to, wrote, today)
   /* (the move first: it is the cheap question, and asks no input — read for every line each time a bell is drawn) */
-  return moved && !noticeAboutHim(n)
+  if (!moves.length || noticeAboutHim(n)) return false
+  /* A MASTER ADMIN'S MOVE KEEPS THE SQUADRONS HE IS STILL ADMIN OF (batch 1's second half, plan §16 D1′b — R3-F6; his
+     D2198, D2218): a squadron's admin line (a posting's, its take-back's, a holiday's) carries its squadron (`u`), so it
+     leaves on a move day only where, from that day, he is not admin of that squadron by any road (adminThen: the master
+     mark, or Plan held before the day began). A Plan holder's move ends his Plan (D2203), so his lines still leave. A
+     line with no stamp (D56) is his old home's business, as before. */
+  const u = adminLineSquadron(n)
+  if (!u) return true
+  const acct = accountOfPid(to)
+  return moves.some(d => !(acct && adminThen(acct, u, d)))
+}
+/* the squadron of an admin-kind line — a posting's, its take-back's, a holiday's (§16 D1′) — stamped with it; else null */
+const ADMIN_KINDS = new Set(['po', 'poback', 'pofail', 'oilhol'])
+function adminLineSquadron(n: Pick<Notice, 'iid' | 'what'> & { u?: string }): string | null {
+  const p: any = (n.what || [])[0]
+  return !n.iid && p && ADMIN_KINDS.has(p.k) && typeof n.u === 'string' && n.u ? n.u : null
+}
+/** WHEN DID THE ADMIN RIGHT HE HOLDS IN THAT SQUADRON NOW BEGIN? (batch 1's second half, plan §16 D1′ — his D2310, D2218)
+ *  Null: he holds none today by his account's own role (never the role in force — a tap to the member view retires
+ *  nothing). Else the earliest moment among the roads that hold: his home's admin role (Account.adminAt), Plan of it
+ *  (Grant.fromAt — Plan is an admin's), the master mark (Account.masterAt; for a squadron he held Plan of when made one,
+ *  that Plan's own moment, Account.kept — D1′a). A road with no moment (a row from before they were kept — D56) counts
+ *  from always. `roads` 'rights' — the Plan and the mark only (a filer told through a right, R3-O2). */
+export function rightStart(pid: string, u: string, iso: string = todayIso(), roads: 'all' | 'rights' = 'all'): number | null {
+  const acct: any = accountOfPid(pid)
+  if (!acct || !isAdminRole(acct)) return null
+  let best: number | null = null
+  const take = (x: unknown): void => { const v = typeof x === 'number' && Number.isFinite(x) ? x : -Infinity; best = best == null ? v : Math.min(best, v) }
+  if (acct.master === true) {
+    const k = acct.kept && typeof acct.kept === 'object' && Object.prototype.hasOwnProperty.call(acct.kept, u) ? acct.kept[u] : undefined
+    take(typeof k === 'number' && Number.isFinite(k) ? (Number.isFinite(acct.masterAt) ? Math.min(k, acct.masterAt) : -Infinity) : acct.masterAt)
+  }
+  if (homeOn(pid, iso) === u) {
+    if (roads === 'all' && levelOfAccount(levelAcct({ ...acct, master: undefined }), u, iso) === 'admin') take(acct.adminAt)
+  } else {
+    const g = grantOfOn({ id: acct.id, pid: String(acct.pid), pidFrom: acct.pidFrom }, u, iso)
+    if (g && g.level === 'admin') take(g.fromAt)
+  }
+  return best
+}
+/** IS THE RIGHT THAT BROUGHT THIS LINE STILL HELD, WITHOUT A BREAK SINCE THE LINE? (§16 D1′ — his D2310: "a squadron's
+ *  admin lines stay only while he has been its admin without a break"; D2218: a line leaves for good.) An admin-kind line
+ *  (adminLineSquadron) is live only while (1) its reader holds an admin right in its squadron by his account's own role —
+ *  so it leaves at once on every road that ends the right: a command, an Undo, a Redo, an archive, an Overseas posting —
+ *  and (2) that right began no later than the line, so a right given back later brings none of the old lines back; an
+ *  Undo of the take-away restores the row whole, its moment with it, and the lines come back. A worked-out "off the
+ *  manpower" line (leavewar/sync.ts postedLinesOf) is judged by its posting's day: a posting dated before the day the
+ *  right began is not shown — one of that very day shows (a posting keeps a day, not a moment: the agent's reading,
+ *  told to him). A line about the reader himself (his own posting) stays. A line he was told only as an input's filer
+ *  (`fu`) stays while one of its squadrons is his home, or a right of his in one — Plan or the mark — began no later than
+ *  it (R3-O2). Nothing is deleted: the lines are kept, and the change history keeps everything. */
+function rightHolds(n: Notice, today: string): boolean {
+  const u = adminLineSquadron(n)
+  if (u) {
+    if (noticeAboutHim(n)) return true
+    const s = rightStart(String(n.to), u, today)
+    if (s == null) return false
+    return n.id.startsWith('po:') ? s === -Infinity || dayOfAt(s) <= n.day : s <= n.at
+  }
+  if (n.iid && Array.isArray(n.fu) && n.fu.length && !noticeAboutHim(n)) {
+    const to = String(n.to), home = homeOn(to, today)
+    return n.fu.some(x => { if (x === home) return true; const s = rightStart(to, x, today, 'rights'); return s != null && s <= n.at })
+  }
+  return true
 }
 
 /** IS THIS NOTICE ONE TO SHOW? Every notice about an input is. A holiday's is only while an input on its dates still
@@ -791,6 +890,13 @@ export function noticeLeftBell(n: Pick<Notice, 'to' | 'at' | 'iid' | 'what' | 'f
 export function noticeLive(n: Notice): boolean {
   /* a line of his old squadron's, once he has moved (D2218 — noticeLeftBell, above) */
   if (noticeLeftBell(n)) return false
+  /* a squadron's admin line whose right has ended, or begun again since (§16 D1′ — rightHolds, above) */
+  if (!rightHolds(n, todayIso())) return false
+  /* A SQUADRON HIS BELL'S SWITCH HAS OFF (batch 1's second half §7 item 3, §15 D6, §16 D5′ — D2198, D2202; state/bellsqn.ts):
+     asked here, the one body, so a line switched off is neither listed, counted, lighting the bell nor marked read; kept,
+     it is back as he left it once switched on. Never of a line about him (his own leave, his own posting, an input he is
+     named in — D5′), and only of a line that carries a squadron (one stored before reads as his home, D56) */
+  if (!noticeAboutHim(n) && !bellShows(String(n.to), lineUnit(n) ?? '')) return false
   /* ONE BIDDING LINE A STRETCH (M4 9.4): each month tapped in "Open for bidding" is its own command — a newer line of his
      about bidding on dates this one shares takes its place, as the holiday's lines do */
   const o = openOf(n)
@@ -820,7 +926,7 @@ export function noticeLive(n: Notice): boolean {
   /* A POSTING'S LINE IS A SCHEDULER'S, as a holiday's is (below): it is addressed to an admin and its tap opens Admin →
      Users, so with his member view on (D292) it is neither listed nor counted, and is there again, read or unread as he
      left it, when he switches back */
-  if (w && (w.k === 'po' || w.k === 'poback')) return mayEditSched()
+  if (w && (w.k === 'po' || w.k === 'poback' || w.k === 'pofail')) return mayEditSched()
   const h = holOf(n)
   if (!h) return true
   /* A SCHEDULER'S LINE, AND ONLY WHILE HE IS ONE (the check's walk, E8 — 13 Oct 26; owner D785, with the reading told to
@@ -872,14 +978,15 @@ export function warLineName(part: NoticePart): string {
 }
 /** a war line, written inside the war command that made the change (leavewar/sync.ts) — never to whoever did it, never
  *  to a man who has left. Answers how many were made. */
-export function noticeWar(to: readonly string[], by: string | null, part: NoticePart, at: number = Date.now()): number {
+/* (`u` — the war's squadron: the loaded war's, perms.ts lwUnitNow, unless the caller names it — §7 item 1) */
+export function noticeWar(to: readonly string[], by: string | null, part: NoticePart, at: number = Date.now(), u: string | null = lwUnitNow()): number {
   const p: any = part
   const name = warLineName(part)
   let made = 0
   for (const who of new Set(to.map(String))) {
     if (!here(who) || (by != null && who === by)) continue
     const id = mint(at)
-    NOTICES.push({ id, to: who, by, at, iid: '', name, day: String(p.a), what: [part] })
+    NOTICES.push({ id, to: who, by, at, iid: '', name, day: String(p.a), what: [part], ...(u ? { u } : {}) })
     noteWarMade(id)
     made++
   }
@@ -890,14 +997,15 @@ export function noticeWar(to: readonly string[], by: string | null, part: Notice
  *  scheduler store enlisted), so a refused pass tells nobody; once made it stays as the record that the posting ran (the top
  *  bar's Undo never takes a posting back — D350). `to` — every admin who can sign in (D1547: "each admin's bell"), the man
  *  himself left out by the caller; a man no longer here is told nothing. Answers how many were made. */
-export function noticePosting(to: readonly string[], who: string, o: PoOutcome, day: string, acct: boolean, at: number = Date.now()): number {
+/* (`u` — the posting's squadron: the loaded war's unless the runner names another — §7 item 1) */
+export function noticePosting(to: readonly string[], who: string, o: PoOutcome, day: string, acct: boolean, at: number = Date.now(), u: string | null = lwUnitNow()): number {
   const p: any = PEOPLE[who]
   const part: NoticePart = acct && o === 'overseas' ? { k: 'po', who, o, acct: true } : { k: 'po', who, o }
   let made = 0
   for (const t of new Set(to.map(String))) {
     if (!here(t)) continue
     const id = mint(at)
-    NOTICES.push({ id, to: t, by: null, at, iid: '', name: p && p.cs ? String(p.cs) : who, day, what: [part] })
+    NOTICES.push({ id, to: t, by: null, at, iid: '', name: p && p.cs ? String(p.cs) : who, day, what: [part], ...(u ? { u } : {}) })
     noteWarMade(id)
     made++
   }
@@ -906,15 +1014,46 @@ export function noticePosting(to: readonly string[], who: string, o: PoOutcome, 
 /** A POSTING'S LINE TAKEN BACK ([NOTICE-UNDO-RETRACT] step 1 — D1693, D1699): one line to an admin who had read the
  *  posting's line, pushed INSIDE the posting sheet's "Undo post out" command (leavewar/sync.ts retractPostingLines), by the
  *  admin who pressed it — never to him. Its words: the posting's own, struck, then "taken back · Saber" (noticeWords). */
-export function noticePostingBack(to: string, by: string | null, who: string, o: PoOutcome, day: string, acct: boolean, at: number = Date.now()): boolean {
+/* (`u` — the squadron of the line it takes back — §7 item 1) */
+export function noticePostingBack(to: string, by: string | null, who: string, o: PoOutcome, day: string, acct: boolean, at: number = Date.now(), u: string | null = lwUnitNow()): boolean {
   if (!here(to) || (by != null && to === by)) return false
   const p: any = PEOPLE[who]
   const part: NoticePart = acct && o === 'overseas' ? { k: 'poback', who, o, acct: true } : { k: 'poback', who, o }
   const id = mint(at)
-  NOTICES.push({ id, to, by, at, iid: '', name: p && p.cs ? String(p.cs) : who, day, what: [part] })
+  NOTICES.push({ id, to, by, at, iid: '', name: p && p.cs ? String(p.cs) : who, day, what: [part], ...(u ? { u } : {}) })
   noteWarMade(id)
   return true
 }
+/** A POSTING THAT COULD NOT RUN (§7 item 7 — his D2214): one line to each of `to` (his squadron's admins, the man
+ *  himself left out by the caller), by the app, each its fixed id — the posting's key and the admin — so a second load
+ *  writes nothing. Pushed INSIDE the app's own `posting.failed` command (leavewar/sync.ts tellPostingFailed). */
+export const poFailedLineId = (key: string, to: string): string => `pofail:${key}:${to}`
+export function noticePostingFailed(to: readonly string[], key: string, who: string, o: PoOutcome, day: string, u: string, at: number = Date.now()): number {
+  const p: any = PEOPLE[who]
+  let made = 0
+  for (const t of new Set(to.map(String))) {
+    const id = poFailedLineId(key, t)
+    if (!here(t) || NOTICES.some(n => n.id === id)) continue
+    NOTICES.push({ id, to: t, by: null, at, iid: '', name: p && p.cs ? String(p.cs) : who, day, what: [{ k: 'pofail', who, o }], u })
+    noteWarMade(id)
+    made++
+  }
+  return made
+}
+/** A LINE ABOUT HIS OWN ACCOUNT (§7 item 6), pushed INSIDE the command that changed it (state/acctlines.ts tellAccess), or
+ *  by the app's own writer when a move takes effect (`id` fixed by the change, so a second load writes nothing). To the man
+ *  himself, archived or suspended among them — he reads it once he can sign in again (D2251); never a deleted man. */
+/* (`ref` — on an Undo's opposite line, the step's own line it answers: a later Redo finds it there, §16 D7′) */
+export function noticeAccount(to: string, by: string | null, part: Extract<NoticePart, { k: 'acct' }>, day: string, at: number = Date.now(), id?: string, ref?: string): string | null {
+  const x: any = PEOPLE[to]
+  if (!x || x.deleted || x.special) return null
+  const nid = id ?? mint(at)
+  if (NOTICES.some(n => n.id === nid)) return null
+  NOTICES.push({ id: nid, to, by, at, iid: '', name: x.cs ? String(x.cs) : to, day, what: [part], ...(ref ? { ref } : {}) })
+  return nid
+}
+/** is this one of his own account's lines (§7 item 6)? */
+export const isAcctNotice = (n: any): boolean => !!n && Array.isArray(n.what) && n.what.some((p: any) => p && p.k === 'acct')
 /** HIS SANS POSTING OR TICK CHANGED (D2391, with D1693, D1710): one line to him, pushed INSIDE the change's own command
  *  (leavewar/sansunfiled.ts sansTakeBack), by the admin who did it — never to him. `day` — the posting's date, or the day
  *  of the untick; `said` — what changed (`how`, the new date `to`, `back` for an untick's "taken back"). */
@@ -1014,7 +1153,8 @@ function sansBackLeft(n: Notice): boolean {
 /** the posting a line is about, or null — the bell's tap asks it (ui/topstate.ts openNotice) */
 export function postOf(n: Pick<Notice, 'what'>): { who: string; o: PoOutcome; acct: boolean } | null {
   const p: any = (n.what || [])[0]
-  return p && (p.k === 'po' || p.k === 'poback') ? { who: String(p.who), o: p.o as PoOutcome, acct: !!p.acct } : null
+  /* (…and a posting that could not run: its tap opens his row too — §7 item 7) */
+  return p && (p.k === 'po' || p.k === 'poback' || p.k === 'pofail') ? { who: String(p.who), o: p.o as PoOutcome, acct: !!p.acct } : null
 }
 /* what the outcome did, in the past (D1690 — the drawing of record docs/mock/2026-11-05-postout-bell/, picture 2b): the
    sheet's own line (leavewar/ui/outcomewords.ts) said as done. A Delete reads "deleted" whether or not he held a sign-in
@@ -1128,16 +1268,42 @@ function partWords(p: NoticePart): string {
       return c
     }
     case 'po': return `Posted out · ${PO_DID[p.o] ? PO_DID[p.o](!!p.acct) : 'off the manpower'}`
+    /* (his D2214's words, as drawn — picture p10 of the second half's page) */
+    case 'pofail': return 'Posting out could not run. See his row on Admin → Users.'
     /* "Bidding" with a capital, as his drawing writes it (his D1433, 27 Oct 26) */
     case 'lwopen': return p.end ? 'Bidding closed · its dates ended' : p.open ? 'Bidding open' : 'Bidding closed'
     /* a taken-back line's own words are "taken back"; what it took back is said struck through beside them (backWords) */
     case 'lwback': return 'taken back'
     case 'poback': return 'taken back'
+    case 'acct': return acctWords(p)
     /* (only an untick line's "taken back" reads so — D1693; every other SANS line has its own words: sansBackWords) */
     case 'sansback': return 'taken back'
     /* (his own words, D2340, D2390 — the old "Planned, no availability filed" was not clear, D2342) */
     case 'sansdue': return `You're planned on ${sansDaysWords(sansDays(p))} with nothing filed. Tap to file for availability.`
   }
+}
+/* HIS OWN ACCOUNT'S WORDS (his D2319 — docs/mock/2026-11-22-msq-b1-screens, pictures f3a, f3b): "Given Plan of 149: full
+   access to 149"; the app's own, with no one's name, "View of 149 ended: you moved to 150", "Plan of 149 ended: archived",
+   "Made a member: you moved to 149" */
+function acctWords(p: Extract<NoticePart, { k: 'acct' }>): string {
+  const n = p.num ?? ''
+  /* (his D2396 (n): a View or Plan that being made a master admin ended — "Plan of 149 ended: master admin covers every
+     squadron", signed by who did it) */
+  const why = p.why === 'moved' ? `: you moved to ${p.mv ?? ''}` : p.why === 'archived' ? ': archived'
+    : p.why === 'master' ? ': master admin covers every squadron' : ''
+  switch (p.c) {
+    case 'admin': return `Made an admin of ${n}`
+    case 'member': return 'Made a member' + why
+    case 'off': return 'Suspended'
+    case 'on': return 'Enabled'
+    case 'view': return `Given View of ${n}`
+    case 'viewEnd': return `View of ${n} ended` + why
+    case 'plan': return `Given Plan of ${n}: full access to ${n}`
+    case 'planEnd': return `Plan of ${n} ended` + why
+    case 'master': return 'Made a master admin: full access to every squadron'
+    case 'masterEnd': return 'Master admin taken off: full access to every squadron ended'
+  }
+  return ''
 }
 /* HIS SANS DAYS, AS THE LINE'S DATE (D2338): the first three named, each month once at the end of its run of days, as the
    bell writes a run of dates — "Sat 18 Jul"; "Fri 17, Sat 18 Jul"; across two months "Fri 31 Jul, Sat 1 Aug" */
@@ -1242,7 +1408,7 @@ export function noticeWords(n: Notice): { name: string; day: string; what: strin
   }
   /* A POSTING'S LINE (D1690 — picture 2b): the man in bold, by his callsign of today (a deleted man keeps his record, so
      his name still reads), the posting's date; "Posted out · archived, account suspended"; nobody named */
-  if (w && w.k === 'po') {
+  if (w && (w.k === 'po' || w.k === 'pofail')) {
     const p: any = PEOPLE[String(w.who)]
     return { name: p && p.cs ? String(p.cs) : n.name, day: noticeDay(n.day), what: partWords(w), who: '' }
   }

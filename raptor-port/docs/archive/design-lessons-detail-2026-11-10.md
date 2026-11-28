@@ -177,3 +177,29 @@ nothing until accepted again" and a rejected row's hover text "Removed from the 
 Both wait for his answer (the night of 16–17 Oct 26, question 2).
 
 *Lesson 1 (16 Oct 26, D938 — "a scheduler's working screen carries no hint on how a row is edited…") was struck by him the same day: "Disregard this lesson" (D942).*
+
+## Added 22 Nov 26 (chat 137)
+
+**Lesson 98 (22 Nov 26, D2336).** Said of picture 5c on batch 1's second-half page (Admin → Users, Ranger's row opened by Hunter, 142's admin): the line "Only 149's admins, an admin with Plan of 149 or a master admin give access to 149." became "Only an admin of 149 can give access to 149."; the shared place's time-zone line likewise became "Only an admin of both 142 and 149 can change the time zone: both squadrons are here." *Other places it may apply (D852), named, not changed:* every "who can" line the multi-squadron build adds — the last-admin refusals, a greyed access button's line, the bell's lines about who may act — reads one role; "Only a master admin can give Plan." already does. Reader's notes: below, once read.
+
+Reader's notes (one fresh reader, 22 Nov 26): the first wording covered every "who may" line, unmarked, and its "never a list" clashed with D2241 where no one role covers them; narrowed to his case (access to a squadron, and the time-zone line he approved likewise), the wider reach marked as the agent's reading with D2241's exception. It contradicts no other lesson or rule in the guide.
+
+## Added 26 Nov 26 (chat 188)
+
+**Lesson 103 (26 Nov 26, D2644).** Said of round 5's D1 drawing on the guard rail's questions page (Admin → Users, the "+ Add a person" form opened at the top): the drawer had added a Cancel beside the form's "Add person", a different size and off its line, and the note below jammed against the pair. Redrawn by chat 187 with the app's own row-foot pair, measured. *Other places it may apply (D852), named, not changed:* every mock-up that adds a button beside one the app already draws — D8's "Someone new" beside "Add person" (redrawn the same night), the Display page's buttons, the "Post out…" and "Edit on 142 →" rows of the round-6 drawings. Reader's notes: below, once read.
+
+**Lesson 104 (26 Nov 26, D2645).** Said of round 5's D12 drawing on the guard rail's questions page: the PLANNED BY box drawn open as a plain, white-edged browser list of names. Checked by chat 188's drawer: both the sign-off boxes and "+ Input"'s Person box open the browser's own list today (on an iPhone, the wheel at the screen's foot). Redrawn in round 6 (N10) with the app's own drop-down, the top bar's squadron list: a dark card, a tick on the chosen row, the squadron number in grey at the right. *Other places it may apply (D852), named, not changed:* every other sign-off box on Edit Schedule, the Inputs page's Person box on the home squadron, the Add a person form's "Pilot, WSO or personnel" and CAT boxes, the Leave War's pickers. Reader's notes: below, once read.
+
+Reader's notes (one fresh reader, 26 Nov 26, both lessons; whole in `raptor-port/docs/superpowers/briefs/2026-11-26-msq-r6-lessons-reader.md`): lesson 103 first said "on one line", narrower than his "aligned" — changed to his word; both lessons narrow lesson 68 and now say so, lesson 68 pointing to them; "measured" stood unmarked on the How we work line as if his — taken off there, kept as a marked reading on the lesson; lesson 104's model drop-down marked as the agent's choice, the SANS calendar's Highlight list of people named as the other candidate. Neither changes his meaning.
+
+**Lesson 104, narrowed the same day (D2646).** Shown round 6's N10 (an app-drawn drop-down), he sent a picture of the PLANNED BY list open on his iPhone — the phone's own dark list — and said he is ok with it: "No need for an app version". So the fault was the drawing, not the app; the lesson now reads "drawn as his phone really shows it". The earlier wording ("the app's own drop-down look, never the browser's plain list") is kept here only. Reader's notes (one fresh reader, 26 Nov 26, `raptor-port/docs/superpowers/briefs/2026-11-26-msq-r6-lesson104-reader.md`): "made-up plain box" was unmarked and not true of the desktop drawing (it showed the real browser list) — now "a look his phone does not show"; "happy" → his "ok"; a desktop picture named; the lesson-68 sentence corrected (it narrows lesson 68's reading, not his rule); the People & accounts line names the two lists only. The reader judged D2646 a reversal of D2645 (archive it); kept live as narrowed, since his "so ugly" of the drawing still stands behind lesson 104 (the agent's call).
+
+## Added 27 Nov 26 (chat 206)
+
+Lessons 160 and 161 (numbers 151–159 left clear of the open readings branch, which reached 150). Other places the same improvement would apply, suggestions only, nothing changed unasked:
+- Lesson 160: the grid's figure beside a man's name, his "My leave" line on a phone and the leave buttons' "left" figures — already put to him as question 23 (an amber "–" where "Not typed" does not fit); the five smaller kinds in his window (question 23 item 6).
+- Lesson 161: none known to the coordinator.
+
+Read by one fresh reader (a fresh Opus, 27 Nov 26): both OK with small changes, taken — lesson 160 "his window" → "a person's window" and his own reason added ("which he found excessive there"); lesson 161 "the phone's small gap" → "a gap like the phone's" (he asked for "similar", not the same to the pixel).
+
+Lesson 162 (D2823) read by one fresh reader (a fresh Opus, 27 Nov 26): the outline and the "–" elsewhere were written as his rule; they are the agent's reading — moved into the reading, as the reader proposed. Other places: none beyond lesson 160's list.

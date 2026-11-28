@@ -75,6 +75,10 @@ const homes = (pid: string, key: string, rows: [string, string][]) => {
 const on = (d: number, h = 9, m = 0) => { vi.setSystemTime(new Date(2026, 6, d, h, m, 0)); unitsLoad() }
 const lineTo = (pid: string): Notice | undefined => NOTICES.find(n => n.to === pid && n.iid === IID)
 const shown = (pid: string, id: string) => noticesFor(pid).some(n => n.id === id)
+/* (HIS BELL'S SWITCH — batch 1's second half §7 item 3, §16 D5′; D2198: once a master admin's home is 149, 142's lines not
+   about him are off on his bell by default. These tests are about the move's rule, so the old squadron is switched on, as
+   he would switch it, before the line is looked for) */
+const bellOn = (pid: string, u: string) => { const k = `bellsqn:${pid}`; const v: any = settingsStore.get(k, null) || {}; settingsStore.set(k, { ...v, [u]: true }) }
 /* Outlaw (`casper`) as a plain 142 admin — as the gate reads an actor (fix read 7's harness) */
 const outlaw = { id: 'acoutlaw', role: 'admin', personId: 'casper', session: null }
 const asOutlaw = (changes: any[], type = 'inputs.batch'): any => ({ type, origin: 'user', actor: outlaw, changes })
@@ -610,6 +614,7 @@ describe('fault F — an older Undo of the same account row keeps the link\'s da
 
 describe('fault G — three Undo cases keep the line the man kept (F11-5a, F11-5b, F11-6)', () => {
   it('(Fable F11-5a) master since 10 Jul; the mark taken off and undone on 11 Jul; he moves 12 Jul as the master; on 13 Jul the Redo by mistake and its Undo at once: his day and his line come back', () => {
+    bellOn('prowler', 'u142')
     on(10)
     signInAs('ad', 'a'); expect(setMaster('acad2', true).ok).toBe(true)
     const l = hunterLine()
@@ -666,6 +671,7 @@ describe('fault G — three Undo cases keep the line the man kept (F11-5a, F11-5
     expect(levelIn('acad2', 'u149', rosterToday()), '17 Jul, after the Undo').toBeNull()
   })
   it('(Fable F11-6) Hunter master since 10 Jul, moved 12 Jul; on 15 Jul Saber links his sign-in to Newby by mistake and presses Undo: his mark day and his line come back', () => {
+    bellOn('prowler', 'u142')
     on(10)
     signInAs('ad', 'a'); expect(setMaster('acad2', true).ok).toBe(true)
     const l = hunterLine()

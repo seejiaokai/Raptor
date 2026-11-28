@@ -15,9 +15,7 @@
    listed is found again at the save: an input answered or deleted while the list was up is simply not written. */
 import { HOOKS } from '../engine/hooks'
 import { INPUTS } from '../engine/inputs'
-import { canEditSched } from '../state/auth'
-import { pageUnit } from '../state/perms'
-import { levelIn, signedInAccount } from '../state/accounts'
+import { pageUnit, adminOfUnit } from '../state/perms'
 import { todayIso } from '../state/units'
 import { stampChanged } from '../state/inputstamp'
 import { oilOpenOn } from '../leavewar/sync'
@@ -30,12 +28,11 @@ export type OilPick = 'y' | 'n'
  *  (canEditSched — the member view is a member, D292) and his level in that squadron today is admin — at home there, by
  *  Plan of it, or a master admin (accounts.ts levelIn, the one reader). The list's window and its Save both ask it. A
  *  session with no account behind it (a hand-made test session) answers for the page's own squadron only, as
- *  perms.ts adminOfPage does. */
+ *  perms.ts adminOfPage does. Step A (the second-half plan §2 item 1, its "named squadron" kind): the one body is
+ *  perms.ts adminOfUnit — the role in force asked of the role, never of the squadron in view, so a View holder with
+ *  149 picked still answers 142's list. */
 export function adminOfList(unit: string): boolean {
-  if (!canEditSched()) return false
-  const today = todayIso()
-  const a = signedInAccount()
-  return a ? levelIn(a.id, unit, today) === 'admin' : unit === pageUnit('own', today)
+  return adminOfUnit(unit, todayIso())
 }
 
 /** Save the picked answers for the squadron the list lists (`unit` — its own page's squadron where not handed one).
