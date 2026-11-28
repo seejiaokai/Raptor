@@ -60,6 +60,8 @@ resolved statuses always carry their resolution date
 
 **Principle:** A helper's report reaches the host as its final reply; a brief that asks for a report file may be refused, and the reply is then the only copy, so save it at once.
 
+met again 28 Nov 26 (chat A216, U2 round 3 and 4 reads): five of seven reader helpers were refused writing `report.md` to the shared notes; most fell back to the shell, two returned text only and the host saved them by hand. Guard proposed: the reader-brief template says "return the report as your final reply AND write it with the shell" — never the file tool for a `.md` report.
+
 ### Observation 917: The shared-folder trap of Observation 787 met again — an opening line written in chat, outside the handoff guide
 **Status:** ACTIONED (2026-11-20) — the skill review of 20 Nov 26 (filed): [CHECK-TOOLS-HARDEN] addition (s): a commit guard beside the push guard refusing a commit when the folder's branch differs from the session's (met 3 and 10 Nov 26); its guide half is in the SH draft with 916 (every opening line, in a reply too)
 **Date:** 10 Nov 26
