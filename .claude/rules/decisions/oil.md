@@ -84,6 +84,7 @@ Loads with any OIL, Leave War, placeholder-puck or publishing file (the `paths:`
 ## How it shows, and OIL Earn
 - The green OIL bar shows only on the events that counted towards a man's day, not on every puck he wears; the ALL AVAIL count chip agrees with it [D1].
 - In OIL Earn a tap on a puck that cannot earn on its row picks nothing and says why in the app's plain passing note — "Nothing changed for <callsign>." then the reason — not the grey "Blocked:" note; every such reason takes that shape ("This row gives him no working hours to count OIL from."); the tap targets stay [D1783, D26].
+- The OIL card names a day's OIL's source in one short sentence — the app, or by hand — its words put to him first [D2930].
 - Words that stand as built: the OIL batch's — the Unpublish warning, its done note and the armed button's title when an amendment is withdrawn, and the same-time line's "earns nobody any OIL" [D1094]; the OIL question's when an input's ⓘ mark comes off [D865].
 
 ## Settled
