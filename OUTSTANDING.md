@@ -3067,7 +3067,7 @@ stamped with who gave it — his D2802 (26 Nov 26): F1 names nobody, who answere
 draw with the six; (c) five of the adjusted sentences (the sign-off refusal, the Leave War card, both hidden-warning
 lines, the Logic line) owe a cold read before they are built (`words-reviewed.md`); (d) his D2617 (a changed late
 cut-off moves LATE marks at once, published days too, as built): look at View-only Sched's face of a published day
-after the change, which was never checked.
+after the change, which was never checked. **Chat 211 (28 Nov 26):** the cold reads his D2856 asked for are done (`raptor-port/docs/superpowers/briefs/2026-11-28-round3-f-words-*.md`: drafts, a Fable adjuster, three blind Fable cold reads, the comparison) and F7 is drawn; round 4 put to him, three questions — F2/F7's "the OIL follows" → "changes to match", F6's plainer words ("busy"), and F5's words on a hidden "Overlaps standby" line too (round 3's E10 was untrue for it): https://claude.ai/artifact/11xuBXCEJ5vbdoL5zm4uwU (source `raptor-port/docs/mock/2026-11-28-round4/`, checked by a fresh Opus, `…/briefs/2026-11-28-round4-page-check-opus.md`). (b) widened: "Only a scheduler can move someone else's input" (`ui/caldrag.ts`) is untrue the same way; the three take F3's line by the builder's reading, told to him on the page. Before the build, try on screen: a hidden "Overlaps standby" line stays hidden when the meeting moves; F6's three readings (working copy only, no Accept needed, CX of the input).
 
 ### [SANS-INFO-LINE] A SANS man told when a scheduler puts him on anything but a flight or sim (his D2566, 24 Nov 26; SC MAIN, SC SPARE, BB and AVALON too — his D2576, 25 Nov 26)
 
