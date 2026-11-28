@@ -562,7 +562,11 @@ export type SignSet = { cur: string; sked: string; plan: string; appr: string }
  *  time: the canonical digest (§5.0), the schedule date, the current issued base
  *  id, and the candidate (plan/draft) revision. A signature is content-valid only
  *  while all four still match the live day; validity is recomputed, never cleared. */
-export type SignBinding = { dg: string; iso: string; base: string; rev: string; fil: string; oil?: string; gord?: string; pd?: string }   // pd: the whole pending comparison on a published day (D103)
+export type SignBinding = { dg: string; iso: string; base: string; rev: string; fil: string; oil?: string; gord?: string; pd?: string;   // pd: the whole pending comparison on a published day (D103)
+  /** the Logic values the day's OIL was worked out from at signing (D592 (4)); null on a day that earns nothing */
+  orv?: Record<string, number> | null
+  /** each input's OIL answer as it stood at signing, null for a question still open (D2800, D2868, D2869) */
+  oa?: Record<string, number | null> | null }
 /** Per-day, per-role bindings — only roles signed through `setSign` appear. */
 export type SignBindSet = Record<number, Partial<Record<keyof SignSet, SignBinding>>>
 

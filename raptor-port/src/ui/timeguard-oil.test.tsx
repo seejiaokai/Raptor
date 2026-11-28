@@ -20,7 +20,7 @@ import { initStore as lwInitStore, setPeople, setRole } from '../leavewar/state/
 import { memoryBackend } from '../leavewar/state/storage'
 import { oilOpenOn, wireLeaveWarSync } from '../leavewar/sync'
 import * as pops from './pops'
-import { signPick, holdLater, holdSave, resetOilSign } from './oilsign'
+import { signPick, holdLater, holdSave } from './oilsign'
 
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)
@@ -47,7 +47,7 @@ beforeEach(() => {
   lwInitStore(memoryBackend()); setPeople(projectPeople()); setRole('admin')
   wireLeaveWarSync()
   _resetDisclosure()
-  pops.setOilList(null); resetOilSign()
+  pops.setOilList(null)
   said = []
   HOOKS.toast = ((m: any, k: any) => { said.push([String(m), k]) }) as any
   view.setPage('editsched')
@@ -77,7 +77,7 @@ describe('a missing time and an open OIL question on one day (D2855 E2)', () => 
 })
 
 describe('the OIL list\'s held name meets a time emptied while the list was up (D2612 — the backstop)', () => {
-  it('Later: nothing is signed, the time note is said, and the day is not marked asked', () => {
+  it('Later: nothing is signed, the time note is said, and the next press asks again', () => {
     expect(signPick(SAT, 'cur', 'ignite')).toBe('held')
     const hold = pops.OILLIST!.hold!
     gap()
@@ -85,7 +85,7 @@ describe('the OIL list\'s held name meets a time emptied while the list was up (
     expect(signShown(SAT).cur, 'no name written').toBeFalsy()
     expect(blocked()).toEqual([TIME_NOTE])
     fill()
-    /* the question was never used up: the next press asks again */
+    /* the next press asks again (every press does while the question stands — his D2800) */
     expect(signPick(SAT, 'cur', 'ignite')).toBe('held')
   })
 

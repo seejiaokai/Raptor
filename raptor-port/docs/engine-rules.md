@@ -3462,6 +3462,19 @@ line (`docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md`).**
   edited request's times, a Quals or posting change, a filing — takes the four down; putting it back restores them
   (AM11). This REPLACES D45's signature half (the OIL key still omits membership; `pd` carries it). A draft day's
   `pd` is ''.
+- **An input's OIL answer is left out of the signature's OIL key (D2800, D2801 — 27 Nov 26, `[OIL-LATER-PASSES-ON]`).**
+  `oilev.ts oilSignKey` reads every answer as unanswered, so on a day not yet published an answer — from the sign-off
+  list, the input's own "OIL?" sign or a bell line — leaves the names already signed; every other part of an input
+  (who, type, filing, standing, window) still binds. **Only the answer to a question open at signing (D2868, D2869 —
+  27 Nov 26):** the binding keeps each input's answer as it stood (`oa`, `oilev.ts oilAnsKept`); one the names were
+  signed over that has since changed, or been taken away, takes them down (`publish.ts oilAnsBoundOk`). A name signed
+  while the question stood open stays through every later change of that answer — its first answer and any change after
+  it (D2895, 28 Nov 26): the binding keeps that answer as unanswered, so no later answer is one it was signed over. On a published
+  day the comparison key keeps the answer, so it is still a change waiting (the count, the publish button), but the
+  binding's `pd` is read with the open-at-signing answers unanswered (`pendingKeyAtSign`), so that answer leaves the
+  names there too (narrows D103, AM11). The Logic check (`orv`, D592 (4)) reads the same answers as at signing
+  (`oilAnsAtSign`), so a Logic change that moved nobody while the question was open does not take the names down when
+  it is answered; one that moves OIL they were signed over still does.
 - **The ground programme is bound as shown (`[AMEND-SMALL-SEEN]` 9, 28 Sep 26).** The ground rows are SHOWN in time
   order whatever order they are stored in (`order.ts groundOrder`), and the change count reads that shown order — but
   the signature's digest keyed them by STORED position, so "Sort" on a published day (it re-orders the array only) took
