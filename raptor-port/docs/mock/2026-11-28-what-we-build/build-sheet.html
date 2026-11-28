@@ -40,6 +40,9 @@ p{margin:0 0 8px}
 .pen{display:inline-block;width:1em;height:1em;vertical-align:-.15em;color:var(--ink)}
 .new{display:inline-block;font:800 11px/17px var(--sans);background:var(--mark);color:#15171c;border-radius:9px;padding:0 6px;margin-right:4px;vertical-align:1px}
 .note{color:var(--ink-3);font-size:13px;margin-top:10px}
+.fresh{color:var(--mark)}
+.round{background:var(--panel);border:1px solid var(--mark);border-radius:12px;padding:10px 14px;margin:12px 0}
+.round b{color:var(--mark)}
 details{background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:4px 14px;margin-top:10px}
 summary{cursor:pointer;padding:10px 0;font-weight:700}
 details ul{margin:0 0 12px;padding-left:18px;display:grid;gap:6px}
@@ -56,6 +59,8 @@ details li b{color:var(--ink)}
 <div class="wrap">
   <h1>What we would build</h1>
   <p class="lede">Everything you ruled on the Leave War window, the period list and "To review", drawn on the real app. Yellow marks show what is new since your last look.</p>
+
+  <div class="round"><b>New since your last look</b> (in yellow below): every card shows its people as small pucks, one person too · pressing Cutter on a group leave shows only his puck · a course day keeps the leave buttons, so leave can still go on it (my first drawing left them off by mistake).</div>
 
   <section class="ask" aria-labelledby="q1">
     <div class="q" id="q1">Build these as drawn?</div>
@@ -119,13 +124,14 @@ const PEN = '<svg class="pen" viewBox="0 0 24 24" aria-hidden="true"><g transfor
 const NEW = n => `<span class="new">${n}</span>`
 /* each picture: its file stem, whether a marked version exists, its title and one line */
 const WAR = [
-  ['b2-pending', false, 'A bid waiting', 'Its own card: Approve, Refuse, Move, Delete, its remarks, and its leave buttons to change LL to OL in one tap.'],
+  ['b2-pending', false, 'A bid waiting', 'Its own card: Approve, Refuse, Move, Delete, its remarks, and its leave buttons to change LL to OL in one tap. <span class="fresh">Now every card shows its people as small pucks, one person too.</span>'],
   ['b3-inputs-ll', false, 'Leave filed on the Inputs page', 'The same card and buttons as leave placed on the Leave War.'],
   ['b6-two', false, 'Two things on one day', 'Each card has its own buttons, so you always know what you are changing.'],
   ['b7-group', true, 'Group leave', `${NEW(1)} the ${PEN} opens the full leave. ${NEW(2)} Move and Delete added.`],
+  ['b7b-cutter-only', true, '<span class="fresh">Group leave, Cutter pressed</span>', `<span class="fresh">${NEW(1)} Cutter pressed: ${NEW(2)} only his puck shows. "3 pax" shows all three again.</span>`],
   ['b8-half', false, 'Leave for the morning (AM)', 'Its card as above. The free afternoon keeps the usual buttons to add leave.'],
   ['b4-medical', true, 'Medical', `No Move or Delete. Its Document, and ${NEW(1)} the ${PEN} for its details.`],
-  ['b5-course', true, 'Course from the Inputs page', `Move, Delete and remarks right here. ${NEW(1)} the ${PEN} for its title and hours.`],
+  ['b5-course', true, 'Course from the Inputs page', `Move, Delete and remarks right here. ${NEW(1)} the ${PEN} for its title and hours. <span class="fresh">Leave can still be added on a course day: the leave buttons stay.</span>`],
   ['b9-pencil-open', false, `After the ${PEN} on the course`, 'Its own window opens over the Leave War. Close it and you are back where you were.'],
   ['b1-empty', false, 'An empty day', 'As today. The manning line now sits under the date.'],
   ['m1-own-approved', false, 'Ranger (a member), his own approved leave', 'What it is, his remarks and Document. Nothing he may not do.'],

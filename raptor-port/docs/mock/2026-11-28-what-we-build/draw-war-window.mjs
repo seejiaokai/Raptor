@@ -24,7 +24,7 @@ const R = await import('../2026-11-27-war-window-states/rollcall-today.mjs')
 const { PW, PHONE, sleep, press, tap, reach, closeAll, signIn, toWar, CUT, RAN } = R
 const IMG = path.join(HERE, 'img')
 mkdirSync(IMG, { recursive: true })
-const VERSION = 'draw-war-window v1.0 (28 Nov 26, chat 196)'
+const VERSION = 'draw-war-window v1.1 (28 Nov 26, chat 196)'
 console.log(VERSION, '| pictures to', IMG)
 
 const BASE = '2026-12-31'
@@ -36,28 +36,35 @@ const ACT = {
   approved: `<button class="dchip dk-b dk-a on dk-ring">${TICK}Approved</button>`, refuseOff: `<button class="dchip dk-b dk-r dk-off">${CROSS}Refuse</button>`,
   move: '<button class="dchip move"><span class="mvarr" aria-hidden="true">⇄</span>Move</button>', del: '<button class="dchip del">Delete</button>', edit: '<button class="dchip">Edit…</button>' }
 const PLACED = who => `<span class="bp-placedline">Placed <b>${who}</b> · Fri 27 Nov, 12:46</span>`
-const LL_PEND = { box: 'c k-ll s-w whole', t: 'LL', main: 'Pending · Whole day', sub: PLACED('Saber'), acts: ['approve', 'refuse', 'move', 'del'], rmk: 'full', leave: 'LL', dur: 'Whole day' }
+/* v1.1 (his D2895, 28 Nov 26): every card wears its people as mini pucks, a one-man card its one puck too;
+   (his D2896): on a group card, pressing the man's own button in the Change line shows only his puck (frame b7b);
+   b5: leave can be placed over a course (D1552), so the course day keeps the buttons to add leave. */
+const LL_PEND = { box: 'c k-ll s-w whole', t: 'LL', main: 'Pending · Whole day', pucks: ['psy'], sub: PLACED('Saber'), acts: ['approve', 'refuse', 'move', 'del'], rmk: 'full', leave: 'LL', dur: 'Whole day' }
 
 /* each frame: the day, its cards, and whether the window still adds leave (an empty day, a free half) */
 const FRAMES = [
   { id: 'b1-empty', role: 'ad', who: CUT, iso: '2026-12-01', date: 'Tue 1 Dec', cards: [], add: { dur: 'Whole day' }, say: 'An empty day: as today, the manning line moved under the title.' },
   { id: 'b2-pending', role: 'ad', who: CUT, iso: '2026-12-02', date: 'Wed 2 Dec', cards: [LL_PEND], say: 'A pending bid placed on the war.' },
   { id: 'b3-inputs-ll', role: 'ad', who: CUT, iso: '2026-12-09', date: 'Wed 9 Dec',
-    cards: [{ box: 'c k-ll s-a whole', t: 'LL', main: 'Approved · Whole day', sub: PLACED('Cutter'), acts: ['approved', 'refuseOff', 'move', 'del'], rmk: 'full', leave: 'LL', dur: 'Whole day' }], say: 'LL filed on the Inputs page: the same card as one placed on the war.' },
+    cards: [{ box: 'c k-ll s-a whole', t: 'LL', main: 'Approved · Whole day', pucks: ['psy'], sub: PLACED('Cutter'), acts: ['approved', 'refuseOff', 'move', 'del'], rmk: 'full', leave: 'LL', dur: 'Whole day' }], say: 'LL filed on the Inputs page: the same card as one placed on the war.' },
   { id: 'b4-medical', role: 'ad', who: CUT, iso: '2026-12-10', date: 'Thu 10 Dec',
-    cards: [{ fromCell: true, t: 'OML', main: 'Whole day', sub: PLACED('Cutter'), acts: [], pen: true, rmk: 'doc', mark: 'pen' }], say: 'A medical: no Move, no Delete; its Document and the pencil.' },
+    cards: [{ fromCell: true, t: 'OML', main: 'Whole day', pucks: ['psy'], sub: PLACED('Cutter'), acts: [], pen: true, rmk: 'doc', mark: 'pen' }], say: 'A medical: no Move, no Delete; its Document and the pencil.' },
   { id: 'b5-course', role: 'ad', who: CUT, iso: '2026-12-14', date: 'Mon 14 Dec',
-    cards: [{ fromCell: true, t: 'CSE', main: 'Whole day', sub: PLACED('Cutter'), acts: ['move', 'del'], pen: true, rmk: 'full', mark: 'pen' }], say: 'A course filed on the Inputs page: Move, Delete, its remarks, and the pencil.' },
+    cards: [{ fromCell: true, t: 'CSE', main: 'Whole day', pucks: ['psy'], sub: PLACED('Cutter'), acts: ['move', 'del'], pen: true, rmk: 'full', mark: 'pen' }],
+    add: { dur: 'Whole day' }, say: 'A course filed on the Inputs page: Move, Delete, its remarks, the pencil, and leave can still be added over it.' },
   { id: 'b6-two', role: 'ad', who: CUT, iso: '2026-12-18', date: 'Fri 18 Dec',
-    cards: [{ box: 'c k-oil s-a whole', t: 'FO', main: 'OIL award · a day', sub: '<span class="bp-placedline">Weekend det · given by Saber</span>', acts: ['edit', 'del'] }, LL_PEND], say: 'Two entries: each its own card and its own buttons.' },
+    cards: [{ box: 'c k-oil s-a whole', t: 'FO', main: 'OIL award · a day', pucks: ['psy'], sub: '<span class="bp-placedline">Weekend det · given by Saber</span>', acts: ['edit', 'del'] }, LL_PEND], say: 'Two entries: each its own card and its own buttons.' },
   { id: 'b7-group', role: 'ad', who: CUT, iso: '2026-12-21', date: 'Mon 21 Dec',
     cards: [{ box: 'c k-ll s-a whole', t: 'LL', main: 'Approved · Whole day', pucks: ['psy', 'riddler', 'spaceman'], sub: PLACED('Saber'), acts: ['approved', 'refuseOff', 'move', 'del'],
       change: ['3 pax', 'Cutter'], rmk: 'full', rmkText: 'Family trip', leave: 'LL', dur: 'Whole day', pen: true, mark: 'group' }], say: 'A group leave: Move and Delete added, and the pencil.' },
+  { id: 'b7b-cutter-only', role: 'ad', who: CUT, iso: '2026-12-21', date: 'Mon 21 Dec',
+    cards: [{ box: 'c k-ll s-a whole', t: 'LL', main: 'Approved · Whole day', pucks: ['psy'], sub: PLACED('Saber'), acts: ['approved', 'refuseOff', 'move', 'del'],
+      change: ['3 pax', 'Cutter'], changeOn: 1, rmk: 'full', rmkText: 'Family trip', leave: 'LL', dur: 'Whole day', pen: true, mark: 'cutter' }], say: 'Cutter pressed: only his puck shows (D2896).' },
   { id: 'b8-half', role: 'ad', who: CUT, iso: '2026-12-16', date: 'Wed 16 Dec',
-    cards: [{ box: 'c k-ll s-a whole', t: 'LL', main: 'Approved · AM', sub: PLACED('Cutter'), acts: ['approved', 'refuseOff', 'move', 'del'], rmk: 'full', leave: 'LL', dur: 'AM' }],
+    cards: [{ box: 'c k-ll s-a whole', t: 'LL', main: 'Approved · AM', pucks: ['psy'], sub: PLACED('Cutter'), acts: ['approved', 'refuseOff', 'move', 'del'], rmk: 'full', leave: 'LL', dur: 'AM' }],
     add: { dur: 'PM' }, say: 'A morning leave: the free afternoon keeps the usual buttons to add leave.' },
   { id: 'm1-own-approved', role: 'us', who: RAN, iso: '2026-12-03', date: 'Thu 3 Dec',
-    cards: [{ box: 'c k-ll s-a whole', t: 'LL', main: 'Approved · Whole day', sub: PLACED('Saber'), acts: [], rmk: 'full' }], say: 'Ranger, a member, on his own approved leave: its state and its Document.' },
+    cards: [{ box: 'c k-ll s-a whole', t: 'LL', main: 'Approved · Whole day', pucks: ['bane'], sub: PLACED('Saber'), acts: [], rmk: 'full' }], say: 'Ranger, a member, on his own approved leave: its state and its Document.' },
 ]
 
 const CSS = `
@@ -82,7 +89,7 @@ const CSS = `
 .rd .rd-card > .bidsheet-row:last-child{margin-bottom:0}
 .rd .rd-card .dchip:not(.on):not(.lit){background:#151a20}
 .rd .rd-card .pchip:not(.on){background:#151a20}
-.rd .rd-pucks{display:flex;flex-wrap:wrap;gap:4px;margin:3px 0 2px}
+.rd .rd-pucks{display:flex;flex-wrap:wrap;gap:4px;margin:3px 0 2px;width:fit-content}
 .rd .rd-change{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;align-items:center}
 .rd .rd-change .note{padding-left:2px}
 .rd .dl-head .ev-pen{margin-left:auto;align-self:center;width:30px;height:30px;border-radius:7px}
@@ -121,7 +128,8 @@ function transform(f) {
     const card = document.createElement('div'); card.className = 'rd-card'; card.dataset.rd = ++n
     const pucks = c.pucks ? `<span class="rd-pucks">${c.pucks.map(puck).join('')}</span>` : ''
     const acts = c.acts.length ? `<div class="dl-acts bp-acts">${c.acts.map(a => f.ACT[a]).join('')}</div>` : ''
-    const change = c.change ? `<div class="rd-change"><span class="note">Change</span><button class="pchip on">${c.change[0]}</button><button class="pchip">${c.change[1]}</button></div>` : ''
+    const on = i => (c.changeOn || 0) === i ? ' on' : ''
+    const change = c.change ? `<div class="rd-change"><span class="note">Change</span><button class="pchip${on(0)}">${c.change[0]}</button><button class="pchip${on(1)}">${c.change[1]}</button></div>` : ''
     const pen = c.pen ? `<button type="button" class="ev-ctl ev-pen" title="Edit" aria-label="Edit ${c.t}, ${f.date}">${f.PEN}</button>` : ''
     card.innerHTML = `<ul class="daylist flat"><li class="dl-line dl-card"><div class="dl-head"><span class="leg-box dl-box" aria-hidden="true"><span class="${box}">${c.t}</span></span><div class="dl-text"><span class="dl-main">${c.main}</span>${pucks}<span class="dl-sub bp-placed">${c.sub}</span></div>${pen}</div>${acts}${change}</li></ul>`
     if (c.rmk && rmk) {
@@ -140,7 +148,10 @@ function transform(f) {
   /* the add part: only where leave can still be placed (an empty day, a free half) */
   if (f.add) {
     if (dur) litDur(dur, f.add.dur)
-    if (held) { /* the add part follows the last card, in today's order */ const extra = sheet.querySelector('[data-testid="bid-extra-row"]'); [rmk, dur, leave].forEach(e => e && extra.before(e)) }
+    /* the add part follows the last card, in today's order; its own Remarks row goes (v1.1): each card holds its entry's
+       remarks, and a second empty Remarks box under a card read as a doubled box — a new leave's remarks are typed on
+       its card once it is placed */
+    if (held) { const extra = sheet.querySelector('[data-testid="bid-extra-row"]'); rmk?.remove(); [dur, leave].forEach(e => e && extra.before(e)) }
   } else {
     rmk?.remove(); dur?.remove(); leave?.remove()
     sheet.querySelector('[data-testid="bid-approve-tick"]')?.remove()
@@ -158,14 +169,15 @@ async function mark(p, f, on) {
     const list = []
     f.cards.forEach((c, i) => {
       if (c.mark === 'pen') list.push([`.rd-card[data-rd="${i + 1}"] .ev-pen`, '1'])
+      if (c.mark === 'cutter') { list.push([`.rd-card[data-rd="${i + 1}"] .rd-change .pchip.on`, '1']); list.push([`.rd-card[data-rd="${i + 1}"] .rd-pucks`, '2']) }
       if (c.mark === 'group') { list.push([`.rd-card[data-rd="${i + 1}"] .ev-pen`, '1']); list.push([`.rd-card[data-rd="${i + 1}"] .dl-acts .move`, '2']) }
     })
     for (const [sel, text] of list) {
       const e = [...document.querySelectorAll(sel)].find(x => x.getBoundingClientRect().width > 0); if (!e) continue
       e.classList.add('rd-new')
-      if (text === '2') { const d = e.nextElementSibling; if (d) d.classList.add('rd-new') }
+      if (text === '2' && sel.includes('.move')) { const d = e.nextElementSibling; if (d) d.classList.add('rd-new') }
       const r = e.getBoundingClientRect(), t = document.createElement('span'); t.className = 'rd-tag'; t.textContent = text; document.body.appendChild(t)
-      t.style.left = Math.max(2, r.left - t.getBoundingClientRect().width - 4) + 'px'; t.style.top = Math.max(2, r.top + r.height / 2 - 9) + 'px'
+      t.style.left = (sel.includes('.rd-pucks') ? r.right + 4 : Math.max(2, r.left - t.getBoundingClientRect().width - 4)) + 'px'; t.style.top = Math.max(2, r.top + r.height / 2 - 9) + 'px'
     }
   }, [on, f])
 }
