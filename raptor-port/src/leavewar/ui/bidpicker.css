@@ -1926,14 +1926,44 @@
    bid windows and the day's list, never the OIL panel's green "Give FO") rest grey, as Move does, their words in their
    colours; the decided one is solid in its colour with dark words — 9.1 : 1 green, 5.6 : 1 red — and its word is the
    state ("Approved", "Refused"). The solid colours are the chips' own green and red at full strength. */
+/* …and at rest each wears a faint edge of its own colour, its words' colour at 45% (his D2881 — drawing E3-pending) */
 .bidsheet .dchip.dec.approve,
-.bidsheet .dl-acts .dchip.dec.approve { background: var(--panel-2); color: #8FE0A8; border-color: var(--edge); }
+.bidsheet .dl-acts .dchip.dec.approve { background: var(--panel-2); color: #8FE0A8; border-color: rgba(143, 224, 168, .45); }
 .bidsheet .dchip.dec.refuse,
-.bidsheet .dl-acts .dchip.dec.refuse { background: var(--panel-2); color: #FFA6AD; border-color: var(--edge); }
+.bidsheet .dl-acts .dchip.dec.refuse { background: var(--panel-2); color: #FFA6AD; border-color: rgba(255, 166, 173, .45); }
 .bidsheet .dchip.dec.approve.lit,
 .bidsheet .dl-acts .dchip.dec.approve.lit { background: #57C97A; color: #0b1116; border-color: #57C97A; }
 .bidsheet .dchip.dec.refuse.lit,
 .bidsheet .dl-acts .dchip.dec.refuse.lit { background: #F0555F; color: #0b1116; border-color: #F0555F; }
+
+/* THE DECIDED LOOK (his D2881, 28 Nov 26 — "A, solid + cyan ring", answering D2880 "Doesn't feel like approved is
+   selected"; drawing of record docs/mock/2026-11-27-decide-buttons/img/trio-E3-*.png): ONE RECIPE for every place the
+   war decides — the bid windows, the day's list, the picked-days sheet and Approvals (approvals.css keeps only his
+   drawings' colours, D1427), the classes given by bidhelpers.ts decideLook, the mark SheetActions.tsx DecideMark. The decided one keeps its
+   solid fill and dark words and wears the window's own "this one is picked" mark, the lit leave button's cyan ring below
+   (.tchip.lv.lit) — a line, never a glow (D881); the other turns grey, its fill, size and place as at rest, still
+   pressable; each carries a drawn tick or cross before its word, in its words' colour. Size, row and words unchanged. */
+.bidsheet .dchip.dec,
+.appr-btns > .appr-ok,
+.appr-btns > .appr-no { display: inline-flex; align-items: center; justify-content: center; }
+.dec-ic { width: 14px; height: 14px; flex: none; margin-right: 5px; }
+.dec-ring { outline: 2px solid var(--accent); outline-offset: 2px; }
+.bidsheet .dchip.dec.dec-off,
+.bidsheet .dl-acts .dchip.dec.dec-off,
+.appr-btns > .dec-off { color: #7d8794; border-color: var(--edge); }
+/* on a phone the mark and the window's decide words a little smaller, as drawn (E3-*-phone: 12px, the words .9 of the
+   row's), so "Approved" and its tick stand clear inside the edge at 390 wide (lesson 59) — measured 2px from the edge
+   at the full size */
+@media (max-width: 600px) {
+  .dec-ic { width: 12px; height: 12px; margin-right: 4px; }
+  /* the smaller words keep the row's height: stretched to Move and Delete beside them (31 tall alone, the row 32) */
+  .bidsheet .dchip.dec { font-size: 11.5px; align-self: stretch; }
+}
+/* Approvals' phone line (`.appr-l1`, drawn below 700 wide — D1435, D1441): its buttons are as wide as their words, beside
+   the request's dates, so the mark is smaller still — 9px and a 2px gap keep a half-day date ("10 Feb AM ›") on one line
+   at his iPhone's 402, measured in WebKit (76 wide there); below about 400 such a date takes two lines inside the
+   buttons' height */
+.appr-l1 .appr-btns .dec-ic { width: 9px; height: 9px; margin-right: 2px; }
 
 /* REMARKS AND DOCUMENT ON ONE ROW (change 4): the box takes the room, then its "till", then the Document button */
 .bidsheet .bp-words { flex-wrap: nowrap; align-items: flex-start; }

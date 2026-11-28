@@ -101,6 +101,27 @@ describe('the Approvals page’s rows', () => {
     expect(within(line()).getByTestId('appr-approve').textContent).toBe('Approved')
     expect(reqs('bane', TUE)).toEqual([])
   })
+  /* his D2881 (28 Nov 26, "A, solid + cyan ring"): the war's one decided look on Approvals too — waiting, each its drawn
+     tick or cross; decided, the lit one ringed and the other grey, still pressable; the line stays put (D1421) */
+  it('D2881 the decided one wears the ring and the other turns grey; waiting, each its drawn mark', () => {
+    ranger(); expect(setCell('bane', TUE, 'LL')).toBe(true); saber()
+    render(<ApprovalsPage shown={true} />)
+    const line = () => linesOf('bane')[0]!
+    const ap = () => within(line()).getByTestId('appr-approve'), rf = () => within(line()).getByTestId('appr-refuse')
+    const mark = (b: HTMLElement) => b.querySelector('svg.dec-ic')?.getAttribute('data-mark')
+    expect([mark(ap()), mark(rf())], 'a drawn tick and cross, never a typed glyph').toEqual(['approve', 'refuse'])
+    for (const b of [ap(), rf()]) { expect(b.className).not.toMatch(/dec-ring|dec-off/); expect(b.textContent).not.toMatch(/[✓✔✕✗×]/) }
+    fireEvent.click(ap())
+    expect(ap().className).toContain('dec-ring'); expect(ap().className).not.toContain('dec-off')
+    expect(rf().className).toContain('dec-off'); expect((rf() as HTMLButtonElement).disabled, 'grey, still pressable').toBe(false)
+    fireEvent.click(rf())
+    expect(linesOf('bane'), 'the line stays put (D1421)').toHaveLength(1)
+    expect(rf().className).toContain('dec-ring'); expect(ap().className).toContain('dec-off')
+    expect([mark(ap()), mark(rf())], 'the marks stay through every state').toEqual(['approve', 'refuse'])
+    fireEvent.click(rf())
+    expect(rf().textContent, 'a second tap on the lit one sends it back to pending').toBe('Refuse')
+    for (const b of [ap(), rf()]) expect(b.className).not.toMatch(/dec-ring|dec-off/)
+  })
   /* his D1430 (27 Oct 26, "all as recommended"): back to the drawing — a decided line's kind box shows the decision as the
      grid draws it, and a thin line stands between New and the dates; D1435: a decide button holds its longer word's room */
   it('D1430 a decided line\'s box is the grid\'s approved or refused box; a thin line stands between New and DATES', () => {

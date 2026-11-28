@@ -35,6 +35,8 @@ import { ClipIcon } from '../../ui/icons'
 import { askLw, apprMode, apprRingAsked, lwNavVersion, setApprMode, subscribeLwNav, takeApprRing } from './lwnav'
 import { ringCell } from './cellring'
 import { RangePicker, type Range } from './RangePicker'
+import { DecideMark } from './SheetActions'
+import { decideLook } from './bidhelpers'
 import { usePhone } from './phone'
 import { fitToScreen } from './screenfit'
 import { useVersion } from './useStore'
@@ -580,13 +582,15 @@ function Line({ r, phone, fresh, ringed, onPress, onDates }: { r: Row; phone: bo
     </button>
   )
   /* a decided line keeps its OTHER button pressable (his D1428, as drawn r22-3): one tap changes his mind either way; a
-     second tap on the lit one sends it back to pending (D1421); only a line drawn from a state since changed has both off */
+     second tap on the lit one sends it back to pending (D1421); only a line drawn from a state since changed has both off.
+     THE WAR'S ONE DECIDED LOOK (his D2881): the lit one wears the window's cyan ring, the other turns grey; each its drawn
+     tick or cross (bidhelpers.ts decideLook, SheetActions.tsx DecideMark) — his drawings' colours kept (D1427) */
   const btns = (
     <span className="appr-btns">
-      <button type="button" className={`appr-ok${r.lit === 'approved' ? ' lit' : ''}`} aria-pressed={r.lit === 'approved'} data-testid="appr-approve"
-        disabled={stale} onClick={() => onPress(r, 'approved')}>{word(r.lit === 'approved' ? 'Approved' : 'Approve', 'Approved')}</button>
-      <button type="button" className={`appr-no${r.lit === 'refused' ? ' lit' : ''}`} aria-pressed={r.lit === 'refused'} data-testid="appr-refuse"
-        disabled={stale} onClick={() => onPress(r, 'refused')}>{word(r.lit === 'refused' ? 'Refused' : 'Refuse', 'Refused')}</button>
+      <button type="button" className={`appr-ok${decideLook(r.lit, 'approved')}`} aria-pressed={r.lit === 'approved'} data-testid="appr-approve"
+        disabled={stale} onClick={() => onPress(r, 'approved')}><DecideMark kind="approve" />{word(r.lit === 'approved' ? 'Approved' : 'Approve', 'Approved')}</button>
+      <button type="button" className={`appr-no${decideLook(r.lit, 'refused')}`} aria-pressed={r.lit === 'refused'} data-testid="appr-refuse"
+        disabled={stale} onClick={() => onPress(r, 'refused')}><DecideMark kind="refuse" />{word(r.lit === 'refused' ? 'Refused' : 'Refuse', 'Refused')}</button>
     </span>
   )
   if (phone) {

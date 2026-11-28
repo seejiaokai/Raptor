@@ -11,6 +11,25 @@
 //          side read as the same act (Refuse keeps the bid as history; Delete takes the record away).
 //
 // The look lives in bidpicker.css (`.dchip.move .mvarr`, `.dchip.del`); what each press DOES stays with its sheet.
+//
+// THE ONE DECIDED LOOK (his D2881, 28 Nov 26 — "A, solid + cyan ring", answering his D2880 "Doesn't feel like approved is
+// selected"; drawing of record docs/mock/2026-11-27-decide-buttons/img/trio-E3-*.png): wherever the war decides — the bid
+// windows, the day's list, the picked-days sheet and Approvals — Approve and Refuse draw their mark and their state from
+// HERE, so the four places wear one look. Waiting, each shows a drawn tick or cross before its word; decided, the picked
+// one keeps its solid fill and wears the window's cyan ring (`dec-ring`), the other turns grey (`dec-off`) and stays
+// pressable. The classes come from bidhelpers.ts `decideLook`; the recipe is one block of bidpicker.css (THE DECIDED LOOK).
+
+/** the drawn tick (Approve) or cross (Refuse) before the word — drawn by the app in the button's own colour, never a
+ *  typed ✓ / ✕, which each device's font draws its own way (the one-icon rule, D1134, D1508) */
+export function DecideMark({ kind }: { kind: 'approve' | 'refuse' }) {
+  return (
+    <svg className="dec-ic" data-mark={kind} viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+      {kind === 'approve'
+        ? <path d="M3 8.5l3.2 3.2L13 4.8" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+        : <path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />}
+    </svg>
+  )
+}
 
 export function MoveChip({ testid, onClick, title = 'Pick this up and put it on another day' }: {
   testid: string
