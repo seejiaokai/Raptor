@@ -1831,3 +1831,16 @@ recheck every standing resource (locks, loops, write rights) after a restart, be
 **Issue:** The build branch was pushed about ten times in the night (build, reads, walk, three fixes, three re-walks, records). Every push of a code branch starts a preview build. With the other chats' pushes, the preview host refused the morning's build ("Deployment rate limited — retry in 24 hours"), so the morning report had no preview link for his look, the one thing the night was for. Numbered after 1097–1098 on other branches.
 **Suggested improvement:** In Part 2, push a code branch only when a pushed state is needed (the pull request opened for its checks, a fix ready for its re-walk is not one — walkers work from the local checkout), and batch evidence and pictures into one push at the end; before the last push, check the preview host's remaining builds for the day, so the final state is the one that gets a preview.
 **Principle:** When a scarce daily allowance (preview builds, API calls) is spent by every intermediate save, the final deliverable can be the one that gets refused; batch intermediate saves locally and spend the allowance on the state someone will look at.
+
+### Observation 1113: A long-lived records branch brought level with main trips two checks that exist only for the merge
+
+**Status:** OPEN
+**Date:** 28 Nov 26
+**Session context:** chat 211 — bringing main (317 commits ahead) into the records branch claude/readings-lapse-fix-fdbb3c before its own pull request (1111 and 1112 are held on other branches)
+**Skill:** New skill candidate: merge-main-into-long-branch (beside records-merge.mjs's own steps)
+**Type:** open-source
+**Phase/Area:** after the clashes are settled, before the commit
+
+**Issue:** two failures came from the merge itself, not from either side. (1) A size limit had to rise because both sides' lines were joined; raising it inside the merge commit failed the document check ("a ceiling changed in a commit that also touches raptor-port/src" — the merge brings main's code in), so the unpushed merge commit had to be amended and the raise moved to its own commit. (2) While the merge was uncommitted, the branch's new readings check counted main's code comments as "lines this branch adds" (it diffs against the old merge base) and listed eleven; once committed they were not new.
+**Suggested improvement:** records-merge.mjs's closing advice (or the shipping steps' merge section) says: settle the clashes, commit the merge with every limit as main had it, then raise any limit the joined lines need in a separate notes-only commit; and read a check's "new" findings again after the merge commit, never during it.
+**Principle:** A check that compares against a merge base gives answers about the merge-in-progress, not the branch; commit the merge first, then judge what the check says, and keep changes that a check confines to notes-only commits out of a merge commit.
