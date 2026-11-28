@@ -1857,3 +1857,70 @@ recheck every standing resource (locks, loops, write rights) after a restart, be
 **Issue:** two failures came from the merge itself, not from either side. (1) A size limit had to rise because both sides' lines were joined; raising it inside the merge commit failed the document check ("a ceiling changed in a commit that also touches raptor-port/src" — the merge brings main's code in), so the unpushed merge commit had to be amended and the raise moved to its own commit. (2) While the merge was uncommitted, the branch's new readings check counted main's code comments as "lines this branch adds" (it diffs against the old merge base) and listed eleven; once committed they were not new.
 **Suggested improvement:** records-merge.mjs's closing advice (or the shipping steps' merge section) says: settle the clashes, commit the merge with every limit as main had it, then raise any limit the joined lines need in a separate notes-only commit; and read a check's "new" findings again after the merge commit, never during it.
 **Principle:** A check that compares against a merge base gives answers about the merge-in-progress, not the branch; commit the merge first, then judge what the check says, and keep changes that a check confines to notes-only commits out of a merge commit.
+
+### Observation 1092: A window copied for a mock-up loses what its lists show
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** chat 191, drawing "Change for Cutter only" on the Leave War; a real input window opened on the Inputs page was copied by its markup and laid over the war (numbered past 1091, held by another open branch's log)
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** drawing a proposed state by cloning a real window
+
+**Issue:** the copied window showed its PERSON list reading the first name in the squadron ("Ace") instead of the man the window was for (Cutter): a copy of an element's markup keeps each option list but not which entry is picked (the picked value is live state, not markup), and the same holds for typed text and ticks. The script's own premise check passed, since it read the original window's text; only looking at the picture caught it.
+**Suggested improvement:** in the guide's section on cloning a real element, add: when a window is copied by its markup, read every list's, box's and tick's live value from the original before closing it and set them on the copy; then read the copy's values back and assert them, not the original's.
+**Principle:** A copy of an interface element made from its markup drops its live state; a mock-up that copies one must carry the state across and check the copy, not the source.
+
+### Observation 1093: "You two agree on it" — a shared fact map, then two rounds
+
+**Status:** OPEN
+**Date:** 27 Nov 26
+**Session context:** chat 191, his step back on how the Leave War, the Inputs pages and the schedule fit together (D2782), asking Fable and Astra to agree a design
+**Skill:** New skill candidate: design-agreement (two readers converge on a design)
+**Type:** open-source
+**Phase/Area:** setting up a design question for two independent readers who must end in one answer
+
+**Issue:** the method that worked: (1) one helper first wrote a fact map of today from the code, each cell cited, inferences marked, no opinions; (2) both readers got the same brief and the map and proposed blind; (3) the host listed the points where they differed (A–H) in a round-2 brief, and each read the other's proposal and settled every point (agree / hold / a third way), blind to the other's round 2; (4) the host merged and put only the questions left to him. On one point the readers each moved to the other's first view, so a round 2 alone does not guarantee agreement; the host named that point and drew both rather than picking.
+**Suggested improvement:** write this as a short method (in the brainstorming or impeccable notes for this project): a fact map before blind proposals, a round-2 brief that names the differences point by point, a fixed answer form per point, and the rule that a point still split after round 2 goes to the owner drawn both ways.
+**Principle:** Two readers converge faster and more honestly when they start from one shared set of checked facts and round 2 names each disagreement explicitly; a disagreement that survives is shown to the decision-maker, not resolved by the host.
+
+Met again 27 Nov 26 (chat 192, the clean sheet for the same question): the method held — round 2 settled nine of eleven points, and the two left had each crossed to the other's first view again. One addition: before a split point goes to the owner, the host checks whether the app already does it; here both readers asked for (or against) a new "what changed" mark while the changes window's New to you already lists every change, so the split dissolved into one line. Suggested step: the round-2 brief asks each reader "is any of this already built?" against the fact map.
+
+### Observation 1100: A button pressed by its words matches inside another button's words
+
+**Status:** OPEN
+**Date:** 27 Nov 26
+**Session context:** chat 193 — a roll-call script setting up every state of the Leave War's window on the real app (numbered past 1099, the highest on any open branch)
+**Skill:** New skill candidate: walk-script writing (`raptor-port/docs/walk-scripts.md`)
+**Type:** open-source
+**Phase/Area:** setting up a state by pressing the app's own buttons
+
+**Issue:** The script pressed the leave button with Playwright's `button:has-text("OL")`. That selector matches any button whose words merely contain "ol", ignoring case, so it pressed "Whole day" first — the two-day leave was never placed, and the roll-call's first run silently recorded the wrong state. Only reading the window's parts back (the leave figure had not moved) showed it.
+**Suggested improvement:** walk-scripts.md gains a line: press a control by its test name, or by its words anchored whole (`/^OL\b/`), never by `has-text` of a short word; and every setup step reads back the state it meant to make before the picture is taken.
+**Principle:** A text match is a substring match unless anchored; short labels collide with longer ones. Verify a set-up state, not only the press.
+
+### Observation 1105: A handoff told the next chat to "record his answers" that he had never given
+
+**Status:** OPEN
+**Date:** 2026-11-27
+**Session context:** Chat 194, leave and inputs questions page (numbered past 1104, taken on another open branch)
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** the "Pick up here" line and the ready-to-paste opening line
+
+**Issue:** The handoff's opening line said "record my answers to F6 and F1–F5 on the questions page". The page cannot store answers and has no comments, so the new chat searched the page, its comments and other chats, found nothing, and had to ask him; he then asked for the questions again, shorter. The line read as if the answers already existed somewhere.
+**Suggested improvement:** In the handoff skill's "Pick up here" step: when the next step waits on his answers, say where they will come from ("he answers in the chat; the page only builds a reply line") and make the first action "put the questions to him, short, with the page link", never "record his answers".
+**Principle:** A handoff names the source of every input the next step needs; "record X" is only written when X is already stored somewhere the next session can read.
+
+### Observation 1106: A page on a previous account cannot be read from a new one
+
+**Status:** OPEN
+**Date:** 28 Nov 26
+**Session context:** chat 196, the first chat on his new account: the handoff said "read the live questions page first", but the page was published from his previous account and the read came back "not found".
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** the handoff block's pointers to published pages
+
+**Issue:** The handoff named a published page as the thing to read and republish. After the account move the page could not be opened at all; only because a working copy of the page was kept in the repo could the next chat go on, by publishing a fresh page from it.
+**Suggested improvement:** When a handoff is written ahead of an account or workspace move, its block names the repo copy of every published page as the source, and says the link may not open on the new account; the next chat publishes a new page from the copy and names the new link.
+**Principle:** A link to something hosted under one account is not durable state; the repo copy is. Hand off the copy, and treat the link as a convenience.

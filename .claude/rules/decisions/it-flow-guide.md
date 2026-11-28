@@ -28,4 +28,4 @@ Loads with any IT flow guide file. Each line is a rule as it stands, its rulings
 - The deck and PDF of 29 Sep 26 — its two-slide sample a spent one-off, not a standing rule; what changed since (the Leave War's stages among it) waits on `[ITFLOW-OIL-RESHOOT]`; re-shooting: `raptor-port/docs/it-flow-guide/README.md` §Remaking it after a screen changes [D410, D411, D403].
 
 ## From other areas
-- The Leave War's (stages and open dates, a closed day's bid, Inputs-page leave, notices, full editing, D418): D1177, D1225, D1166, D1208, D1724, D418.
+- The Leave War's (stages and open dates, a closed day's bid, Inputs-page leave, notices, full editing): D1177, D1225, D1166, D1208, D1724, D2888, D418.

@@ -2602,7 +2602,7 @@ input of one person too. The pictures still stand; what changed underneath, bull
   removed: an input has ONE filing, so its line is never split by where each man's request is filed.
 - **The Unavailable list is still one row a man (D737)** — drawn from the record's people; one man's row of an input
   that holds several is addressed `iu:<iid>~<person>` ("The Unavailable row's person cell is a plant/drop target
-  too", below).
+  too", below). *(To change, not built: D737 is replaced by D2777 (26 Nov 26) — a shared input one row under Unavailable too, medical excepted; the combined-row job, [COMBINED-INPUT-ROWS].)*
 - **A jump** needs no `leadKeyOf` (`ui/grouprow.ts` is removed): the row is the row.
 - **What a hand does** is the door `ui/reqdoor.ts`, for every input's row: a person dropped on the puck of an input's
   ONLY entry REPLACES him ("Tally is on Training instead of Ranger"; dragged from a seat elsewhere, "Tally and Ranger
@@ -2646,7 +2646,7 @@ is the rule.)*
   "accepted" for a man who is not (`state/inputgroup.ts entryLines`). Folded, it counts the input once ("1 input · 1 on
   programme"). On a desktop the panel takes the Ground Programme's two-puck People column (`04-pucks-sections.css` —
   picture 5); a phone keeps one puck a line.
-- **The Unavailable list is left as it is: a row a man (D737).**
+- **The Unavailable list is left as it is: a row a man (D737).** *(To change, not built: D737 is replaced by D2777 (26 Nov 26) — a shared input one row under Unavailable too, medical excepted; the combined-row job, [COMBINED-INPUT-ROWS].)*
 - **A jump to a place that is not drawn** — a member row's boxes or "+ add", a non-first record's line under Personal
   Inputs — lands on the one row: `ui/grouprow.ts leadKeyOf`, asked by `ui/interactions.ts jumpToChange`.
 - Pins: `ui/grouprow-draw.test.tsx`; the geometry, in a real browser, `e2e/grouprow.spec.ts` (two across on a desktop,
@@ -12409,7 +12409,8 @@ Built on `claude/leave-war-m4-planning-d18224` from `docs/superpowers/plans/2026
   (`sync.ts openRequestDocs`, `openInputDocs`). A replaced bid's grid notice shows the bid's remarks and documents and
   offers "Add to the LL" onto the leave that replaced it (`sync.ts replacedCarry`).
 - **"Placed · Decided" (r7-13):** the bid window's one compact line an entry under its day line — "Placed Ranger · Mon 5
-  Jan, 09:12 · Approved Saber · Thu 8 Jan, 08:40" (`ui/PlacedLine.tsx`); nothing where nothing is known.
+  Jan, 09:12 · Approved Saber · Thu 8 Jan, 08:40" (`ui/PlacedLine.tsx`); nothing where nothing is known. **To read "Placed by
+  Ranger · … · Approved by Saber · …" (his D2927, 28 Nov 26), built with the day window ([COMBINED-INPUT-ROWS]).**
 
 ## A leave of several days opens whole (his D1448, D1461 — [LW-WHOLE-LEAVE-WINDOW], 28 Oct 26)
 

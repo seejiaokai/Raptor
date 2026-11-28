@@ -1,0 +1,1368 @@
+{
+ "version": "rollcall-today v1.1 (27 Nov 26, chat 193)",
+ "errs": [],
+ "out": [
+  {
+   "id": "a01-empty",
+   "said": "an empty day, open for bidding",
+   "who": "psy",
+   "iso": "2026-12-01",
+   "window": "bid-picker",
+   "rows": [
+    {
+     "row": "bidsheet-hd",
+     "buttons": [
+      "Auto-approve",
+      "✕"
+     ],
+     "text": "CutterTue 1 DecAuto-approve✕"
+    },
+    {
+     "row": "bid-dayline",
+     "buttons": [],
+     "text": "No manning row turns amber or red"
+    },
+    {
+     "row": "Remarks and document",
+     "buttons": [
+      "Document"
+     ],
+     "text": "till 1 DecDocument"
+    },
+    {
+     "row": "Duration",
+     "buttons": [
+      "Whole day",
+      "AM",
+      "PM",
+      "Pick a range"
+     ],
+     "text": "Whole dayAMPMPick a range"
+    },
+    {
+     "row": "Which leave",
+     "buttons": [
+      "LL9.5",
+      "OL9.5",
+      "OIL1",
+      "CCL−1",
+      "FCL−1",
+      "PL−1",
+      "EL−1",
+      "CL−1"
+     ],
+     "text": "LL9.5OL9.5OIL1CCL−1FCL−1PL−1EL−1CL−1"
+    },
+    {
+     "row": "bid-extra-row",
+     "buttons": [
+      "CSE",
+      "OD",
+      "Grant OIL",
+      "⋯"
+     ],
+     "text": "CSEODGrant OIL⋯"
+    }
+   ],
+   "pic": "a01-empty-phone.png"
+  },
+  {
+   "id": "a02-empty-closed",
+   "said": "an empty day not open for bidding (30 Nov)",
+   "who": "psy",
+   "iso": "2026-11-30",
+   "window": "bid-picker",
+   "rows": [
+    {
+     "row": "bidsheet-hd",
+     "buttons": [
+      "Auto-approve",
+      "✕"
+     ],
+     "text": "CutterMon 30 NovAuto-approve✕"
+    },
+    {
+     "row": "bid-dayline",
+     "buttons": [],
+     "text": "No manning row turns amber or red"
+    },
+    {
+     "row": "Remarks and document",
+     "buttons": [
+      "Document"
+     ],
+     "text": "till 30 NovDocument"
+    },
+    {
+     "row": "Duration",
+     "buttons": [
+      "Whole day",
+      "AM",
+      "PM",
+      "Pick a range"
+     ],
+     "text": "Whole dayAMPMPick a range"
+    },
+    {
+     "row": "Which leave",
+     "buttons": [
+      "LL9.5",
+      "OL9.5",
+      "OIL1",
+      "CCL−1",
+      "FCL−1",
+      "PL−1",
+      "EL−1",
+      "CL−1"
+     ],
+     "text": "LL9.5OL9.5OIL1CCL−1FCL−1PL−1EL−1CL−1"
+    },
+    {
+     "row": "bid-extra-row",
+     "buttons": [
+      "CSE",
+      "OD",
+      "Grant OIL",
+      "⋯"
+     ],
+     "text": "CSEODGrant OIL⋯"
+    }
+   ],
+   "pic": "a02-empty-closed-phone.png"
+  },
+  {
+   "id": "a03-pending",
+   "said": "his pending LL bid",
+   "who": "psy",
+   "iso": "2026-12-02",
+   "window": "bid-picker",
+   "rows": [
+    {
+     "row": "bidsheet-hd",
+     "buttons": [
+      "Auto-approve",
+      "✕"
+     ],
+     "text": "CutterWed 2 DecAuto-approve✕"
+    },
+    {
+     "row": "bid-dayline",
+     "buttons": [],
+     "text": "No manning row is amber or red"
+    },
+    {
+     "row": "bid-placed",
+     "buttons": [],
+     "text": "Placed Saber · Fri 27 Nov, 12:48"
+    },
+    {
+     "row": "Actions",
+     "buttons": [
+      "Approve",
+      "Refuse",
+      "⇄Move",
+      "Delete"
+     ],
+     "text": "ApproveRefuse⇄MoveDelete"
+    },
+    {
+     "row": "Remarks and document",
+     "buttons": [
+      "Document"
+     ],
+     "text": "till 2 DecDocument"
+    },
+    {
+     "row": "Duration",
+     "buttons": [
+      "Whole day",
+      "AM",
+      "PM",
+      "Pick a range"
+     ],
+     "text": "Whole dayAMPMPick a range"
+    },
+    {
+     "row": "Which leave",
+     "buttons": [
+      "LL10.5",
+      "OL10.5",
+      "OIL1",
+      "CCL−1",
+      "FCL−1",
+      "PL−1",
+      "EL−1",
+      "CL−1"
+     ],
+     "text": "LL10.5OL10.5OIL1CCL−1FCL−1PL−1EL−1CL−1"
+    },
+    {
+     "row": "bid-extra-row",
+     "buttons": [
+      "CSE",
+      "OD",
+      "Grant OIL",
+      "⋯"
+     ],
+     "text": "CSEODGrant OIL⋯"
+    }
+   ],
+   "pic": "a03-pending-phone.png"
+  },
+  {
+   "id": "a04-approved",
+   "said": "his LL placed approved on the war",
+   "who": "psy",
+   "iso": "2026-12-03",
+   "window": "bid-picker",
+   "rows": [
+    {
+     "row": "bidsheet-hd",
+     "buttons": [
+      "Auto-approve",
+      "✕"
+     ],
+     "text": "CutterThu 3 DecAuto-approve✕"
+    },
+    {
+     "row": "bid-dayline",
+     "buttons": [],
+     "text": "No manning row is amber or red"
+    },
+    {
+     "row": "bid-placed",
+     "buttons": [],
+     "text": "Placed Saber · Fri 27 Nov, 12:48 · Approved Saber · Fri 27 Nov, 12:48"
+    },
+    {
+     "row": "Actions",
+     "buttons": [
+      "Approved",
+      "Refuse",
+      "⇄Move",
+      "Delete"
+     ],
+     "text": "ApprovedRefuse⇄MoveDelete"
+    },
+    {
+     "row": "Remarks and document",
+     "buttons": [
+      "Document"
+     ],
+     "text": "till 3 DecDocument"
+    },
+    {
+     "row": "Duration",
+     "buttons": [
+      "Whole day",
+      "AM",
+      "PM",
+      "Pick a range"
+     ],
+     "text": "Whole dayAMPMPick a range"
+    },
+    {
+     "row": "Which leave",
+     "buttons": [
+      "LL10.5",
+      "OL10.5",
+      "OIL2",
+      "CCL0",
+      "FCL0",
+      "PL0",
+      "EL0",
+      "CL0"
+     ],
+     "text": "LL10.5OL10.5OIL2CCL0FCL0PL0EL0CL0"
+    },
+    {
+     "row": "bid-extra-row",
+     "buttons": [
+      "CSE",
+      "OD",
+      "Grant OIL",
+      "⋯"
+     ],
+     "text": "CSEODGrant OIL⋯"
+    }
+   ],
+   "pic": "a04-approved-phone.png"
+  },
+  {
+   "id": "a05-multi",
+   "said": "his two-day OL, approved (tap on the first day)",
+   "who": "psy",
+   "iso": "2026-12-07",
+   "window": "bid-picker",
+   "rows": [
+    {
+     "row": "bidsheet-hd",
+     "buttons": [
+      "Auto-approve",
+      "✕"
+     ],
+     "text": "Cutter7–8 DecAuto-approve✕"
+    },
+    {
+     "row": "bid-dayline",
+     "buttons": [],
+     "text": "No manning row is amber or red"
+    },
+    {
+     "row": "bid-placed",
+     "buttons": [],
+     "text": "Placed Saber · Fri 27 Nov, 12:48 · Approved Saber · Fri 27 Nov, 12:48"
+    },
+    {
+     "row": "Actions",
+     "buttons": [
+      "Approved",
+      "Refuse",
+      "⇄Move",
+      "Delete"
+     ],
+     "text": "ApprovedRefuse⇄MoveDelete"
+    },
+    {
+     "row": "Remarks and document",
+     "buttons": [
+      "Document"
+     ],
+     "text": "till 8 DecDocument"
+    },
+    {
+     "row": "Duration",
+     "buttons": [
+      "Whole day",
+      "AM",
+      "PM",
+      "All 2 days",
+      "Mon 7"
+     ],
+     "text": "Whole dayAMPMAll 2 daysMon 7"
+    },
+    {
+     "row": "Which leave",
+     "buttons": [
+      "LL10.5",
+      "OL10.5",
+      "OIL2",
+      "CCL0",
+      "FCL0",
+      "PL0",
+      "EL0",
+      "CL0"
+     ],
+     "text": "LL10.5OL10.5OIL2CCL0FCL0PL0EL0CL0"
+    },
+    {
+     "row": "bid-extra-row",
+     "buttons": [
+      "CSE",
+      "OD",
+      "Grant OIL",
+      "⋯"
+     ],
+     "text": "CSEODGrant OIL⋯"
+    }
+   ],
+   "pic": "a05-multi-phone.png"
+  },
+  {
+   "id": "a06-inputs-ll",
+   "said": "an LL filed on the Inputs page",
+   "who": "psy",
+   "iso": "2026-12-09",
+   "window": "bid-picker",
+   "rows": [
+    {
+     "row": "bidsheet-hd",
+     "buttons": [
+      "Auto-approve",
+      "✕"
+     ],
+     "text": "CutterWed 9 DecAuto-approve✕"
+    },
+    {
+     "row": "bid-dayline",
+     "buttons": [],
+     "text": "No manning row is amber or red"
+    },
+    {
+     "row": "bidsheet-row",
+     "buttons": [],
+     "text": "LLWhole day· change it on the Inputs page"
+    },
+    {
+     "row": "Remarks and document",
+     "buttons": [
+      "Document"
+     ],
+     "text": "till 9 DecDocument"
+    },
+    {
+     "row": "Duration",
+     "buttons": [
+      "Whole day",
+      "AM",
+      "PM",
+      "Pick a range"
+     ],
+     "text": "Whole dayAMPMPick a range"
+    },
+    {
+     "row": "bid-extra-row",
+     "buttons": [
+      "CSE",
+      "OD",
+      "Grant OIL",
+      "⋯"
+     ],
+     "text": "CSEODGrant OIL⋯"
+    }
+   ],
+   "pic": "a06-inputs-ll-phone.png"
+  },
+  {
+   "id": "a07-medical",
+   "said": "an OML filed on the Inputs page",
+   "who": "psy",
+   "iso": "2026-12-10",
+   "window": "bid-picker",
+   "rows": [
+    {
+     "row": "bidsheet-hd",
+     "buttons": [
+      "Auto-approve",
+      "✕"
+     ],
+     "text": "CutterThu 10 DecAuto-approve✕"
+    },
+    {
+     "row": "bid-dayline",
+     "buttons": [],
+     "text": "No manning row is amber or red"
+    },
+    {
+     "row": "bidsheet-row",
+     "buttons": [],
+     "text": "OMLWhole day· change it on the Inputs page"
+    },
+    {
+     "row": "Remarks and document",
+     "buttons": [
+      "Document"
+     ],
+     "text": "till 10 DecDocument"
+    },
+    {
+     "row": "Duration",
+     "buttons": [
+      "Whole day",
+      "AM",
+      "PM",
+      "Pick a range"
+     ],
+     "text": "Whole dayAMPMPick a range"
+    },
+    {
+     "row": "bid-extra-row",
+     "buttons": [
+      "CSE",
+      "OD",
+      "Grant OIL",
+      "⋯"
+     ],
+     "text": "CSEODGrant OIL⋯"
+    }
+   ],
+   "pic": "a07-medical-phone.png"
+  },
+  {
+   "id": "a08-od",
+   "said": "an overseas duty filed on the Inputs page",
+   "who": "psy",
+   "iso": "2026-12-11",
+   "window": "bid-picker",
+   "rows": [
+    {
+     "row": "bidsheet-hd",
+     "buttons": [
+      "Auto-approve",
+      "✕"
+     ],
+     "text": "CutterFri 11 DecAuto-approve✕"
+    },
+    {
+     "row": "bid-dayline",
+     "buttons": [],
+     "text": "No manning row is amber or red"
+    },
+    {
+     "row": "bidsheet-row",
+     "buttons": [],
+     "text": "ODWhole day· change it on the Inputs page"
+    },
+    {
+     "row": "Remarks and document",
+     "buttons": [
+      "Document"
+     ],
+     "text": "till 11 DecDocument"
+    },
+    {
+     "row": "Duration",
+     "buttons": [
+      "Whole day",
+      "AM",
+      "PM",
+      "Pick a range"
+     ],
+     "text": "Whole dayAMPMPick a range"
+    },
+    {
+     "row": "Which leave",
+     "buttons": [
+      "LL9.5",
+      "OL9.5",
+      "OIL1",
+      "CCL−1",
+      "FCL−1",
+      "PL−1",
+      "EL−1",
+      "CL−1"
+     ],
+     "text": "LL9.5OL9.5OIL1CCL−1FCL−1PL−1EL−1CL−1"
+    },
+    {
+     "row": "bid-extra-row",
+     "buttons": [
+      "CSE",
+      "OD",
+      "Grant OIL",
+      "⋯"
+     ],
+     "text": "CSEODGrant OIL⋯"
+    }
+   ],
+   "pic": "a08-od-phone.png"
+  },
+  {
+   "id": "a09-course",
+   "said": "a course filed on the Inputs page",
+   "who": "psy",
+   "iso": "2026-12-14",
+   "window": "bid-picker",
+   "rows": [
+    {
+     "row": "bidsheet-hd",
+     "buttons": [
+      "Auto-approve",
+      "✕"
+     ],
+     "text": "CutterMon 14 DecAuto-approve✕"
+    },
+    {
+     "row": "bid-dayline",
+     "buttons": [],
+     "text": "No manning row is amber or red"
+    },
+    {
+     "row": "bidsheet-row",
+     "buttons": [],
+     "text": "CSEWhole day· change it on the Inputs page"
+    },
+    {
+     "row": "Remarks and document",
+     "buttons": [
+      "Document"
+     ],
+     "text": "till 14 DecDocument"
+    },
+    {
+     "row": "Duration",
+     "buttons": [
+      "Whole day",
+      "AM",
+      "PM",
+      "Pick a range"
+     ],
+     "text": "Whole dayAMPMPick a range"
+    },
+    {
+     "row": "Which leave",
+     "buttons": [
+      "LL9.5",
+      "OL9.5",
+      "OIL1",
+      "CCL−1",
+      "FCL−1",
+      "PL−1",
+      "EL−1",
+      "CL−1"
+     ],
+     "text": "LL9.5OL9.5OIL1CCL−1FCL−1PL−1EL−1CL−1"
+    },
+    {
+     "row": "bid-extra-row",
+     "buttons": [
+      "CSE",
+      "OD",
+      "Grant OIL",
+      "⋯"
+     ],
+     "text": "CSEODGrant OIL⋯"
+    }
+   ],
+   "pic": "a09-course-phone.png"
+  },
+  {
+   "id": "a10-other",
+   "said": "an Other under Unavailable, whole day",
+   "who": "psy",
+   "iso": "2026-12-15",
+   "window": "bid-picker",
+   "rows": [
+    {
+     "row": "bidsheet-hd",
+     "buttons": [
+      "Auto-approve",
+      "✕"
+     ],
+     "text": "CutterTue 15 DecAuto-approve✕"
+    },
+    {
+     "row": "bid-dayline",
+     "buttons": [],
+     "text": "No manning row is amber or red"
+    },
+    {
+     "row": "bidsheet-row",
+     "buttons": [],
+     "text": "OTHWhole day· change it on the Inputs page"
+    },
+    {
+     "row": "Remarks and document",
+     "buttons": [
+      "Document"
+     ],
+     "text": "till 15 DecDocument"
+    },
+    {
+     "row": "Duration",
+     "buttons": [
+      "Whole day",
+      "AM",
+      "PM",
+      "Pick a range"
+     ],
+     "text": "Whole dayAMPMPick a range"
+    },
+    {
+     "row": "Which leave",
+     "buttons": [
+      "LL9.5",
+      "OL9.5",
+      "OIL1",
+      "CCL−1",
+      "FCL−1",
+      "PL−1",
+      "EL−1",
+      "CL−1"
+     ],
+     "text": "LL9.5OL9.5OIL1CCL−1FCL−1PL−1EL−1CL−1"
+    },
+    {
+     "row": "bid-extra-row",
+     "buttons": [
+      "CSE",
+      "OD",
+      "Grant OIL",
+      "⋯"
+     ],
+     "text": "CSEODGrant OIL⋯"
+    }
+   ],
+   "pic": "a10-other-phone.png"
+  },
+  {
+   "id": "a11-half",
+   "said": "a morning LL filed on the Inputs page (afternoon free)",
+   "who": "psy",
+   "iso": "2026-12-16",
+   "window": "bid-picker",
+   "rows": [
+    {
+     "row": "bidsheet-hd",
+     "buttons": [
+      "Auto-approve",
+      "✕"
+     ],
+     "text": "CutterWed 16 DecAuto-approve✕"
+    },
+    {
+     "row": "bid-dayline",
+     "buttons": [],
+     "text": "No manning row turns amber or red"
+    },
+    {
+     "row": "Remarks and document",
+     "buttons": [
+      "Document"
+     ],
+     "text": "till 16 DecDocument"
+    },
+    {
+     "row": "Duration",
+     "buttons": [
+      "PM",
+      "Pick a range"
+     ],
+     "text": "PMThe morning is LL, filed on the Inputs page — change that there.Pick a range"
+    },
+    {
+     "row": "Which leave",
+     "buttons": [
+      "LL>10",
+      "OL>10",
+      "OIL>1.5",
+      "CCL>−0.5",
+      "FCL>−0.5",
+      "PL>−0.5",
+      "EL>−0.5",
+      "CL>−0.5"
+     ],
+     "text": "LL>10OL>10OIL>1.5CCL>−0.5FCL>−0.5PL>−0.5EL>−0.5CL>−0.5"
+    },
+    {
+     "row": "bid-extra-row",
+     "buttons": [
+      "CSE",
+      "OD",
+      "Grant OIL",
+      "⋯"
+     ],
+     "text": "CSEODGrant OIL⋯"
+    }
+   ],
+   "pic": "a11-half-phone.png"
+  },
+  {
+   "id": "a12-oil",
+   "said": "an OIL award (FO) given on the war",
+   "who": "psy",
+   "iso": "2026-12-17",
+   "window": "bid-picker",
+   "rows": [
+    {
+     "row": "bidsheet-hd",
+     "buttons": [
+      "Auto-approve",
+      "✕"
+     ],
+     "text": "CutterThu 17 DecAuto-approve✕"
+    },
+    {
+     "row": "bid-dayline",
+     "buttons": [],
+     "text": "No manning row turns amber or red"
+    },
+    {
+     "row": "Actions",
+     "buttons": [
+      "Delete"
+     ],
+     "text": "Delete"
+    },
+    {
+     "row": "Remarks and document",
+     "buttons": [
+      "Document"
+     ],
+     "text": "till 17 DecDocument"
+    },
+    {
+     "row": "Duration",
+     "buttons": [
+      "Whole day",
+      "AM",
+      "PM",
+      "Pick a range"
+     ],
+     "text": "Whole dayAMPMPick a range"
+    },
+    {
+     "row": "Which leave",
+     "buttons": [
+      "LL9.5",
+      "OL9.5",
+      "OIL1",
+      "CCL−1",
+      "FCL−1",
+      "PL−1",
+      "EL−1",
+      "CL−1"
+     ],
+     "text": "LL9.5OL9.5OIL1CCL−1FCL−1PL−1EL−1CL−1"
+    },
+    {
+     "row": "bid-extra-row",
+     "buttons": [
+      "CSE",
+      "OD",
+      "FO · a day",
+      "⋯"
+     ],
+     "text": "CSEODFO · a day⋯"
+    },
+    {
+     "row": "bidsheet-row",
+     "buttons": [],
+     "text": "ReasonWeekend det"
+    },
+    {
+     "row": "bidsheet-row",
+     "buttons": [],
+     "text": "Given byNot given"
+    },
+    {
+     "row": "bidsheet-row",
+     "buttons": [],
+     "text": "Entered bySaber"
+    },
+    {
+     "row": "bidsheet-row",
+     "buttons": [],
+     "text": "Daysa day"
+    }
+   ],
+   "pic": "a12-oil-phone.png"
+  },
+  {
+   "id": "a13-two",
+   "said": "two entries: an OIL award and a pending LL bid",
+   "who": "psy",
+   "iso": "2026-12-18",
+   "window": "daylist-sheet",
+   "rows": [
+    {
+     "row": "bidsheet-hd",
+     "buttons": [
+      "✕"
+     ],
+     "text": "CutterFri 18 Dec✕"
+    },
+    {
+     "row": "dl-c-ol-mwyi4fa76f9fg",
+     "buttons": [
+      "Edit…",
+      "Delete"
+     ],
+     "text": "FOOIL award (Weekend det)Edit…Delete"
+    },
+    {
+     "row": "dl-r-rmwyi4hc978cfr",
+     "buttons": [
+      "Approve",
+      "Refuse",
+      "⇄Move",
+      "Delete",
+      "Document"
+     ],
+     "text": "LLPendingPlaced Saber · Fri 27 Nov, 12:48ApproveRefuse⇄MoveDeletetill 18 DecDocument"
+    },
+    {
+     "row": "bidsheet-row",
+     "buttons": [],
+     "text": "OIL awarda day"
+    },
+    {
+     "row": "bidsheet-row",
+     "buttons": [],
+     "text": "ReasonWeekend det"
+    },
+    {
+     "row": "bidsheet-row",
+     "buttons": [],
+     "text": "Given byNot given"
+    },
+    {
+     "row": "bidsheet-row",
+     "buttons": [],
+     "text": "Entered bySaber · 27 Nov 26"
+    }
+   ],
+   "pic": "a13-two-phone.png"
+  },
+  {
+   "id": "a14-group",
+   "said": "a group LL filed on the Inputs page for Cutter, Ghost and Dash",
+   "who": "psy",
+   "iso": "2026-12-21",
+   "window": "bid-picker",
+   "rows": [
+    {
+     "row": "bidsheet-hd",
+     "buttons": [
+      "Auto-approve",
+      "✕"
+     ],
+     "text": "CutterMon 21 DecAuto-approve✕"
+    },
+    {
+     "row": "bid-dayline",
+     "buttons": [],
+     "text": "No manning row is amber or red"
+    },
+    {
+     "row": "bidsheet-row",
+     "buttons": [],
+     "text": "LLWhole day“Family trip till 21 Dec”· change it on the Inputs page"
+    },
+    {
+     "row": "Remarks and document",
+     "buttons": [
+      "Document"
+     ],
+     "text": "till 21 DecDocument"
+    },
+    {
+     "row": "Duration",
+     "buttons": [
+      "Whole day",
+      "AM",
+      "PM",
+      "Pick a range"
+     ],
+     "text": "Whole dayAMPMPick a range"
+    },
+    {
+     "row": "bid-extra-row",
+     "buttons": [
+      "CSE",
+      "OD",
+      "Grant OIL",
+      "⋯"
+     ],
+     "text": "CSEODGrant OIL⋯"
+    }
+   ],
+   "pic": "a14-group-phone.png"
+  },
+  {
+   "id": "a15-postedout",
+   "said": "a day after Diesel posts out (10 Dec)",
+   "who": "fantom",
+   "iso": "2026-12-14",
+   "window": "postout-sheet",
+   "rows": [
+    {
+     "row": "bidsheet-hd",
+     "buttons": [
+      "✕"
+     ],
+     "text": "DieselMon 14 Dec✕"
+    },
+    {
+     "row": "bidsheet-row",
+     "buttons": [
+      "Thu 10 Dec 26▾"
+     ],
+     "text": "PO fromThu 10 Dec 26▾"
+    },
+    {
+     "row": "Posting",
+     "buttons": [
+      "✓ Overseas Sqn",
+      "Delete",
+      "SANS",
+      "Transfer to Sqn"
+     ],
+     "text": "Posting✓ Overseas SqnDeleteSANSTransfer to Sqn"
+    },
+    {
+     "row": "bidsheet-row",
+     "buttons": [],
+     "text": "On 10 Dec: archived."
+    },
+    {
+     "row": "bidsheet-row",
+     "buttons": [
+      "Undo post out (PO)",
+      "Place leave or OIL here instead…"
+     ],
+     "text": "Undo post out (PO)Place leave or OIL here instead…"
+    }
+   ],
+   "pic": "a15-postedout-phone.png"
+  },
+  {
+   "id": "a16-past",
+   "said": "an empty day before today (20 Nov)",
+   "who": "psy",
+   "iso": "2026-11-20",
+   "window": "bid-picker",
+   "rows": [
+    {
+     "row": "bidsheet-hd",
+     "buttons": [
+      "Auto-approve",
+      "✕"
+     ],
+     "text": "CutterFri 20 NovAuto-approve✕"
+    },
+    {
+     "row": "bid-dayline",
+     "buttons": [],
+     "text": "No manning row turns amber or red"
+    },
+    {
+     "row": "Remarks and document",
+     "buttons": [
+      "Document"
+     ],
+     "text": "till 20 NovDocument"
+    },
+    {
+     "row": "Duration",
+     "buttons": [
+      "Whole day",
+      "AM",
+      "PM",
+      "Pick a range"
+     ],
+     "text": "Whole dayAMPMPick a range"
+    },
+    {
+     "row": "Which leave",
+     "buttons": [
+      "LL9.5",
+      "OL9.5",
+      "OIL1",
+      "CCL−1",
+      "FCL−1",
+      "PL−1",
+      "EL−1",
+      "CL−1"
+     ],
+     "text": "LL9.5OL9.5OIL1CCL−1FCL−1PL−1EL−1CL−1"
+    },
+    {
+     "row": "bid-extra-row",
+     "buttons": [
+      "CSE",
+      "OD",
+      "Grant OIL",
+      "⋯"
+     ],
+     "text": "CSEODGrant OIL⋯"
+    }
+   ],
+   "pic": "a16-past-phone.png"
+  },
+  {
+   "id": "m01-empty",
+   "said": "his own empty day, open for bidding",
+   "who": "bane",
+   "iso": "2026-12-01",
+   "window": "bid-picker",
+   "rows": [
+    {
+     "row": "bidsheet-hd",
+     "buttons": [
+      "✕"
+     ],
+     "text": "RangerTue 1 Dec✕"
+    },
+    {
+     "row": "bid-dayline",
+     "buttons": [],
+     "text": "No manning row turns amber or red"
+    },
+    {
+     "row": "Remarks and document",
+     "buttons": [
+      "Document"
+     ],
+     "text": "till 1 DecDocument"
+    },
+    {
+     "row": "Duration",
+     "buttons": [
+      "Whole day",
+      "AM",
+      "PM",
+      "Pick a range"
+     ],
+     "text": "Whole dayAMPMPick a range"
+    },
+    {
+     "row": "Which leave",
+     "buttons": [
+      "LL8.5",
+      "OL8.5",
+      "OIL−1",
+      "CCL1",
+      "FCL4",
+      "PL0.5",
+      "EL3",
+      "CL−1"
+     ],
+     "text": "LL8.5OL8.5OIL−1CCL1FCL4PL0.5EL3CL−1"
+    },
+    {
+     "row": "bid-extra-row",
+     "buttons": [
+      "CSE",
+      "OD",
+      "⋯"
+     ],
+     "text": "CSEOD⋯"
+    }
+   ],
+   "pic": "m01-empty-phone.png"
+  },
+  {
+   "id": "m02-closed",
+   "said": "his own empty day not open (30 Nov)",
+   "who": "bane",
+   "iso": "2026-11-30",
+   "window": "closed-note",
+   "rows": [
+    {
+     "row": "bidsheet-hd",
+     "buttons": [
+      "✕"
+     ],
+     "text": "RangerMon 30 Nov✕"
+    },
+    {
+     "row": "closed-extra-row",
+     "buttons": [
+      "CSE",
+      "OD",
+      "⋯"
+     ],
+     "text": "CSEOD⋯"
+    }
+   ],
+   "pic": "m02-closed-phone.png"
+  },
+  {
+   "id": "m03-past",
+   "said": "his own empty day before today (20 Nov)",
+   "who": "bane",
+   "iso": "2026-11-20",
+   "window": "closed-note",
+   "rows": [
+    {
+     "row": "bidsheet-hd",
+     "buttons": [
+      "✕"
+     ],
+     "text": "RangerFri 20 Nov✕"
+    },
+    {
+     "row": "closed-extra-row",
+     "buttons": [
+      "CSE",
+      "OD",
+      "⋯"
+     ],
+     "text": "CSEOD⋯"
+    }
+   ],
+   "pic": "m03-past-phone.png"
+  },
+  {
+   "id": "m04-pending",
+   "said": "his own pending LL bid",
+   "who": "bane",
+   "iso": "2026-12-02",
+   "window": "bid-picker",
+   "rows": [
+    {
+     "row": "bidsheet-hd",
+     "buttons": [
+      "✕"
+     ],
+     "text": "RangerWed 2 Dec✕"
+    },
+    {
+     "row": "bid-dayline",
+     "buttons": [],
+     "text": "No manning row is amber or red"
+    },
+    {
+     "row": "bid-placed",
+     "buttons": [],
+     "text": "Placed Saber · Fri 27 Nov, 12:48"
+    },
+    {
+     "row": "Actions",
+     "buttons": [
+      "⇄Move",
+      "Delete"
+     ],
+     "text": "⇄MoveDelete"
+    },
+    {
+     "row": "Remarks and document",
+     "buttons": [
+      "Document"
+     ],
+     "text": "till 2 DecDocument"
+    },
+    {
+     "row": "Duration",
+     "buttons": [
+      "Whole day",
+      "AM",
+      "PM",
+      "Pick a range"
+     ],
+     "text": "Whole dayAMPMPick a range"
+    },
+    {
+     "row": "Which leave",
+     "buttons": [
+      "LL9.5",
+      "OL9.5",
+      "OIL−1",
+      "CCL1",
+      "FCL4",
+      "PL0.5",
+      "EL3",
+      "CL−1"
+     ],
+     "text": "LL9.5OL9.5OIL−1CCL1FCL4PL0.5EL3CL−1"
+    },
+    {
+     "row": "bid-extra-row",
+     "buttons": [
+      "CSE",
+      "OD",
+      "⋯"
+     ],
+     "text": "CSEOD⋯"
+    }
+   ],
+   "pic": "m04-pending-phone.png"
+  },
+  {
+   "id": "m05-approved",
+   "said": "his own LL, approved",
+   "who": "bane",
+   "iso": "2026-12-03",
+   "window": "remarks-sheet",
+   "rows": [
+    {
+     "row": "bidsheet-hd",
+     "buttons": [
+      "✕"
+     ],
+     "text": "Ranger3 DecLL✕"
+    },
+    {
+     "row": "Remarks and document",
+     "buttons": [
+      "Document"
+     ],
+     "text": "till 3 DecDocument"
+    }
+   ],
+   "pic": "m05-approved-phone.png"
+  },
+  {
+   "id": "m06-inputs-ll",
+   "said": "his own LL filed on the Inputs page",
+   "who": "bane",
+   "iso": "2026-12-09",
+   "window": "bid-picker",
+   "rows": [
+    {
+     "row": "bidsheet-hd",
+     "buttons": [
+      "✕"
+     ],
+     "text": "RangerWed 9 Dec✕"
+    },
+    {
+     "row": "bid-dayline",
+     "buttons": [],
+     "text": "No manning row is amber or red"
+    },
+    {
+     "row": "bidsheet-row",
+     "buttons": [],
+     "text": "LLWhole day· change it on the Inputs page"
+    },
+    {
+     "row": "Remarks and document",
+     "buttons": [
+      "Document"
+     ],
+     "text": "till 9 DecDocument"
+    },
+    {
+     "row": "Duration",
+     "buttons": [
+      "Whole day",
+      "AM",
+      "PM",
+      "Pick a range"
+     ],
+     "text": "Whole dayAMPMPick a range"
+    },
+    {
+     "row": "bid-extra-row",
+     "buttons": [
+      "CSE",
+      "OD",
+      "⋯"
+     ],
+     "text": "CSEOD⋯"
+    }
+   ],
+   "pic": "m06-inputs-ll-phone.png"
+  },
+  {
+   "id": "m07-other-empty",
+   "said": "another man's empty day (Cutter)",
+   "who": "psy",
+   "iso": "2026-12-01",
+   "window": "NONE",
+   "pic": "m07-other-empty-phone.png"
+  },
+  {
+   "id": "m08-other-leave",
+   "said": "another man's approved LL (Cutter)",
+   "who": "psy",
+   "iso": "2026-12-03",
+   "window": "NONE",
+   "pic": "m08-other-leave-phone.png"
+  },
+  {
+   "id": "m09-other-od",
+   "said": "another man's overseas duty (Cutter)",
+   "who": "psy",
+   "iso": "2026-12-11",
+   "window": "raptor-sheet",
+   "rows": [
+    {
+     "row": "bidsheet-hd",
+     "buttons": [
+      "✕"
+     ],
+     "text": "CutterFri 11 DecOD✕"
+    },
+    {
+     "row": "bidsheet-row",
+     "buttons": [],
+     "text": "Inputs pageChange it on the Inputs page, not here."
+    }
+   ],
+   "pic": "m09-other-od-phone.png"
+  }
+ ]
+}
