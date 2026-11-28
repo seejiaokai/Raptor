@@ -1,0 +1,102 @@
+{
+ "edit": {
+  "coloured words": {
+   "#052A34": "Templates .dhbtn",
+   "#08131B": "Not yet signed .nysmark",
+   "#F2D699": "16:20H: NIGHT WAVE RU IN TIM .itline",
+   "#3BC6E8": "AREA .fa-lb",
+   "#E5A83B": "⠿Ground Programme .sub-h",
+   "#FBB4B9": "▼ .dwcar",
+   "#7C8CF0": "⠿Common Programme .ah-h",
+   "#FFDF9E": "16:20H .",
+   "#57C97A": "1st wave .ntx",
+   "#B24DEA": "F .sanscard-l",
+   "#1B1305": "LATE .latetag",
+   "#F08A4A": "Personal Inputs .",
+   "#35D6A4": "Available crew .",
+   "#F0555F": "⠿Unavailable .sub-h"
+  },
+  "stripe": {
+   "#7C8CF0": "⠿Common ProgrammeEP: ENGIN",
+   "#3BC6E8": "⠿WAVE 1 Traffic+ In-time09",
+   "#F0555F": "⠿UnavailableNameStartEndPe",
+   "#57C97A": "⠿DutiesNameStartEndPeopleR",
+   "#B24DEA": "⠿SANS AvailCPTallyOFPM",
+   "#E5A83B": "⠿Ground ProgrammeTo take a",
+   "#35D6A4": "⠿Available crew⌃1st wave A"
+  },
+  "puck": {
+   "#6E6A2E": "puck sm",
+   "#9B2FAE": "puck sm warn hard boxred me",
+   "#1F6E52": "puck r sm warn hard boxred"
+  },
+  "CAT box": {
+   "#9F4ADF": "IP",
+   "#7F65BF": "O",
+   "#E5A83B": "B",
+   "#CA4750": "A",
+   "#3BC6E8": "C",
+   "#3673DD": "D"
+  },
+  "puck ring": {
+   "#8A96A3": "puck sm warn note",
+   "#E5A83B": "puck r sm warn san",
+   "#F0555F": "puck r sm warn hard boxred"
+  },
+  "flag chip": {
+   "#8A96A3": "L Long day (>12h)",
+   "#E5A83B": "CP Crew pairing — this pairing ne",
+   "#F0555F": "C Conflict (two events at once)"
+  },
+  "stores chip": {
+   "#3BC6E8": "edge"
+  }
+ },
+ "board": {
+  "coloured words": {
+   "#E5A83B": "4 to sign · CUR CK, SKED CK, .so-state",
+   "#08131B": "Not yet signed .nysmark",
+   "#F2D699": "16:20H: NIGHT WAVE RU IN TIM .itline",
+   "#3BC6E8": "NAV .stchip",
+   "#FBB4B9": "ATT C .sbi-ty",
+   "#FFDF9E": "16:20H .",
+   "#B24DEA": "F .sanscard-l"
+  },
+  "stripe": {
+   "#E5A83B": "⠿Ground Programme + Inputs",
+   "#7C8CF0": "⠿Common Programme Auto sor",
+   "#3BC6E8": "⠿Go 11st wave2nd wave3rd w",
+   "#F0555F": "⠿Unavailable + AddItemStar",
+   "#57C97A": "⠿Duties + Block1st wave Au",
+   "#B24DEA": "⠿SANS Avail + AddCPTallyOF",
+   "#F08A4A": "⠿Personal Inputs 3 inputs ",
+   "#35D6A4": "⠿Available crew⌃1st wave A"
+  },
+  "puck": {
+   "#6E6A2E": "puck sm",
+   "#9B2FAE": "puck sm warn hard boxred me",
+   "#1F6E52": "puck r sm warn hard boxred"
+  },
+  "CAT box": {
+   "#9F4ADF": "IP",
+   "#7F65BF": "O",
+   "#E5A83B": "B",
+   "#CA4750": "A",
+   "#3BC6E8": "C",
+   "#3673DD": "D"
+  },
+  "puck ring": {
+   "#8A96A3": "puck sm warn note",
+   "#E5A83B": "puck r sm warn san",
+   "#F0555F": "puck r sm warn hard boxred"
+  },
+  "flag chip": {
+   "#8A96A3": "L Long day (>12h)",
+   "#E5A83B": "CP Crew pairing — this pairing ne",
+   "#F0555F": "C Conflict (two events at once)"
+  },
+  "stores chip": {
+   "#3BC6E8": "edge"
+  }
+ }
+}

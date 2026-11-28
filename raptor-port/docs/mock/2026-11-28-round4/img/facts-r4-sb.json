@@ -1,0 +1,84 @@
+[
+ {
+  "scene": "SB",
+  "size": "desktop",
+  "what": "staged: the SC line and its front seat",
+  "v": {
+   "gi": 2,
+   "ok": true,
+   "label": "SC",
+   "f": "{\"cs\":\"SC\",\"msn\":\"AM\",\"shift\":\"AM\",\"to\":\"07:00\",\"ld\":\"13:00\",\"aircraft\":[{\"p\":\"romeo\",\"w\":\"\",\"area\":\"\",\"rmks\":\"\",\"opts\":{},\"spare\":false,\"role\":\"MAIN\",\"rid\":\"rmrldi3d1a6jkd7\"},{\"p\":\"\",\"w\":\"\",\"area\":\"\",\"rmks\":\"\",\"opts\":{},\"spare\":false,\"role\":\"MAIN\",\"rid\":\"rmrldi3d176qcn6\"},{\"p\":\"\",\"w\":\"\",\"area\":\"\",\""
+  }
+ },
+ {
+  "scene": "SB",
+  "size": "desktop",
+  "what": "staged: the training filed",
+  "v": {
+   "iid": "imrldi52fu8s94l",
+   "type": "Meeting",
+   "acc": "g",
+   "people": [
+    {
+     "p": "romeo",
+     "by": "stiff",
+     "at": 1784077204263
+    }
+   ]
+  }
+ },
+ {
+  "scene": "SB",
+  "size": "desktop",
+  "what": "Monday holds the SC line and the meeting",
+  "v": {
+   "sc": true,
+   "mtg": true
+  }
+ },
+ {
+  "scene": "SB",
+  "size": "desktop",
+  "what": "the standby line and its ✕ hover words (today)",
+  "v": {
+   "text": "Overlaps standbyRebel — Overlaps standby: RANGE BRIEF 09:00–10:00 & SC AM 07:00–13:00✕",
+   "x": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes"
+  }
+ },
+ {
+  "scene": "SB",
+  "size": "desktop",
+  "what": "the note after ✕ (today)",
+  "v": "Warning hidden: no flag, not counted. It returns if the warning changes."
+ },
+ {
+  "scene": "SB",
+  "size": "desktop",
+  "what": "errors",
+  "v": []
+ },
+ {
+  "scene": "SB",
+  "size": "phone",
+  "what": "Monday holds the SC line and the meeting",
+  "v": {
+   "sc": true,
+   "mtg": true
+  }
+ },
+ {
+  "scene": "SB",
+  "size": "phone",
+  "what": "the standby line and its ✕ hover words (today)",
+  "v": {
+   "none": true,
+   "lines": []
+  }
+ },
+ {
+  "scene": "sb",
+  "size": "p",
+  "what": "STOPPED",
+  "v": "SB: no \"Overlaps standby\" line on Monday"
+ }
+]

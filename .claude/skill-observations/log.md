@@ -1764,3 +1764,96 @@ recheck every standing resource (locks, loops, write rights) after a restart, be
 **Issue:** A double-tap guard counts a press only if its window closes within 1 s of it (`performance.now()`). In a real browser the close follows its press within a frame; in jsdom the close waits for the whole save and re-render, which on a CI runner running four test files at once once took over 1 s. The test failed on GitHub only; locally every tap took under 100 ms. Re-running would have hidden it, and it would have come back.
 **Suggested improvement:** In the skill's "flaky / passes locally" branch, add one step: list every wall-clock comparison on the path (`performance.now`, `Date.now`, timers measured against real time) and ask whether a synchronous test gesture's own compute time can cross the threshold. If so, reproduce it red first with an injected clock that jumps at each reading, then fix the TEST so the gesture runs with the clock standing still (a helper that pins `performance.now` for the gesture), never with a longer wait or a bigger threshold.
 **Principle:** When an app measures human timing with the wall clock, a test that simulates the human must not let machine speed be part of what is measured. Freeze the clock for the simulated gesture, and prove it with a deliberately slow clock.
+
+### Observation 1058: A record script's all-or-nothing restore erased a helper's live edit
+
+**Status:** OPEN
+**Date:** 25 Nov 26
+**Session context:** chat 173, the readings-lapse fix — the host recorded a ruling while an Opus helper was editing DECISIONS.md in the same working copy
+**Skill:** New skill candidate: helpers-in-one-working-copy
+**Type:** open-source
+**Phase/Area:** running a record-keeping script beside a helper that writes the same files
+
+**Issue:** the host ran the rulings script while a builder helper was adding a block to DECISIONS.md. The script failed on an unrelated check and "put every file back exactly as it was" — restoring DECISIONS.md over the helper's insert. The helper reported the block done; two blind readers then found it missing.
+**Suggested improvement:** before running any script that rewrites or restores shared files, check no helper is writing in that working copy (or give the helper its own worktree); after such a run, re-check the files a running helper reported changing.
+**Principle:** a tool that restores files on failure is a writer too; two writers in one copy need the same care as two people.
+
+### Observation 1063: A shared working folder switched branch under the host and its helpers
+
+**Status:** OPEN
+**Date:** 25 Nov 26
+**Session context:** chat 180, [READINGS-LAPSE-FIX] round 2 and drawings (numbered past 1061–1062 on other branches)
+**Skill:** New skill candidate: session-start (where a chat works)
+**Type:** open-source
+**Phase/Area:** choosing a working copy at the start of a chat; briefing helpers
+
+**Issue:** the chat started in the main checkout, switched it to its job's branch tip on a detached HEAD, and briefed two helpers to write there. Minutes later another chat switched the same checkout to its own branch. The helpers' new files survived only because they were untracked; the sources they read vanished mid-job (one helper read them out of git by commit), and the host had to move to the job's own worktree and copy the helpers' output across.
+**Suggested improvement:** a chat whose job has its own branch works in that branch's own worktree from its first write, never in a checkout other chats start in; every helper's brief names that worktree as its only place to read and write.
+**Principle:** a working copy shared by several live sessions is not a place to do work, only a place to start from; give each job its own copy before the first write.
+
+### Observation 1081: A published artifact page blocks styles a script adds — test the switch where it is served
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** chat 180 — an interactive mock-up (the amendment-colours try-out) published as a claude.ai Artifact; numbered past 1080, the highest on other branches
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** interactive mock-ups / testing before showing
+
+**Issue:** The try-out's colour switch wrote a new `<style>` element from script. Every local Playwright check passed, but on the published page the host's security rules blocked the added style, so the switch did nothing on the owner's screen and he saw the old colours under the new label. A second fault on the same page: plain `<a href>` links to full-size pictures replaced the whole page inside the viewer, with no way back on an iPhone.
+
+**Suggested improvement:** Add to the mock-up guide's interactive section: (1) never add style elements or stylesheets from script on a page that will be published — keep all CSS fixed in the page and change only classes and CSS variables (`element.style.setProperty`); (2) picture links open with `target="_blank"`; (3) the page's test asserts both (no `createElement('style')`, every picture link has a target).
+
+**Principle:** A local test does not reproduce the host's security policy: anything that depends on the page being served (styles injected by script, navigation inside a framed viewer) must be ruled out by construction and checked by a test, because the local run will pass.
+
+### Observation 1082: Searching every branch for the next free lesson number
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** Chat 192 writing D2737 as a design-guide lesson
+**Skill:** New skill candidate: next-free-number (lessons, rulings, skill notes)
+**Type:** open-source
+**Phase/Area:** taking a number before writing a numbered entry
+
+**Issue:** `git grep` over every remote ref failed with "Argument list too long" (about 150 branches), so the first search found nothing; a loop of `git show <ref>:<file>` per branch found lessons up to 147 on another branch. The fresh reader, searching fewer branches, then advised renumbering to 102, a number already taken there.
+**Suggested improvement:** One small script that takes a file and a heading pattern, loops `git show` over every ref (never one `git grep` with all refs as arguments), and prints the highest number and which branch holds it; the lesson, ruling and skill-note steps call it, and a reader's brief names the number already checked so it does not re-advise.
+**Principle:** A search that fails on too many arguments must fail loudly, not read as "none found"; numbering checks across many branches belong in one tested script, not retyped per chat.
+
+### Observation 1083: Answers to follow-up questions skipped the pre-send check
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** Chat 192 taking his answers on the rulings audit's round-2 page
+**Skill:** New skill candidate: answering-his-follow-ups (D2140's check applied to chat replies)
+**Type:** open-source
+**Phase/Area:** replying in chat to "is this still applicable?" / "shouldn't X be able to…?"
+
+**Issue:** Taking over a questions page another chat wrote, the agent summarised it for him and changed one recommendation (H) to match a try-out's default without saying the page recommended otherwise, and passed the try-out builder's defaults off as recommendations. Then it answered three follow-ups from one area file and a code grep each, never searching the rulings on main and the open branches (this branch was 97 commits behind main; two other branches held about 120 newer rulings). He noticed: "seems like u are making errors", and asked for an Opus and a Fable check.
+**Suggested improvement:** Before re-presenting a page someone else wrote, or answering any follow-up that recommends something: (1) search every rulings source by subject, including main and every open branch of that area; (2) never change a page's recommendation in a summary without naming the change and why; (3) mark a builder's default as the builder's, not as a recommendation; (4) when the branch is far behind main, bring main in (or read main's rulings) before answering.
+**Principle:** A chat reply that recommends something is "put to him" as much as a page is, and needs the same check; a summary must not quietly change what the source it summarises says.
+
+### Observation 1099: An overnight run of pushes used up the day's preview builds
+
+**Status:** OPEN
+**Date:** 27 Nov 26
+**Session context:** chat 202's /overnight run — one build job ([END-TIME-GUARD]) through a FULL check, with three fix rounds and re-walks, each pushed as it landed
+**Skill:** overnight
+**Type:** open-source
+**Phase/Area:** Part 2, "At every commit" (the branch pushed at each commit)
+
+**Issue:** The build branch was pushed about ten times in the night (build, reads, walk, three fixes, three re-walks, records). Every push of a code branch starts a preview build. With the other chats' pushes, the preview host refused the morning's build ("Deployment rate limited — retry in 24 hours"), so the morning report had no preview link for his look, the one thing the night was for. Numbered after 1097–1098 on other branches.
+**Suggested improvement:** In Part 2, push a code branch only when a pushed state is needed (the pull request opened for its checks, a fix ready for its re-walk is not one — walkers work from the local checkout), and batch evidence and pictures into one push at the end; before the last push, check the preview host's remaining builds for the day, so the final state is the one that gets a preview.
+**Principle:** When a scarce daily allowance (preview builds, API calls) is spent by every intermediate save, the final deliverable can be the one that gets refused; batch intermediate saves locally and spend the allowance on the state someone will look at.
+
+### Observation 1113: A long-lived records branch brought level with main trips two checks that exist only for the merge
+
+**Status:** OPEN
+**Date:** 28 Nov 26
+**Session context:** chat 211 — bringing main (317 commits ahead) into the records branch claude/readings-lapse-fix-fdbb3c before its own pull request (1111 and 1112 are held on other branches)
+**Skill:** New skill candidate: merge-main-into-long-branch (beside records-merge.mjs's own steps)
+**Type:** open-source
+**Phase/Area:** after the clashes are settled, before the commit
+
+**Issue:** two failures came from the merge itself, not from either side. (1) A size limit had to rise because both sides' lines were joined; raising it inside the merge commit failed the document check ("a ceiling changed in a commit that also touches raptor-port/src" — the merge brings main's code in), so the unpushed merge commit had to be amended and the raise moved to its own commit. (2) While the merge was uncommitted, the branch's new readings check counted main's code comments as "lines this branch adds" (it diffs against the old merge base) and listed eleven; once committed they were not new.
+**Suggested improvement:** records-merge.mjs's closing advice (or the shipping steps' merge section) says: settle the clashes, commit the merge with every limit as main had it, then raise any limit the joined lines need in a separate notes-only commit; and read a check's "new" findings again after the merge commit, never during it.
+**Principle:** A check that compares against a merge base gives answers about the merge-in-progress, not the branch; commit the merge first, then judge what the check says, and keep changes that a check confines to notes-only commits out of a merge commit.

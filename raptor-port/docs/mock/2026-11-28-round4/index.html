@@ -1,0 +1,441 @@
+<title>Rulings Check Round 4</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f4f6f9;
+    --surface: #ffffff;
+    --surface-2: #eef2f6;
+    --line: #d5dce5;
+    --text: #17202b;
+    --muted: #55637a;
+    --accent: #0b7f96;
+    --accent-soft: #e2f3f6;
+    --rec: #0f6b4f;
+    --rec-soft: #e4f4ec;
+    --rec-line: #9fd3bd;
+    --accent-line: #8fcbd6;
+    --warn: #8a5a00;
+    --warn-soft: #fbf1dc;
+    --shot-bg: #0c1118;
+    --shadow: 0 1px 2px rgba(20, 30, 45, .08);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0b1220;
+      --surface: #111a2b;
+      --surface-2: #162236;
+      --line: #25344d;
+      --text: #e8edf2;
+      --muted: #9aa9bd;
+      --accent: #3fd0e6;
+      --accent-soft: #10303c;
+      --rec: #6fdcae;
+      --rec-soft: #103227;
+      --rec-line: #1f5a45;
+      --accent-line: #1f5c6b;
+      --warn: #f0c065;
+      --warn-soft: #33280f;
+      --shot-bg: #070b12;
+      --shadow: none;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0b1220;
+    --surface: #111a2b;
+    --surface-2: #162236;
+    --line: #25344d;
+    --text: #e8edf2;
+    --muted: #9aa9bd;
+    --accent: #3fd0e6;
+    --accent-soft: #10303c;
+    --rec: #6fdcae;
+    --rec-soft: #103227;
+    --warn: #f0c065;
+    --warn-soft: #33280f;
+    --shot-bg: #070b12;
+    --shadow: none;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Inter, -apple-system, "SF Pro Text", "Segoe UI", Roboto, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-text-size-adjust: 100%;
+    overflow-x: hidden;
+  }
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding-block: 24px 56px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  h1 { font-size: 26px; line-height: 1.2; margin: 0 0 6px; letter-spacing: -.01em; }
+  h2 { font-size: 20px; line-height: 1.25; margin: 44px 0 12px; letter-spacing: -.005em; }
+  h3 { font-size: 18px; line-height: 1.3; margin: 0 0 4px; }
+  h4 {
+    font-size: 12px; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--muted); margin: 20px 0 4px; font-weight: 600;
+  }
+  p { margin: 0 0 10px; }
+  .lede { color: var(--muted); margin-bottom: 18px; }
+  .kicker {
+    font-size: 12px; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--accent); font-weight: 600; margin-bottom: 6px;
+  }
+  .quote { font-style: normal; color: var(--text); background: var(--surface-2); border-radius: 4px; padding: 0 4px; }
+
+  /* What to look at now */
+  .now {
+    background: var(--surface);
+    border: 1px solid var(--accent-line);
+    border-radius: 10px;
+    padding: 16px 16px 6px;
+    box-shadow: var(--shadow);
+  }
+  .now h2 { margin: 0 0 4px; font-size: 18px; }
+  .now ol { list-style: none; margin: 10px 0 0; padding: 0; }
+  .now li { border-top: 1px solid var(--line); }
+  .now a {
+    display: grid; grid-template-columns: 28px 1fr; gap: 8px;
+    padding: 12px 0; color: inherit; text-decoration: none;
+  }
+  .now .n {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--accent-soft); color: var(--accent);
+    font-weight: 700; font-size: 14px; display: grid; place-items: center; margin-top: 1px;
+  }
+  .now .q { font-weight: 600; }
+  .now .r { color: var(--rec); display: block; font-weight: 500; }
+  .how { font-size: 14px; color: var(--muted); margin: 12px 0 10px; }
+
+  /* A question */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 18px 16px 8px;
+    margin: 0 0 18px;
+    box-shadow: var(--shadow);
+    scroll-margin-top: 12px;
+  }
+  .card .num {
+    display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 6px;
+  }
+  .rec {
+    background: var(--rec-soft);
+    border: 1px solid var(--rec-line);
+    border-radius: 8px;
+    padding: 12px 14px 4px;
+    margin: 16px 0 14px;
+  }
+  .rec h4 { color: var(--rec); margin-top: 0; }
+  .choice { margin: 0 0 10px; padding: 0; list-style: none; }
+  .choice li { padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; margin-bottom: 8px; }
+  .choice b { display: block; }
+  .cost { color: var(--warn); }
+
+  /* Pictures */
+  figure { margin: 14px 0 16px; }
+  .shot {
+    display: block; width: 100%; padding: 10px; margin: 0;
+    background: var(--shot-bg); border: 1px solid var(--line); border-radius: 8px;
+    cursor: zoom-in; text-align: center; font: inherit; color: inherit;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .shot:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .shot img { max-width: 100%; height: auto; display: block; margin: 0 auto; border-radius: 4px; }
+  figcaption { font-size: 14px; color: var(--muted); margin-top: 6px; }
+  figcaption b { color: var(--text); font-weight: 600; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: start; }
+  .pair figure { margin: 0; }
+  .pair + figcaption, .pairnote { font-size: 14px; color: var(--muted); margin: 6px 0 16px; }
+  .zoomhint { font-size: 13px; color: var(--muted); margin: -4px 0 14px; }
+
+  /* Fixes */
+  .fix { border-top: 1px solid var(--line); padding: 16px 0 4px; }
+  .fix:first-of-type { border-top: 0; padding-top: 4px; }
+  .fix p { margin-bottom: 8px; }
+  .says, .true { display: block; }
+  .tag {
+    display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    padding: 1px 7px; border-radius: 4px; margin-right: 6px; vertical-align: 1px;
+  }
+  .tag.s { background: var(--warn-soft); color: var(--warn); }
+  .tag.t { background: var(--rec-soft); color: var(--rec); }
+
+  /* Small points */
+  details {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+    padding: 0 16px; box-shadow: var(--shadow);
+  }
+  summary {
+    cursor: pointer; padding: 14px 0; font-weight: 600; list-style: none;
+    display: flex; justify-content: space-between; gap: 12px; align-items: center;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "Show"; color: var(--accent); font-weight: 600; font-size: 14px; }
+  details[open] summary::after { content: "Hide"; }
+  .small { list-style: none; margin: 0; padding: 0 0 8px; counter-reset: sp; }
+  .small li {
+    counter-increment: sp; border-top: 1px solid var(--line);
+    padding: 12px 0 12px 34px; position: relative;
+  }
+  .small li::before {
+    content: counter(sp); position: absolute; left: 0; top: 12px;
+    width: 24px; text-align: right; color: var(--muted); font-weight: 600; font-size: 14px;
+  }
+  .small .r { display: block; color: var(--rec); font-weight: 500; margin-top: 2px; }
+  .small .r.change { color: var(--warn); }
+
+  .next { list-style: none; margin: 0; padding: 0; }
+  .next li { border-top: 1px solid var(--line); padding: 10px 0; }
+  .next li:first-child { border-top: 0; }
+  .foot { font-size: 14px; color: var(--muted); margin-top: 28px; }
+
+  /* Lightbox */
+  .lb {
+    position: fixed; inset: 0; z-index: 50; display: none;
+    background: rgba(4, 8, 14, .94); overflow: auto; -webkit-overflow-scrolling: touch;
+    padding: 56px 12px 24px; cursor: zoom-out;
+  }
+  .lb.on { display: block; }
+  .lb img { display: block; margin: 0 auto; max-width: none; border-radius: 4px; }
+  .lb-close {
+    position: fixed; top: 10px; right: max(12px, env(safe-area-inset-right, 0px)); z-index: 51;
+    height: 36px; padding: 0 14px; border-radius: 18px;
+    border: 1px solid #3a4a63; background: #162236; color: #e8edf2;
+    font: 600 14px Inter, -apple-system, "Segoe UI", sans-serif; cursor: pointer;
+  }
+  .lb-close:focus-visible { outline: 2px solid #3fd0e6; outline-offset: 2px; }
+
+  @media (max-width: 380px) {
+    .pair { grid-template-columns: 1fr; }
+  }
+
+  /* Round 2 */
+  :root { --new: #fff1bf; --new-text: #5c4300; --new-line: #e2c25a; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --new: #4a3a0c; --new-text: #ffe08a; --new-line: #7a611a; }
+  }
+  :root[data-theme="dark"] { --new: #4a3a0c; --new-text: #ffe08a; --new-line: #7a611a; --rec-line: #1f5a45; --accent-line: #1f5c6b; }
+  .tagnew {
+    display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    padding: 1px 7px; border-radius: 4px; background: var(--new); color: var(--new-text); vertical-align: 1px;
+  }
+  mark { background: var(--new); color: var(--new-text); border-radius: 3px; padding: 0 2px; }
+  .card.isnew { border-color: var(--new-line); }
+  .done {
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px;
+    padding: 14px 16px 6px; margin-top: 14px;
+  }
+  .done h2 { margin: 0 0 6px; font-size: 16px; }
+  .done ul { margin: 0 0 8px; padding-left: 20px; font-size: 15px; }
+  .done li { margin-bottom: 6px; }
+  .card.pts { padding-top: 4px; }
+  .card.pts .small li:first-child { border-top: 0; }
+  h2[id] { scroll-margin-top: 12px; }
+  .small.e li { padding-left: 42px; }
+  .small.e li::before { content: "E" counter(sp); width: 32px; text-align: left; }
+  .fix figure { margin-bottom: 10px; }
+  @media (max-width: 560px) { .pair.stack { grid-template-columns: 1fr; } }
+  .second { border: 1px solid var(--new-line); border-radius: 8px; padding: 12px 14px 4px; margin: 14px 0; }
+  .second h4 { margin-top: 0; color: var(--new-text); }
+  .second p:last-child { margin-bottom: 4px; }
+  .shot.tall img { max-height: 520px; width: auto; }
+  .shot.crop img { width: 100%; aspect-ratio: 1143 / 560; object-fit: cover; object-position: 0 84%; }
+  details.answered { margin-top: 28px; }
+  details.answered ul { margin: 0 0 12px; padding-left: 20px; font-size: 15px; }
+  details.answered li { margin-bottom: 6px; }
+</style>
+
+<div class="wrap">
+
+  <div class="kicker">TALON · 28 Nov 26</div>
+  <h1>Rulings check, round 4</h1>
+  <p class="lede">Three small wording questions left from round 3's sentences (F). Before any of them is built, your rule asks for one read by someone who has never seen the words. Those reads found that the OIL card's last words and the Logic page's line could each be taken two ways. Separately, something round 3 told you about hidden warnings is not true for one of them. Everything here is new.</p>
+
+  <section class="now" aria-labelledby="now-h">
+    <h2 id="now-h">What to look at now</h2>
+    <ol>
+      <li><a href="#q1"><span class="n">1</span><span><span class="q">The Leave War's OIL card (F2 and F7): end "and the OIL follows", or "and the OIL changes to match"?</span> <span class="r">Recommended: "changes to match".</span></span></a></li>
+      <li><a href="#q2"><span class="n">2</span><span><span class="q">The Logic page's line under "An input closes its hours" (F6): plainer words?</span> <span class="r">Recommended: the plainer words, with "busy".</span></span></a></li>
+      <li><a href="#q3"><span class="n">3</span><span><span class="q">A hidden "Overlaps standby" warning: give it F5's new words too?</span> <span class="r">Recommended: yes.</span></span></a></li>
+    </ol>
+    <p class="how">Answer in the chat, for example "all as recommended", or "1 as recommended, 2 keep round 3's words". Tap any picture to see it full size. Pictures are the live app on the demo week of 13 to 19 Jul; pink marks are the drawing's, and only the words marked are changed. The yellow box stands for the words shown when the pointer rests on a button, which a picture never catches. Nothing is built yet.</p>
+  </section>
+
+  <!-- ============ 1 ============ -->
+  <article class="card isnew" id="q1">
+    <span class="num">Question 1 · the OIL card's last words</span>
+    <h3>End the card's line with "and the OIL follows", or "and the OIL changes to match"?</h3>
+
+    <h4>When it happens</h4>
+    <p>An admin, or the man himself, taps a weekend or holiday on the Leave War that shows OIL the app worked out. The card says where the OIL came from: the published schedule (F2) or an accepted duty input (F7).</p>
+
+    <h4>The example</h4>
+    <p>Anvil is on a Range safety duty, 09:00 to 12:00 on Sat 18 Jul. Saturday is published, and his OIL box shows HO*. The admin taps it. Under "Where it came from", the line approved in round 3 reads "Earned off a duty input that was accepted. Change that input and publish the day again, and the OIL follows." A reader given only these words read "the OIL follows" two ways: the OIL changes to match, or the OIL is given afterwards, as if the line were steps for getting OIL. "Changes to match" can only mean the first.</p>
+    <figure>
+      <button class="shot" type="button"><img src="img/f7-proposed-phone.png" width="394" height="450" alt="On a phone. Anvil's card for Sat 18 Jul on the Leave War. Under Where it came from, ringed in pink: Earned off a duty input that was accepted. Change that input and publish the day again, and the OIL changes to match. Below it: Reason Duty, Given by Duty input, Days half a day, AM, worked 09:00 to 12:00"></button>
+      <figcaption><b>F7 drawn, as your round-3 rule asked:</b> Anvil's card, the line ringed, with "changes to match". F2's line sits in the same place on a day whose OIL came from the schedule; it is not drawn again here (round 3 drew it).</figcaption>
+    </figure>
+    <figure>
+      <button class="shot" type="button"><img src="img/f7-today-phone.png" width="394" height="450" alt="On a phone. The same card as the app draws it today. Under Where it came from: Earned off a duty input that was accepted, change that input, not the schedule"></button>
+      <figcaption><b>The same card today:</b> "…change that input, not the schedule", which leaves out that the day must be published again.</figcaption>
+    </figure>
+
+    <h4>The choice</h4>
+    <ul class="choice">
+      <li><b>1 · "…and the OIL changes to match."</b> On both lines: <i>Earned off the published schedule. Change the schedule and publish the day again, and the OIL changes to match.</i> and <i>Earned off a duty input that was accepted. Change that input and publish the day again, and the OIL changes to match.</i></li>
+      <li><b>2 · Keep round 3's "…and the OIL follows."</b></li>
+    </ul>
+
+    <div class="rec">
+      <h4>Recommended</h4>
+      <p><b>1.</b> Two words longer, and it can only be read one way. A second reader given these words read them as intended.</p>
+      <p class="cost">That reader also asked whether "Change that input" means only editing it, or rejecting or deleting it too. Round 3's words have the same phrase, and the card's job is to point at the input, so I would leave it; it is checked in the running app before anything is built.</p>
+    </div>
+  </article>
+
+  <!-- ============ 2 ============ -->
+  <article class="card isnew" id="q2">
+    <span class="num">Question 2 · the Logic page, "An input closes its hours"</span>
+    <h3>Plainer words for the line under "An input closes its hours"?</h3>
+
+    <h4>When it happens</h4>
+    <p>A scheduler opens the Logic page to see why a man shows as busy, or not, while an input of his is on the day. Rare, but this is where the app explains the rule.</p>
+
+    <h4>The example</h4>
+    <p>Round 3's words (your "F as written"): "On the working copy an input closes the man for the hours it covers, from the moment it is filed. SANS availability and an upchit close nothing, nor does an input a scheduler takes off the programme, cancels (CX) or marks information only." A reader given those words alone, and a second given a first rewording, found:</p>
+    <ul>
+      <li>"the man" could be the man who filed it, not the man it is for;</li>
+      <li>"from the moment it is filed" could mean his busy time starts at that minute;</li>
+      <li>"closes" is used only in the check's own name and one other row, so a reader has to guess what it does to the man;</li>
+      <li>"nor does an input a scheduler … cancels" reads as "it never counted", where in fact it stops counting once the scheduler does it;</li>
+      <li>the scheduler's controls are Reject and the ⓘ marked "Info only", not "takes off the programme" and "information only".</li>
+    </ul>
+    <figure>
+      <button class="shot" type="button"><img src="img/f6-proposed-phone.png" width="402" height="153" alt="On a phone. The Logic page, under An input closes its hours, ringed in pink: On the working copy the man an input is for counts as taken for the hours it covers, as soon as it is filed. SANS availability and an upchit take nobody's hours. Once a scheduler rejects an input, cancels it (CX) or marks it Info only, it stops taking the man's hours"></button>
+      <figcaption><b>The plainer words on your phone,</b> ringed.</figcaption>
+    </figure>
+    <figure>
+      <button class="shot" type="button"><img src="img/f6-approved-phone.png" width="402" height="135" alt="On a phone. The same place with round 3's words: On the working copy an input closes the man for the hours it covers, from the moment it is filed. SANS availability and an upchit close nothing, nor does an input a scheduler takes off the programme, cancels (CX) or marks information only"></button>
+      <figcaption><b>Round 3's words,</b> for comparison. Today the app still says "Every input closes the man…", which is not true of SANS availability or an upchit.</figcaption>
+    </figure>
+
+    <h4>The choice</h4>
+    <ul class="choice">
+      <li><b>1 · The plainer words:</b> <i>On the working copy the man an input is for counts as taken for the hours it covers, as soon as it is filed. SANS availability and an upchit take nobody's hours. Once a scheduler rejects an input, cancels it (CX) or marks it Info only, it stops taking the man's hours.</i></li>
+      <li><b>2 · The same, with "busy" for "taken"</b>, as the third reader suggested: <i>On the working copy the man an input is for counts as busy for the hours it covers, as soon as it is filed. SANS availability and an upchit make nobody busy. Once a scheduler rejects an input, cancels it (CX) or marks it Info only, it stops making him busy.</i></li>
+      <li><b>3 · Keep round 3's words.</b></li>
+    </ul>
+
+    <div class="rec">
+      <h4>Recommended</h4>
+      <p><b>2.</b> A third reader, given only choice 1's words, understood them as meant: the man is busy for those hours from the moment it is filed; never for SANS availability or an upchit; freed by Reject, CX or Info only. But "counts as taken" made that reader think first of "picked for something", and of leave taken. "Busy" is the reader's own word for it, and the plainest. The reader also asked whether "On the working copy" means only there, whether "as soon as it is filed" means no Accept is needed, and whether CX cancels the input or a programme item. Each is checked in the running app before anything is built.</p>
+      <p class="cost">Choice 2's own words have not been read cold yet; they are before anything is built. Choice 1 is nine words longer than round 3's, choice 2 eight. The check keeps its name, "An input closes its hours". I stopped after three rounds of rewording, which is my reading of your limit on review rounds.</p>
+    </div>
+  </article>
+
+  <!-- ============ 3 ============ -->
+  <article class="card isnew" id="q3">
+    <span class="num">Question 3 · hiding an "Overlaps standby" warning</span>
+    <h3>A hidden "Overlaps standby" warning: give it F5's new words too?</h3>
+
+    <h4>When it happens</h4>
+    <p>A man on an SC standby line that is not flying is also down for a meeting in his standby hours. The warning list shows an amber "Overlaps standby" line. The scheduler knows about it and presses the ✕ to hide it.</p>
+
+    <h4>The example</h4>
+    <p>Rebel is on SC AM, 07:00 to 13:00 on Mon 13 Jul, and has a Range brief meeting 09:00 to 10:00. In round 3 you approved F5's new note for a hidden conflict between two schedule items: it stays hidden while the same man is on the same two items, even if their times change. Round 3 also told you (point E10) that every other warning comes back when its words change, so they keep today's words. That was wrong for this one: the app's code keeps an "Overlaps standby" warning hidden the same way: by the man and his two items, so moving the meeting to 10:00 would leave it hidden. (Read in the code, not yet tried on screen; it is tried before anything is built.) So today's words, "it comes back if the situation changes" and "It returns if the warning changes", are not true for it.</p>
+    <figure>
+      <button class="shot" type="button"><img src="img/sb-x-today-desktop.png" width="888" height="103" alt="On a desktop. The warning list: Overlaps standby, Rebel, Overlaps standby: RANGE BRIEF 09:00 to 10:00 and SC AM 07:00 to 13:00. Its cross ringed in pink, with today's hover words: Hide this warning, it flags no puck and is not counted; it comes back if the situation changes"></button>
+      <figcaption><b>Today,</b> on your PC: the line, its ✕ ringed, and the words shown when the pointer rests on it (drawn in yellow, as a browser never pictures them).</figcaption>
+    </figure>
+    <figure>
+      <button class="shot" type="button"><img src="img/sb-x-proposed-desktop.png" width="888" height="119" alt="The same line with F5's hover words: Hide this warning, it flags no puck and is not counted; it stays hidden while the same man is on the same two items, even if their times change"></button>
+      <figcaption><b>With new words to match F5's note.</b> These hover words are new: round 3 approved only the note.</figcaption>
+    </figure>
+    <figure>
+      <button class="shot" type="button"><img src="img/sb-note-proposed-desktop.png" width="752" height="79" alt="The passing note after the cross is pressed, with F5's words: Warning hidden: no flag, not counted. It stays hidden while the same man is on the same two items, even if their times change"></button>
+      <figcaption><b>The note after the ✕ is pressed, with F5's words.</b> Today it reads "Warning hidden: no flag, not counted. It returns if the warning changes."</figcaption>
+    </figure>
+
+    <h4>The choice</h4>
+    <ul class="choice">
+      <li><b>1 · Yes:</b> F5's note, and the matching hover words above, on every warning the app keeps hidden by its man and two items, an "Overlaps standby" line included. Every other warning keeps today's words.</li>
+      <li><b>2 · No:</b> keep today's words on "Overlaps standby". <span class="cost">They would stay untrue for it.</span></li>
+    </ul>
+
+    <div class="rec">
+      <h4>Recommended</h4>
+      <p><b>1.</b> The app treats both the same, so they should say the same. The words would follow how the app keeps the warning hidden, not its heading.</p>
+    </div>
+  </article>
+
+  <h2>Settled without asking, for your information</h2>
+  <section class="card">
+    <ul>
+      <li><b>Three refusal notes, "You can only edit your own inputs", "…delete your own inputs" and "Only a scheduler can move someone else's input",</b> are untrue too: the man who filed an input for someone else may also change it, for the kinds a member may file for others, while that switch is on. No tap reaches them today (a tap opens the input's window, which already shows your F3 line), so there is nothing to picture. My reading, not your ruling: they will follow your F3 line, "Only Ace, Ranger (who filed it) or an admin can change this input" where the man who filed it may, "Only Ace or an admin can change this input" where he may not. A fresh reader read the first two as intended. Say if you want them asked instead.</li>
+    </ul>
+  </section>
+
+  <p class="foot">The readers' reports and the drawings' scripts are kept in the project.</p>
+
+</div>
+
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Picture, full size" hidden>
+  <button class="lb-close" id="lbClose" type="button">Close</button>
+</div>
+
+<script>
+(function () {
+  var lb = document.getElementById('lb');
+  var img = null;
+  var closeBtn = document.getElementById('lbClose');
+  var opener = null;
+
+  function open(btn) {
+    var src = btn.querySelector('img');
+    if (!src) return;
+    opener = btn;
+    img = document.createElement('img');
+    lb.appendChild(img);
+    img.src = src.getAttribute('src');
+    img.alt = src.getAttribute('alt') || '';
+    var nat = src.naturalWidth || parseInt(src.getAttribute('width'), 10) || 600;
+    var room = Math.max(200, window.innerWidth - 24);
+    // Full size at least; a small picture is enlarged to fill the screen's width, up to twice its size.
+    var w = Math.max(nat, Math.min(room, nat * 2));
+    img.style.width = w + 'px';
+    lb.hidden = false;
+    lb.classList.add('on');
+    lb.scrollTop = 0;
+    lb.scrollLeft = 0;
+    closeBtn.focus();
+  }
+  function close() {
+    lb.classList.remove('on');
+    lb.hidden = true;
+    if (img) { lb.removeChild(img); img = null; }
+    if (opener) { opener.focus(); opener = null; }
+  }
+
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest ? e.target.closest('.shot') : null;
+    if (btn) { open(btn); return; }
+    if (lb.classList.contains('on') && (e.target === lb || e.target === closeBtn || e.target === img)) close();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && lb.classList.contains('on')) close();
+  });
+})();
+</script>

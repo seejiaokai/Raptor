@@ -65,6 +65,7 @@ function makeRepo(live = LIVE0) {
   if (!gate2.includes("other.md', 6000, 6000")) throw new Error('PAGE_LIMITS was not found in docsize.mjs — update this self-test')
   w('raptor-port/scripts/docsize.mjs', gate2)
   w('raptor-port/scripts/docsize-rulings.mjs', readFileSync(join(HERE, 'docsize-rulings.mjs'), 'utf8'))
+  w('raptor-port/scripts/readings.mjs', readFileSync(join(HERE, 'readings.mjs'), 'utf8'))   // the gate imports it (his D2610)
   w('raptor-port/scripts/backlog-archive.mjs', readFileSync(MOVER, 'utf8'))
   w('raptor-port/scripts/rulecheck.mjs', RULES0)
   w('raptor-port/docs/superpowers/specs/x-behaviour-register.md', REG0)

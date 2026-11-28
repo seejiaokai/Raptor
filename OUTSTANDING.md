@@ -119,7 +119,11 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [INPUTS-LIVE-LEFT] — what the Inputs pages' work left: readings he has not answered, his iPhone looks, three unconfirmed observations.
 - [SANS-PREVIOUS-REPORT-OFFER] — a previous evening's availability is not combined with the day's — his rule first; with caps and ops limits.
 
+- [ROUND3-SMALL-BUILDS] — five small builds from round 3's small points (his D2858): the export's draft words, the day's figures, the crew list by the day, the SANS counts by the day, an offer's window.
+
 **OIL**
+- [OIL-UNANSWERED-NOTE-OVERRIDE] — the publish note says "nobody on it earns OIL" for an unanswered input a scheduler switched a man on for; reword only where true, drawn first.
+- [OIL-LIST-EMPTIED-HOLD] — the OIL list emptied behind a held name signs nothing and says nothing; drawn first, put to him.
 - [OIL-INERT-WHY-CX-INFO] — in OIL Earn a cancelled or ⓘ row with times says "This row gives him no working hours to count OIL from" (as D1783 ruled); a finer reason is his question.
 - [OIL-EARN-WORDS-LEFT] — two OIL Earn wordings not ruled: the switch's passing note "…and the marks underneath are back" and an item's hover "the day blanket is on" — his look.
 - [OIL-WINDOW-FOOT-SHAPE] — in OIL Earn the ALL AVAIL window's foot gives an inert man's reason as "<callsign> — <reason>", where the board now says "Nothing changed for <callsign>. <Reason>." — older; his question.
@@ -161,6 +165,10 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ALL-AVAIL-REMOVE-BY-HAND] — take a person out of an ALL AVAIL crowd by hand (his D2330, 22 Nov 26): not built; a mock-up and five points for him first.
 - [BELL-WORDS-CLEAR] — every bell line saying an earlier line no longer stands, reworded in the SANS lines' plain style (his D2392, D2393), Fable rewording, drawn first; after the SANS job.
 - [READINGS-LAPSE-FIX] — Fable fixes the lapse that let a builder's reading pass as his rule through every layer (lesson 32), and plans and reviews an audit of the designs and the app's words against his rulings, Opus doing the work (his D2567); a session of its own, now.
+- [ALL-AVAIL-STANDBY] — a man only standing by is counted in an ALL AVAIL / ALL crowd in his standby hours and earns its OIL (his D2614, 25 Nov 26); today he is left out (avail personBusy); a scheduling and OIL change — its bug check FULL.
+- [END-TIME-GUARD] — **LIVE 27 Nov 26 (pull request 858, merged on his "merge live")**; left: Fable's scenario design and code read (after 30 Nov, findings a follow-up, D2864), the plan's later-round questions, the Logic page's "Rows with no end time" words (Q-W5). No day published or signed off while an item has a start and no end; the empty end box outlined red (his D2612, 25 Nov 26); drawn first; D2046, D2053, D1990, D2055, D2072, D2073, D2080, D360 and D605 marked narrowed to drafts (by D2852) and their pages fixed, [ROW-NO-TIME-MARK] archived; replaces the rulings audit's round-1 questions 1 and 4; the demo week remade with it to fit the rule (his D2616); whether an item with no start is flagged too is his question I (asked 25 Nov 26); a typed row never gets "all day", only an input with All day ticked (his D2790). The Legend's line: the outlined box beside "Time missing, fill it" (his D2803). Round 3 answered, all as recommended (his D2852–D2856): every item, no start too, the exceptions; grey then red; the count line and the words.
+- [AL-LOOK] — build the amendment look he picked (his D2618, D2619, 26 Nov 26): colour and a line in place of the "ALn" words, the line only on the newest published AL and waiting changes, a puck's number or tab, a "Changed in" key line, his seven colours; the try-out and Fable's study are the design (`raptor-port/docs/mock/2026-11-26-al-colours/`, `raptor-port/docs/superpowers/briefs/2026-11-26-al-colours-fable.md`); with it, D92 and D93's pages and every place that draws an ALn tag; Fable's colour-blind switch still put to him. High risk (the published record): a FULL bug check.
+- [AL-MARK-GAPS] — found by the amendment-colours study (chat 180, 26 Nov 26), not fixed: a changed free-text sim crew name (the outside squadron's) and a changed traffic line wear no amendment mark on a published day in any look, though each is counted and listed as pending; a fault — fix with the amendment-look build or sooner (`raptor-port/docs/superpowers/briefs/2026-11-26-al-colours-fable.md`).
 - [SANS-INFO-LINE] — a SANS man put by a scheduler on anything but a flight or sim is told by a bell line of its own, as soon as planned (his D2566); drawn first; after the SANS words job.
 - [UNASKED-READINGS-SWEEP] — the builders' readings marked "his to change" in code comments (11 files) checked against what was put to him; each never asked goes to him with an example (bug-check lesson 32); filed 24 Nov 26.
 - [COMBINED-INPUT-ROWS] — a shared input drawn as ONE row under Unavailable too (medical excepted, D2775), every input row taking drops as a sim row does (D2770–D2774); leave still his question; the plan read by Fable, Astra and a fresh Opus — drawings first, then a FULL check.
@@ -233,6 +241,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [CHAT66-OPEN-ROUND] — his answer to the night of 11 Nov 26's question 1 (the bell) and that night's small round of questions, put to him only when he says (D994).
 
 **Checks and tooling**
+- [VERCEL-NOT-CHASED] — the shipping rule and the deploy notes still say a change is done only when live on Vercel; his D2906 leaves a refused live build, previews from GitHub.
 - [DATECAL-GLIDE-TEST-FLAKE] — the date calendar's "a glide caught, held still, then dragged" test failed on GitHub in six runs on 17 Nov 26, each passing on re-run, in its setup's 28 quick arrow presses; first find out whether the app itself loses quick presses on a slow machine, then fix (pull request 802 waits, test-only).
 - [LW-ZOOM-TEST-SLOW] — the Leave War desktop browser test "a pinch (phone) or Ctrl+scroll (desktop) zooms the whole grid down and back" timed out twice in one GitHub run (3 Nov 26, at 31.8s and 32.0s) and passed on the next commit's run; watch it (D84).
 - [REVIEW-LAYERS] — his five rulings from the review-process page (D1407–D1411): the scorecard's baseline first, then notes-only pull requests merging by themselves, the secrets scan, the security read, the reader's test set. Steps 1 (the scorecard) and 4 (the secrets scan) built 31 Oct 26, not merged; two repository settings his to approve.
@@ -321,6 +330,11 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [VERCEL-NOT-CHASED] The shipping rule still waits for Vercel's live build (his D2906, 28 Nov 26, chat 210) — OPEN
+**What it is:** his D2906 — "Leave it. I don't bother about vercel since the limit is so limited. I'll use GitHub from now on for preview": a merge whose live build Vercel refuses for its daily limit is left (no retry, no spare build, no Promote asked of him), a change is done once `main`'s own run is green, and previews for his look come from GitHub (his D2839, 27 Nov 26, on the multi-squadron branches, filed there as [GH-PAGES-PREVIEW-DOCS]). The shipping rule still says "Done means LIVE — and live means ON VERCEL" and waits for a READY production deployment (D143), and its steps and the deploy notes send previews to Vercel.
+**Done in chat 210** (read by Astra and a fresh Opus, each blind — `raptor-port/docs/superpowers/briefs/2026-11-28-vercel-not-chased-guide-read-{astra,opus}.md`; their fixes made): the shipping rule's "done" lines, its link step, its notes-only line, the general rulings page's line. **To do:** what the two reads named as left — the shipping rule's section heading ("live means ON VERCEL", shared with the steps file's heading), its first bullet's "gives him a Vercel link", the steps file's link and "done" steps, the deploy notes' Vercel recovery steps (the spare-branch Promote), the general rulings page's "No public GitHub web address [D343]; the app is viewed on Vercel [D59]" line beside GitHub previews, and the agent's own note on a missed Vercel merge — one change with [GH-PAGES-PREVIEW-DOCS] once that branch is in `main`; when Vercel does build, READY is still waited for — his D2907 (28 Nov 26), the rule already saying so. A rule-file change: two readers, then his "merge live".
+**Where:** Checks and tooling; next after the multi-squadron branches bring D2839 to `main`.
 
 ### [LW-POSTIN-BALANCE] The leave balance of a man posted in from outside the app (filed 26 Nov 26, chat 200) — OPEN
 **What it is:** his question of 26 Nov 26 — how a posted-in man's balance is typed, against pending, and in which order. Ruled so far: a leave on a day before his post-in date shows on the grid but is never deducted from his balance (D2747, narrowing D1479); where a balance can be typed, one line always shown, "Only leave after post-in is deducted." (D2749, settling D2748), and no line under the balance naming where or when it was typed (D2812); the label "App bal" becomes "Official bal" everywhere, "War bal" unchanged (D2810). A balance never typed reads "Not typed" in amber, never 0, the below-zero question waiting for a figure (D2746, narrowing D1492); today's order kept, no build (D2745).
@@ -2054,14 +2068,6 @@ puck's 74px, the time boxes sized for "hh:mm" in JetBrains Mono, the callsign co
 device and every check machine; every measured width re-measured once, a wide visual change) or name a system font per
 platform and measure on the widest. **Place:** his call; before the database step is fine.
 
-### [ROW-NO-TIME-MARK] A "?" where a row has no timing or no end time (filed 29 Sep 26, D361)
-**Owner, 29 Sep 26 (D361):** *"In the future I think there’s a ? Shown if no timing or end time is entered. As a future job
-I think."* Today a row with a start and no end shows nothing missing on the row itself; only an ALL AVAIL on it names the
-assumed hour, in the window its count opens (D360, D361 — a "~" on the count was mocked up and declined). A row with NO start
-already makes its ALL AVAIL count a "?" (D360 (4)). **To do:** scope it with him first — which rows (programme, duties,
-sims, ground; the flying line's times?), where the "?" sits (the empty time box, or beside it), what a tap or hover says,
-and whether a published face prints it. LOOK tier. **Place:** low; a future job, his "as a future job I think".
-
 ### [UNDO-POSTING-RECORD] Undo for adding, archiving, restoring a person and for postings — the war's posting record (D350, 28 Sep 26)
 Left out of the change-recording build by his "4 ok" (D350). All five write the Leave War's posting record
 (`lw.postouts/all` — his stints, D308, D320), which the one undo cannot restore safely: `src/undo/timeline.ts`
@@ -2712,6 +2718,7 @@ design short form, each whole. Then options for which of them stop loading there
 | Multi-squadron batch 1, fix read 14 (`claude/multi-sqn-b1-107`, pull request 806, 20 Nov 26) — Astra stopped by its service after ~268k tokens; its three saved findings reproduced red; his D2232 accepts such stops for the build's fix reads (partial reads listed here) | a fresh, blind Opus reader, Fable (D2224) and the security reader (D1411) whole; Astra partial (D2232) | Astra's full report |
 | The turn-end backlog check made fast, [TURN-END-CHECK-SLOW] (a) (pull request 828, live 24 Nov 26): a change to a check's script and a hook's time limit, no app code | one fresh, blind Opus reader; old and new compared in five situations | Astra's read — **24 Nov 26: DROPPED on his word ("Drop it")** |
 | Multi-squadron batch 1, the core read (his D2237; `state/{perms,notices,units}.ts` whole at `7dbc13fd0`, 20 Nov 26, chat 124) — Astra stopped by its service after one stated finding (reproduced red, R4); fix read 17 beside it had all four whole | the fresh, blind Opus reader and the security reader (D1411) whole; Astra partial (D2232) | Astra's full report |
+| [END-TIME-GUARD] (`claude/end-time-guard-202`, pull request 858, chat 202, the night of 27 Nov 26) — high risk, built by Opus (his "use opus" and D2819) | Astra (the plan's red team, a scenario list, a code read); fresh, blind Opus readers (the plan's red team, a scenario list, two code reads); a fresh Fable read the built words (all kept) | Fable's scenario design and Fable's code read (D2440, D2443) — a fresh, blind Opus sat in each seat, for the night's build and again for round 1's commit (27 Nov 26, morning: Astra and a fresh Opus each designed and read); Fable reads after the 30 Nov reset, findings a follow-up (his D2864) |
 | [LW-POSTIN-BALANCE]'s build (`claude/lw-postin-build-5d49de`, pull request 857, chat 208, 27 Nov 26) — his D2819: until the 30 Nov reset Fable only reviews on-screen words | Astra's scenario design and a fresh, blind Opus in Fable's seat (D2443, D2819); a fresh Fable's words review; Astra and a fresh, blind Opus code reads; walked FULL (`raptor-port/docs/handpass/2026-11-27-lw-postin-build.md`) | Fable's scenario design (D2444) |
 
 ### [WEEK-ADD-TAP-PHONE] On a phone, a tap on a row's "+ add" on Edit Schedule's week arms nothing when the row already holds someone (found 11 Oct 26 by `[GROUP-INPUT-ONE-ROW]`'s walk — older than that job; his to place)
@@ -2836,6 +2843,15 @@ Put to him on https://claude.ai/artifact/CaQkNnknq7J57JvDKMj5Gg as Q3 (drawn by 
 recommended red when any row turns red, a row a line, before → after. Not answered. Since then his D1313 / D1314 put the day
 line's rows side by side and only amber or red (design lesson 50 names the bubble as a place it would apply), so it is redrawn
 with those in place before it is asked again (D1301's step 4). **Place:** after [LW-ROUND3-BUILD].
+
+### [ROUND3-SMALL-BUILDS] Five small builds from round 3's small points (his D2858, 26 Nov 26 — chat 202)
+**To build, each with a failing test first:** (2) the schedule export stamps a day signed but not published "Working draft — not yet published", when the export work resumes (on hold on his word); (9) the day's "Aircrew tasked" figure reads a man only standing by as free, as the crew list does (`engine/avail.ts` dayTasked — the Leave War stays as it is; narrows D1120); (11) a man archived later in a week is offered in that week's earlier crew lists, read by the day as the ALL AVAIL count is; (17) the Inputs calendar's people groups and the Leave War's Available pilot and WSO counts read SANS by the day (D2313), the Leave War's row staying where D-September put it; (19) an offer's window leaves out a man on a day he is not SANS (his 23 Nov ruling), drawn for him first. **Place:** small, by area — (9), (11) with the scheduler's next batch; (17), (19) with the SANS work; (2) with the export.
+
+### [OIL-LIST-EMPTIED-HOLD] The OIL list emptied behind a held name signs nothing and says nothing (the fresh Fable code read, F3, 28 Nov 26 — chat 210)
+A scheduler presses CUR CK on a day with an unanswered OIL question; the list opens holding his name ("waiting for your answer"). He opens the input from its card in the list and answers there (or another door answers it). Back at the list: "Nothing left to answer.", only Close, the held box gone, no foot line; Close leaves CUR CK unsigned without a word, and he must press the box again (it then signs at once). Cause: `ui/OilDayList.tsx Body` — the held box needs rows, and the foot offers only Close when none is left; closing throws the hold away. Older than [OIL-LATER-PASSES-ON]; since his D2800 the list asks at every box, so this path is commoner. Fix to put to him, drawn first (D1625 — he would see it): with no row left and the hold still standing, either Close writes the held name (Later's path) or the held box stays with a Sign button. Proof: the Fable read's P9 (`raptor-port/docs/superpowers/briefs/2026-11-28-oil-later-code-read-fable.md` on `claude/oil-later-209`).
+
+### [OIL-UNANSWERED-NOTE-OVERRIDE] The publish note says "nobody on it earns OIL" for an unanswered input a scheduler switched someone on for (Astra's red-team read, 27 Nov 26 — chat 209)
+An input left with its OIL question unanswered, on a holiday, where a scheduler has switched one man on in OIL Earn: he earns OIL through the switch (`engine/oilev.ts earnsFrom` — an allow comes before the unanswered default), while the publish note (`leavewar/sync.ts oilUnansweredLine`) says the input has no answer "so nobody on it earns OIL". Older than [OIL-LATER-PASSES-ON]; Astra's probe confirmed a full day earned. **To do, if he wants it:** keep naming the unanswered input, but say "nobody … earns" only where true; the exceptional wording drawn and put through the words review (Opus drafts, a fresh Fable adjusts, D2441) and shown to him first (D1625); tests for a named man and a placeholder switched on. **Place:** OIL — with the next OIL words or publish-note change. Report: `raptor-port/docs/superpowers/briefs/2026-11-27-oil-later-redteam-astra.md` (on `claude/oil-later-209`), finding 3.
 
 ### [OIL-INERT-WHY-CX-INFO] A cancelled or ⓘ row's reason in OIL Earn (walk find, 8 Nov 26 — chat 5, `claude/pr-oil-earn-ffbf07`)
 W2's A21 (pictures `raptor-port/docs/img/handpass/2026-11-08-oil-earn-board/``w2/s21-*`): in OIL Earn a tap on a man on a cancelled (CX) or information-only (ⓘ) row says
@@ -3018,6 +3034,9 @@ bid) is not called undone. Drawn on the page of 24 Nov 26 (`raptor-port/docs/moc
 `claude/allavail-drawings-156`), reworded again by Fable under his D2422.
 **Also (his D2563, 24 Nov 26, chat 169):** an input's "Deleted" line is reworded in the same plain style — "Training on Wed
 15 Jul was deleted. · Saber" — drawn for him first, then built with this job.
+**Also (chat 192, 26 Nov 26, the rulings check's small point 8):** the bell's leave-bid lines "LL bid changed to OL", "LL
+bid moved to Thu 29 Jan" and "LL bid deleted" were never shown to him — drawn for him with this job's lines and put to him
+(three readers of round 2 found a "leave as built" on words he never saw; round 3 moved the point here).
 
 ### [READINGS-LAPSE-FIX] The lapse that let a builder's reading pass as his rule — fixed by Fable, and an audit against his rulings (his D2567, 24 Nov 26)
 
@@ -3032,6 +3051,23 @@ the rules for recording a reading), each change read as a working-guide change i
 his "merge live"; (2) Fable plans the audit — which designs, words and surfaces, against which rulings, how a mismatch is
 reported; Opus helpers do it; Fable reviews their findings; each mismatch goes to him with when it happens, an example and
 a picture; [UNASKED-READINGS-SWEEP] folds into it. **Place:** a session of its own, started 24 Nov 26 from chat 169.
+**Round 3 answered (chat 202, 26 Nov 26):** his D2800–D2804, D2850–D2858 — the seven sentences' new words (D2856) and E's points (D2855) to build, F2, F5, F6, F7 after one cold read. **State (chat 173, 25 Nov 26, his D2610, D2611):** (1) the checking fix BUILT on `claude/readings-lapse-fix-fdbb3c`
+(three rounds of blind reads by Astra, a fresh Opus and Fable, each must-fix fixed, the last checked by a fresh Fable:
+`raptor-port/docs/superpowers/briefs/2026-11-2{4,5}-readings-fix-*.md`); its pull request waits for pull request 825
+to merge, then his "merge live"; the readers' "left as is" points (`…-read3-*.md`, `…-fix4-fable.md`) are small and
+filed here, not built. (2) The audit's core done and reviewed by Fable (`…-rulings-audit-*.md`); round 1 put to him on
+https://claude.ai/artifact/JijvQqMqRAULtwUkNEMkqP; round 2 (three questions) and the six wording faults' build, drawn
+first, after his answers; the rest of the audit (Leave War, Tracker, app-wide words, the old rows' readings, tests)
+only on his word. **Chat 180, 25 Nov 26:** round 2 and the drawings ([END-TIME-GUARD] and the six sentences, words
+adjusted by a fresh Fable) are on the same page (`raptor-port/docs/mock/2026-11-25-rulings-round2/`,
+`…/2026-11-25-guardrail-wording/` with `words-reviewed.md`), waiting on his answers. Filed with it, not built: (a) the
+day's OIL list keeps no record of who answered each question, though the OIL page's D782 line says each answer is
+stamped with who gave it — his D2802 (26 Nov 26): F1 names nobody, who answered is neither kept nor told to the member, a job of its own only on his word; (b) two more untrue lines,
+"You can only edit your own inputs" / "…delete your own inputs" (a member may also change one he filed), to draft and
+draw with the six; (c) five of the adjusted sentences (the sign-off refusal, the Leave War card, both hidden-warning
+lines, the Logic line) owe a cold read before they are built (`words-reviewed.md`); (d) his D2617 (a changed late
+cut-off moves LATE marks at once, published days too, as built): look at View-only Sched's face of a published day
+after the change, which was never checked. **Chat 211 (28 Nov 26):** the cold reads his D2856 asked for are done (`raptor-port/docs/superpowers/briefs/2026-11-28-round3-f-words-*.md`: drafts, a Fable adjuster, three blind Fable cold reads, the comparison) and F7 is drawn; round 4 put to him, three questions — F2/F7's "the OIL follows" → "changes to match", F6's plainer words ("busy"), and F5's words on a hidden "Overlaps standby" line too (round 3's E10 was untrue for it): https://claude.ai/artifact/11xuBXCEJ5vbdoL5zm4uwU (source `raptor-port/docs/mock/2026-11-28-round4/`, checked by a fresh Opus, `…/briefs/2026-11-28-round4-page-check-opus.md`). (b) widened: "Only a scheduler can move someone else's input" (`ui/caldrag.ts`) is untrue the same way; the three take F3's line by the builder's reading, told to him on the page. Before the build, try on screen: a hidden "Overlaps standby" line stays hidden when the meeting moves; F6's three readings (working copy only, no Accept needed, CX of the input).
 
 ### [SANS-INFO-LINE] A SANS man told when a scheduler puts him on anything but a flight or sim (his D2566, 24 Nov 26; SC MAIN, SC SPARE, BB and AVALON too — his D2576, 25 Nov 26)
 
@@ -3053,7 +3089,7 @@ order's §7.11 lesson 32). Eleven source files hold comments of that shape ("his
 more may use other words). **To do:** for each reading, search the rulings' full rows and the closing reports for
 whether it was told to him; each never told goes to him in a small round, with when it happens and a worked example
 (D2439), and each answer is recorded and the comment rewritten to cite it. **Place:** a job of its own after the SANS
-words job merges; reading only until he answers.
+words job merges; reading only until he answers. **Added 28 Nov 26 (chat 211, merging `main` into `claude/readings-lapse-fix-fdbb3c`):** the readings check named eleven more comments on `main`, each a reading with no ruling cited — `engine/avail.ts:94`, `engine/oilev.ts:1007`, `engine/sans-notimes-strike.test.ts:6`, `engine/timegaps.ts:13` and `:21`, `leavewar/engine/leaveyear.test.ts:218`, `leavewar/sans-reads-156.test.tsx:545`, `leavewar/sansunfiled.ts:21`, `leavewar/ui/PersonWindow.tsx:78`, `ui/oilsign.ts:121`, `ui/palette-html.ts:294` (under `raptor-port/src`, line numbers of that day); the check stops only new lines, so these stand until this sweep.
 
 ### [SANS-WORDS-LEFTOVERS] What the SANS words job's reads found and left (filed 24 Nov 26, chat 169)
 

@@ -1,0 +1,58 @@
+[
+ {
+  "scene": "F7",
+  "size": "desktop",
+  "what": "staged: the duty filed",
+  "v": {
+   "iid": "imrldi4qsgbjlo5",
+   "type": "Duty",
+   "acc": "g",
+   "oil": {
+    "2026-07-18": 0.5
+   },
+   "people": [
+    {
+     "p": "romeo",
+     "by": "stiff",
+     "at": 1784077203844
+    }
+   ]
+  }
+ },
+ {
+  "scene": "F7",
+  "size": "desktop",
+  "what": "Saturday published: the note",
+  "v": "Saturday published and approved"
+ },
+ {
+  "scene": "F7",
+  "size": "desktop",
+  "what": "anything published",
+  "v": true
+ },
+ {
+  "scene": "F7",
+  "size": "desktop",
+  "what": "the man on the Leave War",
+  "v": {
+   "id": null,
+   "cs": "Rebel",
+   "rows": [
+    "row-dice = ReaperIR22",
+    "row-shaft = AnvilIP19",
+    "row-snap = CinchIP23.5",
+    "row-pump = PistonIP–",
+    "row-bane = RangerIP12.57.5LLLLLLLLLLLLLLLLLLCCLPLCL",
+    "row-stiff = SaberIP17.5"
+   ],
+   "n": 49
+  }
+ },
+ {
+  "scene": "f7",
+  "size": "d",
+  "what": "STOPPED",
+  "v": "locator.evaluate: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"cell-null-2026-07-18\"]').first()\u001b[22m\n"
+ }
+]
