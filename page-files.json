@@ -3,102 +3,102 @@
     "file": "assets/RangePicker-CFDM6F5I.css",
     "src": "_RangePicker-CFDM6F5I.css"
   },
-  "_RangePicker-Sjjksx_o.js": {
-    "file": "assets/RangePicker-Sjjksx_o.js",
+  "_RangePicker-CxyJ_Hv0.js": {
+    "file": "assets/RangePicker-CxyJ_Hv0.js",
     "name": "RangePicker",
     "imports": [
       "_wavetpl-DUYFzvF5.js",
-      "_lift-eC32_21R.js",
-      "_glyphs-Bx8-62PC.js",
-      "_store-ttBamb5C.js",
-      "_inputedit-r-FznM3f.js",
-      "_changesmodel-CkL-1Ht1.js",
-      "_vvfollow-B5RkXdcC.js",
+      "_lift-g7sP-N4L.js",
+      "_glyphs-BRFPeFUc.js",
+      "_store-SPo1Qaod.js",
+      "_inputedit-IhxPvlXp.js",
+      "_changesmodel-BCJeaAY4.js",
+      "_vvfollow-C4AO2jBj.js",
       "_undo-bridge-CzXc6gaO.js"
     ],
     "css": [
       "assets/RangePicker-CFDM6F5I.css"
     ]
   },
-  "_changesmodel-CkL-1Ht1.js": {
-    "file": "assets/changesmodel-CkL-1Ht1.js",
+  "_changesmodel-BCJeaAY4.js": {
+    "file": "assets/changesmodel-BCJeaAY4.js",
     "name": "changesmodel",
     "imports": [
       "_wavetpl-DUYFzvF5.js",
-      "_glyphs-Bx8-62PC.js"
+      "_glyphs-BRFPeFUc.js"
     ]
   },
-  "_drag-BQZ7DBsd.js": {
-    "file": "assets/drag-BQZ7DBsd.js",
+  "_drag-DQLjHGhu.js": {
+    "file": "assets/drag-DQLjHGhu.js",
     "name": "drag",
     "imports": [
       "_wavetpl-DUYFzvF5.js",
-      "_lift-eC32_21R.js",
-      "_glyphs-Bx8-62PC.js",
-      "_store-ttBamb5C.js",
-      "_inputedit-r-FznM3f.js",
-      "_changesmodel-CkL-1Ht1.js",
-      "_pan-wj92hweF.js"
+      "_lift-g7sP-N4L.js",
+      "_glyphs-BRFPeFUc.js",
+      "_store-SPo1Qaod.js",
+      "_inputedit-IhxPvlXp.js",
+      "_changesmodel-BCJeaAY4.js",
+      "_pan-BfwNYTgB.js"
     ]
   },
-  "_glyphs-Bx8-62PC.js": {
-    "file": "assets/glyphs-Bx8-62PC.js",
+  "_glyphs-BRFPeFUc.js": {
+    "file": "assets/glyphs-BRFPeFUc.js",
     "name": "glyphs",
     "imports": [
       "_wavetpl-DUYFzvF5.js"
     ]
   },
-  "_inputedit-r-FznM3f.js": {
-    "file": "assets/inputedit-r-FznM3f.js",
+  "_inputedit-IhxPvlXp.js": {
+    "file": "assets/inputedit-IhxPvlXp.js",
     "name": "inputedit",
     "imports": [
       "_wavetpl-DUYFzvF5.js",
-      "_lift-eC32_21R.js",
-      "_glyphs-Bx8-62PC.js",
-      "_store-ttBamb5C.js",
-      "_changesmodel-CkL-1Ht1.js",
+      "_lift-g7sP-N4L.js",
+      "_glyphs-BRFPeFUc.js",
+      "_store-SPo1Qaod.js",
+      "_changesmodel-BCJeaAY4.js",
       "_weeknav-DEdR3eQ_.js"
     ]
   },
-  "_lift-eC32_21R.js": {
-    "file": "assets/lift-eC32_21R.js",
+  "_lift-g7sP-N4L.js": {
+    "file": "assets/lift-g7sP-N4L.js",
     "name": "lift",
     "imports": [
       "_wavetpl-DUYFzvF5.js",
-      "_glyphs-Bx8-62PC.js"
+      "_glyphs-BRFPeFUc.js"
     ]
   },
-  "_pan-wj92hweF.js": {
-    "file": "assets/pan-wj92hweF.js",
+  "_pan-BfwNYTgB.js": {
+    "file": "assets/pan-BfwNYTgB.js",
     "name": "pan",
     "imports": [
       "_wavetpl-DUYFzvF5.js",
-      "_glyphs-Bx8-62PC.js",
-      "_store-ttBamb5C.js",
-      "_changesmodel-CkL-1Ht1.js",
+      "_glyphs-BRFPeFUc.js",
+      "_store-SPo1Qaod.js",
+      "_changesmodel-BCJeaAY4.js",
       "_weeknav-DEdR3eQ_.js"
     ]
   },
-  "_store-ttBamb5C.js": {
-    "file": "assets/store-ttBamb5C.js",
+  "_store-SPo1Qaod.js": {
+    "file": "assets/store-SPo1Qaod.js",
     "name": "store",
     "imports": [
       "_wavetpl-DUYFzvF5.js",
-      "_glyphs-Bx8-62PC.js"
+      "_glyphs-BRFPeFUc.js"
     ]
   },
   "_undo-bridge-CzXc6gaO.js": {
     "file": "assets/undo-bridge-CzXc6gaO.js",
     "name": "undo-bridge"
   },
-  "_vvfollow-B5RkXdcC.js": {
-    "file": "assets/vvfollow-B5RkXdcC.js",
+  "_vvfollow-C4AO2jBj.js": {
+    "file": "assets/vvfollow-C4AO2jBj.js",
     "name": "vvfollow",
     "imports": [
       "_wavetpl-DUYFzvF5.js",
-      "_glyphs-Bx8-62PC.js",
-      "_inputedit-r-FznM3f.js",
-      "_changesmodel-CkL-1Ht1.js"
+      "_glyphs-BRFPeFUc.js",
+      "_inputedit-IhxPvlXp.js",
+      "_changesmodel-BCJeaAY4.js"
     ]
   },
   "_wavetpl-DUYFzvF5.js": {
@@ -110,64 +110,64 @@
     "name": "weeknav"
   },
   "index.html": {
-    "file": "assets/index-BDm_6vyD.js",
+    "file": "assets/index-C9MKMLp8.js",
     "name": "index",
     "src": "index.html",
     "isEntry": true,
     "imports": [
       "_wavetpl-DUYFzvF5.js",
-      "_lift-eC32_21R.js",
-      "_glyphs-Bx8-62PC.js",
-      "_store-ttBamb5C.js",
-      "_inputedit-r-FznM3f.js",
-      "_changesmodel-CkL-1Ht1.js",
-      "_RangePicker-Sjjksx_o.js",
+      "_lift-g7sP-N4L.js",
+      "_glyphs-BRFPeFUc.js",
+      "_store-SPo1Qaod.js",
+      "_inputedit-IhxPvlXp.js",
+      "_changesmodel-BCJeaAY4.js",
+      "_RangePicker-CxyJ_Hv0.js",
       "_weeknav-DEdR3eQ_.js",
-      "_drag-BQZ7DBsd.js",
-      "_pan-wj92hweF.js",
-      "_vvfollow-B5RkXdcC.js"
+      "_drag-DQLjHGhu.js",
+      "_pan-BfwNYTgB.js",
+      "_vvfollow-C4AO2jBj.js"
     ],
     "dynamicImports": [
       "src/leavewar/LeaveWarPage.tsx",
       "src/tracker/TrackerPage.tsx",
       "index.html",
       "_wavetpl-DUYFzvF5.js",
-      "_changesmodel-CkL-1Ht1.js",
-      "_pan-wj92hweF.js",
-      "_drag-BQZ7DBsd.js"
+      "_changesmodel-BCJeaAY4.js",
+      "_pan-BfwNYTgB.js",
+      "_drag-DQLjHGhu.js"
     ],
     "css": [
-      "assets/index-CjzzsTGj.css"
+      "assets/index-CgtqJ_gy.css"
     ]
   },
   "src/leavewar/LeaveWarPage.tsx": {
-    "file": "assets/LeaveWarPage-C_kE8GHy.js",
+    "file": "assets/LeaveWarPage-BdGnh7Ni.js",
     "name": "LeaveWarPage",
     "src": "src/leavewar/LeaveWarPage.tsx",
     "isDynamicEntry": true,
     "imports": [
       "_wavetpl-DUYFzvF5.js",
-      "_lift-eC32_21R.js",
-      "_glyphs-Bx8-62PC.js",
-      "_store-ttBamb5C.js",
-      "_inputedit-r-FznM3f.js",
-      "_RangePicker-Sjjksx_o.js",
-      "_vvfollow-B5RkXdcC.js"
+      "_lift-g7sP-N4L.js",
+      "_glyphs-BRFPeFUc.js",
+      "_store-SPo1Qaod.js",
+      "_inputedit-IhxPvlXp.js",
+      "_RangePicker-CxyJ_Hv0.js",
+      "_vvfollow-C4AO2jBj.js"
     ],
     "css": [
-      "assets/LeaveWarPage-Q0d5vEfU.css"
+      "assets/LeaveWarPage-DittkLpJ.css"
     ]
   },
   "src/tracker/TrackerPage.tsx": {
-    "file": "assets/TrackerPage-Bz19Tdlc.js",
+    "file": "assets/TrackerPage-B1sYqhLD.js",
     "name": "TrackerPage",
     "src": "src/tracker/TrackerPage.tsx",
     "isDynamicEntry": true,
     "imports": [
       "_wavetpl-DUYFzvF5.js",
-      "_lift-eC32_21R.js",
-      "_glyphs-Bx8-62PC.js",
-      "_store-ttBamb5C.js",
+      "_lift-g7sP-N4L.js",
+      "_glyphs-BRFPeFUc.js",
+      "_store-SPo1Qaod.js",
       "_undo-bridge-CzXc6gaO.js",
       "index.html"
     ],
