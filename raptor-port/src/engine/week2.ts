@@ -91,7 +91,7 @@ export const WEEK2_DAYS:any[]=[
 
  {dow:'Friday',dt:'Jul 24',wc:'0 X 0 X 0',
   notes:[{t:'NO FLYING - GROUND TRAINING DAY'},{t:'ORDERS: FLYING ORDERS SECTION 5'}],
-  allhands:[{prog:'SODB',str:'0745',end:'0800'},{prog:'SQN PT',str:'1500',end:'1630'},{prog:'MASS DEBRIEF + BEER CALL',str:'1700',end:''}],
+  allhands:[{prog:'SODB',str:'0745',end:'0800'},{prog:'SQN PT',str:'1500',end:'1630'},{prog:'MASS DEBRIEF + BEER CALL',str:'1700',end:'1800'}],
   waves:[],
   sims:{amt:[],oft:[{label:'EP-6',str:'1400',end:'1530',p:'boosh',w:'shaft'}]},
   dutywaves:[{label:'Duty',rows:[{role:'SDO',id:'yeti',str:'0730',end:'1730'},{role:'SXO',id:'razer',str:'0730',end:'1730'}]}],

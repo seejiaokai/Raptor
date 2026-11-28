@@ -9,7 +9,7 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../../engine/inputs'
-import { getState, heldRunAt, initStore, lwHistInit, setDayAward, setPeople, setPostOut, setRole, setViewer } from '../state/store'
+import { getState, heldRunAt, initStore, lwHistInit, setDayAward, setPeople, setPostOut, setRole, setTypedBalance, setViewer } from '../state/store'
 import { initStore as raptorInitStore } from '../../state/store'
 import { setSession } from '../../state/auth'
 import { projectPeople } from '../state/raptorRoster'
@@ -131,6 +131,7 @@ describe('what "All 4 days" acts on', () => {
   })
   it('over an overseas duty of four days a leave pressed on "All" goes on every day; on the day tapped on that day', () => {
     fileAbsence(P, 'OD', DAYS[0]!, DAYS[3]!)
+    setTypedBalance(P, 'LVE', 0)   // a figure typed: a balance never typed asks nothing (D2746)
     tap(DAYS[1])
     expect(title()).toBe('9–12 Feb')
     /* he has no LVE left: the first press asks before going below zero, the same leave again goes ahead (the window's own ask) */
@@ -142,6 +143,7 @@ describe('what "All 4 days" acts on', () => {
   })
   it('…and on the day tapped, only that day', () => {
     fileAbsence(P, 'OD', DAYS[0]!, DAYS[3]!)
+    setTypedBalance(P, 'LVE', 0)   // a figure typed: a balance never typed asks nothing (D2746)
     tap(DAYS[1])
     fireEvent.click(dayChip())
     fireEvent.click(within(sheet()).getByTestId('bid-LL'))

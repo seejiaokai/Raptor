@@ -21,6 +21,22 @@ describe('the leave buttons', () => {
     expect(document.body.textContent).not.toContain('½')
   })
 
+  /* D2823 (27 Nov 26 — question 23 item 4 as drawn): a kind never typed shows the amber "–" where its "left" stands, NOT
+     dimmed (no figure to be at 0), and no words, its hover the kind's own name only */
+  it('D2823: a kind never typed reads the amber "–" for what is left, not dimmed, no words', () => {
+    render(<LeaveButtons portion="full" onPick={() => {}} filled={false} figure={code => (code === 'LL' || code === 'OL' ? 'nt' : code === 'CCL' ? 2 : 0)} />)
+    const ll = screen.getByTestId('bid-LL-left')
+    expect(ll.textContent).toBe('–')
+    expect(ll.className).toContain('lv-nt')
+    expect(ll.className).not.toContain('lv-neg')
+    expect(screen.getByTestId('bid-LL').className).not.toContain('lv-dim')
+    expect(screen.getByTestId('bid-OL-left').textContent).toBe('–')
+    expect(screen.getByTestId('bid-CCL-left').textContent).toBe('2')
+    expect(screen.getByTestId('bid-OIL').className).toContain('lv-dim')      // a figure at 0 still dims
+    expect(document.body.textContent).not.toContain('Not typed')
+    expect(document.querySelector('[title*="Not typed"]')).toBeNull()
+  })
+
   it('a kind that spends nothing shows no figure', () => {
     render(<LeaveButtons portion="full" onPick={() => {}} filled={false} figure={() => null} />)
     expect(screen.queryByTestId('bid-LL-left')).toBeNull()

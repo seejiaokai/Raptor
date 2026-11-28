@@ -19,6 +19,7 @@ import { rowElsewhere, isoDayWords } from '../engine/weekstash'
 import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, restTraceEntries, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal, withOfficialWarn, officialWarn, fltNoLen, fltNoLenMsg, versionFaceWarn, withVersionWarn } from '../engine/validate'
 import { availByWave, personBusy, dayOff, dayEngaged, personWarns, dayTasked } from '../engine/avail'
 import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayShownPendCount, dayDelta, dayDiscardCount, alColor, signOf, signMissing, signShown, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, verLabel, protectedWeek, notYetSigned, verSigners, publishReadPass, unpublishBackTo, pendingInputIds } from '../engine/publish'
+import { timeGapsOf } from '../engine/timegaps'
 import { verSeq, dayIso } from '../engine/verid'
 import { rosterOf } from '../engine/roster'
 import { UNIT } from '../engine/unitview'
@@ -428,6 +429,13 @@ export function viewVerSelHTML(di:any){
     +`<option value="issued"${work?'':' selected'}>${esc(verLabel(cv))} — as issued</option>`
     +`<option value="working"${work?' selected':''}>Working draft — not issued</option>`
     +`</select>`
+}
+/* [END-TIME-GUARD] — EDIT SCHEDULE'S LEGEND LINE FOR THE OUTLINE (his D2803, D2860: approved as drawn,
+   docs/mock/2026-11-27-morning-drawings/legend.mjs): at the Legend's foot an empty time box outlined grey, one outlined
+   red, then his words. Edit Schedule's Legend only — View-only Sched never shows the outline (D2853), so its Legend never
+   names it; kept apart from legendHTML(), which both Legends share and the reference's item set pins (html.test.ts). */
+export function timeLegendHTML(){
+  return `<span style="margin-left:8px" data-leg="timegap"><span class="qk tg-leg" style="background:transparent;box-shadow:inset 0 0 0 1px var(--ink-3);border-radius:4px;min-width:26px;padding:0;margin-right:3px"></span><span class="qk tg-leg" style="background:transparent;box-shadow:inset 0 0 0 1px var(--hard);border-radius:4px;min-width:26px;padding:0;margin-right:5px"></span>Time missing, fill it</span>`;
 }
 export function legendHTML(){
   return `<span><i style="background:var(--fcp)"></i>FCP (pilot)</span><span><i style="background:var(--rcp)"></i>RCP (WSO)</span><span data-leg="pers"><i style="background:var(--pers);box-shadow:inset 0 0 0 1px var(--pers-line)"></i>Personnel (ground crew)</span>
@@ -1701,6 +1709,11 @@ export function dayStatHTML(di:any,ed:any){
           ? `<button class="dpend dpendbtn dchg" data-chgday="${di}" data-chgtab="all" aria-haspopup="dialog" title="Every change on ${d.dow} and who made it">${cc.all}&nbsp;change${cc.all>1?'s':''}</button>`
           : '';
     const sgOK=daySigned(di);
+    /* [END-TIME-GUARD] (his D2855 E1, D2853): the greyed Publish day / Publish AL still takes a press while an item on the
+       day is missing a time — locked as before (aria-disabled, the same look), the press refused with the note
+       (state/sched-commit.ts); with nothing missing it is disabled exactly as before. The Amendments panel's own Publish AL
+       is left as it is until his answer (the plan's R6). */
+    const lockAt=timeGapsOf(+di).items?' aria-disabled="true"':' disabled';
     /* THE BEAK (§9, closes BUG-2): on a NEVER-published day it first-approves
        (Publish day). On a PUBLISHED day it renders NOTHING here — a published
        version is frozen, and its status is the green title tag; amending is edit
@@ -1710,7 +1723,7 @@ export function dayStatHTML(di:any,ed:any){
       : workView
       ? `<span class="dbeak ro work" title="${d.dow} is published, but this is the working draft — not what was issued">Working draft</span>`
       : (ed&&!ok)
-      ? `<button class="dbeak ${!sgOK?'locked':''}" data-beak="${di}"${!sgOK?' disabled':''} title="${sgOK?'Publish '+d.dow+' — approve this day only':'Sign off '+signMissing(di).join(', ')+' before publishing '+d.dow}">Publish day</button>`
+      ? `<button class="dbeak ${!sgOK?'locked':''}" data-beak="${di}"${!sgOK?lockAt:''} title="${sgOK?'Publish '+d.dow+' — approve this day only':'Sign off '+signMissing(di).join(', ')+' before publishing '+d.dow}">Publish day</button>`
       : ok
       ? ''   /* published: stamp retired — the green title tag names the issued version (verTagHTML) */
       : '';   /* unpublished view: no stamp — its title tag already reads DRAFT (owner D950 R1, 17 Oct 26 — the words pass, round 2:
@@ -1726,7 +1739,7 @@ export function dayStatHTML(di:any,ed:any){
        actions under a preview, so drop the button there. */
     const alN=nextSeq(di);
     const alpub=(ed&&ok&&nd&&!DPREV.has(+di))
-      ? `<button class="dbeak dalpub${sgOK?'':' locked'}" data-alpub="${di}"${sgOK?'':' disabled'} title="${sgOK
+      ? `<button class="dbeak dalpub${sgOK?'':' locked'}" data-alpub="${di}"${sgOK?'':lockAt} title="${sgOK
           ?`Publish AL${alN} — ${nd} change${nd>1?'s':''} on ${d.dow} only`
           :`Sign off ${signMissing(di).join(', ')} before publishing AL${alN}`}">Publish AL${alN}</button>`
       :'';
@@ -2527,6 +2540,23 @@ export function signoffHTML(di:any,full:any){
   const missing=new Set(miss);
   const stale=SIGN_ROLES.filter((r:any)=>r[2]&&g[r[0]]&&missing.has(r[1])).map((r:any)=>r[1]);
   const why=(l:any)=>stale.includes(l)?`${l} needs an appointed scheduler`:l;
+  /* [END-TIME-GUARD] WHILE AN ITEM ON THE DAY IS MISSING A TIME (his D2612, D2854; the approved try-out): a press on a box
+     is refused, so the box takes the press itself and its list can neither open nor take the keys — the select is
+     disabled and out of the tab order (Windows F4, the iPhone's form arrows and a screen reader's double tap open a select
+     a mouse catch cannot stop — the fresh Opus red-team read, 2b), the pill a button for the keys (interactions.ts
+     routeClick / routeOpenKey say the note: state/timeguard.ts). */
+  /* Not on a protected week: the quarantine keeps its own first word, as at every other sign and publish door (the
+     Fable-seat code read, F3 — the board still draws this bar there). */
+  const gaps=timeGapsOf(+di).items, lock=!!gaps&&!protectedWeek(), blockAt=lock?' role="button" tabindex="0" aria-disabled="true"':'';
+  /* …and the status line says how many items are missing a time, before "N to sign" (D2854); on the board, with no names
+     of the boxes still to sign until the last time is typed, so it stays one line on a phone (D2734). The week keeps the
+     stale-appointment words after it, as built (the plan's Q21). Once all four show (an older saved week, Q-W3) the line
+     is as before. */
+  const gapLead=gaps?`<span class="tg-n">${gaps} item${gaps===1?'':'s'} missing a time</span> · `:'';
+  /* ON EDIT SCHEDULE THE LINE IS A BUTTON while it names the count: a tap on it goes to each empty box in turn (his D2854;
+     the try-out's count tap — interactions.ts routeClick, ui/timegap-paint.ts nextGapBox). The board's line stays words
+     (the plan's Q19); no hover words until his answer (Q-W4). */
+  const tapTag=!full&&gaps&&miss.length?'button':'span';
   return `<span class="so-h">Sign-off</span>`
     +SIGN_ROLES.map(([k,lbl,sch]:any)=>{
       const v=g[k], ids=signPeople(sch,v,di);
@@ -2536,9 +2566,9 @@ export function signoffHTML(di:any,full:any){
          value; it re-renders on every reflow, the same path that used to move
          the `selected` attribute. */
       const shown=v&&PEOPLE[v]?PEOPLE[v].cs:(ids.length?'— name —':'— none appointed —');
-      return `<label class="sgn ${v?'on':''}${sch?' sch':''}" title="${esc(lbl)}${sch?' — appointed schedulers only':''}${v&&PEOPLE[v]?' — '+esc(PEOPLE[v].name||PEOPLE[v].cs):''}">`
+      return `<label class="sgn ${v?'on':''}${sch?' sch':''}${lock?' tg-block':''}" title="${esc(lbl)}${sch?' — appointed schedulers only':''}${v&&PEOPLE[v]?' — '+esc(PEOPLE[v].name||PEOPLE[v].cs):''}"${blockAt}>`
         +`<span class="k">${esc(lbl)}</span><span class="v">${esc(shown)}</span>`
-        +`<select data-sign="${k}" data-signday="${di}" aria-label="${esc(lbl)} — ${esc((DAYS[di]||{}).dow||'')}">`
+        +`<select data-sign="${k}" data-signday="${di}" aria-label="${esc(lbl)} — ${esc((DAYS[di]||{}).dow||'')}"${lock?' disabled tabindex="-1"':''}>`
         +`<option value="">${ids.length?'— name —':'— none appointed —'}</option>`
         +ids.map((id:any)=>`<option value="${id}"${id===v?' selected':''}>${esc(PEOPLE[id].cs)}</option>`).join('')
         +`</select></label>`;}).join('')
@@ -2549,15 +2579,16 @@ export function signoffHTML(di:any,full:any){
        issued version and says whether there is anything to publish — the old flat
        "can be published" wrongly implied a publish button that (correctly) is not
        there when nothing has changed. dayDelta is the ONE eligibility authority. */
-    +`<span class="so-state ${miss.length?'no':'yes'}">${
-        miss.length ? `${miss.length} to sign${full?' · '+miss.map(why).join(', '):stale.length?' · '+stale.map(why).join(', '):''}`
+    +`<${tapTag} class="so-state ${miss.length?'no':'yes'}${gaps&&miss.length?' tg-has':''}${tapTag==='button'?' tg-tap':''}"${tapTag==='button'?` type="button" data-tgnext="${di}"`:''}>${
+        miss.length&&gaps ? `${gapLead}${miss.length} to sign${!full&&stale.length?' · '+stale.map(why).join(', '):''}`
+        : miss.length ? `${miss.length} to sign${full?' · '+miss.map(why).join(', '):stale.length?' · '+stale.map(why).join(', '):''}`
         : !dayApproved(di) ? 'Signed — this day can be published'
         : (()=>{const cv=dayCurVer(di); if(cv==null) return 'Signed';   // approved but no resolvable snapshot (probe/import) → no ALNaN label (Fable #3)
             const chg=dayShownPendCount(di);   // the ONE count the day head shows (D109 — a man moved is one change)
             return chg
               ? `Published at ${esc(verLabel(cv))} · ${chg} change${chg>1?'s':''} to publish — Publish AL${nextSeq(di)}`
               : `Published at ${esc(verLabel(cv))} — no changes to publish`;})()
-      }</span>`;
+      }</${tapTag}>`;
 }
 /* =====================================================================
    DAY DETAILS — the ⓘ chip on every day head. Approval state, which AL

@@ -35,6 +35,7 @@ import { withFreshMissionRoles } from '../state/mission-roles'
 import { missionTracking } from '../engine/insights-config'
 import { resolveMissionRole } from '../engine/mission-role'
 import { dayDrafts, curDraftId, draftDup, draftSelect, ROWSLEFT, rowsLeftSentences } from '../engine/drafts'
+import { carryTimeRed } from './timegap-paint'
 import { oilPutBackWatch, oilNeedSaid } from './oilputback'
 import { setTplEdit, setDayTplEdit, setDraftsEdit, setWaveEdit } from './pops'
 import { noteOpener, menuEscape, menuKeys, locate, keysBack } from './sheetfocus'
@@ -1941,7 +1942,11 @@ export function planMenu(anchor: HTMLElement, di: any) {
     if (e.target.closest('[data-plangolive]')) { close(); view.setDayPreview(di, null); notify(); e.stopPropagation(); return }
     if (e.target.closest('[data-plandup]')) {
       close()
+      const firstPlan = !dayDrafts(di).length
       const t = draftDup(di)
+      /* [END-TIME-GUARD] the first + Alt Plan turns the plain working copy into Plan A: its red goes with it (D2853 —
+         ui/timegap-paint.ts carryTimeRed); the copy, the new live plan, starts grey */
+      if (t && firstPlan && dayDrafts(di)[0]) carryTimeRed(di, '', String(dayDrafts(di)[0].id))
       if (t) {
         /* the new plan is now the live day, so drop any frozen preview this menu
            was opened from — otherwise the day keeps showing the old read-only

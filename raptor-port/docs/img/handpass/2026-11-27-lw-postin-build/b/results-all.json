@@ -1,0 +1,654 @@
+[
+ {
+  "id": "F0 fixture: three men on the Balances page",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Buzzard=pmwxvnvd8innldx Lynx=pmwxvnxwe5inxw4 Pelican=pmwxvo08ne1605a",
+  "pics": []
+ },
+ {
+  "id": "F1 fixture: Pelican 24 typed",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "War bal 24",
+  "pics": []
+ },
+ {
+  "id": "B1a heading OFFICIAL over BAL",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "heading \"OFFICIAL / BAL\" [137,232.1 40x22]; next heading \"CARRIED\" from x=196; all: NAME · GRADE | OFFICIAL / BAL | CARRIED | PENDING / APPROVAL | WAR BAL | OIL | CCL | FCL | PL | EL | CL",
+  "pics": [
+   "01-bal-admin-402"
+  ]
+ },
+ {
+  "id": "B1b \"App bal\" nowhere",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "shown: []; names: []",
+  "pics": [
+   "01-bal-admin-402"
+  ]
+ },
+ {
+  "id": "B1c the one line above the rows",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "1 line(s) \"Only leave after post-in is deducted.\" 13px rgb(154, 164, 178) [16,203.3 370x18.8]; view switch foot y=183.8; headings top y=230.1 (one expected)",
+  "pics": [
+   "01-bal-admin-402"
+  ]
+ },
+ {
+  "id": "B1d rows with five empty amber boxes",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "53 rows drawn; 36 show all five of CCL·FCL·PL·EL·CL never typed (empty dashed boxes); 17 do not (AnvilIP, CinchIP, RangerIP, DrifterA, RidgeC, BasherIW, CometIP, AceA, TorchC, DieselD, RelayIW, StaticIW, CinderB, RuneB, FableC, VectorC, WispC); LVE never typed: PistonIP, ForgeIP, LedgerIW, GhostC, BuzzardO, LynxO, TalismanO, Cotter",
+  "pics": [
+   "01-bal-admin-402"
+  ]
+ },
+ {
+  "id": "B1e \"Not typed\" fits the WAR BAL column",
+  "size": "phone",
+  "verdict": "FAIL",
+  "said": "WAR BAL column x 314–369; 8 of 8 spill: PistonIP: words x 314–380.3, OIL figure from x=376, 14px rgb(242, 200, 121) · ForgeIP: words x 314–380.3, OIL figure from x=376, 14px rgb(242, 200, 121) · LedgerIW: words x 314–380.3, OIL figure from x=376, 14px rgb(242, 200, 121)",
+  "pics": [
+   "01-bal-admin-402",
+   "01-bal-admin-402-nt-zoom"
+  ]
+ },
+ {
+  "id": "B1g nothing shows through the pinned headings",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "list scrolled bp-hs 0→360; rows found under the headings/line: none; line-to-headings gap 8px",
+  "pics": [
+   "01b-bal-admin-402-scrolled"
+  ]
+ },
+ {
+  "id": "B2a \"Not typed\" in the LVE tile",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "War bal reads \"Not typed\" 16px 800 colour rgb(242, 200, 121); words [145.3,346.8 79x21] inside tile [31,290.8 202.4x152.9]; OIL tile starts x=237.4; cut=false",
+  "pics": [
+   "02-pw-buzzard-402"
+  ]
+ },
+ {
+  "id": "B2b label \"Official bal\"",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "labels in the LVE tile: [\"Official bal\",\"Pending\",\"War bal\"]",
+  "pics": [
+   "02-pw-buzzard-402"
+  ]
+ },
+ {
+  "id": "B2c both LVE boxes empty, dashed amber",
+  "size": "phone",
+  "verdict": "FAIL",
+  "said": "Official bal box \"\" edge solid rgb(102, 113, 127); carried box \"\" edge solid rgb(102, 113, 127)",
+  "pics": [
+   "02-pw-buzzard-402"
+  ]
+ },
+ {
+  "id": "B2d the one line under the LVE box",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "1 line(s): \"Only leave after post-in is deducted.\" 11px rgb(138, 150, 163), words [40,419.8 172.8x15], tile [31,290.8 202.4x152.9], carried box foot y=393.8",
+  "pics": [
+   "02-pw-buzzard-402"
+  ]
+ },
+ {
+  "id": "B2e the small tiles' boxes never typed (CCL FCL PL EL CL)",
+  "size": "phone",
+  "verdict": "FAIL",
+  "said": "CCL \"\" solid inTile=true · FCL \"\" solid inTile=true · PL \"\" solid inTile=true · EL \"\" solid inTile=true · CL \"\" solid inTile=true",
+  "pics": [
+   "02-pw-buzzard-402"
+  ]
+ },
+ {
+  "id": "B2f the window inside the screen",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "window [10,198.3 382x477.4] on a 402-wide screen",
+  "pics": [
+   "02-pw-buzzard-402"
+  ]
+ },
+ {
+  "id": "B3a \"Type the Official bal first\" fully in sight",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "\"Type the Official bal first\" [64.7,397.8 149.3x27.6] 12px rgb(255, 179, 185); window [10,198.3 382x477.4]; on top",
+  "pics": [
+   "03-cf-first-refused"
+  ]
+ },
+ {
+  "id": "B3d what the refusal tag stands over",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "tag [64.7,397.8 149.3x27.6]; \"till 31 Dec\" [40,396.8 184.4x12] covered 1642.3px²; the one line [40,419.8 184.4x15.9] covered 835.1px² (its top 419.8, the tag's foot 425.4)",
+  "pics": [
+   "03b-cf-first-refused-crop"
+  ]
+ },
+ {
+  "id": "B3b nothing saved by the refusal",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "War bal still \"Not typed\"",
+  "pics": [
+   "03-cf-first-refused"
+  ]
+ },
+ {
+  "id": "B3e the refusal after the box is emptied and left",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "refusal still shown: true",
+  "pics": [
+   "03c-cf-cleared-tap-away"
+  ]
+ },
+ {
+  "id": "B3c cleared and left: still never typed",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "War bal \"Not typed\", carried box \"\", error shown: true",
+  "pics": [
+   "03c-cf-cleared-tap-away"
+  ]
+ },
+ {
+  "id": "B4r grid figure beside a never-typed name (left unchanged on purpose)",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "Buzzard's row name cell reads \"Buzzard O 0 \"",
+  "pics": []
+ },
+ {
+  "id": "B4r2 leave buttons' \"left\" for a never-typed man (left unchanged on purpose)",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "LL: LL −1 · OL: OL −1 · OIL: OIL −1 · CCL: CCL −1 · FCL: FCL −1 · PL: PL −1 · EL: EL −1 · CL: CL −1",
+  "pics": [
+   "04a-buzzard-8dec-open"
+  ]
+ },
+ {
+  "id": "B4a never typed: no below-zero question, placed on the first tap",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "question: none; window still open: false; the day now reads \"LL\"",
+  "pics": [
+   "04b-buzzard-LL-one-tap-q",
+   "04b-buzzard-LL-one-tap"
+  ]
+ },
+ {
+  "id": "B4b after the leave, still \"Not typed\" (never 0 or −1)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Buzzard War bal \"Not typed\"",
+  "pics": []
+ },
+ {
+  "id": "B4c \"taken\" on his LVE tile (LL Tue 8 Dec approved, after his post-in)",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "tile says \"0 taken\"; War bal \"Not typed\"; leave list \"LL Tue 8 Dec 1 Approved\"",
+  "pics": [
+   "04d-pw-buzzard-after-LL"
+  ]
+ },
+ {
+  "id": "B5a 0 typed saves (tap away): the box shows 0, no dashed edge",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "CCL box \"0\" edge solid rgb(102, 113, 127) class mth-in bp-bx sm z",
+  "pics": [
+   "05a-buzzard-CCL-0-tap-away"
+  ]
+ },
+ {
+  "id": "B5b the other kinds stay never typed",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "LVE box \"\", War bal \"Not typed\"",
+  "pics": [
+   "05a-buzzard-CCL-0-tap-away"
+  ]
+ },
+ {
+  "id": "B5c typed 0: the below-zero question, fully in sight above the buttons",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "\"That takes Buzzard to −1 CCL. Tap the same leave again to go ahead.\" [25,722.3 352x16.7]; CCL button top y=745; on top",
+  "pics": [
+   "05d-buzzard-CCL-first-tap-q",
+   "05d-buzzard-CCL-first-tap"
+  ]
+ },
+ {
+  "id": "B5d the second tap places it",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "window open false; day reads \"CCL\"",
+  "pics": [
+   "05e-buzzard-CCL-second-tap"
+  ]
+ },
+ {
+  "id": "B5e CCL now reads below zero",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "CCL box \"−1\"",
+  "pics": []
+ },
+ {
+  "id": "B6a the leave on Wed 2 Dec placed and shown on the grid",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "placed=true; day reads \"LL\"",
+  "pics": [
+   "06d-lynx-grid-2dec"
+  ]
+ },
+ {
+  "id": "B6b before typing: Not typed",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "War bal \"Not typed\"",
+  "pics": [
+   "06e-pw-lynx-before"
+  ]
+ },
+ {
+  "id": "B6c his example: Official 24, War 24 (2 Dec never deducted)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Official bal \"24\", Pending \"–\", War bal \"24\", taken \"0 taken\"",
+  "pics": [
+   "06f-pw-lynx-24-typed"
+  ]
+ },
+ {
+  "id": "B6d his leave list still shows 2 Dec",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "leave list: \"LL Wed 2 Dec 1 Approved\"",
+  "pics": [
+   "06f-pw-lynx-24-typed"
+  ]
+ },
+ {
+  "id": "B6f \"taken\" on Lynx's tile after 7 Dec",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "tile says \"0 taken\"; Official \"23\", War \"23\"",
+  "pics": [
+   "06i-pw-lynx-after-7dec"
+  ]
+ },
+ {
+  "id": "B6e leave on his post-in day (Mon 7 Dec) does come off",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "placed=true; Official \"23\", War \"23\"",
+  "pics": [
+   "06h-bal-lynx-after-7dec"
+  ]
+ },
+ {
+  "id": "B6r grid figure beside Lynx",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "\"Lynx O 23 2 LL LL \"",
+  "pics": []
+ },
+ {
+  "id": "B7a heading OFFICIAL over BAL",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "heading \"OFFICIAL / BAL\" [137,232.1 40x22]; next heading \"CARRIED\" from x=196; all: NAME · GRADE | OFFICIAL / BAL | CARRIED | PENDING / APPROVAL | WAR BAL | OIL | CCL | FCL | PL | EL | CL",
+  "pics": [
+   "07-bal-admin-375"
+  ]
+ },
+ {
+  "id": "B7b \"App bal\" nowhere",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "shown: []; names: []",
+  "pics": [
+   "07-bal-admin-375"
+  ]
+ },
+ {
+  "id": "B7c the one line above the rows",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "1 line(s) \"Only leave after post-in is deducted.\" 13px rgb(154, 164, 178) [16,203.3 343x18.8]; view switch foot y=183.8; headings top y=230.1 (one expected)",
+  "pics": [
+   "07-bal-admin-375"
+  ]
+ },
+ {
+  "id": "B7d rows with five empty amber boxes",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "53 rows drawn; 35 show all five of CCL·FCL·PL·EL·CL never typed (empty dashed boxes); 18 do not (AnvilIP, CinchIP, RangerIP, DrifterA, RidgeC, BasherIW, CometIP, AceA, TorchC, DieselD, RelayIW, StaticIW, CinderB, RuneB, FableC, VectorC, WispC, BuzzardO); LVE never typed: PistonIP, ForgeIP, LedgerIW, GhostC, BuzzardO, TalismanO, Cotter",
+  "pics": [
+   "07-bal-admin-375"
+  ]
+ },
+ {
+  "id": "B7e \"Not typed\" fits the WAR BAL column",
+  "size": "phone",
+  "verdict": "FAIL",
+  "said": "WAR BAL column x 314–369; 7 of 7 spill: PistonIP: words x 314–380.3, OIL figure from x=376, 14px rgb(242, 200, 121) · ForgeIP: words x 314–380.3, OIL figure from x=376, 14px rgb(242, 200, 121) · LedgerIW: words x 314–380.3, OIL figure from x=376, 14px rgb(242, 200, 121)",
+  "pics": [
+   "07-bal-admin-375",
+   "07-bal-admin-375-nt-zoom"
+  ]
+ },
+ {
+  "id": "B7pa \"Not typed\" in the LVE tile",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "War bal reads \"Not typed\" 14px 800 colour rgb(242, 200, 121); words [139.4,291.3 69.1x19] inside tile [31,234.3 186.2x168.9]; OIL tile starts x=221.2; cut=false",
+  "pics": [
+   "07b-pw-buzzard-375"
+  ]
+ },
+ {
+  "id": "B7pb label \"Official bal\"",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "labels in the LVE tile: [\"Official bal\",\"Pending\",\"War bal\"]",
+  "pics": [
+   "07b-pw-buzzard-375"
+  ]
+ },
+ {
+  "id": "B7pc both LVE boxes empty, dashed amber",
+  "size": "phone",
+  "verdict": "FAIL",
+  "said": "Official bal box \"\" edge solid rgb(102, 113, 127); carried box \"\" edge solid rgb(102, 113, 127)",
+  "pics": [
+   "07b-pw-buzzard-375"
+  ]
+ },
+ {
+  "id": "B7pd the one line under the LVE box",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "1 line(s): \"Only leave after post-in is deducted.\" 11px rgb(138, 150, 163), words [40,363.3 122.1x30.9], tile [31,234.3 186.2x168.9], carried box foot y=337.3",
+  "pics": [
+   "07b-pw-buzzard-375"
+  ]
+ },
+ {
+  "id": "B7pe the small tiles' boxes never typed (FCL PL EL CL)",
+  "size": "phone",
+  "verdict": "FAIL",
+  "said": "FCL \"\" solid inTile=true · PL \"\" solid inTile=true · EL \"\" solid inTile=true · CL \"\" solid inTile=true",
+  "pics": [
+   "07b-pw-buzzard-375"
+  ]
+ },
+ {
+  "id": "B7pf the window inside the screen",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "window [10,141.8 355x528.4] on a 375-wide screen",
+  "pics": [
+   "07b-pw-buzzard-375"
+  ]
+ },
+ {
+  "id": "B7q \"Type the Official bal first\" in sight at 375",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "[64.7,341.3 149.3x27.6] window [10,141.8 355x528.4]",
+  "pics": [
+   "07c-cf-first-375"
+  ]
+ },
+ {
+  "id": "B8a heading OFFICIAL over BAL",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "heading \"OFFICIAL / BAL\" [137,232.1 40x22]; next heading \"CARRIED\" from x=196; all: NAME · GRADE | OFFICIAL / BAL | CARRIED | PENDING / APPROVAL | WAR BAL | OIL | CCL | FCL | PL | EL | CL",
+  "pics": [
+   "08-bal-member-unlocked"
+  ]
+ },
+ {
+  "id": "B8b \"App bal\" nowhere",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "shown: []; names: []",
+  "pics": [
+   "08-bal-member-unlocked"
+  ]
+ },
+ {
+  "id": "B8c the one line above the rows",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "1 line(s) \"Only leave after post-in is deducted.\" 13px rgb(154, 164, 178) [16,203.3 370x18.8]; view switch foot y=183.8; headings top y=230.1 (one expected)",
+  "pics": [
+   "08-bal-member-unlocked"
+  ]
+ },
+ {
+  "id": "B8d rows with five empty amber boxes",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "53 rows drawn; 36 show all five of CCL·FCL·PL·EL·CL never typed (amber dashes); 17 do not (ReaperIR, AnvilIP, CinchIP, PistonIP, RangerIP, SaberIP, SidewinderIP, WardenIP, DrifterA, RidgeC, BasherIW, EchoIW, BladeIP, CobraIP, CometIP, ForgeIP, HavocIP, HunterIP, TridentIP, VandalIP, AceA, SaintB, GambitC, NomadC, OutlawC, TorchC, DieselD, VaporD, LedgerIW, QuillIW, RelayIW, ScopeIW, StaticIW, CinderB, RuneB, CutterC, DashC, FableC, GhostC, GritC, HexC, RyderC, VectorC, WispC, BuzzardO, LynxO, PelicanO, ReconO, TalismanO, WildcardO, Cotter, Ratchet, Widget); LVE never typed: PistonIP, ForgeIP, LedgerIW, GhostC, BuzzardO, TalismanO, Cotter",
+  "pics": [
+   "08-bal-member-unlocked"
+  ]
+ },
+ {
+  "id": "B8e \"Not typed\" fits the WAR BAL column",
+  "size": "phone",
+  "verdict": "FAIL",
+  "said": "WAR BAL column x 314–369; 7 of 7 spill: PistonIP: words x 314–380.3, OIL figure from x=376, 14px rgb(242, 200, 121) · ForgeIP: words x 314–380.3, OIL figure from x=376, 14px rgb(242, 200, 121) · LedgerIW: words x 314–380.3, OIL figure from x=376, 14px rgb(242, 200, 121)",
+  "pics": [
+   "08-bal-member-unlocked",
+   "08-bal-member-unlocked-nt-zoom"
+  ]
+ },
+ {
+  "id": "B8f read-only \"never typed\" is the amber dash",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "254 read-only never-typed marks on 52 rows, 0 not the amber dash; first: ReaperIR read-only \"–\" rgb(242, 200, 121) · ReaperIR read-only \"–\" rgb(242, 200, 121) · ReaperIR read-only \"–\" rgb(242, 200, 121)",
+  "pics": [
+   "08-bal-member-unlocked"
+  ]
+ },
+ {
+  "id": "B8g member: own row boxes, others read only",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "his Official bal INPUT \"15\"; rows with boxes: RangerIP; Buzzard's row read only: – – −1 – – – –",
+  "pics": [
+   "08-bal-member-unlocked"
+  ]
+ },
+ {
+  "id": "B8h own window unlocked: the one line",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "1 line(s)",
+  "pics": [
+   "08c-pw-ranger-own-unlocked"
+  ]
+ },
+ {
+  "id": "B8i member types his own figure on the phone (Enter)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "his CCL \"3\" → \"2\"",
+  "pics": [
+   "08d-pw-ranger-CCL-2"
+  ]
+ },
+ {
+  "id": "B8j another man's window: no line, amber dash, \"Not typed\" fits",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "0 line(s); Official bal \"–\" SPAN rgb(242, 200, 121); War bal \"Not typed\" [145.3,342.8 79x21] in tile [31,286.8 202.4x126]",
+  "pics": [
+   "08e-pw-member-sees-buzzard"
+  ]
+ },
+ {
+  "id": "B8k another man's small tiles",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "CCL \"−1\" war \"(no line)\" · FCL \"–\" war \"(no line)\" · PL \"–\" war \"(no line)\" · EL \"–\" war \"(no line)\" · CL \"–\" war \"(no line)\"",
+  "pics": [
+   "08e-pw-member-sees-buzzard"
+  ]
+ },
+ {
+  "id": "B9a admin locks on the phone (padlock)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "lock aria-checked=true",
+  "pics": [
+   "09a-admin-locks-q",
+   "09a-admin-locks"
+  ]
+ },
+ {
+  "id": "B9b admin still sees the one line when locked",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "1 line(s)",
+  "pics": [
+   "09a-admin-locks"
+  ]
+ },
+ {
+  "id": "B9ca heading OFFICIAL over BAL",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "heading \"OFFICIAL / BAL\" [137,225.3 40x22]; next heading \"CARRIED\" from x=196; all: NAME · GRADE | OFFICIAL / BAL | CARRIED | PENDING / APPROVAL | WAR BAL | OIL | CCL | FCL | PL | EL | CL",
+  "pics": [
+   "09b-bal-member-locked"
+  ]
+ },
+ {
+  "id": "B9cb \"App bal\" nowhere",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "shown: []; names: []",
+  "pics": [
+   "09b-bal-member-locked"
+  ]
+ },
+ {
+  "id": "B9cc the one line above the rows",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "0 line(s) \"\"   none; view switch foot y=183.8; headings top y=223.3 (none expected, locked)",
+  "pics": [
+   "09b-bal-member-locked"
+  ]
+ },
+ {
+  "id": "B9cd rows with five empty amber boxes",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "53 rows drawn; 36 show all five of CCL·FCL·PL·EL·CL never typed (amber dashes); 17 do not (ReaperIR, AnvilIP, CinchIP, PistonIP, RangerIP, SaberIP, SidewinderIP, WardenIP, DrifterA, RidgeC, BasherIW, EchoIW, BladeIP, CobraIP, CometIP, ForgeIP, HavocIP, HunterIP, TridentIP, VandalIP, AceA, SaintB, GambitC, NomadC, OutlawC, TorchC, DieselD, VaporD, LedgerIW, QuillIW, RelayIW, ScopeIW, StaticIW, CinderB, RuneB, CutterC, DashC, FableC, GhostC, GritC, HexC, RyderC, VectorC, WispC, BuzzardO, LynxO, PelicanO, ReconO, TalismanO, WildcardO, Cotter, Ratchet, Widget); LVE never typed: PistonIP, ForgeIP, LedgerIW, GhostC, BuzzardO, TalismanO, Cotter",
+  "pics": [
+   "09b-bal-member-locked"
+  ]
+ },
+ {
+  "id": "B9ce \"Not typed\" fits the WAR BAL column",
+  "size": "phone",
+  "verdict": "FAIL",
+  "said": "WAR BAL column x 314–369; 7 of 7 spill: PistonIP: words x 314–380.3, OIL figure from x=376, 14px rgb(242, 200, 121) · ForgeIP: words x 314–380.3, OIL figure from x=376, 14px rgb(242, 200, 121) · LedgerIW: words x 314–380.3, OIL figure from x=376, 14px rgb(242, 200, 121)",
+  "pics": [
+   "09b-bal-member-locked",
+   "09b-bal-member-locked-nt-zoom"
+  ]
+ },
+ {
+  "id": "B9cf read-only \"never typed\" is the amber dash",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "254 read-only never-typed marks on 52 rows, 0 not the amber dash; first: ReaperIR read-only \"–\" rgb(242, 200, 121) · ReaperIR read-only \"–\" rgb(242, 200, 121) · ReaperIR read-only \"–\" rgb(242, 200, 121)",
+  "pics": [
+   "09b-bal-member-locked"
+  ]
+ },
+ {
+  "id": "B9d \"Locked by admin\" shown",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "\"Locked by admin\" [0,193.3 402x30]",
+  "pics": [
+   "09b-bal-member-locked"
+  ]
+ },
+ {
+  "id": "B9e own window locked: no line, read only, padlock",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "0 line(s); Official bal SPAN \"15\"; padlock true",
+  "pics": [
+   "09c-pw-ranger-own-locked"
+  ]
+ },
+ {
+  "id": "B10x lead: desktop 1536 person window, a never-typed CCL box",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "CCL box \"\" edge solid rgb(102, 113, 127)",
+  "pics": [
+   "10x-desk-1536-pw-pelican"
+  ]
+ },
+ {
+  "id": "B10a drawing check, his window (as built: five kinds never typed)",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "478x600; 21 band(s) differ: y 0–4 x 6–469 (11px); y 31–44 x 17–477 (393px); y 59–59 x 16–477 (445px); y 88–98 x 28–105 (248px); y 128–150 x 36–419 (918px); y 162–175 x 37–265 (553px); y 181–187 x 36–477 (145px); y 191–209 x 47–392 (434px); y 212–217 x 37–101 (136px); y 221–224 x 68–110 (90px); y 228–244 x 37–477 (623px); y 250–260 x 36–477 (221px); y 282–297 x 37–477 (1016px); y 326–352 x 31–412 (2916px); y 358–395 x 31–441 (2857px); y 469–478 x 281–477 (504px); y 482–497 x 28–431 (1340px); y 500–509 x 281–447 (506px); y 537–552 x 29–227 (1129px); y 580–580 x 476–477 (2px); y 583–599 x 0–477 (1453px)",
+  "pics": [
+   "10b-pw-drawing-vs-build-as-built"
+  ]
+ },
+ {
+  "id": "B10b drawing check, his window (five kinds typed 0, the drawing's world)",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "478x600; 22 band(s) differ: y 0–4 x 6–469 (11px); y 31–44 x 17–477 (393px); y 59–59 x 16–477 (445px); y 88–98 x 28–105 (248px); y 128–150 x 36–419 (918px); y 162–175 x 37–265 (553px); y 181–187 x 36–477 (145px); y 191–209 x 47–392 (434px); y 212–217 x 37–101 (136px); y 221–224 x 68–110 (90px); y 228–244 x 37–477 (623px); y 250–260 x 36–477 (221px); y 282–297 x 37–477 (1016px); y 326–352 x 31–412 (2916px); y 358–375 x 31–439 (1310px); y 379–395 x 31–439 (1311px); y 469–478 x 281–477 (504px); y 482–497 x 28–431 (1340px); y 500–509 x 281–447 (506px); y 537–552 x 29–227 (1129px); y 580–580 x 476–477 (2px); y 583–599 x 0–477 (1453px)",
+  "pics": [
+   "10d-pw-drawing-vs-build-zeros"
+  ]
+ },
+ {
+  "id": "B10c drawing check, Balances page",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "402x874; 4 band(s) differ: y 540–562 x 8–89 (405px); y 646–675 x 137–379 (857px); y 776–805 x 137–379 (862px); y 836–845 x 168–182 (56px)",
+  "pics": [
+   "10f-bal-drawing-vs-build"
+  ]
+ }
+]

@@ -129,7 +129,8 @@ export const PersonRow = memo(function PersonRow({ p, version, period, monthDays
   // for nothing. The lines object is keyed on the two NUMBERS, not on the store's version: the memoised box beside the
   // name (FigureCell) is handed the same object, and so draws again, only when one of his own figures moved.
   const nf = nameFigures(p.id, period.start, period.end)
-  const lines = useMemo<FigureLines>(() => ({ top: nf.war, used: [{ label: 'LL OL', tone: 'amber', value: nf.used }] }), [nf.war, nf.used])
+  /* a balance never typed: `nt`, the amber "–" in the box (D2746, D2823) */
+  const lines = useMemo<FigureLines>(() => ({ top: nf.war, used: [{ label: 'LL OL', tone: 'amber', value: nf.used }], ...(nf.nt ? { nt: true as const } : {}) }), [nf.war, nf.used, nf.nt])
   return (
     /* `me` lights the VIEWER's own row (owner, 17 Aug 26). While arranging the
        row is a drop target the pointer drag reads by hit-test; the drag SOURCE
@@ -207,7 +208,8 @@ export const PersonRow = memo(function PersonRow({ p, version, period, monthDays
         testid={`bal-${p.id}`}
         dataFig={shown.id}
         dataPerson={p.id}
-        title={`${p.callsign}: ${shown.label} ${figWords(lines.top)} ${shown.kind === 'bal' ? 'left' : 'taken'}. Tap for his leave`}
+        /* a balance never typed has no figure to name, and no words say so (D2823): the hover names him and the tap only */
+        title={lines.nt ? `${p.callsign}: tap for his leave` : `${p.callsign}: ${shown.label} ${figWords(lines.top)} ${shown.kind === 'bal' ? 'left' : 'taken'}. Tap for his leave`}
         onClick={() => api.current.setWhoOpen(p.id)}
       />
       {padL && <td className="lwph lwph-l" ref={phL} />}

@@ -212,3 +212,124 @@ describe('the rest of §1', () => {
     expect(annualUsedIn(world({ today: '2026-01-01' }), PID, days, '2026-01-01', '2026-12-31')).toBe(8.5)
   })
 })
+
+/* D2746 (question 11 A, 26 Nov 26): a balance never typed reads "Not typed", never 0 — the engine says which kinds were
+   never typed; the figures underneath still count from 0, so typing one moves nothing else. An old bare-number opening
+   (demo data) counts as typed (the agent's reading in D2746's row). */
+describe('D2746 — which balances were never typed', () => {
+  it('nothing typed: every kind not typed; its figures still count from 0 underneath', () => {
+    const days = approved(new Map(), 'LL', '2026-03-02')
+    const f = personFigures(world({ today: '2026-03-10' }), PID, days)
+    for (const k of ['LVE', 'CCL', 'FCL', 'PL', 'EL', 'CL'] as const) expect(f.kinds[k].notTyped).toBe(true)
+    expect(f.kinds.LVE.app).toBe(-1)
+  })
+  it('LVE typed, CCL not: only CCL reads not typed', () => {
+    const f = personFigures(world({ today: '2026-03-10', balances: lve(20, 0, '2026-03-01') }), PID, new Map())
+    expect([f.kinds.LVE.notTyped, f.kinds.CCL.notTyped]).toEqual([false, true])
+  })
+  it('a figure typed as 0 is typed', () => {
+    const f = personFigures(world({ today: '2026-03-10', balances: lve(0, 0, '2026-03-01') }), PID, new Map())
+    expect(f.kinds.LVE.notTyped).toBe(false)
+  })
+  it('an old bare-number opening counts as typed', () => {
+    const f = personFigures(world({ today: '2026-03-10', openings: { [PID]: { annual: 12 } } as LeaveYearWorld['openings'] }), PID, new Map())
+    expect([f.kinds.LVE.notTyped, f.kinds.LVE.app]).toEqual([false, 12])
+  })
+})
+
+/* D2747 (question 12 A, 26 Nov 26): a leave on a day before his post-in date still shows on the grid but never comes off
+   his balance — his old squadron's leave, already in the figure typed from the official leave app; a man back from
+   overseas the same, his days away not coming off. Only leave on or after his post-in date is deducted. "Before his
+   post-in date" is before his CURRENT stint and outside every earlier one (leaveyear.ts beforePostIn — the plan's step 2,
+   every gap, not only the last): an earlier stint's days were his leave here and still count; a day after a posting out
+   is untouched (D1541). */
+describe('D2747 — leave before his post-in date is never deducted', () => {
+  /* his example: posted in Mon 7 Dec 2026, a leave on Wed 2 Dec, 24 typed from the official leave app */
+  const man = (o: Partial<Person> = {}) => ({ id: PID, seat: 'wso', from: '2026-12-07', to: null, ...o }) as Person
+  const at = (o: { person?: Person | null; typed: Balances; days: DayRecs; today?: string }) =>
+    personFigures(world({ today: o.today ?? '2026-12-10', ctx: { people: o.person === null ? [] : [o.person ?? man()] }, balances: o.typed }), PID, o.days)
+
+  it('his example, the leave put on first and 24 typed after: 24', () => {
+    const days = approved(new Map(), 'LL', '2026-12-02')
+    const snap = snapshotOf(days, 'LVE')
+    expect(at({ typed: lve(24, 0, '2026-12-08', snap), days }).kinds.LVE.app).toBe(24)
+  })
+  it('his example, 24 typed first and the leave put on after: 24, not 23', () => {
+    const days = approved(new Map(), 'LL', '2026-12-02')
+    const f = at({ typed: lve(24, 0, '2026-12-01'), days }).kinds.LVE
+    expect([f.app, f.war, f.pending]).toEqual([24, 24, 0])
+  })
+  it('a bid before his post-in date is never pending against him either', () => {
+    const days = pending(new Map(), 'LL', '2026-12-03')
+    const f = at({ typed: lve(24, 0, '2026-12-01'), days }).kinds.LVE
+    expect([f.app, f.pending, f.war]).toEqual([24, 0, 24])
+  })
+  it('a leave on or after his post-in date still comes off: Mon 7 Dec, 23', () => {
+    const days = approved(new Map(), 'LL', '2026-12-07')
+    expect(at({ typed: lve(24, 0, '2026-12-01'), days }).kinds.LVE.app).toBe(23)
+  })
+  it('a half day: before his post-in date nothing, after it .5', () => {
+    const before = approved(new Map(), 'LL', '2026-12-04', '2026-12-04', 'am')
+    const after = approved(new Map(), 'LL', '2026-12-08', '2026-12-08', 'pm')
+    expect(at({ typed: lve(24, 0, '2026-12-01'), days: before }).kinds.LVE.app).toBe(24)
+    expect(at({ typed: lve(24, 0, '2026-12-01'), days: after }).kinds.LVE.app).toBe(23.5)
+  })
+  it('a leave across his post-in date: only its days from the post-in date count (Thu 3 – Wed 9 Dec: 3 of 5)', () => {
+    const days = approved(new Map(), 'LL', '2026-12-03', '2026-12-09')
+    const f = at({ typed: lve(24, 0, '2026-12-01'), days })
+    expect(f.kinds.LVE.app).toBe(21)
+    expect(f.lveTaken).toBe(3)
+  })
+  it('every kind of leave the same — CCL before his post-in date not deducted', () => {
+    const days = approved(new Map(), 'CCL', '2026-12-02')
+    const typed: Balances = { [PID]: { CCL: { amount: 5, day: '2026-12-01', by: 'saber', snap: [] } } }
+    expect(at({ typed, days }).kinds.CCL.app).toBe(5)
+  })
+  it('a man back from overseas: his days away (the gap before his current stint) are not deducted; an earlier stint is', () => {
+    const back = man({ past: [{ from: '2026-01-01', to: '2026-03-31' }], from: '2026-06-01' })
+    const away = approved(new Map(), 'LL', '2026-04-13')
+    const earlier = approved(new Map(), 'LL', '2026-02-10')
+    expect(at({ person: back, typed: lve(24, 0, '2026-01-05'), days: away }).kinds.LVE.app).toBe(24)
+    expect(at({ person: back, typed: lve(24, 0, '2026-01-05'), days: earlier }).kinds.LVE.app).toBe(23)
+  })
+  it('a man away twice: leave in EITHER gap before his current stint is not deducted; deleting one gives nothing back (both scenario designers, 27 Nov 26)', () => {
+    const twice = man({ past: [{ from: '2026-01-05', to: '2026-03-31' }, { from: '2026-06-01', to: '2026-08-31' }], from: '2026-11-02' })
+    const firstGap = approved(new Map(), 'LL', '2026-04-13')
+    const lastGap = approved(new Map(), 'LL', '2026-09-14')
+    expect(at({ person: twice, typed: lve(24, 0, '2026-01-06'), days: firstGap }).kinds.LVE.app).toBe(24)
+    expect(at({ person: twice, typed: lve(24, 0, '2026-01-06'), days: lastGap }).kinds.LVE.app).toBe(24)
+    /* typed with the first gap's leave in its snapshot, then that leave deleted: no day given back */
+    const snap = snapshotOf(firstGap, 'LVE')
+    expect(at({ person: twice, typed: lve(24, 0, '2026-04-20', snap), days: new Map() }).kinds.LVE.app).toBe(24)
+  })
+  it('a day after his posting-out date is untouched (D1541): still deducted', () => {
+    const out = man({ from: '2026-01-01', to: '2026-12-15' })
+    const days = approved(new Map(), 'LL', '2026-12-21')
+    expect(at({ person: out, typed: lve(24, 0, '2026-12-01'), days, today: '2026-12-22' }).kinds.LVE.app).toBe(23)
+  })
+  it('a man here always (no post-in date), or one the count has no record of, has nothing left out', () => {
+    const days = approved(new Map(), 'LL', '2026-12-02')
+    expect(at({ person: man({ from: null }), typed: lve(24, 0, '2026-12-01'), days }).kinds.LVE.app).toBe(23)
+    expect(at({ person: null, typed: lve(24, 0, '2026-12-01'), days }).kinds.LVE.app).toBe(23)
+  })
+  it('the order never matters once his post-in date moves: typed with the leave in its snapshot, the date moved before it — still 24', () => {
+    const days = approved(new Map(), 'LL', '2026-12-02')
+    const snap = snapshotOf(days, 'LVE')
+    expect(at({ person: man({ from: '2026-11-30' }), typed: lve(24, 0, '2026-12-08', snap), days }).kinds.LVE.app).toBe(24)
+    expect(at({ person: man({ from: '2026-12-07' }), typed: lve(24, 0, '2026-12-08', snap), days }).kinds.LVE.app).toBe(24)
+  })
+  it('a post-in in the next year: a leave in the old year before it is not deducted (Astra 19, 27 Nov 26)', () => {
+    const days = approved(new Map(), 'LL', '2026-12-29')
+    const f = at({ person: man({ from: '2027-01-04' }), typed: lve(24, 0, '2027-01-05'), days, today: '2027-01-10' }).kinds.LVE
+    expect([f.app, f.war]).toEqual([24, 24])
+  })
+  it('a pilot\'s 15-day run across his post-in date: only its days from the date count, its weekends with them (the reading parked for him, (f))', () => {
+    const pilot = man({ seat: 'pilot' } as Partial<Person>)
+    const days = approved(new Map(), 'LL', '2026-11-30', '2026-12-14')
+    const whole = at({ person: man({ seat: 'pilot', from: null } as Partial<Person>), typed: lve(30, 0, '2026-11-01'), days }).kinds.LVE.app
+    const f = at({ person: pilot, typed: lve(30, 0, '2026-11-01'), days }).kinds.LVE
+    /* the run, here always, charges all 15 days; from Mon 7 Dec only Mon 7 – Mon 14 Dec, the weekend 12–13 Dec included: 8 */
+    expect(whole).toBe(15)
+    expect(f.app).toBe(22)
+  })
+})

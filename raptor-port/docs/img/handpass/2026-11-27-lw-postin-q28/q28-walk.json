@@ -1,0 +1,1714 @@
+{
+ "WALK": [
+  [
+   "PASS",
+   "desk admin",
+   "War bal shows no words (\"\")"
+  ],
+  [
+   "PASS",
+   "desk admin",
+   "the words \"Not typed\" stand nowhere on the Balances page"
+  ],
+  [
+   "PASS",
+   "desk admin",
+   "War bal's outline as drawn: {\"w\":40,\"h\":28,\"edge\":\"dashed rgba(242, 200, 121, 0.8)\",\"rad\":\"7px\",\"text\":\"\",\"name\":\"Not typed\",\"title\":\"Not typed\"} vs drawn {\"w\":40,\"h\":28,\"edge\":\"dashed rgba(242, 200, 121, 0.8)\",\"color\":\"rgb(230, 237, 243)\",\"name\":\"Not typed\"}"
+  ],
+  [
+   "PASS",
+   "desk admin",
+   "seven empty dashed boxes, nothing read only ({\"inputs\":7,\"ntInputs\":7,\"roNt\":0,\"roNtText\":\"\",\"war\":\"\"})"
+  ],
+  [
+   "PASS",
+   "desk admin",
+   "his row's height unchanged (40 vs 40 drawn today)"
+  ],
+  [
+   "PASS",
+   "desk admin",
+   "his person window still reads \"Not typed\" (\"Not typed\")"
+  ],
+  [
+   "PASS",
+   "desk member",
+   "War bal shows no words (\"\")"
+  ],
+  [
+   "PASS",
+   "desk member",
+   "the words \"Not typed\" stand nowhere on the Balances page"
+  ],
+  [
+   "PASS",
+   "desk member",
+   "War bal's outline as drawn: {\"w\":40,\"h\":28,\"edge\":\"dashed rgba(242, 200, 121, 0.8)\",\"rad\":\"7px\",\"text\":\"\",\"name\":\"Not typed\",\"title\":\"Not typed\"} vs drawn {\"w\":40,\"h\":28,\"edge\":\"dashed rgba(242, 200, 121, 0.8)\",\"color\":\"rgb(230, 237, 243)\",\"name\":\"Not typed\"}"
+  ],
+  [
+   "PASS",
+   "desk member",
+   "seven read-only places, each empty, named \"Not typed\" (|Not typed,|Not typed,|Not typed,|Not typed,|Not typed,|Not typed,|Not typed)"
+  ],
+  [
+   "PASS",
+   "desk member",
+   "the read-only outlines the drawing's edge and height (54x28 44x28 44x28 44x28 44x28 44x28 44x28; drawn 54x28)"
+  ],
+  [
+   "PASS",
+   "desk member",
+   "each read-only outline the width of the admin's box in its column (54/54 44/44 44/44 44/44 44/44 44/44 44/44)"
+  ],
+  [
+   "PASS",
+   "desk member",
+   "his row's height unchanged (40 vs 40 drawn today)"
+  ],
+  [
+   "PASS",
+   "desk member",
+   "his person window still reads \"Not typed\" (\"Not typed\")"
+  ],
+  [
+   "PASS",
+   "phone admin",
+   "War bal shows no words (\"\")"
+  ],
+  [
+   "PASS",
+   "phone admin",
+   "the words \"Not typed\" stand nowhere on the Balances page"
+  ],
+  [
+   "PASS",
+   "phone admin",
+   "War bal's outline as drawn: {\"w\":44,\"h\":30,\"edge\":\"dashed rgba(242, 200, 121, 0.8)\",\"rad\":\"7px\",\"text\":\"\",\"name\":\"Not typed\",\"title\":\"Not typed\"} vs drawn {\"w\":44,\"h\":30,\"edge\":\"dashed rgba(242, 200, 121, 0.8)\",\"color\":\"rgb(201, 209, 217)\",\"name\":\"Not typed\"}"
+  ],
+  [
+   "PASS",
+   "phone admin",
+   "seven empty dashed boxes, nothing read only ({\"inputs\":7,\"ntInputs\":7,\"roNt\":0,\"roNtText\":\"\",\"war\":\"\"})"
+  ],
+  [
+   "PASS",
+   "phone admin",
+   "his row's height unchanged (27.390625 vs 27.390625 drawn today)"
+  ],
+  [
+   "PASS",
+   "phone admin",
+   "his person window still reads \"Not typed\" (\"Not typed\")"
+  ],
+  [
+   "PASS",
+   "phone member",
+   "War bal shows no words (\"\")"
+  ],
+  [
+   "PASS",
+   "phone member",
+   "the words \"Not typed\" stand nowhere on the Balances page"
+  ],
+  [
+   "PASS",
+   "phone member",
+   "War bal's outline as drawn: {\"w\":44,\"h\":30,\"edge\":\"dashed rgba(242, 200, 121, 0.8)\",\"rad\":\"7px\",\"text\":\"\",\"name\":\"Not typed\",\"title\":\"Not typed\"} vs drawn {\"w\":44,\"h\":30,\"edge\":\"dashed rgba(242, 200, 121, 0.8)\",\"color\":\"rgb(201, 209, 217)\",\"name\":\"Not typed\"}"
+  ],
+  [
+   "PASS",
+   "phone member",
+   "seven read-only places, each empty, named \"Not typed\" (|Not typed,|Not typed,|Not typed,|Not typed,|Not typed,|Not typed,|Not typed)"
+  ],
+  [
+   "PASS",
+   "phone member",
+   "the read-only outlines the drawing's edge and height (54x30 44x30 54x30 54x30 54x30 54x30 54x30; drawn 54x30)"
+  ],
+  [
+   "PASS",
+   "phone member",
+   "each read-only outline the width of the admin's box in its column (54/54 44/44 54/54 54/54 54/54 54/54 54/54)"
+  ],
+  [
+   "PASS",
+   "phone member",
+   "his row's height unchanged (27.390625 vs 27.390625 drawn today)"
+  ],
+  [
+   "PASS",
+   "phone member",
+   "his person window still reads \"Not typed\" (\"Not typed\")"
+  ]
+ ],
+ "OUT": {
+  "desk-admin": {
+   "premise": {
+    "inputs": 7,
+    "ntInputs": 7,
+    "roNt": 0,
+    "roNtText": "",
+    "war": ""
+   },
+   "built": {
+    "war": {
+     "w": 40,
+     "h": 28,
+     "edge": "dashed rgba(242, 200, 121, 0.8)",
+     "rad": "7px",
+     "text": "",
+     "name": "Not typed",
+     "title": "Not typed"
+    },
+    "ro": [],
+    "rowText": "PelicanONo grade––0›",
+    "pageHasWords": false,
+    "rowH": 40
+   },
+   "rowH": 40,
+   "base": {
+    "rows": [
+     [
+      [
+       21,
+       1494,
+       40
+      ],
+      [
+       21,
+       170,
+       40
+      ],
+      [
+       191,
+       192.8,
+       40
+      ],
+      [
+       383.8,
+       75,
+       40
+      ],
+      [
+       458.8,
+       88,
+       40
+      ],
+      [
+       546.8,
+       79.16,
+       40
+      ],
+      [
+       625.95,
+       60,
+       40
+      ],
+      [
+       685.95,
+       49.14,
+       40
+      ],
+      [
+       735.09,
+       66,
+       40
+      ],
+      [
+       801.09,
+       66,
+       40
+      ],
+      [
+       867.09,
+       66,
+       40
+      ],
+      [
+       933.09,
+       66,
+       40
+      ],
+      [
+       999.09,
+       66,
+       40
+      ],
+      [
+       1065.09,
+       449.91,
+       40
+      ]
+     ],
+     [
+      [
+       21,
+       1494,
+       40
+      ],
+      [
+       21,
+       170,
+       40
+      ],
+      [
+       191,
+       192.8,
+       40
+      ],
+      [
+       383.8,
+       75,
+       40
+      ],
+      [
+       458.8,
+       88,
+       40
+      ],
+      [
+       546.8,
+       79.16,
+       40
+      ],
+      [
+       625.95,
+       60,
+       40
+      ],
+      [
+       685.95,
+       49.14,
+       40
+      ],
+      [
+       735.09,
+       66,
+       40
+      ],
+      [
+       801.09,
+       66,
+       40
+      ],
+      [
+       867.09,
+       66,
+       40
+      ],
+      [
+       933.09,
+       66,
+       40
+      ],
+      [
+       999.09,
+       66,
+       40
+      ],
+      [
+       1065.09,
+       449.91,
+       40
+      ]
+     ],
+     [
+      [
+       21,
+       1494,
+       40
+      ],
+      [
+       21,
+       170,
+       40
+      ],
+      [
+       191,
+       192.8,
+       40
+      ],
+      [
+       383.8,
+       75,
+       40
+      ],
+      [
+       458.8,
+       88,
+       40
+      ],
+      [
+       546.8,
+       79.16,
+       40
+      ],
+      [
+       625.95,
+       60,
+       40
+      ],
+      [
+       685.95,
+       49.14,
+       40
+      ],
+      [
+       735.09,
+       66,
+       40
+      ],
+      [
+       801.09,
+       66,
+       40
+      ],
+      [
+       867.09,
+       66,
+       40
+      ],
+      [
+       933.09,
+       66,
+       40
+      ],
+      [
+       999.09,
+       66,
+       40
+      ],
+      [
+       1065.09,
+       449.91,
+       40
+      ]
+     ]
+    ],
+    "heads": [
+     [
+      21,
+      170,
+      43
+     ],
+     [
+      191,
+      192.8,
+      43
+     ],
+     [
+      383.8,
+      75,
+      43
+     ],
+     [
+      458.8,
+      88,
+      43
+     ],
+     [
+      546.8,
+      79.16,
+      43
+     ],
+     [
+      625.95,
+      60,
+      43
+     ],
+     [
+      685.95,
+      49.14,
+      43
+     ],
+     [
+      735.09,
+      66,
+      43
+     ],
+     [
+      801.09,
+      66,
+      43
+     ],
+     [
+      867.09,
+      66,
+      43
+     ],
+     [
+      933.09,
+      66,
+      43
+     ],
+     [
+      999.09,
+      66,
+      43
+     ],
+     [
+      1065.09,
+      449.91,
+      43
+     ]
+    ]
+   },
+   "sizes": {
+    "2": {
+     "w": 54,
+     "h": 28,
+     "rad": "7px",
+     "edge": "rgba(242, 200, 121, 0.8)",
+     "style": "dashed",
+     "nt": true,
+     "val": ""
+    },
+    "3": {
+     "w": 44,
+     "h": 28,
+     "rad": "7px",
+     "edge": "rgba(242, 200, 121, 0.8)",
+     "style": "dashed",
+     "nt": true,
+     "val": ""
+    },
+    "7": {
+     "w": 44,
+     "h": 28,
+     "rad": "7px",
+     "edge": "rgba(242, 200, 121, 0.8)",
+     "style": "dashed",
+     "nt": true,
+     "val": ""
+    },
+    "8": {
+     "w": 44,
+     "h": 28,
+     "rad": "7px",
+     "edge": "rgba(242, 200, 121, 0.8)",
+     "style": "dashed",
+     "nt": true,
+     "val": ""
+    },
+    "9": {
+     "w": 44,
+     "h": 28,
+     "rad": "7px",
+     "edge": "rgba(242, 200, 121, 0.8)",
+     "style": "dashed",
+     "nt": true,
+     "val": ""
+    },
+    "10": {
+     "w": 44,
+     "h": 28,
+     "rad": "7px",
+     "edge": "rgba(242, 200, 121, 0.8)",
+     "style": "dashed",
+     "nt": true,
+     "val": ""
+    },
+    "11": {
+     "w": 44,
+     "h": 28,
+     "rad": "7px",
+     "edge": "rgba(242, 200, 121, 0.8)",
+     "style": "dashed",
+     "nt": true,
+     "val": ""
+    },
+    "cfCol": 3,
+    "warCol": 5
+   }
+  },
+  "desk-member": {
+   "premise": {
+    "inputs": 0,
+    "ntInputs": 0,
+    "roNt": 7,
+    "roNtText": "|Not typed,|Not typed,|Not typed,|Not typed,|Not typed,|Not typed,|Not typed",
+    "war": ""
+   },
+   "built": {
+    "war": {
+     "w": 40,
+     "h": 28,
+     "edge": "dashed rgba(242, 200, 121, 0.8)",
+     "rad": "7px",
+     "text": "",
+     "name": "Not typed",
+     "title": "Not typed"
+    },
+    "ro": [
+     {
+      "w": 54,
+      "h": 28,
+      "edge": "dashed rgba(242, 200, 121, 0.8)",
+      "rad": "7px",
+      "text": "",
+      "name": "Not typed",
+      "title": "Not typed"
+     },
+     {
+      "w": 44,
+      "h": 28,
+      "edge": "dashed rgba(242, 200, 121, 0.8)",
+      "rad": "7px",
+      "text": "",
+      "name": "Not typed",
+      "title": "Not typed"
+     },
+     {
+      "w": 44,
+      "h": 28,
+      "edge": "dashed rgba(242, 200, 121, 0.8)",
+      "rad": "7px",
+      "text": "",
+      "name": "Not typed",
+      "title": "Not typed"
+     },
+     {
+      "w": 44,
+      "h": 28,
+      "edge": "dashed rgba(242, 200, 121, 0.8)",
+      "rad": "7px",
+      "text": "",
+      "name": "Not typed",
+      "title": "Not typed"
+     },
+     {
+      "w": 44,
+      "h": 28,
+      "edge": "dashed rgba(242, 200, 121, 0.8)",
+      "rad": "7px",
+      "text": "",
+      "name": "Not typed",
+      "title": "Not typed"
+     },
+     {
+      "w": 44,
+      "h": 28,
+      "edge": "dashed rgba(242, 200, 121, 0.8)",
+      "rad": "7px",
+      "text": "",
+      "name": "Not typed",
+      "title": "Not typed"
+     },
+     {
+      "w": 44,
+      "h": 28,
+      "edge": "dashed rgba(242, 200, 121, 0.8)",
+      "rad": "7px",
+      "text": "",
+      "name": "Not typed",
+      "title": "Not typed"
+     }
+    ],
+    "rowText": "PelicanONo grade–0›",
+    "pageHasWords": false,
+    "rowH": 40
+   },
+   "rowH": 40,
+   "base": {
+    "rows": [
+     [
+      [
+       21,
+       1494,
+       40
+      ],
+      [
+       21,
+       170,
+       40
+      ],
+      [
+       191,
+       192.8,
+       40
+      ],
+      [
+       383.8,
+       75,
+       40
+      ],
+      [
+       458.8,
+       88,
+       40
+      ],
+      [
+       546.8,
+       79.16,
+       40
+      ],
+      [
+       625.95,
+       60,
+       40
+      ],
+      [
+       685.95,
+       49.14,
+       40
+      ],
+      [
+       735.09,
+       66,
+       40
+      ],
+      [
+       801.09,
+       66,
+       40
+      ],
+      [
+       867.09,
+       66,
+       40
+      ],
+      [
+       933.09,
+       66,
+       40
+      ],
+      [
+       999.09,
+       66,
+       40
+      ],
+      [
+       1065.09,
+       449.91,
+       40
+      ]
+     ],
+     [
+      [
+       21,
+       1494,
+       40
+      ],
+      [
+       21,
+       170,
+       40
+      ],
+      [
+       191,
+       192.8,
+       40
+      ],
+      [
+       383.8,
+       75,
+       40
+      ],
+      [
+       458.8,
+       88,
+       40
+      ],
+      [
+       546.8,
+       79.16,
+       40
+      ],
+      [
+       625.95,
+       60,
+       40
+      ],
+      [
+       685.95,
+       49.14,
+       40
+      ],
+      [
+       735.09,
+       66,
+       40
+      ],
+      [
+       801.09,
+       66,
+       40
+      ],
+      [
+       867.09,
+       66,
+       40
+      ],
+      [
+       933.09,
+       66,
+       40
+      ],
+      [
+       999.09,
+       66,
+       40
+      ],
+      [
+       1065.09,
+       449.91,
+       40
+      ]
+     ],
+     [
+      [
+       21,
+       1494,
+       40
+      ],
+      [
+       21,
+       170,
+       40
+      ],
+      [
+       191,
+       192.8,
+       40
+      ],
+      [
+       383.8,
+       75,
+       40
+      ],
+      [
+       458.8,
+       88,
+       40
+      ],
+      [
+       546.8,
+       79.16,
+       40
+      ],
+      [
+       625.95,
+       60,
+       40
+      ],
+      [
+       685.95,
+       49.14,
+       40
+      ],
+      [
+       735.09,
+       66,
+       40
+      ],
+      [
+       801.09,
+       66,
+       40
+      ],
+      [
+       867.09,
+       66,
+       40
+      ],
+      [
+       933.09,
+       66,
+       40
+      ],
+      [
+       999.09,
+       66,
+       40
+      ],
+      [
+       1065.09,
+       449.91,
+       40
+      ]
+     ]
+    ],
+    "heads": [
+     [
+      21,
+      170,
+      43
+     ],
+     [
+      191,
+      192.8,
+      43
+     ],
+     [
+      383.8,
+      75,
+      43
+     ],
+     [
+      458.8,
+      88,
+      43
+     ],
+     [
+      546.8,
+      79.16,
+      43
+     ],
+     [
+      625.95,
+      60,
+      43
+     ],
+     [
+      685.95,
+      49.14,
+      43
+     ],
+     [
+      735.09,
+      66,
+      43
+     ],
+     [
+      801.09,
+      66,
+      43
+     ],
+     [
+      867.09,
+      66,
+      43
+     ],
+     [
+      933.09,
+      66,
+      43
+     ],
+     [
+      999.09,
+      66,
+      43
+     ],
+     [
+      1065.09,
+      449.91,
+      43
+     ]
+    ]
+   },
+   "sizes": {
+    "2": {
+     "w": 54,
+     "h": 28,
+     "rad": "7px",
+     "edge": "rgba(242, 200, 121, 0.8)",
+     "style": "dashed",
+     "nt": true,
+     "val": ""
+    },
+    "3": {
+     "w": 44,
+     "h": 28,
+     "rad": "7px",
+     "edge": "rgba(242, 200, 121, 0.8)",
+     "style": "dashed",
+     "nt": true,
+     "val": ""
+    },
+    "7": {
+     "w": 44,
+     "h": 28,
+     "rad": "7px",
+     "edge": "rgba(242, 200, 121, 0.8)",
+     "style": "dashed",
+     "nt": true,
+     "val": ""
+    },
+    "8": {
+     "w": 44,
+     "h": 28,
+     "rad": "7px",
+     "edge": "rgba(242, 200, 121, 0.8)",
+     "style": "dashed",
+     "nt": true,
+     "val": ""
+    },
+    "9": {
+     "w": 44,
+     "h": 28,
+     "rad": "7px",
+     "edge": "rgba(242, 200, 121, 0.8)",
+     "style": "dashed",
+     "nt": true,
+     "val": ""
+    },
+    "10": {
+     "w": 44,
+     "h": 28,
+     "rad": "7px",
+     "edge": "rgba(242, 200, 121, 0.8)",
+     "style": "dashed",
+     "nt": true,
+     "val": ""
+    },
+    "11": {
+     "w": 44,
+     "h": 28,
+     "rad": "7px",
+     "edge": "rgba(242, 200, 121, 0.8)",
+     "style": "dashed",
+     "nt": true,
+     "val": ""
+    },
+    "cfCol": 3,
+    "warCol": 5
+   }
+  },
+  "phone-zoom": {
+   "zoom": "0.548",
+   "fits": true
+  },
+  "phone-admin": {
+   "premise": {
+    "inputs": 7,
+    "ntInputs": 7,
+    "roNt": 0,
+    "roNtText": "",
+    "war": ""
+   },
+   "built": {
+    "war": {
+     "w": 44,
+     "h": 30,
+     "edge": "dashed rgba(242, 200, 121, 0.8)",
+     "rad": "7px",
+     "text": "",
+     "name": "Not typed",
+     "title": "Not typed"
+    },
+    "ro": [],
+    "rowText": "PelicanONo grade–0›",
+    "pageHasWords": false,
+    "rowH": 27.390625
+   },
+   "rowH": 27.390625,
+   "base": {
+    "rows": [
+     [
+      [
+       0,
+       401.52,
+       27.39
+      ],
+      [
+       0,
+       72.33,
+       26.39
+      ],
+      [
+       75.06,
+       29.58,
+       16.44
+      ],
+      [
+       107.38,
+       24.11,
+       16.44
+      ],
+      [
+       134.22,
+       3.81,
+       10
+      ],
+      [
+       172.02,
+       9.78,
+       11
+      ],
+      [
+       202.14,
+       18.08,
+       10
+      ],
+      [
+       228.98,
+       33.86,
+       16.44
+      ],
+      [
+       265.14,
+       29.58,
+       16.44
+      ],
+      [
+       297.45,
+       29.58,
+       16.44
+      ],
+      [
+       329.77,
+       29.58,
+       16.44
+      ],
+      [
+       362.08,
+       29.58,
+       16.44
+      ]
+     ],
+     [
+      [
+       0,
+       401.52,
+       27.39
+      ],
+      [
+       0,
+       72.33,
+       26.39
+      ],
+      [
+       75.06,
+       29.58,
+       16.44
+      ],
+      [
+       107.38,
+       24.11,
+       16.44
+      ],
+      [
+       134.22,
+       3.81,
+       10
+      ],
+      [
+       172.02,
+       24.11,
+       16.44
+      ],
+      [
+       202.14,
+       13.92,
+       10
+      ],
+      [
+       228.98,
+       33.86,
+       16.44
+      ],
+      [
+       265.14,
+       29.58,
+       16.44
+      ],
+      [
+       297.45,
+       29.58,
+       16.44
+      ],
+      [
+       329.77,
+       29.58,
+       16.44
+      ],
+      [
+       362.08,
+       29.58,
+       16.44
+      ]
+     ],
+     [
+      [
+       0,
+       401.52,
+       27.39
+      ],
+      [
+       0,
+       72.33,
+       26.39
+      ],
+      [
+       75.06,
+       29.58,
+       16.44
+      ],
+      [
+       107.38,
+       24.11,
+       16.44
+      ],
+      [
+       134.22,
+       3.81,
+       10
+      ],
+      [
+       172.02,
+       8.83,
+       11
+      ],
+      [
+       202.14,
+       13.92,
+       10
+      ],
+      [
+       228.98,
+       33.86,
+       16.44
+      ],
+      [
+       265.14,
+       29.58,
+       16.44
+      ],
+      [
+       297.45,
+       29.58,
+       16.44
+      ],
+      [
+       329.77,
+       29.58,
+       16.44
+      ],
+      [
+       362.08,
+       29.58,
+       16.44
+      ]
+     ]
+    ],
+    "heads": [
+     [
+      0,
+      72.33,
+      12.7
+     ],
+     [
+      75.06,
+      21.92,
+      12.06
+     ],
+     [
+      107.38,
+      21.42,
+      6.03
+     ],
+     [
+      134.22,
+      26.02,
+      12.06
+     ],
+     [
+      172.02,
+      22.41,
+      6.03
+     ],
+     [
+      202.14,
+      12.45,
+      6.03
+     ],
+     [
+      228.98,
+      13.28,
+      6.03
+     ],
+     [
+      265.14,
+      8.55,
+      6.03
+     ],
+     [
+      297.45,
+      5.69,
+      6.03
+     ],
+     [
+      329.77,
+      5.36,
+      6.03
+     ],
+     [
+      362.08,
+      5.88,
+      6.03
+     ]
+    ]
+   },
+   "sizes": {
+    "1": {
+     "w": 54,
+     "h": 30,
+     "rad": "7px",
+     "edge": "rgba(242, 200, 121, 0.8)",
+     "style": "dashed",
+     "nt": true,
+     "val": ""
+    },
+    "2": {
+     "w": 44,
+     "h": 30,
+     "rad": "7px",
+     "edge": "rgba(242, 200, 121, 0.8)",
+     "style": "dashed",
+     "nt": true,
+     "val": ""
+    },
+    "6": {
+     "w": 54,
+     "h": 30,
+     "rad": "7px",
+     "edge": "rgba(242, 200, 121, 0.8)",
+     "style": "dashed",
+     "nt": true,
+     "val": ""
+    },
+    "7": {
+     "w": 54,
+     "h": 30,
+     "rad": "7px",
+     "edge": "rgba(242, 200, 121, 0.8)",
+     "style": "dashed",
+     "nt": true,
+     "val": ""
+    },
+    "8": {
+     "w": 54,
+     "h": 30,
+     "rad": "7px",
+     "edge": "rgba(242, 200, 121, 0.8)",
+     "style": "dashed",
+     "nt": true,
+     "val": ""
+    },
+    "9": {
+     "w": 54,
+     "h": 30,
+     "rad": "7px",
+     "edge": "rgba(242, 200, 121, 0.8)",
+     "style": "dashed",
+     "nt": true,
+     "val": ""
+    },
+    "10": {
+     "w": 54,
+     "h": 30,
+     "rad": "7px",
+     "edge": "rgba(242, 200, 121, 0.8)",
+     "style": "dashed",
+     "nt": true,
+     "val": ""
+    },
+    "cfCol": 2,
+    "warCol": 4
+   }
+  },
+  "phone-member": {
+   "premise": {
+    "inputs": 0,
+    "ntInputs": 0,
+    "roNt": 7,
+    "roNtText": "|Not typed,|Not typed,|Not typed,|Not typed,|Not typed,|Not typed,|Not typed",
+    "war": ""
+   },
+   "built": {
+    "war": {
+     "w": 44,
+     "h": 30,
+     "edge": "dashed rgba(242, 200, 121, 0.8)",
+     "rad": "7px",
+     "text": "",
+     "name": "Not typed",
+     "title": "Not typed"
+    },
+    "ro": [
+     {
+      "w": 54,
+      "h": 30,
+      "edge": "dashed rgba(242, 200, 121, 0.8)",
+      "rad": "7px",
+      "text": "",
+      "name": "Not typed",
+      "title": "Not typed"
+     },
+     {
+      "w": 44,
+      "h": 30,
+      "edge": "dashed rgba(242, 200, 121, 0.8)",
+      "rad": "7px",
+      "text": "",
+      "name": "Not typed",
+      "title": "Not typed"
+     },
+     {
+      "w": 54,
+      "h": 30,
+      "edge": "dashed rgba(242, 200, 121, 0.8)",
+      "rad": "7px",
+      "text": "",
+      "name": "Not typed",
+      "title": "Not typed"
+     },
+     {
+      "w": 54,
+      "h": 30,
+      "edge": "dashed rgba(242, 200, 121, 0.8)",
+      "rad": "7px",
+      "text": "",
+      "name": "Not typed",
+      "title": "Not typed"
+     },
+     {
+      "w": 54,
+      "h": 30,
+      "edge": "dashed rgba(242, 200, 121, 0.8)",
+      "rad": "7px",
+      "text": "",
+      "name": "Not typed",
+      "title": "Not typed"
+     },
+     {
+      "w": 54,
+      "h": 30,
+      "edge": "dashed rgba(242, 200, 121, 0.8)",
+      "rad": "7px",
+      "text": "",
+      "name": "Not typed",
+      "title": "Not typed"
+     },
+     {
+      "w": 54,
+      "h": 30,
+      "edge": "dashed rgba(242, 200, 121, 0.8)",
+      "rad": "7px",
+      "text": "",
+      "name": "Not typed",
+      "title": "Not typed"
+     }
+    ],
+    "rowText": "PelicanONo grade–0›",
+    "pageHasWords": false,
+    "rowH": 27.390625
+   },
+   "rowH": 27.390625,
+   "base": {
+    "rows": [
+     [
+      [
+       0,
+       401.52,
+       27.39
+      ],
+      [
+       0,
+       72.33,
+       26.39
+      ],
+      [
+       75.06,
+       29.58,
+       16.44
+      ],
+      [
+       107.38,
+       24.11,
+       16.44
+      ],
+      [
+       134.22,
+       3.81,
+       10
+      ],
+      [
+       172.02,
+       9.78,
+       11
+      ],
+      [
+       202.14,
+       18.08,
+       10
+      ],
+      [
+       228.98,
+       33.86,
+       16.44
+      ],
+      [
+       265.14,
+       29.58,
+       16.44
+      ],
+      [
+       297.45,
+       29.58,
+       16.44
+      ],
+      [
+       329.77,
+       29.58,
+       16.44
+      ],
+      [
+       362.08,
+       29.58,
+       16.44
+      ]
+     ],
+     [
+      [
+       0,
+       401.52,
+       27.39
+      ],
+      [
+       0,
+       72.33,
+       26.39
+      ],
+      [
+       75.06,
+       29.58,
+       16.44
+      ],
+      [
+       107.38,
+       24.11,
+       16.44
+      ],
+      [
+       134.22,
+       3.81,
+       10
+      ],
+      [
+       172.02,
+       24.11,
+       16.44
+      ],
+      [
+       202.14,
+       13.92,
+       10
+      ],
+      [
+       228.98,
+       33.86,
+       16.44
+      ],
+      [
+       265.14,
+       29.58,
+       16.44
+      ],
+      [
+       297.45,
+       29.58,
+       16.44
+      ],
+      [
+       329.77,
+       29.58,
+       16.44
+      ],
+      [
+       362.08,
+       29.58,
+       16.44
+      ]
+     ],
+     [
+      [
+       0,
+       401.52,
+       27.39
+      ],
+      [
+       0,
+       72.33,
+       26.39
+      ],
+      [
+       75.06,
+       29.58,
+       16.44
+      ],
+      [
+       107.38,
+       24.11,
+       16.44
+      ],
+      [
+       134.22,
+       3.81,
+       10
+      ],
+      [
+       172.02,
+       8.83,
+       11
+      ],
+      [
+       202.14,
+       13.92,
+       10
+      ],
+      [
+       228.98,
+       33.86,
+       16.44
+      ],
+      [
+       265.14,
+       29.58,
+       16.44
+      ],
+      [
+       297.45,
+       29.58,
+       16.44
+      ],
+      [
+       329.77,
+       29.58,
+       16.44
+      ],
+      [
+       362.08,
+       29.58,
+       16.44
+      ]
+     ]
+    ],
+    "heads": [
+     [
+      0,
+      72.33,
+      12.7
+     ],
+     [
+      75.06,
+      21.92,
+      12.06
+     ],
+     [
+      107.38,
+      21.42,
+      6.03
+     ],
+     [
+      134.22,
+      26.02,
+      12.06
+     ],
+     [
+      172.02,
+      22.41,
+      6.03
+     ],
+     [
+      202.14,
+      12.45,
+      6.03
+     ],
+     [
+      228.98,
+      13.28,
+      6.03
+     ],
+     [
+      265.14,
+      8.55,
+      6.03
+     ],
+     [
+      297.45,
+      5.69,
+      6.03
+     ],
+     [
+      329.77,
+      5.36,
+      6.03
+     ],
+     [
+      362.08,
+      5.88,
+      6.03
+     ]
+    ]
+   },
+   "sizes": {
+    "1": {
+     "w": 54,
+     "h": 30,
+     "rad": "7px",
+     "edge": "rgba(242, 200, 121, 0.8)",
+     "style": "dashed",
+     "nt": true,
+     "val": ""
+    },
+    "2": {
+     "w": 44,
+     "h": 30,
+     "rad": "7px",
+     "edge": "rgba(242, 200, 121, 0.8)",
+     "style": "dashed",
+     "nt": true,
+     "val": ""
+    },
+    "6": {
+     "w": 54,
+     "h": 30,
+     "rad": "7px",
+     "edge": "rgba(242, 200, 121, 0.8)",
+     "style": "dashed",
+     "nt": true,
+     "val": ""
+    },
+    "7": {
+     "w": 54,
+     "h": 30,
+     "rad": "7px",
+     "edge": "rgba(242, 200, 121, 0.8)",
+     "style": "dashed",
+     "nt": true,
+     "val": ""
+    },
+    "8": {
+     "w": 54,
+     "h": 30,
+     "rad": "7px",
+     "edge": "rgba(242, 200, 121, 0.8)",
+     "style": "dashed",
+     "nt": true,
+     "val": ""
+    },
+    "9": {
+     "w": 54,
+     "h": 30,
+     "rad": "7px",
+     "edge": "rgba(242, 200, 121, 0.8)",
+     "style": "dashed",
+     "nt": true,
+     "val": ""
+    },
+    "10": {
+     "w": 54,
+     "h": 30,
+     "rad": "7px",
+     "edge": "rgba(242, 200, 121, 0.8)",
+     "style": "dashed",
+     "nt": true,
+     "val": ""
+    },
+    "cfCol": 2,
+    "warCol": 4
+   }
+  }
+ }
+}

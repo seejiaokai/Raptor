@@ -1,8 +1,11 @@
 /* ---- schedule data (week of Mon 13 Jul 26, Monday..Sunday) ---- */
+/* [END-TIME-GUARD] the demo week remade to fit the end-time rule (his D2616, D2612, D2852, 27 Nov 26): the seven rows that
+   had a start and no end were given the end the app had assumed for them (the start plus the Logic page's one hour), so
+   every day can be signed and published. The original app's copy is given the same ends (testing/refwin.ts reground). */
 export const DAYS:any[]=[
  {dow:'Monday',dt:'Jul 13',wc:'4 X 4 X 0',today:true,
   notes:[{t:'EP: ENGINE FIRE ON TAKE OFF'},{t:'ORDERS: FLYING ORDERS SECTION 2'}],
-  allhands:[{prog:'SODB',str:'0745',end:'0815'},{prog:'MET + NOTAM BRIEF',str:'0815',end:'0830',who:'nact'},{prog:'FLIGHT SAFETY STAND-DOWN',str:'0830',end:'0900',who:'bane'},{prog:'WPNS & TACTICS SYNC',str:'1130',end:'1200',who:'harpoon'},{prog:'STANDARDISATION MEETING',str:'1330',end:'1430',who:'pump'},{prog:'OCU PROGRESS REVIEW',str:'1445',end:'1530',who:'bapster'},{prog:'INTEL UPDATE',str:'1600',end:'1620',who:'romeo'},{prog:'OPS SHARING + NAV SYS BRIEF',str:'1755',end:'',who:'stiff'},{prog:'DINNER WITH CMD',str:'1830',end:''},{prog:'CMD ENGAGEMENT @ CREW ROOM (ALL)',str:'2130',end:''}],
+  allhands:[{prog:'SODB',str:'0745',end:'0815'},{prog:'MET + NOTAM BRIEF',str:'0815',end:'0830',who:'nact'},{prog:'FLIGHT SAFETY STAND-DOWN',str:'0830',end:'0900',who:'bane'},{prog:'WPNS & TACTICS SYNC',str:'1130',end:'1200',who:'harpoon'},{prog:'STANDARDISATION MEETING',str:'1330',end:'1430',who:'pump'},{prog:'OCU PROGRESS REVIEW',str:'1445',end:'1530',who:'bapster'},{prog:'INTEL UPDATE',str:'1600',end:'1620',who:'romeo'},{prog:'OPS SHARING + NAV SYS BRIEF',str:'1755',end:'1855',who:'stiff'},{prog:'DINNER WITH CMD',str:'1830',end:'1930'},{prog:'CMD ENGAGEMENT @ CREW ROOM (ALL)',str:'2130',end:'2230'}],
   waves:[
    {label:'WAVE 1',night:false,intimes:['0940H: FIRST WAVE VL IN TIME + WX/NOTAMS','1040H: FIRST WAVE RU IN TIME + WX/NOTAMS'],traffic:['1 X TRANSPORT / WEST HIGH / FL240 / 1300H - 1715H'],formations:[
      {cs:'VL',msn:'BFM',to:'12:40',ld:'14:05',aircraft:[
@@ -51,7 +54,7 @@ export const DAYS:any[]=[
         oft:[{label:'EP-5',str:'0930',end:'1100',p:'haowen',w:'freak'},{label:'SIMS (EXT SQN)',str:'1200',end:'1330',who:'EXT SQN'}]},
   dutywaves:[{label:'1st wave',rows:[{role:'SDO',id:'boosh',str:'0530',end:'1200'},{role:'SXO',id:'snap',str:'0500',end:'1200'},{role:'OPS-O',id:'wolf',str:'0500',end:'1200'}]},
              {label:'2nd wave',rows:[{role:'SDO',id:'beams',str:'1200',end:'1700'},{role:'SXO',id:'razer',str:'1200',end:'1700'},{role:'OPS-O',id:'stuff',str:'1200',end:'1700'}]}],
-  ground:[{prog:'OPS BRIEFER / EP SUP',str:'0500',end:'',who:'dice'},{prog:'FLY W EXT SQN',str:'0845',end:'',who:'ipman'},{prog:'MEDICAL APPT',str:'1330',end:'1500',who:'yeti'}]},
+  ground:[{prog:'OPS BRIEFER / EP SUP',str:'0500',end:'0600',who:'dice'},{prog:'FLY W EXT SQN',str:'0845',end:'0945',who:'ipman'},{prog:'MEDICAL APPT',str:'1330',end:'1500',who:'yeti'}]},
 
  {dow:'Wednesday',dt:'Jul 15',wc:'4 X 4 X 0',
   notes:[{t:'ORDERS: FLYING ORDERS SECTION 2'}],
@@ -75,7 +78,7 @@ export const DAYS:any[]=[
         oft:[{label:'EP-4',str:'0900',end:'1030',pax:['boosh','xray','waldo']},
              {label:'IAT-3',str:'1500',end:'1630',p:'prism',w:'nasty'}]},
   dutywaves:[{label:'1st wave',rows:[{role:'SDO',id:'mamba',str:'0800',end:'1400'},{role:'SXO',id:'shaft',str:'0800',end:'1400'},{role:'OPS-O',id:'divot',str:'0800',end:'1400'}]}],
-  ground:[{prog:'MAINT CONF @ ENG WING',str:'1400',end:'1630',who:'dj'},{prog:'NAV-SYS TRIAL PREP',str:'1400',end:'',who:'vegas'}]},
+  ground:[{prog:'MAINT CONF @ ENG WING',str:'1400',end:'1630',who:'dj'},{prog:'NAV-SYS TRIAL PREP',str:'1400',end:'1500',who:'vegas'}]},
 
  {dow:'Thursday',dt:'Jul 16',wc:'4 X 4 X 0',
   notes:[{t:'EXAM PERIOD RESTRICTIONS / 21 JUL 0700H - 24 JUL 1800H'},{t:'ORDERS: FLYING ORDERS SECTION 4'}],
@@ -103,7 +106,7 @@ export const DAYS:any[]=[
 
  {dow:'Friday',dt:'Jul 17',wc:'0 X 0 X 0',
   notes:[{t:'NO FLYING - GROUND TRAINING DAY'},{t:'ORDERS: FLYING ORDERS SECTION 5'}],
-  allhands:[{prog:'SODB',str:'0745',end:'0800'},{prog:'SQN PT',str:'1500',end:'1630'},{prog:'MASS DEBRIEF + BEER CALL',str:'1700',end:''}],
+  allhands:[{prog:'SODB',str:'0745',end:'0800'},{prog:'SQN PT',str:'1500',end:'1630'},{prog:'MASS DEBRIEF + BEER CALL',str:'1700',end:'1800'}],
   waves:[],
   sims:{amt:[],oft:[{label:'SIMS (EXT SQN)',str:'0900',end:'1030',who:'EXT SQN'},{label:'EP-6',str:'1400',end:'1530',p:'bapster',w:'shaft'}]},
   dutywaves:[{label:'Duty',rows:[{role:'SDO',id:'yeti',str:'0730',end:'1730'},{role:'SXO',id:'razer',str:'0730',end:'1730'}]}],

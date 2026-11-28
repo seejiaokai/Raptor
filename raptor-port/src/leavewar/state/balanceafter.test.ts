@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { balanceAfterFill, getState, grantTo, initStore, setCell, setOilPolicy, setRole } from './store'
+import { balanceAfterFill, getState, grantTo, initStore, setCell, setOilPolicy, setRole, setTypedBalance } from './store'
 import { memoryBackend } from './storage'
 import { goesBelow } from '../ui/belowzero'
 
@@ -8,7 +8,9 @@ import { goesBelow } from '../ui/belowzero'
    would leave them, through the column's own figure — so the ask quotes what the column will show. Astra's final read
    (29 Sep 26) found the three cases the first cut got wrong; each is pinned here through the real store. */
 
-beforeEach(() => { initStore(memoryBackend()); setRole('admin') })
+/* Dusk's FCL typed as 0 first: a balance never typed reads "Not typed" and the question waits for a figure (D2746 — its own
+   case below) */
+beforeEach(() => { initStore(memoryBackend()); setRole('admin'); setTypedBalance('dusk', 'FCL', 0) })
 
 describe('balanceAfterFill', () => {
   it('an afternoon beside a morning already held spends its half — the morning is not forgotten (F1)', () => {
@@ -18,6 +20,15 @@ describe('balanceAfterFill', () => {
     expect(r.before).toBe(-0.5)
     expect(r.after).toBe(-1)
     expect(goesBelow(r)).toBe(true)
+  })
+
+  it('a balance never typed asks nothing, the fill still worked out from 0 (D2746)', () => {
+    /* Dusk's EL: never typed in this store (his CCL is) */
+    const r = balanceAfterFill('dusk', ['2026-02-11'], 'EL')!
+    expect([r.counter, r.notTyped]).toEqual(['el', true])
+    expect(r.after).toBeLessThan(0)
+    expect(r.after).toBeLessThan(r.before)
+    expect(goesBelow(r)).toBe(false)
   })
 
   it('a Saturday of FCL costs nothing — no ask, even at zero', () => {

@@ -155,9 +155,10 @@ This page translates between the app’s words, their everyday meaning and the n
 | Lowest Avail | The lowest relevant availability shown across a request’s dates. | `ApprovalsPage`, `leavewar/approvals.ts` |
 | Balances | Everyone’s leave balances and grades, with editing controlled by role and the members’ lock. | `BalancesPage`, `personFigures` |
 | LVE | The shared annual-leave balance used by local and overseas leave. | `BAL_KINDS`, `KIND_COUNTER` |
-| App bal (to read "Official bal" — D2810, filed as [LW-POSTIN-BALANCE]) | The balance entered from the official leave app, reduced by later approvals. | `TypedBal`, `personFigures` |
+| Official bal ("App bal" until D2810, 26 Nov 26) | The balance entered from the official leave app, reduced by later approvals on or after his post-in date (D2747). | `TypedBal`, `personFigures` (its `app`) |
+| Not typed | What a leave balance reads, in amber, until a figure has been typed for it — never 0 (D2746). | `KindFigures.notTyped` |
 | Pending | The number of days requested but not yet approved. | `personFigures`, `RequestRec` |
-| War bal | App bal after pending leave has also been deducted. | `personFigures` |
+| War bal | Official bal after pending leave has also been deducted. | `personFigures` |
 | INCL. CARRIED FWD / CARRIED — two names on screen | The carried-forward part already included in the annual-leave balance. | `TypedBal`, `leaveyear.ts` |
 | Days taken | Shows leave and other counted absence days over the chosen dates. | `daysTaken`, `DAYS_TAKEN_COLS` |
 | Grades | Sets the leave grades and the annual leave each adds on 1 January. | `GradesSheet`, `GradeDef`, `gradeDaysOn` |

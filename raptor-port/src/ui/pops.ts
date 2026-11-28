@@ -185,6 +185,10 @@ export function setOilList(v: null | { from: string; to: string; name: string; f
    more that day", D2294): his for as long as he is signed in, cleared with the windows at the session's end. Keyed by
    squadron and date, so another week's Saturday or another squadron's is its own. */
 export const OILSIGN_LATER = new Map<string, Set<string>>()
+/* THE BOXES A REFUSED PRESS TURNED RED ([END-TIME-GUARD], his D2853 — ui/timegap-paint.ts): keyed by squadron, date and
+   saved plan, each holding the time boxes that were missing at the press; a box leaves as its time is typed. His, in this
+   browser, for as long as he is signed in (the plan's R4), cleared with the windows at the session's end. */
+export const TIME_RED = new Map<string, Set<string>>()
 export const POPS_RESET: { name: string; reset: () => void }[] = [
   { name: 'DAYPOP', reset: () => setDayPop(null) },
   { name: 'INSIGHTS', reset: () => setInsights(false) },
@@ -208,6 +212,7 @@ export const POPS_RESET: { name: string; reset: () => void }[] = [
   { name: 'INPSET', reset: () => setInpSet(false) },
   { name: 'OILLIST', reset: () => setOilList(null) },
   { name: 'OILSIGN_LATER', reset: () => OILSIGN_LATER.clear() },
+  { name: 'TIME_RED', reset: () => TIME_RED.clear() },
   { name: 'BELLLIST', reset: () => setBellList(false) },
   { name: 'BELLAT', reset: () => setBellList(false) },   // set and cleared with the flag above — one setter for the pair
 ]

@@ -1101,6 +1101,8 @@
     white-space: nowrap;
   }
   .myleave .ml-figs b { font-weight: 800; }
+  /* his LVE never typed: the amber "–" (D2823 — question 23's item 2; the amber every never-typed place wears) */
+  .myleave .ml-figs b .nt { color: #F2C879; font-weight: 600; }
   .myleave .ml-go {
     color: var(--ink-3);
     font-size: 15px;

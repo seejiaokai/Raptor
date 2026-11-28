@@ -23,11 +23,12 @@ import { curDraftId } from '../engine/drafts'
 import { logAction } from '../engine/editlog'
 import { HOOKS } from '../engine/hooks'
 import { PEOPLE } from '../engine/people'
-import { setSign, signShown, daySigned, dayApproved, dayHasChanges, SIGN_ROLES } from '../engine/publish'
+import { setSign, signShown, daySigned, dayApproved, dayHasChanges, SIGN_ROLES, protectedWeek } from '../engine/publish'
 import { UNIT } from '../engine/unitview'
 import { dayIso } from '../engine/verid'
 import { CURWEEK } from '../engine/waves'
 import { schedWrite, SCHED_TYPES } from '../state/sched-commit'
+import { refuseForTime } from '../state/timeguard'
 import { oilOpenOn, unitDayFacts, holidayOwnNameOf } from '../leavewar/sync'
 import { adminOfList, saveOilDay, type OilPick } from './oilday'
 import { OILSIGN_LATER, setOilList } from './pops'
@@ -37,6 +38,10 @@ export type SignHold = { di: number; role: string; who: string; plan?: string }
 /** the sign-off's write — the body the boxes' handler has always run (ui/Shell.tsx), moved here whole so the list's Save
  *  and Later write the held name by the very same path */
 export function writeSign(di: number, role: string, who: string): void {
+  /* [END-TIME-GUARD] THE BACKSTOP (his D2612): no name is written while an item on the day is missing a time. The box's
+     own press is refused first (signPick, below); this catches the OIL list's Save and Later, whose held name may meet a
+     time emptied while the list was up. Taking a name OUT is never refused; the quarantine keeps its own first word. */
+  if (who && !protectedWeek() && refuseForTime(di, 'sign')) return
   const wasSigned = daySigned(di)             // capture BEFORE, so the note fires only on COMPLETING the set (kept OUTSIDE the command, R2-11)
   /* [ARCH-STACK] follow-up #1 (row D): route the sign write through a
      sched.sign command. setSign mutates SCHED.sign/signBind and histPush
@@ -63,8 +68,12 @@ export function writeSign(di: number, role: string, who: string): void {
     HOOKS.toast('All signed — no changes to publish right now')
 }
 
-/** A NAME PICKED IN A SIGN-OFF BOX. 'signed' — written; 'held' — the day's OIL list is up first and nothing is written. */
-export function signPick(di: number, role: string, who: string): 'held' | 'signed' {
+/** A NAME PICKED IN A SIGN-OFF BOX. 'signed' — written; 'held' — the day's OIL list is up first and nothing is written;
+ *  'refused' — an item on the day is missing a time, and nothing is written (the note says so: state/timeguard.ts). */
+export function signPick(di: number, role: string, who: string): 'held' | 'signed' | 'refused' {
+  /* [END-TIME-GUARD] (his D2855 E2): the missing time is refused FIRST — the day's OIL list opens at the next press, once
+     the times are typed */
+  if (who && !protectedWeek() && refuseForTime(di, 'sign')) return 'refused'
   const ask = who ? signAsks(di) : null     // a name taken OUT of a box signs nothing, so it asks nothing
   if (!ask) { writeSign(di, role, who); return 'signed' }
   /* the list for that one day, as a put-back opens it (ui/oilputback.ts): a holiday named by its own name, a plain
