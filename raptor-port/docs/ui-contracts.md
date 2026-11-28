@@ -12383,9 +12383,9 @@ Built on `claude/leave-war-m4-planning-d18224` from `docs/superpowers/plans/2026
   The lit one wears the cyan ring and the other turns grey, each with its drawn tick or cross, as in the bid windows
   (D2881 — built; his drawings' colours kept, D1427, the rest edge his green or red at 45%); the buttons keep the longer
   word's width, the mark inside it (D1435) — on a desktop both stay 100 wide, the side padding 6px and the mark 12px with
-  a 4px gap; on the phone's line the mark is 9px with a 2px gap, so a half-day date ("10 Feb AM ›") keeps one line at 402
-  in WebKit, takes two lines at 390, and at 360 three, the line then 45 tall (main: two lines, 36) — whether the phone
-  line keeps the mark is his call, pending.
+  a 4px gap; the phone's line draws no tick or cross (his D2921, 28 Nov 26), so a half-day date ("23 Jan AM ›", "28 May PM
+  ›") keeps one line at 402 and 390 and two at 360, the line 78 tall as before — the ring and the grey stay. Pinned by
+  `m4page.test.tsx` (D2921) and `e2e/decidelook-leavewar.spec.ts` (390 wide).
   A line the rules refuse says why, in red, under its dates; one drawn from a state since changed says what happened
   ("Already refused by Hex", "Moved to Thu 29 Jan", "No longer there" — B8). Approve all approves exactly what the list
   shows: one tap arms it ("Approve 13 — tap again"), anything that changes what the list shows disarms it.

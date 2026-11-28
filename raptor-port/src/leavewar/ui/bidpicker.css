@@ -1979,11 +1979,8 @@
 @media (max-width: 379px) {
   .bidsheet .dchip.dec .dec-ic { width: 11px; height: 11px; margin-right: 3px; }
 }
-/* Approvals' phone line (`.appr-l1`, drawn below 700 wide — D1435, D1441): its buttons are as wide as their words, beside
-   the request's dates, so the mark is smaller still — 9px and a 2px gap keep a half-day date ("10 Feb AM ›") on one line
-   at his iPhone's 402, measured in WebKit (76 wide there); at 390 such a date takes two lines, at 360 three and the line
-   grows to 45 (main: two, 36) — whether this line keeps the mark is his call, pending */
-.appr-l1 .appr-btns .dec-ic { width: 9px; height: 9px; margin-right: 2px; }
+/* Approvals' phone line (`.appr-l1`, drawn below 700 wide) draws no mark at all (his D2921, ApprovalsPage.tsx): even at
+   9px it pushed a half-day date onto a second line at 390 wide and a third at 360 */
 
 /* REMARKS AND DOCUMENT ON ONE ROW (change 4): the box takes the room, then its "till", then the Document button */
 .bidsheet .bp-words { flex-wrap: nowrap; align-items: flex-start; }

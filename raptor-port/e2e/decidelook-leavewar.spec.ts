@@ -157,3 +157,25 @@ test('1536 wide: Approvals — the decided one ringed, the other grey, both 100 
   await pair(page, one.getByTestId('appr-approve'), one.getByTestId('appr-refuse'), 'Approvals, approved')
   await pair(page, two.getByTestId('appr-refuse'), two.getByTestId('appr-approve'), 'Approvals, refused')
 })
+
+/* HIS D2921 (28 Nov 26, "4:1"): on a phone Approvals' buttons carry no drawn tick or cross, so a half-day date keeps to one
+   line (D1441) — with them "23 Jan AM ›" broke onto a second line at 390 wide; the ring and the grey stay */
+test('390 wide: Approvals on a phone — no tick or cross, a half-day date on one line, the decided one still ringed', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  const half = page.locator(`${T('approvals-page')} [data-testid^="appr-line-"]`).filter({ has: page.locator(T('appr-dates'), { hasText: / (AM|PM)/ }) }).first()
+  await expect(half, 'the demo holds a half-day request').toHaveCount(1)
+  await half.scrollIntoViewIfNeeded()
+  expect(await page.locator(`${T('approvals-page')} .appr-btns svg.dec-ic`).count(), 'no drawn mark on a phone').toBe(0)
+  const lines = await half.getByTestId('appr-dates').evaluate(d => {
+    const r = d.getBoundingClientRect(), lh = parseFloat(getComputedStyle(d).lineHeight) || 15
+    return Math.round(r.height / lh)
+  })
+  expect(lines, 'the half-day date on one line').toBe(1)
+  await half.getByTestId('appr-approve').click()
+  await expect(half.getByTestId('appr-approve')).toHaveText('Approved')
+  const lit = await half.getByTestId('appr-approve').evaluate(el => { const cs = getComputedStyle(el); return `${cs.outlineStyle} ${cs.outlineWidth} ${cs.outlineColor}` })
+  expect(lit, 'the decided one still wears the ring').toBe(`solid 2px ${ACCENT}`)
+  expect(await half.getByTestId('appr-refuse').evaluate(el => getComputedStyle(el).color), 'the other grey').toBe(GREY)
+})
