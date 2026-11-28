@@ -2142,3 +2142,16 @@ recheck every standing resource (locks, loops, write rights) after a restart, be
 **Issue:** Two blind plan reviews passed a new refusal because each read the mechanism, not the sentence the user would read. Only when its words were written — "do X, then Y" — did a reviewer see that the remedy the words had to offer was forbidden by a standing rule.
 **Suggested improvement:** when a plan adds a refusal or warning, draft its words (with the way out it offers) inside the plan before the plan's reads, so the readers judge the remedy against the rules too.
 **Principle:** a refusal is only as sound as the way out it tells the user to take; write that sentence before reviewing the design.
+
+### Observation 1112: A question's picture carried draft words, so the answered question needed a second card for the words
+
+**Status:** OPEN
+**Date:** 28 Nov 26
+**Session context:** multi-squadron build, section 1 (chat A211) — a question to the owner (how a window shows it is read only) was drawn with a line of words marked "draft, to be settled"; he answered the question, and the reviewed words then had to go to him as a second card with two more pictures (numbered past 1110 and 1111 on other branches)
+**Skill:** brainstorming (mockups-on-the-real-app)
+**Type:** open-source
+**Phase/Area:** drawing a question's picture when the proposed screen includes new words
+
+**Issue:** The drawing step ran before the wording step, so the picture showed placeholder words. The owner's answer covered the design but could not cover the words, and a second round was needed for one sentence.
+**Suggested improvement:** in the mock-up guide's steps, when the proposed screen holds new words a person reads, run the wording step (draft, then the fresh review) before the picture is drawn, so one card settles both; mark words "draft" only when the question itself is about the words.
+**Principle:** put a question to the decider once, with everything it will show already in its final form.
