@@ -20,7 +20,14 @@ const { chromium } = createRequire(resolve(ROOT, 'package.json'))('playwright')
 const CHROMIUM = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium'
 const LAUNCH = existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {}
 const URL_ = 'http://localhost:4743/'
-const OUT = resolve(ROOT, 'docs/mock/2026-11-28-msq-k10-q1')
+/* (a second use, 28 Nov 26, after his D2899: the read-only line's reviewed words drawn for his look — OUT_DIR names
+   another folder under docs/mock, RO_WORDS the line, RO_TAG the label under it, WIN_TAG the label over the window,
+   SHOT2 the second picture's name; with none set the script draws Q1's card as it did) */
+const OUT = resolve(ROOT, 'docs/mock', process.env.OUT_DIR || '2026-11-28-msq-k10-q1')
+const RO_WORDS = process.env.RO_WORDS || 'Ranger has moved to 149. Only Ranger, 149’s admins or a master admin can change this.'
+const RO_TAG = process.env.RO_TAG || 'Draft words, to be settled'
+const WIN_TAG = process.env.WIN_TAG || 'Proposed — choice A: the same window, read only. Everything shown, nothing to change.'
+const SHOT2 = process.env.SHOT2 || 'q1-2-choiceA-read-only-proposed'
 const TMP = resolve(ROOT, '.tmp/a211-k10-q1'); mkdirSync(TMP, { recursive: true })
 for (const d of [OUT]) { rmSync(d, { recursive: true, force: true }); mkdirSync(d, { recursive: true }) }
 const TEAL = '#0D9488'
@@ -233,7 +240,7 @@ try {
        only); Delete and Save are not drawn; Cancel reads "Close"; the app's own read-only line (.inped-ro) stands in the
        foot, its words a DRAFT (the app's present words, "Only Ranger or an admin can change this.", would be untrue for
        Hunter, who is an admin). Nothing is removed: parts are hidden, one line added with the app's own class. */
-    const tf = await s.page.evaluate(() => {
+    const tf = await s.page.evaluate((roWords) => {
       const w = document.querySelector('[data-testid="win-inputedit"]'); if (!w) return 'no window'
       const body = w.querySelector('.inped-body'); if (!body) return 'no body'
       body.setAttribute('inert', '')
@@ -244,19 +251,19 @@ try {
       if (del) del.style.display = 'none'; if (sv) sv.style.display = 'none'; if (cn) cn.textContent = 'Close'
       const spacer = [...cn.parentElement.children].find(e => e.tagName === 'SPAN' && e.style.flex.startsWith('1'))
       const ro = document.createElement('span'); ro.className = 'inped-ro'; ro.dataset.a211 = 'ro'
-      ro.textContent = 'Ranger has moved to 149. Only Ranger, 149’s admins or a master admin can change this.'
+      ro.textContent = roWords
       cn.parentElement.insertBefore(ro, spacer || cn)
       return { dates: !!dates, del: !!del, save: !!sv, spacer: !!spacer }
-    })
+    }, RO_WORDS)
     FACT('shot.transform', tf)
     await wait(s, 300)
     const after = await winNow(s); FACT('shot.windowProposed', after)
     const wb = await boxOf(s, '[data-testid="win-inputedit"]'), rob = await boxOf(s, '[data-a211="ro"]')
-    const rw = await ring(s, wb, 'Proposed — choice A: the same window, read only. Everything shown, nothing to change.', 'above')
-    const rr = await ring(s, rob, 'Draft words, to be settled', 'below')
+    const rw = await ring(s, wb, WIN_TAG, 'above')
+    const rr = await ring(s, rob, RO_TAG, 'below')
     const rowB = await boxOf(s, sel)
     const mr2 = await ring(s, mark, '')
-    await shot(s, 'q1-2-choiceA-read-only-proposed', [mr2.ring, rowB, rw.ring, rw.tag, rr.tag])
+    await shot(s, SHOT2, [mr2.ring, rowB, rw.ring, rw.tag, rr.tag])
     await unring(s)
     FACT('shot.errs', s.errs)
   } finally { await s.ctx.close().catch(() => {}) }
