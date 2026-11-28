@@ -270,9 +270,10 @@ export const SPANS: Array<[Span, string, string]> = [
 /* THE SANS SUB-FORM (owner, 14 Aug 26; reworked the same day) — the only
    place a record's Fly/AMT/OFT flags are typed, shared by the add form, the
    in-table row editor and this file's own modal (the same three surfaces
-   SpanPicker already serves). Fly / AMT / OFT, in that display order —
-   SANS_KEY in avail.ts maps them to f/o/a, which is a lookup order, not a
-   reading order.
+   SpanPicker already serves). Fly / OFT / AMT, in that display order — the
+   one order every place reads them in, his card's and the crew list's F, O, A
+   letters and the lines' "offered OFT and AMT only" (owner D2755, 27 Nov 26;
+   it was Fly / AMT / OFT before).
    It is FLAGS ONLY now, three checkboxes and nothing else — the owner's own
    phone bug (14 Aug 26): a per-event `<input type=time>` pair could not be
    cleared with one tap, only typed over one digit at a time, and there was
@@ -281,7 +282,7 @@ export const SPANS: Array<[Span, string, string]> = [
    own standard allday/half/s/e fields now, exactly like a leave input, so
    clearing a timing is the same one tap "All day" already gives every other
    type — SpanPicker draws it, not this picker. */
-export const SANS_ROWS: Array<[string, string]> = [['f', 'Fly'], ['a', 'AMT'], ['o', 'OFT']]
+export const SANS_ROWS: Array<[string, string]> = [['f', 'Fly'], ['o', 'OFT'], ['a', 'AMT']]
 /* Flags only — every ticked key becomes `true`; anything falsy, including a
    legacy `{s,e}` value shape from before the 14 Aug rework, is dropped.
    Shared so the add form and commitInputEdit can never normalise a payload
@@ -347,7 +348,7 @@ export function sansRefusal(person: any, sans: any, from?: string, to?: string, 
           : `${p.cs} is SANS from ${isoDayWords(next)}: file SANS availability for days from then`
     }
   }
-  if (!sans || !Object.keys(sans).some(k => sans[k])) return 'Tick at least one of Fly / AMT / OFT'
+  if (!sans || !Object.keys(sans).some(k => sans[k])) return 'Tick at least one of Fly / OFT / AMT'
   return ''
 }
 const isoPlus = (iso: string, n: number): string => {

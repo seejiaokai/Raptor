@@ -26,6 +26,7 @@ import { sbSlot } from './board-html'
 import { warnDelta } from '../state/dropflag'
 import * as view from '../state/view'
 import { setSession } from '../state/auth'
+import { coverSans } from '../testing/sanscover'
 // Isolate the existing warning-hide readers from the new reporting-order checks.
 
 const DSNAP = JSON.stringify(DAYS)
@@ -215,3 +216,9 @@ describe('the two lists agree with the readers above', () => {
     expect(h).toContain(PEOPLE.wolf.cs)
   })
 })
+
+/* Its subject is not SANS availability, yet the seed plans SANS men (waldo among them) with nothing filed, which since
+   owner D2579 (25 Nov 26) raises an amber line and an "A" chip that outranks TT and DT: every SANS man is covered after
+   the world is reset, so the test reads the world it was written for (testing/sanscover.ts). Registered last, so it
+   runs after the reset above. */
+beforeEach(() => { coverSans() })

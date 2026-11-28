@@ -1,0 +1,143 @@
+[
+ {
+  "scn": "as19",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "as19",
+  "size": "desktop",
+  "id": "as19.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "as19-as19.post-postout-open-desktop.png, as19-as19.post-postout-sheet-desktop.png"
+ },
+ {
+  "scn": "as19",
+  "size": "desktop",
+  "id": "as19.line",
+  "what": "set-up: a new flying line on Sat (+ Wave → Flying wave), no times typed",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 1\",\"kind\":\"\",\"standalone\":false,\"cs\":\"\",\"to\":\"\",\"ld\":\"\",\"n\":1}"
+ },
+ {
+  "scn": "as19",
+  "size": "desktop",
+  "id": "as19.file",
+  "what": "set-up: Saber files SANS fly all day for bane+cards on 2026-07-18",
+  "ok": true,
+  "note": "{\"iid\":\"imrldijglyzt10f\",\"people\":\"[{\\\"p\\\":\\\"bane\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077222917},{\\\"p\\\":\\\"cards\\\",\\\"\",\"date\":\"Jul 18\",\"endDate\":null,\"sans\":{\"f\":true},\"allday\":true,\"e\":1439,\"remarks\":\"\",\"by\":\"stiff\"}",
+  "pics": "as19-as19.file-form-desktop.png, as19-as19.file-saved-desktop.png"
+ },
+ {
+  "scn": "as19",
+  "size": "desktop",
+  "id": "as19.1r",
+  "what": "one filing naming Ranger and Marlin: FCP — Ranger plain",
+  "ok": true,
+  "note": "[SANS Avail, plain] title \"Ranger\" (no reason printed)",
+  "pics": "as19-as19-1-fcp-armed-clip-desktop.png, as19-as19-1-fcp-sans-clip-desktop.png, as19-as19-1-fcp-armed-desktop.png"
+ },
+ {
+  "scn": "as19",
+  "size": "desktop",
+  "id": "as19.1m",
+  "what": "one filing naming Ranger and Marlin: RCP — Marlin (SANS WSO) plain",
+  "ok": true,
+  "note": "[SANS Avail, plain] title \"Marlin\" (no reason printed)",
+  "pics": "as19-as19-1-rcp-armed-clip-desktop.png, as19-as19-1-rcp-sans-clip-desktop.png, as19-as19-1-rcp-armed-desktop.png"
+ },
+ {
+  "scn": "as19",
+  "size": "desktop",
+  "id": "as19.open",
+  "what": "set-up: the shared filing opened from its SANS day",
+  "ok": true,
+  "note": "{\"person\":\"fixed \",\"options\":[],\"several\":\"true\",\"picked\":[\"bane\",\"cards\"],\"groups\":[\"pilots:bane*\"],\"why\":\"\",\"count\":\"2 picked\",\"type\":\"SANS Availability\",\"ticks\":\"Fly✓ AMT OFT\",\"dates\":[\"07-18\"],\"title\":\"Marlin +1 · 18 Jul\",\"ro\":\"\",\"save\":true,\"del\":true}",
+  "pics": "as19-as19-open-open-desktop.png"
+ },
+ {
+  "scn": "as19",
+  "size": "desktop",
+  "id": "as19.out",
+  "what": "set-up: Saber takes only Ranger out of it (Save)",
+  "ok": true,
+  "note": "picked cards · note \"Input updated\" · people now cards",
+  "pics": "as19-as19-out-saved-desktop.png"
+ },
+ {
+  "scn": "as19",
+  "size": "desktop",
+  "id": "as19.2r",
+  "what": "Ranger taken out of the shared filing: FCP — Ranger struck \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\"",
+  "ok": true,
+  "note": "[SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" printed \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\"",
+  "pics": "as19-as19-2-fcp-armed-clip-desktop.png, as19-as19-2-fcp-sans-clip-desktop.png, as19-as19-2-fcp-armed-desktop.png"
+ },
+ {
+  "scn": "as19",
+  "size": "desktop",
+  "id": "as19.2m",
+  "what": "Ranger taken out of the shared filing: RCP — Marlin (SANS WSO) plain",
+  "ok": true,
+  "note": "[SANS Avail, plain] title \"Marlin\" (no reason printed)",
+  "pics": "as19-as19-2-rcp-armed-clip-desktop.png, as19-as19-2-rcp-sans-clip-desktop.png, as19-as19-2-rcp-armed-desktop.png"
+ },
+ {
+  "scn": "as19",
+  "size": "desktop",
+  "id": "as19.file19",
+  "what": "set-up: Saber files SANS fly all day for bane on 2026-07-19",
+  "ok": true,
+  "note": "{\"iid\":\"imrldj7fhdi5o3t\",\"people\":\"[{\\\"p\\\":\\\"bane\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077253981}]\",\"date\":\"Jul 19\",\"endDate\":null,\"sans\":{\"f\":true},\"allday\":true,\"e\":1439,\"remarks\":\"\",\"by\":\"stiff\"}",
+  "pics": "as19-as19.file19-form-desktop.png, as19-as19.file19-saved-desktop.png"
+ },
+ {
+  "scn": "as19",
+  "size": "desktop",
+  "id": "as19.3r",
+  "what": "plus a Sun 19-only filing for Ranger: FCP — Ranger struck \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\"",
+  "ok": true,
+  "note": "[SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" printed \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\"",
+  "pics": "as19-as19-3-fcp-armed-clip-desktop.png, as19-as19-3-fcp-sans-clip-desktop.png, as19-as19-3-fcp-armed-desktop.png"
+ },
+ {
+  "scn": "as19",
+  "size": "desktop",
+  "id": "as19.3m",
+  "what": "plus a Sun 19-only filing for Ranger: RCP — Marlin (SANS WSO) plain",
+  "ok": true,
+  "note": "[SANS Avail, plain] title \"Marlin\" (no reason printed)",
+  "pics": "as19-as19-3-rcp-armed-clip-desktop.png, as19-as19-3-rcp-sans-clip-desktop.png, as19-as19-3-rcp-armed-desktop.png"
+ },
+ {
+  "scn": "as19",
+  "size": "desktop",
+  "id": "as19.seat",
+  "what": "set-up: Ranger tapped into the Sat 18 blank FCP",
+  "ok": true,
+  "note": "note \"the WAVE 1 line has no usable times, so nobody on it earns OIL for this day\"",
+  "pics": "as19-as19-seat-note-clip-desktop.png, as19-as19-seat-picked-desktop.png"
+ },
+ {
+  "scn": "as19",
+  "size": "desktop",
+  "id": "as19.4",
+  "what": "Ranger's bell names Sat 18 (Marlin's filing and his own Sun 19 one never clear him)",
+  "ok": true,
+  "note": "lit true · 4 line(s) · Mark all read in view · [unread] \"You're SANS from Fri 17 Jul.\" \"\" \"You're planned on Sat 18 Jul with nothing filed. Tap to file for availability.\" || [unread] \"SANS Availability\" \"Sun 19 Jul\" \"You were added · Saber\" || [unread] \"SANS Availability\" \"Sat 18 Jul\" \"You were taken off · Saber\" || [unread] \"SANS Availability\" \"Sat 18 Jul\" \"You were added · Saber\"",
+  "pics": "as19-as19-bell-desktop.png"
+ },
+ {
+  "scn": "as19",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

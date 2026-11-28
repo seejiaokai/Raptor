@@ -1,0 +1,89 @@
+[
+ {
+  "scn": "two",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "two",
+  "size": "phone",
+  "id": "two.lines",
+  "what": "set-up: VX ACM 09:00–10:00 and VZ DACT 15:00–16:00 on Sat 18",
+  "ok": true,
+  "note": "[{\"cs\":\"VX\",\"msn\":\"ACM\",\"to\":\"09:00\",\"ld\":\"10:00\"},{\"cs\":\"VZ\",\"msn\":\"DACT\",\"to\":\"15:00\",\"ld\":\"16:00\"}]"
+ },
+ {
+  "scn": "two",
+  "size": "phone",
+  "id": "two.notes",
+  "what": "F27: one note per plant (A's words; recorded)",
+  "ok": "REC",
+  "note": "\"Bolt — SANS — no availability filed for today\" / \"Bolt — SANS — no availability filed for today (+1 more)\"",
+  "pics": "two-two-1-armed-clip-phone.png, two-two-1-sans-clip-phone.png, two-two-1-armed-phone.png, two-two-1-note-clip-phone.png, two-two-1-picked-phone.png, two-two-2-armed-clip-phone.png, two-two-2-sans-clip-phone.png, two-two-2-armed-phone.png, two-two-2-note-clip-phone.png, two-two-2-picked-phone.png"
+ },
+ {
+  "scn": "two",
+  "size": "phone",
+  "id": "two.a",
+  "what": "F27 / S15: two SANS lines for Bolt, each naming its flight (\"SANS: no availability filed for today. Planned on VX ACM (T/O 09:00)\", \"SANS: no availability filed for today. Planned on VZ DACT (T/O 15:00)\")",
+  "ok": true,
+  "note": "\"SANS: no availability filed for today. Planned on VX ACM (T/O 09:00)\" | \"SANS: no availability filed for today. Planned on VZ DACT (T/O 15:00)\" · bar \"⚠ 4 issues ▲\"",
+  "pics": "two-two-a-list-clip-phone.png"
+ },
+ {
+  "scn": "two",
+  "size": "phone",
+  "id": "two.b",
+  "what": "F27 / S15: VX hidden — VZ stays shown; the count down by one",
+  "ok": true,
+  "note": "\"SANS: no availability filed for today. Planned on VX ACM (T/O 09:00)\" HIDDEN | \"SANS: no availability filed for today. Planned on VZ DACT (T/O 15:00)\" · count 4 → 3",
+  "pics": "two-two-b-list-clip-phone.png"
+ },
+ {
+  "scn": "two",
+  "size": "phone",
+  "id": "two.c",
+  "what": "S15: VX restored, VZ hidden — VX shown, VZ hidden, the count down by one",
+  "ok": true,
+  "note": "\"SANS: no availability filed for today. Planned on VX ACM (T/O 09:00)\" | \"SANS: no availability filed for today. Planned on VZ DACT (T/O 15:00)\" HIDDEN · count 3",
+  "pics": "two-two-c-list-clip-phone.png"
+ },
+ {
+  "scn": "two",
+  "size": "phone",
+  "id": "two.leave",
+  "what": "set-up: OL filed for Otter on Sat 18 through the board's Unavailable \"+ Add\"",
+  "ok": true,
+  "note": "[{\"iid\":\"imrldjac1eq8ma6\",\"type\":\"OL\",\"date\":\"Jul 18\",\"who\":\"[{\\\"p\\\":\\\"wrangler\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077257745}]\",\"allday\":true}] toast \"Input added\"",
+  "pics": "two-two-leave-form-phone.png"
+ },
+ {
+  "scn": "two",
+  "size": "phone",
+  "id": "two.otter-note",
+  "what": "F28: the note after planting Otter (on leave, nothing filed) — which leads (A's words; recorded)",
+  "ok": "REC",
+  "note": "placed true · \"Otter — On leave + planned: RU ACM (T/O 11:00) (+1 more)\"",
+  "pics": "two-two-otter-armed-clip-phone.png, two-two-otter-sans-clip-phone.png, two-two-otter-armed-phone.png, two-two-otter-note-clip-phone.png, two-two-otter-picked-phone.png"
+ },
+ {
+  "scn": "two",
+  "size": "phone",
+  "id": "two.otter",
+  "what": "F28 / S15: Otter keeps both — the leave line and the SANS line \"… Planned on RU ACM (T/O 11:00)\"",
+  "ok": true,
+  "note": "[hard] On leave + planned Otter — On leave + planned: RU ACM (T/O 11:00) ✕ || [adv] SANS availability — not filed, or planned outside it Otter — SANS: no availability filed for today. Planned on RU ACM (T/O 11:00) ✕",
+  "pics": "two-two-otter-list-clip-phone.png"
+ },
+ {
+  "scn": "two",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

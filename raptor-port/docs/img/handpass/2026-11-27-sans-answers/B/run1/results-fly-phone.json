@@ -1,0 +1,44 @@
+[
+ {
+  "scn": "fly",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "fly",
+  "size": "phone",
+  "id": "fly.line",
+  "what": "set-up: a flying line VL BFM T/O 13:00, no landing, on Fri 17",
+  "ok": true,
+  "note": "{\"cs\":\"VL\",\"msn\":\"BFM\",\"to\":\"13:00\",\"ld\":\"\"}"
+ },
+ {
+  "scn": "fly",
+  "size": "phone",
+  "id": "fly.note",
+  "what": "the note after the plant (A's; recorded)",
+  "ok": "REC",
+  "note": "placed true · \"Jester — SANS — no availability filed for today\"",
+  "pics": "fly-fly-armed-clip-phone.png, fly-fly-sans-clip-phone.png, fly-fly-armed-phone.png, fly-fly-note-clip-phone.png, fly-fly-picked-phone.png"
+ },
+ {
+  "scn": "fly",
+  "size": "phone",
+  "id": "fly.words",
+  "what": "F20: the flying words as before — \"SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)\", no \"(end assumed)\"",
+  "ok": true,
+  "note": "\"SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)\"",
+  "pics": "fly-fly-list-clip-phone.png"
+ },
+ {
+  "scn": "fly",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

@@ -1,0 +1,341 @@
+[
+ {
+  "scn": "f3",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "f3",
+  "size": "desktop",
+  "id": "f3.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "f3-f3.post-postout-open-desktop.png, f3-f3.post-postout-sheet-desktop.png"
+ },
+ {
+  "scn": "f3",
+  "size": "desktop",
+  "id": "f3.line",
+  "what": "set-up: a new flying line on Sat (+ Wave → Flying wave), no times typed",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 1\",\"kind\":\"\",\"standalone\":false,\"cs\":\"\",\"to\":\"\",\"ld\":\"\",\"n\":1}"
+ },
+ {
+  "scn": "f3",
+  "size": "desktop",
+  "id": "f3.seat",
+  "what": "set-up: Ranger tapped into the FCP of the new Sat line (seat tapped, then his name)",
+  "ok": true,
+  "note": "armed 5.0.0.0.p · note \"the WAVE 1 line has no usable times, so nobody on it earns OIL for this day\"",
+  "pics": "f3-f3-seat-note-clip-desktop.png, f3-f3-seat-picked-desktop.png"
+ },
+ {
+  "scn": "f3",
+  "size": "desktop",
+  "id": "f3.line",
+  "what": "set-up: a new flying line on Mon (+ Wave → Flying wave), no times typed",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 3\",\"kind\":\"\",\"standalone\":false,\"cs\":\"\",\"to\":\"\",\"ld\":\"\",\"n\":1}"
+ },
+ {
+  "scn": "f3",
+  "size": "desktop",
+  "id": "f3.seat",
+  "what": "set-up: Ranger tapped into the FCP of the new Mon line (seat tapped, then his name)",
+  "ok": true,
+  "note": "armed 0.2.0.0.p · note \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\"",
+  "pics": "f3-f3-seat-note-clip-desktop.png, f3-f3-seat-picked-desktop.png"
+ },
+ {
+  "scn": "f3",
+  "size": "desktop",
+  "id": "f3.0",
+  "what": "Saber leaves the schedule on another week (Mon 20 not shown) before Ranger signs in",
+  "ok": "REC",
+  "note": "Edit Schedule on week 13/07/2026"
+ },
+ {
+  "scn": "f3",
+  "size": "desktop",
+  "id": "f3.1",
+  "what": "Ranger's bell: \"You're SANS from Fri 17 Jul.\" \"You're planned on Sat 18, Mon 20 Jul with nothing filed. Tap to file for availability.\" (D2568: seats with no times count; each date once)",
+  "ok": true,
+  "note": "lit true · 1 line(s) · Mark all read in view · [unread] \"You're SANS from Fri 17 Jul.\" \"\" \"You're planned on Sat 18, Mon 20 Jul with nothing filed. Tap to file for availability.\"",
+  "pics": "f3-f3-bell-desktop.png"
+ },
+ {
+  "scn": "f3",
+  "size": "desktop",
+  "id": "f3.2",
+  "what": "the reminder tapped opens the SANS calendar on Sat 18 with its day window (D2340)",
+  "ok": true,
+  "note": "page \"inputs\" · month \"July 2026\" · window \"⠿Sat 18 JulNo flying set✕FigurePilotsWSOsRequired to fly––Available2718SANS comm\" · list closed",
+  "pics": "f3-f3-tap-tapped-desktop.png, f3-f3-tap-after-desktop.png"
+ },
+ {
+  "scn": "f3",
+  "size": "desktop",
+  "id": "f3.3",
+  "what": "Saber picks the RCP of the same Sat 18 flight: Ranger struck on the crew list (the two surfaces agree)",
+  "ok": true,
+  "note": "armed 5.0.0.0.w · [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" printed \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\"",
+  "pics": "f3-f3-rcp-armed-clip-desktop.png, f3-f3-rcp-sans-clip-desktop.png, f3-f3-rcp-armed-desktop.png"
+ },
+ {
+  "scn": "f3",
+  "size": "desktop",
+  "id": "f3.4",
+  "what": "the same on Edit Schedule's crew panel",
+  "ok": true,
+  "note": "armed 5.0.0.0.w · [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" printed \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\"",
+  "pics": "f3-f3-ercp-earmed-clip-desktop.png, f3-f3-ercp-esans-clip-desktop.png, f3-f3-ercp-earmed-desktop.png"
+ },
+ {
+  "scn": "f3",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "f7",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "f7",
+  "size": "desktop",
+  "id": "f7.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "f7-f7.post-postout-open-desktop.png, f7-f7.post-postout-sheet-desktop.png"
+ },
+ {
+  "scn": "f7",
+  "size": "desktop",
+  "id": "f7.SC",
+  "what": "set-up: + Wave → SC on Sat 18",
+  "ok": true,
+  "note": "{\"label\":\"SC\",\"kind\":\"sc\",\"standalone\":true,\"cs\":\"SC\",\"to\":\"07:00\",\"ld\":\"13:00\",\"n\":4}"
+ },
+ {
+  "scn": "f7",
+  "size": "desktop",
+  "id": "f7.AVALON",
+  "what": "set-up: + Wave → AVALON on Sat 18",
+  "ok": true,
+  "note": "{\"label\":\"AVALON\",\"kind\":\"avalon\",\"standalone\":true,\"cs\":\"AV\",\"to\":\"19:00\",\"ld\":\"07:00\",\"n\":4}"
+ },
+ {
+  "scn": "f7",
+  "size": "desktop",
+  "id": "f7.BB",
+  "what": "set-up: + Wave → BB on Sat 18",
+  "ok": true,
+  "note": "{\"label\":\"BB\",\"kind\":\"bb\",\"standalone\":true,\"cs\":\"BB\",\"to\":\"\",\"ld\":\"\",\"n\":4}"
+ },
+ {
+  "scn": "f7",
+  "size": "desktop",
+  "id": "f7.shape",
+  "what": "the three standby lines as made (times; each aircraft spare?)",
+  "ok": "REC",
+  "note": "{\"SC\":[{\"to\":\"07:00\",\"ld\":\"13:00\",\"ac\":[false,false,true,true]},{\"to\":\"13:00\",\"ld\":\"19:00\",\"ac\":[false,false,true,true]}],\"AVALON\":[{\"to\":\"19:00\",\"ld\":\"07:00\",\"ac\":[false,false,true,true]}],\"BB\":[{\"to\":\"\",\"ld\":\"\",\"ac\":[false,false,true,true]}]}"
+ },
+ {
+  "scn": "f7",
+  "size": "desktop",
+  "id": "f7.clear",
+  "what": "set-up: every standby formation's times cleared (read back)",
+  "ok": true,
+  "note": "{\"SC\":\"-/- -/-\",\"AVALON\":\"-/-\",\"BB\":\"-/-\"}"
+ },
+ {
+  "scn": "f7",
+  "size": "desktop",
+  "id": "f7.SC-MAIN-p",
+  "what": "SC MAIN FCP armed, no times: no \"no availability filed\" for Ranger, Jester or Marlin",
+  "ok": true,
+  "note": "armed 5.0.0.0.p · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed) · Marlin [SANS Avail, STRUCK] title \"Marlin — WSO — cannot fly front seat\" printed \"WSO — cannot fly front seat\"",
+  "pics": "f7-f7-SC-MAIN-p-armed-clip-desktop.png, f7-f7-SC-MAIN-p-sans-clip-desktop.png, f7-f7-SC-MAIN-p-armed-desktop.png"
+ },
+ {
+  "scn": "f7",
+  "size": "desktop",
+  "id": "f7.SC-MAIN-w",
+  "what": "SC MAIN RCP armed, no times: no \"no availability filed\" for Ranger, Jester or Marlin",
+  "ok": true,
+  "note": "armed 5.0.0.0.w · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed) · Marlin [SANS Avail, plain] title \"Marlin\" (no reason printed)",
+  "pics": "f7-f7-SC-MAIN-w-armed-clip-desktop.png, f7-f7-SC-MAIN-w-sans-clip-desktop.png, f7-f7-SC-MAIN-w-armed-desktop.png"
+ },
+ {
+  "scn": "f7",
+  "size": "desktop",
+  "id": "f7.SC-SPARE-p",
+  "what": "SC SPARE FCP armed, no times: no \"no availability filed\" for Ranger, Jester or Marlin",
+  "ok": true,
+  "note": "armed 5.0.0.2.p · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed) · Marlin [SANS Avail, STRUCK] title \"Marlin — WSO — cannot fly front seat\" printed \"WSO — cannot fly front seat\"",
+  "pics": "f7-f7-SC-SPARE-p-armed-clip-desktop.png, f7-f7-SC-SPARE-p-sans-clip-desktop.png, f7-f7-SC-SPARE-p-armed-desktop.png"
+ },
+ {
+  "scn": "f7",
+  "size": "desktop",
+  "id": "f7.SC-SPARE-w",
+  "what": "SC SPARE RCP armed, no times: no \"no availability filed\" for Ranger, Jester or Marlin",
+  "ok": true,
+  "note": "armed 5.0.0.2.w · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed) · Marlin [SANS Avail, plain] title \"Marlin\" (no reason printed)",
+  "pics": "f7-f7-SC-SPARE-w-armed-clip-desktop.png, f7-f7-SC-SPARE-w-sans-clip-desktop.png, f7-f7-SC-SPARE-w-armed-desktop.png"
+ },
+ {
+  "scn": "f7",
+  "size": "desktop",
+  "id": "f7.AVALON-MAIN-p",
+  "what": "AVALON MAIN FCP armed, no times: no \"no availability filed\" for Ranger, Jester or Marlin",
+  "ok": true,
+  "note": "armed 5.1.0.0.p · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed) · Marlin [SANS Avail, STRUCK] title \"Marlin — WSO — cannot fly front seat\" printed \"WSO — cannot fly front seat\"",
+  "pics": "f7-f7-AVALON-MAIN-p-armed-clip-desktop.png, f7-f7-AVALON-MAIN-p-sans-clip-desktop.png, f7-f7-AVALON-MAIN-p-armed-desktop.png"
+ },
+ {
+  "scn": "f7",
+  "size": "desktop",
+  "id": "f7.AVALON-MAIN-w",
+  "what": "AVALON MAIN RCP armed, no times: no \"no availability filed\" for Ranger, Jester or Marlin",
+  "ok": true,
+  "note": "armed 5.1.0.0.w · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed) · Marlin [SANS Avail, plain] title \"Marlin\" (no reason printed)",
+  "pics": "f7-f7-AVALON-MAIN-w-armed-clip-desktop.png, f7-f7-AVALON-MAIN-w-sans-clip-desktop.png, f7-f7-AVALON-MAIN-w-armed-desktop.png"
+ },
+ {
+  "scn": "f7",
+  "size": "desktop",
+  "id": "f7.AVALON-SPARE-p",
+  "what": "AVALON SPARE FCP armed, no times: no \"no availability filed\" for Ranger, Jester or Marlin",
+  "ok": true,
+  "note": "armed 5.1.0.2.p · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed) · Marlin [SANS Avail, STRUCK] title \"Marlin — WSO — cannot fly front seat\" printed \"WSO — cannot fly front seat\"",
+  "pics": "f7-f7-AVALON-SPARE-p-armed-clip-desktop.png, f7-f7-AVALON-SPARE-p-sans-clip-desktop.png, f7-f7-AVALON-SPARE-p-armed-desktop.png"
+ },
+ {
+  "scn": "f7",
+  "size": "desktop",
+  "id": "f7.AVALON-SPARE-w",
+  "what": "AVALON SPARE RCP armed, no times: no \"no availability filed\" for Ranger, Jester or Marlin",
+  "ok": true,
+  "note": "armed 5.1.0.2.w · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed) · Marlin [SANS Avail, plain] title \"Marlin\" (no reason printed)",
+  "pics": "f7-f7-AVALON-SPARE-w-armed-clip-desktop.png, f7-f7-AVALON-SPARE-w-sans-clip-desktop.png, f7-f7-AVALON-SPARE-w-armed-desktop.png"
+ },
+ {
+  "scn": "f7",
+  "size": "desktop",
+  "id": "f7.BB-MAIN-p",
+  "what": "BB MAIN FCP armed, no times: no \"no availability filed\" for Ranger, Jester or Marlin",
+  "ok": true,
+  "note": "armed 5.2.0.0.p · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed) · Marlin [SANS Avail, STRUCK] title \"Marlin — WSO — cannot fly front seat\" printed \"WSO — cannot fly front seat\"",
+  "pics": "f7-f7-BB-MAIN-p-armed-clip-desktop.png, f7-f7-BB-MAIN-p-sans-clip-desktop.png, f7-f7-BB-MAIN-p-armed-desktop.png"
+ },
+ {
+  "scn": "f7",
+  "size": "desktop",
+  "id": "f7.BB-MAIN-w",
+  "what": "BB MAIN RCP armed, no times: no \"no availability filed\" for Ranger, Jester or Marlin",
+  "ok": true,
+  "note": "armed 5.2.0.0.w · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed) · Marlin [SANS Avail, plain] title \"Marlin\" (no reason printed)",
+  "pics": "f7-f7-BB-MAIN-w-armed-clip-desktop.png, f7-f7-BB-MAIN-w-sans-clip-desktop.png, f7-f7-BB-MAIN-w-armed-desktop.png"
+ },
+ {
+  "scn": "f7",
+  "size": "desktop",
+  "id": "f7.BB-SPARE-p",
+  "what": "BB SPARE FCP armed, no times: no \"no availability filed\" for Ranger, Jester or Marlin",
+  "ok": true,
+  "note": "armed 5.2.0.2.p · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed) · Marlin [SANS Avail, STRUCK] title \"Marlin — WSO — cannot fly front seat\" printed \"WSO — cannot fly front seat\"",
+  "pics": "f7-f7-BB-SPARE-p-armed-clip-desktop.png, f7-f7-BB-SPARE-p-sans-clip-desktop.png, f7-f7-BB-SPARE-p-armed-desktop.png"
+ },
+ {
+  "scn": "f7",
+  "size": "desktop",
+  "id": "f7.BB-SPARE-w",
+  "what": "BB SPARE RCP armed, no times: no \"no availability filed\" for Ranger, Jester or Marlin",
+  "ok": true,
+  "note": "armed 5.2.0.2.w · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed) · Marlin [SANS Avail, plain] title \"Marlin\" (no reason printed)",
+  "pics": "f7-f7-BB-SPARE-w-armed-clip-desktop.png, f7-f7-BB-SPARE-w-sans-clip-desktop.png, f7-f7-BB-SPARE-w-armed-desktop.png"
+ },
+ {
+  "scn": "f7",
+  "size": "desktop",
+  "id": "f7.AVALON-flies",
+  "what": "AVALON: its row 5.1.0.0 ticked FLIES",
+  "ok": "REC",
+  "note": "aria-pressed true",
+  "pics": "f7-f7-AVALON-flies-clip-desktop.png"
+ },
+ {
+  "scn": "f7",
+  "size": "desktop",
+  "id": "f7.AVALON-FLIES-p-flies",
+  "what": "AVALON FLIES FCP armed, no times (FLIES ticked): no \"no availability filed\" for Ranger, Jester or Marlin",
+  "ok": true,
+  "note": "armed 5.1.0.0.p · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed) · Marlin [SANS Avail, STRUCK] title \"Marlin — WSO — cannot fly front seat\" printed \"WSO — cannot fly front seat\"",
+  "pics": "f7-f7-AVALON-FLIES-p-flies-armed-clip-desktop.png, f7-f7-AVALON-FLIES-p-flies-sans-clip-desktop.png, f7-f7-AVALON-FLIES-p-flies-armed-desktop.png"
+ },
+ {
+  "scn": "f7",
+  "size": "desktop",
+  "id": "f7.AVALON-FLIES-w-flies",
+  "what": "AVALON FLIES RCP armed, no times (FLIES ticked): no \"no availability filed\" for Ranger, Jester or Marlin",
+  "ok": true,
+  "note": "armed 5.1.0.0.w · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed) · Marlin [SANS Avail, plain] title \"Marlin\" (no reason printed)",
+  "pics": "f7-f7-AVALON-FLIES-w-flies-armed-clip-desktop.png, f7-f7-AVALON-FLIES-w-flies-sans-clip-desktop.png, f7-f7-AVALON-FLIES-w-flies-armed-desktop.png"
+ },
+ {
+  "scn": "f7",
+  "size": "desktop",
+  "id": "f7.BB-flies",
+  "what": "BB: its row 5.2.0.0 ticked FLIES",
+  "ok": "REC",
+  "note": "aria-pressed true",
+  "pics": "f7-f7-BB-flies-clip-desktop.png"
+ },
+ {
+  "scn": "f7",
+  "size": "desktop",
+  "id": "f7.BB-FLIES-p-flies",
+  "what": "BB FLIES FCP armed, no times (FLIES ticked): no \"no availability filed\" for Ranger, Jester or Marlin",
+  "ok": true,
+  "note": "armed 5.2.0.0.p · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed) · Marlin [SANS Avail, STRUCK] title \"Marlin — WSO — cannot fly front seat\" printed \"WSO — cannot fly front seat\"",
+  "pics": "f7-f7-BB-FLIES-p-flies-armed-clip-desktop.png, f7-f7-BB-FLIES-p-flies-sans-clip-desktop.png, f7-f7-BB-FLIES-p-flies-armed-desktop.png"
+ },
+ {
+  "scn": "f7",
+  "size": "desktop",
+  "id": "f7.BB-FLIES-w-flies",
+  "what": "BB FLIES RCP armed, no times (FLIES ticked): no \"no availability filed\" for Ranger, Jester or Marlin",
+  "ok": true,
+  "note": "armed 5.2.0.0.w · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed) · Marlin [SANS Avail, plain] title \"Marlin\" (no reason printed)",
+  "pics": "f7-f7-BB-FLIES-w-flies-armed-clip-desktop.png, f7-f7-BB-FLIES-w-flies-sans-clip-desktop.png, f7-f7-BB-FLIES-w-flies-armed-desktop.png"
+ },
+ {
+  "scn": "f7",
+  "size": "desktop",
+  "id": "f7.ctl",
+  "what": "control: SC MAIN FCP with 07:00–13:00 typed — Ranger and Jester (the known timed strike, D2576–D2578 not built: not a finding)",
+  "ok": "REC",
+  "note": "Ranger [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" printed \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" · Jester [SANS Avail, STRUCK] title \"Jester — SANS — no availability filed for today\" printed \"SANS — no availability filed for today\"",
+  "pics": "f7-f7-SC-MAIN-timed-armed-clip-desktop.png, f7-f7-SC-MAIN-timed-sans-clip-desktop.png, f7-f7-SC-MAIN-timed-armed-desktop.png"
+ },
+ {
+  "scn": "f7",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

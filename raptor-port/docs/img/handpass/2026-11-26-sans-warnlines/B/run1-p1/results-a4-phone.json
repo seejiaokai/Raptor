@@ -1,0 +1,107 @@
+[
+ {
+  "scn": "a4",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "a4",
+  "size": "phone",
+  "id": "a4.plant",
+  "what": "Jester into an OFT \"EP-9\" 15:00–16:00: the note \"Jester — SANS: no availability filed for today. Planned on Sim EP-9 15:00–16:00\"",
+  "ok": true,
+  "note": "row {\"label\":\"EP-9\",\"str\":\"15:00\",\"end\":\"16:00\"} · \"Jester — SANS: no availability filed for today. Planned on Sim EP-9 15:00–16:00\"",
+  "pics": "a4-a4-plant-armed-clip-phone.png, a4-a4-plant-sans-clip-phone.png, a4-a4-plant-armed-phone.png, a4-a4-plant-note-clip-phone.png, a4-a4-plant-picked-phone.png"
+ },
+ {
+  "scn": "a4",
+  "size": "phone",
+  "id": "a4.hid",
+  "what": "set-up: his line hidden",
+  "ok": true,
+  "note": "bar \"✓ No issues ▲\" [calm] · 1 line(s): [adv HIDDEN struck [drawn icon: Flag this again]] SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on Sim EP-9 15:00–16:00"
+ },
+ {
+  "scn": "a4",
+  "size": "phone",
+  "id": "a4.f0",
+  "what": "set-up: Saber files SANS fly all day for ipman on 2026-07-17",
+  "ok": true,
+  "note": "{\"iid\":\"imrldiogj7t1ry4\",\"people\":\"[{\\\"p\\\":\\\"ipman\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077229395}]\",\"date\":\"Jul 17\",\"endDate\":null,\"sans\":{\"f\":true},\"allday\":true,\"e\":1439,\"remarks\":\"\",\"by\":\"stiff\"}",
+  "pics": "a4-a4.f0-form-phone.png, a4-a4.f0-saved-phone.png"
+ },
+ {
+  "scn": "a4",
+  "size": "phone",
+  "id": "a4.f0",
+  "what": "Fly only, all day → \"offered Fly only today\": SHOWN, not hidden (a different fact, D469)",
+  "ok": true,
+  "note": "\"SANS: offered Fly only today. Planned on Sim EP-9 15:00–16:00\" · EDIT bar \"⚠ 1 issue ▲\" [adv] · 1 line(s): [adv ✕] SANS availability — not filed, or planned outside it Jester — SANS: offered Fly only today. Planned on Sim EP-9 15:00–16:00 ✕ ·· INFO \"Friday · Jul 17 · 0 X 0 X 0\" · Draft — not yet published 7 changes · 1 ADVISORY · 1 line(s): [] Advisory · SANS availability — not filed, or planned outside it Jester — SANS: offered Fly only today. Planned on Sim EP-9 15:00–16:00 ·· BOARD head \"▾ ⚠ 1 issue\" · 1 line(s): [✕] Jester — SANS: offered Fly only today. Planned on Sim EP-9 15:00–16:00 ✕ ·· PUCKS ipman week[sim@Fri(s:4.oft.2.p):amber/A ; SANS@Fri:amber/A] board[sim(s:4.oft.2.p):amber/A ; SANS:amber/A ; crew list (week):amber/A]",
+  "pics": "a4-a4-f0-e-list-clip-phone.png, a4-a4-f0-ipop-clip-phone.png, a4-a4-f0-b-clip-phone.png, a4-a4-f0-board-phone.png"
+ },
+ {
+  "scn": "a4",
+  "size": "phone",
+  "id": "a4.f1",
+  "what": "set-up: Saber files SANS oft 08:00–12:00 for ipman on 2026-07-17",
+  "ok": true,
+  "note": "{\"iid\":\"imrldjg8a5w23na\",\"people\":\"[{\\\"p\\\":\\\"ipman\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077265386}]\",\"date\":\"Jul 17\",\"endDate\":null,\"sans\":{\"o\":true},\"allday\":false,\"s\":480,\"e\":720,\"remarks\":\"\",\"by\":\"stiff\"}",
+  "pics": "a4-a4.f1-form-phone.png, a4-a4.f1-saved-phone.png"
+ },
+ {
+  "scn": "a4",
+  "size": "phone",
+  "id": "a4.f1",
+  "what": "OFT 08:00–12:00 → \"available 08:00–12:00 only\": SHOWN, not hidden (a different fact, D469)",
+  "ok": true,
+  "note": "\"SANS: available 08:00–12:00 only. Planned on Sim EP-9 15:00–16:00\" · EDIT bar \"⚠ 1 issue ▲\" [adv] · 1 line(s): [adv ✕] SANS availability — not filed, or planned outside it Jester — SANS: available 08:00–12:00 only. Planned on Sim EP-9 15:00–16:00 ✕ ·· INFO \"Friday · Jul 17 · 0 X 0 X 0\" · Draft — not yet published 9 changes · 1 ADVISORY · 1 line(s): [] Advisory · SANS availability — not filed, or planned outside it Jester — SANS: available 08:00–12:00 only. Planned on Sim EP-9 15:00–16:00 ·· BOARD head \"▾ ⚠ 1 issue\" · 1 line(s): [✕] Jester — SANS: available 08:00–12:00 only. Planned on Sim EP-9 15:00–16:00 ✕ ·· PUCKS ipman week[sim@Fri(s:4.oft.2.p):amber/A ; SANS@Fri:amber/A] board[sim(s:4.oft.2.p):amber/A ; SANS:amber/A ; crew list (week):amber/A]",
+  "pics": "a4-a4-f1-e-list-clip-phone.png, a4-a4-f1-ipop-clip-phone.png, a4-a4-f1-b-clip-phone.png, a4-a4-f1-board-phone.png"
+ },
+ {
+  "scn": "a4",
+  "size": "phone",
+  "id": "a4.f2",
+  "what": "set-up: Saber files SANS oft all day for ipman on 2026-07-17",
+  "ok": true,
+  "note": "{\"iid\":\"imrldk88w0fwq5d\",\"people\":\"[{\\\"p\\\":\\\"ipman\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077301696}]\",\"date\":\"Jul 17\",\"endDate\":null,\"sans\":{\"o\":true},\"allday\":true,\"e\":1439,\"remarks\":\"\",\"by\":\"stiff\"}",
+  "pics": "a4-a4.f2-form-phone.png, a4-a4.f2-saved-phone.png"
+ },
+ {
+  "scn": "a4",
+  "size": "phone",
+  "id": "a4.f2",
+  "what": "OFT all day: no SANS line for him, no ring",
+  "ok": true,
+  "note": "EDIT bar \"(no bar)\" [] · 0 line(s) ·· INFO \"Friday · Jul 17 · 0 X 0 X 0\" · Draft — not yet published 11 changes ·  · 0 line(s) ·· BOARD head \"▸ No conflicts flagged for Friday ✓\" · 0 line(s) · other [\"No conflicts flagged for this day ✓\"] ·· PUCKS ipman week[sim@Fri(s:4.oft.2.p):no ring ; SANS@Fri:no ring] board[sim(s:4.oft.2.p):no ring ; SANS:no ring ; crew list (week):no ring]",
+  "pics": "a4-a4-f2-e-list-phone.png, a4-a4-f2-ipop-clip-phone.png, a4-a4-f2-b-clip-phone.png, a4-a4-f2-board-phone.png"
+ },
+ {
+  "scn": "a4",
+  "size": "phone",
+  "id": "a4.reload",
+  "what": "after a reload and a fresh sign-in: still no SANS line for him",
+  "ok": true,
+  "note": "EDIT bar \"(no bar)\" [] · 0 line(s) ·· INFO \"Friday · Jul 17 · 0 X 0 X 0\" · Draft — not yet published 11 changes ·  · 0 line(s) ·· BOARD head \"▸ No conflicts flagged for Friday ✓\" · 0 line(s) · other [\"No conflicts flagged for this day ✓\"] ·· PUCKS ipman week[sim@Fri(s:4.oft.2.p):no ring ; SANS@Fri:no ring] board[sim(s:4.oft.2.p):no ring ; SANS:no ring ; crew list (week):no ring]",
+  "pics": "a4-a4-reload-e-list-phone.png, a4-a4-reload-ipop-clip-phone.png, a4-a4-reload-b-clip-phone.png, a4-a4-reload-board-phone.png"
+ },
+ {
+  "scn": "a4",
+  "size": "phone",
+  "id": "a4.none",
+  "what": "the filing deleted: \"no availability filed\" again — shown, or hidden by the first ✕? (RECORD)",
+  "ok": "REC",
+  "note": "deleted · HIDDEN \"SANS: no availability filed for today. Planned on Sim EP-9 15:00–16:00\"",
+  "pics": "a4-a4-none-e-list-clip-phone.png, a4-a4-none-ipop-clip-phone.png, a4-a4-none-b-clip-phone.png, a4-a4-none-board-phone.png"
+ },
+ {
+  "scn": "a4",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

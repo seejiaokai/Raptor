@@ -1,0 +1,949 @@
+{
+ "state": "wrap-phone",
+ "drawing": {
+  "script": "docs/mock/2026-11-25-sans-d2588/draw.mjs",
+  "shot": "col-wrap-phone"
+ },
+ "recorded": "2026-11-26T17:09:08.674Z",
+ "drawnOn": "the frozen build D:/raptor-work/c185-build (index-SXKkjfaJ.js)",
+ "checkout": "ab72316f4",
+ "viewport": {
+  "w": 402,
+  "h": 874
+ },
+ "dpr": 3,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "sec": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 158,
+    "y": 451,
+    "w": 230,
+    "h": 348.9
+   },
+   "ink": {
+    "x": 158,
+    "y": 451,
+    "w": 218.2,
+    "h": 339.8
+   },
+   "text": "SANS Avail · 1 free Zenith C A Bolt C SANS — offered Fly only, not AMT F Jester B SANS — available 08:00–10:00 only A 08:00–10:00 Kraken D SANS — offered Fly and OFT only, not AMT F/O Marlin A SANS — no availability filed for today Otter D SANS — no availability filed for today Pixel D SANS — no availability filed for today Rebel B SANS — offered OFT only, not AMT O Scribe D SANS — no availability filed for today Tally O SANS — no availability filed for today Zulu O SANS — no availability filed for today",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "1px solid rgb(42, 49, 58)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.rall.rsans"
+  },
+  "head": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 158,
+    "y": 451,
+    "w": 230,
+    "h": 10
+   },
+   "ink": {
+    "x": 158,
+    "y": 451,
+    "w": 104.5,
+    "h": 10
+   },
+   "text": "SANS Avail · 1 free",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(178, 77, 234)",
+     "0px none rgb(178, 77, 234)",
+     "0px none rgb(178, 77, 234)",
+     "0px none rgb(178, 77, 234)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(178, 77, 234)",
+    "align": "start",
+    "justify": "normal",
+    "font": "700 9px",
+    "spacing": "0.63px"
+   },
+   "tag": "div.rh2"
+  },
+  "row-yeti": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 158,
+    "y": 484,
+    "w": 230,
+    "h": 27.2
+   },
+   "ink": {
+    "x": 159,
+    "y": 485,
+    "w": 175.8,
+    "h": 25.1
+   },
+   "text": "Bolt C SANS — offered Fly only, not AMT F",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.rsans-row"
+  },
+  "name-yeti": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 158,
+    "y": 484,
+    "w": 74,
+    "h": 15
+   },
+   "ink": {
+    "x": 163,
+    "y": 485,
+    "w": 64.2,
+    "h": 13
+   },
+   "text": "Bolt C",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(110, 106, 46)",
+    "image": "linear-gradient(rgba(128, 128, 128, 0.3), rgba(128, 128, 128, 0.3))",
+    "edge": [
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)"
+    ],
+    "corners": [
+     "3px",
+     "3px",
+     "3px",
+     "3px"
+    ],
+    "shadow": "none",
+    "color": "rgb(251, 250, 240)",
+    "align": "start",
+    "justify": "normal",
+    "font": "600 9px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.puck.sm.san"
+  },
+  "why-yeti": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 158,
+    "y": 500,
+    "w": 165.7,
+    "h": 11.2
+   },
+   "ink": {
+    "x": 159,
+    "y": 500.1,
+    "w": 128.5,
+    "h": 10
+   },
+   "text": "SANS — offered Fly only, not AMT",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 8.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.rwhy"
+  },
+  "let-yeti": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 329.7,
+    "y": 492.6,
+    "w": 5.1,
+    "h": 10
+   },
+   "ink": {
+    "x": 329.7,
+    "y": 492.6,
+    "w": 5.1,
+    "h": 10
+   },
+   "text": "F",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 8.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.rsans-b.sw-mark"
+  },
+  "row-romeo": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 158,
+    "y": 671.1,
+    "w": 230,
+    "h": 27.2
+   },
+   "ink": {
+    "x": 159,
+    "y": 672.1,
+    "w": 177.2,
+    "h": 25.1
+   },
+   "text": "Rebel B SANS — offered OFT only, not AMT O",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.rsans-row"
+  },
+  "name-romeo": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 158,
+    "y": 671.1,
+    "w": 74,
+    "h": 15
+   },
+   "ink": {
+    "x": 163,
+    "y": 672.1,
+    "w": 64.2,
+    "h": 13
+   },
+   "text": "Rebel B",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(110, 106, 46)",
+    "image": "linear-gradient(rgba(128, 128, 128, 0.3), rgba(128, 128, 128, 0.3))",
+    "edge": [
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)"
+    ],
+    "corners": [
+     "3px",
+     "3px",
+     "3px",
+     "3px"
+    ],
+    "shadow": "none",
+    "color": "rgb(251, 250, 240)",
+    "align": "start",
+    "justify": "normal",
+    "font": "600 9px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.puck.sm.san"
+  },
+  "why-romeo": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 158,
+    "y": 687.1,
+    "w": 165.7,
+    "h": 11.2
+   },
+   "ink": {
+    "x": 159,
+    "y": 687.2,
+    "w": 134,
+    "h": 10
+   },
+   "text": "SANS — offered OFT only, not AMT",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 8.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.rwhy"
+  },
+  "let-romeo": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 329.7,
+    "y": 679.7,
+    "w": 6.5,
+    "h": 10
+   },
+   "ink": {
+    "x": 329.7,
+    "y": 679.7,
+    "w": 6.5,
+    "h": 10
+   },
+   "text": "O",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 8.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.rsans-b.sw-mark"
+  },
+  "row-ipman": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 158,
+    "y": 515.2,
+    "w": 230,
+    "h": 27.2
+   },
+   "ink": {
+    "x": 159,
+    "y": 516.2,
+    "w": 217.2,
+    "h": 25.1
+   },
+   "text": "Jester B SANS — available 08:00–10:00 only A 08:00–10:00",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.rsans-row"
+  },
+  "name-ipman": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 158,
+    "y": 515.2,
+    "w": 74,
+    "h": 15
+   },
+   "ink": {
+    "x": 163,
+    "y": 516.2,
+    "w": 64.2,
+    "h": 13
+   },
+   "text": "Jester B",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(110, 106, 46)",
+    "image": "linear-gradient(rgba(128, 128, 128, 0.3), rgba(128, 128, 128, 0.3))",
+    "edge": [
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)"
+    ],
+    "corners": [
+     "3px",
+     "3px",
+     "3px",
+     "3px"
+    ],
+    "shadow": "none",
+    "color": "rgb(251, 250, 240)",
+    "align": "start",
+    "justify": "normal",
+    "font": "600 9px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.puck.sm.san"
+  },
+  "why-ipman": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 158,
+    "y": 531.2,
+    "w": 165.7,
+    "h": 11.2
+   },
+   "ink": {
+    "x": 159,
+    "y": 531.3,
+    "w": 135.4,
+    "h": 10
+   },
+   "text": "SANS — available 08:00–10:00 only",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 8.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.rwhy"
+  },
+  "let-ipman": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 329.7,
+    "y": 518.8,
+    "w": 46.6,
+    "h": 20
+   },
+   "ink": {
+    "x": 329.7,
+    "y": 518.8,
+    "w": 46.6,
+    "h": 20
+   },
+   "text": "A 08:00–10:00",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 8.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.rsans-b.sw-mark"
+  },
+  "row-krait": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 158,
+    "y": 546.4,
+    "w": 230,
+    "h": 27.2
+   },
+   "ink": {
+    "x": 159,
+    "y": 547.4,
+    "w": 184.7,
+    "h": 25.1
+   },
+   "text": "Kraken D SANS — offered Fly and OFT only, not AMT F/O",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.rsans-row"
+  },
+  "name-krait": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 158,
+    "y": 546.4,
+    "w": 74,
+    "h": 15
+   },
+   "ink": {
+    "x": 163,
+    "y": 547.4,
+    "w": 64.2,
+    "h": 13
+   },
+   "text": "Kraken D",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(110, 106, 46)",
+    "image": "linear-gradient(rgba(128, 128, 128, 0.3), rgba(128, 128, 128, 0.3))",
+    "edge": [
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)"
+    ],
+    "corners": [
+     "3px",
+     "3px",
+     "3px",
+     "3px"
+    ],
+    "shadow": "none",
+    "color": "rgb(251, 250, 240)",
+    "align": "start",
+    "justify": "normal",
+    "font": "600 9px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.puck.sm.san"
+  },
+  "why-krait": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 158,
+    "y": 562.4,
+    "w": 165.7,
+    "h": 11.2
+   },
+   "ink": {
+    "x": 159,
+    "y": 562.5,
+    "w": 163.7,
+    "h": 10
+   },
+   "text": "SANS — offered Fly and OFT only, not AMT",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 8.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.rwhy"
+  },
+  "let-krait": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 329.7,
+    "y": 555,
+    "w": 14,
+    "h": 10
+   },
+   "ink": {
+    "x": 329.7,
+    "y": 555,
+    "w": 14,
+    "h": 10
+   },
+   "text": "F/O",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 8.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.rsans-b.sw-mark"
+  },
+  "row-vinci": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 158,
+    "y": 465,
+    "w": 230,
+    "h": 15
+   },
+   "ink": {
+    "x": 163,
+    "y": 466,
+    "w": 172.3,
+    "h": 13
+   },
+   "text": "Zenith C A",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.rsans-row"
+  },
+  "name-vinci": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 158,
+    "y": 465,
+    "w": 74,
+    "h": 15
+   },
+   "ink": {
+    "x": 163,
+    "y": 466,
+    "w": 64.2,
+    "h": 13
+   },
+   "text": "Zenith C",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(110, 106, 46)",
+    "image": "",
+    "edge": [
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)"
+    ],
+    "corners": [
+     "3px",
+     "3px",
+     "3px",
+     "3px"
+    ],
+    "shadow": "none",
+    "color": "rgb(251, 250, 240)",
+    "align": "start",
+    "justify": "normal",
+    "font": "600 9px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.puck.sm.san"
+  },
+  "let-vinci": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 329.7,
+    "y": 467.5,
+    "w": 5.6,
+    "h": 10
+   },
+   "ink": {
+    "x": 329.7,
+    "y": 467.5,
+    "w": 5.6,
+    "h": 10
+   },
+   "text": "A",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 8.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.rsans-b.sw-mark"
+  },
+  "hours-ipman": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 329.7,
+    "y": 528.8,
+    "w": 46.6,
+    "h": 10
+   },
+   "ink": {
+    "x": 329.7,
+    "y": 528.8,
+    "w": 46.6,
+    "h": 10
+   },
+   "text": "08:00–10:00",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 8.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.sw-hrs"
+  }
+ },
+ "approved": {
+  "picture": "col-wrap-phone.png",
+  "identical": true
+ }
+}

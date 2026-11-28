@@ -1,0 +1,141 @@
+[
+ {
+  "scn": "a20",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "a20",
+  "size": "phone",
+  "id": "a20.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "a20-a20.post-postout-open-phone.png, a20-a20.post-postout-sheet-phone.png"
+ },
+ {
+  "scn": "a20",
+  "size": "phone",
+  "id": "a20.duty-list",
+  "what": "N6: the new duty desk row armed — no SANS reason for Ranger or Jester",
+  "ok": true,
+  "note": "armed d:5.0.1.+ · \"SANS Avail · 12 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed)",
+  "pics": "a20-a20-duty-armed-clip-phone.png, a20-a20-duty-sans-clip-phone.png, a20-a20-duty-armed-phone.png"
+ },
+ {
+  "scn": "a20",
+  "size": "phone",
+  "id": "a20.rows",
+  "what": "set-up: Ranger on a ground row (Fri 17), a duty desk row (Sat 18), all hands (Sun 19)",
+  "ok": true,
+  "note": "{\"prog\":\"B GROUND\",\"str\":\"10:00\",\"end\":\"11:00\",\"who\":\"bane\",\"rid\":\"rmrldivwi1jzb9g\"} · \"Duty has no usable times, so nobody on it earns OIL for this day\" · {\"prog\":\"B ALLHANDS\",\"str\":\"10:00\",\"end\":\"11:00\",\"who\":\"bane\",\"rid\":\"rmrldjfg4z6txrx\"}"
+ },
+ {
+  "scn": "a20",
+  "size": "phone",
+  "id": "a20.block",
+  "what": "\"+ Block\" pressed on Sun 19: what it offers",
+  "ok": "REC",
+  "note": "[\"ScribeDOAM\",\"ScopeIW\",\"ScopeIW\",\"+ Block\",\"✕ Block\",\"+ Block\",\"SC Shift4 roles · SC desk\",\"AVALON4 roles · AVALON desk\",\"Empty block\"]",
+  "pics": "a20-a20-block-phone.png"
+ },
+ {
+  "scn": "a20",
+  "size": "phone",
+  "id": "a20.block2",
+  "what": "the block made (an AVALON desk where offered)",
+  "ok": "REC",
+  "note": "{\"label\":\"AVALON\",\"rows\":4} · [\"Duty\",\"AVALON\"]"
+ },
+ {
+  "scn": "a20",
+  "size": "phone",
+  "id": "a20.blockin",
+  "what": "Ranger tapped onto the new block's first desk",
+  "ok": "REC",
+  "note": "placed true · \"Ranger planned\"",
+  "pics": "a20-a20-blockin-armed-clip-phone.png, a20-a20-blockin-sans-clip-phone.png, a20-a20-blockin-armed-phone.png, a20-a20-blockin-note-clip-phone.png, a20-a20-blockin-picked-phone.png"
+ },
+ {
+  "scn": "a20",
+  "size": "phone",
+  "id": "a20.bell1",
+  "what": "his bell: no SANS reminder (ground, duty desk, all hands, a standby desk never count — D2564)",
+  "ok": true,
+  "note": "lit false · 0 line(s) · Mark all read none · empty",
+  "pics": "a20-a20-bell1-phone.png"
+ },
+ {
+  "scn": "a20",
+  "size": "phone",
+  "id": "a20.bell2",
+  "what": "an SC wave added on Sun 19 and made to fly: still no reminder",
+  "ok": true,
+  "note": "lit false · 0 line(s) · Mark all read none · empty",
+  "pics": "a20-a20-bell2-phone.png"
+ },
+ {
+  "scn": "a20",
+  "size": "phone",
+  "id": "a20.fl",
+  "what": "set-up: a new flying line on Sun (+ Wave → Flying wave), no times typed",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 1\",\"kind\":\"\",\"standalone\":false,\"cs\":\"\",\"to\":\"\",\"ld\":\"\",\"n\":1}"
+ },
+ {
+  "scn": "a20",
+  "size": "phone",
+  "id": "a20.ace-untimedflightFCP",
+  "what": "N1: untimed flight FCP armed — Ace (not SANS) has no SANS reason",
+  "ok": true,
+  "note": "Ace [Pilots · 28 free, plain] title \"Ace\" (no reason printed) · Ranger [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed\" printed \"SANS from Fri 17 Jul: no availability filed\" · \"SANS Avail · 0 free\"",
+  "pics": "a20-a20-ace-untimedflightFCP-armed-clip-phone.png, a20-a20-ace-untimedflightFCP-sans-clip-phone.png, a20-a20-ace-untimedflightFCP-armed-phone.png"
+ },
+ {
+  "scn": "a20",
+  "size": "phone",
+  "id": "a20.ace-untimedOFTfront",
+  "what": "N1: untimed OFT front armed — Ace (not SANS) has no SANS reason",
+  "ok": true,
+  "note": "Ace [Pilots · 28 free, plain] title \"Ace\" (no reason printed) · Ranger [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed\" printed \"SANS from Fri 17 Jul: no availability filed\" · \"SANS Avail · 0 free\"",
+  "pics": "a20-a20-ace-untimedOFTfront-armed-clip-phone.png, a20-a20-ace-untimedOFTfront-sans-clip-phone.png, a20-a20-ace-untimedOFTfront-armed-phone.png"
+ },
+ {
+  "scn": "a20",
+  "size": "phone",
+  "id": "a20.ace-flyingSCMAINFCP",
+  "what": "N1: flying SC MAIN FCP armed — Ace (not SANS) has no SANS reason",
+  "ok": true,
+  "note": "Ace [Pilots · 25 free, plain] title \"Ace\" (no reason printed) · Ranger [SANS Avail, STRUCK] title \"Ranger — already on B ALLHANDS 10:00–11:00\" printed \"already on B ALLHANDS 10:00–11:00\" · \"SANS Avail · 5 free\"",
+  "pics": "a20-a20-ace-flyingSCMAINFCP-armed-clip-phone.png, a20-a20-ace-flyingSCMAINFCP-sans-clip-phone.png, a20-a20-ace-flyingSCMAINFCP-armed-phone.png"
+ },
+ {
+  "scn": "a20",
+  "size": "phone",
+  "id": "a20.groundrow",
+  "what": "N6: the ground row's \"+ add\" armed — no SANS reason for Ranger or Jester",
+  "ok": true,
+  "note": "armed g:4.2.+ · \"SANS Avail · 10 free\" · Ranger [SANS Avail, STRUCK] title \"Ranger — already on B GROUND 10:00–11:00 · not added twice\" printed \"already on B GROUND 10:00–11:00 · not added twice\" · Jester [SANS Avail, plain] title \"Jester\" (no reason printed)",
+  "pics": "a20-a20-groundrow-armed-clip-phone.png, a20-a20-groundrow-sans-clip-phone.png, a20-a20-groundrow-armed-phone.png"
+ },
+ {
+  "scn": "a20",
+  "size": "phone",
+  "id": "a20.allhandsrow",
+  "what": "N6: the all hands row's \"+ add\" armed — no SANS reason for Ranger or Jester",
+  "ok": true,
+  "note": "armed a:6.0.+ · \"SANS Avail · 11 free\" · Ranger [SANS Avail, STRUCK] title \"Ranger — already on B ALLHANDS 10:00–11:00 · not added twice\" printed \"already on B ALLHANDS 10:00–11:00 · not added twice\" · Jester [SANS Avail, plain] title \"Jester\" (no reason printed)",
+  "pics": "a20-a20-allhandsrow-armed-clip-phone.png, a20-a20-allhandsrow-sans-clip-phone.png, a20-a20-allhandsrow-armed-phone.png"
+ },
+ {
+  "scn": "a20",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

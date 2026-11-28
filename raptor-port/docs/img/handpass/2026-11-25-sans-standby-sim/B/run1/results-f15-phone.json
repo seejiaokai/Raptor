@@ -1,0 +1,196 @@
+[
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "f15-f15.post-postout-open-phone.png, f15-f15.post-postout-sheet-phone.png"
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.0",
+  "what": "nothing filed: untimed OFT front seat armed — Ranger struck \"SANS from Fri 17 Jul: no availability filed\"",
+  "ok": true,
+  "note": "armed s:5.oft.0.p · \"SANS Avail · 0 free\" · Ranger [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed\" printed \"SANS from Fri 17 Jul: no availability filed\"",
+  "pics": "f15-f15-0-armed-clip-phone.png, f15-f15-0-sans-clip-phone.png, f15-f15-0-armed-phone.png"
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.file",
+  "what": "set-up: Saber files SANS oft all day for bane on 2026-07-18",
+  "ok": true,
+  "note": "{\"iid\":\"imrldjkwdu8idlm\",\"people\":\"[{\\\"p\\\":\\\"bane\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077271437}]\",\"date\":\"Jul 18\",\"endDate\":null,\"sans\":{\"o\":true},\"allday\":true,\"e\":1439,\"remarks\":\"\",\"by\":\"stiff\"}",
+  "pics": "f15-f15.file-form-phone.png, f15-f15.file-saved-phone.png"
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.1",
+  "what": "OFT all day filed (Inputs → SANS), back on the board, no reload: untimed OFT front seat armed — Ranger with no SANS reason",
+  "ok": true,
+  "note": "armed s:5.oft.0.p · \"SANS Avail · 1 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed)",
+  "pics": "f15-f15-1-armed-clip-phone.png, f15-f15-1-sans-clip-phone.png, f15-f15-1-armed-phone.png"
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.del",
+  "what": "set-up: the filing opened from its SANS day and deleted",
+  "ok": true,
+  "note": "",
+  "pics": "f15-f15-del-open-phone.png, f15-f15-del-deleted-phone.png"
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.2",
+  "what": "the filing deleted: untimed OFT front seat armed — Ranger struck \"SANS from Fri 17 Jul: no availability filed\"",
+  "ok": true,
+  "note": "armed s:5.oft.0.p · \"SANS Avail · 0 free\" · Ranger [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed\" printed \"SANS from Fri 17 Jul: no availability filed\"",
+  "pics": "f15-f15-2-armed-clip-phone.png, f15-f15-2-sans-clip-phone.png, f15-f15-2-armed-phone.png"
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.u",
+  "what": "the top bar Undo on the Inputs page",
+  "ok": "REC",
+  "note": "pressed \"Undo — Ranger’s SANS Availability\" · note \"Undid: Ranger’s SANS Availability\" · filing back true",
+  "pics": "f15-f15-undo-phone.png"
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.3",
+  "what": "the delete undone: untimed OFT front seat armed — Ranger with no SANS reason",
+  "ok": true,
+  "note": "armed s:5.oft.0.p · \"SANS Avail · 1 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed)",
+  "pics": "f15-f15-3-armed-clip-phone.png, f15-f15-3-sans-clip-phone.png, f15-f15-3-armed-phone.png"
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.del2",
+  "what": "set-up: the filing deleted again (nothing filed)",
+  "ok": true,
+  "note": "",
+  "pics": "f15-f15-del2-open-phone.png, f15-f15-del2-deleted-phone.png"
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.seats",
+  "what": "set-up: Ranger on the untimed OFT (Sat 18) and on SC AM MAIN only (Sun 19)",
+  "ok": true,
+  "note": "\"the OFT sim has no usable times, so nobody on it earns OIL for this day\" / \"Ranger planned\""
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.bell1",
+  "what": "as Ranger: his reminder names Sat 18 only (never the standby-only Sun 19)",
+  "ok": true,
+  "note": "lit true · 3 line(s) · Mark all read in view · [unread] \"You're SANS from Fri 17 Jul.\" \"\" \"You're planned on Sat 18 Jul with nothing filed. Tap to file for availability.\" || [unread] \"SANS Availability\" \"Sat 18 Jul\" \"Deleted · Saber\" || [unread] \"SANS Availability\" \"Sat 18 Jul\" \"You were added · Saber\"",
+  "pics": "f15-f15-bell1-phone.png"
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.tap",
+  "what": "the reminder tapped opens the SANS calendar on Sat 18 with its day window",
+  "ok": true,
+  "note": "page \"inputs\" · month \"Jul 2026\" · window \"⠿Sat 18 JulNo flying set✕FigurePilotsWSOsRequired to fly––Available2718SANS comm\"",
+  "pics": "f15-f15-tap-tapped-phone.png, f15-f15-tap-after-phone.png"
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.rfile",
+  "what": "set-up: Ranger files OFT, all day, for Sat 18 himself (+ Commitment)",
+  "ok": true,
+  "note": "{\"iid\":\"imrldlno5a72smu\",\"people\":\"[{\\\"p\\\":\\\"bane\\\",\\\"by\\\":\\\"bane\\\",\\\"at\\\":1784077368341}]\",\"date\":\"Jul 18\",\"endDate\":null,\"sans\":{\"o\":true},\"allday\":true,\"e\":1439,\"remarks\":\"\",\"by\":\"bane\"}",
+  "pics": "f15-f15-rfile-form-phone.png, f15-f15-rfile-saved-phone.png"
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.bell2",
+  "what": "filed: the reminder no longer names Sat 18 (and never Sun 19)",
+  "ok": true,
+  "note": "lit true · 2 line(s) · Mark all read in view · [unread] \"SANS Availability\" \"Sat 18 Jul\" \"Deleted · Saber\" || [unread] \"SANS Availability\" \"Sat 18 Jul\" \"You were added · Saber\"",
+  "pics": "f15-f15-bell2-phone.png"
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.filed-x",
+  "what": "Saber, the board: the untimed OFT's rear seat armed with his filing in (RECORD — he sits in the front seat)",
+  "ok": "REC",
+  "note": "armed s:5.oft.0.w · \"SANS Avail · 0 free\" · Ranger [SANS Avail, STRUCK] title \"Ranger — already on this row · not added twice\" printed \"already on this row · not added twice\"",
+  "pics": "f15-f15-filed-x-armed-clip-phone.png, f15-f15-filed-x-sans-clip-phone.png, f15-f15-filed-x-armed-phone.png"
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.e-filed",
+  "what": "Saber, Edit Schedule's crew panel: the week's OFT row picked (RECORD)",
+  "ok": "REC",
+  "note": "armed null · armed null · \"SANS Avail · 0 free\" · Ranger [SANS Avail, plain] title \"Ranger — already tasked today, but you can still plan him\" (no reason printed)",
+  "pics": "f15-f15-e-filed-earmed-clip-phone.png, f15-f15-e-filed-esans-clip-phone.png, f15-f15-e-filed-earmed-phone.png"
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.rdel",
+  "what": "set-up: Ranger deletes his own filing",
+  "ok": true,
+  "note": "",
+  "pics": "f15-f15-rdel-open-phone.png, f15-f15-rdel-deleted-phone.png"
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.bell3",
+  "what": "Ranger, app reopened after deleting his filing: the bell (RECORD the renewed reminder)",
+  "ok": "REC",
+  "note": "lit true · 3 line(s) · Mark all read in view · [read] \"You're SANS from Fri 17 Jul.\" \"\" \"You're planned on Sat 18 Jul with nothing filed. Tap to file for availability.\" || [unread] \"SANS Availability\" \"Sat 18 Jul\" \"Deleted · Saber\" || [unread] \"SANS Availability\" \"Sat 18 Jul\" \"You were added · Saber\"",
+  "pics": "f15-f15-bell3-phone.png"
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.bell3c",
+  "what": "the reminder names Sat 18 again, never Sun 19",
+  "ok": true,
+  "note": "lit true · 3 line(s) · Mark all read in view · [read] \"You're SANS from Fri 17 Jul.\" \"\" \"You're planned on Sat 18 Jul with nothing filed. Tap to file for availability.\" || [unread] \"SANS Availability\" \"Sat 18 Jul\" \"Deleted · Saber\" || [unread] \"SANS Availability\" \"Sat 18 Jul\" \"You were added · Saber\""
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.final",
+  "what": "Saber after the reload: the OFT rear seat armed (RECORD)",
+  "ok": "REC",
+  "note": "armed s:5.oft.0.w · \"SANS Avail · 0 free\" · Ranger [SANS Avail, STRUCK] title \"Ranger — already on this row · not added twice\" printed \"already on this row · not added twice\"",
+  "pics": "f15-f15-final-armed-clip-phone.png, f15-f15-final-sans-clip-phone.png, f15-f15-final-armed-phone.png"
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

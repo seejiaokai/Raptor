@@ -1,0 +1,177 @@
+[
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "pl.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "plain-pl.post-postout-open-desktop.png, plain-pl.post-postout-sheet-desktop.png"
+ },
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "pl.0",
+  "what": "Saber opens Edit Schedule",
+  "ok": "REC",
+  "note": "page editsched",
+  "pics": "plain-pl-0-editsched-desktop.png"
+ },
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "pl.line",
+  "what": "set-up: a new flying line on Sat (+ Wave → Flying wave) 13:00–14:00",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 1\",\"kind\":\"\",\"standalone\":false,\"cs\":\"PLAIN\",\"to\":\"13:00\",\"ld\":\"14:00\",\"n\":1}"
+ },
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "pl.1",
+  "what": "the board of Sat 18: + Wave → flying line PLAIN 13:00–14:00, + Wave → SC, an OFT row and an AMT row (no times)",
+  "ok": "REC",
+  "note": "{\"fl\":{\"label\":\"WAVE 1\",\"kind\":\"\",\"standalone\":false,\"cs\":\"PLAIN\",\"to\":\"13:00\",\"ld\":\"14:00\",\"n\":1},\"sc\":1,\"oft\":{\"label\":\"PL OFT\",\"str\":\"\",\"end\":\"\"},\"amt\":{\"label\":\"PL AMT\",\"str\":\"\",\"end\":\"\"}}",
+  "pics": "plain-pl-1-built-desktop.png"
+ },
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "pl.2",
+  "what": "crew dropped in: Ace on PLAIN, Jester (SANS, nothing filed) on the untimed OFT, Ranger on SC MAIN — the SC note carries no SANS words",
+  "ok": true,
+  "note": "\"Ace planned\" / \"the OFT sim has no usable times, so nobody on it earns OIL for this day\" / \"Ranger planned\"",
+  "pics": "plain-pl-3-jester-armed-clip-desktop.png, plain-pl-3-jester-sans-clip-desktop.png, plain-pl-3-jester-armed-desktop.png, plain-pl-3-jester-note-clip-desktop.png, plain-pl-3-jester-picked-desktop.png, plain-pl-4-ranger-armed-clip-desktop.png, plain-pl-4-ranger-sans-clip-desktop.png, plain-pl-4-ranger-armed-desktop.png, plain-pl-4-ranger-note-clip-desktop.png, plain-pl-4-ranger-picked-desktop.png"
+ },
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "pl.2n",
+  "what": "the note when Jester dropped on the untimed OFT (RECORD)",
+  "ok": "REC",
+  "note": "\"the OFT sim has no usable times, so nobody on it earns OIL for this day\""
+ },
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "pl.3",
+  "what": "a time typed: the AMT row's start 10:00",
+  "ok": "REC",
+  "note": "box \"10:00\" · row {\"label\":\"PL AMT\",\"str\":\"10:00\",\"end\":\"\",\"rid\":\"rmrldiku23lyvn8\"}",
+  "pics": "plain-pl-3-time-desktop.png"
+ },
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "pl.4",
+  "what": "the PLAIN line cancelled (CX, WX) and restored (Un-cancel)",
+  "ok": true,
+  "note": "cancelled true → false",
+  "pics": "plain-pl-4-cx-desktop.png, plain-pl-5-uncx-desktop.png"
+ },
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "pl.ud-sc",
+  "what": "Marlin (SANS WSO) onto SC AM MAIN row 2 RCP: dropped, the board's Undo takes it back exactly, Redo puts it back",
+  "ok": true,
+  "note": "note \"Marlin planned\" · Undo \"Undo — a change to the schedule\" → \"Undid: a change to the schedule\" · Redo → \"Redid: a change to the schedule\"",
+  "pics": "plain-ud-sc-undo-desktop.png, plain-ud-sc-redo-desktop.png"
+ },
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "pl.ud-amt",
+  "what": "Ranger onto the untimed AMT front seat: dropped, the board's Undo takes it back exactly, Redo puts it back",
+  "ok": true,
+  "note": "note \"the AMT sim and the OFT sim have no usable times, so nobody on them earns OIL for this day\" · Undo \"Undo — a change to the schedule\" → \"Undid: a change to the schedule\" · Redo → \"Redid: a change to the schedule\"",
+  "pics": "plain-ud-amt-undo-desktop.png, plain-ud-amt-redo-desktop.png"
+ },
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "pl.6",
+  "what": "the day's warning list (RECORD)",
+  "ok": "REC",
+  "note": "head \"▸⚠ 2 issues · 1 warning\" · 2 row(s) · Ranger's: none · SANS: none · seated: Ranger 5.1.0.0.p · s:5.amt.0.p / Jester s:5.oft.0.p",
+  "pics": "plain-pl-6-warn-clip-desktop.png"
+ },
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "pl.6c",
+  "what": "nothing SANS on a standby row anywhere (no SANS line naming SC; Ranger's SC puck plain)",
+  "ok": true,
+  "note": "head \"▸⚠ 2 issues · 1 warning\" · 2 row(s) · Ranger's: none · SANS: none · seated: Ranger 5.1.0.0.p · s:5.amt.0.p / Jester s:5.oft.0.p"
+ },
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "pl.7",
+  "what": "the board closed by ✓ Done",
+  "ok": "REC",
+  "note": "page editsched · board shown 0",
+  "pics": "plain-pl-7-done-desktop.png"
+ },
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "pl.8",
+  "what": "Edit Schedule's crew panel opened on Sat 18 (nothing picked) and closed",
+  "ok": "REC",
+  "note": "saturday · Ranger [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed\" (no reason printed)",
+  "pics": "plain-pl-8-elist-clip-desktop.png, plain-pl-8-elist-desktop.png"
+ },
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "pl.9",
+  "what": "the Scheduler Board of Sat 18 opened again",
+  "ok": "REC",
+  "note": "SBDAY 5",
+  "pics": "plain-pl-9-board-desktop.png"
+ },
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "pl.10",
+  "what": "as Ranger: the bell — his SANS reminder names Sat 18 (the untimed AMT)",
+  "ok": true,
+  "note": "lit true · 1 line(s) · Mark all read in view · [unread] \"You're SANS from Fri 17 Jul.\" \"\" \"You're planned on Sat 18 Jul with nothing filed. Tap to file for availability.\"",
+  "pics": "plain-pl-10-bell-desktop.png"
+ },
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "pl.11",
+  "what": "the reminder tapped: the SANS calendar on Sat 18 with its day window",
+  "ok": true,
+  "note": "page \"inputs\" · month \"July 2026\" · window \"⠿Sat 18 JulNo flying set✕FigurePilotsWSOsRequired to fly––Available2718SANS comm\"",
+  "pics": "plain-pl-11-tapped-desktop.png, plain-pl-11-after-desktop.png"
+ },
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "pl.12",
+  "what": "the day window closed by its ✕",
+  "ok": true,
+  "note": "day window shown after ✕: 0",
+  "pics": "plain-pl-12-closed-desktop.png"
+ },
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

@@ -1,0 +1,54 @@
+[
+ {
+  "scn": "form",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "form",
+  "size": "phone",
+  "id": "fm.row",
+  "what": "F26: on the phone the three boxes Fly · OFT · AMT in one row (or a clean wrap), each box the topmost thing at its middle, none under Cancel / Add",
+  "ok": true,
+  "note": "{\"labs\":[{\"l\":28,\"r\":64,\"t\":238,\"b\":253},{\"l\":80,\"r\":123,\"t\":238,\"b\":253},{\"l\":139,\"r\":184,\"t\":238,\"b\":253}],\"btns\":[{\"t\":823,\"l\":251,\"r\":317,\"b\":851},{\"t\":823,\"l\":325,\"r\":374,\"b\":851}],\"rmk\":{\"l\":28,\"r\":374,\"t\":422,\"b\":455},\"hit\":[\"box\",\"box\",\"box\"],\"oneRow\":true,\"rmkCovered\":[],\"boxCovered\":0,\"vh\":874,\"vw\":402}",
+  "pics": "form-fm-open-phone.png"
+ },
+ {
+  "scn": "form",
+  "size": "phone",
+  "id": "fm.ticks",
+  "what": "F26: tapped OFT and AMT (Fly off) — ticked as tapped",
+  "ok": true,
+  "note": "{\"labels\":[\"Fly\",\"OFT\",\"AMT\"],\"ticked\":[\"OFT\",\"AMT\"],\"lefts\":[28,80,139],\"tops\":[238,238,238],\"save\":\"live\",\"type\":\"\",\"person\":\"vinci\"}",
+  "pics": "now/form-fm-ticked-now-phone.png"
+ },
+ {
+  "scn": "form",
+  "size": "phone",
+  "id": "fm.rmk",
+  "what": "F26: Remarks tapped — the box in the screen and not under Cancel / Add (the test browser raises no keyboard: the iPhone's keys are his look, lesson 5)",
+  "ok": true,
+  "note": "{\"rmk\":{\"l\":28,\"r\":374,\"t\":422,\"b\":455},\"covered\":[],\"btns\":[{\"t\":823,\"l\":251,\"r\":317,\"b\":851},{\"t\":823,\"l\":325,\"r\":374,\"b\":851}],\"vh\":874}",
+  "pics": "now/form-fm-rmk-now-phone.png, form-fm-rmk-phone.png"
+ },
+ {
+  "scn": "form",
+  "size": "phone",
+  "id": "fm.saved",
+  "what": "F26: saved from the phone — the SANS day reads Jester \"O/A\"",
+  "ok": true,
+  "note": "Zenith[F All day Zenith · 22 Jun, 15:52] Jester[O · A All day \"walk B remark\" Saber for Jester · 15 Jul, 09:00]",
+  "pics": "form-fm-saved-phone.png"
+ },
+ {
+  "scn": "form",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

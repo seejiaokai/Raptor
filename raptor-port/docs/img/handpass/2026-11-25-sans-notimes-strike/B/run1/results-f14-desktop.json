@@ -1,0 +1,62 @@
+[
+ {
+  "scn": "f14",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "f14",
+  "size": "desktop",
+  "id": "f14.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "f14-f14.post-postout-open-desktop.png, f14-f14.post-postout-sheet-desktop.png"
+ },
+ {
+  "scn": "f14",
+  "size": "desktop",
+  "id": "f14.line",
+  "what": "set-up: a new flying line on Mon (+ Wave → Flying wave), no times typed",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 3\",\"kind\":\"\",\"standalone\":false,\"cs\":\"\",\"to\":\"\",\"ld\":\"\",\"n\":1}"
+ },
+ {
+  "scn": "f14",
+  "size": "desktop",
+  "id": "f14.0",
+  "what": "Edit Schedule crew list, Mon 20, nothing picked: Ranger",
+  "ok": "REC",
+  "note": "monday · [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" (no reason printed)",
+  "pics": "f14-f14-unpicked-elist-clip-desktop.png, f14-f14-unpicked-elist-desktop.png"
+ },
+ {
+  "scn": "f14",
+  "size": "desktop",
+  "id": "f14.1",
+  "what": "Mon 20 blank FCP picked: Ranger struck with the unpicked hover's sentence (\"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\")",
+  "ok": true,
+  "note": "[SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" printed \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\"",
+  "pics": "f14-f14-earmed-clip-desktop.png, f14-f14-esans-clip-desktop.png, f14-f14-earmed-desktop.png"
+ },
+ {
+  "scn": "f14",
+  "size": "desktop",
+  "id": "f14.2",
+  "what": "the same on the Scheduler Board",
+  "ok": true,
+  "note": "[SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" printed \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\"",
+  "pics": "f14-f14-board-armed-clip-desktop.png, f14-f14-board-sans-clip-desktop.png, f14-f14-board-armed-desktop.png"
+ },
+ {
+  "scn": "f14",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

@@ -1,0 +1,160 @@
+[
+ {
+  "scn": "as14",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "as14",
+  "size": "phone",
+  "id": "as14.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "as14-as14.post-postout-open-phone.png, as14-as14.post-postout-sheet-phone.png"
+ },
+ {
+  "scn": "as14",
+  "size": "phone",
+  "id": "as14.rows",
+  "what": "set-up: an OFT row on Sat 18 and an AMT row on Sun 19, no times typed (read back)",
+  "ok": true,
+  "note": "OFT {\"label\":\"B SIM\",\"str\":\"\",\"end\":\"\"} · AMT {\"label\":\"B AMT\",\"str\":\"\",\"end\":\"\"}"
+ },
+ {
+  "scn": "as14",
+  "size": "phone",
+  "id": "as14.oft-datafills5oft0",
+  "what": "OFT no times — [data-fill=\"s:5.oft.0.+\"] armed: Ranger (RECORD; D2573's flight-only boundary, the owner's open question)",
+  "ok": "REC",
+  "note": "armed s:5.oft.0.+ · [SANS Avail, not struck] title \"Ranger\" (no reason printed)",
+  "pics": "as14-as14-oft-datafills5oft0-armed-clip-phone.png, as14-as14-oft-datafills5oft0-armed-phone.png"
+ },
+ {
+  "scn": "as14",
+  "size": "phone",
+  "id": "as14.oft-dataslots5oft0p",
+  "what": "OFT no times — [data-slot=\"s:5.oft.0.p\"] armed: Ranger (RECORD; D2573's flight-only boundary, the owner's open question)",
+  "ok": "REC",
+  "note": "armed s:5.oft.0.p · [SANS Avail, not struck] title \"Ranger\" (no reason printed)",
+  "pics": "as14-as14-oft-dataslots5oft0p-armed-clip-phone.png, as14-as14-oft-dataslots5oft0p-armed-phone.png"
+ },
+ {
+  "scn": "as14",
+  "size": "phone",
+  "id": "as14.oft-dataslots5oft0w",
+  "what": "OFT no times — [data-slot=\"s:5.oft.0.w\"] armed: Ranger (RECORD; D2573's flight-only boundary, the owner's open question)",
+  "ok": "REC",
+  "note": "armed s:5.oft.0.w · [SANS Avail, not struck] title \"Ranger\" (no reason printed)",
+  "pics": "as14-as14-oft-dataslots5oft0w-armed-clip-phone.png, as14-as14-oft-dataslots5oft0w-armed-phone.png"
+ },
+ {
+  "scn": "as14",
+  "size": "phone",
+  "id": "as14.amt-datafills6amt0",
+  "what": "AMT no times — [data-fill=\"s:6.amt.0.+\"] armed: Ranger (RECORD; D2573's flight-only boundary, the owner's open question)",
+  "ok": "REC",
+  "note": "armed s:6.amt.0.+ · [SANS Avail, not struck] title \"Ranger\" (no reason printed)",
+  "pics": "as14-as14-amt-datafills6amt0-armed-clip-phone.png, as14-as14-amt-datafills6amt0-armed-phone.png"
+ },
+ {
+  "scn": "as14",
+  "size": "phone",
+  "id": "as14.amt-dataslots6amt0p",
+  "what": "AMT no times — [data-slot=\"s:6.amt.0.p\"] armed: Ranger (RECORD; D2573's flight-only boundary, the owner's open question)",
+  "ok": "REC",
+  "note": "armed s:6.amt.0.p · [SANS Avail, not struck] title \"Ranger\" (no reason printed)",
+  "pics": "as14-as14-amt-dataslots6amt0p-armed-clip-phone.png, as14-as14-amt-dataslots6amt0p-armed-phone.png"
+ },
+ {
+  "scn": "as14",
+  "size": "phone",
+  "id": "as14.amt-dataslots6amt0w",
+  "what": "AMT no times — [data-slot=\"s:6.amt.0.w\"] armed: Ranger (RECORD; D2573's flight-only boundary, the owner's open question)",
+  "ok": "REC",
+  "note": "armed s:6.amt.0.w · [SANS Avail, not struck] title \"Ranger\" (no reason printed)",
+  "pics": "as14-as14-amt-dataslots6amt0w-armed-clip-phone.png, as14-as14-amt-dataslots6amt0w-armed-phone.png"
+ },
+ {
+  "scn": "as14",
+  "size": "phone",
+  "id": "as14.placed",
+  "what": "set-up: Ranger placed in the untimed OFT (Sat 18) and AMT (Sun 19)",
+  "ok": true,
+  "note": "Jul 13: .allhands[2].who .waves[0].formations[0].aircraft[1].p .sims.oft[1].p | Jul 14: nothing | Jul 15: nothing | Jul 16: .waves[1].formations[1].aircraft[0].p .ground[2].who | Jul 17: nothing | Jul 18: .sims.oft[0].p | Jul 19: .sims.amt[0].p"
+ },
+ {
+  "scn": "as14",
+  "size": "phone",
+  "id": "as14.bell",
+  "what": "his bell names Sat 18 and Sun 19 — an uncancelled sim with no times counts (D2568)",
+  "ok": true,
+  "note": "lit true · 1 line(s) · Mark all read in view · [unread] \"You're SANS from Fri 17 Jul.\" \"\" \"You're planned on Sat 18, Sun 19 Jul with nothing filed. Tap to file for availability.\"",
+  "pics": "as14-as14-bell-phone.png"
+ },
+ {
+  "scn": "as14",
+  "size": "phone",
+  "id": "as14.oft-timed-datafills5oft1",
+  "what": "OFT 13:00–14:00 — [data-fill=\"s:5.oft.1.+\"] armed: Ranger (RECORD; D2573's flight-only boundary, the owner's open question)",
+  "ok": "REC",
+  "note": "armed s:5.oft.1.+ · [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" printed \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\"",
+  "pics": "as14-as14-oft-datafills5oft1-timed-armed-clip-phone.png, as14-as14-oft-datafills5oft1-timed-armed-phone.png"
+ },
+ {
+  "scn": "as14",
+  "size": "phone",
+  "id": "as14.oft-timed-dataslots5oft1p",
+  "what": "OFT 13:00–14:00 — [data-slot=\"s:5.oft.1.p\"] armed: Ranger (RECORD; D2573's flight-only boundary, the owner's open question)",
+  "ok": "REC",
+  "note": "armed s:5.oft.1.p · [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" printed \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\"",
+  "pics": "as14-as14-oft-dataslots5oft1p-timed-armed-clip-phone.png, as14-as14-oft-dataslots5oft1p-timed-armed-phone.png"
+ },
+ {
+  "scn": "as14",
+  "size": "phone",
+  "id": "as14.oft-timed-dataslots5oft1w",
+  "what": "OFT 13:00–14:00 — [data-slot=\"s:5.oft.1.w\"] armed: Ranger (RECORD; D2573's flight-only boundary, the owner's open question)",
+  "ok": "REC",
+  "note": "armed s:5.oft.1.w · [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" printed \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\"",
+  "pics": "as14-as14-oft-dataslots5oft1w-timed-armed-clip-phone.png, as14-as14-oft-dataslots5oft1w-timed-armed-phone.png"
+ },
+ {
+  "scn": "as14",
+  "size": "phone",
+  "id": "as14.amt-timed-datafills6amt1",
+  "what": "AMT 13:00–14:00 — [data-fill=\"s:6.amt.1.+\"] armed: Ranger (RECORD; D2573's flight-only boundary, the owner's open question)",
+  "ok": "REC",
+  "note": "armed s:6.amt.1.+ · [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" printed \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\"",
+  "pics": "as14-as14-amt-datafills6amt1-timed-armed-clip-phone.png, as14-as14-amt-datafills6amt1-timed-armed-phone.png"
+ },
+ {
+  "scn": "as14",
+  "size": "phone",
+  "id": "as14.amt-timed-dataslots6amt1p",
+  "what": "AMT 13:00–14:00 — [data-slot=\"s:6.amt.1.p\"] armed: Ranger (RECORD; D2573's flight-only boundary, the owner's open question)",
+  "ok": "REC",
+  "note": "armed s:6.amt.1.p · [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" printed \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\"",
+  "pics": "as14-as14-amt-dataslots6amt1p-timed-armed-clip-phone.png, as14-as14-amt-dataslots6amt1p-timed-armed-phone.png"
+ },
+ {
+  "scn": "as14",
+  "size": "phone",
+  "id": "as14.amt-timed-dataslots6amt1w",
+  "what": "AMT 13:00–14:00 — [data-slot=\"s:6.amt.1.w\"] armed: Ranger (RECORD; D2573's flight-only boundary, the owner's open question)",
+  "ok": "REC",
+  "note": "armed s:6.amt.1.w · [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" printed \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\"",
+  "pics": "as14-as14-amt-dataslots6amt1w-timed-armed-clip-phone.png, as14-as14-amt-dataslots6amt1w-timed-armed-phone.png"
+ },
+ {
+  "scn": "as14",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]
