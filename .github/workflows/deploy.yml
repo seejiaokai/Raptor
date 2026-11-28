@@ -683,6 +683,10 @@ jobs:
   # Publishes only when every gate above is green: a failed or cancelled
   # `needs` job skips this one, so nothing deploys red.
   #
+  # HISTORY ONLY: the explanation and re-enabling instructions below describe the old
+  # live-site publisher. Keep this job disabled. Since D2832/D2839, previews are published
+  # through gh-pages by raptor-port/docs/shipping-steps.md; the live app remains on Vercel.
+  #
   # OFF — no public GitHub web address (D343, 28 Sep 26: his "Disregard the public
   # website for GitHub"). It was switched back on for under an hour the same day
   # (D341) and withdrawn before anything published; the Pages site is deleted on

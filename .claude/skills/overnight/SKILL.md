@@ -198,7 +198,8 @@ and checked, so a short night leaves that pull request as its checked jobs.
   claude/<name>`); if a new chat already holds the branch, the work goes to that chat.
 - **One notification**, one line: done, or blocked, and where to look.
 - **The report**, short, plain words, in this order:
-  1. what is ready for his look — per job: what it does in the app, the preview link, the pictures (several pictures go
+  1. what is ready for his look — per job: what it does in the app, the preview link (one site, one job at a time: only
+     the job his first look needs is published, the rest wait — `raptor-port/docs/shipping-steps.md` §The loop), the pictures (several pictures go
      as one Artifact page, sharp, tap to zoom); a list written during the night — differences from a drawing, findings —
      is checked against a picture of the last build first, and an item a later fix closed is marked so;
   2. what of his selection was not done, and why — and any stale record found on the way;

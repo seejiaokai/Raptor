@@ -336,7 +336,7 @@ one bid written and two frames waited: median 100–102 ms before, 101–115 ms 
 This container runs Blink (Chromium) only — **no WebKit binary**. Anything whose
 correctness depends on WebKit's table/sticky/contenteditable behaviour (grid
 column reconciliation, contenteditable editing, touch fling) is **verified on the
-owner's iPhone against the Vercel preview**, not here. A green suite here is
+owner's iPhone against the preview he is sent** (the GitHub Pages one, D2839), not here. A green suite here is
 necessary, not sufficient, for those.
 
 ## The change-checklist

@@ -26,7 +26,8 @@ permission) — or, where the whole pull request changes only notes (the "only n
 run is green, the agent merging it by that document's steps — the file list checked, `npm run rulecheck` and the unit
 tests that read documents run first, under the merge lock, and said in its report (D1407; a rules-diet step waits for
 his word all the same, D1737). So most sessions
-end on "pushed, PR open, awaiting merge live": hand him the Vercel preview link and say so in chat. **That is the
+end on "pushed, PR open, awaiting merge live": when the work is ready for his look, hand him its checked GitHub Pages
+preview link by `raptor-port/docs/shipping-steps.md` §The loop, and say so in chat. **That is the
 NORMAL end state, not an Unfinished item.**
 
 "Unfinished" means any of: work not yet pushed or not yet handed to the owner, a gate that is red or was never run, a

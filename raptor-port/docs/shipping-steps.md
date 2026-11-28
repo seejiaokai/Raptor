@@ -8,9 +8,10 @@ lands on the short form, which names the section here. The rulings behind each l
 
 ## "Push" and "merge live"
 
-- Push a branch freely; ask before `main`. A branch push changes nothing official and — when it changes the app; a
-  notes-only push normally skips the build (D2032) — gives him a Vercel link to look at, so it needs no permission; `main` stays gated behind his "merge live" — "push" and "merge live" are not the same
-  thing (D60, D1407, D1737, D1980).
+- Push a branch freely; ask before `main`. A branch push changes nothing official and needs no permission. When the
+  work is ready for his look, publish its GitHub Pages preview by §The loop. Vercel still builds app changes and
+  normally skips notes-only pushes (D2032); `main` stays gated behind his "merge live" (D60, D1407, D1737, D1980,
+  D2839).
 - Nothing reaches `main` without his explicit "merge live", whatever the change that touches the app — but a pull
   request that changes only notes goes live by itself once its run is green: the agent checks the file list, merges and
   says so in its report. A rules-diet step waits for his "merge live" all the same, even one that changes only notes
@@ -76,31 +77,53 @@ lands on the short form, which names the section here. The rulings behind each l
   branch push that changes the app (its preview: the `vercel[bot]` comment on the pull request, or the branch head's
   Preview deployment, `gh api repos/<owner>/<repo>/deployments` then its statuses); that preview is simply no longer
   the link sent to him.
-- The Pages site is ONE site for the whole project, and public: each preview replaces the one before. The message with
-  the link says which branch (and commit) it shows. A second chat publishing replaces the first's — before publishing,
-  `git fetch origin gh-pages` and read `git log -1 --format=%s origin/gh-pages`; if another chat's look may be under
-  way there, tell that chat first (D2832, D2839).
+- The Pages site is one public site for the whole project; publishing replaces the preview currently served. Read the
+  current preview's commit message and agree the changeover with the chat responsible before replacing a look still in
+  progress. If that chat cannot be reached, wait. Record the source branch and commit in the publishing commit and the
+  handoff. Keep the preview's history: add a commit to `gh-pages`, never replace it with an orphan commit or force-push
+  it. A rejected push means another publisher moved the branch; agree the changeover again before retrying (D2832,
+  D2839).
+- An unattended run: the one site shows one branch at a time, so publish only the job his first look in the morning
+  needs; the others' links wait in the closing report until that look is done (D596, D2839).
 - Publishing a preview (first done for pull request 857, 27 Nov 26), in Git Bash, from the branch's own working copy:
-  1. Build with the site's sub-path — a build, so under the checks lock's rule like any other:
-     `cd raptor-port && MSYS_NO_PATHCONV=1 npm run build -- --base=/Raptor/`. Without `MSYS_NO_PATHCONV=1` Git Bash
-     turns `/Raptor/` into a Windows folder path. `dist/index.html` must name its files `/Raptor/assets/…`.
-  2. Look at it served under that sub-path before pushing: `MSYS_NO_PATHCONV=1 npx vite preview --base=/Raptor/
-     --port <a free port>`, then `http://localhost:<port>/Raptor/` — the page loads, no file is missing, sign-in works
-     (chat 208's check of the Leave War, a model to copy: `raptor-port/scripts/handpass/lw-pages-check.mjs`).
-  3. Make the branch's single commit in a copy outside the working copy (`<copy>`: a fresh folder in the scratchpad):
-     `cp -r dist <copy> && touch <copy>/.nojekyll && git -C <copy> init -q -b gh-pages && git -C <copy> add -A &&
-     git -C <copy> commit -q -m "Preview of <branch> (<commit>) for his look"`. The empty `.nojekyll` stops GitHub
-     treating the site as a Jekyll one, which drops some files.
-  4. Force-push that branch only: `git -C <copy> push -f https://github.com/seejiaokai/Raptor.git gh-pages:gh-pages`
-     — never `main`, never the session branch. Pages already serves the `gh-pages` branch from its root; nothing in
-     the repo's settings changes.
-  5. Wait until the site serves the new build: `gh api repos/seejiaokai/Raptor/pages/builds/latest -q '.status + " "
-     + .commit'` reads `built` and the commit just pushed (about a minute), and `curl -s
-     https://seejiaokai.github.io/Raptor/ | grep -o 'assets/index-[^"]*[.]js'` names the same file as
-     `dist/index.html`. The site may be cached for up to 10 minutes: if his phone still shows the old build, he
-     reloads. It is public, so the agent's own browser can open it too.
-  6. Send the link, naming the branch it shows. Then rebuild with a plain `npm run build` before any local browser
-     test or walk — the `/Raptor/` build does not serve from the root.
+  1. First check the branch is clean and pushed: `git status --short` prints nothing and `git rev-parse HEAD` equals
+     `git rev-parse origin/<branch>`. Then build with the site's sub-path — a build, so under the checks lock's rule
+     like any other: `cd raptor-port && MSYS_NO_PATHCONV=1 npm run build -- --base=/Raptor/` (why the
+     `MSYS_NO_PATHCONV=1`: `gates-and-deploy.md` §Now, "GitHub Pages is a preview site only").
+     `dist/index.html` must name its files `/Raptor/assets/…`.
+  2. Look at it served under that sub-path before pushing, on a free port other than 4173:
+     `MSYS_NO_PATHCONV=1 npx vite preview --base=/Raptor/ --port <port>`, then `http://localhost:<port>/Raptor/` — the
+     page loads, no file is missing, sign-in works (chat 208's check of the Leave War, a model to copy:
+     `raptor-port/scripts/handpass/lw-pages-check.mjs`).
+  3. Prepare the next publishing commit from the existing `gh-pages` branch. `<copy>` is an absolute path outside the
+     working copy that does not yet exist; its parent folder must exist. From `raptor-port/`:
+     `git clone --single-branch --branch gh-pages https://github.com/seejiaokai/Raptor.git "<copy>" &&
+     git -C "<copy>" log -1 --format=%s`. Agree the changeover as above. Then replace the files in the copy with the
+     checked build, keeping the earlier commits: `git -C "<copy>" rm -r -q -- . && cp -r dist/. "<copy>/" &&
+     touch "<copy>/.nojekyll" &&
+     printf '%s' '{"git":{"deploymentEnabled":{"gh-pages":false}},"ignoreCommand":"exit 0"}' > "<copy>/vercel.json" &&
+     test -f "<copy>/index.html" && git -C "<copy>" add -A &&
+     git -C "<copy>" commit --allow-empty -m "Preview of <branch> (<commit>) for his look"`. Stop if any command fails.
+     The empty `.nojekyll` tells Pages to serve the files without Jekyll processing; the `vercel.json` stops Vercel
+     building the preview branch (the trap: `gates-and-deploy.md` §Now).
+  4. Push only the publishing branch: `git -C "<copy>" push origin HEAD:refs/heads/gh-pages`. Never force-push, push
+     `main`, or use the session branch as the publishing target. If rejected, stop and settle the competing
+     publication before preparing another commit. Pages must serve `gh-pages` from its root by "Deploy from a branch";
+     check it, without changing it: `gh api repos/seejiaokai/Raptor/pages --jq '{build_type, source}'` — expect
+     `legacy`, branch `gh-pages`, path `/`. If they differ, settle the setting before going on; never switch the old
+     deploy job back on.
+  5. Wait for the publication just pushed. Read its commit with `git -C "<copy>" rev-parse HEAD`. Run
+     `gh api repos/seejiaokai/Raptor/pages/builds/latest --jq '.status + " " + .commit'` until it reports `built` for
+     that publishing commit, not the app's source commit; an error or a different commit is not success. Then compare
+     the served page with the published copy: `curl -fsSL https://seejiaokai.github.io/Raptor/ | cmp -s
+     "<copy>/index.html" -`. Go on only when the comparison succeeds. Open the public address in a fresh browser
+     context, check sign-in and the changed area, and check for missing files and page errors. If an old page is still
+     served (it may be cached up to 10 minutes), wait and check again before sending the link. After the first publish
+     with the `vercel.json`, check no Vercel status lands on the publishing commit:
+     `gh api repos/seejiaokai/Raptor/commits/<publishing commit>/statuses --jq '.[].context'` prints nothing.
+  6. Send the link with the pictures and a plain description of the change it currently shows. Then rebuild with a
+     plain `npm run build`, following the checks-lock rule, before any local browser test or walk — the `/Raptor/`
+     build does not serve from the root.
 - Vercel is his surface, never your drive target: it sits behind his Vercel sign-in, so he can open it and your
   browser cannot (it answers with a 302 to `vercel.com/sso-api`). Your fast surface is the local
   `npm run build && npx vite preview` — the same bundle, byte for byte (`raptor-port/CLAUDE.md` §Build & verify).
@@ -133,9 +156,9 @@ lands on the short form, which names the section here. The rulings behind each l
   says, and report it merged without waiting for a new READY deployment; if it builds instead, wait for READY
   (corrected 24 Nov 26, D201).
 - His "merge live" (or "merge now") means his own look is done — never ask him about it again (D1640).
-- His look on his phone replaces the live-page look the agent used to do on GitHub Pages (gone since D59 and D343, the
-  repo public again since D106, D1530): the live app sits behind his sign-in, and the agent is never given a login to
-  it (D143).
+- His look on his phone is the live-app check: the live app remains on Vercel behind his sign-in, and the agent is
+  never given a login to it (D143). The public GitHub Pages preview is separate and can be checked by the agent (D2832,
+  D2839).
 - During an unattended run a question is not a reason to stop or to notify: park it in the run's one list and carry on
   with everything else; preview links and questions go in the closing report; one notification, when the run ends or
   when nothing authorised can continue (D596).

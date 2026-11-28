@@ -249,9 +249,16 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
   job stays off (D59, 23 Sep 26; D343, 28 Sep 26, which D2832 replaces for previews only — D341's live site on GitHub is
   not back), and every trap of that job below is history. The live app is VERCEL: it still builds a preview per branch
   (no longer the link sent to him; the agent's own surface is the local `vite preview`) and the live app from `main`.
+  On Pages anyone with the address can open and use it, with no Vercel sign-in in front of it (the lock D59 relied
+  on). The bundle holds only what the public project already does, so never publish a build made with anything kept
+  out of the project.
   **A Pages preview built in Git Bash needs `MSYS_NO_PATHCONV=1`** (met 27 Nov 26, chat 208): without it the shell
   rewrites `--base=/Raptor/` into a Windows folder path, and the built page's file paths come out wrong — check
-  `dist/index.html` names `/Raptor/assets/…` before pushing. **"Done" after "merge live" means live on Vercel** (D143): merge → `main`'s run green (on
+  `dist/index.html` names `/Raptor/assets/…` before pushing.
+  **Every push of `gh-pages` starts a Vercel deployment unless the publishing commit carries its own `vercel.json`**
+  (met 27 Nov 26: the first preview's commit got "Deployment rate limited" from Vercel — a deployment
+  tried for a branch that is no app, while the daily limit was already holding builds, below): the steps put `{"git":{"deploymentEnabled":{"gh-pages":false}},"ignoreCommand":"exit 0"}` in the
+  copy, and after the first such publish no Vercel status may land on the publishing commit. **"Done" after "merge live" means live on Vercel** (D143): merge → `main`'s run green (on
   GitHub's machines while the repo is public, on his PC once it is private — D1086, D1530) → the Production deployment for that commit READY (`gh api repos/<owner>/<repo>/deployments?environment=Production`,
   then its statuses) → one notification with the link (a merge Vercel skips as all notes — "A notes-only push skips its
   build", below — shows as Canceled, keeps the live app serving, and needs no READY and no Promote: D2032). The whole

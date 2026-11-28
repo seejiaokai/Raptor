@@ -8,9 +8,9 @@ checks and the deploy are in `raptor-port/docs/gates-and-deploy.md`.
 
 ## "Push" and "merge live"
 
-- Push a branch freely; ask before `main`. A branch push changes nothing official — one that changes the app gives him
-  a Vercel link, a notes-only push normally skips the build (D2032) — so "push" and "merge live" are not the same thing (D60,
-  D1407, D1737, D1980).
+- Push a branch freely; ask before `main`. A branch push changes nothing official. When the work is ready for his
+  look, publish its GitHub Pages preview by §The loop; a notes-only push normally skips Vercel's build (D2032). "Push"
+  and "merge live" remain different (D60, D1407, D1737, D1980, D2839).
 - Nothing reaches `main` without his explicit "merge live". The one exception: a pull request that changes only notes
   goes live by itself once its run is green — the agent checks the file list, merges and says so in its report. A
   rules-diet step waits for his word all the same (D60, D1407, D1737, D1980); an unattended run's notes wait for the
@@ -36,8 +36,8 @@ checks and the deploy are in `raptor-port/docs/gates-and-deploy.md`.
   lot) → open the pull request into `main` as soon as the job is built, so its checks run while the app is walked
   (D1086) → once the work is ready for his look and its GitHub Pages preview serves it, send him that link (D2839).
 - The link and the pictures come whenever you need him to review something, and when the work is done — not after
-  every push of unfinished work (D905, D906). The link is the GitHub Pages preview, published by hand — one public
-  site, each preview replacing the last; Vercel stays the live app. How to publish it: the steps (D2832, D2839).
+  every push of unfinished work (D905, D906). The link is the GitHub Pages preview — one public site, each preview
+  replacing the last; how to publish it: the steps (D2832, D2839).
 - **Never push while that pull request's checks are running:** any push, even of notes, cancels the run in progress
   and restarts it. Look first — the command is in the steps, and a push starts two runs, so read them all — then batch,
   and push when it has finished ([RUN-CHECK-BOTH-RUNS], D151, D870).

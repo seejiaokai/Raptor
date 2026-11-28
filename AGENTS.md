@@ -43,8 +43,8 @@ or change anything.**
 ## Hard limits
 
 - **Never push to `main`, never merge a pull request, never open one for merging.** "Merge live" is his word alone,
-  and it cannot be given for anything you built until Claude has read it (D67). Push BRANCHES freely — each gives him
-  a Vercel link to look at (`shipping.md`).
+  and it cannot be given for anything you built until Claude has read it (D67). Push BRANCHES freely. When the work is
+  ready for his look, publish and check its GitHub Pages preview by `shipping.md`; Vercel stays the live app.
 - **Branches:** each build job gets its own branch, `codex/<short-name>`, cut from `main` unless he names another
   base.
 - **One full check at a time on his PC:** take the lock before the full unit suite, a multi-file browser run, the
