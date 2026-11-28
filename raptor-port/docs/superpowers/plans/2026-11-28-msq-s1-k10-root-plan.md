@@ -426,6 +426,17 @@ is 149's. It can be changed only on 149's page."; the move-ahead pair as drafted
 are drawn on the real app for his look before K10-d builds them (D1625) — the picture he answered carried draft words
 marked as draft.
 
+**THE WORDS ARE SETTLED — his "48 as recommended" (28 Nov 26, D2904, the coordinator's record; pictures
+`docs/mock/2026-11-28-msq-k10-ro-words/`).** K10-d builds, at the foot of a moved man's read-only record on his old
+squadron's list: **"Ranger moved to 149 on Thu 16 Jul, so this input is 149's. It can be changed only on 149's
+page."** (the man's callsign, the squadron and the move's day filled in; the apostrophe as the app types it). Once
+`[XFER]` lets the new squadron's admins change a carried record, the second sentence becomes "Only Ranger or an admin
+of 149 can change it." — `[XFER]`'s change, with the approved refusal it makes untrue (the review's §3). The move-ahead
+pair, the same sentence turned round and true today, needs no card (the coordinator, 28 Nov): "Nasty moves to 149 on
+Mon 20 Jul, so until then this input is 142's. Only Nasty or an admin of 142 can change it." — the builder first
+settles from the save check whether a member may change his own medical downchit (if not, "Only an admin of 142 can
+change it." there). §8's "No new words on screen in any sub-step" is set aside for K10-d by D2899 and D2904.
+
 **Q1 — Ranger's leave, looked at on his old squadron's list after he has moved**
 
 *Example:* Ranger (member) has leave from Tue 14 to Sat 18 Jul. On Thu 16 Jul he moves from 142 to 149, so the leave
