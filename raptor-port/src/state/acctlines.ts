@@ -366,7 +366,8 @@ export function writeMoveLines(commit: (type: string, apply: (txn: any) => void)
  *  telling loses the debt: a role change loses his own "Made a member: you moved to 150"; a re-link of his sign-in, or
  *  his account or person deleted, loses the whole telling. So each door that changes or removes an account calls this
  *  first — at its top level, before its own snapshot (accessWas) and its commit, outside any command (inside one the
- *  pass can only wait, which is too late): accounts.ts updateAccount and saveAccess, person-delete.ts deletePerson, and
+ *  pass can only wait, which is too late): accounts.ts updateAccount and saveAccess, person-delete.ts deletePerson, leavewar/sync.ts postOut
+ *  (round 5: a Delete posting whose date has come deletes him inside the Post out command itself), and
  *  every Undo and Redo (undo/timeline.ts, with no account named). Keyed on the account being CHANGED: making another
  *  man an admin tells nothing first. The pass is leavewar/sync.ts runMoveLines, installed by its wiring; a move the
  *  pass was refused today is not sent again (the limit the plan names: the change then loses what it destroys). */

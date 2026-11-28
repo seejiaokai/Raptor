@@ -2252,7 +2252,9 @@ judged whole against `moveTellingsOwed`, asked from `acctLineViolation`'s `accou
 rule; `planLineViolation`'s one changed condition, the audience over today; `liveAtViolation` and `restoreIntoForce`
 gone, `restoreRedated` puts an old image back without `liveAt`), `src/leavewar/sync.ts` (`runMoveLines` — a refusal
 marked per move and day, `movesRefused` its reader, cleared at a fresh wiring; it runs FIRST in `runPoOutcomes`, before
-the postings; `wireLeaveWarSync` installs `tellMovesFirst`), `src/state/person-delete.ts` (`deletePerson` tells first),
+the postings; `wireLeaveWarSync` installs `tellMovesFirst`; round 5: `postOut` tells the man’s due moves first, and
+the pass woken as a command lands queues its telling ahead of the posting’s command instead of returning),
+`src/state/person-delete.ts` (`deletePerson` tells first),
 `src/undo/timeline.ts` (the `tellFirst` hook, called first by `globalUndo` and `globalRedo`), `src/state/undo-wire.ts`
 (installs it). **Existing tests changed:** `src/state/msq-s2-u2fix3-moveday.test.ts` ("a LATE first wake" reversed — the
 man made an admin since is told; the `restoreIntoForce` rule test retired, the two Undo / Redo scenarios kept without

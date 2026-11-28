@@ -3132,8 +3132,8 @@ export function runPoOutcomes(only?: string): void {
    drawn on screen — while every other move is told as normal; the next day's wake, or a reload (a fresh wiring), tries
    it again. The mark is `today|account|move day`, kept with whether somebody was signed in when it was refused: a pass
    refused with NOBODY signed in (a boot before sign-in) holds nothing against the pass that runs once someone is, so
-   it is told at sign-in. A press never retries: the notify of a command lands while that command is committing, and the pass
-   returns there. `account` — that account's moves only (acctlines.ts tellMovesFirst, installed below). */
+   it is told at sign-in. A press never retries a move so marked: the pass woken as a command lands skips it like any
+   other pass (until round 5 it returned there whole — the belt, below). `account` — that account's moves only (acctlines.ts tellMovesFirst, installed below). */
 const MV_REFUSED = new Map<string, boolean>()   // the mark → whether somebody was signed in when it was refused
 const mvHeld = (k: string): boolean => { const signedIn = MV_REFUSED.get(k); return signedIn !== undefined && (signedIn || !SESSION) }
 /** the moves the pass has given up for today — `today|account|move day` (tests and walks read it) */
@@ -3144,7 +3144,12 @@ export function movesRefused(): string[] {
 let MV_RUNNING = false
 function runMoveLines(account?: string): void {
   if (SYNCING || MV_RUNNING) return
-  if (isInReducer() || cmdIsCommitting()) { if (isInReducer()) cmdDeferEffect(() => runMoveLines(account)); return }
+  /* inside another command's reducer it can only wait for that command to land. AS A COMMAND LANDS (its notify, or an
+     effect it deferred) it no longer returns (U2 fix round 5, part 1 — the belt): each telling is committed there and
+     QUEUED, so it lands straight after that command and BEFORE the posting pass's own command, which is queued behind
+     it (runPoOutcomes: the moves first) — a Delete posting saved ahead and fallen due with the move no longer runs
+     first because the day's first press, not a wake, woke the passes */
+  if (isInReducer()) { cmdDeferEffect(() => runMoveLines(account)); return }
   const today = todayIso(), signedIn = !!SESSION
   for (const k of [...MV_REFUSED.keys()]) if (!k.startsWith(`${today}|`)) MV_REFUSED.delete(k)
   const key = (g: MoveTelling): string => `${today}|${g.account}|${g.day}`
@@ -4255,6 +4260,17 @@ export function postOut(id: string, from: string, archive: boolean | PostOutcome
   if (body && body.deleted) return false
   const outcome: PostOutcome = typeof archive === 'string' ? archive : (archive ? 'overseas' : 'none')
   if (postOutProblem(id, outcome)) return false
+  /* HIS OWN DUE MOVES ARE TOLD FIRST (U2 fix round 5, part 1 — his D2908; state/acctlines.ts tellMovesFirst): a posting
+     whose date has come runs at once, INSIDE this door's own command (runLoadedPostings joins it), and with the outcome
+     Delete it takes the man and his account — and with them everything a move of his not yet told owes: his own lines
+     and "Plan of 149 ended: he moved to 150" to 149's admins. Inside that command the move pass can only wait until he
+     is gone (runMoveLines), so it is asked here, at the door's outer entry, after its own refusals and before its
+     command opens — as the hand delete asks (person-delete.ts deletePerson). Every posting door comes through here
+     (the bid sheet's PO, the Post out sheet, the drag-selection's Post out — ui/Matrix.tsx postOutOr), whatever the
+     outcome or date: a move whose day has come is only told sooner. A move the pass was refused today is not sent
+     again (the per-move rule), and the posting runs all the same. */
+  const acct = accountOfPid(id)
+  if (acct) runMoveLines(acct.id)   // (tellMovesFirst's own pass — this file installs it, wireLeaveWarSync)
   const keep = postingKeeps(from, outcome)
   /* ALWAYS the posting command (`lw.postout` — its permission row, its envelope, what the database will authorise), a
      first posting and a change with nothing to take back included: a bare war write was routed as a generic `lw.edit`,

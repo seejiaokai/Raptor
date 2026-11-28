@@ -34,6 +34,8 @@ import { setBellSquadron } from './bellsqn'
 import { deletePerson } from './person-delete'
 import * as sync from '../leavewar/sync'
 import { archivePerson, restoreArchivedPerson, postOut, wireLeaveWarSync } from '../leavewar/sync'
+import { setCell } from '../leavewar/state/store'
+import { pickSquadron } from './pick'
 
 withThird()
 beforeEach(() => { NOTICES.length = 0 })
@@ -802,5 +804,113 @@ describe('25 — no reader at the telling', () => {
     reload()
     pastMidnight()
     expect(movesTo(PID.osprey)).toEqual([])
+  })
+})
+
+/* ROUND 4's READ (Astra's proof 1, the fresh Opus reader's proof 2 — U2 fix round 5, part 1): a Post out with the
+   outcome Delete whose date has come runs AT ONCE, inside the admin's own Post out command — where the move pass can
+   only wait until the man and his account are gone. So the posting door tells his due moves first (leavewar/sync.ts
+   postOut), as the hand delete does. The window is test 6's: the day came, no wake yet, someone at the keys. */
+describe('round 4 read: an immediate Delete posting', () => {
+  const gone = (): boolean => !!(PEOPLE as any)[PID.hunter]?.deleted
+  /* the commands of the two kinds since `from`, in the order they landed */
+  const order = (from: number): string[] => commandStream().slice(from).map(e => e.type).filter(t => t === 'account.told' || t === 'lw.postout')
+  /* Mako has 150's Leave War open since the 15th (it holds Hunter's stint to come); the day turns with no wake */
+  function makoAtTheKeys(day = 17): void {
+    saberMovesHunter()
+    signInAs('mako'); reload()
+    late(day); reload()
+    expect(homeOn(PID.hunter, todayIso()), 'premise: Hunter is 150\'s').toBe(third.u150)
+    expect({ audience: audience(), owed: planMovesOwed().filter(o => o.part.who === PID.hunter).map(o => String(o.to)).sort() }, 'premise: owed, not yet told')
+      .toEqual({ audience: [], owed: READERS() })
+    expect(sync.postOutProblem(PID.hunter, 'delete'), 'premise: the Post out sheet offers Mako the Delete').toBeNull()
+  }
+  const TOLD_THEN_GONE = (): unknown => ({ audience: READERS(), order: ['account.told', 'lw.postout'], gone: true, acct: false })
+  function postsOut(from: string, say: string): unknown {
+    const before = commandStream().length
+    expect(postOut(PID.hunter, from, 'delete'), say).toBe(true)
+    reload()
+    return { audience: audience(), order: order(before), gone: gone(), acct: !!accountById(ACCT.hunter) }
+  }
+  it('Astra\'s proof: Mako posts Hunter out from today, outcome Delete — 149\'s admins are told first, and no later wake is needed', () => {
+    makoAtTheKeys()
+    const atOnce = postsOut(todayIso(), 'Mako posts Hunter out from today, outcome Delete')
+    wake(); pass(); reload()
+    expect({ atOnce, afterWake: audience() }).toEqual({ atOnce: TOLD_THEN_GONE(), afterWake: READERS() })
+    for (const n of NOTICES.filter(x => isMoveOf(x))) expect(noticeWords(n).what).toBe(LINE)
+  })
+  it('the same on the move day itself (the 16th, the first press of the day)', () => {
+    makoAtTheKeys(16)
+    expect(postsOut(todayIso(), 'Mako posts Hunter out from today, outcome Delete')).toEqual(TOLD_THEN_GONE())
+  })
+  it('a date already past (the 16th, pressed on the 17th)', () => {
+    makoAtTheKeys()
+    expect(postsOut(DAY, 'Mako posts Hunter out from the 16th, outcome Delete')).toEqual(TOLD_THEN_GONE())
+  })
+  it('a posting saved for a later day, then moved to today as a Delete: told at the door\'s first press, once', () => {
+    makoAtTheKeys()
+    const before = commandStream().length
+    expect(postOut(PID.hunter, '2026-07-20', 'sans'), 'Mako posts Hunter out from the 20th, SANS').toBe(true)
+    reload()
+    expect({ audience: audience(), order: order(before), gone: gone() }).toEqual({ audience: READERS(), order: ['account.told', 'lw.postout'], gone: false })
+    expect(postOut(PID.hunter, todayIso(), 'delete'), 'Mako changes it to today, Delete').toBe(true)
+    reload()
+    expect({ audience: audience(), order: order(before), gone: gone() }).toEqual({ audience: READERS(), order: ['account.told', 'lw.postout', 'lw.postout'], gone: true })
+  })
+  it('the move is told whole: the mover\'s own two lines and the readers\', at one moment', () => {
+    makoAtTheKeys()
+    const before = commandStream().length
+    postsOut(todayIso(), 'Mako posts Hunter out from today, outcome Delete')
+    const told = commandStream().slice(before).find(e => e.type === 'account.told') as any
+    const ids = JSON.stringify(told ?? null)
+    expect({ plan: ids.includes(OWN_PLAN()), member: ids.includes(OWN_MEMBER()), moments: new Set(NOTICES.filter(n => isMoveOf(n)).map(n => n.at)).size })
+      .toEqual({ plan: true, member: true, moments: 1 })
+  })
+  it('a telling refused today is not sent again by the posting door (the per-move rule), and the posting still runs', () => {
+    saberMovesHunter()
+    unwritable(ACCT.hunter)
+    pastMidnight()
+    expect({ lines: ofHunter().length, refused: refused().length }, 'premise: the 16th\'s telling refused').toEqual({ lines: 0, refused: 1 })
+    signInAs('mako'); reload()
+    const before = commandStream().length
+    expect(postOut(PID.hunter, todayIso(), 'delete'), 'Mako posts Hunter out from today, outcome Delete').toBe(true)
+    reload()
+    expect({ order: order(before), gone: gone() }).toEqual({ order: ['lw.postout'], gone: true })
+  })
+  it('control: the move told by the wake first — the Delete posting behaves as before, and tells nothing more', () => {
+    saberMovesHunter()
+    signInAs('mako'); reload()
+    pastMidnight()
+    expect(audience(), 'premise: told by the wake of the 16th').toEqual(READERS())
+    const lines = JSON.stringify(NOTICES.filter(n => isMoveOf(n)))
+    expect(postsOut(todayIso(), 'Mako posts Hunter out from today, outcome Delete')).toEqual({ audience: READERS(), order: ['lw.postout'], gone: true, acct: false })
+    expect(JSON.stringify(NOTICES.filter(n => isMoveOf(n)))).toBe(lines)
+  })
+  /* THE BELT: a Delete posting saved AHEAD (a master admin, with 150's Leave War in view, before the move day) falls due
+     with the move — and the first press of the day is anything that wakes the passes as its command lands. The move pass
+     used to return there while the posting pass queued its own command; now the telling is queued first */
+  it('a Delete posting saved ahead, then any Leave War change as the first press of the day: told, then deleted', async () => {
+    saberMovesHunter()
+    await pickSquadron(third.u150)
+    expect(postOut(PID.hunter, DAY, 'delete'), 'Saber, 150 in view, posts Hunter out from the 16th, outcome Delete').toBe(true)
+    reload()
+    late(); reload()
+    expect({ gone: gone(), audience: audience() }, 'premise: neither pass has run').toEqual({ gone: false, audience: [] })
+    const before = commandStream().length
+    expect(setCell(PID.mako, '2026-07-21', 'LL'), 'Saber places a leave on Mako\'s row').toBe(true)
+    reload()
+    const types = commandStream().slice(before).map(e => e.type).filter(t => t === 'account.told' || t === 'lw.postoutRun')
+    expect({ audience: audience(), types, gone: gone(), acct: !!accountById(ACCT.hunter) }).toEqual({ audience: READERS(), types: ['account.told', 'lw.postoutRun'], gone: true, acct: false })
+  })
+  it('control: a Delete posting of a man who never moved tells nothing first; a door that refuses tells nothing', () => {
+    saberMovesHunter()
+    late(); reload()
+    const before = commandStream().length
+    expect(postOut(PID.saber, todayIso(), 'delete'), 'Saber cannot delete himself by a posting').toBe(false)
+    expect(order(before), 'the refused door told nothing').toEqual([])
+    expect(postOut(PID.ranger, todayIso(), 'delete'), 'Saber posts Ranger out from today, outcome Delete').toBe(true)
+    reload()
+    expect({ first: order(before)[0], ranger: !!(PEOPLE as any)[PID.ranger]?.deleted }, 'Hunter\'s move is not Ranger\'s: Ranger\'s posting is not held for it')
+      .toEqual({ first: 'lw.postout', ranger: true })
   })
 })
