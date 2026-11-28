@@ -33,6 +33,11 @@ import { unitOf } from '../storage/unitid'
 
 /* ---- pluggable app hooks (snap, bubble, locks, publish-day resolve) ------- */
 export interface UndoHooks {
+  /* BEFORE EVERY UNDO AND REDO (U2 fix round 4, part 2 — state/acctlines.ts tellMovesFirst): the app's own work that
+     must not be lost to a restore is done first — a squadron move whose day has come and is not yet told, since a
+     restore may rewrite or remove the very account and rights its telling is read from. Called first of all, before
+     the step is picked: what it writes is the app's own command, out of band, never a step of this list. */
+  tellFirst?(): void
   /* snap-to-context: bring an off-screen week/war/course into view before the
      inverse applies (§8.1). Multi-context loads happen before any write. `entry`
      is passed so the consumer can tell a week context that is weekstash-ONLY (an
@@ -1167,6 +1172,7 @@ function refusedFor(entry: UndoEntry, dir: 'undo' | 'redo', reason?: string): st
 }
 
 export function globalUndo(): UndoResult {
+  if (hooks.tellFirst) hooks.tellFirst()
   const entry = newestUndoable()
   if (!entry) return { ok: false, reason: nothingToUndoWhy() || 'Nothing to undo.' }
   /* the newest own step of the kind not undone here, if Undo is about to go past it (A2-F3) — read before the apply */
@@ -1207,6 +1213,7 @@ export function globalUndo(): UndoResult {
 }
 
 export function globalRedo(): UndoResult {
+  if (hooks.tellFirst) hooks.tellFirst()
   const entry = mostRecentlyUndone()
   if (!entry) return { ok: false, reason: LAST_BLOCKED || LAST_DEAD || 'Nothing to redo.' }
   const stR = hooks.stuck ? hooks.stuck(keptOf(entry, entry.forward, 'redo'), 'redo', entry) : false

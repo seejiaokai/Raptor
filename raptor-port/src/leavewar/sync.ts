@@ -169,7 +169,7 @@ import { HOOKS } from '../engine/hooks'
 import { deferEffect as cmdDeferEffect, commitProjection as cmdCommitProjection, commit as cmdCommit, CmdRefused, isInReducer, isCommitting as cmdIsCommitting, activeEnvelope, isQueued, isOk, type CommitResult, type Txn } from '../command'
 /* [POST-OUT-OUTCOMES] (27 Sep 26): the posting's outcomes cross the seam HERE, the one place the war meets Raptor */
 import { suspendForPosting, enableAfterPosting, lastAdminIfGone, lastAdminLock, masterDeleteProblem, masterChangeProblem, otherSquadronPersonProblem, accountOfPid, suspendForArchive, enableForRestore, ACCOUNTS_LIST, isAdminAccount, adminLineAudience, endRightsOfArchived } from '../state/accounts'
-import { accessWas, tellAccess, writeMoveLines, acctFollowUps } from '../state/acctlines'
+import { accessWas, tellAccess, writeMoveLines, acctFollowUps, setTellMovesFirst, type MoveTelling } from '../state/acctlines'
 import { markBack, clearBack, CURPAGE } from '../state/view'
 /* every page change by a press goes through the page door (step K6 — the guard rail's plan §4.5, R5 (b)) */
 import { setPage, ownPageRefused } from '../state/store'
@@ -3113,24 +3113,55 @@ export function postingHeldNote(id: string): string | null {
 export function postingRunsBy(poDate: string): boolean { return poDate <= effectiveToday() }
 /* THE POSTING PASS OVER EVERY SQUADRON (the reshape plan §6.2 A5, step 1): the loaded war's postings as ever, then — a
    whole pass only, never one posting's retry — every other squadron's, from its stored war (runForeignPostings, below) */
+/* (THE MOVES FIRST — U2 fix round 4, part 2, plan v3 §5: a posting with the outcome Delete that falls due removes the man
+   and his account, and with them everything a move of his not yet told owes — so the move pass runs before the
+   postings, for one posting's retry as for a whole pass, and the app's own dated work in a wake never changes who a
+   move's line is sent to) */
 export function runPoOutcomes(only?: string): void {
+  runMoveLines()
   runLoadedPostings(only)
-  if (only === undefined) { runForeignPostings(); runMoveLines() }
+  if (only === undefined) runForeignPostings()
 }
 /* A MOVE TELLS HIM ON ITS DAY (batch 1's second half, plan §7 item 6, §15 D11, §16 D11′): a move saved today ends his
    rights from tomorrow, so the line is written when it takes effect — by the app itself, with no one's name, at the first
    load on or after that day and at the midnight wake (both run this pass), each line its fixed id (a second load writes
    nothing; a move cancelled first owes nothing). A command of its own, out of band — never inside another, never part of
-   anyone's Undo step (undo/timeline.ts). Refused, it is not tried again that day. */
-let MV_REFUSED_DAY = ''
-function runMoveLines(): void {
-  if (SYNCING) return
-  if (isInReducer() || cmdIsCommitting()) { if (isInReducer()) cmdDeferEffect(() => runMoveLines()); return }
+   anyone's Undo step (undo/timeline.ts).
+   ONE COMMAND A MOVE, AND A REFUSAL MARKED PER MOVE (U2 fix round 4, part 2 — his D2908; state/acctlines.ts
+   writeMoveLines): a move refused is not sent again that day — no second refused command at every focus, nothing new
+   drawn on screen — while every other move is told as normal; the next day's wake, or a reload (a fresh wiring), tries
+   it again. The mark is `today|account|move day`, kept with whether somebody was signed in when it was refused: a pass
+   refused with NOBODY signed in (a boot before sign-in) holds nothing against the pass that runs once someone is, so
+   it is told at sign-in. A press never retries: the notify of a command lands while that command is committing, and the pass
+   returns there. `account` — that account's moves only (acctlines.ts tellMovesFirst, installed below). */
+const MV_REFUSED = new Map<string, boolean>()   // the mark → whether somebody was signed in when it was refused
+const mvHeld = (k: string): boolean => { const signedIn = MV_REFUSED.get(k); return signedIn !== undefined && (signedIn || !SESSION) }
+/** the moves the pass has given up for today — `today|account|move day` (tests and walks read it) */
+export function movesRefused(): string[] {
   const today = todayIso()
-  if (MV_REFUSED_DAY === today) return
-  let res: CommitResult | undefined
-  writeMoveLines((type, apply) => (res = cmdCommitProjection({ type, scope: { module: 'inputs' }, apply })))
-  if (res && !isQueued(res) && !isOk(res)) MV_REFUSED_DAY = today
+  return [...MV_REFUSED.keys()].filter(k => k.startsWith(`${today}|`) && mvHeld(k))
+}
+let MV_RUNNING = false
+function runMoveLines(account?: string): void {
+  if (SYNCING || MV_RUNNING) return
+  if (isInReducer() || cmdIsCommitting()) { if (isInReducer()) cmdDeferEffect(() => runMoveLines(account)); return }
+  const today = todayIso(), signedIn = !!SESSION
+  for (const k of [...MV_REFUSED.keys()]) if (!k.startsWith(`${today}|`)) MV_REFUSED.delete(k)
+  const key = (g: MoveTelling): string => `${today}|${g.account}|${g.day}`
+  const mark = (g: MoveTelling, r: CommitResult): void => { if (!isOk(r)) MV_REFUSED.set(key(g), signedIn) }
+  MV_RUNNING = true
+  try {
+    writeMoveLines((type, apply) => cmdCommitProjection({ type, scope: { module: 'inputs' }, apply }), {
+      account,
+      skip: g => mvHeld(key(g)),
+      done: (g, res) => {
+        const r = res as CommitResult | undefined
+        if (!r) return
+        if (isQueued(r)) { r.done.then(x => mark(g, x), () => {}); return }
+        mark(g, r)
+      },
+    })
+  } finally { MV_RUNNING = false }
 }
 /* A POSTING THE APP COULD NOT RUN (batch 1's second half, plan §7 item 7, §15 D10, §16 D10′ — his D2214: "Bell the
    admins"): once the runner gives a posting up — its command refused after its one retry of it alone (PO_REFUSED; another
@@ -4339,6 +4370,10 @@ function sansAheadOf(p: unknown): string | null {
 export function wireLeaveWarSync(): void {
   /* a fresh wiring (a boot) tries every refused posting again (the fix read, 18 Nov 26 — Opus 1) */
   PO_REFUSED.clear(); PO_RETRIED.clear(); PO_FAILED_TOLD.clear()
+  /* …and every move's telling refused (U2 fix round 4, part 2); the doors that change or remove an account ask the
+     move pass to tell that account's own due moves first (state/acctlines.ts tellMovesFirst) */
+  MV_REFUSED.clear()
+  setTellMovesFirst(account => runMoveLines(account))
   setSansAhead(sansAheadOf)
   /* the days each man's SANS-days line named when a command began — what its struck line must keep (sansunfiled.ts) */
   wireSansBackBefore()

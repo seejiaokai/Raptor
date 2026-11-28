@@ -52,9 +52,7 @@ describe('D2903 — Enable of a suspended admin is not making an admin', () => {
     signInAs('hunter')
     const row: any = store.get(ACCOUNT_PFX + ACCT.osprey, null)
     expect(row, 'setup: Osprey\'s stored account row').toBeTruthy()
-    /* (the row as the one row writer would write the Enable — dated back in force now, U2 fix round 2, fix 3's `liveAt`,
-       which the gate holds) */
-    const r: any = commitSettingsIntent('account.update', null, () => { store.set(ACCOUNT_PFX + ACCT.osprey, { ...row, on: true, liveAt: Date.now() }) })
+    const r: any = commitSettingsIntent('account.update', null, () => { store.set(ACCOUNT_PFX + ACCT.osprey, { ...row, on: true }) })
     reload()
     expect(r.ok, 'the gate let it through').toBe(true)
     expect(accountById(ACCT.osprey)!.on).toBe(true)

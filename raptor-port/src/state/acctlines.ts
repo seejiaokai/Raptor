@@ -8,16 +8,17 @@
    own command; the commit gate (state/perms.ts acctLineViolation) asks the same two of the command's own rows before
    and after, so a line reaches only the man whose access that command changed, in words that match the change exactly.
    An Undo and a Redo are judged the same way over the rows they restore (§16 D7′). A change that takes effect later — a
-   move saved today ends his rights from tomorrow — is told when it does, by the app's own writer, `tellMoves`, at the
-   first load on or after that day and at the midnight wake (D11, D11′). */
+   move saved today ends his rights from tomorrow — is told when it does, by the app's own writer, writeMoveLines, at the
+   first load on or after that day and at the midnight wake (D11, D11′): once, whole, to the squadron's admins as they
+   are at the moment it goes out (his D2908). */
 import { HOOKS, store } from '../engine/hooks'
 import { activeEnvelope } from '../command'
 import { PEOPLE } from '../engine/people'
 import { addDays } from './flyplan-model'
-import { ACCOUNTS_LIST, ACCOUNT_PFX, levelAcct, readAccounts, seedAccounts, adminLineAudience, adminLineAudienceOn, type Account } from './accounts'
+import { ACCOUNTS_LIST, ACCOUNT_PFX, levelAcct, readAccounts, seedAccounts, adminLineAudience, type Account } from './accounts'
 import { me } from './perms'
 import { NOTICES, noticeAccount, noticePlanLine, isAcctNotice, isPlanLine, type NoticePart, type AcctChange } from './notices'
-import { unitRows, unitRowsBefore, unitRowsAfter, todayIso, homeBefore, levelBefore, grantBefore, homeChangesOn } from './units'
+import { unitRows, unitRowsBefore, unitRowsAfter, todayIso, homeBefore, levelBefore, grantBefore, homeChangesBefore } from './units'
 import type { UnitRows, GrantLevel } from './units-model'
 
 export type AcctPart = Extract<NoticePart, { k: 'acct' }>
@@ -230,19 +231,18 @@ export function acctFollowUps(forward: ReadonlyArray<{ collection: string; id: s
   }
   return out
 }
-/** A MOVE'S SQUADRON LINE IS TOLD ONCE (U2 fix round 3, fix 5 — Opus 2, Astra 2, Fable 1, the security reader's S3; the
- *  orchestrator's decision). The pass below rescans the moves of the last weeks at every wake and worked out "who was a
- *  reader that day" afresh each time, from the moments the records keep (accounts.ts adminLineAudienceOn) — and four more
- *  roads brought a man in after the day with an old moment: a Plan put back by Undo or Redo, a re-link undone or redone,
- *  a moved man re-made an admin by a Redo, a Plan put back and its holder then made a master admin. So the audience is
- *  no longer rebuilt: once a move has been told, no further reader is ever owed its line. "Told" — a stored bell line of
- *  that move: any squadron line with the move's fixed id less its reader (planMovedLineId), or the mover's own line of
- *  that Plan ending on that day (movedLineId — owed from the very part the squadron's line is, and written by the same
- *  `account.told` command, writeMoveLines; it alone marks a move day on which the squadron had no reader to tell).
- *  ONE body: the writer (planMovesOwed) owes nothing for a move already told, and the gate (state/perms.ts
- *  planLineViolation, `account.told`) refuses a line for one told before its command — `notices` is the bell as the
- *  caller reads it: live for the writer, as it stood before the command for the gate. The moments stay, as the audience
- *  of the FIRST telling. The fixed ids, and the old lines coming back on an Undo of a take-away (D2310), are untouched. */
+/** A MOVE'S SQUADRON LINE IS TOLD ONCE (U2 fix round 3, fix 5; round 4, part 2 — his D2908, 28 Nov 26: once, the first
+ *  time it is sent, to that squadron's admins as they are at that moment). The pass below rescans the moves of the last
+ *  weeks at every wake; rounds 1 to 3 worked out "who was a reader that day" from moments the records keep, and road
+ *  after road brought a man in after the day with an old moment. The past day is no longer rebuilt at all: the first
+ *  telling that succeeds goes to the squadron's admins of THAT moment (accounts.ts adminLineAudience over today), and
+ *  once a move has been told no further reader is ever owed its line. "Told" — a stored bell line of that move: any
+ *  squadron line with the move's fixed id less its reader (planMovedLineId), or the mover's own line of that Plan ending
+ *  on that day (movedLineId — owed from the very part the squadron's line is, and written by the same `account.told`
+ *  command, writeMoveLines; it alone marks a telling at which the squadron had no reader to tell).
+ *  ONE body: the writer and the gate (state/perms.ts moveTellingViolation, planLineViolation) both ask moveTellingsOwed
+ *  below, which asks this — `notices` is the bell as the caller reads it: live for the writer, as it stood before the
+ *  command for the gate. The fixed ids, and the old lines coming back on an Undo of a take-away (D2310), are untouched. */
 /* …AND A LINE COUNTS ONLY WHERE IT IS THAT MOVE'S LINE, AS THE WRITER WRITES IT (U2 fix round 4, part 1 — the security,
    Opus and Fable readers' squat): judged on the bare id, an ordinary line a person may write — a member's to the admin
    who filed his leave, an admin's "View of 150 ended" or "Suspended" — saved under a move's fixed id marked that move
@@ -267,65 +267,109 @@ export function moveTold(accountId: string, day: string, unit: string, notices: 
     return false
   })
 }
-/** THE MOVES THAT HAVE TAKEN EFFECT, not yet told (D11, D11′): every account whose squadron changed on a day up to today,
- *  within the last month (a move older than that is past telling — demo data, D56), each line its fixed id. */
+/** THE MOVES THAT HAVE TAKEN EFFECT, not yet told (D11, D11′; U2 fix round 4, part 2 — his D2908): every account whose
+ *  squadron changed on a day up to today, within the last month (30 days old is told, 31 is not — a move older than that
+ *  is past telling), ONE GROUP an account and move day:
+ *  - `own` — the mover's own lines (movedParts: each View and Plan the move ended, an admin joining as a member), each
+ *    its fixed id, less any already on the bell;
+ *  - `sq` — for each Plan the move ended, "Plan of 149 ended: he moved to 150" to each of that squadron's admins AS THEY
+ *    ARE TODAY (accounts.ts adminLineAudience over `today` — the moment it goes out, never the move day), the man himself
+ *    out of it; nothing for a move already told (moveTold); and nothing to a reader whose fixed id already stands on
+ *    the bell — the writer skips an id already there (notices.ts noticePlanLine), so a line squatting one reader's id
+ *    (which moveTold rightly does not count as "told") would otherwise stay owed, never be written, and the gate's
+ *    "whole" would refuse the app's own command every day of the month.
+ *  A deleted man or a placeholder is owed nothing (notices.ts noticeAccount writes him none); an ARCHIVED mover is owed
+ *  his own lines. "No reader" is `sq` empty, never the audience empty.
+ *  ONE BODY, asked by the writer (writeMoveLines: the live bell and rows) and by the gate (state/perms.ts
+ *  moveTellingViolation: the bell as it stood before the command, the rows as it leaves them), so the two cannot
+ *  disagree about what a move owes or who is told. */
 export const MOVES_TOLD_DAYS = 31
-export function movesOwed(today: string = todayIso()): Array<{ to: string; part: AcctPart; day: string; id: string }> {
-  const rows = unitRows(), out: Array<{ to: string; part: AcctPart; day: string; id: string }> = []
-  const have = new Set(NOTICES.map(n => n.id))
-  for (const a of ACCOUNTS_LIST) {
-    const pid = String(a.pid)
-    const x: any = (PEOPLE as any)[pid]
-    if (!x || x.deleted || x.special) continue
-    for (const d of homeChangesOn(pid, addDays(today, -MOVES_TOLD_DAYS), today)) {
-      for (const p of movedParts(accessIn(a, rows, addDays(d, -1)), accessIn(a, rows, d))) {
-        const id = movedLineId(a.id, d, p)
-        if (!have.has(id)) out.push({ to: pid, part: p, day: d, id })
-      }
-    }
-  }
-  return out
+export interface MoveTelling {
+  account: string
+  pid: string
+  day: string
+  own: Array<{ to: string; part: AcctPart; day: string; id: string }>
+  sq: Array<{ to: string; u: string; part: PlanPart; day: string; id: string }>
 }
-/** …AND THE SQUADRONS' ADMINS OWED A MOVE'S LINE (U2 — D2654 E9l: "Plan of 149 ended: he moved to 150"): for each Plan a
- *  move ended in the same stretch movesOwed reads, a line to each of that squadron's admins on the move's day (its
- *  audience then, over the rows as they stand — the man himself out of it), each its fixed id. The gate asks this one body
- *  (state/perms.ts planLineViolation, `account.told`). A move already told owes nobody (moveTold, above). */
-export function planMovesOwed(today: string = todayIso()): Array<{ to: string; u: string; part: PlanPart; day: string; id: string }> {
-  const rows = unitRows(), out: Array<{ to: string; u: string; part: PlanPart; day: string; id: string }> = []
-  const have = new Set(NOTICES.map(n => n.id))
+export function moveTellingsOwed(today: string, notices: ReadonlyArray<{ id?: unknown }>, rows: UnitRows): MoveTelling[] {
+  const out: MoveTelling[] = []
+  const have = new Set(notices.map(n => String(n?.id ?? '')))
   for (const a of ACCOUNTS_LIST) {
     const pid = String(a.pid)
     const x: any = (PEOPLE as any)[pid]
     if (!x || x.deleted || x.special) continue
-    for (const d of homeChangesOn(pid, addDays(today, -MOVES_TOLD_DAYS), today)) {
-      for (const l of planLinesOf(pid, movedParts(accessIn(a, rows, addDays(d, -1)), accessIn(a, rows, d)))) {
+    for (const d of homeChangesBefore(pid, addDays(today, -MOVES_TOLD_DAYS), today, rows)) {
+      const g: MoveTelling = { account: a.id, pid, day: d, own: [], sq: [] }
+      const parts = movedParts(accessIn(a, rows, addDays(d, -1)), accessIn(a, rows, d))
+      for (const p of parts) {
+        const id = movedLineId(a.id, d, p)
+        if (!have.has(id)) g.own.push({ to: pid, part: p, day: d, id })
+      }
+      for (const l of planLinesOf(pid, parts)) {
         /* (told once — U2 fix round 3, fix 5: a line of this move stored already, and no further reader is owed it) */
-        if (moveTold(a.id, d, l.u, NOTICES, pid)) continue
-        /* (the first telling's audience, as it stood on the move day by the records — U2 fix round 1, fix 8: a man made
-           an admin since gets none) */
-        for (const to of adminLineAudienceOn(l.u, d, rows)) {
+        if (moveTold(a.id, d, l.u, notices, pid)) continue
+        for (const to of adminLineAudience(l.u, today, rows)) {
           const id = planMovedLineId(a.id, d, l.u, to)
-          if (to !== pid && !have.has(id)) out.push({ to, u: l.u, part: l.part, day: d, id })
+          if (to !== pid && !have.has(id)) g.sq.push({ to, u: l.u, part: l.part, day: d, id })
         }
       }
+      if (g.own.length || g.sq.length) out.push(g)
     }
   }
   return out
 }
-/** the app's own writer: the owed moves told, in a command of its own out of band (`account.told` — never part of the
- *  step of whoever's load woke it, undo/timeline.ts); installed by leavewar/sync.ts, which runs it at sign-in and at the
- *  midnight wake beside the posting pass. Writes nothing where nothing is owed. */
-export function writeMoveLines(commit: (type: string, apply: (txn: any) => void) => unknown, now: number = Date.now()): number {
-  const owed = movesOwed()
-  /* (…and the squadrons' admins told of a Plan his move ended — U2, unsigned: the app ended it) */
-  const sq = planMovesOwed()
-  if (!owed.length && !sq.length) return 0
+/** the movers' own lines owed, and the squadrons' admins' — thin readers of the one body over the live bell and rows */
+export function movesOwed(today: string = todayIso()): MoveTelling['own'] {
+  return moveTellingsOwed(today, NOTICES, unitRows()).flatMap(g => g.own)
+}
+export function planMovesOwed(today: string = todayIso()): MoveTelling['sq'] {
+  return moveTellingsOwed(today, NOTICES, unitRows()).flatMap(g => g.sq)
+}
+/** the app's own writer: the owed moves told, ONE COMMAND A MOVE, each out of band (`account.told` — never part of the
+ *  step of whoever's load woke it, undo/timeline.ts); run by leavewar/sync.ts runMoveLines — at boot, at the midnight
+ *  wake and on the page shown on a new day — which holds the mark of a move refused today (`skip`, `done`). A move is
+ *  told whole — every line the mover is owed and every reader's — or not at all (the gate holds it), so one move's
+ *  refusal rolls back exactly that move and never holds back another's. Each move's lines are worked out again just
+ *  before its own command, and again inside it (a queued command runs later): a pass woken by one of its own commands
+ *  never sends a move already written. `account` — that account's moves only (tellMovesFirst). Writes nothing where
+ *  nothing is owed. */
+export interface MoveLinesOpts {
+  now?: number
+  account?: string
+  skip?: (g: MoveTelling) => boolean
+  done?: (g: MoveTelling, res: unknown) => void
+}
+export function writeMoveLines(commit: (type: string, apply: (txn: any) => void) => unknown, opts: MoveLinesOpts = {}): number {
+  const mine = (g: MoveTelling): boolean => (opts.account === undefined || g.account === opts.account) && !opts.skip?.(g)
+  const fresh = (account: string, day: string): MoveTelling | undefined =>
+    moveTellingsOwed(todayIso(), NOTICES, unitRows()).find(g => g.account === account && g.day === day && mine(g))
   let wrote = 0
-  commit('account.told', (txn: any) => {
-    HOOKS.bellEnlist(txn)
-    for (const o of owed) if (noticeAccount(o.to, null, o.part, o.day, now, o.id)) wrote++
-    for (const o of sq) wrote += noticePlanLine([o.to], null, o.part, o.u, o.day, now, () => o.id)
-    HOOKS.bellEnd()
-  })
+  for (const first of moveTellingsOwed(todayIso(), NOTICES, unitRows()).filter(mine)) {
+    const due = fresh(first.account, first.day)
+    if (!due) continue
+    const res = commit('account.told', (txn: any) => {
+      const g = fresh(first.account, first.day)
+      if (!g) return
+      const now = opts.now ?? Date.now()
+      HOOKS.bellEnlist(txn)
+      for (const o of g.own) if (noticeAccount(o.to, null, o.part, o.day, now, o.id)) wrote++
+      /* (…and the squadrons' admins told of a Plan his move ended — U2, unsigned: the app ended it) */
+      for (const o of g.sq) wrote += noticePlanLine([o.to], null, o.part, o.u, o.day, now, () => o.id)
+      HOOKS.bellEnd()
+    })
+    opts.done?.(due, res)
+  }
   return wrote
 }
+/** AN ACCOUNT'S OWN DUE MOVES ARE TOLD BEFORE A DOOR CHANGES OR REMOVES IT (U2 fix round 4, part 2 — plan v3 §5). What a
+ *  move ended is read from the mover's account and right rows as they stand, so a change to them before the first
+ *  telling loses the debt: a role change loses his own "Made a member: you moved to 150"; a re-link of his sign-in, or
+ *  his account or person deleted, loses the whole telling. So each door that changes or removes an account calls this
+ *  first — at its top level, before its own snapshot (accessWas) and its commit, outside any command (inside one the
+ *  pass can only wait, which is too late): accounts.ts updateAccount and saveAccess, person-delete.ts deletePerson, and
+ *  every Undo and Redo (undo/timeline.ts, with no account named). Keyed on the account being CHANGED: making another
+ *  man an admin tells nothing first. The pass is leavewar/sync.ts runMoveLines, installed by its wiring; a move the
+ *  pass was refused today is not sent again (the limit the plan names: the change then loses what it destroys). */
+let TELL_FIRST: ((account?: string) => void) | null = null
+export function setTellMovesFirst(fn: ((account?: string) => void) | null): void { TELL_FIRST = fn }
+export function tellMovesFirst(account?: string): void { if (TELL_FIRST) TELL_FIRST(account) }

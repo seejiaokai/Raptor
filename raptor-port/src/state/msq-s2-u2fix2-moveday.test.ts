@@ -9,17 +9,19 @@
    an Undo or Redo that brings the row into force, held by the gate; `adminAt` is never moved (the bell's retirement,
    notices.ts rightHolds, reads it — an Undo of a take-away still brings the old lines back). Copied from Astra's proof 2
    and the fresh Opus read's proof 2 (2a, 2b, 2c), with 2d, a master-mark twin of 2c, two controls and a forged moment.
-   NOTICES are read raw (every line written), never through a bell's own switches. */
+   NOTICES are read raw (every line written), never through a bell's own switches.
+   RETIRED BY ROUND 4, PART 2 (his D2908, 28 Nov 26 — msq-s2-u2fix4-moveday.test.ts): `liveAt` is gone, so every
+   assertion of it and "the gate holds the moment" went with the deleted code. What stays is each test's audience
+   check: in every one the move was TOLD on the 16th, and a move told once owes no later reader a line — still true,
+   now for that reason alone. */
 import { beforeEach, describe, expect, it } from 'vitest'
 import { withThird, signInAs, moveMan, pastMidnight, on, PID, ACCT, third } from '../test-support/msq-world'
-import { saveAccess, updateAccount, accountById, accountsLoad, adminLineAudience, setMaster, ACCOUNT_PFX, signIn, sessionFor } from './accounts'
+import { saveAccess, updateAccount, accountById, accountsLoad, adminLineAudience, setMaster, signIn, sessionFor } from './accounts'
 import { unitsLoad, todayIso } from './units'
 import { NOTICES, type Notice } from './notices'
 import { archivePerson, restoreArchivedPerson } from '../leavewar/sync'
 import { globalUndo, globalRedo } from '../undo/timeline'
 import { setSession, setMe, SESSION } from './auth'
-import { commitSettingsIntent } from './people-settings-commit'
-import { store } from '../engine/hooks'
 
 withThird()
 beforeEach(() => { NOTICES.length = 0 })
@@ -61,7 +63,6 @@ describe('Astra 2 — Enable after a move does not add a suspended admin to its 
     signInAs('kestrel')
     expect(updateAccount(ACCT.osprey, { on: true })).toBeNull()
     expect(accountById(ACCT.osprey)!.adminAt, 'adminAt is never moved').toBe(appointedAt)
-    expect(accountById(ACCT.osprey)!.liveAt, 'back in force now').toBe(Date.now())
 
     pastMidnight()
     expect(movesTo(PID.osprey), 'Osprey was switched off on the move day').toEqual([])
@@ -96,7 +97,6 @@ describe('Opus F1 — a move line reaches a man not an admin in force on the mov
     signInAs('kestrel')
     expect(restoreArchivedPerson(PID.osprey, todayIso()), 'Kestrel restores Osprey').toBe(true)
     reload()
-    expect(accountById(ACCT.osprey)!.liveAt, 'Restore\'s enable went through the one row writer').toBe(Date.now())
     pastMidnight()
     expect(movesTo(PID.osprey), 'Osprey was archived on the move day').toEqual([])
   })
@@ -113,7 +113,6 @@ describe('Opus F1 — a move line reaches a man not an admin in force on the mov
     const u = globalUndo()
     reload()
     expect({ ok: u.ok, role: accountById(ACCT.osprey)?.role }, `setup: the Undo answered ${u.reason ?? 'ok'}`).toEqual({ ok: true, role: 'admin' })
-    expect(accountById(ACCT.osprey)!.liveAt, 'the Undo brings him into force now').toBe(Date.now())
     pastMidnight()
     expect(movesTo(PID.osprey), 'Osprey was a member on the move day').toEqual([])
   })
@@ -147,7 +146,6 @@ describe('Opus F1 — a move line reaches a man not an admin in force on the mov
     const u = globalUndo()
     reload()
     expect({ ok: u.ok, master: accountById(ACCT.mako)?.master === true }, `setup: the Undo answered ${u.reason ?? 'ok'}`).toEqual({ ok: true, master: true })
-    expect(accountById(ACCT.mako)!.liveAt, 'the mark back brings him into force now').toBe(Date.now())
     pastMidnight()
     expect(movesTo(PID.mako), 'Mako held no right in 149 on the move day').toEqual([])
   })
@@ -178,30 +176,5 @@ describe('the controls — a man in force on the move day keeps his one line', (
     expect({ ok: u.ok, on: accountById(ACCT.osprey)?.on }, `setup: the Undo answered ${u.reason ?? 'ok'}`).toEqual({ ok: true, on: true })
     moveHunterAndWake()
     expect(movesTo(PID.osprey), 'in force before the move day began').toHaveLength(1)
-  })
-})
-
-describe('the gate holds the moment', () => {
-  it('a forged Enable carrying an older moment back in force is refused; a moment changed with nothing else is refused', () => {
-    signInAs('kestrel')
-    expect(saveAccess(ACCT.osprey, { role: 'admin' })).toBeNull()
-    expect(updateAccount(ACCT.osprey, { on: false })).toBeNull()
-    reload()
-    on(17, 9)
-    const key = ACCOUNT_PFX + ACCT.osprey
-    const row: any = store.get(key, null)
-    expect(row && row.on, 'setup: Osprey\'s stored row, switched off').toBe(false)
-    const older = new Date(2026, 6, 15, 8).getTime()
-    const r1: any = commitSettingsIntent('account.update', null, () => { store.set(key, { ...row, on: true, liveAt: older }) })
-    reload()
-    expect({ ok: r1.ok, on: accountById(ACCT.osprey)!.on }).toEqual({ ok: false, on: false })
-    expect(String(r1.message ?? r1.reason ?? ''), 'refused for its moment').toMatch(/back in force/)
-    expect(updateAccount(ACCT.osprey, { on: true })).toBeNull()
-    reload()
-    const now: any = store.get(key, null)
-    const r2: any = commitSettingsIntent('account.update', null, () => { store.set(key, { ...now, liveAt: older }) })
-    reload()
-    expect({ ok: r2.ok, liveAt: accountById(ACCT.osprey)!.liveAt }).toEqual({ ok: false, liveAt: Date.now() })
-    expect(String(r2.message ?? r2.reason ?? ''), 'refused for its moment').toMatch(/back in force/)
   })
 })

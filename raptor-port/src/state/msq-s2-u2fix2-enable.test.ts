@@ -84,8 +84,7 @@ describe('Fable 2 — a moved admin is a member: bringing him back makes no admi
     reload()
     signInAs('mako'); enterSquadron('u149'); reload()
     const row: any = store.get(ACCOUNT_PFX + ACCT.hunter, null)
-    /* (dated back in force now, as the one row writer stamps an Enable — fix 3's `liveAt`, which the gate holds) */
-    const r: any = commitSettingsIntent('account.update', null, () => { store.set(ACCOUNT_PFX + ACCT.hunter, { ...row, on: true, liveAt: Date.now() }) })
+    const r: any = commitSettingsIntent('account.update', null, () => { store.set(ACCOUNT_PFX + ACCT.hunter, { ...row, on: true }) })
     reload()
     expect({ ok: r.ok !== false, on: accountById(ACCT.hunter)!.on, level: levelIn(ACCT.hunter, 'u149', todayIso()) }).toEqual({ ok: true, on: true, level: 'member' })
   })
@@ -145,8 +144,7 @@ describe('Opus F2 — Ranger, made a 142 admin and moved to 149, comes back a me
     signInAs('hunter'); enterSquadron('u149'); reload()
     const row: any = store.get(ACCOUNT_PFX + ACCT.ranger, null)
     expect(row, 'setup: Ranger\'s stored account row').toBeTruthy()
-    /* (dated back in force now, as the one row writer stamps an Enable — fix 3's `liveAt`, which the gate holds) */
-    const r: any = commitSettingsIntent('account.update', null, () => { store.set(ACCOUNT_PFX + ACCT.ranger, { ...row, on: true, liveAt: Date.now() }) })
+    const r: any = commitSettingsIntent('account.update', null, () => { store.set(ACCOUNT_PFX + ACCT.ranger, { ...row, on: true }) })
     reload()
     expect({ ok: r.ok, on: accountById(ACCT.ranger)!.on, level: levelIn(ACCT.ranger, 'u149', todayIso()) }, `the gate answered: ${r?.message ?? 'ok'}`)
       .toEqual({ ok: true, on: true, level: 'member' })

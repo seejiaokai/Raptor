@@ -92,7 +92,7 @@ describe('D2903 — his example: Kestrel suspends Osprey (149\'s admin), Hunter 
     asHunter()
     const row: any = store.get(ACCOUNT_PFX + ACCT.osprey, null)
     expect(row, 'setup: Osprey\'s stored account row').toBeTruthy()
-    const r: any = commitSettingsIntent('account.update', null, () => { store.set(ACCOUNT_PFX + ACCT.osprey, { ...row, on: true, liveAt: Date.now() }) })
+    const r: any = commitSettingsIntent('account.update', null, () => { store.set(ACCOUNT_PFX + ACCT.osprey, { ...row, on: true }) })
     reload()
     expect({ ok: r.ok !== false, ...osprey() }, `the gate answered: ${r.message ?? 'ok'}`).toEqual({ ok: true, ...BACK })
   })

@@ -12,7 +12,11 @@
    The readers' own proofs, each copied whole into a file of its own: msq-s2-u2fix3-moveday-opus2, -astra2, -fable1,
    -security1, -security4. Here: what the brief adds — a forged second telling refused at the gate, the first telling on
    a late first wake, two wakes in a row, a move day with no reader — and the two new cases of restoreIntoForce.
-   NOTICES are read raw (every line written), never through a bell's own switches. */
+   NOTICES are read raw (every line written), never through a bell's own switches.
+   CHANGED BY ROUND 4, PART 2 (his D2908, 28 Nov 26 — a move's line goes once, to the squadron's admins as they are at
+   the moment it is sent; msq-s2-u2fix4-moveday.test.ts): the late first wake now tells the man made an admin since
+   (the one expectation reversed); `liveAt` and restoreIntoForce are gone, so the rule's own test and the moment
+   assertions of the two Undo / Redo scenarios are retired with them, the scenarios themselves kept. */
 import { beforeEach, describe, expect, it } from 'vitest'
 import { withThird, signInAs, moveMan, pastMidnight, on, PID, ACCT, third } from '../test-support/msq-world'
 import { saveAccess, updateAccount, setMaster, accountById, accountsLoad, adminLineAudience, levelIn, linkablePeople, signIn, sessionFor } from './accounts'
@@ -26,7 +30,6 @@ import { commitSettingsIntent } from './people-settings-commit'
 import { HOOKS } from '../engine/hooks'
 import { PEOPLE } from '../engine/people'
 import { moveTold, planMovesOwed, planMovedLineId, movedLineId } from './acctlines'
-import { restoreIntoForce } from './perms'
 
 withThird()
 beforeEach(() => { NOTICES.length = 0 })
@@ -94,19 +97,20 @@ describe('U2 fix 3, fix 5 — the first telling, then nothing', () => {
     expect(bell(), 'the wake of the 18th').toBe(told)
     expect(planMovesOwed().filter(o => o.part.who === PID.hunter), 'and the writer owes nobody').toEqual([])
   })
-  it('a LATE first wake — nobody opened the app on the move day: a man made an admin since gets none, the readers of the day do', () => {
+  it('a LATE first wake — nobody opened the app on the move day: it goes to 149\'s admins as they are when it is sent, a man made an admin since among them (his D2908)', () => {
     signInAs('saber')
     expect(moveMan(PID.hunter, third.u150)).toMatchObject({ ok: true })
-    /* Fri 17, the app untouched since the 15th: Saber's first press makes Osprey an admin of 149, and the pass that
-       follows that command is the move's FIRST telling */
+    /* Fri 17, the app untouched since the 15th: Saber's first press makes Osprey an admin of 149. That press runs no
+       pass (the notify of a command lands while it is committing); the wake after it — the page shown on a new day —
+       is the move's FIRST telling */
     on(17, 9)
     expect(NOTICES.filter(isHuntersMove), 'premise: nothing told on the move day').toEqual([])
     expect(updateAccount(ACCT.osprey, { role: 'admin' }), 'Saber makes Osprey an admin of 149').toBeNull()
     reload()
     expect(adminLineAudience('u149'), 'premise: Osprey reads 149\'s admin lines today').toContain(PID.osprey)
     pastMidnight()
-    expect(audience(), 'the first telling: the readers of the 16th by the records').toEqual([PID.kestrel, PID.saber].sort())
-    expect(movesTo(PID.osprey), 'Osprey was a member on the move day').toEqual([])
+    expect(audience(), 'the first telling: 149\'s admins of the moment it goes out').toEqual([PID.kestrel, PID.osprey, PID.saber].sort())
+    expect(movesTo(PID.osprey), 'Osprey, 149\'s admin since the 17th, is told once').toHaveLength(1)
   })
 })
 
@@ -151,7 +155,7 @@ describe('U2 fix 3, fix 5 — a second telling is refused at the gate', () => {
    so the shape is made here on the bell itself: the first telling's two squadron lines taken out, as if none had been
    owed (a builder's stand-in, said in the round's report). What then marks the move told is the mover's
    OWN line of that Plan ending — written by the same command, from the same part. With neither, nothing is stored of the
-   move and the moments decide again: the first telling. */
+   move and it is owed again: a first telling, to the admins of that moment. */
 describe('U2 fix 3, fix 5 — what marks a move told', () => {
   function told(): void {
     signInAs('saber')
@@ -179,7 +183,7 @@ describe('U2 fix 3, fix 5 — what marks a move told', () => {
     expect(movesTo(PID.saber)).toEqual([])
     expect(planMovesOwed().filter(o => o.part.who === PID.hunter && o.u === 'u149'), 'Saber, a reader of the day, is not told later').toEqual([])
   })
-  it('nothing stored of the move: the moments decide again — the first telling', () => {
+  it('nothing stored of the move: a first telling', () => {
     told()
     drop(n => n.id !== ownLine() && !isHuntersMove(n))
     expect(moveTold(ACCT.hunter, DAY, 'u149', NOTICES)).toBe(false)
@@ -187,16 +191,10 @@ describe('U2 fix 3, fix 5 — what marks a move told', () => {
   })
 })
 
-describe('U2 fix 3, fix 5 — restoreIntoForce: the two cases it missed (the backstop of the first telling)', () => {
-  it('the rule itself: a row put back naming another man, or an admin\'s where the role was given elsewhere, comes into force', () => {
-    const row = { id: 'x', pid: 'a', role: 'admin', on: true }
-    expect(restoreIntoForce(row, { ...row }), 'the same row: no').toBe(false)
-    expect(restoreIntoForce(row, { ...row, pid: 'b' }), 'another man').toBe(true)
-    expect(restoreIntoForce(row, { ...row, adminOf: 'u149', adminFrom: '2026-07-16' }), 'an admin of another squadron').toBe(true)
-    expect(restoreIntoForce({ ...row, adminOf: 'u149', adminFrom: '2026-07-10' }, { ...row, adminOf: 'u149', adminFrom: '2026-07-16' }), 'the same squadron, given anew').toBe(true)
-    expect(restoreIntoForce({ ...row, role: 'main', adminOf: 'u1' }, { ...row, role: 'main' }), 'not an admin\'s row: the record of where means nothing').toBe(false)
-  })
-  it('a re-link undone: the sign-in back on Osprey is dated now, and the gate lets the restore write it', () => {
+/* (restoreIntoForce and the moment it dated, `liveAt`, went with round 4, part 2 — his D2908: its own test is retired
+   with it. The two real scenarios it was added for stay, without the moment: the restore still goes through.) */
+describe('U2 fix 3, fix 5 — a re-link undone and redone, a moved man re-made an admin by Redo: the restores go through', () => {
+  it('a re-link undone puts the sign-in back on Osprey, and its Redo back on the other man', () => {
     signInAs('kestrel'); enterSquadron('u149'); reload()
     expect(saveAccess(ACCT.osprey, { role: 'admin' }), 'setup: Kestrel makes Osprey an admin of 149').toBeNull()
     reload()
@@ -207,16 +205,16 @@ describe('U2 fix 3, fix 5 — restoreIntoForce: the two cases it missed (the bac
     on(17, 9)
     const u = globalUndo()
     reload()
-    expect({ ok: u.ok, pid: accountById(ACCT.osprey)?.pid, liveAt: accountById(ACCT.osprey)?.liveAt }, `the Undo answered ${u.reason ?? 'ok'}`)
-      .toEqual({ ok: true, pid: PID.osprey, liveAt: Date.now() })
-    /* …and its Redo, on the 18th: the sign-in on the other man, dated then */
+    expect({ ok: u.ok, pid: accountById(ACCT.osprey)?.pid }, `the Undo answered ${u.reason ?? 'ok'}`)
+      .toEqual({ ok: true, pid: PID.osprey })
+    /* …and its Redo, on the 18th: the sign-in on the other man */
     on(18, 9)
     const r = globalRedo()
     reload()
-    expect({ ok: r.ok, pid: accountById(ACCT.osprey)?.pid, liveAt: accountById(ACCT.osprey)?.liveAt }, `the Redo answered ${r.reason ?? 'ok'}`)
-      .toEqual({ ok: true, pid: z, liveAt: Date.now() })
+    expect({ ok: r.ok, pid: accountById(ACCT.osprey)?.pid }, `the Redo answered ${r.reason ?? 'ok'}`)
+      .toEqual({ ok: true, pid: z })
   })
-  it('a moved man re-made an admin by Redo: his sign-in is dated now', () => {
+  it('a moved man re-made an admin by Redo', () => {
     signInAs('saber')
     expect(saveAccess(ACCT.ranger, { role: 'admin' }), 'setup: Saber makes Ranger a 142 admin').toBeNull()
     reload()
@@ -232,7 +230,7 @@ describe('U2 fix 3, fix 5 — restoreIntoForce: the two cases it missed (the bac
     on(18, 9)
     const r = globalRedo()
     reload()
-    expect({ ok: r.ok, level: levelIn(ACCT.ranger, 'u149', todayIso()), liveAt: accountById(ACCT.ranger)?.liveAt }, `the Redo answered ${r.reason ?? 'ok'}`)
-      .toEqual({ ok: true, level: 'admin', liveAt: Date.now() })
+    expect({ ok: r.ok, level: levelIn(ACCT.ranger, 'u149', todayIso()) }, `the Redo answered ${r.reason ?? 'ok'}`)
+      .toEqual({ ok: true, level: 'admin' })
   })
 })

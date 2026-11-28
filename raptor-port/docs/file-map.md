@@ -2239,3 +2239,27 @@ and `src/state/msq-s2-u2-doors.test.ts` (the rename refusal's expected words). *
 - `src/ui/msq-s2-u2fix4-signin-box.test.tsx` (Hunter on Kestrel's and on another 149 admin's row: read only, reached by
   the keyboard, the line word for word in RoleNote's markup, Member picked still greyed; Osprey's member row, Saber and
   Kestrel as today; a master admin's row keeps its own rules; the doors' refusal in the same words).
+
+Chat A216, 28 Nov 26 — step U2's fourth fix round, part 2 (his D2908: a move's bell lines go once, the first time they
+are sent, to that squadron's admins as they are at that moment; plan v3). **Changed:** `src/state/acctlines.ts`
+(`moveTellingsOwed` — the one body, a group an account and move day: the mover's own lines and each reader's, the
+audience `adminLineAudience` over today; `movesOwed` and `planMovesOwed` thin readers of it; `writeMoveLines` one
+`account.told` a move, each worked out again before and inside its own command; `tellMovesFirst` /
+`setTellMovesFirst` — an account's own due moves told before a door changes or removes it), `src/state/accounts.ts`
+(`adminLineAudienceOn` and `Account.liveAt` gone — the field, its stamp in `stampMoments`, its place in the row and the
+loader; `updateAccount` and `saveAccess` tell first), `src/state/perms.ts` (`moveTellingViolation` — an `account.told`
+judged whole against `moveTellingsOwed`, asked from `acctLineViolation`'s `account.told` branch after each line's own
+rule; `planLineViolation`'s one changed condition, the audience over today; `liveAtViolation` and `restoreIntoForce`
+gone, `restoreRedated` puts an old image back without `liveAt`), `src/leavewar/sync.ts` (`runMoveLines` — a refusal
+marked per move and day, `movesRefused` its reader, cleared at a fresh wiring; it runs FIRST in `runPoOutcomes`, before
+the postings; `wireLeaveWarSync` installs `tellMovesFirst`), `src/state/person-delete.ts` (`deletePerson` tells first),
+`src/undo/timeline.ts` (the `tellFirst` hook, called first by `globalUndo` and `globalRedo`), `src/state/undo-wire.ts`
+(installs it). **Existing tests changed:** `src/state/msq-s2-u2fix3-moveday.test.ts` ("a LATE first wake" reversed — the
+man made an admin since is told; the `restoreIntoForce` rule test retired, the two Undo / Redo scenarios kept without
+the moment; "nothing stored of the move" renamed), `src/state/msq-s2-u2fix2-moveday.test.ts` ("the gate holds the
+moment" and every `liveAt` assertion retired, each audience check kept), `src/state/msq-s2-u2fix-enable.test.ts`,
+`src/state/msq-s2-u2fix2-enable.test.ts`, `src/state/msq-s2-u2fix3-d2903.test.ts` (the hand-written `liveAt` taken out
+of their forged rows). **New (test):**
+- `src/state/msq-s2-u2fix4-moveday.test.ts` (a late telling by every road in; the gate whole both ways; one move
+  unwritable beside another; tell first at each door, a Delete posting and Undo / Redo; `liveAt` gone from rows and Undo
+  images; the newcomer and D2310; the controls — wakes in a row, three moves, the 31 days, who may write `account.told`).

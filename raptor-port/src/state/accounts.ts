@@ -80,7 +80,7 @@ import { putNewHome, dropGrantsOfAccount, dropGrantRows, levelOfAccount, levelBe
 import { moveFrom, type UnitRows, type Grant, type GrantLevel } from './units-model'
 import type { LockBreach } from './lastadmin'
 import { noticeDay } from './notices'
-import { accessWas, tellAccess } from './acctlines'
+import { accessWas, tellAccess, tellMovesFirst } from './acctlines'
 import { isUnitId, type UnitLevel, type LevelAccount } from './units-model'
 import { validIso } from './flyplan-model'
 
@@ -117,18 +117,12 @@ export type AccountRole = 'admin' | 'main'
    right counts from the Plan's start, and his bell's default for them reads "on" (state/bellsqn.ts bellDefault); written
    by the door that sets the mark (saveAccess, setMaster), it goes with the mark. An Undo restores the row whole. Absent on
    a row from before they were kept (D56): from always. The gate holds every one (perms.ts accountShapeAndMasterViolation). */
-/* `liveAt` (U2 fix round 2, fix 3 — Astra 2, Opus F1; the orchestrator's decision): the moment (ms) this sign-in last came
-   back INTO FORCE — switched on again after it was off (a hand Enable, Restore, the posting taken back: all through the one
-   row writer, stampMoments), or put back by an Undo or Redo that brings it into force (perms.ts restoreRedated, by
-   restoreIntoForce's cases: no row there before, off and put back on, not an admin's role and put back an admin's, the
-   master mark put back, the row put back naming another man, an admin's row put back with its role given somewhere
-   else or anew — the last two since U2 fix round 3, fix 5). A move's
-   bell line is written only to readers in force before the move day began (adminLineAudienceOn), and an admin switched
-   off, archived or a member that day, brought back later, kept his old `adminAt` — so the next wake wrote him the old
-   day's line. `adminAt` is NEVER moved for this: the bell's retirement (notices.ts rightStart / rightHolds) reads it, and an
-   Undo of a take-away still brings the old lines back (D2310's reading); `liveAt` is not read there. A new row has none
-   (counts from always, D56); kept while the row stays in force. The gate holds it (perms.ts liveAtViolation). */
-export interface Account { id: string; name: string; role: AccountRole; pid: string; on: boolean; offBy?: 'po'; seenFrom?: LinePos; createdAt?: number; master?: true; masterFrom?: string; pidFrom?: string; adminOf?: string; adminFrom?: string; adminAt?: number; masterAt?: number; kept?: Record<string, number>; liveAt?: number }
+/* (`liveAt`, "the moment this sign-in last came back into force" — U2 fix rounds 2 and 3 — is GONE: his D2908, 28 Nov 26.
+   It existed to rebuild who read a squadron's lines on a move day already past; a move's line now goes once, to the
+   admins of the moment it is sent (acctlines.ts moveTellingsOwed), so no past day is rebuilt and nothing reads it. A
+   stored row or an Undo step's image that still carries one loads without it — readAccounts drops it, no check refuses
+   it — and the next save of that row writes it out. `adminAt` is unchanged: the bell's retirement reads it, D2310.) */
+export interface Account { id: string; name: string; role: AccountRole; pid: string; on: boolean; offBy?: 'po'; seenFrom?: LinePos; createdAt?: number; master?: true; masterFrom?: string; pidFrom?: string; adminOf?: string; adminFrom?: string; adminAt?: number; masterAt?: number; kept?: Record<string, number> }
 /* the master mark as a row keeps it — the mark, and its day where it has one; and the day of the link, where it has one;
    and where the admin role was given, where that is recorded; and the moments (§16 D1′) */
 const masterOf = (x: { master?: true; masterFrom?: string; pidFrom?: string; role?: string; adminOf?: string; adminFrom?: string; adminAt?: number; masterAt?: number; kept?: Record<string, number> }) => ({
@@ -158,11 +152,6 @@ export function stampMoments(prev: Account | undefined, a: Account, now: number 
     if (prev!.masterAt === undefined) delete out.masterAt; else out.masterAt = prev!.masterAt
     if (prev!.kept === undefined) delete out.kept; else out.kept = { ...prev!.kept }
   }
-  /* (the sign-in back in force — `liveAt` above: switched on again after it was off; otherwise as the row had it, never
-     what a door hands in, so no door can date it) */
-  if (prev && prev.on === false && a.on !== false) out.liveAt = now
-  else if (prev && prev.liveAt !== undefined) out.liveAt = prev.liveAt
-  else delete out.liveAt
   return out
 }
 /* made a master admin: the squadrons he holds Plan of today, each with that Plan's moment (§16 D1′a) */
@@ -276,7 +265,7 @@ function rowsOf(pfx: string): Map<string, any> {
 /* whether the accounts are stored as rows yet — none means the seeded list, held in memory (see the header) */
 let ACCOUNTS_STORED = false
 /* an account as its row stores it */
-const accountRow = (a: Account) => ({ id: a.id, name: a.name, role: a.role, pid: a.pid, on: a.on, ...(a.offBy ? { offBy: a.offBy } : {}), ...(a.seenFrom ? { seenFrom: a.seenFrom } : {}), ...(a.createdAt != null ? { createdAt: a.createdAt } : {}), ...masterOf(a), ...(Number.isFinite(a.liveAt) ? { liveAt: a.liveAt } : {}) })
+const accountRow = (a: Account) => ({ id: a.id, name: a.name, role: a.role, pid: a.pid, on: a.on, ...(a.offBy ? { offBy: a.offBy } : {}), ...(a.seenFrom ? { seenFrom: a.seenFrom } : {}), ...(a.createdAt != null ? { createdAt: a.createdAt } : {}), ...masterOf(a) })
 /* a request as its row stores it — who has seen it is not on it (reqseen rows) */
 const reqRow = (r: AccessRequest) => ({ id: r.id, name: r.name, cs: r.cs, ini: r.ini, seat: r.seat, cat: r.cat, at: r.at, unit: r.unit })
 
@@ -308,7 +297,6 @@ export function readAccounts(images: any[], why?: (text: string) => void, person
       ...(validIso(x.pidFrom) ? { pidFrom: String(x.pidFrom) } : {}),
       ...(x.role === 'admin' && isUnitId(x.adminOf) ? { adminOf: String(x.adminOf), ...(validIso(x.adminFrom) ? { adminFrom: String(x.adminFrom) } : {}) } : {}),
       ...(x.role === 'admin' && Number.isFinite(x.adminAt) ? { adminAt: +x.adminAt } : {}),
-      ...(Number.isFinite(x.liveAt) ? { liveAt: +x.liveAt } : {}),
     })
   }
   return out
@@ -480,43 +468,10 @@ export function adminLineAudience(unit: string, iso: string = todayIso(), rows?:
   }
   return out
 }
-/* WHO WAS TOLD A SQUADRON'S ADMIN LINES ON A DAY ALREADY BEGUN, AS THE RECORDS HOLD IT (U2 fix round 1, fix 8 — Astra 3):
-   adminLineAudience on that day, less any reader whose admin right there began only after that day began. The move-day
-   pass rescans the moves of the last weeks at every wake, so a man made an admin of 149 on the 17th was written the line
-   of a move on the 16th — its moment now, so the bell's retirement (notices.ts rightHolds) showed it. Read from what the
-   records keep, road by road, the earliest that holds on `iso` counting: his home's admin role (`adminAt`), the master
-   mark (`masterAt`, or for a squadron he held Plan of when made one, that Plan's moment — `kept`), a Plan of it
-   (`Grant.fromAt`); a road with no moment (a row from before moments were kept, D56) counts from always. What the records
-   do not hold — a role or mark held on that day and taken away since — is not brought back: such a man is no reader
-   today, as before. ONE body: the writer (acctlines.ts planMovesOwed) and the gate (perms.ts planLineViolation) ask it.
-   Since U2 fix round 3, fix 5 it is the audience of a move's FIRST telling only: once a line of the move is stored, no
-   further reader is owed one, whatever the moments say (acctlines.ts moveTold) — the moments could not hold every road
-   by which a man is put back after the day with an old one (a Plan put back by Undo, a re-link undone, `kept`). */
-export function adminLineAudienceOn(unit: string, iso: string, rows: UnitRows): string[] {
-  const [y, m, d] = iso.split('-').map(Number)
-  const dayStart = new Date(y!, m! - 1, d!).getTime()
-  return adminLineAudience(unit, iso, rows).filter(pid => {
-    const a = ACCOUNTS_LIST.find(x => String(x.pid) === pid)
-    if (!a) return false
-    let best = Infinity
-    const take = (x: unknown): void => { best = Math.min(best, typeof x === 'number' && Number.isFinite(x) ? x : -Infinity) }
-    if (a.master === true) {
-      const k = a.kept && Object.prototype.hasOwnProperty.call(a.kept, unit) ? a.kept[unit] : undefined
-      take(typeof k === 'number' && Number.isFinite(k) ? (Number.isFinite(a.masterAt) ? Math.min(k, a.masterAt!) : -Infinity) : a.masterAt)
-    }
-    const bare = levelAcct({ ...a, master: undefined })
-    if (homeBefore(pid, iso, rows) === unit) {
-      if (levelBefore(bare, unit, iso, rows) === 'admin') take(a.adminAt)
-    } else {
-      const g = rows.grants.find(x => x.account === a.id && x.unit === unit && x.level === 'admin' && grantRowHolds({ id: a.id, pid, pidFrom: a.pidFrom }, x, iso, rows))
-      if (g) take(g.fromAt)
-    }
-    /* (U2 fix round 2, fix 3 — Astra 2, Opus F1): and the sign-in in force before that day began — one switched off,
-       archived or made a member that day and brought back since carries the moment it came back (`liveAt`), whichever
-       road he reads by (his home's admin, a Plan, the mark); a row with none counts from always (D56) */
-    return Math.max(best, typeof a.liveAt === 'number' && Number.isFinite(a.liveAt) ? a.liveAt : -Infinity) < dayStart
-  })
-}
+/* (A MOVE'S LINE reads this same audience, over the day it is SENT — his D2908, 28 Nov 26: "Plan of 149 ended: he moved
+   to 150" goes once, to the squadron's admins as they are at that moment, acctlines.ts moveTellingsOwed. The audience
+   "as the records held it on the move day" — adminLineAudienceOn, U2 fix rounds 1 to 3 — is gone with the moments it
+   read: no past day is rebuilt.) */
 /* THE MASTER MARK (multi-squadron batch 1, step 1 — D2191): a master is an admin of every unit and the only one who
    makes a unit or another master. The mark lives on the account row (the database's User.master) and changes only by
    its own command, setMaster below — the commit gate (perms.ts unitRowViolation) refuses a change of it in any other. */
@@ -936,6 +891,11 @@ export function updateAccount(id: string, patch: { name?: any; role?: AccountRol
      account does (Fable's scenario read, 26 Sep 26: the request stayed listed, could never
      be approved — "already has an account" — and kept the Admin tab's count up) */
   const answered = next.name !== a.name && !!requestByName(next.name)
+  /* HIS OWN DUE MOVES ARE TOLD FIRST (U2 fix round 4, part 2 — acctlines.ts tellMovesFirst): what a move not yet told
+     ended is read from this account and its rights as they stand, so a role change here loses his own "Made a member"
+     line and a re-link the whole telling, 149's admins' lines with it. Told before this door's own snapshot and commit,
+     outside any command; nothing where no move of his is due. */
+  tellMovesFirst(a.id)
   return commitIntent('account.update', null, () => {
     writeAccounts(list)
     if (relink) dropGrantsOfAccount(a.id)
@@ -1074,6 +1034,9 @@ export function saveAccess(id: string, want: AccessSave): string | null {
   if (locked) return locked
   const accountCh = roleCh || masterCh || nameCh
   const answered = nameCh && !!requestByName(nameAfter)
+  /* (his own due moves told first — acctlines.ts tellMovesFirst: a role rewritten here loses "Made a member: you moved
+     to 150" from a move not yet told; before this door's own snapshot and commit, outside any command) */
+  tellMovesFirst(a.id)
   return commitIntent('account.access', null, () => {
     if (accountCh) writeAccounts(list)
     if (answered) writeReqs(ACCESS_REQS.filter(r => r.name !== nameAfter))

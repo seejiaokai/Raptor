@@ -34,7 +34,7 @@ import { deriveActor } from '../command/actor'
 import { voidedOil } from '../engine/oil'
 /* the seeded accounts, read only by the posting pass's first-write rule below (accounts.ts imports this file; the call is
    made only when a command is judged, never as the module loads) */
-import { seedAccounts, ACCOUNTS_LIST, isMasterAccount, accountBefore, levelAcct, madeAdminAcct, readAccounts, adminLineAudience, adminLineAudienceOn, type Account } from './accounts'
+import { seedAccounts, ACCOUNTS_LIST, isMasterAccount, accountBefore, levelAcct, madeAdminAcct, readAccounts, adminLineAudience, type Account } from './accounts'
 import { unitRowsBefore, unitRowsAfter, levelBefore, homeBefore, homeChangesBefore, todayIso, homeOn, levelOfAccount, setNewHomeUnit, grantBefore, grantRowHolds, datedBreach, lockBreach, everOfBefore, units as storeUnits, unitById as storeUnitById, mayGivePlanOn, madeAdminsNow } from './units'
 import { PEOPLE, sansStart, sansStop } from '../engine/people'
 import { UNIT, BOOT_UNIT } from '../engine/unitview'
@@ -49,7 +49,7 @@ import type { Actor, Change, CommitEnvelope } from '../command/types'
 import { deepEqual } from '../command/util'
 /* (notices.ts reads this module too — mayEditSched; each side calls the other only at run time, never at load) */
 import { noticeAboutHim, noticeLeftBell, filerTold, filerVia, foldedInto, joinFilerImgs, dayOfAt, changeFiler, APP_ACTS, passMade, warMade, holMade, shareMade, AT_SLACK_MS, NOTICES, isAcctNotice, isPlanLine, poFailedLineId } from './notices'
-import { accessIn, accessParts, movedParts, acctByApp, movedLineId, MOVES_TOLD_DAYS, planLinesOf, planMovedLineId, moveTold, type AcctPart } from './acctlines'
+import { accessIn, accessParts, movedParts, acctByApp, movedLineId, MOVES_TOLD_DAYS, planLinesOf, planMovedLineId, moveTold, moveTellingsOwed, type AcctPart } from './acctlines'
 import { addDays } from './flyplan-model'
 
 export type Act = 'C' | 'R' | 'U' | 'D'
@@ -2264,28 +2264,10 @@ function momentsViolation(was: any, is: any, relinked: boolean, env: CommitEnvel
   if (keptKey(is.kept) !== keptKey(was.kept)) return 'kept squadrons changed'
   return null
 }
-/* THE SIGN-IN BACK IN FORCE (U2 fix round 2, fix 3 — Astra 2, Opus F1; accounts.ts Account.liveAt): a move's bell line
-   goes only to readers in force before the move day began (accounts.ts adminLineAudienceOn), so a `liveAt` back-dated
-   would write an old day's line to a man brought back since. A command dates it now only where it switches the sign-in on
-   again (the one row writer, accounts.ts stampMoments); an Undo or Redo where it puts the row back INTO force — none there
-   before (`was` none), off and the image on, not an admin's role and the image an admin's, without the master mark and
-   the image with it, naming another man than the stored row does (a re-link undone or redone: THAT man comes into
-   force), or an admin's row whose role was given somewhere else or anew (`adminOf` / `adminFrom` — a moved man re-made
-   an admin of the squadron he joined) — the last two as the row writer itself dates an admin role begun (accounts.ts
-   stampMoments), added by U2 fix round 3, fix 5 (Fable 1, the security reader's S3). restoreIntoForce is the one body:
-   the restore's own writing, restoreRedated, asks it too. Anywhere else it is kept exactly as it stood, so it is never back-dated, never dropped, and an image's
-   older one never put back. Since that round it decides only who is in a move's FIRST telling (acctlines.ts moveTold). */
-export const restoreIntoForce = (was: any, is: any): boolean => !was
-  || (was.on === false && is.on !== false)
-  || (was.role !== 'admin' && is.role === 'admin')
-  || (was.master !== true && is.master === true)
-  || String(was.pid) !== String(is.pid)
-  || (is.role === 'admin' && (was.adminOf !== is.adminOf || was.adminFrom !== is.adminFrom))
-function liveAtViolation(was: any, is: any, restoring: boolean): string | null {
-  const into = restoring ? restoreIntoForce(was, is) : !!was && was.on === false && is.on !== false
-  if (into) return momentNow(is.liveAt) ? null : 'a sign-in back in force not dated now'
-  return is.liveAt === (was ? was.liveAt : undefined) ? null : "a sign-in's moment back in force changed"
-}
+/* (THE SIGN-IN'S MOMENT "BACK IN FORCE" — `liveAt`, its rule here and restoreIntoForce — IS GONE: his D2908, 28 Nov 26.
+   It held who read a squadron's lines on a move day already past; a move's line now goes once, to the admins of the
+   moment it is sent (acctlines.ts moveTellingsOwed), so nothing reads it and nothing is held. A stored row or an Undo
+   step's image still carrying one is refused by no rule: the loader drops it, and the next save writes it out.) */
 /* …and the restore writes it so: an Undo or Redo whose image turns a right on dates it today (installed in
    undo-wire.ts as the timeline's `redate` hook, before the restore is named for verifiedReplay, so the image the
    timeline vouches for IS the one written); one that leaves a right standing keeps the day it has now. */
@@ -2384,13 +2366,11 @@ export function restoreRedated(c: Change, offAt?: number, dir?: 'undo' | 'redo',
         : markBackHolds(was, n, offAt) || back ? (prior?.master === true ? prior.masterFrom : n.masterFrom) : today
       if (out.masterFrom !== masterFrom) out = { ...out, masterFrom }
     }
-    /* (U2 fix round 2, fix 3): the sign-in back in force — dated now where this put brings it into force
-       (restoreIntoForce), else as the stored row has it: the image's own older moment is never put back, and a newer
-       stored one never dropped, as the link's day is kept as it stands above */
-    const liveAt = restoreIntoForce(was, n) ? Date.now() : was?.liveAt
-    if (out.liveAt !== liveAt) {
+    /* (an image recorded while the sign-in's moment "back in force" was kept — `liveAt`, gone with his D2908 — is put
+       back without it: nothing reads it, and the row writer no longer writes it) */
+    if ('liveAt' in out) {
       const { liveAt: _drop, ...rest } = out
-      out = liveAt === undefined ? rest : { ...rest, liveAt }
+      out = rest
     }
     return out === n ? c : { ...c, after: out }
   }
@@ -2600,10 +2580,6 @@ function accountShapeAndMasterViolation(env: CommitEnvelope): string | null {
        was. A restore's verified replay puts back its image whole (an Undo of the take-away brings the lines back). Asked
        last, after the days, so a row refused for its days is refused in those words first. */
     const moments = replayed ? null : momentsViolation(was, is, relinked, env)
-    /* (U2 fix round 2, fix 3): the sign-in's moment back in force — asked of a restore too, which writes it so
-       (restoreRedated), so neither a command nor a replay back-dates it */
-    const live = liveAtViolation(was, is, env.origin === 'restore')
-    if (live) return `${live} (${c.id})`
     /* (fix read 10, fault E): a mark put back on the same person, off since a moment with no move of his since, keeps its
        recorded day — the restore writes it so (restoreRedated); the gate asks the same of the same moment */
     if (replayed && (is.master !== true || kept || back || markBackHolds(was, is, OFFAT?.(env), w.rowsB.homes))) continue
@@ -4095,7 +4071,10 @@ function acctLineViolation(env: CommitEnvelope): string | null {
         || !homeChangesBefore(String(n.to), addDays(d, -1), d, rows).includes(d)
         || !movedParts(accessIn(acct, rows, addDays(d, -1)), accessIn(acct, rows, d)).some(x => deepEqual(x, p))) return `an account line the app did not owe (${where})`
     }
-    return null
+    /* (…each squadron's line by its own rule first, so a line refused for itself is refused in those words; then the
+       command WHOLE — moveTellingViolation, below. Asked from here because this branch runs for every `account.told`,
+       one carrying no account line at all among them) */
+    return planLineViolation(env) ?? moveTellingViolation(env)
   }
   if (!ch.length) return null
   const self = a?.personId == null ? null : String(a.personId)
@@ -4134,6 +4113,42 @@ function acctLineViolation(env: CommitEnvelope): string | null {
   }
   return null
 }
+/* A MOVE IS TOLD WHOLE OR NOT AT ALL (U2 fix round 4, part 2 — his D2908, 28 Nov 26; plan v3 §4; docs/data-model.md §11,
+   the Notice row — together, D200). Each line of an `account.told` command is judged by itself above and in
+   planLineViolation, and each passed alone: a command carrying one of two owed readers was accepted, marked the move
+   told (acctlines.ts moveTold) and silenced the other for good; so did the readers without the mover's own lines, or
+   his lines without the readers. So the command is judged whole, against the ONE body its writer asks
+   (acctlines.ts moveTellingsOwed) — over the bell as it stood BEFORE the command, the rows as it leaves them and today:
+   every line it writes is, field for field, a line some move owes (its id, its reader, its day, its part, its
+   squadron); and for every move it touches, every line that move owes — the mover's own and each reader's — is in it.
+   So one reader of two, a line to a man who is no admin of the squadron now, a reader added, the mover's lines alone
+   while readers are owed: each refused, the whole command with it. A move already told whose own line is still
+   missing passes alone (over the earlier bell its group holds that one line); several whole moves in one command
+   pass; a move 31 days old has no group. The writer sends one command a move (writeMoveLines), so a refusal here rolls
+   back exactly one move. */
+function moveTellingViolation(env: CommitEnvelope): string | null {
+  const owed = moveTellingsOwed(todayIso(), noticesBefore(env), unitRowsAfter(env.changes))
+  const lineOf = new Map<string, { g: number; to: string; day: string; part: unknown; u?: string }>()
+  owed.forEach((g, i) => {
+    for (const o of g.own) lineOf.set(o.id, { g: i, to: o.to, day: o.day, part: o.part })
+    for (const o of g.sq) lineOf.set(o.id, { g: i, to: o.to, day: o.day, part: o.part, u: o.u })
+  })
+  const written = new Set<string>(), touched = new Set<number>()
+  for (const c of env.changes) {
+    const where = `${c.collection}/${c.id}`
+    const n: any = c.op === 'delete' ? null : c.after
+    const o = lineOf.get(String(c.id))
+    if (!n || !o || written.has(String(c.id)) || String(n.id) !== String(c.id) || String(n.to) !== o.to || String(n.day) !== o.day
+      || n.u !== o.u || !Array.isArray(n.what) || n.what.length !== 1 || !deepEqual(n.what[0], o.part)) return `a move's line the app does not owe (${where})`
+    written.add(String(c.id))
+    touched.add(o.g)
+  }
+  for (const i of touched) {
+    const g = owed[i]!
+    if ([...g.own, ...g.sq].some(o => !written.has(o.id))) return `a move not told whole (account.told: ${g.account} on ${g.day})`
+  }
+  return null
+}
 /* A SQUADRON'S PLAN LINE ONLY AS ITS CHANGE OWES IT (Admin → Users across squadrons, step U2 — his D2626, D2654 E6, E9l;
    the plan §19.2 "The gate's rule for these lines", security S2; docs/data-model.md §11, the Notice row — together, D200).
    A line of the `sqplan` kind goes to another squadron's admins as often as not, so the own-man door (adminOwnerViolation
@@ -4150,9 +4165,11 @@ function acctLineViolation(env: CommitEnvelope): string | null {
      replay rule's (c)), put back only where the restore owes it again, as above, its time and day its own;
    - the app's own writer (`account.told`, the system actor): a move's line alone ("…: he moved to 150"), unsigned, on the
      day his squadron changed, for a Plan he held the day before and not that day (movedParts), to an admin of that
-     squadron on that day, its fixed id (acctlines.ts planMovedLineId) — the same body the writer asks (planMovesOwed);
+     squadron TODAY — as its admins are at the moment the line is sent (his D2908; accounts.ts adminLineAudience over
+     today), never as they were on the move day — its fixed id (acctlines.ts planMovedLineId);
      and TOLD ONCE (U2 fix round 3, fix 5 — acctlines.ts moveTold, the writer's own body): never for a move a line of
-     which — its squadron line to any reader, or the mover's own — stood on the bell before this command;
+     which — its squadron line to any reader, or the mover's own — stood on the bell before this command; and the
+     command WHOLE (moveTellingViolation, above);
    - nothing else: no rewrite, no removal outside a restore, no line from any other command of the app's. */
 export const planLineChange = (c: Change): boolean =>
   c.collection === 'notices' && (isPlanLine(c.before) || (c.op !== 'delete' && isPlanLine(c.after)))
@@ -4184,9 +4201,11 @@ function planLineViolation(env: CommitEnvelope): string | null {
         // eslint-disable-next-line react-doctor/js-set-map-lookups -- one look in a list worked out afresh for this line's own man and day, never the same list twice
         || !homeChangesBefore(pid, addDays(d, -1), d, rows).includes(d)
         || !planLinesOf(pid, movedParts(accessIn(acct, rows, addDays(d, -1)), accessIn(acct, rows, d))).some(l => l.u === n.u && deepEqual(l.part, p))
-        /* (the audience as it stood on the move day — the writer's own body, U2 fix round 1, fix 8) */
-        // eslint-disable-next-line react-doctor/js-set-map-lookups -- one look in the audience of this line's own squadron and day, worked out afresh for it
-        || !adminLineAudienceOn(n.u, d, rows).includes(String(n.to))) return `a squadron's Plan line only the app writes for a move (${where})`
+        /* (the squadron's admins AS THEY ARE TODAY, the moment it is sent — his D2908: the same audience, the same day
+           and the same rows the owed body reads, acctlines.ts moveTellingsOwed, so this check and that list cannot
+           disagree; never the move day rebuilt) */
+        // eslint-disable-next-line react-doctor/js-set-map-lookups -- one look in the audience of this line's own squadron, worked out afresh for it
+        || !adminLineAudience(n.u, today, rows).includes(String(n.to))) return `a squadron's Plan line only the app writes for a move (${where})`
     }
     return null
   }

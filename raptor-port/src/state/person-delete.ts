@@ -66,7 +66,8 @@ import { commit, CmdRefused, isCommitting, isInReducer } from '../command'
 import { peopleStore, settingsStore, finishPeopleWrite } from './people-settings-commit'
 import { schedStore, schedApplyEnd, resyncBeforeEnlist } from './sched-commit'
 import { mayDeletePerson, byAfterLeaving } from './perms'
-import { deleteAccountProblem, dropAccountOfPid, accountsAfter } from './accounts'
+import { deleteAccountProblem, dropAccountOfPid, accountsAfter, accountOfPid } from './accounts'
+import { tellMovesFirst } from './acctlines'
 import { saidOf } from './roster-add'
 import { stampChanged, stampWho } from './inputstamp'
 import { deletePersonOnWar, postingOutIds, postingRefusedFrom, postingRestoreWhy, refusedFrom, warIdentityIfHidden } from '../leavewar/sync'
@@ -500,6 +501,12 @@ export function deletePerson(id: string, dateIso?: string | null): string | null
   const cutoff = deleteCutoff(dateIso)
   const pre = stashPreflight(id, cutoff)
   if (pre) return pre
+  /* HIS OWN DUE MOVES ARE TOLD FIRST (U2 fix round 4, part 2 — acctlines.ts tellMovesFirst): the delete takes his
+     account, and with it everything a move of his not yet told owes — his own lines and "Plan of 149 ended: he moved to
+     150" to 149's admins. Here, at the door's outer entry: applyDelete and dropAccountOfPid run inside the command,
+     where the telling could only wait until he was gone. */
+  const acct = accountOfPid(id)
+  if (acct) tellMovesFirst(acct.id)
   return saidOf(commit({
     type: 'person.delete', scope: { module: 'people' }, meta: null,
     apply: (txn: any) => {

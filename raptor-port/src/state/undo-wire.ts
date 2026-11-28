@@ -54,6 +54,7 @@ import { warCounts } from '../leavewar/absences'
 import { DATES, inputCoversDate, isSansAvail } from '../engine/inputs'
 import { UNIT_ROW_PREFIXES, GRANT_PFX, UNIT_PFX, UNITPLACE_PFX, PLACE_PFX } from './units-model'
 import { noticeLeftBell, isAcctNotice, isPlanLine, type Notice } from './notices'
+import { tellMovesFirst } from './acctlines'
 import { UNIT } from '../engine/unitview'
 import { split, localOf, qualify } from '../storage/unitid'
 import { storedPlan } from './plan-foreign'
@@ -877,6 +878,8 @@ export function installGlobalUndo(): void {
     /* (fix read 12, fault E — Astra 2): and with the right as it stood before the restore the other way took it, so a
        repeated Undo / Redo puts back the day an earlier restore gave it, never the step's older one */
     redate: (c, dir, offAt, stood) => restoreRedated(c, offAt, dir, stood),
+    /* a move whose day has come and is not yet told is told before every Undo and Redo (acctlines.ts tellMovesFirst) */
+    tellFirst: () => tellMovesFirst(),
     stoodNow: (c) => restoreStood(c),
     /* A-v: which squadron each world holds now, the squadron in view, and the squadrons he can still reach */
     worldNow,
