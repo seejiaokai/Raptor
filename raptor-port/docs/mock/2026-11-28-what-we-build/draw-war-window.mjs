@@ -47,6 +47,14 @@ const FRAMES = [
   { id: 'b2-pending', role: 'ad', who: CUT, iso: '2026-12-02', date: 'Wed 2 Dec', cards: [LL_PEND], say: 'A pending bid placed on the war.' },
   { id: 'b3-inputs-ll', role: 'ad', who: CUT, iso: '2026-12-09', date: 'Wed 9 Dec',
     cards: [{ box: 'c k-ll s-a whole', t: 'LL', main: 'Approved · Whole day', pucks: ['psy'], sub: PLACED('Cutter'), acts: ['approved', 'refuseOff', 'move', 'del'], rmk: 'full', leave: 'LL', dur: 'Whole day' }], say: 'LL filed on the Inputs page: the same card as one placed on the war.' },
+  /* his D2897: OL tapped on an approved LL day — never a second kind on top; the two ways he offered, drawn for his pick
+     (the words Opus's draft, a fresh Fable to adjust them before the build, D2441) */
+  { id: 'b3o1-replace-tap', role: 'ad', who: CUT, iso: '2026-12-09', date: 'Wed 9 Dec',
+    cards: [{ box: 'c k-ll s-a whole', t: 'LL', main: 'Approved · Whole day', pucks: ['psy'], sub: PLACED('Cutter'), acts: ['approved', 'refuseOff', 'move', 'del'], rmk: 'full', leave: 'LL', dur: 'Whole day',
+      noteText: 'Only one kind of leave a day. Tap OL again to change this LL to OL.', mark: 'note' }], say: 'Option 1: OL tapped once says so; a second tap on OL replaces the LL.' },
+  { id: 'b3o2-delete-first', role: 'ad', who: CUT, iso: '2026-12-09', date: 'Wed 9 Dec',
+    cards: [{ box: 'c k-ll s-a whole', t: 'LL', main: 'Approved · Whole day', pucks: ['psy'], sub: PLACED('Cutter'), acts: ['approved', 'refuseOff', 'move', 'del'], rmk: 'full', leave: 'LL', dur: 'Whole day',
+      noteText: 'Only one kind of leave a day. Delete this LL first, then add OL.', mark: 'note' }], say: 'Option 2: OL tapped says so and does nothing; delete the LL, then add OL.' },
   { id: 'b4-medical', role: 'ad', who: CUT, iso: '2026-12-10', date: 'Thu 10 Dec',
     cards: [{ fromCell: true, t: 'OML', main: 'Whole day', pucks: ['psy'], sub: PLACED('Cutter'), acts: [], pen: true, rmk: 'doc', mark: 'pen' }], say: 'A medical: no Move, no Delete; its Document and the pencil.' },
   { id: 'b5-course', role: 'ad', who: CUT, iso: '2026-12-14', date: 'Mon 14 Dec',
@@ -141,7 +149,10 @@ function transform(f) {
     if (c.leave && dur && leave) {
       const d2 = dur.cloneNode(true), l2 = leave.cloneNode(true)
       litDur(d2, c.dur || 'Whole day'); l2.querySelector(`[data-testid="bid-${c.leave}"]`)?.classList.add('lit')
-      card.appendChild(d2); card.appendChild(l2)
+      card.appendChild(d2)
+      /* D2897's line stands just above the leave buttons, where the below-zero line stands (D2031) */
+      if (c.noteText) { const nr = document.createElement('div'); nr.className = 'bidsheet-row rd-noteline'; nr.innerHTML = `<span class="note warn">${c.noteText}</span>`; card.appendChild(nr) }
+      card.appendChild(l2)
     }
     anchor.after(card); anchor = card
   }
@@ -169,6 +180,7 @@ async function mark(p, f, on) {
     const list = []
     f.cards.forEach((c, i) => {
       if (c.mark === 'pen') list.push([`.rd-card[data-rd="${i + 1}"] .ev-pen`, '1'])
+      if (c.mark === 'note') list.push([`.rd-card[data-rd="${i + 1}"] .rd-noteline`, '1'])
       if (c.mark === 'cutter') { list.push([`.rd-card[data-rd="${i + 1}"] .rd-change .pchip.on`, '1']); list.push([`.rd-card[data-rd="${i + 1}"] .rd-pucks`, '2']) }
       if (c.mark === 'group') { list.push([`.rd-card[data-rd="${i + 1}"] .ev-pen`, '1']); list.push([`.rd-card[data-rd="${i + 1}"] .dl-acts .move`, '2']) }
     })
@@ -283,6 +295,9 @@ try {
   const p1 = await ctx.newPage(); watch(p1)
   await R.setupWorld(p1); await p1.addStyleTag({ content: CSS })
   const only = process.argv.includes('--b9')
+  /* --only id,id: draw just those frames (no b9, no member pass) */
+  const pick = process.argv.includes('--only') ? process.argv[process.argv.indexOf('--only') + 1].split(',') : null
+  if (pick) { for (const f of FRAMES.filter(f => pick.includes(f.id))) await draw(p1, f); await browser.close(); console.log('DONE', VERSION, 'errors:', errs.length, errs.slice(0, 5)); process.exit(0) }
   if (!only) for (const f of FRAMES.filter(f => f.role === 'ad')) await draw(p1, f)
   await overWar(p1)
   if (only) { await browser.close(); process.exit(0) }

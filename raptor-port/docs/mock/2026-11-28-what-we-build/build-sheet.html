@@ -60,9 +60,20 @@ details li b{color:var(--ink)}
   <h1>What we would build</h1>
   <p class="lede">Everything you ruled on the Leave War window, the period list and "To review", drawn on the real app. Yellow marks show what is new since your last look.</p>
 
-  <div class="round"><b>New since your last look</b> (in yellow below): every card shows its people as small pucks, one person too · pressing Cutter on a group leave shows only his puck · a course day keeps the leave buttons, so leave can still go on it (my first drawing left them off by mistake).</div>
+  <div class="round"><b>New since your last look</b> (in yellow below): every card shows its people as small pucks, one person too · pressing Cutter on a group leave shows only his puck · a course or overseas-duty day keeps the leave buttons, so leave can still go on it (my first drawing left them off by mistake) · a new question just below: what tapping OL on an LL day does.</div>
 
-  <section class="ask" aria-labelledby="q1">
+  <section class="ask" aria-labelledby="q2" style="border-color:var(--mark)">
+    <div class="q" id="q2"><span class="fresh">New ·</span> Cutter has an approved LL on Wed 9 Dec. You tap OL on it. What happens?</div>
+    <div class="when">When: an admin or Cutter wants to swap the kind of a leave already on a day. Leave never goes on top of leave.</div>
+    <div class="grid" id="opt"></div>
+    <div class="opts">
+      <div class="opt rec"><span class="k">1</span><div><b>Tap OL again to replace it.</b> (Recommended.) The first tap only shows the line; the second makes it OL. Its remarks and Document stay with it. The Leave War already asks for a second tap when leave would go below zero.</div></div>
+      <div class="opt"><span class="k">2</span><div><b>Delete it first, then add OL.</b> The tap only shows the line. Deleting also drops its remarks and Document, so they are typed and attached again.</div></div>
+    </div>
+    <div class="reply">Reply in the chat: <code>1</code> or <code>2</code>. The words are a draft; they get a polish before the build.</div>
+  </section>
+
+  <section class="ask" aria-labelledby="q1" style="margin-top:12px">
     <div class="q" id="q1">Build these as drawn?</div>
     <div class="when">When: every time you tap a day on the Leave War, pick a leave period, or review inputs on the schedule.</div>
     <div class="opts">
@@ -157,7 +168,11 @@ function draw(id, list) {
     return `<figure class="card${wide}" style="margin:0">${pics}<figcaption class="cap"><span class="t">${t}</span><span class="d">${d}</span></figcaption></figure>`
   }).join('')
 }
-function all() { draw('war', WAR); draw('periods', PER); draw('review', REV) }
+const OPT = [
+  ['b3o1-replace-tap', true, 'Option 1', `${NEW(1)} "Only one kind of leave a day. Tap OL again to change this LL to OL."`],
+  ['b3o2-delete-first', true, 'Option 2', `${NEW(1)} "Only one kind of leave a day. Delete this LL first, then add OL."`],
+]
+function all() { draw('opt', OPT); draw('war', WAR); draw('periods', PER); draw('review', REV) }
 function setSize(s) {
   size = s
   document.getElementById('segPhone').setAttribute('aria-pressed', s === 'phone')
