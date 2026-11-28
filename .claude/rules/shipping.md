@@ -34,9 +34,10 @@ checks and the deploy are in `raptor-port/docs/gates-and-deploy.md`.
 - Finished jobs waiting on his "merge live" at once may merge as one — **open the steps first** (D822, D1930).
 - Change → its own tests green locally → commit and push to the session branch (one open pull request accumulates the
   lot) → open the pull request into `main` as soon as the job is built, so its checks run while the app is walked
-  (D1086) → once the work is ready for his look and its Vercel preview is Ready, send him the link.
+  (D1086) → once the work is ready for his look and its GitHub Pages preview serves it, send him that link (D2839).
 - The link and the pictures come whenever you need him to review something, and when the work is done — not after
-  every push of unfinished work (D905, D906). Where the link is: the steps.
+  every push of unfinished work (D905, D906). The link is the GitHub Pages preview, published by hand — one public
+  site, each preview replacing the last; Vercel stays the live app. How to publish it: the steps (D2832, D2839).
 - **Never push while that pull request's checks are running:** any push, even of notes, cancels the run in progress
   and restarts it. Look first — the command is in the steps, and a push starts two runs, so read them all — then batch,
   and push when it has finished ([RUN-CHECK-BOTH-RUNS], D151, D870).

@@ -1,8 +1,9 @@
 # THE CHECKS: build the React port and run every gate — on each pull request into main, so a red pull request is
 # caught BEFORE the merge (owner ask, 5 Aug 26), and on each push to main. This workflow PUBLISHES NOTHING: the live
 # app is Vercel's, which builds every push by itself (vercel.json at the repo root; "done" means live on Vercel — D143).
-# It once also published to GitHub Pages; that site is gone since the repo first went private (D59, 23 Sep 26) and is
-# not coming back (D343) — the `deploy` job at the end is that publish, switched off, kept with its story. The
+# It once also published to GitHub Pages (gone since D59, 23 Sep 26; D343); the `deploy` job at the end is that
+# publish, switched off, kept with its story. Pages is now a preview site only, published by hand from the `gh-pages`
+# branch for his look (D2832, D2839, 27 Nov 26) — never by this workflow; the live app stays Vercel's. The
 # workflow's `name:` and its concurrency group (`pages`, `pages-pr-<n>`) keep their Pages-era words on purpose:
 # GitHub and other places know the checks by them ([DEPLOY-DOCS], 21 Oct 26).
 # Where the gates run: on GitHub's machines while the repo is public (D106, D1086), on his own PC once it is private

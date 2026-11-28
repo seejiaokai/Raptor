@@ -57,8 +57,8 @@ lands on the short form, which names the section here. The rulings behind each l
   above. Not a notes-only pull request (D1407, D1737, D1980) nor the D1795/D1796 chats' own rule; never stacked on another's branch.
 - Change → its own tests green locally (the whole gate set too once the repo is private again — §The checks) → commit
   and push to the session branch (one open pull request accumulates the lot) → once the work is ready for his look
-  (built and checked) and its Vercel preview is Ready, send him the link — not after every push of unfinished work
-  (D905, D906).
+  (built and checked) and its GitHub Pages preview serves it (below), send him the link — not after every push of
+  unfinished work (D905, D906, D2839).
 - The link and the pictures come whenever you need him to review something, and when the work is done (D906).
 - Do not go quiet waiting on the checks — take the next change. While a preview or a check run cooks he will hand you
   more work: take it; never idle waiting on a rollout.
@@ -71,9 +71,36 @@ lands on the short form, which names the section here. The rulings behind each l
   never discover it at "merge live".
 - A green pull request sitting open is the intended resting state, not a thing to finish. The link never gates the
   merge — only his "merge live" does.
-- Where the link is: the `vercel[bot]` comment on the pull request (its Preview URL is stable per branch), or the
-  Preview deployment of the branch's head commit on GitHub (`gh api repos/<owner>/<repo>/deployments`, then its
-  statuses — the URL rides the status). Hand it to him every time.
+- Where the link is: the GitHub Pages preview, https://seejiaokai.github.io/Raptor/, published by hand from the
+  branch (the steps below). Hand it to him every time (D2832, D2839). Vercel stays the live app and still builds each
+  branch push that changes the app (its preview: the `vercel[bot]` comment on the pull request, or the branch head's
+  Preview deployment, `gh api repos/<owner>/<repo>/deployments` then its statuses); that preview is simply no longer
+  the link sent to him.
+- The Pages site is ONE site for the whole project, and public: each preview replaces the one before. The message with
+  the link says which branch (and commit) it shows. A second chat publishing replaces the first's — before publishing,
+  `git fetch origin gh-pages` and read `git log -1 --format=%s origin/gh-pages`; if another chat's look may be under
+  way there, tell that chat first (D2832, D2839).
+- Publishing a preview (first done for pull request 857, 27 Nov 26), in Git Bash, from the branch's own working copy:
+  1. Build with the site's sub-path — a build, so under the checks lock's rule like any other:
+     `cd raptor-port && MSYS_NO_PATHCONV=1 npm run build -- --base=/Raptor/`. Without `MSYS_NO_PATHCONV=1` Git Bash
+     turns `/Raptor/` into a Windows folder path. `dist/index.html` must name its files `/Raptor/assets/…`.
+  2. Look at it served under that sub-path before pushing: `MSYS_NO_PATHCONV=1 npx vite preview --base=/Raptor/
+     --port <a free port>`, then `http://localhost:<port>/Raptor/` — the page loads, no file is missing, sign-in works
+     (chat 208's check of the Leave War, a model to copy: `raptor-port/scripts/handpass/lw-pages-check.mjs`).
+  3. Make the branch's single commit in a copy outside the working copy (`<copy>`: a fresh folder in the scratchpad):
+     `cp -r dist <copy> && touch <copy>/.nojekyll && git -C <copy> init -q -b gh-pages && git -C <copy> add -A &&
+     git -C <copy> commit -q -m "Preview of <branch> (<commit>) for his look"`. The empty `.nojekyll` stops GitHub
+     treating the site as a Jekyll one, which drops some files.
+  4. Force-push that branch only: `git -C <copy> push -f https://github.com/seejiaokai/Raptor.git gh-pages:gh-pages`
+     — never `main`, never the session branch. Pages already serves the `gh-pages` branch from its root; nothing in
+     the repo's settings changes.
+  5. Wait until the site serves the new build: `gh api repos/seejiaokai/Raptor/pages/builds/latest -q '.status + " "
+     + .commit'` reads `built` and the commit just pushed (about a minute), and `curl -s
+     https://seejiaokai.github.io/Raptor/ | grep -o 'assets/index-[^"]*[.]js'` names the same file as
+     `dist/index.html`. The site may be cached for up to 10 minutes: if his phone still shows the old build, he
+     reloads. It is public, so the agent's own browser can open it too.
+  6. Send the link, naming the branch it shows. Then rebuild with a plain `npm run build` before any local browser
+     test or walk — the `/Raptor/` build does not serve from the root.
 - Vercel is his surface, never your drive target: it sits behind his Vercel sign-in, so he can open it and your
   browser cannot (it answers with a 302 to `vercel.com/sso-api`). Your fast surface is the local
   `npm run build && npx vite preview` — the same bundle, byte for byte (`raptor-port/CLAUDE.md` §Build & verify).

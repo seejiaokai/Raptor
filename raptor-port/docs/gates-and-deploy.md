@@ -243,9 +243,15 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
   filed, keeps its own rule — D84.) A check called hung or slow: read the step times of recent runs first
   (`gh run view <id> --json jobs`) and name the slow step before setting a limit or blaming a test (8 Nov 26: a smoke
   "hung 16 minutes" was 12 of them in the browser install's download, slow in 9 runs of 20).
-- **There is no GitHub Pages site** (D59, 23 Sep 26; D343, 28 Sep 26 — D341 switched it back on for under an hour and was
-  withdrawn before anything published): the publish job is off, and every Pages trap below is history. The app is seen on VERCEL: a preview per branch (his surface — the agent's is the local `vite preview`) and the
-  live app from `main`. **"Done" after "merge live" means live on Vercel** (D143): merge → `main`'s run green (on
+- **GitHub Pages is a preview site only** (D2832, D2839, 27 Nov 26): https://seejiaokai.github.io/Raptor/, published by
+  hand from the `gh-pages` branch — the link for his look, one public site, each preview replacing the one before; the
+  steps: `raptor-port/docs/shipping-steps.md` §The loop. The checks still publish nothing: the workflow's old publish
+  job stays off (D59, 23 Sep 26; D343, 28 Sep 26, which D2832 replaces for previews only — D341's live site on GitHub is
+  not back), and every trap of that job below is history. The live app is VERCEL: it still builds a preview per branch
+  (no longer the link sent to him; the agent's own surface is the local `vite preview`) and the live app from `main`.
+  **A Pages preview built in Git Bash needs `MSYS_NO_PATHCONV=1`** (met 27 Nov 26, chat 208): without it the shell
+  rewrites `--base=/Raptor/` into a Windows folder path, and the built page's file paths come out wrong — check
+  `dist/index.html` names `/Raptor/assets/…` before pushing. **"Done" after "merge live" means live on Vercel** (D143): merge → `main`'s run green (on
   GitHub's machines while the repo is public, on his PC once it is private — D1086, D1530) → the Production deployment for that commit READY (`gh api repos/<owner>/<repo>/deployments?environment=Production`,
   then its statuses) → one notification with the link (a merge Vercel skips as all notes — "A notes-only push skips its
   build", below — shows as Canceled, keeps the live app serving, and needs no READY and no Promote: D2032). The whole
@@ -526,7 +532,8 @@ None of these gate a tracker- or storage-only change.
   are still there.
 
 *The section below moved whole from `HANDOFF.md` §Deploy on 24 Sep 26. Its GitHub Pages parts are history since D59 —
-the Now block at the top of this file is current.*
+the Now block at the top of this file is current — including the hand-published Pages preview site since 27 Nov 26
+(D2832, D2839), which is not the old publish job these parts describe.*
 
 ## Deploy — the traps, all still live
 
@@ -620,6 +627,8 @@ routing every look through the gated Pages deploy.
   run (the workers flake), so workflow changes go one at a time.
 
 GitHub Pages must stay enabled (Settings → Pages → Source: GitHub Actions).
+*(History. Today Pages serves the hand-published `gh-pages` branch from its root, a preview site only — leave that
+setting as it is: §Now, "GitHub Pages is a preview site only", D2832, D2839.)*
 The workflow refuses to publish on any red test. The four gates also run on
 every **pull request** into main, so a red PR is caught before merge; a PR
 run gates only — it uploads no artifact and never deploys. Publishing stays
