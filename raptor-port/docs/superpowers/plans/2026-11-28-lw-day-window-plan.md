@@ -375,8 +375,14 @@ the one place that answers "may this person do this?").
   `recordTakeable` 4340, `changeAbsenceById` 4505 'removed', the `AbsenceDoor` interface 3015);
   `src/leavewar/sync.ts` (two **new** door functions, installed in `installAbsenceDoor` 332; `oilAskPlan` 1385);
   `src/ui/inputedit.tsx oilGate` (932 — called, not changed); `src/state/perms.ts` (`COMMAND_OPS`: two new command
-  types, `lw.inputMove` and `lw.inputRemove`, each `op(T.input, 'U' | 'D', 'optional', [[T.bid, 'U'], [T.notice, 'C']])`
-  — the extra tables because the Inputs door may replace a clashing pending bid and tell its man, round 1 M5);
+  types, `lw.inputMove` and `lw.inputRemove`, each `op(T.input, 'U' | 'D', 'optional')` **with no extra-tables list**
+  (round 2, both readers: `cmdAuthorize`, 722–733, asks every extra table with the own-row rule 'never', so a list
+  there would refuse every member's own call — and no command a member runs has one today). That the door may also
+  replace a clashing pending bid and tell its man is written in a comment above the two types and in the new row of
+  `docs/data-model.md` §11; what keeps a member to his own records is the gate's check of the real changes
+  (`inputBreach`, the `lw.cell` case), as for `lw.edit` and `inputs.write`);
+  `src/ui/inputedit.tsx oilFirst` (1798) and `src/ui/caldrag.ts commitChipMove` (160–185) — called and copied from,
+  not changed;
   `docs/data-model.md` §11; `src/leavewar/permsparity.test.ts`; `daycards.ts` (flip `move` / `del`).
 - **One question, one door (round 1, M4).**
   - The blue "filed on the Inputs page" edge (`offWar`) and the day lock (`lockedOnWar`) are **not changed for any
@@ -388,7 +394,12 @@ the one place that answers "may this person do this?").
     `doorMoveApproved` (1040) and `doorRemoveApproved` (1010) are **not widened**: called on an Inputs-filed entry
     they refuse as today (a test). So leave without `lw` moved by an admin stays approved, stays without `lw`, and
     gets **no** `lwMoved` trail and no dotted "moved" mark — it was never the war's.
-  - The grid's move mode, entered from a **card's** Move, carries such a record and at the drop calls step 4's door.
+  - **A card's Move does not go through `moveRecords` (round 2, Opus M-1).** `moveRecords`, `moveRecordsProblem`,
+    `absenceMovable` and `movableRecords` stay exactly as today: they refuse these records ('raptor'), which is what
+    keeps the drag window out. The move mode remembers what started it: when the record came from a **card's** Move
+    and is an entry step 4 owns, the landing preview asks step 4's own problem function and the drop calls step 4's
+    door as a **top-level** gesture of type `lw.inputMove` — never nested inside `lw.move` (a nested gesture commits
+    under the outer type, `store.ts` 3339, so the gate, the bell and Undo's name would all read `lw.move`).
     The drag window never offers it (§2a).
 - **Change:**
   - *Delete* cuts the tapped day (or all its days, by the card's chips — R4) out of the Input, by the same
@@ -400,15 +411,16 @@ the one place that answers "may this person do this?").
     exactly as the Inputs page does for the same edit); the input gate's `vet` (leave over leave, leave over a medical
     → refused with its reason) and its bid replacement (a moved leave or course landing on a pending bid's time — the
     same as filing it there on the Inputs page); another squadron's day; a posting with the Delete outcome.
-  - **The OIL question comes first (round 1, Astra 3 — D783, D804, D831).** A move that lands a kind that is asked
-    (a course, an overseas duty, an Other, Training and the rest) on a weekend or holiday with no answer for that day
-    asks before anything is cut: the builder calls `oilGate(<the entry as it would stand after the move>, <as it
-    stands>)` — for a moved part of a longer entry, the moved part — and, on `ask`, opens the app's one OIL question
-    (`setOilAsk`, as `sync.ts askFiledOil` does over the war). **Nothing moves until it is answered**; answered, the
-    answer and the move are one command and one Undo; closed unanswered, both days are as they were, no bell line, no
-    Undo step, and the standing bar reads "Not moved — OIL not answered · Answer OIL · OK" (the existing bar, its
-    existing shape; the word "moved" to Fable, §6 w27). After the answer the entry, the permission, the destination
-    and the lock are checked **again** before saving.
+  - **The OIL question comes first — through the door the app already has (round 1, Astra 3; round 2, Opus M-3 —
+    D783, D804, D831).** Not `setOilAsk` the way `sync.ts askFiledOil` uses it: that one asks **after** the filing
+    is saved. The app's one "question before a change" is `ui/inputedit.tsx oilFirst({ kind: 'move', lead, iid, same,
+    gate, make, places, again })`, which the Inputs calendar's chip drag uses for this very case (`ui/caldrag.ts
+    commitChipMove`). Step 4's door is wrapped in it: `gate` is `oilGate(<the entry as it would stand after the
+    move — for a moved part of a longer entry, that part>, <as it stands>)`; `make(r, oil)` calls the war door with
+    the answer, so the answer and the move are one command and one Undo; `same` is the re-check of the entry, the
+    permission, the destination and the lock after the answer. Nothing is cut before the answer; closed unanswered,
+    both days are as they were, no bell line, no Undo step, and the existing bar stands — "Not moved — OIL not
+    answered · Answer OIL · OK" (`WAIT_WORDS.move`, already built and pinned; no new words).
   - A move is all or nothing: any refusal at commit **throws** and rolls the whole command back
     (`MoveRefusedAtCommit`'s way — a returned `false` does not undo what an earlier stage wrote).
 - **Tests first** (new `src/leavewar/inputdoor-move.test.ts`, `inputdoor-remove.test.ts`, `inputdoor-oil.test.ts`,
@@ -419,9 +431,13 @@ the one place that answers "may this person do this?").
   rejected course (R8); onto a locked week; onto a published day (pending amendment, the issued face unchanged); onto
   another squadron's day; onto a posted-out day.
   **Onto a day holding the man's pending bid:** admin moves Cutter's course there → as the Inputs page does it (a course
-  leaves a bid alone; a leave replaces the clashing half), Cutter told once; a member moves his own leave-kind entry
-  onto his own pending bid on a closed day → allowed (D1166), the bid cut.
-  **OIL:** a weekday course moved to Saturday → the question first, nothing cut; answered Yes · FO → moved and
+  leaves a bid alone; a leave replaces the clashing half), Cutter told once; a member's own **approved leave** is never moved by this door (round 2, Astra 4): pressed onto a closed day
+  holding his pending bid, the war refuses and neither the leave nor the bid changes (step 7, rule 4); the same move
+  made **on the Inputs page** is allowed and stays approved (D1166) — a positive test there, so the difference is
+  pinned on both sides. **The type:** the committed envelope of a card-started move is `lw.inputMove`; a member's own
+  call of each new type passes `cmdAuthorize` (the test that would have caught round 2's top finding), and another
+  man's is refused; `moveRecords` called directly with a course's record still returns its refusal and changes nothing.
+  **OIL** (the pattern: `ui/caldrag.test.tsx`'s ON9 case, run through the war's door)**:** a weekday course moved to Saturday → the question first, nothing cut; answered Yes · FO → moved and
   credited, one Undo takes both back; closed unanswered → nothing changed, no Undo step, the bar; already answered
   for that day → no question; a weekday → holiday move the same; the entry changed by someone else while the question
   is open → the re-check refuses, nothing half done.
@@ -441,22 +457,33 @@ the one place that answers "may this person do this?").
   no new field. `docs/data-schema.md` needs no change; say so in the step's commit.
 
 #### Step 5 — an admin decides leave that was filed on the Inputs page (drawing b3) · HIGH · after 4
-- **Files:** `store.ts` (`warEditable` 3978, `changeAbsenceById`, `setBidStates` 4116, `decideRequests` 4443);
+- **Files:** `store.ts` (one **new** door for the card, `decideApprovedById(personId, date, iid, to)`);
   `sync.ts` (`decideApprovedWhy` 662, `doorDecideApproved` 968 — **its own entry test only**; the shared
-  `warLeaveRow` 514, which `doorMoveApproved` and `doorRemoveApproved` also ask, is left as it is — round 1, M4);
-  `daycards.ts`.
-- **Change:** `doorDecideApproved` (and `warEditable` for the two decide paths only) takes a one-person leave Input with or without `lw`, provided it is a whole day, a morning
-  or an afternoon (a bid cannot hold custom hours — such a leave keeps its pencil and has no Approved / Refuse, R5).
-  The lit "Approved" tapped again sends it back to pending; Refuse refuses it. The minted request's "placed by" is the
-  Input's `lwBy`/`lwAt` where it has them, else its `by`/`at` (who filed it on the Inputs page). The period is the one
-  holding the day; a day in no period is not on the grid, so cannot be reached.
+  `warLeaveRow` 514 is left as it is); `daycards.ts`.
+- **The shared doors are not widened (round 2, Opus H-2).** `warEditable` (3978) is asked by `setBidStates` (4116 —
+  what the drag window's and the one-day window's range Decide call, `SelectSheet.tsx` 396), by `decidableIn` (6477),
+  `deletableIn` (6494), `recordTakeable` and `clearCells`. Widening it would hand the drag window a power to refuse
+  Inputs-filed leave that was never drawn there (§2a, D1625). So `warEditable`, `setBidStates`, `decideRequests`,
+  `decidableIn` and `deletableIn` stay exactly as they are. (`decideRequests` is Approvals' door, and leave filed on
+  the Inputs page never stands on Approvals.)
+- **Change:** `decideApprovedById` asks `canDecide`, step 4's `warMayChange`, and that the Input is a one-person
+  leave on a whole day, a morning or an afternoon (a bid cannot hold set hours — such a leave keeps its pencil and
+  has no Approved / Refuse, R5); then, as its own top-level gesture (`lw.decideApproved`, already in the command
+  list, an admin's), calls `doorDecideApproved`, whose entry takes a leave with or without `lw`. **Only the card's
+  lit Approved and Refuse call it.** The lit "Approved" tapped again sends it back to pending; Refuse refuses it. The
+  minted request's "placed by" is the Input's `lwBy`/`lwAt` where it has them, else its `by`/`at` (who filed it on
+  the Inputs page) — written by an admin, whom the stamp check does not bind. The period is the one holding the day;
+  a day in no period is not on the grid, so cannot be reached.
 - **Tests first:** admin sends back an Inputs-filed LL (whole, AM, PM, a middle day of a several-day leave → it splits,
   the other days stay approved); refuses one; approves it again → it comes back as war-approved (`lw` set — the war
-  approved it now), remarks, till and documents intact; balances (App bal, Pending, War bal) right at each stage; the
-  man's bell: "put back to a bid", "refused", "approved again"; Undo of each; a locked week refuses with the door's
-  words; a custom-hours leave offers neither button and the door refuses it called directly.
-- **Permission:** admin only (`canDecide`) — a member's call refused in store and gate (`lw.decide` is `bid:U` 'never'
-  for a member already; pinned).
+  approved it now), remarks, till and documents intact; balances (Official bal, Pending, War bal) right at each stage;
+  the man's bell: "put back to a bid", "refused", "approved again"; Undo of each; a locked week refuses with the
+  door's words; a set-hours leave offers neither button and the door refuses it called directly.
+  **The drag window and the range Decide gain nothing:** an admin's drag selection over a day of Inputs-filed LL —
+  `decidableIn` counts it 0, and Approve / Refuse there leave it approved and unchanged; the one-day window's range
+  Decide the same.
+- **Permission:** admin only (`canDecide`) — a member's call refused in store and gate (`lw.decideApproved` is the
+  admin's already; pinned).
 
 #### Step 6 — an admin swaps the kind, or changes the half, of approved leave (D2897, D2923, D2925) · HIGH · after 5
 - **Files:** `store.ts` (new `replaceEntry(personId, date, entryId, newCode, approveAfter)` — one function for a
@@ -502,18 +529,23 @@ differ). So:
 - **nothing in the gate is loosened or tightened for the Inputs page**;
 - and, as a backstop against a fault in the war's own door (not a security wall — a member can always reach the
   Inputs-page result on purpose), the door's commands carry **their own types**, and for those types only the gate
-  checks the shape: no leave Input of his is created or lengthened by the command, every request it writes is his,
-  pending, on a day open for him. A war-door bug that left the leave approved is then refused, not saved.
+  checks the shape — judged by what his approved leave **covers**, not by whether a record is new (round 2, Astra 3
+  and Opus M-2: cutting a middle day leaves a second piece with a fresh id, `sync.ts` 940–945, which must pass): no
+  leave Input of his ends the command covering a day or a half it did not cover before, and his approved leave days
+  do not rise; a new leave record is allowed only as a piece of one this command shortened — the same man, kind and
+  hours, its days among that record's days before; every request the command writes is his, pending, on a day open
+  for him. A war-door bug that left the changed or the landing part approved is then refused, not saved.
 
 - **Files:** `src/leavewar/engine/access.ts` (one new exported question, `canChangeOwnApproved(role, viewer, personId)`
   — a member on his own row; `canDecide` untouched); `store.ts` (new `ownApprovedProblem(personId, date, iid, what, to?)`
-  and one door, `changeOwnApproved(...)`, with three uses — delete, move, change of kind or half; **`moveRecords` 6362
-  and `moveRecordsProblem` 6303**, the one commit every Move ends in — see rule 8; `clearCells` 3808 and
+  and one door, `changeOwnApproved(...)`, with three uses — delete, move, change of kind or half; `moveRecords` 6362 and `moveRecordsProblem` 6303 are **not changed** — see rule 8; `clearCells` 3808 and
   `changeAbsenceById` 'removed' are **not** opened to a member); `ui/Matrix.tsx` (the move mode's drop); `sync.ts`
   (the door's cut and mint; `alsoSince`); `src/state/perms.ts` — `COMMAND_OPS`: two new types,
-  `lw.ownApprovedChange` and `lw.ownApprovedRemove`, each
-  `op(T.bid, 'U', 'optional', [[T.input, 'U'], [T.input, 'D']])` so the list names every table they write (round 1,
-  M5), and the shape check above for those two types; **`stampForged` is not touched**; `docs/data-model.md` §11 (a new
+  `lw.ownApprovedChange` and `lw.ownApprovedRemove`, each `op(T.bid, 'U', 'optional')` **with no extra-tables list** — the shape a member's command has today
+  (`lw.edit`, `lw.move`); an extra-tables list is asked with the own-row rule 'never' (`cmdAuthorize` 722–733) and
+  would refuse every member, the very calls this step exists for (round 2, both readers). That the two types also
+  write the Input table is said in a comment above them and in the new §11 row; the shape check above for those two
+  types; **`stampForged` is not touched**; `docs/data-model.md` §11 (a new
   row: "a member — his own approved leave on the Leave War: delete; move / change → pending"); `permsparity.test.ts`;
   `daycards.ts`.
 - **Rules (each a test):**
@@ -537,13 +569,24 @@ differ). So:
   7. No bell line to anyone (his own change; D1208). The admin sees the re-bid as New on Approvals; a **deleted**
      approved leave is listed under Approvals' "Also since you last looked", as a withdrawn bid is (`alsoSince`) —
      its words §6 w26, drawn first (step 9b).
-  8. **Every Move ends in the same commit, so the commit must know (round 1, H1).** `moveRecords` today sends every
-     approved leave to `DOOR.moveApproved`, which re-files it **approved**. In `moveRecords` and
-     `moveRecordsProblem`: a record that is an approved leave Input and whose actor is not an admin never reaches
-     `DOOR.moveApproved` — it goes to `changeOwnApproved`. `absenceMovable` and `movableRecords` stay admin-only as
-     today, so the **drag window gains nothing**; a member's approved leave is picked up only from its card's Move.
+  8. **A member's Move goes to the war door itself, never through the shared move commit (round 1, H1; round 2, Opus
+     M-1).** `moveRecords`, `moveRecordsProblem`, `absenceMovable` and `movableRecords` stay exactly as today — they
+     refuse a member's approved leave ('raptor') before anything else, which is the safety H1 asked for and why the
+     **drag window gains nothing**. The move mode remembers what started it: when the record came from a **card's**
+     Move and is the member's own approved leave, the landing preview asks `ownApprovedProblem` and the drop calls
+     `changeOwnApproved` as a **top-level** gesture of type `lw.ownApprovedChange` — never nested in `lw.move`, or
+     the command would reach the gate as `lw.move` and the backstop, the bell and Undo's name would read the wrong
+     type (`store.ts` 3339).
   9. Days from a posting with the Delete outcome (D1541, D1555): the war refuses approving leave there, so a re-bid
      landing there could never be approved — the move is refused with that reason.
+  10. **A leave with set hours (10:00–15:00) is not moved or changed by its member on the war (round 2, Astra 2).**
+     A bid holds only a kind and whole day / AM / PM (`engine/warrecs.ts RequestRec`), so sending such a leave back
+     to pending would silently make it a whole day — D2922 asks for pending, not for its hours to change. Adding
+     hours to a bid is a change to what the app saves that nobody has ruled, so this plan does not make it. His card
+     for such a leave has Delete, its remarks and Document, and the pencil — whose window is the Inputs page's own,
+     where his change of hours or date is saved as that page saves it (D1166). `ownApprovedProblem` refuses a move
+     or change of it; the state is drawn first (step 9b, item 2). An admin's Move of it keeps its hours (step 4's
+     door re-files the Input itself).
 - **Tests first** — `src/leavewar/own-approved.test.ts` (store) and `own-approved-sec.test.ts` (hand-made commands,
   the way `m4sec.test.ts` and `sec147-read.test.ts` do):
   - *Store.* The worked case of D2922: Ranger's approved LL on Thu 3 Dec; **by the card's Move and a drop in the
@@ -563,8 +606,14 @@ differ). So:
   - *Gate — only what the gate truly owns.* Refused: a command on another man's row or cutting another man's Input; a
     forged decided stamp; a request placed by anyone but himself (the existing `stampForged`, unchanged — ten bids
     borrowing an old stamp cannot arise, there is no borrowed stamp); a bid on a closed day or a past day; a locked
-    week; a group leave he is in (not his own — `mayEditInput` false). **The backstop:** a command of type
-    `lw.ownApprovedChange` that leaves or creates approved leave for him is refused.
+    week; a group leave he is in (not his own — `mayEditInput` false). **The members' own calls pass:** a signed-in member's call of `lw.ownApprovedChange` and
+    `lw.ownApprovedRemove` passes `cmdAuthorize` — run through the card and through the grid's drop, not only the
+    helper; the committed envelope's type is `lw.ownApprovedChange`. `moveRecords` called directly with a member's
+    approved-leave record still returns `{ reason: 'raptor' }` and changes nothing. **The backstop:** a middle-day
+    Delete, a middle-day Move, a middle-day kind change and a middle-day half change of a five-day leave are each
+    **accepted** (both untouched pieces stay approved, a reload agrees, one Undo restores the one leave); a hand-made
+    `lw.ownApprovedChange` whose new piece adds a day, or that leaves the changed or landing part approved, is
+    refused. A set-hours leave: Move and change refused by the store; Delete allowed.
     **And the opposite pin:** a hand-made command equal to an Inputs-page re-date of his own leave (an Inputs command
     type, the leave still approved) is **ACCEPTED** — D1166 — so nothing here can quietly break the Inputs page.
   - A member whose leave was approved, then his dates closed: Move, Duration and the leave buttons are not offered;
@@ -606,7 +655,11 @@ kinds, and one member frame. These states are new and undrawn:
   5. the group card as it stands until Q1 and Q2 are answered (line w8) beside the approved b7 — or, if he would
      rather, nothing new: the group entry keeps opening what it opens today (the default below);
   6. Approvals' "Also since you last looked" with a member's deleted approved leave (w26), phone and desktop;
-  7. the bell's two new lines (w10, w11) in the bell's own list.
+  7. the bell's two new lines (w10, w11) in the bell's own list;
+  8. four cards the drawings never showed (round 2, Opus L-1): a member looking at another man's day (read-only
+     cards, no buttons); a refused bid's card; an OIL the schedule earned (FO* / HO*) as a card with no buttons; a
+     replaced-bid notice as a card. And item 2 for a **member** too: his own set-hours leave with Delete, remarks,
+     Document and the pencil only (step 7, rule 10).
 - **Until he has answered**, each state opens **what it opens today** — the routing table of step 10 says which old
   window — and steps 6, 7, 13, 15 and 16 build only the parts already drawn.
 - **Put to him as one small round**, with Q3–Q5 (and Q1, Q2 when step 16 is next): each question one decision, when
@@ -619,8 +672,10 @@ kinds, and one member frame. These states are new and undrawn:
 - **Change:** `DayWindow` = title (drag handle, name, date, Auto-approve where `autoApprove`, ✕) → manning line → the
   cards → the add part where `add` → the last row. **The routing moves one state at a time (round 1, L3):** in this step `Matrix.tsx` opens `DayWindow` for **the empty
   day only** (b1); a routing table (`ui/dayroute.ts`, pure, tested) names for every state which window opens. Each
-  later step moves its own states across as its card lands — step 11 the one-leave days, step 13 the other kinds,
-  step 15 the combinations and the member's approved leave, step 16 the group — so no commit ships a window missing
+  later step moves its own states across as its card lands — step 11 the pending bid (b2) only; an **admin on approved
+  leave** (b3, b3o1, b8's held half) once Q4 is answered (today's window already gives him Approved / put back,
+  Refuse, Move and Delete there); step 13 the other kinds; step 15 the combinations and the member's approved leave;
+  step 16 the group; the four looks of step 9b's item 8 only after he has seen them — so no commit ships a window missing
   its entries' buttons; `BidPicker`, `DayListSheet` and `RemarksSheet` stay mounted for the states not yet moved,
   and for every undrawn state of step 9b until he has answered. **Left exactly as they are** (R1): `ClosedNoteSheet`, the read-only schedule sheet
   where a day holds only schedule-earned OIL for a member, the posted-out / not-yet-arrived routes, another squadron's
@@ -635,11 +690,16 @@ kinds, and one member frame. These states are new and undrawn:
   and 1536×864 and measures each part's place, size, colour and text against the `*-clean-*` picture; every difference
   over 2px listed with a marked side-by-side. Run after this step and after every later step and fix.
 
-#### Step 11 — the leave card: a pending bid and an approved leave (b2, b3, b3o1) · after 10, 6
+#### Step 11 — the leave card: a pending bid first (b2); an approved leave (b3, b3o1) once Q4 is answered · after 10, 6
 - **Files:** `ui/EntryCard.tsx`, `ui/DayWindow.tsx`, `ui/belowzero.ts` (the second-tap pattern reused, not copied),
   `ui/bidpicker.css`; tests `ui/daywindow-leave.test.tsx`; the tests that pin today's one-tap re-type
   (`ui/wholeleave.test.tsx` 216–222, `ui/leavebuttons.test.tsx`, `ui/doubletap*.test.tsx`) are **changed on purpose** —
   name each in the commit.
+- **Order inside the step (round 2, Opus M-4).** First the **pending bid's** card (b2), for an admin and for the
+  member: all of the below. The **admin's approved-leave** card (b3, b3o1) — whose swap and Duration follow a switch
+  that may be hidden — is built **only once Q4 is answered**; until then the routing keeps those days on today's
+  window, so no card is ever shown with leave buttons that do nothing or that follow a switch out of sight. A refused
+  bid's card waits for step 9b's item 8.
 - **Change:** heading "Pending · Whole day" / "Approved · AM" / "Refused · PM" (Fable's "AM", taken); the puck line;
   "Placed by…"; the action row in the fixed order Approve · Refuse · Move · Delete; Remarks · till · Document; Duration
   with the card's half lit; the eight leave buttons with its kind lit and ringed.
@@ -680,8 +740,8 @@ kinds, and one member frame. These states are new and undrawn:
   (`grpBy`, else `by`). An Input with no stamp says nothing. Tests on b3, b4, b5 and beside the Inputs page's line
   for the same input.
 - **Tests first:** per kind and role, exactly the drawn controls; a medical card has no Move/Delete for an admin, the
-  man himself or anyone; the read-only reader (a member on another's course) sees the card, its remarks read only, no
-  buttons, no pencil; b6's order — the award's card, then the bid's.
+  man himself or anyone; the read-only reader (a member on another's course) — built and tested only after he has seen step 9b's
+  item 8; until then that tap opens what it opens today; b6's order — the award's card, then the bid's.
 
 #### Step 14 — the pencil opens the entry's window over the war (D2889, D2892, b9) · after 13
 - **Files:** `ui/EntryCard.tsx`; `sync.ts` (a new small export beside `openInputWindow`: open **without** changing page —
@@ -766,11 +826,12 @@ line; the week's Ground Programme rows have no buttons. So the week must never b
   worked out afresh when a week loads, so a Sunday–Monday request placed on Sunday would come back under Monday's week.
   The check is the one `accCtl` already makes to print "Reject · Tue" and "On <date>" (`src/ui/html.ts` 2498–2511): it
   looks through the week in view **and the saved weeks**; that lookup is lifted into one function both the rows and the
-  heading's count call. A saved week that cannot be read is **not** taken as "unplaced": the input is then not listed,
-  and the builder says in the step's notes what the existing lookup does in that case and keeps to it); callers
+  heading's count call. A saved week that cannot be read is handled **as `accCtl` handles it today** (round 2, Opus L-2 — round 1's
+  wording here contradicted itself): the input stays **listed** under "To review", its Accept refusing with today's
+  reason, so it never vanishes from both the programme and the list); callers
   `src/ui/html.ts` 2315, `src/ui/board-html.ts` 818; the counts in the folded heading (`html.ts` 2240–2246,
   `board-html.ts` 827–831).
-- **Tests first:** the release rule of T0 (on Edit Schedule, before its Reject is built, a placed input is still
+- **Tests first:** a saved week that cannot be read → the input listed, its Accept refused with its words; the release rule of T0 (on Edit Schedule, before its Reject is built, a placed input is still
   listed with its Reject); a Sunday–Monday request placed on Sunday is not listed on Monday's week — after switching
   weeks and after a reload — and once its Sunday row is taken off it is listed again; on the issued (read-only) face,
   what is listed is what the frozen inputs give and no button is drawn; an accepted input (`'g'`) is not listed; a rejected one is; one under Unavailable (`'u'`) is not;
@@ -847,7 +908,7 @@ Opus's drafts unless marked "ruled" or "taken". "Unchanged" words that only move
 | w8 | a group entry's in-between card — **only if he picks it in step 9b** | — | draft: "For all 3 — open it with the pencil." |
 | w9 | a member's approved leave on a day he may not bid on (closed, or before today) — drawn first (step 9b), its words follow Q5 | — | draft: "Bidding is closed on this day. You can delete this leave here, or change it on the Inputs page."; a past day: "This day has passed. …" |
 | w26 | Approvals, "Also since you last looked": a member deleted his approved leave | (a withdrawn bid's line today) | draft, in that line's own shape: "Ranger deleted his approved LL · Thu 3 Dec" |
-| w27 | the standing bar when a move's OIL question is closed unanswered | "Not swapped / Not added / Not filed — OIL not answered · Answer OIL · OK" | the same bar: "Not moved — OIL not answered · Answer OIL · OK" |
+| w27 | the standing bar when a move's OIL question is closed unanswered | "Not swapped / Not added / Not filed — OIL not answered · Answer OIL · OK" | unchanged — the existing bar already has "Not moved — OIL not answered" (`WAIT_WORDS.move`); no new words for Fable |
 | w28 | Approvals' "<time> · by Saber" and "Already approved by Saber" | as quoted | unchanged — listed so Fable sees them beside w0 |
 | w29 | a member's re-bid after he changed his approved leave | — | no new words: the card reads "Placed by Ranger · <now>" (w0's line) |
 | w10 | bell, an admin swaps the kind of a man's approved leave | — | draft: "LL changed to OL" (+ the day run and who, as every war line); pending after it: "LL changed to OL · pending" — shown to him in step 9b |
@@ -880,13 +941,14 @@ Opus's drafts unless marked "ruled" or "taken". "Unchanged" words that only move
 
 - **K1 — the member's widening leaks.** Step 7 is the only place a member gains power over approved leave. The risk is
   a path that leaves it approved after his change, or reaches another man's. Held by: a separate question in
-  `access.ts` (never loosening `canDecide`), one store door that can produce nothing else, **the one commit every Move
-  ends in sending him to that door** (rule 8 — the hole round 1 found), the drag window gaining nothing, and the
+  `access.ts` (never loosening `canDecide`), one store door that can produce nothing else, **a card's Move going to that door itself while the
+  shared move commit refuses these records as it does today** (rule 8), the drag window gaining nothing, and the
   security read.
 - **K2 — what the gate can and cannot hold.** The gate cannot tell the war's door from the Inputs page, so it cannot
   be the guard of "back to pending" (step 7's opening). It is not asked to be: `stampForged` is untouched, the re-bid
-  is placed by him now, and the only gate addition is a shape check on the war door's own two command types — a
-  backstop against our own fault, said as such to every reader.
+  is placed by him now, and the only gate addition is a shape check on the war door's own two command types — judged by what his
+  approved leave covers, so a lawful split passes — a backstop against our own fault, said as such to every reader.
+  The new command types carry **no** extra-tables list (it would refuse the members they are for).
 - **K3 — Auto-approve decides while hidden.** As first planned, an admin's swap on a whole-day leave would follow a
   switch that is not on screen, and the memory differs by device (on by default on a new one). That is now **Q4**, not
   a notice; step 6's card waits for the answer.
@@ -923,8 +985,11 @@ Opus's drafts unless marked "ruled" or "taken". "Unchanged" words that only move
 - **R4 — several-day entries keep today's two chips** ("All 5 days" · "Wed 16 Dec") on the card, scoping every button.
   *Example: a five-day course, Wednesday tapped, "Wed 16 Dec" lit, Delete → the course becomes Mon–Tue and Thu–Fri.*
   The drawings show only one-day entries.
-- **R5 — leave with custom hours** (say 10:00–15:00, filed on the Inputs page) gets the pencil, Move, Delete and its
-  remarks, but no Approve / Refuse, Duration or leave buttons — a bid can hold only a whole day or a half.
+- **R5 — leave with custom hours** (say 10:00–15:00, filed on the Inputs page): for an **admin** the pencil, Move
+  (its hours kept), Delete and its remarks, but no Approve / Refuse, Duration or leave buttons — a bid can hold only a
+  whole day or a half. For **its own member**: Delete, remarks, Document and the pencil only — no Move on the war,
+  since his move must become a bid and a bid would lose the hours (step 7, rule 10). *Example: Ranger's approved LL
+  10:00–15:00 on Thu 3 Dec; to move it he presses the pencil and changes its date in its own window.*
 - **R6 — an admin's AM / PM change of an approved leave follows his Auto-approve switch**, as his kind swap does
   (D2925 names only the swap). *Example: Hex makes Cutter's approved whole-day LL an AM leave; switch on → approved AM
   leave; switch off → a pending AM bid.* An admin's **Move** keeps it approved, as built and tested today. Told to him inside Q4.
@@ -1047,8 +1112,8 @@ next; Q6 before Branch B switches the week.
   the switch is still on) it stays approved. **Recommended: A — show the switch in the title bar whenever an admin's
   card has leave buttons, so he sees what will happen.** B — keep it hidden, as first drawn. C — an admin's swap or
   AM/PM change always stays approved, no switch involved. (His Move keeps it approved either way, as today.)
-  *Meanwhile:* an admin's swap and AM/PM change of approved leave are not built; the card shows the leave's kind and
-  half lit, and Approve · Refuse · Move · Delete work.
+  *Meanwhile:* a day holding approved leave opens for an admin what it opens today (Approved / put back, Refuse, Move,
+  Delete, its remarks) — the new card for it is not shown until this is answered.
 - **Q5 — a member's approved leave on a day closed for bidding, or already past.** *When:* bidding for December has
   closed and Ranger's plans change — common once a window shuts. *Example:* Ranger's approved LL on Thu 3 Dec, December
   closed. A move or change makes it a bid again, and he cannot bid on a closed or past day. **Recommended: A — on such
@@ -1075,6 +1140,11 @@ the time he changed it; leave filed on the Inputs page and moved by an admin on 
 7. The bell's two new lines (an admin changed the kind, or the half, of a man's approved leave).
 8. "To review" on Edit Schedule's week, both sizes: Reject on a Ground Programme and a Common Programme row, the empty
    section, one rejected input waiting (Q6).
+9. A member looking at another man's day: read-only cards.
+10. A refused bid's card.
+11. An OIL the schedule earned (FO* / HO*) as a card with no buttons.
+12. A replaced-bid notice as a card.
+(Item 2 is drawn for an admin and for the leave's own member, who has no Move there.)
 
 ---
 
@@ -1092,7 +1162,49 @@ the time he changed it; leave filed on the Inputs page and moved by an admin on 
 
 ---
 
-## 10. Round 1 dispositions
+## 10. The red team's rounds — what the code reads must check, and what was done with each finding
+
+Round 2 was the last round of plan review (the cap of about three). What is left is checked in the build and by the
+code reads.
+
+### What the build's code reads must check (the fixes easiest to get wrong in code)
+
+1. **The new command types carry no extra-tables list.** `lw.inputMove`, `lw.inputRemove`, `lw.ownApprovedChange`,
+   `lw.ownApprovedRemove`: a signed-in member's own call of each passes `cmdAuthorize`, through the card and the
+   grid's drop; another man's records are still refused by the check of the real changes.
+2. **A card's Move never runs inside `lw.move`.** The committed envelope's type is `lw.inputMove` or
+   `lw.ownApprovedChange`; `moveRecords`, `moveRecordsProblem`, `absenceMovable`, `movableRecords` are unchanged
+   and still refuse these records.
+3. **A member's change of approved leave can only end pending.** No path — card, move mode, drag window, Duration,
+   leave buttons — leaves the changed or landing part approved; and the opposite pin holds: the same re-date made on
+   the Inputs page is accepted and stays approved (D1166).
+4. **The backstop judges coverage, not new records.** A middle day cut from a five-day leave leaves two approved
+   pieces and passes; a piece that adds a day is refused.
+5. **The re-bid is placed by him, now; `stampForged` is untouched.** No stamp is borrowed from the cut leave.
+6. **Swap and AM/PM replace the entry by its id.** AM → PM leaves one entry; the final state is checked before
+   anything is removed, the chosen entry alone left out of the clash check; the other half's entry is never eaten.
+7. **Every failed stage throws.** A refusal after the first stage of a swap, a move or a re-approval rolls the whole
+   command back; nothing returns `false` after writing.
+8. **The drag window and the range Decide gained nothing.** `warEditable`, `setBidStates`, `decidableIn`,
+   `deletableIn`, `warLeaveRow`, `doorMoveApproved`, `doorRemoveApproved` are as they were; Inputs-filed leave is
+   decided only by `decideApprovedById`, from the card.
+9. **The OIL question is asked before a move, through `oilFirst({ kind: 'move' })`** — nothing cut before the answer,
+   one command with it, nothing changed and no Undo step when closed unanswered.
+10. **`OFF_WAR` / `offWar` are unchanged.** Every kind keeps its blue edge; a medical is refused by both new doors
+    called directly; no `lwMoved` on leave the war never approved.
+11. **A member's Undo after an admin decided his re-bid is refused, naming the admin** — never two approved days
+    from one (D148).
+12. **A set-hours leave is never turned into a bid.** Its member cannot move or change it on the war; an admin's
+    move keeps its hours.
+13. **One man out of a group is not a date cut.** `cutDates` / `sliceInput` copy the whole people list.
+14. **The routing never shows an undrawn or half-built card.** An admin's approved-leave card waits for Q4; the
+    states of step 9b open what they open today until he has seen them.
+15. **"To review":** placed is judged across saved weeks, not the week in view; an unreadable saved week keeps the
+    input listed; a view switches only together with its row Reject — Edit Schedule never has neither.
+16. **The Inputs page itself is unchanged by Branch A** — its rules, its words, and that a member's change there
+    stays approved.
+
+### Round 1 dispositions
 
 Each finding was checked against the code and the rulings before it was taken. ACCEPTED: applied as the reader asked.
 CHANGED: the fault is real, the fix differs. REJECTED: with the evidence.
@@ -1130,4 +1242,31 @@ CHANGED: the fault is real, the fix differs. REJECTED: with the evidence.
 | L5 | Gaps in step 7's tests | **ACCEPTED.** OIL-kind swap by the member; the Delete-outcome posting (rule 9); the all-or-nothing several-day move |
 
 **Count:** 22 findings — 20 accepted, 0 rejected, 2 changed (Astra 1, Opus L2).
+
+### Round 2 dispositions
+
+**Astra (round 2)**
+
+| # | Finding | Disposition |
+|---|---|---|
+| 1 | The new command types' extra tables refuse the members they are for | **CHANGED.** Checked: `cmdAuthorize` (`perms.ts` 722–733) asks every extra table with the own-row rule 'never'; a member holds Input and Bid rights only as his own. The fault is real (round 1's M5 fix caused it). Fix taken: the simpler of the two — no extra-tables list on the four new types, as every member-run command has today; the tables named in a comment and in §11. Astra's own-entry extension of the list is a change to the gate's rules that nothing here needs. The positive member tests through the card and the grid's drop taken |
+| 2 | A member's move of a set-hours leave cannot keep its hours as a bid | **CHANGED.** Checked: a bid holds only a code with a half mark (`engine/warrecs.ts RequestRec`). Adding hours to a bid would change what the app saves, which nobody ruled. Instead the member's set-hours leave has no Move or change on the war — Delete, remarks, Document and the pencil (step 7 rule 10, R5), drawn first; an admin's move keeps its hours |
+| 3 | The backstop refuses the untouched pieces of a longer leave | **ACCEPTED** (the same as Opus M-2). The backstop judges what his approved leave covers; the four middle-day tests added |
+| 4 | Step 4's "allowed (D1166)" test contradicts step 7 | **ACCEPTED.** That test is now a refusal on the war and a positive test on the Inputs page |
+
+**The fresh Opus (round 2)**
+
+| # | Finding | Disposition |
+|---|---|---|
+| H-1 | The new types refuse every member | **ACCEPTED** — its first fix (no extra-tables list); see Astra 1 |
+| H-2 | Step 5 gives the drag window and the range Decide a new power | **ACCEPTED.** Checked: `setBidStates` is the drag window's call (`SelectSheet.tsx` 396) and asks `warEditable` (4116), as `decidableIn` (6477) and `deletableIn` (6494) do. Step 5 is now one id-based door for the card, `decideApprovedById`; the shared doors untouched; the pins added |
+| M-1 | Rule 8's route through `moveRecords` is refused first and hides the command's type | **ACCEPTED.** Checked: a nested gesture returns `fn()` without its own commit (`store.ts` 3339). A card's Move calls the war door as a top-level gesture; `moveRecords` unchanged; steps 4 and 7 and K1 rewritten |
+| M-2 | The backstop refuses a lawful split | **ACCEPTED** — with Astra 3 |
+| M-3 | Step 4 named the ask-after door; the ask-first door exists | **ACCEPTED.** Checked: `ui/inputedit.tsx oilFirst` (1798), used by `ui/caldrag.ts`; its bar already reads "Not moved — OIL not answered". Step 4 wraps its door in it; w27 is no new word |
+| M-4 | Step 11 builds what Q4's "meanwhile" says is not built | **ACCEPTED.** An admin's approved-leave card is built and routed only once Q4 is answered; until then such a day opens what it opens today; step 10, step 11 and Q4's "meanwhile" now say the same |
+| L-1 | Four card looks were never drawn | **ACCEPTED.** Added to step 9b and to §8's drawing list; each opens what it opens today until he has seen it |
+| L-2 | T1's unreadable-week rule contradicted itself | **ACCEPTED.** As `accCtl` does today: the input stays listed, its Accept refusing with its reason; a test |
+
+**Count, round 2:** 12 findings — 10 accepted, 0 rejected, 2 changed (Astra 1, Astra 2). No finding needed his call;
+the six questions are unchanged (only Q4's "meanwhile" was reworded). The drawing list grew from 8 to 12.
 
