@@ -7225,15 +7225,17 @@ a person" (`#accAddRole`, the page's squadron) and in Give access (`#apvRole`, b
 `RoleSelect`), read afresh on every draw, never held by the form; the line in the Role column, 6px under the box, a pair
 holding it lined up at its head so the Sign-in box beside it does not move (`ui/postout.css`; the drawings
 `docs/mock/2026-11-25-msq-pick-guard-q3/drawn/q13-d-rec`, `q13-p-rec` — the other three places undrawn, the agent's
-reading of D2806). Pinned by `ui/msq-s2-u2-row.test.tsx`. **Bringing an admin back is making one** (the agent's
-reading of D2806's rule, U2's fix rounds 1 and 2 — not his ruling; parked for his word): Enable, Restore and "Restore
-as" of a man who would be an admin IN FORCE of his squadron (never his stored role — an admin who moved squadron is a
-member there), the Leave War posting sheet's "Undo post out", and a posting's date or outcome changed so that the
-archive or suspension it made is taken back, are refused in that same sentence to one who may not make an admin of
-that squadron; the buttons stay live and refuse on the press, and the posting sheet stays open with the sentence
-("That did not save" if the save check alone refuses) — `state/accounts.ts updateAccount`, `leavewar/sync.ts
-restoreMakesAdminProblem`, `undoPostOutProblem`, `postOutChangeProblem`; pinned by `state/msq-s2-u2fix2-enable`,
-`-posting` and `ui/msq-s2-u2fix2-postsheet` (closing [LW-UNDO-POSTOUT-ADMIN-WORDS]). Plan picked says what it gives: "Full access to 149, every page: its schedule and publishing, its
+reading of D2806). Pinned by `ui/msq-s2-u2-row.test.tsx`. **Bringing an admin back is NOT making one** (his D2903,
+28 Nov 26, replacing the agent's reading U2's fix rounds 1 and 2 had built): Enable, Restore and "Restore as" of a
+suspended or archived admin, the Leave War posting sheet's "Undo post out", a posting's date or outcome changed so
+that the archive or suspension it made is taken back, and the Undo of a Suspend (an archive is no step of Undo,
+D350 — Restore brings him back), are open to whoever may
+manage that squadron's people — a Plan holder of it too — and the man returns with the role he had; only a role newly
+an admin's is "making an admin" (D2806, D2807), whatever his sign-in's switch or his archive. The posting sheet stays
+open and says "That did not save" where the save check refuses its Undo (a master admin's posting taken back by one
+who is not a master admin, D2205) — `state/units-model.ts madeAdminsIn`, `leavewar/ui/Matrix.tsx`; pinned by
+`state/msq-s2-u2fix3-d2903`, `state/msq-s2-u2fix2-posting` and `ui/msq-s2-u2fix2-postsheet` (U2's fix round 3; the
+closed [LW-UNDO-POSTOUT-ADMIN-WORDS] is answered by the ruling). Plan picked says what it gives: "Full access to 149, every page: its schedule and publishing, its
 settings, its people and their sign-ins." A man of another squadron on the list (found by search, or a Plan holder of
 it) wears his squadron's grey number by his name, and the rest of his row — sign-in, role, Suspend, Archive, Delete —
 is greyed unless the admin is an admin of his own squadron (D2191). A Plan holder's grey line ends "· also plans 149",

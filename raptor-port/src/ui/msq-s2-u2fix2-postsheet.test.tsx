@@ -1,14 +1,23 @@
 // @vitest-environment jsdom
-/* U2 FIX ROUND 2, FIX 2 ON SCREEN (Fable 1, Opus F3, security S5 — the brief
-   docs/superpowers/briefs/2026-11-28-msq-s2-u2fix2-brief.md): the Leave War's posting sheet never closes on a refusal.
-   Kestrel (149's admin) posts Osprey, made an admin of 149, overseas from today; it runs (archived, sign-in suspended).
-   Hunter (142's admin, Plan of 149) presses "Undo post out" on Osprey's sheet: the sheet stays open and says D2806's
-   sentence, where it used to close as if it had worked. Pressed by Kestrel it closes and Osprey is back. A moved member
-   (fix 1's Hunter, at home in 149 as its member) posted out of 149 and taken back by Mako (Plan of 149) goes through. */
+/* THE LEAVE WAR'S POSTING SHEET NEVER CLOSES ON A REFUSAL — and bringing an admin back is not one (his D2903, 28 Nov 26).
+
+   This file was U2 fix round 2's fix 2 on screen (Fable 1, Opus F3, security S5 — the brief
+   docs/superpowers/briefs/2026-11-28-msq-s2-u2fix2-brief.md). Its refusal was Hunter (Plan of 149) pressing "Undo post
+   out" on Osprey, 149's admin posted overseas: the sheet stayed open and said D2806's sentence. His ruling took that
+   refusal away (U2 fix round 3's addendum, docs/superpowers/briefs/2026-11-28-msq-s2-u2fix3-addendum.md): a posted-out
+   admin taken back is not "made an admin", so Hunter's press now goes through and the sheet closes, Osprey 149's admin
+   again.
+
+   What round 2 fixed in the sheet itself stays, and is held here by the refusal that is left: a MASTER ADMIN's posting
+   taken back by one who is not a master admin (D2205 — the save check refuses it). The door says nothing of its own
+   there, so the sheet stays open and says "That did not save", where it used to close as if it had worked. (That the
+   door could say the master admin sentence instead is Fable's finding 4 of round 2 — words only, not built.)
+   A moved member (round 2 fix 1's Hunter, at home in 149 as its member) posted out of 149 and taken back by Mako (Plan
+   of 149) goes through, as before. */
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
 import { withThird, signInAs, moveMan, on, pastMidnight, PID, ACCT } from '../test-support/msq-world'
-import { saveAccess, accountById, accountsLoad } from '../state/accounts'
+import { saveAccess, setMaster, accountById, accountsLoad, adminsOf } from '../state/accounts'
 import { unitsLoad, todayIso } from '../state/units'
 import { enterSquadron } from '../state/store'
 import { postOut } from '../leavewar/sync'
@@ -19,10 +28,9 @@ import { PEOPLE } from '../engine/people'
 withThird()
 afterEach(() => { cleanup() })
 const reload = (): void => { unitsLoad(); accountsLoad() }
-const MAKE = (n: string) => `Only ${n}'s own admins or a master admin can make an admin of ${n}.`
 const back = (pid: string, acct: string) => ({ archived: !!(PEOPLE as any)[pid]?.archived, on: accountById(acct)!.on })
 
-/* the war of 149 drawn, the posted man's day after his posting tapped: his posting's sheet */
+/* the war of the squadron in view drawn, the posted man's day after his posting tapped: his posting's sheet */
 function openPostingSheet(pid: string): HTMLElement {
   render(<div id="page-leavewar" className="page on"><Matrix /></div>)
   act(() => { fireEvent.click(screen.getByTestId(`cell-${pid}-2026-07-16`)) })
@@ -40,16 +48,16 @@ function ospreyAdminPostedOverseas(): void {
   expect(back(PID.osprey, ACCT.osprey), 'setup: archived, sign-in suspended').toEqual({ archived: true, on: false })
 }
 
-describe('the posting sheet\'s "Undo post out" of a 149 admin', () => {
-  it('pressed by Hunter (Plan of 149): the sheet stays open and says who can; nothing changed', () => {
+describe('the posting sheet\'s "Undo post out" of a 149 admin (D2903)', () => {
+  it('pressed by Hunter (Plan of 149): the sheet closes and Osprey is back, 149\'s admin again', () => {
     ospreyAdminPostedOverseas()
     on(15, 11); signInAs('hunter'); enterSquadron('u149'); reload()
     openPostingSheet(PID.osprey)
     pressUndo()
-    expect(screen.queryByTestId('postout-sheet'), 'the sheet stays open').toBeTruthy()
-    expect(screen.getByTestId('postout-err').textContent).toBe(MAKE('149'))
+    expect(screen.queryByTestId('postout-sheet'), 'the sheet closes').toBeNull()
     reload()
-    expect(back(PID.osprey, ACCT.osprey)).toEqual({ archived: true, on: false })
+    expect(back(PID.osprey, ACCT.osprey)).toEqual({ archived: false, on: true })
+    expect(adminsOf('u149', todayIso())).toContain(PID.osprey)
   })
   it('pressed by Kestrel (149\'s own admin): the sheet closes and Osprey is back', () => {
     ospreyAdminPostedOverseas()
@@ -59,6 +67,39 @@ describe('the posting sheet\'s "Undo post out" of a 149 admin', () => {
     expect(screen.queryByTestId('postout-sheet'), 'the sheet closes').toBeNull()
     reload()
     expect(back(PID.osprey, ACCT.osprey)).toEqual({ archived: false, on: true })
+  })
+})
+
+describe('the sheet stays open on a refusal: a master admin\'s posting taken back by one who is not a master admin', () => {
+  /* Saber makes Hunter a master admin and Ranger a 142 admin, then posts Hunter overseas from today; it runs at once */
+  function masterHunterPostedOverseas(): void {
+    signInAs('saber')
+    expect(setMaster(ACCT.hunter, true), 'setup: Saber makes Hunter a master admin').toMatchObject({ ok: true })
+    expect(saveAccess(ACCT.ranger, { role: 'admin' }), 'setup: Saber makes Ranger a 142 admin').toBeNull()
+    reload()
+    on(15, 10)
+    expect(postOut(PID.hunter, todayIso(), 'overseas'), 'setup: Saber posts Hunter overseas from today').toBe(true)
+    reload()
+    expect(back(PID.hunter, ACCT.hunter), 'setup: archived, sign-in suspended').toEqual({ archived: true, on: false })
+  }
+  it('pressed by Ranger (142\'s admin, no master admin): the sheet stays open and says "That did not save"; nothing changed', () => {
+    masterHunterPostedOverseas()
+    on(15, 11); signInAs('ranger'); reload()
+    openPostingSheet(PID.hunter)
+    pressUndo()
+    expect(screen.queryByTestId('postout-sheet'), 'the sheet stays open').toBeTruthy()
+    expect(screen.getByTestId('postout-err').textContent).toBe('That did not save')
+    reload()
+    expect(back(PID.hunter, ACCT.hunter)).toEqual({ archived: true, on: false })
+  })
+  it('control: pressed by Saber, a master admin: the sheet closes and Hunter is back', () => {
+    masterHunterPostedOverseas()
+    on(15, 11); signInAs('saber'); reload()
+    openPostingSheet(PID.hunter)
+    pressUndo()
+    expect(screen.queryByTestId('postout-sheet'), 'the sheet closes').toBeNull()
+    reload()
+    expect(back(PID.hunter, ACCT.hunter)).toEqual({ archived: false, on: true })
   })
 })
 

@@ -649,3 +649,381 @@ Changes: `src/state/accounts.ts`, `src/state/perms.ts`, `src/state/undo-wire.ts`
 `src/state/msq-s2-u2fix-enable.test.ts`; docs: `data-schema.md`, `data-model.md`, `notifications-register.md`, `file-map.md`.
 Open items: none blocking; the two parked items above.
 Rulings: none this session (a builder's run; no owner message).
+
+## Fix round 3 — what the four blind readers of fix round 2 found, and his D2903 (the brief `2026-11-28-msq-s2-u2fix3-brief.md`, its addendum `2026-11-28-msq-s2-u2fix3-addendum.md`)
+
+Builder: one builder (Fable), chat A212's helper, 28 Nov 26, worktree `a212-s2-users-d10cb2`. Nothing committed, staged,
+pushed or built; no checks lock taken; every suite run one file at a time. The addendum arrived mid-build, after fixes 1
+to 5 of the brief were built and green: what it takes out was taken out, and this report describes the code as it now
+stands. The builder's chat was compacted once mid-run; the files in hand were re-read before the next change.
+
+Status: READY FOR INDEPENDENT REVIEW
+
+**In one paragraph.** "Made an admin" is now one thing everywhere: a man whose role is newly an admin's of his squadron,
+whatever his sign-in's switch, his archive or any mark (D2903). Round 1's fix 4 and everything rounds 2 and 3 grew on it
+are gone: Enable, Restore, "Restore as", "Undo post out", a posting moved later or changed, and the Undo of a Suspend all
+go through for whoever may manage the squadron's people, and the man comes back with the role he had. Making a MEMBER an
+admin is still refused to a Plan holder at every door, at the gate and at Undo and Redo — now also where the member is
+switched off, archived or marked a placeholder (the security reader's S1 and S2). A squadron move is told once, to the
+readers of the first telling (fix 5).
+
+| The brief's fix | Outcome |
+|---|---|
+| 1 — the gate watches the marks (security S1) | NOT BUILT, by the addendum (what was built was taken out). S1 still ends refused: fix 2 refuses the role write behind the mark. |
+| 2 — a role newly an admin's is "made" whatever his switch or archive (security S2, with the Redo lead) | DONE — and, by D2903, it is now the whole rule. |
+| 3 — the posting's take-backs ask only where an admin would be in force (Opus 1, Astra 3, Fable 3) | NOT BUILT, by the addendum (what was built was taken out). The three readers' cases pass all the same: the take-backs ask nothing at all now. |
+| 4 — a master admin's posting taken back says the master admin sentence (Fable 4) | NOT BUILT, by the addendum (what was built was taken out). LEFT AS IS — for the orchestrator to file. |
+| 5 — a move told once (Opus 2, Astra 2, Fable 1, security S3 and S4's line) | DONE. |
+| The addendum — D2903 | DONE: items 1 to 7, the test changes, the new test file, the records (ui-contracts left to the orchestrator). |
+
+### The addendum (D2903) — what came out
+- `src/state/accounts.ts updateAccount`: the "ENABLE IS MAKING AN ADMIN" block (round 1 fix 4, narrowed by round 2 fix 1)
+  is gone; a comment in its place cites D2903. A role changed to admin in the same call is still asked, just above it.
+  `makeAdminProblem`'s comment now says it is asked of the role alone.
+- `src/leavewar/sync.ts`: `restoreMakesAdminProblem`, `postingBringsAdminProblem`, `postOutChangeProblem` (and this
+  round's `takeBackAdminProblem`) deleted, with every call — in `restoreProblem`, `restoreArchivedAs`,
+  `restoreArchivedPerson`, `undoPostOutProblem` and `postOut`. `postingKeeps` stays. The imports `adminNow` and
+  `makeAdminProblem` went with them. One comment above `restoreProblem` says what was there and why it went.
+- `src/leavewar/ui/Matrix.tsx`: `postOutOr` no longer calls `postOutChangeProblem` (import removed). KEPT: the posting
+  sheet's `onUndo` still honours a refused save — "That did not save", the sheet stays open.
+- `src/state/units-model.ts`: `inForceOn` deleted; `madeAdminsIn` takes no people and no switch — the role alone
+  (`levelFrom(...) === 'admin'` in his home today, before against after, keyed by the man). Its comment tells both
+  halves: why Enable and Restore no longer count, and why a role written while he was out of force now does.
+- `src/state/perms.ts madeAdminViolation`: the archived-mark trigger is gone (it runs on an account change or a made
+  person, as before round 1); no mark is watched.
+- `src/state/undo-wire.ts makeAdminStuck`: back to the accounts and the squadron rows alone — the Undo of a Suspend of an
+  admin by a Plan holder goes through.
+- Nothing in `src/ui/` changed, and no word on screen was added. No sentence was orphaned by the removal: D2806's
+  sentence is still said by the role doors, D2807's by the Undo of "made a member", "Only a master admin can do that" by
+  Restore of a master admin's man, "That did not save" by the sheet.
+
+### Fix 2 — a role newly an admin's is "made", whatever his switch or archive (security S2) — DONE
+- The change is the one in `madeAdminsIn` above. Before it (round 1's "in force" reading), a Plan holder of 149 could
+  write an admin's role onto a 149 sign-in that was switched off or whose man was archived — nobody was "in force", so
+  nobody was "made" — and the next Enable or Restore by 149's own admin brought back an admin nobody entitled had made.
+- `src/state/msq-s2-u2fix3-role-off.test.ts` (8 tests): the security reader's proof 6 whole (3 cases); his unproven
+  Redo lead built as a test (Kestrel suspends Osprey, makes him an admin, undoes it; later holding only Plan of 149 he
+  presses Redo — refused in the Redo's out-of-band words, the row untouched) with its control; three honest roads (149's
+  own admin still makes a switched-off or archived man an admin; a Plan holder still suspends and enables a member).
+- Seen failing first: proof 6 copied in alone failed 3 of 3 on the code as round 2 left it. With the whole file written
+  and the helper put back to round 2's rule for one run, 4 of 8 failed — proof 6's three and the Redo lead ("the Redo
+  answered: ok", so the lead was real). 8 of 8 pass now.
+
+### The security reader's S1 (the brief's fix 1) — closed by fix 2, no mark watched
+- `src/state/msq-s2-u2fix3-placeholder.test.ts` (5 tests): proof 5's premise and its first case kept — Osprey marked a
+  placeholder, an admin's role written, the mark taken off: he does not end 149's admin. A case of mine beside it says
+  which step is refused: the two mark writes go through, the role write is refused by name. Proof 5 copied in alone
+  failed 2 of 3 on round 2's code (its first case and its Enable twin); the first case passes now.
+- DROPPED, as the addendum says: proof 5's "Enable twin" (a switched-off admin marked a placeholder, switched on, the
+  mark taken off). By D2903 the Plan holder may simply Enable him, so it proves nothing wrong.
+- Two cases on the Undo of a mark alone (my addition, turned round by the addendum): pressed by one who holds only Plan
+  of 149 it now goes through — the man was an admin all along. Under the brief's fix 1 this was blocked in D2807's
+  sentence; that is taken out.
+
+### Fix 5 — a move is told once (Opus 2, Astra 2, Fable 1, security S3 and S4) — DONE
+- `src/state/acctlines.ts`: new `moveTold(accountId, day, unit, notices)` — a move is told once a line of it is stored:
+  any squadron line with the move's fixed id less its reader, or the mover's own "Plan ended: you moved" line of that
+  day (written by the same `account.told` step; it alone marks a move day on which the squadron had no reader).
+  `planMovesOwed` owes nobody for a move already told.
+- `src/state/perms.ts planLineViolation`, the `account.told` section: asks the same `moveTold`, over the bell as it
+  stood BEFORE the command — so a second telling is refused at the gate as any line not owed is, by the app's own door
+  and by a signed-in admin's command alike. The first telling's lines all ride one command, so they never see each other.
+- `src/state/perms.ts restoreIntoForce`: two more cases, as the row writer's own `stampMoments` knows them — the row put
+  back naming another man (a re-link undone or redone), and an admin's row put back with its role given elsewhere or
+  anew. NOTE: I compare `adminFrom` as well as the brief's `adminOf`, because `stampMoments` reads both; say if only
+  `adminOf` was meant.
+- Comments in `src/state/accounts.ts` (`liveAt`, `adminLineAudienceOn`) say the moments now decide only the FIRST
+  telling's audience.
+- Tests, the four readers' proofs each its own file, copied as written (Astra's "NOT RUN" header line replaced by a
+  true one): `msq-s2-u2fix3-moveday-opus2` (1), `-astra2` (2), `-fable1` (4), `-security1` (3), `-security4` (1). All
+  11 failed with the rule off and pass by the writer's rule alone.
+- `src/state/msq-s2-u2fix3-moveday.test.ts` (13 tests, mine): the first telling in one command; two wakes write nothing
+  twice; a late first wake; a forged second telling refused at the gate (the app's door and a signed-in admin's
+  command); the next wake and a later master mark write nothing (the `kept` road); four cases of what marks a move told;
+  three of `restoreIntoForce`. Seen failing first: 7 of 13 with the rule off; with the writer's rule on and the gate and
+  `restoreIntoForce` not yet changed, 4 still failed (the forged line answered "ok", and the three `restoreIntoForce`
+  cases); 13 of 13 now.
+- One thing I could not produce through real doors: a move day on which the squadron has NO reader at all (a master
+  admin reads every squadron, and the last-admin lock keeps one). The "what marks a move told" cases therefore prune the
+  stored lines by hand. Said so in the file.
+
+### D2903's own test — `src/state/msq-s2-u2fix3-d2903.test.ts` (14 tests, new)
+- His example, door and gate: Kestrel suspends Osprey (149's admin), Hunter (Plan of 149) enables him — saved, Osprey
+  149's admin again; told on his own bell as today ("Enabled · Hunter", the same line Kestrel's Enable gives, signed by
+  who pressed); the same Enable written past the door passes the gate; Hunter's Undo of his own Suspend goes through.
+- Restore, "Restore as", "Undo post out", a posting moved later, a posting's outcome changed to none: each goes through
+  for Hunter, Osprey 149's admin again.
+- Still refused: Hunter picks Admin for a member (both doors, D2806's sentence); an admin's role written past the door
+  onto a switched-off member and onto an archived one (the gate — and Hunter may still enable or restore him, as the
+  member he is); Hunter's Undo of "made a member" (D2807's sentence).
+- **"The Undo of an Archive" does not exist in this build**: the Undo button takes back no archive for anyone (his
+  D350), and says so in its own words. So that case is written as: the Undo button answers with D350's words, never
+  D2807's, and Hunter's Restore of the man he archived goes through. The orchestrator's uncommitted line in
+  `docs/ui-contracts.md` lists "the Undo of a Suspend or an Archive" — the Archive half is the Restore.
+- Red-first, honestly: these cases were written after the removal, so they were never seen failing as written. The
+  evidence that the behaviour changed is the old files, run once more against the new code from a temporary copy (since
+  removed): the committed `msq-s2-u2fix-enable.test.ts` — 4 failed of 8, exactly its four "refused to a Plan holder"
+  cases (Enable, the gate-forged Enable, the Undo of his own Suspend, Restore); the committed
+  `msq-s2-u2fix2-postsheet.test.tsx` — 1 failed of 3, "pressed by Hunter: the sheet stays open and says who can". The
+  "still refused" cases pass before and after, as they should.
+
+### Existing tests changed, and why (each by the ruling, none weakened to get green)
+- `src/state/msq-s2-u2fix-enable.test.ts` (round 1 fix 4; 8 tests then, 9 now): the four cases that expected a Plan
+  holder to be REFUSED — Enable, the gate-forged Enable, the Undo of his own Suspend, Restore — now expect them to GO
+  THROUGH, Osprey 149's admin again; "Restore as" given a case of its own; the describes renamed to say D2903; the four
+  controls unchanged (one gained a line: an enabled member is still a member).
+- `src/state/msq-s2-u2fix2-posting.test.ts` (round 2 fix 2; 14 tests then, 9 now): the Plan holder's "Undo post out" and
+  later date of a 149 admin now go through. `postOutChangeProblem` is gone, so the cases that only asked that function
+  what it said were folded into the cases that make the change (fewer tests, the same scenarios — each former refusal
+  is now a "goes through" case; the controls and the moved-member case stand).
+- `src/ui/msq-s2-u2fix2-postsheet.test.tsx` (round 2 fix 2 on screen; 3 tests then, 5 now): Hunter's press on Osprey's
+  sheet now closes it, Osprey back. "The sheet stays open on a refusal" is held by the case the addendum names: Saber
+  makes Hunter a master admin and posts him overseas; Ranger (142's admin, no master admin) presses "Undo post out" —
+  the sheet stays open and says "That did not save", nothing changed; a control with Saber closes it.
+- `src/state/msq-s2-u2fix2-enable.test.ts`: untouched, green as is (9), as the addendum expected.
+- No other existing test needed a change, and none failed: 177 test files were run in all (below), 103 on the brief's
+  list and 74 more found by search.
+
+### The readers' proofs — what was kept, changed, left out
+- Kept as tests in `src/state/msq-s2-u2fix3-posting.test.ts` (11 tests): `opus/zz-opus-proof-1`, `astra/zz-astra-proof-3`,
+  `fable/zz-fable-proof-3`. ONE CHANGE from "as written", forced by the addendum itself: each proof read
+  `postOutChangeProblem` — the function they were proving wrong, which the addendum removes — so where a proof read it,
+  the test reads the door the sheet still asks (`postOutProblem`) and expects the same answer the proof did: nothing.
+  Seen failing first: the file as first written (22 cases — these proofs, Fable's proof 5 and the brief's fix 3 and 4
+  cases) failed 12 of 22 on round 2's code; the 11 kept all pass now.
+- Left out: `fable/zz-fable-proof-5` (finding 4, not built). `fable/zz-fable-proof-4` ("the gate judged alone") was
+  copied in and then removed: it mocks `makeAdminProblem` out of doors that no longer call it, and its sanity case —
+  "the gate still refuses the take-back that really brings an admin back" — is the opposite of D2903.
+- `security/zz-security-proof-5`: first case kept, Enable twin dropped (above). `security/zz-security-proof-6`: whole.
+
+### Records
+- `docs/data-model.md` §11, the `User` row: "who makes an admin" now says a role newly an admin's, whatever his switch,
+  archive or mark, and "bringing an admin back is NOT making one" (D2903) replaces the sentence that said Enable and
+  Restore are; the `Notice` row says a move is told once and who asks `moveTold`; the `liveAt` field row gains
+  `restoreIntoForce`'s two more cases.
+- `docs/notifications-register.md`: the move line's row says "once, to the readers of the first telling". No line there
+  said Enable or Restore makes an admin (the man's own "Enabled" line is unchanged).
+- `docs/file-map.md`: a block for this round — what was taken out, what changed, the tests whose expectation changed,
+  the ten new test files; the two older rounds' lines for the three changed test files now point to it.
+- `docs/ui-contracts.md`: NOT touched by me (the orchestrator's uncommitted change is there, left exactly as it is).
+- Code comments that called round 1's fix 4 "the agent's reading" now say what is true and cite D2903.
+
+### Suites run (one file at a time, `npx vitest run <file>` from `raptor-port/`)
+The brief's list — 103 files, 898 tests, every file passed:
+- `src/leavewar/msq-acct-lines.test.ts` — 24 passed (24)
+- `src/leavewar/msq-bell-audience.test.ts` — 8 passed (8)
+- `src/leavewar/msq-bell-rights.test.ts` — 14 passed (14)
+- `src/leavewar/msq-fix2-a7-award.test.ts` — 2 passed (2)
+- `src/leavewar/msq-fix2-a7-doors.test.ts` — 10 passed (10)
+- `src/leavewar/msq-fix2-a7-move.test.ts` — 4 passed (4)
+- `src/leavewar/msq-fix2-approved-onto-away.test.ts` — 4 passed (4)
+- `src/leavewar/msq-fix2-move-destinations.test.ts` — 2 passed (2)
+- `src/leavewar/msq-fix2-move-onto-away.test.ts` — 2 passed (2)
+- `src/leavewar/msq-fix2-posting-tag.test.ts` — 1 passed (1)
+- `src/leavewar/msq-fix2-r2-duty-note.test.ts` — 2 passed (2)
+- `src/leavewar/msq-fix2-r2-half-restore.test.ts` — 3 passed (3)
+- `src/leavewar/msq-war-a5-a6.test.ts` — 13 passed (13)
+- `src/leavewar/multi-sqn-fixread10.test.ts` — 29 passed (29)
+- `src/leavewar/multi-sqn-fixread11.test.ts` — 46 passed (46)
+- `src/leavewar/multi-sqn-fixread12.test.ts` — 37 passed (37)
+- `src/leavewar/postout-outcomes.test.ts` — 31 passed (31)
+- `src/leavewar/ui/msq-fix2-balances-midnight.test.tsx` — 1 passed (1)
+- `src/leavewar/ui/msq-fix2-person-window-away.test.ts` — 2 passed (2)
+- `src/leavewar/ui/msq-fix2-r2-held-figure.test.tsx` — 4 passed (4)
+- `src/state/accounts.test.ts` — 44 passed (44)
+- `src/state/edit-rights-readers.test.ts` — 4 passed (4)
+- `src/state/lastadmin.test.ts` — 24 passed (24)
+- `src/state/msq-fix2-cut-other.test.ts` — 1 passed (1)
+- `src/state/msq-fix2-forged-stamp.test.ts` — 1 passed (1)
+- `src/state/msq-fix2-meeting-moved-man.test.ts` — 2 passed (2)
+- `src/state/msq-fix2-midnight-history.test.tsx` — 1 passed (1)
+- `src/state/msq-fix2-r2-input-undo.test.ts` — 4 passed (4)
+- `src/state/msq-fix2-reconcile-across-move.test.ts` — 7 passed (7)
+- `src/state/msq-fix2-redo-move-lock-words.test.ts` — 1 passed (1)
+- `src/state/msq-fix2-remarks-midnight.test.tsx` — 1 passed (1)
+- `src/state/msq-fix2-sched-tick-ahead.test.ts` — 1 passed (1)
+- `src/state/msq-fix2-sched-tick-planted.test.ts` — 1 passed (1)
+- `src/state/msq-fix2-sched-tick-undo.test.ts` — 3 passed (3)
+- `src/state/msq-fix2-sec-readrec-plan.test.ts` — 3 passed (3)
+- `src/state/msq-fix2-sec-sched-tick-plant.test.ts` — 2 passed (2)
+- `src/state/msq-fix2-sec-stamp-plant.test.ts` — 3 passed (3)
+- `src/state/msq-fix2-stamp-judged.test.ts` — 5 passed (5)
+- `src/state/msq-fix2-tracker-moved-master.test.tsx` — 1 passed (1)
+- `src/state/msq-fix2-undo-firstadmin-jam.test.ts` — 1 passed (1)
+- `src/state/msq-fix2-undo-jam-plan-lost.test.ts` — 2 passed (2)
+- `src/state/msq-fix2-undo-last-admin-words.test.ts` — 1 passed (1)
+- `src/state/msq-fix2-undo-newsqn-jam.test.ts` — 1 passed (1)
+- `src/state/msq-fix2-undo-reach.test.tsx` — 5 passed (5)
+- `src/state/msq-fix2-undo-right-lock.test.ts` — 2 passed (2)
+- `src/state/msq-s2-u2-doors.test.ts` — 40 passed (40)
+- `src/state/msq-s2-u2-gate.test.ts` — 18 passed (18)
+- `src/state/msq-s2-u2-lines.test.ts` — 26 passed (26)
+- `src/state/msq-s2-u2-replay.test.ts` — 43 passed (43)
+- `src/state/msq-s2-u2fix-appactor.test.ts` — 5 passed (5)
+- `src/state/msq-s2-u2fix-enable.test.ts` — 9 passed (9)
+- `src/state/msq-s2-u2fix-home.test.ts` — 2 passed (2)
+- `src/state/msq-s2-u2fix-memberview.test.ts` — 5 passed (5)
+- `src/state/msq-s2-u2fix-moveday.test.ts` — 1 passed (1)
+- `src/state/msq-s2-u2fix-redo.test.ts` — 3 passed (3)
+- `src/state/msq-s2-u2fix-told.test.ts` — 7 passed (7)
+- `src/state/msq-s2-u2fix2-enable.test.ts` — 9 passed (9)
+- `src/state/msq-s2-u2fix2-moveday.test.ts` — 9 passed (9)
+- `src/state/msq-s2-u2fix2-posting.test.ts` — 9 passed (9)
+- `src/state/msq-s2-u2fix3-d2903.test.ts` — 14 passed (14)
+- `src/state/msq-s2-u2fix3-moveday-astra2.test.ts` — 2 passed (2)
+- `src/state/msq-s2-u2fix3-moveday-fable1.test.ts` — 4 passed (4)
+- `src/state/msq-s2-u2fix3-moveday-opus2.test.ts` — 1 passed (1)
+- `src/state/msq-s2-u2fix3-moveday-security1.test.ts` — 3 passed (3)
+- `src/state/msq-s2-u2fix3-moveday-security4.test.ts` — 1 passed (1)
+- `src/state/msq-s2-u2fix3-moveday.test.ts` — 13 passed (13)
+- `src/state/msq-s2-u2fix3-placeholder.test.ts` — 5 passed (5)
+- `src/state/msq-s2-u2fix3-posting.test.ts` — 11 passed (11)
+- `src/state/msq-s2-u2fix3-role-off.test.ts` — 8 passed (8)
+- `src/state/msq-undo-rights.test.ts` — 11 passed (11)
+- `src/state/msq-undo-worlds.test.ts` — 15 passed (15)
+- `src/state/perms-scan.test.ts` — 2 passed (2)
+- `src/state/units-model-dated.test.ts` — 12 passed (12)
+- `src/state/units-place.test.ts` — 12 passed (12)
+- `src/state/units-roster.test.ts` — 5 passed (5)
+- `src/state/units-sqn-fixread.test.ts` — 14 passed (14)
+- `src/state/units-sqn-fixread16.test.ts` — 7 passed (7)
+- `src/state/units-sqn-fixread2.test.ts` — 34 passed (34)
+- `src/state/units-sqn-guard.test.ts` — 17 passed (17)
+- `src/state/units-switch.test.ts` — 8 passed (8)
+- `src/state/units.test.ts` — 22 passed (22)
+- `src/tracker/msq-bell-input-ask.test.tsx` — 3 passed (3)
+- `src/tracker/msq-bell-recheck-after-ask.test.tsx` — 5 passed (5)
+- `src/tracker/msq-fix2-trksave.test.tsx` — 4 passed (4)
+- `src/ui/msq-bell-show.test.tsx` — 6 passed (6)
+- `src/ui/msq-bell-tap.test.ts` — 12 passed (12)
+- `src/ui/msq-fix2-allavail-door.test.ts` — 6 passed (6)
+- `src/ui/msq-fix2-astra-read-proofs.test.tsx` — 4 passed (4)
+- `src/ui/msq-fix2-cut-words-own-page.test.ts` — 1 passed (1)
+- `src/ui/msq-fix2-delete-across-move.test.ts` — 1 passed (1)
+- `src/ui/msq-fix2-door-placeholder-filer.test.ts` — 3 passed (3)
+- `src/ui/msq-fix2-inpset-midnight.test.tsx` — 2 passed (2)
+- `src/ui/msq-fix2-picked-man-stays-shown.test.tsx` — 1 passed (1)
+- `src/ui/msq-fix2-picker-keeps-own-squadron.test.tsx` — 2 passed (2)
+- `src/ui/msq-fix2-sansday-own-page.test.tsx` — 1 passed (1)
+- `src/ui/msq-fix2-users-moved-admin.test.tsx` — 1 passed (1)
+- `src/ui/msq-s2-u2-row.test.tsx` — 20 passed (20)
+- `src/ui/msq-s2-u2-tap.test.tsx` — 4 passed (4)
+- `src/ui/msq-s2-u2fix-tap.test.tsx` — 5 passed (5)
+- `src/ui/msq-s2-u2fix2-postsheet.test.tsx` — 5 passed (5)
+- `src/ui/postout-landing.test.tsx` — 4 passed (4)
+- `src/undo/timeline-cr.test.ts` — 19 passed (19)
+- `src/undo/timeline.test.ts` — 22 passed (22)
+
+Beyond the brief's list — every other test file that names the doors, the helper or the lines this round
+touched (found by search: the make-an-admin words and helper, Restore, "Undo post out", `updateAccount`, the
+move line, `liveAt`) — 74 files, 1498 tests, every file passed:
+- `src/leavewar/allavail-sans-posted.test.ts` — 30 passed | 1 expected fail (31)
+- `src/leavewar/changelines-lw.test.ts` — 25 passed (25)
+- `src/leavewar/d2328-astra.test.ts` — 7 passed (7)
+- `src/leavewar/d2328-r4b.test.ts` — 6 passed (6)
+- `src/leavewar/d2328-read.test.ts` — 16 passed (16)
+- `src/leavewar/d2338-astra-d.test.ts` — 9 passed (9)
+- `src/leavewar/deleteposting-restore.test.ts` — 20 passed (20)
+- `src/leavewar/fable-r4b.test.ts` — 7 passed | 1 expected fail (8)
+- `src/leavewar/holnotice.test.tsx` — 36 passed (36)
+- `src/leavewar/msq-posting-failed.test.ts` — 9 passed (9)
+- `src/leavewar/msq-war-pb1-pb2.test.ts` — 3 passed (3)
+- `src/leavewar/multi-sqn-a3-foreign.test.ts` — 12 passed (12)
+- `src/leavewar/multi-sqn-fixread13.test.ts` — 31 passed (31)
+- `src/leavewar/multi-sqn-fixread14.test.ts` — 13 passed (13)
+- `src/leavewar/multi-sqn-fixread15.test.ts` — 7 passed (7)
+- `src/leavewar/multi-sqn-fixread16.test.ts` — 13 passed (13)
+- `src/leavewar/multi-sqn-fixread17.test.ts` — 4 passed (4)
+- `src/leavewar/multi-sqn-fixread2-war.test.ts` — 11 passed (11)
+- `src/leavewar/multi-sqn-fixread3-postlock.test.ts` — 5 passed (5)
+- `src/leavewar/multi-sqn-fixread3-retract-moved.test.ts` — 16 passed (16)
+- `src/leavewar/multi-sqn-fixread4-bells.test.ts` — 20 passed (20)
+- `src/leavewar/multi-sqn-fixread6-allavail.test.ts` — 9 passed (9)
+- `src/leavewar/multi-sqn-fixread7.test.ts` — 23 passed (23)
+- `src/leavewar/multi-sqn-fixread8.test.ts` — 22 passed (22)
+- `src/leavewar/multi-sqn-fixread9.test.ts` — 26 passed (26)
+- `src/leavewar/multi-sqn-job2-retract.test.ts` — 3 passed (3)
+- `src/leavewar/onedoor.test.ts` — 35 passed (35)
+- `src/leavewar/poarchive.test.ts` — 13 passed (13)
+- `src/leavewar/postout-notice.test.ts` — 27 passed (27)
+- `src/leavewar/postout-takeback.test.ts` — 29 passed (29)
+- `src/leavewar/sans-ahead.test.ts` — 19 passed (19)
+- `src/leavewar/sans-before.test.tsx` — 6 passed (6)
+- `src/leavewar/sans-from-date.test.ts` — 18 passed (18)
+- `src/leavewar/sans-reads-156.test.tsx` — 45 passed (45)
+- `src/leavewar/sans-unfiled-reload.test.ts` — 1 passed (1)
+- `src/leavewar/sans-unfiled.test.ts` — 29 passed (29)
+- `src/leavewar/sans-words-156.test.tsx` — 78 passed (78)
+- `src/leavewar/ui/postout-date-delete.test.tsx` — 16 passed (16)
+- `src/state/archive-ends-rights.test.ts` — 5 passed (5)
+- `src/state/corelines-bell-moved-admin.test.ts` — 2 passed (2)
+- `src/state/fable-master-mark-lock.test.ts` — 2 passed (2)
+- `src/state/midnight-swap-undo.test.ts` — 6 passed (6)
+- `src/state/msq-fix3-request-forged-account.test.ts` — 3 passed (3)
+- `src/state/msq-s2-plan.test.ts` — 4 passed (4)
+- `src/state/multi-sqn-job2-lock.test.ts` — 4 passed (4)
+- `src/state/people-settings-wire-real.test.ts` — 9 passed (9)
+- `src/state/piece-b-tables.test.ts` — 25 passed (25)
+- `src/state/request-squadron.test.ts` — 14 passed (14)
+- `src/state/reshape-b3-lock-door-vs-gate.test.ts` — 4 passed (4)
+- `src/state/reshape-piece-c-doors.test.ts` — 20 passed (20)
+- `src/state/reshape-plan-audit.test.ts` — 9 passed (9)
+- `src/state/reshape-r1-r7-words.test.ts` — 5 passed (5)
+- `src/state/reshape-r6-refusal-stamps.test.ts` — 5 passed (5)
+- `src/state/roster-restore.test.ts` — 5 passed (5)
+- `src/state/signin-kinds-cells.test.ts` — 22 passed (22)
+- `src/state/signin-kinds-fixes.test.ts` — 27 passed (27)
+- `src/state/signin-kinds-gate.test.ts` — 11 passed (11)
+- `src/state/signin-kinds-proof.test.ts` — 7 passed (7)
+- `src/ui/accounts-ui.test.tsx` — 21 passed (21)
+- `src/ui/memberview.test.tsx` — 7 passed (7)
+- `src/ui/msq-guard-rollcall.test.ts` — 49 passed (49)
+- `src/ui/msq-s2-asis.test.tsx` — 24 passed (24)
+- `src/ui/msq-s2-rejudge.test.tsx` — 23 passed (23)
+- `src/ui/msq-s2-rejudge10.test.tsx` — 21 passed (21)
+- `src/ui/msq-s2-rejudge2.test.tsx` — 52 passed (52)
+- `src/ui/msq-s2-rejudge3.test.tsx` — 39 passed (39)
+- `src/ui/msq-s2-rejudge4.test.tsx` — 110 passed (110)
+- `src/ui/msq-s2-rejudge5.test.tsx` — 83 passed (83)
+- `src/ui/msq-s2-rejudge6.test.tsx` — 21 passed (21)
+- `src/ui/msq-s2-rejudge8.test.tsx` — 32 passed (32)
+- `src/ui/msq-s2-rejudge9.test.tsx` — 15 passed (15)
+- `src/ui/onedoor-users.test.tsx` — 22 passed (22)
+- `src/ui/quals.test.tsx` — 83 passed (83)
+- `src/ui/welcomeback.test.tsx` — 8 passed (8)
+
+(The two "1 expected fail" cases are old ones marked so on purpose in files this round did not touch.) The second list
+ran while the first was still running, two files at a time at most; nothing failed, so nothing needed a re-run alone.
+
+Also: `node reference/tfin.js` — 728 passed, 0 failed (nothing it reaches was touched; run for the record).
+`npx tsc -p tsconfig.app.json --noEmit` — exit 0, no errors. `npm run lint:changed -- --base HEAD --include-untracked` —
+"no new finding (24 changed files read against HEAD)". `npm run docsize` — "docsize OK — every record accounted for"; it
+reports HANDOFF.md over its tripwire by 139 lines and OUTSTANDING.md by 238, both deferred under D29 (neither touched
+here; run again after this section was appended, the same answer). A search of `src` for the
+temporary marker used to switch a rule off for a red run finds none left. NOT RUN, by instruction: `npm run build`, the
+whole unit suite, the browser tests, the Tracker smoke.
+
+### Not this round — left, as the brief and the addendum say
+- Fable's finding 4 of round 2: a master admin's posting taken back by one who is not a master admin is refused by the
+  save check and the sheet says "That did not save", not "Only a master admin can do that". Left as is; for the
+  orchestrator to file.
+- The app acting as itself back-dating or dropping `liveAt` (Astra 1, Fable 2, security S4 — [GATE-APP-ACTOR-DOORS]):
+  the gate's early return for the app's actor was not moved. Fix 5 makes `liveAt` matter only for a move's first
+  telling, which narrows what that hole can reach, but it is NOT closed and I do not claim it.
+
+### Anything unclear, for the orchestrator
+- `adminFrom` in `restoreIntoForce` (above) — the brief named `adminOf` only.
+- The "no reader at all" move day is tested by pruning stored lines, not through doors (above).
+- The reader proofs' read of `postOutChangeProblem` replaced by `postOutProblem` (above).
+- "The Undo of an Archive" is the Restore in this build (D350) (above).
+- The D2903 cases were not seen failing as written (above).
+- No walk, no browser run, no drawing check — not this builder's job; the screen proof is a jsdom render of the Leave
+  War's posting sheet. No skill note was logged (this builder was told not to write under `.claude/`).
+
+Changes: `src/state/accounts.ts`, `src/state/acctlines.ts`, `src/state/perms.ts`, `src/state/undo-wire.ts`,
+`src/state/units-model.ts`, `src/leavewar/sync.ts`, `src/leavewar/ui/Matrix.tsx`; tests new: the ten
+`src/state/msq-s2-u2fix3-*.test.ts` files (62 tests); tests changed: `src/state/msq-s2-u2fix-enable.test.ts`,
+`src/state/msq-s2-u2fix2-posting.test.ts`, `src/ui/msq-s2-u2fix2-postsheet.test.tsx`; docs: `data-model.md`,
+`notifications-register.md`, `file-map.md`, this report.
+Open items: Fable's finding 4 to file; the five points under "Anything unclear".
+Rulings: none this session (a builder's run; no owner message — D2903 was recorded by the orchestrator).

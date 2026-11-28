@@ -119,7 +119,10 @@ export type AccountRole = 'admin' | 'main'
    a row from before they were kept (D56): from always. The gate holds every one (perms.ts accountShapeAndMasterViolation). */
 /* `liveAt` (U2 fix round 2, fix 3 — Astra 2, Opus F1; the orchestrator's decision): the moment (ms) this sign-in last came
    back INTO FORCE — switched on again after it was off (a hand Enable, Restore, the posting taken back: all through the one
-   row writer, stampMoments), or put back by an Undo or Redo that brings it into force (perms.ts restoreRedated). A move's
+   row writer, stampMoments), or put back by an Undo or Redo that brings it into force (perms.ts restoreRedated, by
+   restoreIntoForce's cases: no row there before, off and put back on, not an admin's role and put back an admin's, the
+   master mark put back, the row put back naming another man, an admin's row put back with its role given somewhere
+   else or anew — the last two since U2 fix round 3, fix 5). A move's
    bell line is written only to readers in force before the move day began (adminLineAudienceOn), and an admin switched
    off, archived or a member that day, brought back later, kept his old `adminAt` — so the next wake wrote him the old
    day's line. `adminAt` is NEVER moved for this: the bell's retirement (notices.ts rightStart / rightHolds) reads it, and an
@@ -485,7 +488,10 @@ export function adminLineAudience(unit: string, iso: string = todayIso(), rows?:
    mark (`masterAt`, or for a squadron he held Plan of when made one, that Plan's moment — `kept`), a Plan of it
    (`Grant.fromAt`); a road with no moment (a row from before moments were kept, D56) counts from always. What the records
    do not hold — a role or mark held on that day and taken away since — is not brought back: such a man is no reader
-   today, as before. ONE body: the writer (acctlines.ts planMovesOwed) and the gate (perms.ts planLineViolation) ask it. */
+   today, as before. ONE body: the writer (acctlines.ts planMovesOwed) and the gate (perms.ts planLineViolation) ask it.
+   Since U2 fix round 3, fix 5 it is the audience of a move's FIRST telling only: once a line of the move is stored, no
+   further reader is owed one, whatever the moments say (acctlines.ts moveTold) — the moments could not hold every road
+   by which a man is put back after the day with an old one (a Plan put back by Undo, a re-link undone, `kept`). */
 export function adminLineAudienceOn(unit: string, iso: string, rows: UnitRows): string[] {
   const [y, m, d] = iso.split('-').map(Number)
   const dayStart = new Date(y!, m! - 1, d!).getTime()
@@ -587,9 +593,10 @@ export const makeAdminUndoWords = (unit: string): string => {
   const n = numOfUnit(unit)
   return `Only ${n}’s own admins or a master admin can make an admin of ${n}, so this can’t be undone.`
 }
-/* Q8 AT A DOOR (his D2730 Q8, D2806): a man left an admin in force of `unit` who was not one is refused for one who may not
-   give Plan of it — `unit` his home that day (or, for a man the door makes, where his home will be); no home known (a
-   shared store before its rows) fails closed, as the reader does */
+/* Q8 AT A DOOR (his D2730 Q8, D2806): a man whose role is made an admin's of `unit` is refused for one who may not give
+   Plan of it — `unit` his home that day (or, for a man the door makes, where his home will be); no home known (a shared
+   store before its rows) fails closed, as the reader does. Asked of the ROLE alone, whatever his sign-in's switch or his
+   archive: switching an admin back on, or restoring him, is not making one (his D2903) */
 export function makeAdminProblem(unit: string | null | undefined): string | null {
   if (!unit) return 'This change could not be saved.'
   return mayGivePlanNow(unit) ? null : makeAdminWords(unit)
@@ -867,17 +874,11 @@ export function updateAccount(id: string, patch: { name?: any; role?: AccountRol
     const q = makeAdminProblem(homeOn(next0.pid, todayIso()))
     if (q) return q
   }
-  /* ENABLE IS MAKING AN ADMIN (U2 fix round 1, fix 4 — opus2 F1, security S3; R2 with R1's list: an admin switched off is
-     no admin in force, so switching him on again leaves a man an admin in force who was not one — the agent's reading,
-     said to the coordinator): an admin's sign-in switched off → on, only by one who may make an admin of his squadron.
-     Asked of the role IN FORCE the row leaves (U2 fix round 2, fix 1 — Astra 1, Fable 2, Opus F2): an admin who moved
-     squadron stores "admin" but is a member where he is now (K3), so switching him on makes no admin, and the gate
-     (madeAdminsIn) lets it through — the door asked the stored role and refused a Plan holder in the make-an-admin words.
-     And the home asked is the man the row will name (`next0.pid`): a re-link with Enable in one call asked the old man's */
-  if (patch.on === true && !a.on && adminNow(next0)) {
-    const q = makeAdminProblem(homeOn(next0.pid, todayIso()))
-    if (q) return q
-  }
+  /* ENABLE IS NOT MAKING AN ADMIN (his D2903, 28 Nov 26 — "switching a suspended, archived or posted-out admin back on
+     is not making an admin": whoever may manage that squadron's people may do it, and the man returns with the role he
+     had). Round 1's fix 4 asked Q8 here of an admin's sign-in switched off → on (the agent's reading of R2 then); it is
+     gone, with its twins on Restore and the posting's take-backs (leavewar/sync.ts) and the "in force" half of the
+     gate's helper (units-model.ts madeAdminsIn). A role changed to admin in the same call is still asked, just above. */
   /* A RE-LINK CARRIES NO RIGHT (the reshape plan §4.3, guardrail 1): every right of the sign-in, holding or ended, goes in
      the re-link's own command, whoever re-links (who may, relinkRightsProblem above); the man now on the sign-in is given
      what he needs anew. MAKING A PLAN HOLDER A MEMBER (the Plan audit's PA2; his D2250, replacing R7's D2248): any admin

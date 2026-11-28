@@ -2152,7 +2152,8 @@ nothing). **New (tests):**
 - `src/state/msq-s2-u2fix-memberview.test.ts` (fix 1: the member view is "Switch back…", never blocked for good).
 - `src/state/msq-s2-u2fix-redo.test.ts` (fix 2: a Redo refused whole; the make-member pair kept).
 - `src/state/msq-s2-u2fix-home.test.ts` (fix 3: an unreadable home fails closed for a master admin).
-- `src/state/msq-s2-u2fix-enable.test.ts` (fix 4: Enable, Restore and the Undo of a Suspend are making an admin).
+- `src/state/msq-s2-u2fix-enable.test.ts` (fix 4: Enable, Restore and the Undo of a Suspend were asked as making an
+  admin — replaced by his D2903: they go through for a Plan holder, the third fix round below).
 - `src/state/msq-s2-u2fix-appactor.test.ts` (fix 5: nobody signed in, or the projection door, gives no Plan, makes no
   admin).
 - `src/state/msq-s2-u2fix-told.test.ts` (fix 6: a bare `account.told` carries only account and Plan lines).
@@ -2170,8 +2171,37 @@ Undo or Redo that brings a row into force), `src/leavewar/sync.ts` (`restoreMake
 `src/leavewar/ui/Matrix.tsx` (`postOutOr` says `postOutChangeProblem`'s sentence; the posting sheet's Undo stays open on
 a refusal), `src/state/undo-wire.ts` (a comment: the gate refuses the app's actor a Plan). **New (tests):**
 - `src/state/msq-s2-u2fix2-enable.test.ts` (fix 1: Enable and Restore of a moved member make no admin).
-- `src/state/msq-s2-u2fix2-posting.test.ts` (fix 2: "Undo post out" and a moved posting date of an admin, refused in
-  D2806's sentence by a Plan holder; the controls).
-- `src/ui/msq-s2-u2fix2-postsheet.test.tsx` (fix 2 on screen: the posting sheet stays open and says why).
+- `src/state/msq-s2-u2fix2-posting.test.ts` (fix 2: "Undo post out" and a moved posting date of an admin by a Plan
+  holder — refused then; since his D2903 they go through, the third fix round below; the controls).
+- `src/ui/msq-s2-u2fix2-postsheet.test.tsx` (fix 2 on screen: the posting sheet stays open on a refused save — since
+  D2903 held by a master admin's posting, the third fix round below).
 - `src/state/msq-s2-u2fix2-moveday.test.ts` (fix 3: a move's line only to those in force on the move day; `liveAt`
   held by the gate).
+
+Chat A212, 28 Nov 26 — step U2's third fix round (the four blind readers of round 2; the brief
+`docs/superpowers/briefs/2026-11-28-msq-s2-u2fix3-brief.md` and its addendum `…-u2fix3-addendum.md`, his D2903: bringing
+an admin back is not making one). **Taken out** (round 1's fix 4 and what round 2 grew on it): `src/state/accounts.ts`
+(`updateAccount` no longer asks Q8 of an Enable), `src/leavewar/sync.ts` (`restoreMakesAdminProblem`,
+`postingBringsAdminProblem`, `postOutChangeProblem` and every call of them — `restoreProblem`, `restoreArchivedAs`,
+`restoreArchivedPerson`, `undoPostOutProblem`, `postOut`; `postingKeeps` stays), `src/leavewar/ui/Matrix.tsx`
+(`postOutOr` asks no change question; the posting sheet's Undo still stays open on a refused save),
+`src/state/units-model.ts` (`inForceOn` gone; `madeAdminsIn` reads the role alone), `src/state/perms.ts`
+(`madeAdminViolation` no longer runs on a change of a man's archived mark), `src/state/undo-wire.ts` (`makeAdminStuck`
+hands no switch or people). **Changed** (fix 5 — a move told once): `src/state/acctlines.ts` (`moveTold`, asked by
+`planMovesOwed`), `src/state/perms.ts` (`planLineViolation`'s `account.told` section asks `moveTold` over the notices
+before the command; `restoreIntoForce` gains a re-link and a changed admin stamp). **Existing tests whose expectation
+the ruling changed:** `src/state/msq-s2-u2fix-enable.test.ts` (a Plan holder's Enable, Restore, "Restore as" and Undo of
+his own Suspend of a 149 admin go through), `src/state/msq-s2-u2fix2-posting.test.ts` (his "Undo post out" and later
+date of a 149 admin go through), `src/ui/msq-s2-u2fix2-postsheet.test.tsx` (the sheet closes for him; it stays open,
+"That did not save", on a master admin's posting taken back by one who is not a master admin). **New (tests):**
+- `src/state/msq-s2-u2fix3-d2903.test.ts` (his example at the door and the gate; every way back; what is still refused).
+- `src/state/msq-s2-u2fix3-role-off.test.ts` (fix 2: an admin's role written onto a switched-off or archived member by
+  one who may not is refused where it is written; the Redo of "made an admin"; the honest roads).
+- `src/state/msq-s2-u2fix3-placeholder.test.ts` (the security reader's S1 ends refused at the role write; no mark is
+  watched, an Undo of a mark alone goes through).
+- `src/state/msq-s2-u2fix3-posting.test.ts` (three readers' proofs: a posting's take-back is never refused as making an
+  admin).
+- `src/state/msq-s2-u2fix3-moveday.test.ts` (fix 5: a move told once — the first telling, two wakes, a forged second
+  telling refused at the gate, what marks a move told; `restoreIntoForce`'s two more cases).
+- `src/state/msq-s2-u2fix3-moveday-opus2.test.ts`, `-astra2.test.ts`, `-fable1.test.ts`, `-security1.test.ts`,
+  `-security4.test.ts` (fix 5: the four readers' proofs, one file each, as they wrote them).

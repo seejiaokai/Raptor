@@ -44,7 +44,7 @@ import { SelectSheet } from './SelectSheet'
 import { RemarksSheet } from './RemarksSheet'
 import { ClosedNoteSheet } from './ClosedNoteSheet'
 
-import { availRowNames, availVerdictAt, bidDayLine, dayFacts, docGet, flyMonth, leaveInputAt, openInputDocs, rowDocIds, openDays, postOut, postOutProblem, postOutChangeProblem, postingRunsBy, undoPostOut, undoPostOutProblem, warIdentityIfHidden, type DayAnswer } from '../sync'
+import { availRowNames, availVerdictAt, bidDayLine, dayFacts, docGet, flyMonth, leaveInputAt, openInputDocs, rowDocIds, openDays, postOut, postOutProblem, postingRunsBy, undoPostOut, undoPostOutProblem, warIdentityIfHidden, type DayAnswer } from '../sync'
 import { DayPanelHost } from './DayPanel'
 import { openDayPanel } from './daypanelopen'
 import { columnInView } from './inview'
@@ -85,10 +85,6 @@ function postOutOr(id: string, from: string, archive?: boolean | PostOutcome): s
   const outcome: PostOutcome = typeof archive === 'string' ? archive : (archive === false ? 'none' : 'overseas')
   const self = postOutProblem(id, outcome)
   if (self) return self
-  /* a change that would lift the archive or the suspension the posting made brings an admin back: who may is said here,
-     in place of "That posting date was not taken." (U2 fix round 2, fix 2 — sync.ts postOutChangeProblem) */
-  const change = postOutChangeProblem(id, from, outcome)
-  if (change) return change
   /* through the bridge, so a Post out's own archive follows the new date and switch (Astra's final read, finding 2) */
   return postOut(id, from, archive) ? undefined : (postingProblem(id, 'out', from) || 'That posting date was not taken.')
 }

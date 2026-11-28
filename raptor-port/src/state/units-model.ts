@@ -398,37 +398,33 @@ export function mayGivePlanAt(acct: (LevelAccount & { on?: boolean }) | null | u
   return levelFrom(acct, unit, iso, r, fallback) === 'admin'
 }
 
-/* WHO A COMMAND MADE AN ADMIN, AND OF WHICH SQUADRON (his D2730 Q8, D2806, D2807 — the brief
-   docs/superpowers/briefs/2026-11-27-msq-s2-u2-brief.md R2): every man who, after the command, is an admin in force of the
-   squadron he is at home in today and was not one before it — keyed by the MAN (a re-link puts an admin's sign-in on a
-   man who had none), judged today, over the accounts and rows before and after. ONE pure helper: the commit gate
-   (perms.ts madeAdminViolation) and the Undo's own check (state/undo-wire.ts makeAdminStuck) ask it, so the two never
-   disagree. A home row alone makes nobody an admin today (a move counts from tomorrow, D2119): the first admin of a new
-   squadron moving in is never caught here. A master admin made one is a master admin's act, judged by its own rules. */
+/* WHO A COMMAND MADE AN ADMIN, AND OF WHICH SQUADRON (his D2730 Q8, D2806, D2807, D2903 — the brief
+   docs/superpowers/briefs/2026-11-27-msq-s2-u2-brief.md R2): every man whose ROLE, after the command, is an admin's of the
+   squadron he is at home in today (levelFrom — K3: a moved admin is a member where he is now) and was not before it —
+   keyed by the MAN (a re-link puts an admin's sign-in on a man who had none), judged today, over the accounts and rows
+   before and after. ONE pure helper: the commit gate (perms.ts madeAdminViolation) and the Undo's own check
+   (state/undo-wire.ts makeAdminStuck) ask it, so the two never disagree. A home row alone makes nobody an admin today (a
+   move counts from tomorrow, D2119): the first admin of a new squadron moving in is never caught here. A master admin
+   made one is a master admin's act, judged by its own rules.
+   THE ROLE, WHATEVER HIS SWITCH, HIS ARCHIVE OR ANY MARK (his D2903, 28 Nov 26: "switching a suspended, archived or
+   posted-out admin back on is not making an admin" — whoever may manage the squadron's people may Enable, Restore or
+   take a posting back, and the man returns with the role he had). Round 1's fix 4 read "an admin IN FORCE" here — his
+   sign-in on and his man on the roster — so Enable and Restore counted as making an admin, and a role written while he
+   was out of force did not: a Plan holder of 149 wrote an admin's role on a 149 sign-in that was switched off, or whose
+   man was archived or marked a placeholder, and the next Enable, Restore or lifted mark by one who may brought back an
+   admin nobody entitled had made (the security reader's S1 and S2 — U2 fix round 3, fix 2). Both went with that half:
+   "in force" no longer enters into it, and no mark is watched. */
 export interface MadeAdmin { account: string; pid: string; unit: string }
-/* AN ADMIN IN FORCE ON A SIDE (U2 fix round 1, fix 4 — opus2 F1, security S3; R1's list, D2730 Q10): his account
-   switched on and his man on the roster — not archived, deleted or a placeholder — on that side, read through that
-   side's people. So Enable of a switched-off admin, and Restore of an archived one, are "making an admin" (R2's own
-   words: "a man an admin in force of `unit` who was not one before it" — the agent's reading, said to the coordinator) */
-const inForceOn = (y: LevelAccount & { on?: boolean }, person: (pid: string) => any): boolean => {
-  if (y.on === false) return false
-  const p = person(String(y.pid))
-  return !!p && !p.special && !p.deleted && !p.archived
-}
 export function madeAdminsIn(w: {
-  acctB: readonly (LevelAccount & { on?: boolean })[]; acctA: readonly (LevelAccount & { on?: boolean })[]
-  rowsB: UnitRows; rowsA: UnitRows; today: string; fallback: string | null
-  /* the people before and after the command (each side's own — a restore lifts an archive in the same command) */
-  personB: (pid: string) => any; personA: (pid: string) => any
+  acctB: readonly LevelAccount[]; acctA: readonly LevelAccount[]; rowsB: UnitRows; rowsA: UnitRows; today: string; fallback: string | null
 }): MadeAdmin[] {
   const out: MadeAdmin[] = []
   for (const y of w.acctA) {
     if (y.role !== 'admin' || y.pid == null || y.pid === '') continue
-    if (!inForceOn(y, w.personA)) continue
     const u = homeUnitOn(w.rowsA, String(y.pid), w.today, w.fallback)
     if (u == null || levelFrom(y, u, w.today, w.rowsA, w.fallback) !== 'admin') continue
     const x = w.acctB.find(z => String(z.pid) === String(y.pid))
-    if (x && inForceOn(x, w.personB) && levelFrom(x, u, w.today, w.rowsB, w.fallback) === 'admin') continue
+    if (x && levelFrom(x, u, w.today, w.rowsB, w.fallback) === 'admin') continue
     out.push({ account: y.id, pid: String(y.pid), unit: u })
   }
   return out

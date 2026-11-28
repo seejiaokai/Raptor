@@ -1,11 +1,15 @@
 // @vitest-environment jsdom
-/* U2 FIX ROUND 1, FIX 4 (opus2 F1, security S3 — the brief docs/superpowers/briefs/2026-11-27-msq-s2-u2fix-brief.md):
-   Enable and Restore are "making an admin". R2's own words — "wherever a command leaves a man an admin in force of
-   `unit` who was not one before it" — with R1's list (an account switched off, a man archived: not in force) cover both
-   doors; the agent's reading, said to the coordinator. A Plan holder of 149 (Hunter) may not bring a 149 admin back by
-   Enable, by Restore from the archive, or by the Undo of his own Suspend; 149's own admin (Kestrel) still may, and the
-   door's refusal is D2806's sentence. Copied from opus2's proof-1 and the security reader's proof-3, with the gate,
-   the Undo and the controls added. */
+/* ENABLE AND RESTORE ARE NOT "MAKING AN ADMIN" (his D2903, 28 Nov 26: "switching a suspended, archived or posted-out
+   admin back on is not making an admin" — whoever may manage that squadron's people may do it, and the man returns with
+   the role he had).
+
+   This file was U2 fix round 1's fix 4 (opus2 F1, security S3 — the brief
+   docs/superpowers/briefs/2026-11-27-msq-s2-u2fix-brief.md), which read R2's "an admin in force" as covering both doors
+   and refused them to a Plan holder in D2806's sentence: the agent's reading, never his ruling. His ruling replaced it
+   (U2 fix round 3's addendum, docs/superpowers/briefs/2026-11-28-msq-s2-u2fix3-addendum.md), so every "refused to a Plan
+   holder" case below now expects the Enable, the Restore and the Undo of his own Suspend to GO THROUGH, Osprey 149's
+   admin again; the controls stand as they were. Making a MEMBER an admin is still refused to him (D2806, D2807) — its
+   cases are state/msq-s2-u2fix3-d2903.test.ts and state/msq-s2-u2fix3-role-off.test.ts. */
 import { describe, it, expect } from 'vitest'
 import { withThird, signInAs, PID, ACCT, on } from '../test-support/msq-world'
 import { saveAccess, updateAccount, accountById, accountsLoad, adminsOf, levelIn, isAdminAccount, ACCOUNT_PFX } from './accounts'
@@ -19,7 +23,6 @@ import { store } from '../engine/hooks'
 
 withThird()
 
-const MAKE = (n: string) => `Only ${n}'s own admins or a master admin can make an admin of ${n}.`
 const reload = () => { unitsLoad(); accountsLoad() }
 const adminInForce = (): boolean => { const a = accountById(ACCT.osprey)!; return a.on && a.role === 'admin' && !(PEOPLE as any)[PID.osprey]?.archived && levelIn(ACCT.osprey, 'u149', todayIso()) === 'admin' }
 /* 149 gets a second own admin, Osprey, made by its own admin (so the last-admin lock never answers first) */
@@ -29,8 +32,8 @@ function ospreyAdmin(): void {
   reload()
 }
 
-describe('U2 fix 4 — Enable is making an admin', () => {
-  it('Hunter (Plan of 149) switches Osprey (149 admin, switched off by Kestrel) on again: refused in D2806\'s sentence, nothing saved', () => {
+describe('D2903 — Enable of a suspended admin is not making an admin', () => {
+  it('Hunter (Plan of 149) switches Osprey (149 admin, switched off by Kestrel) on again: saved, Osprey 149\'s admin again', () => {
     ospreyAdmin()
     expect(updateAccount(ACCT.osprey, { on: false }), 'setup: Kestrel switches Osprey off').toBeNull()
     reload()
@@ -40,9 +43,9 @@ describe('U2 fix 4 — Enable is making an admin', () => {
     const r = updateAccount(ACCT.osprey, { on: true })
     reload()
     expect({ r, on: accountById(ACCT.osprey)!.on, admins: adminsOf('u149', todayIso()).includes(PID.osprey) })
-      .toEqual({ r: MAKE('149'), on: false, admins: false })
+      .toEqual({ r: null, on: true, admins: true })
   })
-  it('the gate refuses the same Enable written past the door: "a man made an admin of 149 by one who may not give its Plan"', () => {
+  it('the same Enable written past the door passes the gate: the role is not newly an admin\'s', () => {
     ospreyAdmin()
     expect(updateAccount(ACCT.osprey, { on: false })).toBeNull()
     reload()
@@ -50,14 +53,14 @@ describe('U2 fix 4 — Enable is making an admin', () => {
     const row: any = store.get(ACCOUNT_PFX + ACCT.osprey, null)
     expect(row, 'setup: Osprey\'s stored account row').toBeTruthy()
     /* (the row as the one row writer would write the Enable — dated back in force now, U2 fix round 2, fix 3's `liveAt`,
-       which the gate holds — so the only reason left to refuse it is the one this test is about) */
+       which the gate holds) */
     const r: any = commitSettingsIntent('account.update', null, () => { store.set(ACCOUNT_PFX + ACCT.osprey, { ...row, on: true, liveAt: Date.now() }) })
     reload()
-    expect(r.ok, 'the gate refused it').toBe(false)
-    expect(String(r?.message ?? '')).toMatch(/a man made an admin of u149 by one who may not give its Plan/)
-    expect(accountById(ACCT.osprey)!.on).toBe(false)
+    expect(r.ok, 'the gate let it through').toBe(true)
+    expect(accountById(ACCT.osprey)!.on).toBe(true)
+    expect(adminInForce()).toBe(true)
   })
-  it('the Undo of Hunter\'s own Suspend of Osprey is blocked in D2807\'s sentence, Osprey left switched off', () => {
+  it('the Undo of Hunter\'s own Suspend of Osprey goes through, Osprey 149\'s admin again', () => {
     ospreyAdmin()
     on(15, 10)
     signInAs('hunter')
@@ -66,9 +69,7 @@ describe('U2 fix 4 — Enable is making an admin', () => {
     reload()
     const u = globalUndo()
     reload()
-    expect({ ok: u.ok, reason: u.reason, on: accountById(ACCT.osprey)!.on })
-      /* (D2807's sentence, its apostrophes one kind — fix 9, Fable's word review) */
-      .toEqual({ ok: false, reason: 'Only 149’s own admins or a master admin can make an admin of 149, so this can’t be undone.', on: false })
+    expect({ ok: u.ok, on: accountById(ACCT.osprey)!.on, inForce: adminInForce() }).toEqual({ ok: true, on: true, inForce: true })
   })
   it('control: Kestrel (149\'s own admin) switches Osprey on again: saved', () => {
     ospreyAdmin()
@@ -77,7 +78,7 @@ describe('U2 fix 4 — Enable is making an admin', () => {
     reload()
     expect(adminsOf('u149', todayIso())).toContain(PID.osprey)
   })
-  it('control: Hunter (Plan of 149) switches a 149 MEMBER on again: saved — only an admin\'s Enable is making an admin', () => {
+  it('control: Hunter (Plan of 149) switches a 149 MEMBER on again: saved, and he is still a member', () => {
     signInAs('kestrel')
     expect(updateAccount(ACCT.osprey, { on: false })).toBeNull()
     signInAs('hunter')
@@ -85,11 +86,12 @@ describe('U2 fix 4 — Enable is making an admin', () => {
     expect(updateAccount(ACCT.osprey, { on: true })).toBeNull()
     reload()
     expect(accountById(ACCT.osprey)!.on).toBe(true)
+    expect(levelIn(ACCT.osprey, 'u149', todayIso())).toBe('member')
   })
 })
 
-describe('U2 fix 4 — Restore is making an admin', () => {
-  it('Hunter (Plan of 149) restores Osprey (149 admin, archived by Kestrel): refused, he stays archived', () => {
+describe('D2903 — Restore of an archived admin is not making an admin', () => {
+  it('Hunter (Plan of 149) restores Osprey (149 admin, archived by Kestrel): he is back, 149\'s admin again', () => {
     ospreyAdmin()
     on(15, 10)
     expect(archivePerson(PID.osprey).bad, 'setup: Kestrel archives Osprey').toBeNull()
@@ -98,12 +100,23 @@ describe('U2 fix 4 — Restore is making an admin', () => {
     on(15, 11)
     signInAs('hunter')
     enterSquadron('u149'); reload()
-    expect(restoreProblem(PID.osprey, todayIso())).toBe(MAKE('149'))
-    expect(restoreArchivedAs(PID.osprey, 'Osprey', todayIso())).toBe(MAKE('149'))
+    expect(isAdminAccount(accountById(ACCT.osprey)!), 'premise: his account is still an admin\'s').toBe(true)
+    expect(restoreProblem(PID.osprey, todayIso())).toBeNull()
     const ok = restoreArchivedPerson(PID.osprey, todayIso())
     reload()
-    expect(isAdminAccount(accountById(ACCT.osprey)!), 'premise: his account is still an admin\'s').toBe(true)
-    expect({ ok, archived: !!(PEOPLE as any)[PID.osprey]?.archived, inForce: adminInForce() }).toEqual({ ok: false, archived: true, inForce: false })
+    expect({ ok, archived: !!(PEOPLE as any)[PID.osprey]?.archived, inForce: adminInForce() }).toEqual({ ok: true, archived: false, inForce: true })
+  })
+  it('Hunter (Plan of 149) uses "Restore as" on the same man: he is back, 149\'s admin again', () => {
+    ospreyAdmin()
+    on(15, 10)
+    expect(archivePerson(PID.osprey).bad, 'setup: Kestrel archives Osprey').toBeNull()
+    reload()
+    on(15, 11)
+    signInAs('hunter')
+    enterSquadron('u149'); reload()
+    expect(restoreArchivedAs(PID.osprey, 'Osprey', todayIso())).toBeNull()
+    reload()
+    expect({ archived: !!(PEOPLE as any)[PID.osprey]?.archived, inForce: adminInForce() }).toEqual({ archived: false, inForce: true })
   })
   it('control — an overseas man\'s return: Kestrel archives Osprey (149 admin) and Kestrel restores him: he is 149\'s admin again', () => {
     ospreyAdmin()

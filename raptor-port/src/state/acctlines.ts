@@ -230,6 +230,24 @@ export function acctFollowUps(forward: ReadonlyArray<{ collection: string; id: s
   }
   return out
 }
+/** A MOVE'S SQUADRON LINE IS TOLD ONCE (U2 fix round 3, fix 5 — Opus 2, Astra 2, Fable 1, the security reader's S3; the
+ *  orchestrator's decision). The pass below rescans the moves of the last weeks at every wake and worked out "who was a
+ *  reader that day" afresh each time, from the moments the records keep (accounts.ts adminLineAudienceOn) — and four more
+ *  roads brought a man in after the day with an old moment: a Plan put back by Undo or Redo, a re-link undone or redone,
+ *  a moved man re-made an admin by a Redo, a Plan put back and its holder then made a master admin. So the audience is
+ *  no longer rebuilt: once a move has been told, no further reader is ever owed its line. "Told" — a stored bell line of
+ *  that move: any squadron line with the move's fixed id less its reader (planMovedLineId), or the mover's own line of
+ *  that Plan ending on that day (movedLineId — owed from the very part the squadron's line is, and written by the same
+ *  `account.told` command, writeMoveLines; it alone marks a move day on which the squadron had no reader to tell).
+ *  ONE body: the writer (planMovesOwed) owes nothing for a move already told, and the gate (state/perms.ts
+ *  planLineViolation, `account.told`) refuses a line for one told before its command — `notices` is the bell as the
+ *  caller reads it: live for the writer, as it stood before the command for the gate. The moments stay, as the audience
+ *  of the FIRST telling. The fixed ids, and the old lines coming back on an Undo of a take-away (D2310), are untouched. */
+export function moveTold(accountId: string, day: string, unit: string, notices: ReadonlyArray<{ id?: unknown }>): boolean {
+  const squadron = planMovedLineId(accountId, day, unit, '')
+  const own = movedLineId(accountId, day, { k: 'acct', c: 'planEnd', u: unit })
+  return notices.some(n => { const id = String(n?.id ?? ''); return id === own || id.startsWith(squadron) })
+}
 /** THE MOVES THAT HAVE TAKEN EFFECT, not yet told (D11, D11′): every account whose squadron changed on a day up to today,
  *  within the last month (a move older than that is past telling — demo data, D56), each line its fixed id. */
 export const MOVES_TOLD_DAYS = 31
@@ -252,7 +270,7 @@ export function movesOwed(today: string = todayIso()): Array<{ to: string; part:
 /** …AND THE SQUADRONS' ADMINS OWED A MOVE'S LINE (U2 — D2654 E9l: "Plan of 149 ended: he moved to 150"): for each Plan a
  *  move ended in the same stretch movesOwed reads, a line to each of that squadron's admins on the move's day (its
  *  audience then, over the rows as they stand — the man himself out of it), each its fixed id. The gate asks this one body
- *  (state/perms.ts planLineViolation, `account.told`). */
+ *  (state/perms.ts planLineViolation, `account.told`). A move already told owes nobody (moveTold, above). */
 export function planMovesOwed(today: string = todayIso()): Array<{ to: string; u: string; part: PlanPart; day: string; id: string }> {
   const rows = unitRows(), out: Array<{ to: string; u: string; part: PlanPart; day: string; id: string }> = []
   const have = new Set(NOTICES.map(n => n.id))
@@ -262,7 +280,10 @@ export function planMovesOwed(today: string = todayIso()): Array<{ to: string; u
     if (!x || x.deleted || x.special) continue
     for (const d of homeChangesOn(pid, addDays(today, -MOVES_TOLD_DAYS), today)) {
       for (const l of planLinesOf(pid, movedParts(accessIn(a, rows, addDays(d, -1)), accessIn(a, rows, d)))) {
-        /* (the audience as it stood on the move day, by the records — U2 fix round 1, fix 8: a man made an admin since gets none) */
+        /* (told once — U2 fix round 3, fix 5: a line of this move stored already, and no further reader is owed it) */
+        if (moveTold(a.id, d, l.u, NOTICES)) continue
+        /* (the first telling's audience, as it stood on the move day by the records — U2 fix round 1, fix 8: a man made
+           an admin since gets none) */
         for (const to of adminLineAudienceOn(l.u, d, rows)) {
           const id = planMovedLineId(a.id, d, l.u, to)
           if (to !== pid && !have.has(id)) out.push({ to, u: l.u, part: l.part, day: d, id })

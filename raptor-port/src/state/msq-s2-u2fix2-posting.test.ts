@@ -1,24 +1,29 @@
 // @vitest-environment jsdom
-/* U2 FIX ROUND 2, FIX 2 (Fable 1, Opus F3, security S5 — closes [LW-UNDO-POSTOUT-ADMIN-WORDS]; the brief
-   docs/superpowers/briefs/2026-11-28-msq-s2-u2fix2-brief.md): the posting's two take-backs ask the same door. Kestrel
-   (149's admin) posts Osprey, made an admin of 149, overseas from today; the posting runs (archived, sign-in suspended).
-   Hunter (142's admin, Plan of 149) presses "Undo post out", or moves the date later: the commit gate refuses both (round
-   1's fix 4 — bringing an admin back is making one), and now the doors say why, in D2806's sentence, before anything is
-   written. Copied from Fable's proof 1 (its two red cases turned into "refused in D2806's sentence, nothing changed", its
-   two controls kept), the fresh Opus read's proof 1 and the security reader's proof 2 (whose date-moved case asked
-   postOutProblem: the sentence is the new postOutChangeProblem's, since the posting's outcome alone cannot say it). */
+/* A POSTING TAKEN BACK BRINGS AN ADMIN BACK, AND THAT IS NOT MAKING ONE (his D2903, 28 Nov 26: "switching a suspended,
+   archived or posted-out admin back on is not making an admin" — whoever may manage that squadron's people may do it,
+   and the man returns with the role he had).
+
+   This file was U2 fix round 2's fix 2 (Fable 1, Opus F3, security S5 — the brief
+   docs/superpowers/briefs/2026-11-28-msq-s2-u2fix2-brief.md), which had the posting sheet's two take-backs ask the
+   make-an-admin door and refuse a Plan holder in D2806's sentence. That grew on round 1's fix 4, the agent's reading; his
+   ruling replaced it (U2 fix round 3's addendum, docs/superpowers/briefs/2026-11-28-msq-s2-u2fix3-addendum.md), and the
+   door it asked (leavewar/sync.ts postOutChangeProblem) is gone. So: Kestrel (149's admin) posts Osprey, made an admin of
+   149, overseas from today; the posting runs (archived, sign-in suspended). Hunter (142's admin, Plan of 149) presses
+   "Undo post out", or moves the date later: both now GO THROUGH, Osprey 149's admin again. Every case that expected a
+   refusal expects that; the controls stand as they were. */
 import { describe, it, expect } from 'vitest'
 import { withThird, signInAs, moveMan, on, pastMidnight, PID, ACCT } from '../test-support/msq-world'
-import { saveAccess, accountById, accountsLoad, levelIn } from './accounts'
+import { saveAccess, accountById, accountsLoad, levelIn, adminsOf } from './accounts'
 import { unitsLoad, todayIso, homeOn } from './units'
 import { enterSquadron } from './store'
-import { postOut, postOutProblem, postOutChangeProblem, undoPostOut, undoPostOutProblem, restoreArchivedPerson } from '../leavewar/sync'
+import { postOut, postOutProblem, undoPostOut, undoPostOutProblem, restoreArchivedPerson } from '../leavewar/sync'
 import { PEOPLE } from '../engine/people'
 
 withThird()
 const reload = (): void => { unitsLoad(); accountsLoad() }
-const MAKE = (n: string) => `Only ${n}'s own admins or a master admin can make an admin of ${n}.`
 const state = () => ({ archived: !!(PEOPLE as any)[PID.osprey]?.archived, on: accountById(ACCT.osprey)!.on })
+const BACK = { archived: false, on: true }
+const adminAgain = (): boolean => adminsOf('u149', todayIso()).includes(PID.osprey)
 const addDays = (iso: string, n: number): string => {
   const [y, m, d] = iso.split('-').map(Number)
   const t = new Date(y!, m! - 1, d! + n)
@@ -38,14 +43,14 @@ function ospreyPostedOverseas(admin: boolean): void {
 }
 const asHunter = (): void => { on(15, 11); signInAs('hunter'); enterSquadron('u149'); reload() }
 
-describe('Fable 1 — Undo post out of a 149 admin by a Plan holder of 149', () => {
+describe('Undo post out of a 149 admin by a Plan holder of 149 (D2903)', () => {
   it('control: Hunter (Plan of 149) takes back the posting of a 149 member: it goes through', () => {
     ospreyPostedOverseas(false)
     asHunter()
     expect(undoPostOutProblem(PID.osprey)).toBeNull()
     expect(undoPostOut(PID.osprey)).toBe(true)
     reload()
-    expect(state()).toEqual({ archived: false, on: true })
+    expect(state()).toEqual(BACK)
   })
   it('control: Kestrel (149\'s own admin) takes back the posting of a 149 admin: it goes through', () => {
     ospreyPostedOverseas(true)
@@ -53,99 +58,59 @@ describe('Fable 1 — Undo post out of a 149 admin by a Plan holder of 149', () 
     expect(undoPostOutProblem(PID.osprey)).toBeNull()
     expect(undoPostOut(PID.osprey)).toBe(true)
     reload()
-    expect(state()).toEqual({ archived: false, on: true })
+    expect(state()).toEqual(BACK)
   })
-  it('Hunter presses "Undo post out" on a 149 admin: refused in D2806\'s sentence, nothing changed', () => {
+  it('Hunter presses "Undo post out" on a 149 admin: it goes through, Osprey 149\'s admin again', () => {
     ospreyPostedOverseas(true)
     asHunter()
     const why = undoPostOutProblem(PID.osprey)
     const done = undoPostOut(PID.osprey)
     reload()
-    expect({ why, done, ...state() }).toEqual({ why: MAKE('149'), done: false, archived: true, on: false })
+    expect({ why, done, ...state(), admin: adminAgain() }).toEqual({ why: null, done: true, ...BACK, admin: true })
   })
-  it('Hunter moves that posting to a later date (which would lift the archive and the suspension): refused in D2806\'s sentence, nothing changed', () => {
+  it('Hunter moves that posting to a later date (which lifts the archive and the suspension): it goes through, Osprey 149\'s admin again', () => {
     ospreyPostedOverseas(true)
     asHunter()
-    const why = postOutProblem(PID.osprey, 'overseas') ?? postOutChangeProblem(PID.osprey, '2026-07-25', 'overseas')
+    const why = postOutProblem(PID.osprey, 'overseas')
     const done = postOut(PID.osprey, '2026-07-25', 'overseas')
     reload()
-    expect({ why, done, ...state() }).toEqual({ why: MAKE('149'), done: false, archived: true, on: false })
+    expect({ why, done, ...state(), admin: adminAgain() }).toEqual({ why: null, done: true, ...BACK, admin: true })
   })
 })
 
-describe('Opus F3 — the posting sheet brings an archived admin back only past the make-an-admin door', () => {
-  it('1a: Hunter (Plan of 149): "Undo post out" on Osprey (149 admin): nothing written', () => {
+describe('the posting sheet\'s doors ask nothing about making an admin (D2903)', () => {
+  it('Hunter moves the posting\'s date to next week (so it no longer archives him today): written, he is back', () => {
     ospreyPostedOverseas(true)
     asHunter()
-    const ok = undoPostOut(PID.osprey)
-    reload()
-    expect({ ok, ...state() }).toEqual({ ok: false, archived: true, on: false })
-  })
-  it('1b: the sheet\'s own refusal (undoPostOutProblem) says D2806\'s sentence, as Restore does', () => {
-    ospreyPostedOverseas(true)
-    asHunter()
-    expect(undoPostOutProblem(PID.osprey)).toBe(MAKE('149'))
-  })
-  it('1c: Hunter moves the posting\'s date to next week (so it no longer archives him today): nothing written', () => {
-    ospreyPostedOverseas(true)
-    asHunter()
-    expect(postOutChangeProblem(PID.osprey, addDays(todayIso(), 7), 'overseas')).toBe(MAKE('149'))
     const ok = postOut(PID.osprey, addDays(todayIso(), 7), 'overseas')
     reload()
-    expect({ ok, ...state() }).toEqual({ ok: false, archived: true, on: false })
+    expect({ ok, ...state(), admin: adminAgain() }).toEqual({ ok: true, ...BACK, admin: true })
   })
-  it('1d: the posting door asked with no post-in date (restoreArchivedPerson) refuses before the gate', () => {
+  it('the posting door asked with no post-in date (restoreArchivedPerson) goes through for Hunter too', () => {
     ospreyPostedOverseas(true)
     asHunter()
-    expect(restoreArchivedPerson(PID.osprey)).toBe(false)
+    expect(restoreArchivedPerson(PID.osprey)).toBe(true)
+    reload()
+    expect({ ...state(), admin: adminAgain() }).toEqual({ ...BACK, admin: true })
+  })
+  it('control: the same date moved by Kestrel (149\'s own admin) goes through', () => {
+    ospreyPostedOverseas(true)
+    on(15, 11); signInAs('kestrel'); reload()
+    expect(postOut(PID.osprey, addDays(todayIso(), 7), 'overseas')).toBe(true)
+    reload()
+    expect(state()).toEqual(BACK)
+  })
+  it('control: a date moved that keeps the posting run today lifts nothing: he stays archived and suspended', () => {
+    ospreyPostedOverseas(true)
+    asHunter()
+    expect(postOut(PID.osprey, addDays(todayIso(), -1), 'overseas')).toBe(true)
     reload()
     expect(state()).toEqual({ archived: true, on: false })
   })
-  it('control: the same date moved by Kestrel (149\'s own admin) goes through and asks nothing', () => {
-    ospreyPostedOverseas(true)
-    on(15, 11); signInAs('kestrel'); reload()
-    expect(postOutChangeProblem(PID.osprey, addDays(todayIso(), 7), 'overseas')).toBeNull()
-    expect(postOut(PID.osprey, addDays(todayIso(), 7), 'overseas')).toBe(true)
-    reload()
-    expect(state()).toEqual({ archived: false, on: true })
-  })
-  it('control: a date moved that keeps the posting run today lifts nothing, and asks nothing', () => {
-    ospreyPostedOverseas(true)
-    asHunter()
-    expect(postOutChangeProblem(PID.osprey, addDays(todayIso(), -1), 'overseas')).toBeNull()
-  })
 })
 
-describe('security S5 — "Undo post out" of an admin is asked at the door', () => {
-  it('Hunter (Plan of 149): the sheet\'s Undo post out says who can, and nothing is written', () => {
-    ospreyPostedOverseas(true)
-    asHunter()
-    const problem = undoPostOutProblem(PID.osprey)
-    const ok = undoPostOut(PID.osprey)
-    reload()
-    expect({ problem, ok, ...state() }).toEqual({ problem: MAKE('149'), ok: false, archived: true, on: false })
-  })
-  it('Hunter (Plan of 149): moving the run posting\'s date ahead would lift the archive: the door says who can, nothing written', () => {
-    ospreyPostedOverseas(true)
-    asHunter()
-    const later = '2026-07-30'
-    const problem = postOutChangeProblem(PID.osprey, later, 'overseas')
-    const ok = postOut(PID.osprey, later, 'overseas')
-    reload()
-    expect({ problem, ok, ...state() }).toEqual({ problem: MAKE('149'), ok: false, archived: true, on: false })
-  })
-  it('(control) Kestrel, 149\'s own admin, undoes it: Osprey back', () => {
-    ospreyPostedOverseas(true)
-    on(15, 11); signInAs('kestrel'); reload()
-    expect(undoPostOutProblem(PID.osprey)).toBeNull()
-    expect(undoPostOut(PID.osprey)).toBe(true)
-    reload()
-    expect(state()).toEqual({ archived: false, on: true })
-  })
-})
-
-describe('a moved member (fix 1\'s Hunter) posted out of 149 and taken back by Mako (Plan of 149): goes through', () => {
-  it('Mako takes back Hunter\'s posting: he is a member of 149, so no admin is made', () => {
+describe('a moved member (round 2 fix 1\'s Hunter) posted out of 149 and taken back by Mako (Plan of 149): goes through', () => {
+  it('Mako takes back Hunter\'s posting: he is a member of 149, as he was', () => {
     on(15, 9)
     signInAs('saber')
     expect(moveMan(PID.hunter, 'u149'), 'setup: Saber moves Hunter to 149').toMatchObject({ ok: true })
@@ -163,5 +128,6 @@ describe('a moved member (fix 1\'s Hunter) posted out of 149 and taken back by M
     expect(undoPostOut(PID.hunter)).toBe(true)
     reload()
     expect({ archived: !!(PEOPLE as any)[PID.hunter].archived, on: accountById(ACCT.hunter)!.on }).toEqual({ archived: false, on: true })
+    expect(levelIn(ACCT.hunter, 'u149', todayIso()), 'still a member of 149').toBe('member')
   })
 })

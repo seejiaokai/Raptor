@@ -775,16 +775,12 @@ function makeAdminStuck(entry: UndoEntry, dir: 'undo' | 'redo'): string | boolea
   /* both sides read the same way, from the stored rows — the accounts as the loader reads them, the squadron rows as stored
      — so a list held in memory that lags the store never reads as a man made an admin (the gate reads its two worlds the
      same way, perms.ts buildWorlds) */
-  /* (U2 fix round 1, fix 4: each side's switch and people — the Undo of a Suspend switches an admin's sign-in back on, an
-     admin in force again; a person the step writes is read as the step leaves him) */
-  const peopleA = new Map<string, any>()
-  for (const c of changes) if (c.collection === 'people') peopleA.set(String(c.id), c.op === 'delete' ? null : c.after ?? null)
-  const personB = (pid: string) => (PEOPLE as any)[pid]
-  const personA = (pid: string) => (peopleA.has(pid) ? peopleA.get(pid) : (PEOPLE as any)[pid])
+  /* (THE ROLE ALONE — his D2903, 28 Nov 26: the Undo of a Suspend or an Archive of an admin switches him back on with the
+     role he had, which is not making an admin, so it goes through for whoever may manage the squadron's people; round
+     1's fix 4 handed each side's switch and people to the helper and blocked it — gone) */
   const made = madeAdminsNow({
-    acctB: readAccounts(accountRowsNow()).map(x => ({ ...levelAcct(x), on: x.on })),
-    acctA: readAccounts(after, undefined, personA).map(x => ({ ...levelAcct(x), on: x.on })),
-    rowsB: unitRowsAfter([]), rowsA: unitRowsAfter(changes as any), today: todayIso(), personB, personA,
+    acctB: readAccounts(accountRowsNow()).map(x => levelAcct(x)), acctA: readAccounts(after).map(x => levelAcct(x)),
+    rowsB: unitRowsAfter([]), rowsA: unitRowsAfter(changes as any), today: todayIso(),
   })
   for (const m of made) {
     if (!mayGivePlanByAccount(m.unit)) return dir === 'undo' ? makeAdminUndoWords(m.unit) : true
