@@ -6,7 +6,7 @@
    test-support but a *.test file may). A plain .ts file on purpose (the app drawn by createElement): it exports helpers, never a component, and the code
    check reads a .tsx file as a component file (26 Nov 26). */
 import { createElement } from 'react'
-import { describe, it, expect, afterEach, vi } from 'vitest'
+import { describe, it, expect, afterEach, beforeAll, vi } from 'vitest'
 import { render, act, fireEvent, cleanup } from '@testing-library/react'
 import { withThird, third, signInAs, PID, ACCT, moveMan, pastMidnight } from './msq-world'
 import { App } from '../ui/App'
@@ -54,6 +54,13 @@ import { Whiteboard } from '../storage/whiteboard'
 import { Postman } from '../storage/postman'
 import { trackerTarget } from '../storage/adapters'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
+
+/* THE TWO PAGES THE APP DOWNLOADS ON FIRST VISIT (Shell.tsx), LOADED ONCE PER FILE BEFORE ITS TESTS. In a full run (236
+   files together, A212's of 28 Nov 26) the first visit's download alone outran goLeaveWar's wait with every assertion
+   right: the wait was on the right thing, but the download spent the TEST's 20 s. A hook has its own clock, so the
+   download is paid here and a test's wait only sees the page draw (D87: wait on what the test needs, never a longer fixed
+   time). The same two imports availwin.test.tsx and lwkeepalive.test.tsx make up front. */
+beforeAll(async () => { await Promise.all([import('../leavewar/LeaveWarPage'), import('../tracker/TrackerPage')]) }, 120_000)
 
 export const C: any = TRK
 export const MM = (window as any).matchMedia
