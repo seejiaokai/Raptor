@@ -12357,7 +12357,8 @@ Built on `claude/leave-war-m4-planning-d18224` from `docs/superpowers/plans/2026
   (`sync.ts openRequestDocs`, `openInputDocs`). A replaced bid's grid notice shows the bid's remarks and documents and
   offers "Add to the LL" onto the leave that replaced it (`sync.ts replacedCarry`).
 - **"Placed · Decided" (r7-13):** the bid window's one compact line an entry under its day line — "Placed Ranger · Mon 5
-  Jan, 09:12 · Approved Saber · Thu 8 Jan, 08:40" (`ui/PlacedLine.tsx`); nothing where nothing is known.
+  Jan, 09:12 · Approved Saber · Thu 8 Jan, 08:40" (`ui/PlacedLine.tsx`); nothing where nothing is known. **To read "Placed by
+  Ranger · … · Approved by Saber · …" (his D2927, 28 Nov 26), built with the day window ([COMBINED-INPUT-ROWS]).**
 
 ## A leave of several days opens whole (his D1448, D1461 — [LW-WHOLE-LEAVE-WINDOW], 28 Oct 26)
 
