@@ -49,7 +49,9 @@ describe('U2 fix 4 — Enable is making an admin', () => {
     signInAs('hunter')
     const row: any = store.get(ACCOUNT_PFX + ACCT.osprey, null)
     expect(row, 'setup: Osprey\'s stored account row').toBeTruthy()
-    const r: any = commitSettingsIntent('account.update', null, () => { store.set(ACCOUNT_PFX + ACCT.osprey, { ...row, on: true }) })
+    /* (the row as the one row writer would write the Enable — dated back in force now, U2 fix round 2, fix 3's `liveAt`,
+       which the gate holds — so the only reason left to refuse it is the one this test is about) */
+    const r: any = commitSettingsIntent('account.update', null, () => { store.set(ACCOUNT_PFX + ACCT.osprey, { ...row, on: true, liveAt: Date.now() }) })
     reload()
     expect(r.ok, 'the gate refused it').toBe(false)
     expect(String(r?.message ?? '')).toMatch(/a man made an admin of u149 by one who may not give its Plan/)

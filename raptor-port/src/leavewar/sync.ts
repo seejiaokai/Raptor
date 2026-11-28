@@ -168,7 +168,7 @@ import type { StorageBackend } from './state/storage'
 import { HOOKS } from '../engine/hooks'
 import { deferEffect as cmdDeferEffect, commitProjection as cmdCommitProjection, commit as cmdCommit, CmdRefused, isInReducer, isCommitting as cmdIsCommitting, activeEnvelope, isQueued, isOk, type CommitResult, type Txn } from '../command'
 /* [POST-OUT-OUTCOMES] (27 Sep 26): the posting's outcomes cross the seam HERE, the one place the war meets Raptor */
-import { suspendForPosting, enableAfterPosting, lastAdminIfGone, lastAdminLock, masterDeleteProblem, masterChangeProblem, otherSquadronPersonProblem, accountOfPid, suspendForArchive, enableForRestore, ACCOUNTS_LIST, isAdminAccount, adminLineAudience, endRightsOfArchived, makeAdminProblem } from '../state/accounts'
+import { suspendForPosting, enableAfterPosting, lastAdminIfGone, lastAdminLock, masterDeleteProblem, masterChangeProblem, otherSquadronPersonProblem, accountOfPid, suspendForArchive, enableForRestore, ACCOUNTS_LIST, isAdminAccount, adminNow, adminLineAudience, endRightsOfArchived, makeAdminProblem } from '../state/accounts'
 import { accessWas, tellAccess, writeMoveLines, acctFollowUps } from '../state/acctlines'
 import { markBack, clearBack, CURPAGE } from '../state/view'
 /* every page change by a press goes through the page door (step K6 — the guard rail's plan §4.5, R5 (b)) */
@@ -3621,16 +3621,32 @@ export function restoreArchivedPerson(id: string, postIn?: string): boolean {
   /* [ONE-DOOR] (D308, D320): Restore on Admin → Users brings a post-in date — the war opens a new stint from it; without
      one this is the posting's own undo (the Leave War's Undo post out — the same stint continues) */
   if (postIn !== undefined && restoreProblem(id, postIn)) return false
+  /* …and with no post-in date (the posting sheet's Undo post out) an admin brought back is asked here too, so this door
+     never reaches the gate to be refused there (U2 fix round 2, fix 2 — restoreProblem asks it on the other road) */
+  if (restoreMakesAdminProblem(id)) return false
   if (callsignProblem(body.cs, id)) return false
   return restoreBody(id, null, postIn)
 }
 /* an archived man whose account is an admin's comes back an admin in force — asked of the one who restores him as making an
    admin of his squadron (accounts.ts makeAdminProblem — D2806's sentence; U2 fix round 1, fix 4). A master admin's man is
-   masterChangeProblem's, said first by both doors */
+   masterChangeProblem's, said first by both doors. An admin IN FORCE, never the stored role (U2 fix round 2, fix 1 —
+   Astra 1, Fable 2, Opus F2): an admin who moved squadron is a member where he is now (K3), so restoring him makes no
+   admin, as the gate (madeAdminsIn) already judges it */
 function restoreMakesAdminProblem(id: string): string | null {
   const a = accountOfPid(id)
-  if (!a || a.role !== 'admin' || a.master) return null
+  if (!a || a.master || !adminNow(a)) return null
   return makeAdminProblem(homeOn(id, todayIso()))
+}
+/* WOULD TAKING THIS POSTING BACK BRING AN ADMIN BACK? (U2 fix round 2, fix 2 — Fable 1, Opus F3, security S5): the
+   posting's own archive (`archivedBy: 'po'`) or its own suspension (`offBy: 'po'`) lifted is Restore's question above —
+   asked by the posting sheet's two take-backs (undoPostOutProblem, postOutChangeProblem), which the gate already judged
+   so but whose doors said nothing (the sheet closed as if it had worked) or the wrong thing. null when it brings none
+   back, or the one pressing may. */
+function postingBringsAdminProblem(id: string): string | null {
+  const body = rosterBody(id)
+  const a = accountOfPid(id)
+  const lifts = (!!body && !!body.archived && body.archivedBy === 'po') || (!!a && !a.on && a.offBy === 'po')
+  return lifts ? restoreMakesAdminProblem(id) : null
 }
 /* why Restore on Admin → Users would be refused ([ONE-DOOR], D308): not an admin, not an archived man, no whole date,
    or a post-in on or before the day his stint closed (the store's one sentence). null when it would go ahead. */
@@ -4045,6 +4061,9 @@ export function undoPostOutProblem(id: string): string | null {
   if (!body || body.deleted) return null
   const here = adminArchived(id)
   if (here) return here
+  /* an admin brought back by it — asked of one who may make an admin of his squadron (fix round 2, fix 2) */
+  const admin = postingBringsAdminProblem(id)
+  if (admin) return admin
   if (body.archived && body.archivedBy === 'po' && callsignProblem(body.cs, id))
     return `${body.cs} is taken on the roster — restore him on Admin → Users under another callsign`
   return null
@@ -4220,17 +4239,34 @@ export function isGroundCrew(id: string): boolean {
   const b = rosterBody(id)
   return !!b && (!!b.pers || b.seat === 'GND')
 }
+/* [POST-OUT-OUTCOMES] — #444's take-back, widened: what the posting made (its archive, the account it suspended, the
+   SANS tick it put on) and the NEW posting no longer makes today — its date still to come, or its outcome changed —
+   comes back in the same command. When the new posting makes it today too, it stands (the pass then records it).
+   One body, so the door that asks (postOutChangeProblem) and the write (postOut) judge the same take-back. */
+function postingKeeps(from: string, outcome: PostOutcome): { archive: boolean; suspend: boolean; sans: boolean } {
+  const due = effectiveToday() > addDays(from, -1)
+  return { archive: due && outcome === 'overseas', suspend: due && outcome === 'overseas', sans: due && outcome === 'sans' }
+}
+/* A POSTING CHANGED SO IT NO LONGER ARCHIVES OR SUSPENDS HIM TODAY BRINGS AN ADMIN BACK (U2 fix round 2, fix 2 — Fable 1,
+   Opus F3, security S5): where the change would lift the archive or the suspension the posting made, it is asked as the
+   sheet's Undo is — of one who may make an admin of his squadron (D2806's sentence) — so the sheet says why, where the
+   gate's refusal was said only as "That posting date was not taken.". null when it may go ahead. */
+export function postOutChangeProblem(id: string, from: string, outcome: PostOutcome): string | null {
+  const body = rosterBody(id)
+  const a = accountOfPid(id)
+  const keep = postingKeeps(from, outcome)
+  const lifts = (!keep.archive && !!body && !!body.archived && body.archivedBy === 'po')
+    || (!keep.suspend && !!a && !a.on && a.offBy === 'po')
+  return lifts ? postingBringsAdminProblem(id) : null
+}
 export function postOut(id: string, from: string, archive: boolean | PostOutcome = true): boolean {
   const body = rosterBody(id)
   /* a DELETED man's posting is final ([POST-OUT-OUTCOMES], D287 — Fable F3) */
   if (body && body.deleted) return false
   const outcome: PostOutcome = typeof archive === 'string' ? archive : (archive ? 'overseas' : 'none')
   if (postOutProblem(id, outcome)) return false
-  /* [POST-OUT-OUTCOMES] — #444's take-back, widened: what the posting made (its archive, the account it suspended, the
-     SANS tick it put on) and the NEW posting no longer makes today — its date still to come, or its outcome changed —
-     comes back in the same command. When the new posting makes it today too, it stands (the pass then records it). */
-  const due = effectiveToday() > addDays(from, -1)
-  const keep = { archive: due && outcome === 'overseas', suspend: due && outcome === 'overseas', sans: due && outcome === 'sans' }
+  if (postOutChangeProblem(id, from, outcome)) return false
+  const keep = postingKeeps(from, outcome)
   /* ALWAYS the posting command (`lw.postout` — its permission row, its envelope, what the database will authorise), a
      first posting and a change with nothing to take back included: a bare war write was routed as a generic `lw.edit`,
      a member's own-bid row (Astra's code read 4, 27 Sep 26). The command's gate decides who may; the take-back inside it

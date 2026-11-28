@@ -44,7 +44,7 @@ import { SelectSheet } from './SelectSheet'
 import { RemarksSheet } from './RemarksSheet'
 import { ClosedNoteSheet } from './ClosedNoteSheet'
 
-import { availRowNames, availVerdictAt, bidDayLine, dayFacts, docGet, flyMonth, leaveInputAt, openInputDocs, rowDocIds, openDays, postOut, postOutProblem, postingRunsBy, undoPostOut, undoPostOutProblem, warIdentityIfHidden, type DayAnswer } from '../sync'
+import { availRowNames, availVerdictAt, bidDayLine, dayFacts, docGet, flyMonth, leaveInputAt, openInputDocs, rowDocIds, openDays, postOut, postOutProblem, postOutChangeProblem, postingRunsBy, undoPostOut, undoPostOutProblem, warIdentityIfHidden, type DayAnswer } from '../sync'
 import { DayPanelHost } from './DayPanel'
 import { openDayPanel } from './daypanelopen'
 import { columnInView } from './inview'
@@ -82,8 +82,13 @@ const yearAt = (iso: string) => iso.slice(0, 4)
  *  stays open, where each used to close (or snap back) with nothing said. */
 function postOutOr(id: string, from: string, archive?: boolean | PostOutcome): string | undefined {
   /* never Delete oneself (the posting door's own refusal — sync.ts postOutProblem) */
-  const self = postOutProblem(id, typeof archive === 'string' ? archive : (archive === false ? 'none' : 'overseas'))
+  const outcome: PostOutcome = typeof archive === 'string' ? archive : (archive === false ? 'none' : 'overseas')
+  const self = postOutProblem(id, outcome)
   if (self) return self
+  /* a change that would lift the archive or the suspension the posting made brings an admin back: who may is said here,
+     in place of "That posting date was not taken." (U2 fix round 2, fix 2 — sync.ts postOutChangeProblem) */
+  const change = postOutChangeProblem(id, from, outcome)
+  if (change) return change
   /* through the bridge, so a Post out's own archive follows the new date and switch (Astra's final read, finding 2) */
   return postOut(id, from, archive) ? undefined : (postingProblem(id, 'out', from) || 'That posting date was not taken.')
 }
@@ -4585,7 +4590,7 @@ export function Matrix() {
           onChange={(from, outcome) => postOutOr(open.id, from, outcome)}
           /* the archive the Post out made goes too (W5-F1); refused, with where to go, when a man on the roster now holds
              his callsign (D286 (1) — Fable's scenario 2: it closed and did nothing) */
-          onUndo={() => { const why = undoPostOutProblem(open.id); if (why) return why; undoPostOut(open.id); close() }}
+          onUndo={() => { const why = undoPostOutProblem(open.id); if (why) return why; if (!undoPostOut(open.id)) return 'That did not save'; close() }}
           onClose={close}
         />
       )}

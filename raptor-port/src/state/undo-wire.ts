@@ -698,8 +698,11 @@ function masterRightRefusal(changes: readonly Change[]): string | null {
    (entry.inverse / entry.forward), never the list the leave-outs have thinned, so a Plan row left out never turns a
    refused step into a half one. Both ask the ACCOUNT's own role (accounts.ts mayGivePlanByAccount — U2 fix round 1,
    fix 1), never the role in force: an admin's own step pressed in the member view is the timeline's "Switch back to the
-   admin view to undo that." (D292), never blocked for good. The app's own actor (nobody signed in — a headless test, the boot) is the gate's to pass,
-   as it does; a session with no account fails closed, as the gate's reader does. */
+   admin view to undo that." (D292), never blocked for good. The app's own actor (nobody signed in — a headless test, the boot)
+   is left to the gate, never called stuck here: since U2 fix round 1, fix 5 the gate itself refuses the app's actor a
+   Plan row or a made admin (perms.ts unitRowViolation, madeAdminViolation — only origin `seed` or `remote`, and a removal
+   inside the posting pass, excepted), so such a replay is refused on its press, not let through (U2 fix round 2, fix 4 —
+   Fable's note: this said the gate passed it); a session with no account fails closed, as the gate's reader does. */
 const restoreOf = (entry: UndoEntry, dir: 'undo' | 'redo'): Change[] => (dir === 'undo' ? entry.inverse : entry.forward)
 /* the account rows as stored now (none stored: the seeded list), as accounts.ts accountsAfter reads the other side */
 const accountRowsNow = (): any[] => {

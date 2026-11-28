@@ -2158,3 +2158,20 @@ nothing). **New (tests):**
 - `src/state/msq-s2-u2fix-told.test.ts` (fix 6: a bare `account.told` carries only account and Plan lines).
 - `src/ui/msq-s2-u2fix-tap.test.tsx` (fix 7: a Plan line about a man with no row there opens nothing).
 - `src/state/msq-s2-u2fix-moveday.test.ts` (fix 8: a man made an admin after a move gets no line of it).
+
+Chat A212, 28 Nov 26 — step U2's second fix round (the four blind readers of round 1; the brief
+`docs/superpowers/briefs/2026-11-28-msq-s2-u2fix2-brief.md`). **Changed:** `src/state/accounts.ts` (Enable asks the role
+in force and the home of the man the row will name; `Account.liveAt` — the sign-in back in force — stamped by
+`stampMoments`, written and read with the row; `adminLineAudienceOn` counts a reader only where it is before the day),
+`src/state/perms.ts` (`restoreIntoForce`, `liveAtViolation` — the gate holds `liveAt`; `restoreRedated` dates it on an
+Undo or Redo that brings a row into force), `src/leavewar/sync.ts` (`restoreMakesAdminProblem` asks the role in force;
+`postingBringsAdminProblem`; `undoPostOutProblem` and `restoreArchivedPerson` ask it; `postOutChangeProblem` and
+`postingKeeps` — a posting's date or outcome changed so it lifts the archive or suspension it made asks it),
+`src/leavewar/ui/Matrix.tsx` (`postOutOr` says `postOutChangeProblem`'s sentence; the posting sheet's Undo stays open on
+a refusal), `src/state/undo-wire.ts` (a comment: the gate refuses the app's actor a Plan). **New (tests):**
+- `src/state/msq-s2-u2fix2-enable.test.ts` (fix 1: Enable and Restore of a moved member make no admin).
+- `src/state/msq-s2-u2fix2-posting.test.ts` (fix 2: "Undo post out" and a moved posting date of an admin, refused in
+  D2806's sentence by a Plan holder; the controls).
+- `src/ui/msq-s2-u2fix2-postsheet.test.tsx` (fix 2 on screen: the posting sheet stays open and says why).
+- `src/state/msq-s2-u2fix2-moveday.test.ts` (fix 3: a move's line only to those in force on the move day; `liveAt`
+  held by the gate).

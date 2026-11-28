@@ -117,7 +117,15 @@ export type AccountRole = 'admin' | 'main'
    right counts from the Plan's start, and his bell's default for them reads "on" (state/bellsqn.ts bellDefault); written
    by the door that sets the mark (saveAccess, setMaster), it goes with the mark. An Undo restores the row whole. Absent on
    a row from before they were kept (D56): from always. The gate holds every one (perms.ts accountShapeAndMasterViolation). */
-export interface Account { id: string; name: string; role: AccountRole; pid: string; on: boolean; offBy?: 'po'; seenFrom?: LinePos; createdAt?: number; master?: true; masterFrom?: string; pidFrom?: string; adminOf?: string; adminFrom?: string; adminAt?: number; masterAt?: number; kept?: Record<string, number> }
+/* `liveAt` (U2 fix round 2, fix 3 — Astra 2, Opus F1; the orchestrator's decision): the moment (ms) this sign-in last came
+   back INTO FORCE — switched on again after it was off (a hand Enable, Restore, the posting taken back: all through the one
+   row writer, stampMoments), or put back by an Undo or Redo that brings it into force (perms.ts restoreRedated). A move's
+   bell line is written only to readers in force before the move day began (adminLineAudienceOn), and an admin switched
+   off, archived or a member that day, brought back later, kept his old `adminAt` — so the next wake wrote him the old
+   day's line. `adminAt` is NEVER moved for this: the bell's retirement (notices.ts rightStart / rightHolds) reads it, and an
+   Undo of a take-away still brings the old lines back (D2310's reading); `liveAt` is not read there. A new row has none
+   (counts from always, D56); kept while the row stays in force. The gate holds it (perms.ts liveAtViolation). */
+export interface Account { id: string; name: string; role: AccountRole; pid: string; on: boolean; offBy?: 'po'; seenFrom?: LinePos; createdAt?: number; master?: true; masterFrom?: string; pidFrom?: string; adminOf?: string; adminFrom?: string; adminAt?: number; masterAt?: number; kept?: Record<string, number>; liveAt?: number }
 /* the master mark as a row keeps it — the mark, and its day where it has one; and the day of the link, where it has one;
    and where the admin role was given, where that is recorded; and the moments (§16 D1′) */
 const masterOf = (x: { master?: true; masterFrom?: string; pidFrom?: string; role?: string; adminOf?: string; adminFrom?: string; adminAt?: number; masterAt?: number; kept?: Record<string, number> }) => ({
@@ -147,6 +155,11 @@ export function stampMoments(prev: Account | undefined, a: Account, now: number 
     if (prev!.masterAt === undefined) delete out.masterAt; else out.masterAt = prev!.masterAt
     if (prev!.kept === undefined) delete out.kept; else out.kept = { ...prev!.kept }
   }
+  /* (the sign-in back in force — `liveAt` above: switched on again after it was off; otherwise as the row had it, never
+     what a door hands in, so no door can date it) */
+  if (prev && prev.on === false && a.on !== false) out.liveAt = now
+  else if (prev && prev.liveAt !== undefined) out.liveAt = prev.liveAt
+  else delete out.liveAt
   return out
 }
 /* made a master admin: the squadrons he holds Plan of today, each with that Plan's moment (§16 D1′a) */
@@ -260,7 +273,7 @@ function rowsOf(pfx: string): Map<string, any> {
 /* whether the accounts are stored as rows yet — none means the seeded list, held in memory (see the header) */
 let ACCOUNTS_STORED = false
 /* an account as its row stores it */
-const accountRow = (a: Account) => ({ id: a.id, name: a.name, role: a.role, pid: a.pid, on: a.on, ...(a.offBy ? { offBy: a.offBy } : {}), ...(a.seenFrom ? { seenFrom: a.seenFrom } : {}), ...(a.createdAt != null ? { createdAt: a.createdAt } : {}), ...masterOf(a) })
+const accountRow = (a: Account) => ({ id: a.id, name: a.name, role: a.role, pid: a.pid, on: a.on, ...(a.offBy ? { offBy: a.offBy } : {}), ...(a.seenFrom ? { seenFrom: a.seenFrom } : {}), ...(a.createdAt != null ? { createdAt: a.createdAt } : {}), ...masterOf(a), ...(Number.isFinite(a.liveAt) ? { liveAt: a.liveAt } : {}) })
 /* a request as its row stores it — who has seen it is not on it (reqseen rows) */
 const reqRow = (r: AccessRequest) => ({ id: r.id, name: r.name, cs: r.cs, ini: r.ini, seat: r.seat, cat: r.cat, at: r.at, unit: r.unit })
 
@@ -292,6 +305,7 @@ export function readAccounts(images: any[], why?: (text: string) => void, person
       ...(validIso(x.pidFrom) ? { pidFrom: String(x.pidFrom) } : {}),
       ...(x.role === 'admin' && isUnitId(x.adminOf) ? { adminOf: String(x.adminOf), ...(validIso(x.adminFrom) ? { adminFrom: String(x.adminFrom) } : {}) } : {}),
       ...(x.role === 'admin' && Number.isFinite(x.adminAt) ? { adminAt: +x.adminAt } : {}),
+      ...(Number.isFinite(x.liveAt) ? { liveAt: +x.liveAt } : {}),
     })
   }
   return out
@@ -491,7 +505,10 @@ export function adminLineAudienceOn(unit: string, iso: string, rows: UnitRows): 
       const g = rows.grants.find(x => x.account === a.id && x.unit === unit && x.level === 'admin' && grantRowHolds({ id: a.id, pid, pidFrom: a.pidFrom }, x, iso, rows))
       if (g) take(g.fromAt)
     }
-    return best < dayStart
+    /* (U2 fix round 2, fix 3 — Astra 2, Opus F1): and the sign-in in force before that day began — one switched off,
+       archived or made a member that day and brought back since carries the moment it came back (`liveAt`), whichever
+       road he reads by (his home's admin, a Plan, the mark); a row with none counts from always (D56) */
+    return Math.max(best, typeof a.liveAt === 'number' && Number.isFinite(a.liveAt) ? a.liveAt : -Infinity) < dayStart
   })
 }
 /* THE MASTER MARK (multi-squadron batch 1, step 1 — D2191): a master is an admin of every unit and the only one who
@@ -852,9 +869,13 @@ export function updateAccount(id: string, patch: { name?: any; role?: AccountRol
   }
   /* ENABLE IS MAKING AN ADMIN (U2 fix round 1, fix 4 — opus2 F1, security S3; R2 with R1's list: an admin switched off is
      no admin in force, so switching him on again leaves a man an admin in force who was not one — the agent's reading,
-     said to the coordinator): an admin's sign-in switched off → on, only by one who may make an admin of his squadron */
-  if (patch.on === true && !a.on && a.role === 'admin' && next0.role === 'admin') {
-    const q = makeAdminProblem(homeOn(a.pid, todayIso()))
+     said to the coordinator): an admin's sign-in switched off → on, only by one who may make an admin of his squadron.
+     Asked of the role IN FORCE the row leaves (U2 fix round 2, fix 1 — Astra 1, Fable 2, Opus F2): an admin who moved
+     squadron stores "admin" but is a member where he is now (K3), so switching him on makes no admin, and the gate
+     (madeAdminsIn) lets it through — the door asked the stored role and refused a Plan holder in the make-an-admin words.
+     And the home asked is the man the row will name (`next0.pid`): a re-link with Enable in one call asked the old man's */
+  if (patch.on === true && !a.on && adminNow(next0)) {
+    const q = makeAdminProblem(homeOn(next0.pid, todayIso()))
     if (q) return q
   }
   /* A RE-LINK CARRIES NO RIGHT (the reshape plan §4.3, guardrail 1): every right of the sign-in, holding or ended, goes in

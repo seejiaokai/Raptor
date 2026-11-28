@@ -2264,6 +2264,22 @@ function momentsViolation(was: any, is: any, relinked: boolean, env: CommitEnvel
   if (keptKey(is.kept) !== keptKey(was.kept)) return 'kept squadrons changed'
   return null
 }
+/* THE SIGN-IN BACK IN FORCE (U2 fix round 2, fix 3 — Astra 2, Opus F1; accounts.ts Account.liveAt): a move's bell line
+   goes only to readers in force before the move day began (accounts.ts adminLineAudienceOn), so a `liveAt` back-dated
+   would write an old day's line to a man brought back since. A command dates it now only where it switches the sign-in on
+   again (the one row writer, accounts.ts stampMoments); an Undo or Redo where it puts the row back INTO force — none there
+   before (`was` none), off and the image on, not an admin's role and the image an admin's, or without the master mark and
+   the image with it (restoreIntoForce, which the restore's own writing, restoreRedated, asks too). Anywhere else it is
+   kept exactly as it stood, so it is never back-dated, never dropped, and an image's older one never put back. */
+export const restoreIntoForce = (was: any, is: any): boolean => !was
+  || (was.on === false && is.on !== false)
+  || (was.role !== 'admin' && is.role === 'admin')
+  || (was.master !== true && is.master === true)
+function liveAtViolation(was: any, is: any, restoring: boolean): string | null {
+  const into = restoring ? restoreIntoForce(was, is) : !!was && was.on === false && is.on !== false
+  if (into) return momentNow(is.liveAt) ? null : 'a sign-in back in force not dated now'
+  return is.liveAt === (was ? was.liveAt : undefined) ? null : "a sign-in's moment back in force changed"
+}
 /* …and the restore writes it so: an Undo or Redo whose image turns a right on dates it today (installed in
    undo-wire.ts as the timeline's `redate` hook, before the restore is named for verifiedReplay, so the image the
    timeline vouches for IS the one written); one that leaves a right standing keeps the day it has now. */
@@ -2361,6 +2377,14 @@ export function restoreRedated(c: Change, offAt?: number, dir?: 'undo' | 'redo',
       const masterFrom = masterKept(was, n) ? was.masterFrom
         : markBackHolds(was, n, offAt) || back ? (prior?.master === true ? prior.masterFrom : n.masterFrom) : today
       if (out.masterFrom !== masterFrom) out = { ...out, masterFrom }
+    }
+    /* (U2 fix round 2, fix 3): the sign-in back in force — dated now where this put brings it into force
+       (restoreIntoForce), else as the stored row has it: the image's own older moment is never put back, and a newer
+       stored one never dropped, as the link's day is kept as it stands above */
+    const liveAt = restoreIntoForce(was, n) ? Date.now() : was?.liveAt
+    if (out.liveAt !== liveAt) {
+      const { liveAt: _drop, ...rest } = out
+      out = liveAt === undefined ? rest : { ...rest, liveAt }
     }
     return out === n ? c : { ...c, after: out }
   }
@@ -2570,6 +2594,10 @@ function accountShapeAndMasterViolation(env: CommitEnvelope): string | null {
        was. A restore's verified replay puts back its image whole (an Undo of the take-away brings the lines back). Asked
        last, after the days, so a row refused for its days is refused in those words first. */
     const moments = replayed ? null : momentsViolation(was, is, relinked, env)
+    /* (U2 fix round 2, fix 3): the sign-in's moment back in force — asked of a restore too, which writes it so
+       (restoreRedated), so neither a command nor a replay back-dates it */
+    const live = liveAtViolation(was, is, env.origin === 'restore')
+    if (live) return `${live} (${c.id})`
     /* (fix read 10, fault E): a mark put back on the same person, off since a moment with no move of his since, keeps its
        recorded day — the restore writes it so (restoreRedated); the gate asks the same of the same moment */
     if (replayed && (is.master !== true || kept || back || markBackHolds(was, is, OFFAT?.(env), w.rowsB.homes))) continue
