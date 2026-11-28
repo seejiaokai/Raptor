@@ -37,6 +37,9 @@ Success is a week planned, checked and published with less effort and nothing mi
 - A scheduler works on a wide desktop screen with the whole week in view, placing people by drag and by tap, often
   under time pressure; the same scheduler makes a small correction from an iPhone.
 - A member opens the app on a phone to see what he is on, to file or change an input, to bid for leave.
+- How his squadron uses the three places a person's absence is entered (D2782): the Leave War mostly for leave
+  bidding; the Inputs pages for members' day-to-day and last-minute inputs; the schedule for the scheduler's own
+  last-minute planning. He found what he can do in each, and why it differs, confusing (26 Nov 26).
 - The app's parts: the schedule (Edit Schedule, the Scheduler Board, View-only Sched), Inputs and its calendars, Quals,
   Logic (the rules and their settings), the Leave War (leave bidding and OIL), the Tracker (training progress), Admin.
 - The owner's own phone is an iPhone; his PC's display runs at 125%.

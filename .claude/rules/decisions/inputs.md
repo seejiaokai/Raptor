@@ -192,10 +192,10 @@ His words, the agent's readings (never stated here as his rule) and the history 
 
 ## From other areas (each stated on its own area's file)
 - The Leave War's Other — on the Ground Programme or under Unavailable as its filer picks on the Inputs page, straight under Unavailable when filed from the war, where it stands a scheduler's alone once he has moved it, counting him out only under Unavailable: D1356, D1365, D1388, D1357, D1398, D1390, D1381, D1372, D1374, D1393, D1389.
-- The scheduler's one rule of a row that came from an input, and its people: D755, D756, D757, D776.
-- The schedule's one row for a shared input — its pucks, time, remark and window: D734, D735, D736, D737, D739, D740, D742, D743, D748, D776.
+- The scheduler's one rule of a row that came from an input, and its people: D755, D756, D757, D776, D2772, D2773.
+- The schedule's one row for a shared input — its pucks, time, remark and window: D734, D735, D736, D2777, D739, D740, D742, D743, D748, D776.
 - A cancelled row's CX cancels the input: D760.
-- One row on the schedule, the changes window, the Unavailable list: D661, D662, D663, D736.
+- One row on the schedule, the changes window, the Unavailable list: D661, D2777, D662, D663, D736.
 - What an input is filed for — ALL, ALL AVAIL, Event, Personal, its title: D702, D711, D713, D714, D716, D717, D778.
 - A cancelled input's look on its card, the list and the month's bar: D767.
 - The small choices of these pages, answered "yes to all": D731, D762.

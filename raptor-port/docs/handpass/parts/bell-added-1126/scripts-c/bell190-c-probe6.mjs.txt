@@ -1,0 +1,28 @@
+// bell190-c probe 6: add Kilo through Admin -> Users; look at the post-in picker; find his Leave War row and neighbours.
+import { createRequire } from 'module'
+const require = createRequire(process.cwd() + '/package.json')
+const { chromium } = require('playwright')
+console.log('bell190-c-probe6 v1')
+const URL = 'http://localhost:4190/'
+const OUT = process.argv[2]
+const b = await chromium.launch()
+const ctx = await b.newContext({ viewport: { width: 1536, height: 864 } })
+const page = await ctx.newPage()
+const errs = []; page.on('pageerror', e => errs.push(String(e))); page.on('console', m => { if (m.type() === 'error') errs.push(m.text()) })
+await page.goto(URL); await page.waitForSelector('#luser')
+await page.fill('#luser', 'ad'); await page.fill('#lpass', 'a')
+await page.click('#loginForm button[type=submit]'); await page.waitForSelector('#notifyBell')
+await page.evaluate(() => window.go('admin'))
+await page.waitForTimeout(1200)
+await page.fill('#accAddCs', 'Kilo'); await page.fill('#accAddIni', 'KL')
+await page.selectOption('#accAddSeat', 'FCP'); await page.waitForTimeout(300)
+const cats = await page.evaluate(() => [...document.querySelector('#accAddCat').options].map(o => o.value))
+console.log('cats', cats)
+await page.selectOption('#accAddCat', cats.find(c => c === 'IP') || cats[1])
+await page.fill('#accAddName', 'kilo')
+await page.click('#accAddPostIn'); await page.waitForTimeout(500)
+await page.screenshot({ path: OUT + '/probe6-postin.png' })
+const pk = await page.evaluate(() => [...document.querySelectorAll('[data-testid], button')].filter(e => { const r = e.getBoundingClientRect(); return r.height > 0 && r.top > 300 && /cal|day|month|prev|next|‹|›/i.test((e.dataset.testid || '') + e.className + e.innerText) }).slice(0, 25).map(e => (e.dataset.testid || e.className).toString().slice(0, 40) + ':' + e.innerText.trim().slice(0, 12)).join(' | '))
+console.log('picker bits', pk)
+console.log('errors', errs)
+await b.close()
