@@ -1,0 +1,113 @@
+[
+ {
+  "scn": "hide",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "hide",
+  "size": "phone",
+  "id": "hide.file",
+  "what": "set-up: Jester filed Fly only, all day, for Sun 19",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "hide",
+  "size": "phone",
+  "id": "hide.rows",
+  "what": "set-up: an OFT row and an AMT row both named BOX, 10:00–11:00, on Sun 19",
+  "ok": true,
+  "note": "[{\"label\":\"BOX\",\"str\":\"10:00\",\"end\":\"11:00\"},{\"label\":\"BOX\",\"str\":\"10:00\",\"end\":\"11:00\"}]"
+ },
+ {
+  "scn": "hide",
+  "size": "phone",
+  "id": "hide.o",
+  "what": "set-up: Jester on the OFT BOX",
+  "ok": true,
+  "note": "\"Jester — SANS — offered Fly only, not OFT\""
+ },
+ {
+  "scn": "hide",
+  "size": "phone",
+  "id": "hide.1",
+  "what": "set-up: his OFT line hidden",
+  "ok": true,
+  "note": "\"SANS: offered Fly only today. Planned on OFT BOX 10:00–11:00\" HIDDEN"
+ },
+ {
+  "scn": "hide",
+  "size": "phone",
+  "id": "hide.f21a",
+  "what": "F21: the OFT line hidden, then he is put on the AMT BOX (same name, same times) — the AMT line SHOWS, not hidden; the OFT line stays hidden",
+  "ok": true,
+  "note": "placed true \"Jester — Conflict: in two seats on Sim BOX 10:00–11:00 at once (+1 more)\" · \"SANS: offered Fly only today. Planned on AMT BOX 10:00–11:00\" | \"SANS: offered Fly only today. Planned on OFT BOX 10:00–11:00\" HIDDEN",
+  "pics": "hide-hide-2-list-clip-phone.png"
+ },
+ {
+  "scn": "hide",
+  "size": "phone",
+  "id": "hide.s16",
+  "what": "S16: the OFT line flagged again and only the AMT one hidden — OFT shown, AMT hidden (each its own line, despite the same man, label and times)",
+  "ok": true,
+  "note": "\"SANS: offered Fly only today. Planned on AMT BOX 10:00–11:00\" HIDDEN | \"SANS: offered Fly only today. Planned on OFT BOX 10:00–11:00\"",
+  "pics": "hide-hide-3-list-clip-phone.png"
+ },
+ {
+  "scn": "hide",
+  "size": "phone",
+  "id": "hide.both",
+  "what": "both flagged again: two lines, both shown, each naming its own sim kind",
+  "ok": true,
+  "note": "\"SANS: offered Fly only today. Planned on AMT BOX 10:00–11:00\" | \"SANS: offered Fly only today. Planned on OFT BOX 10:00–11:00\" · bar \"⚠ 4 issues · 1 warning ▲\" (count was 3 with one hidden)",
+  "pics": "hide-hide-4-list-clip-phone.png"
+ },
+ {
+  "scn": "hide",
+  "size": "phone",
+  "id": "hide.end-cleared",
+  "what": "F21 / the host: the OFT line hidden, then the row's end cleared — does the hidden line stay hidden? (RECORD — hiding keys on the exact words, D469)",
+  "ok": "REC",
+  "note": "row {\"label\":\"BOX\",\"str\":\"10:00\",\"end\":\"\"} · OFT \"SANS: offered Fly only today. Planned on OFT BOX 10:00–11:30 (end assumed)\" · AMT \"SANS: offered Fly only today. Planned on AMT BOX 10:00–11:00\"",
+  "pics": "hide-hide-end-cleared-list-clip-phone.png"
+ },
+ {
+  "scn": "hide",
+  "size": "phone",
+  "id": "hide.end-typed",
+  "what": "F21 / the host: the OFT line hidden, then the row's end set to 11:00 — does the hidden line stay hidden? (RECORD — hiding keys on the exact words, D469)",
+  "ok": "REC",
+  "note": "row {\"label\":\"BOX\",\"str\":\"10:00\",\"end\":\"11:00\"} · OFT \"SANS: offered Fly only today. Planned on OFT BOX 10:00–11:00\" HIDDEN · AMT \"SANS: offered Fly only today. Planned on AMT BOX 10:00–11:00\"",
+  "pics": "hide-hide-end-typed-list-clip-phone.png"
+ },
+ {
+  "scn": "hide",
+  "size": "phone",
+  "id": "hide.renamed",
+  "what": "F21 / the host: the OFT line hidden, then the row's label set to EP-9 — does the hidden line stay hidden? (RECORD — hiding keys on the exact words, D469)",
+  "ok": "REC",
+  "note": "row {\"label\":\"EP-9\",\"str\":\"10:00\",\"end\":\"11:00\"} · OFT \"SANS: offered Fly only today. Planned on OFT EP-9 10:00–11:00\" · AMT \"SANS: offered Fly only today. Planned on AMT BOX 10:00–11:00\"",
+  "pics": "hide-hide-renamed-list-clip-phone.png"
+ },
+ {
+  "scn": "hide",
+  "size": "phone",
+  "id": "hide.start-moved",
+  "what": "F21 / the host: the OFT line hidden, then the row's str set to 10:30 — does the hidden line stay hidden? (RECORD — hiding keys on the exact words, D469)",
+  "ok": "REC",
+  "note": "row {\"label\":\"EP-9\",\"str\":\"10:30\",\"end\":\"11:00\"} · OFT \"SANS: offered Fly only today. Planned on OFT EP-9 10:30–11:00\" · AMT \"SANS: offered Fly only today. Planned on AMT BOX 10:00–11:00\"",
+  "pics": "hide-hide-start-moved-list-clip-phone.png"
+ },
+ {
+  "scn": "hide",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

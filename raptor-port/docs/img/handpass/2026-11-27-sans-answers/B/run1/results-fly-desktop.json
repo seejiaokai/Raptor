@@ -1,0 +1,44 @@
+[
+ {
+  "scn": "fly",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "fly",
+  "size": "desktop",
+  "id": "fly.line",
+  "what": "set-up: a flying line VL BFM T/O 13:00, no landing, on Fri 17",
+  "ok": true,
+  "note": "{\"cs\":\"VL\",\"msn\":\"BFM\",\"to\":\"13:00\",\"ld\":\"\"}"
+ },
+ {
+  "scn": "fly",
+  "size": "desktop",
+  "id": "fly.note",
+  "what": "the note after the plant (A's; recorded)",
+  "ok": "REC",
+  "note": "placed true · \"Jester — SANS — no availability filed for today\"",
+  "pics": "fly-fly-armed-clip-desktop.png, fly-fly-sans-clip-desktop.png, fly-fly-armed-desktop.png, fly-fly-note-clip-desktop.png, fly-fly-picked-desktop.png"
+ },
+ {
+  "scn": "fly",
+  "size": "desktop",
+  "id": "fly.words",
+  "what": "F20: the flying words as before — \"SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)\", no \"(end assumed)\"",
+  "ok": true,
+  "note": "\"SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)\"",
+  "pics": "fly-fly-list-clip-desktop.png"
+ },
+ {
+  "scn": "fly",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

@@ -1,0 +1,216 @@
+[
+ {
+  "scn": "f8",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "f8",
+  "size": "phone",
+  "id": "f8.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "f8-f8.post-postout-open-phone.png, f8-f8.post-postout-sheet-phone.png"
+ },
+ {
+  "scn": "f8",
+  "size": "phone",
+  "id": "f8.line3",
+  "what": "set-up: a new flying line on Thu (+ Wave → Flying wave), no times typed",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 3\",\"kind\":\"\",\"standalone\":false,\"cs\":\"\",\"to\":\"\",\"ld\":\"\",\"n\":1}"
+ },
+ {
+  "scn": "f8",
+  "size": "phone",
+  "id": "f8.line4",
+  "what": "set-up: a new flying line on Fri (+ Wave → Flying wave), no times typed",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 1\",\"kind\":\"\",\"standalone\":false,\"cs\":\"\",\"to\":\"\",\"ld\":\"\",\"n\":1}"
+ },
+ {
+  "scn": "f8",
+  "size": "phone",
+  "id": "f8.line5",
+  "what": "set-up: a new flying line on Sat (+ Wave → Flying wave), no times typed",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 1\",\"kind\":\"\",\"standalone\":false,\"cs\":\"\",\"to\":\"\",\"ld\":\"\",\"n\":1}"
+ },
+ {
+  "scn": "f8",
+  "size": "phone",
+  "id": "f8.timed",
+  "what": "set-up: a new flying line on Sat (+ Wave → Flying wave) 13:00–14:00",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 2\",\"kind\":\"\",\"standalone\":false,\"cs\":\"TIMED\",\"to\":\"13:00\",\"ld\":\"14:00\",\"n\":1}"
+ },
+ {
+  "scn": "f8",
+  "size": "phone",
+  "id": "f8.wed-ctl",
+  "what": "Wed 15, 09:00: control — the TIMED Sat 18 line's FCP: Ranger",
+  "ok": "REC",
+  "note": "[SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" printed \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\"",
+  "pics": "f8-f8-wed-timed-armed-clip-phone.png, f8-f8-wed-timed-sans-clip-phone.png, f8-f8-wed-timed-armed-phone.png"
+ },
+ {
+  "scn": "f8",
+  "size": "phone",
+  "id": "f8.wed-Thu",
+  "what": "Wed 15, 09:00: Thu 16 blank FCP — Ranger an ordinary man, in his own column, plain",
+  "ok": true,
+  "note": "[Pilots · 27 free, plain] title \"Ranger\" (no reason printed)",
+  "pics": "f8-f8-wed-Thu-armed-clip-phone.png, f8-f8-wed-Thu-sans-clip-phone.png, f8-f8-wed-Thu-armed-phone.png"
+ },
+ {
+  "scn": "f8",
+  "size": "phone",
+  "id": "f8.wed-Fri",
+  "what": "Wed 15, 09:00: Fri 17 blank FCP — Ranger struck with the timed seat's words (\"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\")",
+  "ok": true,
+  "note": "[SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" printed \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\"",
+  "pics": "f8-f8-wed-Fri-armed-clip-phone.png, f8-f8-wed-Fri-sans-clip-phone.png, f8-f8-wed-Fri-armed-phone.png"
+ },
+ {
+  "scn": "f8",
+  "size": "phone",
+  "id": "f8.wed-Sat",
+  "what": "Wed 15, 09:00: Sat 18 blank FCP — Ranger struck with the timed seat's words (\"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\")",
+  "ok": true,
+  "note": "[SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" printed \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\"",
+  "pics": "f8-f8-wed-Sat-armed-clip-phone.png, f8-f8-wed-Sat-sans-clip-phone.png, f8-f8-wed-Sat-armed-phone.png"
+ },
+ {
+  "scn": "f8",
+  "size": "phone",
+  "id": "f8.wed-words",
+  "what": "Wed 15: the words before his date are \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\"",
+  "ok": true,
+  "note": "SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab."
+ },
+ {
+  "scn": "f8",
+  "size": "phone",
+  "id": "f8.wed-unpicked",
+  "what": "Edit Schedule crew list, Fri 17, NOTHING picked: Ranger struck, no reason line printed (D2420)",
+  "ok": true,
+  "note": "friday · [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" (no reason printed)",
+  "pics": "f8-f8-wed-unpicked-elist-clip-phone.png, f8-f8-wed-unpicked-elist-phone.png"
+ },
+ {
+  "scn": "f8",
+  "size": "phone",
+  "id": "f8.mid",
+  "what": "the page left open across midnight: the app's today now",
+  "ok": "REC",
+  "note": "Fri Jul 17 2026 00:00"
+ },
+ {
+  "scn": "f8",
+  "size": "phone",
+  "id": "f8.mid-ctl",
+  "what": "just after midnight into Fri 17, page never reloaded: control — the TIMED Sat 18 line's FCP: Ranger",
+  "ok": "REC",
+  "note": "[SANS Avail, STRUCK] title \"Ranger — SANS — no availability filed for today\" printed \"SANS — no availability filed for today\"",
+  "pics": "f8-f8-mid-timed-armed-clip-phone.png, f8-f8-mid-timed-sans-clip-phone.png, f8-f8-mid-timed-armed-phone.png"
+ },
+ {
+  "scn": "f8",
+  "size": "phone",
+  "id": "f8.mid-Thu",
+  "what": "just after midnight into Fri 17, page never reloaded: Thu 16 blank FCP — Ranger an ordinary man, in his own column, plain",
+  "ok": true,
+  "note": "[Pilots · 27 free, plain] title \"Ranger\" (no reason printed)",
+  "pics": "f8-f8-mid-Thu-armed-clip-phone.png, f8-f8-mid-Thu-sans-clip-phone.png, f8-f8-mid-Thu-armed-phone.png"
+ },
+ {
+  "scn": "f8",
+  "size": "phone",
+  "id": "f8.mid-Fri",
+  "what": "just after midnight into Fri 17, page never reloaded: Fri 17 blank FCP — Ranger struck with the timed seat's words (\"SANS — no availability filed for today\")",
+  "ok": true,
+  "note": "[SANS Avail, STRUCK] title \"Ranger — SANS — no availability filed for today\" printed \"SANS — no availability filed for today\"",
+  "pics": "f8-f8-mid-Fri-armed-clip-phone.png, f8-f8-mid-Fri-sans-clip-phone.png, f8-f8-mid-Fri-armed-phone.png"
+ },
+ {
+  "scn": "f8",
+  "size": "phone",
+  "id": "f8.mid-Sat",
+  "what": "just after midnight into Fri 17, page never reloaded: Sat 18 blank FCP — Ranger struck with the timed seat's words (\"SANS — no availability filed for today\")",
+  "ok": true,
+  "note": "[SANS Avail, STRUCK] title \"Ranger — SANS — no availability filed for today\" printed \"SANS — no availability filed for today\"",
+  "pics": "f8-f8-mid-Sat-armed-clip-phone.png, f8-f8-mid-Sat-sans-clip-phone.png, f8-f8-mid-Sat-armed-phone.png"
+ },
+ {
+  "scn": "f8",
+  "size": "phone",
+  "id": "f8.mid-words",
+  "what": "after midnight, page open: the timed seat's words and the blank seats' (RECORD)",
+  "ok": "REC",
+  "note": "timed \"SANS — no availability filed for today\" · Fri \"SANS — no availability filed for today\" · Sat \"SANS — no availability filed for today\""
+ },
+ {
+  "scn": "f8",
+  "size": "phone",
+  "id": "f8.fri",
+  "what": "clock Fri 17 09:00, page reloaded, Saber signed in",
+  "ok": "REC",
+  "note": "Fri Jul 17 2026 09:00"
+ },
+ {
+  "scn": "f8",
+  "size": "phone",
+  "id": "f8.fri-ctl",
+  "what": "Fri 17, reopened: control — the TIMED Sat 18 line's FCP: Ranger",
+  "ok": "REC",
+  "note": "[SANS Avail, STRUCK] title \"Ranger — SANS — no availability filed for today\" printed \"SANS — no availability filed for today\"",
+  "pics": "f8-f8-fri-timed-armed-clip-phone.png, f8-f8-fri-timed-sans-clip-phone.png, f8-f8-fri-timed-armed-phone.png"
+ },
+ {
+  "scn": "f8",
+  "size": "phone",
+  "id": "f8.fri-Thu",
+  "what": "Fri 17, reopened: Thu 16 blank FCP — Ranger an ordinary man, in his own column, plain",
+  "ok": true,
+  "note": "[Pilots · 27 free, plain] title \"Ranger\" (no reason printed)",
+  "pics": "f8-f8-fri-Thu-armed-clip-phone.png, f8-f8-fri-Thu-sans-clip-phone.png, f8-f8-fri-Thu-armed-phone.png"
+ },
+ {
+  "scn": "f8",
+  "size": "phone",
+  "id": "f8.fri-Fri",
+  "what": "Fri 17, reopened: Fri 17 blank FCP — Ranger struck with the timed seat's words (\"SANS — no availability filed for today\")",
+  "ok": true,
+  "note": "[SANS Avail, STRUCK] title \"Ranger — SANS — no availability filed for today\" printed \"SANS — no availability filed for today\"",
+  "pics": "f8-f8-fri-Fri-armed-clip-phone.png, f8-f8-fri-Fri-sans-clip-phone.png, f8-f8-fri-Fri-armed-phone.png"
+ },
+ {
+  "scn": "f8",
+  "size": "phone",
+  "id": "f8.fri-Sat",
+  "what": "Fri 17, reopened: Sat 18 blank FCP — Ranger struck with the timed seat's words (\"SANS — no availability filed for today\")",
+  "ok": true,
+  "note": "[SANS Avail, STRUCK] title \"Ranger — SANS — no availability filed for today\" printed \"SANS — no availability filed for today\"",
+  "pics": "f8-f8-fri-Sat-armed-clip-phone.png, f8-f8-fri-Sat-sans-clip-phone.png, f8-f8-fri-Sat-armed-phone.png"
+ },
+ {
+  "scn": "f8",
+  "size": "phone",
+  "id": "f8.fri-words",
+  "what": "Fri 17: the words are now the ordinary \"SANS — no availability filed for today\" (the timed seat's), not the future-start sentence",
+  "ok": true,
+  "note": "timed \"SANS — no availability filed for today\" · Sat \"SANS — no availability filed for today\""
+ },
+ {
+  "scn": "f8",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

@@ -41,7 +41,9 @@ const P = (id: string): any => (PEOPLE as any)[id]
 const signInAs = (name: string, pass = 'x') => { resetSession(sessionFor(signIn(name, pass))); raptorNotify() }
 const FRI = 4, SAT = 5, FRI_ISO = '2026-07-17', SAT_ISO = '2026-07-18'
 const at = (y: number, m: number, d: number) => vi.setSystemTime(new Date(y, m - 1, d, 9, 0, 0))
-const LOOK = 'SANS from Fri 17 Jul: no availability filed. File it on the Inputs page\'s SANS tab.'
+/* his D2587 (25 Nov 26 — "this sounds like we are telling the admin to file it. which is incorrect"): the crew list never
+   tells the scheduler to file; the second sentence went, and the one left takes no full stop, as its siblings (Fable) */
+const LOOK = 'SANS from Fri 17 Jul: no availability filed'
 const whyIn = (di: number, id: string): string | null => {
   const html = sansAvailHTML(di, '', new Set(), new Set(), new Map(), null)
   const m = new RegExp(`<span class="rpuck[^"]*"[^>]*data-person="${id}"([^>]*)>`).exec(html)

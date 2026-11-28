@@ -20,7 +20,8 @@
    (avail.ts) judges a flying/OFT slot against (the crew's published
    IN-TIME when one shows earlier, else VCONF.step, before the sortie's to;
    dekit after ld — owner, 26 Aug 26; a sim's own s/e, unpadded) — so
-   validate() never raises SANS_AVAIL against its own seed. The one
+   validate() never raises SANS_AVAIL against these filed rows (the four SANS men the demo files nothing for — Cards,
+   Wrangler, Yeti, Badger — do raise the nothing-filed line on purpose since owner D2579; demosans.test.ts). The one
    windowed fly record below (nick) stays clean under the in-time anchor
    because his wave's published 19:00 in-time is LATER than his 18:45 step
    and the min() guard keeps the step. demosans.test.ts pins that.

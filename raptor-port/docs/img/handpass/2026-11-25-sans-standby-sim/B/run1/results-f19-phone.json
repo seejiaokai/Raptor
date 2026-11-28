@@ -1,0 +1,184 @@
+[
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "f19.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "f19-f19.post-postout-open-phone.png, f19-f19.post-postout-sheet-phone.png"
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "f19.seats",
+  "what": "set-up: Sat 18: Ranger on SC AM MAIN (standing by) and the untimed OFT front seat",
+  "ok": true,
+  "note": "\"Ranger planned\" / \"the OFT sim has no usable times, so nobody on it earns OIL for this day\""
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "f19.bell0",
+  "what": "his bell names Sat 18 (the untimed OFT)",
+  "ok": true,
+  "note": "lit true · 1 line(s) · Mark all read in view · [unread] \"You're SANS from Fri 17 Jul.\" \"\" \"You're planned on Sat 18 Jul with nothing filed. Tap to file for availability.\"",
+  "pics": "f19-f19-bell0-phone.png"
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "f19.cxsc",
+  "what": "his standby row cancelled (CX, WX): nothing SANS on the warning list",
+  "ok": true,
+  "note": "head \"▾⚠ 2 issues · 1 warning\" · 2 row(s) · Ranger's: none · SANS: none · seated: Ranger 5.0.0.0.p · s:5.oft.0.p",
+  "pics": "f19-f19-cxsc-cx-phone.png, f19-f19-cxsc-warn-clip-phone.png"
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "f19.cxoft",
+  "what": "his untimed OFT cancelled too: nothing SANS on the warning list",
+  "ok": true,
+  "note": "head \"▾⚠ 1 issue\" · 1 row(s) · Ranger's: none · SANS: none · seated: Ranger 5.0.0.0.p · s:5.oft.0.p",
+  "pics": "f19-f19-cxoft-cx-phone.png, f19-f19-cxoft-warn-clip-phone.png"
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "f19.bell1",
+  "what": "both cancelled: the bell no longer names Sat 18 (a cancelled line never counts — D2568)",
+  "ok": true,
+  "note": "lit false · 0 line(s) · Mark all read none · empty",
+  "pics": "f19-f19-bell1-phone.png"
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "f19.cxscfly",
+  "what": "flying SC AM (B 06:30): Ranger on row 2, that row cancelled — nothing SANS on the warning list",
+  "ok": true,
+  "note": "\"Ranger planned\" · head \"▾⚠ 1 issue\" · 1 row(s) · Ranger's: none · SANS: none · seated: Ranger 5.0.0.0.p · 5.0.0.1.p · s:5.oft.0.p",
+  "pics": "f19-f19-cxscfly-warn-clip-phone.png"
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "f19.bell2",
+  "what": "still no Sat 18 in his bell",
+  "ok": true,
+  "note": "lit false · 0 line(s) · Mark all read none · empty",
+  "pics": "f19-f19-bell2-phone.png"
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "f19.f1",
+  "what": "set-up: a new flying line on Sun (+ Wave → Flying wave) 13:00–14:00",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 1\",\"kind\":\"\",\"standalone\":false,\"cs\":\"ONE\",\"to\":\"13:00\",\"ld\":\"14:00\",\"n\":1}"
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "f19.f2",
+  "what": "set-up: a new flying line on Sun (+ Wave → Flying wave) 15:00–16:00",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 2\",\"kind\":\"\",\"standalone\":false,\"cs\":\"TWO\",\"to\":\"15:00\",\"ld\":\"16:00\",\"n\":1}"
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "f19.a7",
+  "what": "set-up: Sun 19: Ranger on flights ONE (13:00) and TWO (15:00) and SC AM MAIN",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "f19.a7-1",
+  "what": "ONE cancelled, TWO left: Sun 19 still named",
+  "ok": true,
+  "note": "lit true · 1 line(s) · Mark all read in view · [unread] \"You're SANS from Fri 17 Jul.\" \"\" \"You're planned on Sun 19 Jul with nothing filed. Tap to file for availability.\"",
+  "pics": "f19-f19-a7-1-phone.png"
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "f19.a7-2",
+  "what": "both cancelled (SC left): Sun 19 not named",
+  "ok": true,
+  "note": "lit false · 0 line(s) · Mark all read none · empty",
+  "pics": "f19-f19-a7-2-phone.png"
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "f19.a7-3",
+  "what": "TWO un-cancelled: Sun 19 named again",
+  "ok": true,
+  "note": "lit true · 1 line(s) · Mark all read in view · [unread] \"You're SANS from Fri 17 Jul.\" \"\" \"You're planned on Sun 19 Jul with nothing filed. Tap to file for availability.\"",
+  "pics": "f19-f19-a7-3-phone.png"
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "f19.undo",
+  "what": "TWO removed by its ✕ (its occupant with it), then the board's Undo brings it back with Ranger",
+  "ok": true,
+  "note": "note \"Line removed — TWO, 15:00–16:00, Ranger\" · Undo \"Undo — a change to the schedule\" → \"Undid: a change to the schedule\" · back true",
+  "pics": "f19-f19-del2-ldel-phone.png, f19-f19-undo-undo-phone.png"
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "f19.a7-5",
+  "what": "removal undone: Sun 19 named again",
+  "ok": true,
+  "note": "lit true · 1 line(s) · Mark all read in view · [unread] \"You're SANS from Fri 17 Jul.\" \"\" \"You're planned on Sun 19 Jul with nothing filed. Tap to file for availability.\"",
+  "pics": "f19-f19-a7-5-phone.png"
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "f19.del3",
+  "what": "TWO removed again by its ✕",
+  "ok": "REC",
+  "note": "note \"Line removed — TWO, 15:00–16:00, Ranger\"",
+  "pics": "f19-f19-del3-ldel-phone.png"
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "f19.a7-4",
+  "what": "TWO removed (ONE cancelled, SC left): Sun 19 not named",
+  "ok": true,
+  "note": "lit false · 0 line(s) · Mark all read none · empty",
+  "pics": "f19-f19-a7-4-phone.png"
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "f19.formation",
+  "what": "A7 \"cancel a whole formation\": the board draws a CX per line only (no formation or wave CX found in probe2) — the one-line flight IS its formation, walked above",
+  "ok": "REC",
+  "note": "per-line CX only"
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

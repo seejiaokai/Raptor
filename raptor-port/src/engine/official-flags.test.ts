@@ -38,6 +38,7 @@ vi.mock('./weeks-data', async (importOriginal) => {
 })
 // eslint-disable-next-line import/first
 import { weekDateLabels, shiftWeekKey } from './weeks-data'
+import { coverSans } from '../testing/sanscover'
 
 
 const DOWS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
@@ -692,3 +693,9 @@ describe('[CRP-FLAG] the crew list, an undo past a publish and a trace into a wo
     expect(() => viewDayHTML(1)).not.toThrow()
   })
 })
+
+/* Its subject is not SANS availability, yet the seed plans SANS men (waldo among them) with nothing filed, which since
+   owner D2579 (25 Nov 26) raises an amber line and an "A" chip that outranks TT and DT: every SANS man is covered after
+   the world is reset, so the test reads the world it was written for (testing/sanscover.ts). Registered last, so it
+   runs after the reset above. */
+beforeEach(() => { coverSans() })

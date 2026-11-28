@@ -7,7 +7,9 @@ import { go, login } from './app'
    not a line seen): the hidden line is PAINTED struck through and greyed where it stood; its ↺ is the thing a finger
    lands on; the man's puck is painted with no ring and no chip; and the hide comes back from the browser's own storage
    after a reload and a fresh sign-in — for the scheduler and for a member, who gets no button. Desktop and phone.
-   The demo Tuesday: four issues, the last "Static has a long work day". */
+   The demo Tuesday: five issues, the last "Static has a long work day" — the fourth, Cards's amber "SANS: no availability
+   filed for today. Planned on RU ACM (T/O 14:40)", since his D2579 / D2584 Q3 (25 Nov 26): the demo files nothing for
+   Cards (state/demoseed.ts), and the demo shows the line. */
 
 const PHONE = { width: 390, height: 844 }
 const DESK = { width: 1440, height: 900 }
@@ -54,22 +56,22 @@ for (const [name, vp] of [['desktop', DESK], ['phone', PHONE]] as const) {
       await go(page, 'editsched')
       await openList(page, '#eWeek', TUE)
       const before = await readList(page, '#eWeek', TUE)
-      expect(before.bar).toContain('4 issues')
-      expect(before.lines.map(l => l.btn)).toEqual(['✕', '✕', '✕', '✕'])
+      expect(before.bar).toContain('5 issues')
+      expect(before.lines.map(l => l.btn)).toEqual(['✕', '✕', '✕', '✕', '✕'])
       expect((await pucks(page, `#eWeek .day[data-day="${TUE}"]`, STATIC)).every(p => p.warn && p.chip), 'Static wears his flag').toBe(true)
 
-      await page.locator(`#eWeek .day[data-day="${TUE}"] [data-woff="${TUE}.3"]`).first().click()
-      await expect(page.locator(`#eWeek .day[data-day="${TUE}"] .daywarn`).first()).toContainText('3 issues')
+      await page.locator(`#eWeek .day[data-day="${TUE}"] [data-woff="${TUE}.4"]`).first().click()
+      await expect(page.locator(`#eWeek .day[data-day="${TUE}"] .daywarn`).first()).toContainText('4 issues')
       const after = await readList(page, '#eWeek', TUE)
       expect(after.bar, 'the count line says nothing about a hidden one (D472)').not.toMatch(/hidden/i)
-      expect(after.lines.map(l => l.ix), 'four lines, in place').toEqual([0, 1, 2, 3])
-      expect(after.lines.map(l => l.hid)).toEqual([false, false, false, true])
-      expect(after.lines[3]!.struck, 'painted struck through').toBe(true)
-      expect(after.lines[2]!.struck).toBe(false)
-      expect(after.lines[3]!.color, 'and greyed, unlike a live line').not.toBe(after.lines[2]!.color)
+      expect(after.lines.map(l => l.ix), 'five lines, in place').toEqual([0, 1, 2, 3, 4])
+      expect(after.lines.map(l => l.hid)).toEqual([false, false, false, false, true])
+      expect(after.lines[4]!.struck, 'painted struck through').toBe(true)
+      expect(after.lines[3]!.struck).toBe(false)
+      expect(after.lines[4]!.color, 'and greyed, unlike a live line').not.toBe(after.lines[3]!.color)
       /* D1792 (d), 8 Nov 26: the flag-again is the app's drawn Reset arrow, no longer a typed ↺ */
-      expect(after.lines[3]!.btn).toBe('reset')
-      expect(after.lines[3]!.btnOnTop, 'the arrow is what a finger lands on').toBe(true)
+      expect(after.lines[4]!.btn).toBe('reset')
+      expect(after.lines[4]!.btnOnTop, 'the arrow is what a finger lands on').toBe(true)
       const pk = await pucks(page, `#eWeek .day[data-day="${TUE}"]`, STATIC)
       expect(pk.length, 'his puck is on the day').toBeGreaterThan(0)
       expect(pk.some(p => p.warn || p.chip), 'no ring, no chip (D469)').toBe(false)
@@ -80,12 +82,12 @@ for (const [name, vp] of [['desktop', DESK], ['phone', PHONE]] as const) {
       await go(page, 'editsched')
       await openList(page, '#eWeek', TUE)
       const back = await readList(page, '#eWeek', TUE)
-      expect(back.bar, 'still hidden after a reload (D469)').toContain('3 issues')
-      expect(back.lines[3]!.hid && back.lines[3]!.struck).toBe(true)
+      expect(back.bar, 'still hidden after a reload (D469)').toContain('4 issues')
+      expect(back.lines[4]!.hid && back.lines[4]!.struck).toBe(true)
 
       /* ↺ flags it again */
-      await page.locator(`#eWeek .day[data-day="${TUE}"] [data-woff="${TUE}.3"]`).first().click()
-      await expect(page.locator(`#eWeek .day[data-day="${TUE}"] .daywarn`).first()).toContainText('4 issues')
+      await page.locator(`#eWeek .day[data-day="${TUE}"] [data-woff="${TUE}.4"]`).first().click()
+      await expect(page.locator(`#eWeek .day[data-day="${TUE}"] .daywarn`).first()).toContainText('5 issues')
       expect((await pucks(page, `#eWeek .day[data-day="${TUE}"]`, STATIC)).every(p => p.warn && p.chip), 'his flag is back').toBe(true)
     })
 
@@ -96,16 +98,16 @@ for (const [name, vp] of [['desktop', DESK], ['phone', PHONE]] as const) {
       await page.waitForSelector('#schedBoard .sb-warn')
       const openFold = async () => { if (name !== 'phone') return; if (!(await page.locator('#schedBoard .sbwrap').first().evaluate(e => e.classList.contains('open')))) await page.locator('#schedBoard [data-sbwtog]').first().click() }
       await openFold()
-      await page.locator(`#schedBoard [data-woff="${TUE}.3"]`).first().click()
-      await expect(page.locator('#schedBoard .sb-warn .wh').first()).toContainText('3 issues')
+      await page.locator(`#schedBoard [data-woff="${TUE}.4"]`).first().click()
+      await expect(page.locator('#schedBoard .sb-warn .wh').first()).toContainText('4 issues')
       await openFold()
       const rows = await page.evaluate(() => [...document.querySelectorAll('#schedBoard .sb-warn .wln[data-wix]')].map(e => {
         const t = e.querySelector('.wln-t') as HTMLElement, b = e.querySelector('button.wln-mute') as HTMLElement
         const r = b.getBoundingClientRect(), hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)
         return { hid: e.classList.contains('hid'), struck: getComputedStyle(t).textDecorationLine.includes('line-through'), btn: b.querySelector('svg.wmuteico') ? 'reset' : b.innerText.trim(), onTop: !!hit && (hit === b || b.contains(hit)) }
       }))
-      expect(rows.map(r => r.hid)).toEqual([false, false, false, true])
-      expect(rows[3]).toMatchObject({ struck: true, btn: 'reset', onTop: true })   // the drawn Reset arrow (D1792 (d))
+      expect(rows.map(r => r.hid)).toEqual([false, false, false, false, true])
+      expect(rows[4]).toMatchObject({ struck: true, btn: 'reset', onTop: true })   // the drawn Reset arrow (D1792 (d))
       expect(await page.locator('#schedBoard .sb-warn').innerText()).not.toMatch(/\d+ hidden/)
       expect((await pucks(page, '#schedBoard', STATIC)).some(p => p.warn || p.chip), 'no flag on the board either').toBe(false)
     })
@@ -114,15 +116,15 @@ for (const [name, vp] of [['desktop', DESK], ['phone', PHONE]] as const) {
       await login(page)
       await go(page, 'editsched')
       await openList(page, '#eWeek', TUE)
-      await page.locator(`#eWeek .day[data-day="${TUE}"] [data-woff="${TUE}.3"]`).first().click()
-      await expect(page.locator(`#eWeek .day[data-day="${TUE}"] .daywarn`).first()).toContainText('3 issues')
+      await page.locator(`#eWeek .day[data-day="${TUE}"] [data-woff="${TUE}.4"]`).first().click()
+      await expect(page.locator(`#eWeek .day[data-day="${TUE}"] .daywarn`).first()).toContainText('4 issues')
       await page.waitForTimeout(700)
       await login(page, 'user')
       await openList(page, '#vWeek', TUE)
       const m = await readList(page, '#vWeek', TUE)
-      expect(m.bar).toContain('3 issues')
-      expect(m.lines.map(l => l.hid)).toEqual([false, false, false, true])
-      expect(m.lines[3]!.struck).toBe(true)
+      expect(m.bar).toContain('4 issues')
+      expect(m.lines.map(l => l.hid)).toEqual([false, false, false, false, true])
+      expect(m.lines[4]!.struck).toBe(true)
       expect(m.lines.every(l => l.btn === ''), 'no ✕ and no ↺ for a member (D475)').toBe(true)
       expect((await pucks(page, `#vWeek .day[data-day="${TUE}"]`, STATIC)).some(p => p.warn || p.chip)).toBe(false)
     })
@@ -145,7 +147,7 @@ for (const [name, vp] of [['desktop', DESK], ['phone', PHONE]] as const) {
       await pub.click()
       await expect(page.locator(`${day} .verchip`).first()).toContainText('ORIG')
       await openList(page, '#eWeek', TUE)
-      await page.locator(`${day} [data-woff="${TUE}.3"]`).first().click()
+      await page.locator(`${day} [data-woff="${TUE}.4"]`).first().click()
       const chip = page.locator(`${day} .dpend`).first()
       await expect(chip).toContainText('1 pending')
       /* shut the list, so its being open afterwards is the tap's own doing */
