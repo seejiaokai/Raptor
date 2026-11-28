@@ -1,0 +1,45 @@
+// @vitest-environment jsdom
+/* SECURITY PROOF 4 — the same root, on ENDING Plan: fix 5 judges the app's own actor where a command MAKES an admin, or
+   where its grant row is Plan; but the account-row check for who may change a man's account (perms.ts homeUnitViolation)
+   still returns at once for anyone not an admin (`if (!a || a.role !== 'admin') return null`) — the app's actor included.
+   So nobody signed in (or the projection door) makes Hunter a member with his account row alone: his Plan of 149 row
+   stays stored, reads as no right (Plan is an admin's), and his Plan of 149 has ENDED — by nobody who may end it
+   (D2626: ended only by 149's own admins or a master admin; D2250: made a member only by an admin of his own squadron). */
+import { describe, expect, it } from 'vitest'
+import { withThird, signInAs, signOut, ACCT } from '../test-support/msq-world'
+import { accountsLoad, levelIn, stampMoments, ACCOUNT_PFX } from './accounts'
+import { unitsLoad, todayIso } from './units'
+import { commitSettingsIntent, settingsStore } from './people-settings-commit'
+import { commitProjection } from '../command'
+import { store } from '../engine/hooks'
+import { seedAccounts } from './accounts'
+
+withThird()
+const reload = () => { unitsLoad(); accountsLoad() }
+const rowOf = (id: string): any => store.get(ACCOUNT_PFX + id, null) ?? seedAccounts().find((x: any) => x.id === id)
+
+describe('security proof 4 — the app\'s actor ends Plan by making its holder a member', () => {
+  it('nobody signed in: a forged account.update making Hunter a member must be refused (his Plan of 149 stands)', () => {
+    signOut()
+    expect(levelIn(ACCT.hunter, 'u149', todayIso()), 'premise: Hunter holds Plan of 149').toBe('admin')
+    const prev = rowOf(ACCT.hunter)
+    expect(prev, 'premise: Hunter\'s account row').toBeTruthy()
+    const r: any = commitSettingsIntent('account.update', null, () => { store.set(ACCOUNT_PFX + ACCT.hunter, stampMoments(prev, { ...prev, role: 'main' })) })
+    reload()
+    expect({ ok: r.ok, hunter149: levelIn(ACCT.hunter, 'u149', todayIso()) }, 'nobody signed in ended Hunter\'s Plan of 149').toEqual({ ok: false, hunter149: 'admin' })
+  })
+  it('the projection door, Osprey (a 149 member) signed in: the same must be refused', () => {
+    signInAs('osprey')
+    const prev = rowOf(ACCT.hunter)
+    const r: any = commitProjection({ type: 'account.update', scope: { module: 'settings' }, apply: (txn: any) => { txn.enlist(settingsStore); store.set(ACCOUNT_PFX + ACCT.hunter, stampMoments(prev, { ...prev, role: 'main' })) } } as any)
+    reload()
+    expect({ ok: r.ok, hunter149: levelIn(ACCT.hunter, 'u149', todayIso()) }).toEqual({ ok: false, hunter149: 'admin' })
+  })
+  it('(contrast) Mako (150\'s admin) signed in, the same write through commit(): refused — not an admin of Hunter\'s squadron', () => {
+    signInAs('mako')
+    const prev = rowOf(ACCT.hunter)
+    const r: any = commitSettingsIntent('account.update', null, () => { store.set(ACCOUNT_PFX + ACCT.hunter, stampMoments(prev, { ...prev, role: 'main' })) })
+    reload()
+    expect(r.ok).toBe(false)
+  })
+})

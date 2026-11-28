@@ -1,0 +1,59 @@
+// @vitest-environment jsdom
+/* SECURITY PROOF 6 — fix 5 exempts a command whose ORIGIN reads `remote` or `seed` from the Plan, first-mark and make-admin
+   checks (perms.ts unitRowViolation, madeAdminViolation). The origin is a label the caller hands in: command/commit.ts
+   exports commitAs, which takes any actor and any origin, and it ships in the bundle (state/store.ts and undo/timeline.ts
+   import it) — the same reach as the projection door fix 5 closed. No code of the app today sends `remote`, so the
+   exemption guards nothing yet and opens the same door again. */
+import { describe, expect, it } from 'vitest'
+import { withThird, signInAs, ACCT } from '../test-support/msq-world'
+import { accountsLoad, levelIn, ACCOUNT_PFX, stampMoments } from './accounts'
+import { unitsLoad, todayIso } from './units'
+import { GRANT_PFX } from './units-model'
+import { settingsStore } from './people-settings-commit'
+import { commitAs } from '../command/commit'
+import { deriveActor, systemActor } from '../command'
+import { store } from '../engine/hooks'
+
+withThird()
+let ACTOR: 'session' | 'system' = 'session'
+const reload = () => { unitsLoad(); accountsLoad() }
+const asOrigin = (origin: 'remote' | 'seed', type: string, rows: Array<[string, unknown]>): any => {
+  const r: any = commitAs({ type, scope: { module: 'settings' }, apply: (txn: any) => { txn.enlist(settingsStore); for (const [k, v] of rows) store.set(k, v) } } as any,
+    { actor: ACTOR === 'system' ? systemActor() : deriveActor(), origin })
+  reload()
+  return r
+}
+
+describe('security proof 6 — a command labelled "remote" or "seed" passes the Plan and make-admin checks', () => {
+  it('Osprey (a 149 member) signed in, origin "remote": Plan of 149 to Mako must be refused', () => {
+    signInAs('osprey')
+    const id = 'gzzsr1'
+    const r = asOrigin('remote', 'grant.set', [[GRANT_PFX + id, { id, account: ACCT.mako, unit: 'u149', level: 'admin', from: todayIso(), fromAt: Date.now() }]])
+    expect({ ok: r.ok, mako149: levelIn(ACCT.mako, 'u149', todayIso()) }, 'a "remote" label gave Plan of 149').toEqual({ ok: false, mako149: null })
+  })
+  it('Osprey signed in, origin "seed": Osprey makes himself 149\'s admin — must be refused', () => {
+    signInAs('osprey')
+    const prev: any = store.get(ACCOUNT_PFX + ACCT.osprey, null)
+    expect(prev, 'premise: Osprey has a stored account row').toBeTruthy()
+    const r = asOrigin('seed', 'account.update', [[ACCOUNT_PFX + ACCT.osprey, stampMoments(prev, { ...prev, role: 'admin' })]])
+    expect({ ok: r.ok, osprey149: levelIn(ACCT.osprey, 'u149', todayIso()) }, 'a "seed" label made an admin').toEqual({ ok: false, osprey149: 'member' })
+  })
+  it('the app\'s actor with the "remote" label (commitAs, any page code): Plan of 149 to Mako must be refused', () => {
+    ACTOR = 'system'
+    try {
+      signInAs('osprey')
+      const id = 'gzzsr2'
+      const r = asOrigin('remote', 'grant.set', [[GRANT_PFX + id, { id, account: ACCT.mako, unit: 'u149', level: 'admin', from: todayIso(), fromAt: Date.now() }]])
+      expect({ ok: r.ok, mako149: levelIn(ACCT.mako, 'u149', todayIso()) }, 'the app\'s actor labelled "remote" gave Plan of 149').toEqual({ ok: false, mako149: null })
+    } finally { ACTOR = 'session' }
+  })
+  it('the app\'s actor with the "remote" label: Osprey made 149\'s admin — must be refused', () => {
+    ACTOR = 'system'
+    try {
+      signInAs('osprey')
+      const prev: any = store.get(ACCOUNT_PFX + ACCT.osprey, null)
+      const r = asOrigin('remote', 'account.update', [[ACCOUNT_PFX + ACCT.osprey, stampMoments(prev, { ...prev, role: 'admin' })]])
+      expect({ ok: r.ok, osprey149: levelIn(ACCT.osprey, 'u149', todayIso()) }, 'the app\'s actor labelled "remote" made an admin').toEqual({ ok: false, osprey149: 'member' })
+    } finally { ACTOR = 'session' }
+  })
+})

@@ -1,0 +1,61 @@
+// @vitest-environment jsdom
+import { expect, it } from 'vitest'
+import {
+  withThird, signInAs, signOut, ACCT,
+} from '../test-support/msq-world'
+import {
+  ACCOUNT_PFX, accountById, accountsLoad, levelIn, stampMoments,
+} from './accounts'
+import { todayIso, unitRows, unitsLoad } from './units'
+import {
+  commitSettingsIntent, settingsStore,
+} from './people-settings-commit'
+import { commitProjection } from '../command'
+import { store } from '../engine/hooks'
+
+withThird()
+
+it.each(['signed out', 'member projection'] as const)(
+  '%s cannot end effective Plan through an account-only demotion',
+  route => {
+    signInAs('saber')
+    expect(levelIn(ACCT.hunter, 'u149', todayIso())).toBe('admin')
+
+    const key = ACCOUNT_PFX + ACCT.hunter
+    const before: any = store.get(key, null)
+    expect(before).toBeTruthy()
+    const grantsBefore = JSON.stringify(unitRows().grants)
+    const after = stampMoments(before, { ...before, role: 'main' })
+
+    if (route === 'signed out') signOut()
+    else signInAs('osprey')
+
+    const result: any = route === 'signed out'
+      ? commitSettingsIntent('account.update', null, () => {
+          store.set(key, after)
+        })
+      : commitProjection({
+          type: 'account.update',
+          scope: { module: 'settings' },
+          apply: (txn: any) => {
+            txn.enlist(settingsStore)
+            store.set(key, after)
+          },
+        })
+
+    unitsLoad()
+    accountsLoad()
+
+    expect({
+      ok: result.ok,
+      role: accountById(ACCT.hunter)!.role,
+      plan149: levelIn(ACCT.hunter, 'u149', todayIso()),
+      grants: JSON.stringify(unitRows().grants),
+    }).toEqual({
+      ok: false,
+      role: 'admin',
+      plan149: 'admin',
+      grants: grantsBefore,
+    })
+  },
+)

@@ -1,0 +1,41 @@
+// @vitest-environment jsdom
+/* SECURITY PROOF 3 — the same root as proof 1, on what a screen shows: fix 5 asks the app's own actor only of a grant row
+   that is Plan on either side (or carries the first mark). A View row written by the app's actor — the projection door any
+   page code can reach, whoever is signed in — still skips every who-check (perms.ts unitRowViolation `if (sys) continue`),
+   so Mako (150's admin) gives HIMSELF View of 149 and is offered 149's View-only Sched. "Only an admin of 149 can give
+   access to 149." (D2336). */
+import { describe, expect, it } from 'vitest'
+import { withThird, signInAs, signOut, ACCT } from '../test-support/msq-world'
+import { accountsLoad, levelIn } from './accounts'
+import { unitsLoad, todayIso } from './units'
+import { GRANT_PFX } from './units-model'
+import { commitSettingsIntent, settingsStore } from './people-settings-commit'
+import { commitProjection } from '../command'
+import { store } from '../engine/hooks'
+
+withThird()
+const reload = () => { unitsLoad(); accountsLoad() }
+const viewRow = (id: string, account: string, unit: string) =>
+  [GRANT_PFX + id, { id, account, unit, level: 'view', from: todayIso() }] as [string, unknown]
+
+describe('security proof 3 — the app\'s actor gives View of a squadron', () => {
+  it('the projection door, Mako (150\'s admin) signed in: View of 149 to himself must be refused', () => {
+    signInAs('mako')
+    expect(levelIn(ACCT.mako, 'u149', todayIso()), 'premise: Mako holds nothing of 149').toBeNull()
+    const r: any = commitProjection({ type: 'grant.set', scope: { module: 'settings' }, apply: (txn: any) => { txn.enlist(settingsStore); const [k, v] = viewRow('gzzsv1', ACCT.mako, 'u149'); store.set(k, v) } } as any)
+    reload()
+    expect({ ok: r.ok, mako149: levelIn(ACCT.mako, 'u149', todayIso()) }, 'Mako gave himself View of 149').toEqual({ ok: false, mako149: null })
+  })
+  it('nobody signed in: a forged grant.set giving Mako View of 149 must be refused', () => {
+    signOut()
+    const r: any = commitSettingsIntent('grant.set', null, () => { const [k, v] = viewRow('gzzsv2', ACCT.mako, 'u149'); store.set(k, v) })
+    reload()
+    expect({ ok: r.ok, mako149: levelIn(ACCT.mako, 'u149', todayIso()) }).toEqual({ ok: false, mako149: null })
+  })
+  it('(contrast) Mako signed in, the same row through commit(): refused by the who-check', () => {
+    signInAs('mako')
+    const r: any = commitSettingsIntent('grant.set', null, () => { const [k, v] = viewRow('gzzsv3', ACCT.mako, 'u149'); store.set(k, v) })
+    reload()
+    expect(r.ok).toBe(false)
+  })
+})

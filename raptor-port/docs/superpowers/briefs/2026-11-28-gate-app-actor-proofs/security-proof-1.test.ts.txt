@@ -1,0 +1,64 @@
+// @vitest-environment jsdom
+/* SECURITY PROOF 1 — fix 5 judged the app's own actor for grant rows, the first mark and account/person changes, but a
+   HOME row written by the app's actor (nobody signed in, or the projection door any page code can reach) still skips
+   every who-check AND the dated-row check (perms.ts unitRowViolation: `if (sys) continue` before the home WHO, and
+   `if (!sys)` around datedBreach), and madeAdminViolation never looks at a home row alone. A home row rewritten for a day
+   already begun changes whose own admin a man is TODAY: Hunter (142's admin, only Plan of 149) gets a first home row in
+   149 dated long ago and is 149's own admin — he may then give Plan of 149 and make its admins. */
+import { describe, expect, it } from 'vitest'
+import { withThird, signInAs, signOut, ACCT, PID } from '../test-support/msq-world'
+import { accountsLoad, levelIn, mayGivePlanNow, saveAccess } from './accounts'
+import { unitsLoad, todayIso, homeOn, setGrant } from './units'
+import { HOME_PFX } from './units-model'
+import { commitSettingsIntent, settingsStore } from './people-settings-commit'
+import { commitProjection } from '../command'
+import { store } from '../engine/hooks'
+
+withThird()
+const reload = () => { unitsLoad(); accountsLoad() }
+const homeRow = (id: string, pid: string, unit: string, from: string) =>
+  [HOME_PFX + id, { id, pid, unit, from }] as [string, unknown]
+const viaProjection = (type: string, rows: Array<[string, unknown]>): any => {
+  const r: any = commitProjection({ type, scope: { module: 'settings' }, apply: (txn: any) => { txn.enlist(settingsStore); for (const [k, v] of rows) store.set(k, v) } } as any)
+  reload()
+  return r
+}
+const forge = (type: string, rows: Array<[string, unknown]>): any => {
+  const r: any = commitSettingsIntent(type, null, () => { for (const [k, v] of rows) store.set(k, v) })
+  reload()
+  return r
+}
+
+describe('security proof 1 — the app\'s actor rewrites a home for a day begun and makes an admin of 149', () => {
+  it('nobody signed in: a forged home.set placing Hunter in 149 from 2000 must be refused', () => {
+    signInAs('hunter')
+    expect(homeOn(PID.hunter, todayIso()), 'premise: Hunter is 142\'s').toBe('u142')
+    expect(mayGivePlanNow('u149'), 'premise: Hunter (Plan of 149) may not give Plan of 149').toBe(false)
+    signOut()
+    const r = forge('home.set', [homeRow('hzzsec1', PID.hunter, 'u149', '2000-01-01')])
+    signInAs('hunter')
+    expect({ ok: r.ok, home: homeOn(PID.hunter, todayIso()), mayGive149: mayGivePlanNow('u149') },
+      'nobody signed in made Hunter 149\'s own admin').toEqual({ ok: false, home: 'u142', mayGive149: false })
+  })
+  it('the projection door, Ranger (a 142 member) signed in: the same home row must be refused', () => {
+    signInAs('ranger')
+    const r = viaProjection('home.set', [homeRow('hzzsec2', PID.hunter, 'u149', '2000-01-01')])
+    expect({ ok: r.ok, home: homeOn(PID.hunter, todayIso()) }, 'the projection door rewrote Hunter\'s past').toEqual({ ok: false, home: 'u142' })
+  })
+  it('…and what it lets through: after the forge Hunter, a Plan holder of 149, gives Mako Plan of 149 and makes Osprey 149\'s admin by the ordinary doors', () => {
+    signOut()
+    forge('home.set', [homeRow('hzzsec3', PID.hunter, 'u149', '2000-01-01')])
+    signInAs('hunter')
+    const give = setGrant(ACCT.mako, 'u149', 'admin', PID.mako)
+    reload()
+    const make = saveAccess(ACCT.osprey, { role: 'admin' })
+    reload()
+    expect({ give: give.ok, mako149: levelIn(ACCT.mako, 'u149', todayIso()), make, osprey149: levelIn(ACCT.osprey, 'u149', todayIso()) },
+      'a Plan holder of 149 gave Plan of 149 and made its admin').toEqual({ give: false, mako149: null, make: expect.any(String), osprey149: 'member' })
+  })
+  it('(contrast) Hunter signed in, the same home row through commit(): refused (a day already begun)', () => {
+    signInAs('hunter')
+    const r = forge('home.set', [homeRow('hzzsec4', PID.hunter, 'u149', '2000-01-01')])
+    expect(r.ok).toBe(false)
+  })
+})
