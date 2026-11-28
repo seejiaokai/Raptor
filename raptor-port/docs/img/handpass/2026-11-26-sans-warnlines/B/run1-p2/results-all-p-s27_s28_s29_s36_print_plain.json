@@ -1,0 +1,561 @@
+[
+ {
+  "scn": "s27",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s27",
+  "size": "phone",
+  "id": "s27.m",
+  "what": "set-up: Marlin on VL BFM 13:00 RCP, nothing filed",
+  "ok": true,
+  "note": "\"Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)\""
+ },
+ {
+  "scn": "s27",
+  "size": "phone",
+  "id": "s27.a",
+  "what": "(a) published (\"Publish day\"): the line shows as published — Edit Schedule, ⓘ, the board, View-only Sched; his ring and \"A\"",
+  "ok": true,
+  "note": "tag \"ORIG\" · \"\" · EDIT bar \"⚠ 1 issue ▲\" [adv] · 1 line(s): [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ ·· INFO \"Friday · Jul 17 · 1\" · ✓ Published — APPROVED · 1 ADVISORY · 1 line(s): [] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ·· BOARD head \"▾ ⚠ 1 issue\" · 1 line(s): [✕] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ ·· PUCKS cards week[flying line@Fri(4.0.0.0.w):amber/A] board[flying line(4.0.0.0.w):amber/A ; crew list (week):amber/A] ·· VIEW bar \"⚠ 1 issue ▲\" [adv] · 1 line(s): [adv] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)",
+  "pics": "s27-s27-a-e-list-clip-phone.png, s27-s27-a-ipop-clip-phone.png, s27-s27-a-b-clip-phone.png, s27-s27-a-board-phone.png, s27-s27-a-view-list-clip-phone.png"
+ },
+ {
+  "scn": "s27",
+  "size": "phone",
+  "id": "n11",
+  "what": "N11: a reload with no change — the published face is word for word the same",
+  "ok": true,
+  "note": "before \"⚠ 1 issue ▲\" 1 · after \"⚠ 1 issue ▲\" 1",
+  "pics": "s27-s27-n11-list-clip-phone.png"
+ },
+ {
+  "scn": "s27",
+  "size": "phone",
+  "id": "s27.b-file",
+  "what": "set-up: Saber files SANS fly all day for cards on 2026-07-17",
+  "ok": true,
+  "note": "{\"iid\":\"imrldj9tr6m3wxt\",\"people\":\"[{\\\"p\\\":\\\"cards\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077257087}]\",\"date\":\"Jul 17\",\"endDate\":null,\"sans\":{\"f\":true},\"allday\":true,\"e\":1439,\"remarks\":\"\",\"by\":\"stiff\"}",
+  "pics": "s27-s27.b-file-form-phone.png, s27-s27.b-file-saved-phone.png"
+ },
+ {
+  "scn": "s27",
+  "size": "phone",
+  "id": "s27.b",
+  "what": "(b) Fly filed all day after publishing: what each face shows, what reads pending (RECORD)",
+  "ok": "REC",
+  "note": "tag \"ORIG\" · \"1 pending\" · EDIT bar \"⚠ 1 to clear once signed ▲\" [adv] · 1 line(s): [adv FROZEN] SANS availability — not filed, or planned outside it Marlin goes away once signed ·· INFO \"Friday · Jul 17 · 1\" · ✓ Published — APPROVED 1 unpublished edit ·  · 0 line(s) ·· BOARD head \"▸ No conflicts flagged for Friday ✓\" · 0 line(s) · other [\"No conflicts flagged for this day ✓\"] ·· PUCKS cards week[flying line@Fri(4.0.0.0.w):no ring ; SANS@Fri:no ring] board[flying line(4.0.0.0.w):no ring ; SANS:no ring ; crew list (week):no ring] ·· VIEW bar \"⚠ 1 issue ▲\" [adv] · 1 line(s): [adv] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)",
+  "pics": "s27-s27-b-e-list-clip-phone.png, s27-s27-b-ipop-clip-phone.png, s27-s27-b-b-clip-phone.png, s27-s27-b-board-phone.png, s27-s27-b-view-list-clip-phone.png"
+ },
+ {
+  "scn": "s27",
+  "size": "phone",
+  "id": "s27.b-frozen",
+  "what": "(b) the published face (View-only Sched) keeps his line frozen (D179, D2005); the working copy no longer carries it as a live line",
+  "ok": true,
+  "note": "working: SANS availability — not filed, or planned outside it Marlin goes away once signed [FROZEN] · view: kept"
+ },
+ {
+  "scn": "s27",
+  "size": "phone",
+  "id": "s27.c",
+  "what": "(c) the filing deleted again: each face, the pending count (RECORD)",
+  "ok": "REC",
+  "note": "deleted · tag \"ORIG\" · \"\" · EDIT bar \"⚠ 1 issue ▲\" [adv] · 1 line(s): [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ ·· INFO \"Friday · Jul 17 · 1\" · ✓ Published — APPROVED · 1 ADVISORY · 1 line(s): [] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ·· BOARD head \"▾ ⚠ 1 issue\" · 1 line(s): [✕] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ ·· PUCKS cards week[flying line@Fri(4.0.0.0.w):amber/A] board[flying line(4.0.0.0.w):amber/A ; crew list (week):amber/A] ·· VIEW bar \"⚠ 1 issue ▲\" [adv] · 1 line(s): [adv] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)",
+  "pics": "s27-s27-c-e-list-clip-phone.png, s27-s27-c-ipop-clip-phone.png, s27-s27-c-b-clip-phone.png, s27-s27-c-board-phone.png, s27-s27-c-view-list-clip-phone.png"
+ },
+ {
+  "scn": "s27",
+  "size": "phone",
+  "id": "s27.c-live",
+  "what": "(c) his line live again on the working copy; still on the published face",
+  "ok": true,
+  "note": "bar \"⚠ 1 issue ▲\" [adv] · 1 line(s): [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ ·· VIEW bar \"⚠ 1 issue ▲\" [adv] · 1 line(s): [adv] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)"
+ },
+ {
+  "scn": "s27",
+  "size": "phone",
+  "id": "s27.d",
+  "what": "(d) Pixel planted on a new line of the published day: the note, each face, pending (RECORD)",
+  "ok": "REC",
+  "note": "note \"Pixel — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00)\" · tag \"ORIG\" · \"1 pending\" · EDIT bar \"⚠ 2 issues ▲\" [adv] · 2 line(s): [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || [adv ✕] SANS availability — not filed, or planned outside it Pixel — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00)new once signed ✕ ·· INFO \"Friday · Jul 17 · 1 X 1\" · ✓ Published — APPROVED 1 unpublished edit · 2 ADVISORY · 2 line(s): [] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [] Advisory · SANS availability — not filed, or planned outside it Pixel — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ·· BOARD head \"▾ ⚠ 2 issues\" · 2 line(s): [✕] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || [✕] Pixel — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ✕ ·· PUCKS badger week[flying line@Fri(4.1.0.0.w):amber/A] board[flying line(4.1.0.0.w):amber/A ; crew list (week):amber/A] ·· VIEW bar \"⚠ 1 issue ▲\" [adv] · 1 line(s): [adv] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)",
+  "pics": "s27-s27-d-armed-clip-phone.png, s27-s27-d-sans-clip-phone.png, s27-s27-d-armed-phone.png, s27-s27-d-note-clip-phone.png, s27-s27-d-picked-phone.png, s27-s27-d-e-list-clip-phone.png, s27-s27-d-ipop-clip-phone.png, s27-s27-d-b-clip-phone.png, s27-s27-d-board-phone.png, s27-s27-d-view-list-clip-phone.png"
+ },
+ {
+  "scn": "s27",
+  "size": "phone",
+  "id": "s27.d-working",
+  "what": "(d) the working copy shows Pixel's new line with his ring and \"A\"; the published face does not have it yet",
+  "ok": true,
+  "note": "note \"Pixel — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00)\" · working has · view no"
+ },
+ {
+  "scn": "s27",
+  "size": "phone",
+  "id": "a3.hide",
+  "what": "A3: Marlin's line hidden on the working copy of the published day: what reads pending, the issued face (RECORD)",
+  "ok": "REC",
+  "note": "tag \"ORIG\" · \"2 pending\" · EDIT bar \"⚠ 1 issue ▲\" [adv] · 2 line(s): [adv HIDDEN struck [drawn icon: Flag this again]] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [adv ✕] SANS availability — not filed, or planned outside it Pixel — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00)new once signed ✕ ·· INFO \"Friday · Jul 17 · 1 X 1\" · ✓ Published — APPROVED 2 unpublished edits · 1 ADVISORY · 2 line(s): [HIDDEN struck ] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [] Advisory · SANS availability — not filed, or planned outside it Pixel — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ·· BOARD head \"▾ ⚠ 1 issue\" · 2 line(s): [HIDDEN struck [drawn icon: Flag this again]] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [✕] Pixel — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ✕ ·· PUCKS cards week[flying line@Fri(4.0.0.0.w):no ring] board[flying line(4.0.0.0.w):no ring ; crew list (week):no ring] ·· VIEW bar \"⚠ 1 issue ▲\" [adv] · 1 line(s): [adv] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)",
+  "pics": "s27-s27-a3-e-list-clip-phone.png, s27-s27-a3-ipop-clip-phone.png, s27-s27-a3-b-clip-phone.png, s27-s27-a3-board-phone.png, s27-s27-a3-view-list-clip-phone.png"
+ },
+ {
+  "scn": "s27",
+  "size": "phone",
+  "id": "a3.pub",
+  "what": "the amendment published",
+  "ok": "REC",
+  "note": "\"Publish AL1\" · tag \"AL1\" · \"\"",
+  "pics": "s27-s27-a3-pub-phone.png"
+ },
+ {
+  "scn": "s27",
+  "size": "phone",
+  "id": "a3.ranger",
+  "what": "A3: as Ranger after the amendment — Marlin's line struck, no Reset arrow, not counted; Pixel's line shown",
+  "ok": true,
+  "note": "bar \"⚠ 1 issue ▲\" [adv] · 2 line(s): [adv HIDDEN struck] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [adv] SANS availability — not filed, or planned outside it Pixel — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00)",
+  "pics": "s27-s27-a3-ranger-list-clip-phone.png"
+ },
+ {
+  "scn": "s27",
+  "size": "phone",
+  "id": "a3.reset",
+  "what": "flagged again on the working copy: pending? the issued face before the next amendment (RECORD)",
+  "ok": "REC",
+  "note": "tag \"AL1\" · \"1 pending\" · bar \"⚠ 2 issues ▲\" [adv] · 2 line(s): [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || [adv ✕] SANS availability — not filed, or planned outside it Pixel — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ✕ ·· VIEW bar \"⚠ 1 issue ▲\" [adv] · 2 line(s): [adv HIDDEN struck] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [adv] SANS availability — not filed, or planned outside it Pixel — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00)",
+  "pics": "s27-s27-a3r-e-list-clip-phone.png, s27-s27-a3r-ipop-clip-phone.png, s27-s27-a3r-b-clip-phone.png, s27-s27-a3r-board-phone.png, s27-s27-a3r-view-list-clip-phone.png"
+ },
+ {
+  "scn": "s27",
+  "size": "phone",
+  "id": "a3.reset-pub",
+  "what": "published again: Marlin's line shown on the issued face",
+  "ok": true,
+  "note": "\"Publish AL2\" · bar \"⚠ 2 issues ▲\" [adv] · 2 line(s): [adv] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [adv] SANS availability — not filed, or planned outside it Pixel — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00)",
+  "pics": "s27-s27-a3r-pub-list-clip-phone.png"
+ },
+ {
+  "scn": "s27",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s28",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s28",
+  "size": "phone",
+  "id": "s28.file",
+  "what": "set-up: Saber files SANS fly all day for wrangler on 2026-07-17",
+  "ok": true,
+  "note": "{\"iid\":\"imrldi7kqntb97r\",\"people\":\"[{\\\"p\\\":\\\"wrangler\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077207514}]\",\"date\":\"Jul 17\",\"endDate\":null,\"sans\":{\"f\":true},\"allday\":true,\"e\":1439,\"remarks\":\"\",\"by\":\"stiff\"}",
+  "pics": "s28-s28.file-form-phone.png, s28-s28.file-saved-phone.png"
+ },
+ {
+  "scn": "s28",
+  "size": "phone",
+  "id": "s28.o",
+  "what": "set-up: Otter (filed Fly all day) on VL BFM 13:00 RCP: no SANS line",
+  "ok": true,
+  "note": "\"Otter planned\""
+ },
+ {
+  "scn": "s28",
+  "size": "phone",
+  "id": "s28.pub",
+  "what": "published (\"Publish day\") clean: the issued face",
+  "ok": "REC",
+  "note": "bar \"(no bar)\" [] · 0 line(s)",
+  "pics": "s28-s28-0-list-phone.png"
+ },
+ {
+  "scn": "s28",
+  "size": "phone",
+  "id": "s28.del",
+  "what": "A1: his filing deleted after publishing — the working copy, the issued face, the pending count (RECORD)",
+  "ok": "REC",
+  "note": "deleted \"Input deleted\" · pending \"1 pending\" · EDIT bar \"⚠ 1 issue ▲\" [adv] · 1 line(s): [adv ✕] SANS availability — not filed, or planned outside it Otter — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)new once signed ✕ ·· INFO \"Friday · Jul 17 · 1\" · ✓ Published — APPROVED 1 unpublished edit · 1 ADVISORY · 1 line(s): [] Advisory · SANS availability — not filed, or planned outside it Otter — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ·· BOARD head \"▾ ⚠ 1 issue\" · 1 line(s): [✕] Otter — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ ·· PUCKS wrangler week[flying line@Fri(4.0.0.0.w):amber/A] board[flying line(4.0.0.0.w):amber/A ; crew list (week):amber/A] ·· VIEW bar \"(no bar)\" [] · 0 line(s)",
+  "pics": "s28-s28-1-e-list-clip-phone.png, s28-s28-1-ipop-clip-phone.png, s28-s28-1-b-clip-phone.png, s28-s28-1-board-phone.png, s28-s28-1-view-list-phone.png"
+ },
+ {
+  "scn": "s28",
+  "size": "phone",
+  "id": "s28.faces",
+  "what": "the working copy gains Otter's \"no availability filed\" line; the issued face stays without it, its count and list agreeing",
+  "ok": true,
+  "note": "working has · view \"(no bar)\" 0 line(s)"
+ },
+ {
+  "scn": "s28",
+  "size": "phone",
+  "id": "s28.amend",
+  "what": "the amendment published (\"Publish AL1\"): the issued face gains Otter's line",
+  "ok": true,
+  "note": "bar \"⚠ 1 issue ▲\" [adv] · 1 line(s): [adv] SANS availability — not filed, or planned outside it Otter — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)",
+  "pics": "s28-s28-2-list-clip-phone.png"
+ },
+ {
+  "scn": "s28",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s29",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s29",
+  "size": "phone",
+  "id": "s29.plant",
+  "what": "Marlin planted: his line, ring and \"A\"",
+  "ok": true,
+  "note": "EDIT bar \"⚠ 1 issue ▲\" [adv] · 1 line(s): [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ ·· INFO \"Friday · Jul 17 · 1\" · Draft — not yet published 6 changes · 1 ADVISORY · 1 line(s): [] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ·· BOARD head \"▾ ⚠ 1 issue\" · 1 line(s): [✕] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ ·· PUCKS cards week[flying line@Fri(4.0.0.0.w):amber/A] board[flying line(4.0.0.0.w):amber/A ; crew list (week):amber/A]",
+  "pics": "s29-s29-1-e-list-clip-phone.png, s29-s29-1-ipop-clip-phone.png, s29-s29-1-b-clip-phone.png, s29-s29-1-board-phone.png"
+ },
+ {
+  "scn": "s29",
+  "size": "phone",
+  "id": "s29.undo",
+  "what": "the board's Undo: the line gone in every place, the count down by one, no ring left on any copy",
+  "ok": true,
+  "note": "\"Undo — a change to the schedule\" → \"Undid: a change to the schedule\" · EDIT bar \"(no bar)\" [] · 0 line(s) ·· INFO \"Friday · Jul 17 · 1\" · Draft — not yet published 7 changes ·  · 0 line(s) ·· BOARD head \"▸ No conflicts flagged for Friday ✓\" · 0 line(s) · other [\"No conflicts flagged for this day ✓\"] ·· PUCKS cards week[no puck drawn] board[crew list (week):no ring]",
+  "pics": "s29-s29-2-e-list-phone.png, s29-s29-2-ipop-clip-phone.png, s29-s29-2-b-clip-phone.png, s29-s29-2-board-phone.png"
+ },
+ {
+  "scn": "s29",
+  "size": "phone",
+  "id": "s29.redo",
+  "what": "Redo: the line, ring, \"A\" and count back, exactly one line for him",
+  "ok": true,
+  "note": "\"Redo — a change to the schedule\" → \"Redid: a change to the schedule\" · EDIT bar \"⚠ 1 issue ▲\" [adv] · 1 line(s): [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ ·· INFO \"Friday · Jul 17 · 1\" · Draft — not yet published 8 changes · 1 ADVISORY · 1 line(s): [] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ·· BOARD head \"▾ ⚠ 1 issue\" · 1 line(s): [✕] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ ·· PUCKS cards week[flying line@Fri(4.0.0.0.w):amber/A] board[flying line(4.0.0.0.w):amber/A ; crew list (week):amber/A]",
+  "pics": "s29-s29-3-e-list-clip-phone.png, s29-s29-3-ipop-clip-phone.png, s29-s29-3-b-clip-phone.png, s29-s29-3-board-phone.png"
+ },
+ {
+  "scn": "s29",
+  "size": "phone",
+  "id": "s29.file",
+  "what": "set-up: Saber files SANS fly all day for wrangler on 2026-07-17",
+  "ok": true,
+  "note": "{\"iid\":\"imrldjoqi8878uk\",\"people\":\"[{\\\"p\\\":\\\"wrangler\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077276411}]\",\"date\":\"Jul 17\",\"endDate\":null,\"sans\":{\"f\":true},\"allday\":true,\"e\":1439,\"remarks\":\"\",\"by\":\"stiff\"}",
+  "pics": "s29-s29.file-form-phone.png, s29-s29.file-saved-phone.png"
+ },
+ {
+  "scn": "s29",
+  "size": "phone",
+  "id": "s29.o",
+  "what": "set-up: Otter (filed) on VL ACM 16:00: no SANS line",
+  "ok": true,
+  "note": "\"Otter planned\""
+ },
+ {
+  "scn": "s29",
+  "size": "phone",
+  "id": "ERR",
+  "what": "script stopped",
+  "ok": false,
+  "note": "locator.tap: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#undoBtn:visible').first()\u001b[22m\n\u001b[2m    - locator resolved to <button id=\"undoBtn\" class=\"abtn hbtn\" aria-label=\"Undo\" title=\"Undo — Otter’s SANS Availability\">…</button>\u001b[22m\n\u001b[2m  - attempting tap action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m  ",
+  "pics": "s29-ERR-phone.png"
+ },
+ {
+  "scn": "s29",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s36",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s36",
+  "size": "phone",
+  "id": "s36.m",
+  "what": "set-up: Marlin on VL BFM 13:00 RCP, nothing filed",
+  "ok": true,
+  "note": "\"Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)\""
+ },
+ {
+  "scn": "s36",
+  "size": "phone",
+  "id": "s36.g",
+  "what": "set-up: a Ground Programme row \"SWL GROUND\" 16:00–17:00 holding Marlin",
+  "ok": true,
+  "note": "row {\"prog\":\"SWL GROUND\",\"str\":\"16:00\",\"end\":\"17:00\",\"who\":\"\",\"rid\":\"rmrldieyozihnk6\"} · \"Marlin planned\""
+ },
+ {
+  "scn": "s36",
+  "size": "phone",
+  "id": "s36.copies",
+  "what": "every copy of his puck that day, week and board (RECORD each)",
+  "ok": "REC",
+  "note": "week[flying line@Fri(4.0.0.0.w):amber/A ; ground@Fri(g:4.2):amber/A] · board[flying line(4.0.0.0.w):amber/A ; ground(g:4.2):amber/A ; crew list (week):amber/A]",
+  "pics": "s36-s36-1-e-list-clip-phone.png, s36-s36-1-ipop-clip-phone.png, s36-s36-1-b-clip-phone.png, s36-s36-1-board-phone.png"
+ },
+ {
+  "scn": "s36",
+  "size": "phone",
+  "id": "s36.copies-A",
+  "what": "each drawn copy wears the amber ring and \"A\" — no other letter (N8, D2583)",
+  "ok": true,
+  "note": "flying line@Fri(4.0.0.0.w):amber/A ; ground@Fri(g:4.2):amber/A ; flying line(4.0.0.0.w):amber/A ; ground(g:4.2):amber/A ; crew list (week):amber/A"
+ },
+ {
+  "scn": "s36",
+  "size": "phone",
+  "id": "s36.one-line",
+  "what": "one SANS line for him (the ground row raises none, D2564)",
+  "ok": true,
+  "note": "bar \"⚠ 1 issue ▲\" [adv] · 1 line(s): [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕"
+ },
+ {
+  "scn": "s36",
+  "size": "phone",
+  "id": "s36.crew",
+  "what": "the board's crew list, nothing armed: his puck carries the amber ring and \"A\", and no reason line under it (D2420)",
+  "ok": true,
+  "note": "[SANS Avail, STRUCK] title \"Marlin — SANS — no availability filed for today\" (no reason printed) · painted crew list (week):amber/A",
+  "pics": "s36-s36-crew-clip-phone.png"
+ },
+ {
+  "scn": "s36",
+  "size": "phone",
+  "id": "s36.a27",
+  "what": "A27: a ground row 11:00–12:00 inside his brief: the list and his pucks (RECORD)",
+  "ok": "REC",
+  "note": "\"Marlin — Misses VL BFM brief 10:40–13:00: SWL BRIEF CLASH 11:00–12:00\" · EDIT bar \"⚠ 2 issues ▲\" [adv] · 2 line(s): [adv ✕] Misses flight brief Marlin — Misses VL BFM brief 10:40–13:00: SWL BRIEF CLASH 11:00–12:00 ✕ || [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ ·· INFO \"Friday · Jul 17 · 1\" · Draft — not yet published 16 changes · 2 ADVISORY · 2 line(s): [] Advisory · Misses flight brief Marlin — Misses VL BFM brief 10:40–13:00: SWL BRIEF CLASH 11:00–12:00 || [] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ·· BOARD head \"▾ ⚠ 2 issues\" · 2 line(s): [✕] Marlin — Misses VL BFM brief 10:40–13:00: SWL BRIEF CLASH 11:00–12:00 ✕ || [✕] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ ·· PUCKS cards week[flying line@Fri(4.0.0.0.w):amber/B ; ground@Fri(g:4.3):amber/B ; ground@Fri(g:4.2):amber/B] board[flying line(4.0.0.0.w):amber/B ; ground(g:4.3):amber/B ; ground(g:4.2):amber/B ; crew list (week):amber/B]",
+  "pics": "s36-s36-2-e-list-clip-phone.png, s36-s36-2-ipop-clip-phone.png, s36-s36-2-b-clip-phone.png, s36-s36-2-board-phone.png"
+ },
+ {
+  "scn": "s36",
+  "size": "phone",
+  "id": "s36.a27-both",
+  "what": "both advisories showing: the chip his seat puck wears (RECORD — which letter wins)",
+  "ok": "REC",
+  "note": "flying line(4.0.0.0.w):amber/B · count 2"
+ },
+ {
+  "scn": "s36",
+  "size": "phone",
+  "id": "s36.a27-1",
+  "what": "only the SANS line hidden: his seat puck keeps an amber ring with the other advisory's own letter (the flag of the one still showing, D475); the count down by one",
+  "ok": true,
+  "note": "flying line(4.0.0.0.w):amber/B · count 1",
+  "pics": "s36-s36-3-e-list-clip-phone.png, s36-s36-3-ipop-clip-phone.png, s36-s36-3-b-clip-phone.png, s36-s36-3-board-phone.png"
+ },
+ {
+  "scn": "s36",
+  "size": "phone",
+  "id": "s36.a27-2",
+  "what": "SANS flagged again, only the other advisory hidden: \"A\" on his seat puck, amber ring",
+  "ok": true,
+  "note": "flying line(4.0.0.0.w):amber/A · count 1",
+  "pics": "s36-s36-4-e-list-clip-phone.png, s36-s36-4-ipop-clip-phone.png, s36-s36-4-b-clip-phone.png, s36-s36-4-board-phone.png"
+ },
+ {
+  "scn": "s36",
+  "size": "phone",
+  "id": "s36.a27-3",
+  "what": "both hidden: no chip and no amber ring on his seat puck; the count down by both",
+  "ok": true,
+  "note": "flying line(4.0.0.0.w):no ring · bar \"✓ No issues ▲\"",
+  "pics": "s36-s36-5-e-list-clip-phone.png, s36-s36-5-ipop-clip-phone.png, s36-s36-5-b-clip-phone.png, s36-s36-5-board-phone.png"
+ },
+ {
+  "scn": "s36",
+  "size": "phone",
+  "id": "s36.a27-4",
+  "what": "SANS flagged again alone: its line and \"A\" back; the other stays hidden (one reset revives one)",
+  "ok": true,
+  "note": "flying line(4.0.0.0.w):amber/A · bar \"⚠ 1 issue ▲\" [adv] · 2 line(s): [adv HIDDEN struck [drawn icon: Flag this again]] Misses flight brief Marlin — Misses VL BFM brief 10:40–13:00: SWL BRIEF CLASH 11:00–12:00 || [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕",
+  "pics": "s36-s36-6-e-list-clip-phone.png, s36-s36-6-ipop-clip-phone.png, s36-s36-6-b-clip-phone.png, s36-s36-6-board-phone.png"
+ },
+ {
+  "scn": "s36",
+  "size": "phone",
+  "id": "s36.a27-letters",
+  "what": "the letters seen (RECORD)",
+  "ok": "REC",
+  "note": "both showing \"B\" · SANS hidden \"B\""
+ },
+ {
+  "scn": "s36",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "print",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "print",
+  "size": "phone",
+  "id": "pr.m",
+  "what": "set-up: Marlin on VL BFM 13:00 RCP, nothing filed: his line on Fri 17",
+  "ok": true,
+  "note": "\"Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)\""
+ },
+ {
+  "scn": "print",
+  "size": "phone",
+  "id": "pr.draft-edit",
+  "what": "Export as PDF from editsched on a day carrying his line (draft): does the warning show in what prints? (RECORD, Chromium and WebKit print media)",
+  "ok": "REC",
+  "note": "printed page made · prints 0 · Friday: \"Friday Jul 17 Working draft — not yet signed Wave CS / Mission Rally Brief T/O Land FCP RCP Area Time Remarks Stores WAVE 1 VL BFM 10:40 13:00 14:00 Marlin A RESTRICTED \" · {\"sans\":false,\"check\":false,\"nf\":false,\"issue\":false}",
+  "pics": "print-draft-edit-print-chromium-phone.png, print-draft-edit-print-phone.pdf, print-draft-edit-print-webkit-phone.png"
+ },
+ {
+  "scn": "print",
+  "size": "phone",
+  "id": "pr.draft-view",
+  "what": "Export as PDF from viewsched (RECORD)",
+  "ok": "REC",
+  "note": "no Export as PDF in the ☰ menu",
+  "pics": "print-draft-view-no-export-phone.png"
+ },
+ {
+  "scn": "print",
+  "size": "phone",
+  "id": "pr.pub",
+  "what": "Fri 17 published (\"Publish day\"): Export as PDF — does the warning show in print? (RECORD)",
+  "ok": "REC",
+  "note": "Friday: \"Friday Jul 17 Published — Original Wave CS / Mission Rally Brief T/O Land FCP RCP Area Time Remarks Stores WAVE 1 VL BFM 10:40 13:00 14:00 Marlin A RESTRICTED \" · {\"sans\":false,\"check\":false,\"nf\":false,\"issue\":false}",
+  "pics": "print-pub-print-chromium-phone.png, print-pub-print-phone.pdf, print-pub-print-webkit-phone.png"
+ },
+ {
+  "scn": "print",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "plain-pl.post-postout-open-phone.png, plain-pl.post-postout-sheet-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.1",
+  "what": "the board of Fri 17: + Wave → VL BFM 13:00–14:00, an OFT row \"EP-9\" 15:00–16:00",
+  "ok": "REC",
+  "note": "{\"l1\":{\"cs\":\"VL\",\"msn\":\"BFM\",\"to\":\"13:00\",\"ld\":\"14:00\"},\"oft\":{\"label\":\"EP-9\",\"str\":\"15:00\",\"end\":\"16:00\"}}",
+  "pics": "plain-pl-1-built-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.2",
+  "what": "Marlin dropped onto the line, Jester onto the OFT (tap-to-plan): each note the new line",
+  "ok": true,
+  "note": "\"Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)\" / \"Jester — SANS: no availability filed for today. Planned on Sim EP-9 15:00–16:00\"",
+  "pics": "plain-pl-2-armed-clip-phone.png, plain-pl-2-sans-clip-phone.png, plain-pl-2-armed-phone.png, plain-pl-2-note-clip-phone.png, plain-pl-2-picked-phone.png, plain-pl-3-armed-clip-phone.png, plain-pl-3-sans-clip-phone.png, plain-pl-3-armed-phone.png, plain-pl-3-note-clip-phone.png, plain-pl-3-picked-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.5",
+  "what": "the board: Undo takes Jester's drop back (his line gone from the panel), Redo puts it back (his line back)",
+  "ok": true,
+  "note": "Undo \"Undo — a change to the schedule\" → \"Undid: a change to the schedule\" · panel head \"▾ ⚠ 1 issue\" · 1 line(s): [✕] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ · Redo → \"Redid: a change to the schedule\" · panel head \"▾ ⚠ 2 issues\" · 2 line(s): [✕] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || [✕] Jester — SANS: no availability filed for today. Planned on Sim EP-9 15:00–16:00 ✕",
+  "pics": "plain-pl-6-undo-phone.png, plain-pl-7-redo-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.3",
+  "what": "Edit Schedule: the day's list opened by its bar — both lines",
+  "ok": true,
+  "note": "bar \"⚠ 2 issues ▲\" [adv] · 2 line(s): [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || [adv ✕] SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on Sim EP-9 15:00–16:00 ✕",
+  "pics": "plain-pl-3-list-clip-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.4",
+  "what": "his line hidden (✕), then flagged again (↺)",
+  "ok": true,
+  "note": "bar \"⚠ 1 issue ▲\" [adv] · 2 line(s): [adv HIDDEN struck [drawn icon: Flag this again]] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [adv ✕] SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on Sim EP-9 15:00–16:00 ✕ → bar \"⚠ 2 issues ▲\" [adv] · 2 line(s): [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || [adv ✕] SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on Sim EP-9 15:00–16:00 ✕",
+  "pics": "plain-pl-4-hidden-list-clip-phone.png, plain-pl-5-back-list-clip-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.4u",
+  "what": "the top bar's Undo right after the flag-again: what it names (RECORD — a hide and a flag-again are Undo steps)",
+  "ok": "REC",
+  "note": "\"Undo — flagging a warning again\" → \"Undid: flagging a warning again\"",
+  "pics": "plain-pl-5u-undo-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.6",
+  "what": "Edit Schedule's crew panel opened on Fri 17 (nothing picked) and closed",
+  "ok": "REC",
+  "note": "friday · Marlin [SANS Avail, STRUCK] title \"Marlin — SANS — no availability filed for today\" (no reason printed)",
+  "pics": "plain-pl-8-elist-clip-phone.png, plain-pl-8-elist-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "ERR",
+  "what": "script stopped",
+  "ok": false,
+  "note": "locator.tap: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a:visible').filter({ hasText: /Legend/i }).first()\u001b[22m\n\u001b[2m    - locator resolved to <button class=\"fchip legkey\" aria-expanded=\"false\" data-testid=\"legend-open\" title=\"What the colours and marks on the grid mean\">Legend</button>\u001b[22m\n\u001b[2m  - attempting tap action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m     ",
+  "pics": "plain-ERR-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

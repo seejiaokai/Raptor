@@ -53,6 +53,7 @@ import { pendItemWords } from '../ui/pendlist'
 import { nextMondayHides } from '../engine/weekctx'
 import { elogWho } from '../engine/editlog'
 import { ensureRowIds } from '../engine/rowids'
+import { coverSans } from '../testing/sanscover'
 
 
 const ISNAP = JSON.stringify(INPUTS)
@@ -501,3 +502,9 @@ describe("the marks that cross the week's edge follow next Monday's own hide (As
     expect(marks(), 'flagged again → back').toBe(2)
   })
 })
+
+/* Its subject is not SANS availability, yet the seed plans SANS men (waldo among them) with nothing filed, which since
+   owner D2579 (25 Nov 26) raises an amber line and an "A" chip that outranks TT and DT: every SANS man is covered after
+   the world is reset, so the test reads the world it was written for (testing/sanscover.ts). Registered last, so it
+   runs after the reset above. */
+beforeEach(() => { coverSans() })

@@ -1,0 +1,841 @@
+[
+ {
+  "scn": "f14",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "f14",
+  "size": "phone",
+  "id": "f14.note",
+  "what": "Jester (SANS, nothing filed) tapped into the seed OFT EP-4 on Wed: the note after the plant (A's scenario; recorded)",
+  "ok": "REC",
+  "note": "row {\"label\":\"EP-4\",\"str\":\"0900\",\"end\":\"1030\"} · placed true · note \"Jester — SANS — no availability filed for today\"",
+  "pics": "now/f14-f14-arm-press-now-phone.png, now/f14-f14-pick-now-phone.png, f14-f14-note-phone.png (armed by the tap armed nothing — a script click used)"
+ },
+ {
+  "scn": "f14",
+  "size": "phone",
+  "id": "f14.line",
+  "what": "F14: Wed's list reads \"SANS: no availability filed for today. Planned on OFT EP-4 09:00–10:30\"",
+  "ok": true,
+  "note": "\"SANS: no availability filed for today. Planned on OFT EP-4 09:00–10:30\"",
+  "pics": "f14-f14-list-list-clip-phone.png"
+ },
+ {
+  "scn": "f14",
+  "size": "phone",
+  "id": "f14.nosim",
+  "what": "F14: no SANS line on any day of the week says \"Sim\"",
+  "ok": true,
+  "note": "1: SANS: no availability filed for today. Planned on RU ACM (T/O 14:40) || 2: SANS: no availability filed for today. Planned on RU ACM (T/O 10:35) || 2: SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || 2: SANS: no availability filed for today. Planned on RU BFM (T/O 13:00) || 2: SANS: no availability filed for today. Planned on OFT EP-4 09:00–10:30 || 3: SANS: no availability filed for today. Planned on RU AD (T/O 12:45)"
+ },
+ {
+  "scn": "f14",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "fam",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "fam",
+  "size": "phone",
+  "id": "fam.rows",
+  "what": "set-up: OFT EP-9 10:00–11:00 and AMT BOX 13:00–14:00 on Fri 17",
+  "ok": true,
+  "note": "[{\"label\":\"EP-9\",\"str\":\"10:00\",\"end\":\"11:00\"},{\"label\":\"BOX\",\"str\":\"13:00\",\"end\":\"14:00\"}]"
+ },
+ {
+  "scn": "fam",
+  "size": "phone",
+  "id": "fam.plant",
+  "what": "set-up: Jester on OFT EP-9, Kraken on AMT BOX (both SANS, nothing filed on Fri)",
+  "ok": true,
+  "note": "\"Jester — SANS — no availability filed for today\" / \"Kraken — SANS — no availability filed for today\""
+ },
+ {
+  "scn": "fam",
+  "size": "phone",
+  "id": "fam.none",
+  "what": "S8 nothing filed: \"SANS: no availability filed for today. Planned on OFT EP-9 10:00–11:00\" / \"… AMT BOX 13:00–14:00\", the same on the board's panel",
+  "ok": true,
+  "note": "Jester \"SANS: no availability filed for today. Planned on OFT EP-9 10:00–11:00\" · Kraken \"SANS: no availability filed for today. Planned on AMT BOX 13:00–14:00\" · board J [\"SANS: no availability filed for today. Planned on OFT EP-9 10:00–11:00\"] K [\"SANS: no availability filed for today. Planned on AMT BOX 13:00–14:00\"]",
+  "pics": "fam-fam-none-list-clip-phone.png, fam-fam-none-board-clip-phone.png"
+ },
+ {
+  "scn": "fam",
+  "size": "phone",
+  "id": "fam.fly",
+  "what": "set-up: Jester and Kraken filed Fly only, all day, for Fri on the SANS tab",
+  "ok": true,
+  "note": "[\"\",\"\"]"
+ },
+ {
+  "scn": "fam",
+  "size": "phone",
+  "id": "fam.fly",
+  "what": "S8 Fly only: \"SANS: offered Fly only today. Planned on OFT EP-9 10:00–11:00\" / \"… AMT BOX 13:00–14:00\" (list and board)",
+  "ok": true,
+  "note": "Jester \"SANS: offered Fly only today. Planned on OFT EP-9 10:00–11:00\" · Kraken \"SANS: offered Fly only today. Planned on AMT BOX 13:00–14:00\" · board [\"SANS: offered Fly only today. Planned on OFT EP-9 10:00–11:00\"] [\"SANS: offered Fly only today. Planned on AMT BOX 13:00–14:00\"]",
+  "pics": "fam-fam-fly-list-clip-phone.png, fam-fam-fly-board-clip-phone.png"
+ },
+ {
+  "scn": "fam",
+  "size": "phone",
+  "id": "fam.f18",
+  "what": "F18 Fly-only man on OFT EP-9 10:00 with no end: \"SANS: offered Fly only today. Planned on OFT EP-9 10:00–11:30 (end assumed)\"",
+  "ok": true,
+  "note": "\"SANS: offered Fly only today. Planned on OFT EP-9 10:00–11:30 (end assumed)\"",
+  "pics": "fam-fam-f18-list-clip-phone.png"
+ },
+ {
+  "scn": "fam",
+  "size": "phone",
+  "id": "fam.hrs",
+  "what": "S8 the sim offered 08:00–09:00 only: \"SANS: available 08:00–09:00 only. Planned on OFT EP-9 10:00–11:00\" / \"… AMT BOX 13:00–14:00\"",
+  "ok": true,
+  "note": "Jester \"SANS: available 08:00–09:00 only. Planned on OFT EP-9 10:00–11:00\" · Kraken \"SANS: available 08:00–09:00 only. Planned on AMT BOX 13:00–14:00\" · board [\"SANS: available 08:00–09:00 only. Planned on OFT EP-9 10:00–11:00\"] [\"SANS: available 08:00–09:00 only. Planned on AMT BOX 13:00–14:00\"]",
+  "pics": "fam-fam-hrs-list-clip-phone.png, fam-fam-hrs-board-clip-phone.png"
+ },
+ {
+  "scn": "fam",
+  "size": "phone",
+  "id": "fam.f19a",
+  "what": "F19 AMT filed 08:00–12:00, planted on AMT BOX 13:00–14:00: \"SANS: available 08:00–12:00 only. Planned on AMT BOX 13:00–14:00\"",
+  "ok": true,
+  "note": "\"SANS: available 08:00–12:00 only. Planned on AMT BOX 13:00–14:00\"",
+  "pics": "fam-fam-f19a-list-clip-phone.png"
+ },
+ {
+  "scn": "fam",
+  "size": "phone",
+  "id": "fam.f19b",
+  "what": "F19 BOX's end cleared: \"… Planned on AMT BOX 13:00–14:30 (end assumed)\"",
+  "ok": true,
+  "note": "\"SANS: available 08:00–12:00 only. Planned on AMT BOX 13:00–14:30 (end assumed)\"",
+  "pics": "fam-fam-f19b-list-clip-phone.png"
+ },
+ {
+  "scn": "fam",
+  "size": "phone",
+  "id": "fam.f19c",
+  "what": "F19 both times cleared: his line goes (nothing to hold his hours against), and his crew-list strike goes too",
+  "ok": true,
+  "note": "no SANS line · armed s:4.amt.1.+ · crew Kraken plain [A08:00–12:00] hours under: \"08:00–12:00\"",
+  "pics": "fam-fam-f19c-list-clip-phone.png, fam-fam-f19c-crew-phone.png"
+ },
+ {
+  "scn": "fam",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "extra",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "extra",
+  "size": "phone",
+  "id": "ex.set",
+  "what": "set-up: an untimed OFT row EP-9 on Fri 17 with Rebel (not SANS-filed for Fri) already in its front seat",
+  "ok": true,
+  "note": "\"Rebel — SANS — no availability filed for today\""
+ },
+ {
+  "scn": "extra",
+  "size": "phone",
+  "id": "ex.1",
+  "what": "S11 the untimed row's extra place armed and Marlin tapped: he lands in the extra place; reason \"SANS — no availability filed for today\"; note \"Marlin — SANS — no availability filed for today\"; line \"… Planned on OFT EP-9 (no times yet)\"",
+  "ok": true,
+  "note": "{\"armed\":\"s:4.oft.2.+\",\"why\":\"SANS — no availability filed for today\",\"struck\":true,\"note\":\"Marlin — SANS — no availability filed for today\",\"held\":[\".sims.oft[2].w\"],\"pic\":\"now/extra-ex-1-press-now-phone.png, extra-ex-1-crew-phone.png, now/extra-ex-1-pick-now-phone.png, extra-ex-1-note-phone.png\"} · \"SANS: no availability filed for today. Planned on OFT EP-9 (no times yet)\"",
+  "pics": "now/extra-ex-1-press-now-phone.png, extra-ex-1-crew-phone.png, now/extra-ex-1-pick-now-phone.png, extra-ex-1-note-phone.png, extra-ex-1-list-clip-phone.png"
+ },
+ {
+  "scn": "extra",
+  "size": "phone",
+  "id": "ex.2",
+  "what": "S11 a later extra place: Pixel tapped in beside Marlin — the same words",
+  "ok": true,
+  "note": "{\"armed\":\"s:4.oft.2.+\",\"why\":\"SANS — no availability filed for today\",\"struck\":true,\"note\":\"Pixel — SANS — no availability filed for today\",\"held\":[\".sims.oft[2].more[0]\"],\"pic\":\"now/extra-ex-2-press-now-phone.png, extra-ex-2-crew-phone.png, now/extra-ex-2-pick-now-phone.png, extra-ex-2-note-phone.png\"} · \"SANS: no availability filed for today. Planned on OFT EP-9 (no times yet)\"",
+  "pics": "now/extra-ex-2-press-now-phone.png, extra-ex-2-crew-phone.png, now/extra-ex-2-pick-now-phone.png, extra-ex-2-note-phone.png, extra-ex-2-list-clip-phone.png"
+ },
+ {
+  "scn": "extra",
+  "size": "phone",
+  "id": "ex.3",
+  "what": "S11 with 10:00–11:00 typed: \"… Planned on OFT EP-9 10:00–11:00\"",
+  "ok": true,
+  "note": "\"SANS: no availability filed for today. Planned on OFT EP-9 10:00–11:00\"",
+  "pics": "extra-ex-3-list-clip-phone.png"
+ },
+ {
+  "scn": "extra",
+  "size": "phone",
+  "id": "ex.4",
+  "what": "S11 Marlin filed Fly only: \"SANS: offered Fly only today. Planned on OFT EP-9 10:00–11:00\"",
+  "ok": true,
+  "note": "\"SANS: offered Fly only today. Planned on OFT EP-9 10:00–11:00\"",
+  "pics": "extra-ex-4-list-clip-phone.png"
+ },
+ {
+  "scn": "extra",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "two",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "two",
+  "size": "phone",
+  "id": "two.lines",
+  "what": "set-up: VX ACM 09:00–10:00 and VZ DACT 15:00–16:00 on Sat 18",
+  "ok": true,
+  "note": "[{\"cs\":\"VX\",\"msn\":\"ACM\",\"to\":\"09:00\",\"ld\":\"10:00\"},{\"cs\":\"VZ\",\"msn\":\"DACT\",\"to\":\"15:00\",\"ld\":\"16:00\"}]"
+ },
+ {
+  "scn": "two",
+  "size": "phone",
+  "id": "two.notes",
+  "what": "F27: one note per plant (A's words; recorded)",
+  "ok": "REC",
+  "note": "\"Bolt — SANS — no availability filed for today\" / \"Bolt — SANS — no availability filed for today (+1 more)\"",
+  "pics": "two-two-1-armed-clip-phone.png, two-two-1-sans-clip-phone.png, two-two-1-armed-phone.png, two-two-1-note-clip-phone.png, two-two-1-picked-phone.png, two-two-2-armed-clip-phone.png, two-two-2-sans-clip-phone.png, two-two-2-armed-phone.png, two-two-2-note-clip-phone.png, two-two-2-picked-phone.png"
+ },
+ {
+  "scn": "two",
+  "size": "phone",
+  "id": "two.a",
+  "what": "F27 / S15: two SANS lines for Bolt, each naming its flight (\"SANS: no availability filed for today. Planned on VX ACM (T/O 09:00)\", \"SANS: no availability filed for today. Planned on VZ DACT (T/O 15:00)\")",
+  "ok": true,
+  "note": "\"SANS: no availability filed for today. Planned on VX ACM (T/O 09:00)\" | \"SANS: no availability filed for today. Planned on VZ DACT (T/O 15:00)\" · bar \"⚠ 4 issues ▲\"",
+  "pics": "two-two-a-list-clip-phone.png"
+ },
+ {
+  "scn": "two",
+  "size": "phone",
+  "id": "two.b",
+  "what": "F27 / S15: VX hidden — VZ stays shown; the count down by one",
+  "ok": true,
+  "note": "\"SANS: no availability filed for today. Planned on VX ACM (T/O 09:00)\" HIDDEN | \"SANS: no availability filed for today. Planned on VZ DACT (T/O 15:00)\" · count 4 → 3",
+  "pics": "two-two-b-list-clip-phone.png"
+ },
+ {
+  "scn": "two",
+  "size": "phone",
+  "id": "two.c",
+  "what": "S15: VX restored, VZ hidden — VX shown, VZ hidden, the count down by one",
+  "ok": true,
+  "note": "\"SANS: no availability filed for today. Planned on VX ACM (T/O 09:00)\" | \"SANS: no availability filed for today. Planned on VZ DACT (T/O 15:00)\" HIDDEN · count 3",
+  "pics": "two-two-c-list-clip-phone.png"
+ },
+ {
+  "scn": "two",
+  "size": "phone",
+  "id": "two.leave",
+  "what": "set-up: OL filed for Otter on Sat 18 through the board's Unavailable \"+ Add\"",
+  "ok": true,
+  "note": "[{\"iid\":\"imrldjac1eq8ma6\",\"type\":\"OL\",\"date\":\"Jul 18\",\"who\":\"[{\\\"p\\\":\\\"wrangler\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077257745}]\",\"allday\":true}] toast \"Input added\"",
+  "pics": "two-two-leave-form-phone.png"
+ },
+ {
+  "scn": "two",
+  "size": "phone",
+  "id": "two.otter-note",
+  "what": "F28: the note after planting Otter (on leave, nothing filed) — which leads (A's words; recorded)",
+  "ok": "REC",
+  "note": "placed true · \"Otter — On leave + planned: RU ACM (T/O 11:00) (+1 more)\"",
+  "pics": "two-two-otter-armed-clip-phone.png, two-two-otter-sans-clip-phone.png, two-two-otter-armed-phone.png, two-two-otter-note-clip-phone.png, two-two-otter-picked-phone.png"
+ },
+ {
+  "scn": "two",
+  "size": "phone",
+  "id": "two.otter",
+  "what": "F28 / S15: Otter keeps both — the leave line and the SANS line \"… Planned on RU ACM (T/O 11:00)\"",
+  "ok": true,
+  "note": "[hard] On leave + planned Otter — On leave + planned: RU ACM (T/O 11:00) ✕ || [adv] SANS availability — not filed, or planned outside it Otter — SANS: no availability filed for today. Planned on RU ACM (T/O 11:00) ✕",
+  "pics": "two-two-otter-list-clip-phone.png"
+ },
+ {
+  "scn": "two",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "tk.order",
+  "what": "F23 / S2: the boxes left to right Fly · OFT · AMT",
+  "ok": true,
+  "note": "{\"labels\":[\"Fly\",\"OFT\",\"AMT\"],\"ticked\":[\"Fly\"],\"lefts\":[28,80,139],\"tops\":[238,238,238],\"save\":\"live\",\"type\":\"\",\"person\":\"ipman\"}",
+  "pics": "ticks-tk-boxes-phone.png"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "tk.opens",
+  "what": "\"+ Commitment\" opens with these ticked (RECORD)",
+  "ok": "REC",
+  "note": "[\"Fly\"]"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "tk.behind",
+  "what": "lesson 4: the form open, Fri 17 pressed on the calendar behind it — what lights and what the form says (RECORD)",
+  "ok": "REC",
+  "note": "before \"Jul 16\" · under the press: dcal-hd · after {\"form\":1,\"read\":\"Jul 16\",\"day\":\"Pilots · 1 to fly\",\"lit\":[]}",
+  "pics": "ticks-tk-behind-phone.png"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "tk.refuse",
+  "what": "F23 / S2: every box unticked, Save — refused \"Tick at least one of Fly / OFT / AMT\"",
+  "ok": true,
+  "note": "{\"words\":\"\",\"toast\":\"Tick at least one of Fly / OFT / AMT\",\"save\":\"live\",\"stayed\":true}",
+  "pics": "ticks-tk-empty-phone.png, ticks-tk-refused-phone.png"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "tk.oft",
+  "what": "set-up: Jester filed with only the middle box (OFT) ticked, all day, Thu 16",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "tk.oft-saved",
+  "what": "F24: the middle box saved OFT (the record carries O only)",
+  "ok": true,
+  "note": "{\"o\":true}"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "tk.oft-day",
+  "what": "F24: the SANS calendar's Thu 16 window — Jester's line",
+  "ok": "REC",
+  "note": "Zenith[F All day Zenith · 22 Jun, 15:52] Jester[O All day Saber for Jester · 15 Jul, 09:00]"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "tk.oft-crew",
+  "what": "F24: armed on a flying seat, Jester's letter \"O\", struck \"SANS — offered OFT only, not Fly\"",
+  "ok": true,
+  "note": "armed 3.2.0.0.p · Jester struck \"SANS — offered OFT only, not Fly\" [O]",
+  "pics": "ticks-tk-oft-crew-phone.png, now/ticks-tk-oft-press-now-phone.png"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "tk.oft-card",
+  "what": "F24: his SANS card on Edit Schedule's Thu 16",
+  "ok": "REC",
+  "note": "JesterBOall day"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "tk.oft-reopen",
+  "what": "F24: reopened — only OFT ticked, boxes Fly · OFT · AMT",
+  "ok": true,
+  "note": "{\"labels\":[\"Fly\",\"OFT\",\"AMT\"],\"ticked\":[\"OFT\"],\"lefts\":[28,80,139],\"tops\":[396,396,396],\"save\":\"live\",\"type\":\"SANS Availability\",\"person\":\"ipman\"}",
+  "pics": "ticks-tk-oft-reopen-phone.png"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "tk.amt-saved",
+  "what": "F24: only the third box (AMT) saved A for Kraken",
+  "ok": true,
+  "note": "{\"a\":true}"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "tk.amt-crew",
+  "what": "F24: Kraken's letter \"A\", struck \"SANS — offered AMT only, not Fly\"",
+  "ok": true,
+  "note": "Kraken struck \"SANS — offered AMT only, not Fly\" [A]",
+  "pics": "ticks-tk-amt-crew-phone.png"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "tk.amt-reopen",
+  "what": "F24: reopened — only AMT ticked",
+  "ok": true,
+  "note": "{\"labels\":[\"Fly\",\"OFT\",\"AMT\"],\"ticked\":[\"AMT\"],\"lefts\":[28,80,139],\"tops\":[396,396,396],\"save\":\"live\",\"type\":\"SANS Availability\",\"person\":\"krait\"}",
+  "pics": "ticks-tk-amt-reopen-phone.png"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "s2.A",
+  "what": "S2: changed to AMT — saved, reopened with exactly those ticked; letters \"A\"",
+  "ok": true,
+  "note": "now {\"a\":true} · reopened [\"AMT\"] · day Zenith[F All day Zenith · 22 Jun, 15:52] Kraken[A All day Saber for Kraken · 15 Jul, 09:01] Jester[A All day Saber for Jester · 15 Jul, 09:00 · changed by Saber · 15 Jul, 09:01]",
+  "pics": "ticks-s2-A-phone.png"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "s2.F/O",
+  "what": "S2: changed to Fly + OFT — saved, reopened with exactly those ticked; letters \"F/O\"",
+  "ok": true,
+  "note": "now {\"f\":true,\"o\":true} · reopened [\"Fly\",\"OFT\"] · day Jester[F · O All day Saber for Jester · 15 Jul, 09:00 · changed by Saber · 15 Jul, 09:01] Zenith[F All day Zenith · 22 Jun, 15:52] Kraken[A All day Saber for Kraken · 15 Jul, 09:01]",
+  "pics": "ticks-s2-FO-phone.png"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "s2.F/A",
+  "what": "S2: changed to Fly + AMT — saved, reopened with exactly those ticked; letters \"F/A\"",
+  "ok": true,
+  "note": "now {\"f\":true,\"a\":true} · reopened [\"Fly\",\"AMT\"] · day Jester[F · A All day Saber for Jester · 15 Jul, 09:00 · changed by Saber · 15 Jul, 09:02] Zenith[F All day Zenith · 22 Jun, 15:52] Kraken[A All day Saber for Kraken · 15 Jul, 09:01]",
+  "pics": "ticks-s2-FA-phone.png"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "s2.O/A",
+  "what": "S2: changed to OFT + AMT — saved, reopened with exactly those ticked; letters \"O/A\"",
+  "ok": true,
+  "note": "now {\"a\":true,\"o\":true} · reopened [\"OFT\",\"AMT\"] · day Zenith[F All day Zenith · 22 Jun, 15:52] Kraken[A All day Saber for Kraken · 15 Jul, 09:01] Jester[O · A All day Saber for Jester · 15 Jul, 09:00 · changed by Saber · 15 Jul, 09:02]",
+  "pics": "ticks-s2-OA-phone.png"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "s2.F/O/A",
+  "what": "S2: changed to Fly + OFT + AMT — saved, reopened with exactly those ticked; letters \"F/O/A\"",
+  "ok": true,
+  "note": "now {\"a\":true,\"o\":true,\"f\":true} · reopened [\"Fly\",\"OFT\",\"AMT\"] · day Jester[F · O · A All day Saber for Jester · 15 Jul, 09:00 · changed by Saber · 15 Jul, 09:02] Zenith[F All day Zenith · 22 Jun, 15:52] Kraken[A All day Saber for Kraken · 15 Jul, 09:01]",
+  "pics": "ticks-s2-FOA-phone.png"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "s2.close",
+  "what": "lesson 19: the edit form (over the SANS day window) closed by its ✕ (the discard question answered) — the form gone, the day window under it still there",
+  "ok": true,
+  "note": "{\"form\":0,\"day\":1,\"asked\":1}",
+  "pics": "ticks-s2-closed-phone.png"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "s2.cancel",
+  "what": "S2: an edit to OFT only cancelled (✕, discard) — reopened, the previous offer (all three) kept",
+  "ok": true,
+  "note": "[\"Fly\",\"OFT\",\"AMT\"]",
+  "pics": "ticks-s2-cancel-phone.png"
+ },
+ {
+  "scn": "ticks",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "doors",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "doors",
+  "size": "phone",
+  "id": "dr.file",
+  "what": "set-up: Jester filed OFT, all day, Thu 16 (a record for the edit doors)",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "doors",
+  "size": "phone",
+  "id": "dr.commit",
+  "what": "F25 / S2 door: \"+ Commitment\" on the SANS day window — boxes Fly · OFT · AMT, and every box unticked is refused \"Tick at least one of Fly / OFT / AMT\"",
+  "ok": true,
+  "note": "opened ticked [\"Fly\"] · type  · refusal {\"words\":\"\",\"toast\":\"Tick at least one of Fly / OFT / AMT\",\"save\":\"live\"}",
+  "pics": "doors-dr-commit-phone.png, doors-dr-commit-empty-phone.png, doors-dr-commit-refused-phone.png"
+ },
+ {
+  "scn": "doors",
+  "size": "phone",
+  "id": "dr.dayline",
+  "what": "F25 / S2 door: his line on the SANS day window (edit) — boxes Fly · OFT · AMT, and every box unticked is refused \"Tick at least one of Fly / OFT / AMT\"",
+  "ok": true,
+  "note": "opened ticked [\"OFT\"] · type SANS Availability · refusal {\"words\":\"\",\"toast\":\"Tick at least one of Fly / OFT / AMT\",\"save\":\"live\"}",
+  "pics": "doors-dr-dayline-phone.png, doors-dr-dayline-empty-phone.png, doors-dr-dayline-refused-phone.png"
+ },
+ {
+  "scn": "doors",
+  "size": "phone",
+  "id": "dr.dayline-kept",
+  "what": "the refused edit changed nothing: his filing still OFT",
+  "ok": true,
+  "note": "{\"o\":true}"
+ },
+ {
+  "scn": "doors",
+  "size": "phone",
+  "id": "dr.boardadd",
+  "what": "F25 / S2 door: the board's SANS panel \"+ Add\" — boxes Fly · OFT · AMT, and every box unticked is refused \"Tick at least one of Fly / OFT / AMT\"",
+  "ok": true,
+  "note": "opened ticked [] · type  · refusal {\"words\":\"\",\"toast\":\"Tick at least one of Fly / OFT / AMT\",\"save\":\"live\"}",
+  "pics": "doors-dr-boardadd-phone.png, doors-dr-boardadd-empty-phone.png, doors-dr-boardadd-refused-phone.png"
+ },
+ {
+  "scn": "doors",
+  "size": "phone",
+  "id": "dr.boardcard",
+  "what": "F25 / S2 door: his SANS card on the board (edit) — boxes Fly · OFT · AMT, and every box unticked is refused \"Tick at least one of Fly / OFT / AMT\"",
+  "ok": true,
+  "note": "opened ticked [\"OFT\"] · type SANS Availability · refusal {\"words\":\"\",\"toast\":\"Tick at least one of Fly / OFT / AMT\",\"save\":\"live\"}",
+  "pics": "doors-dr-boardcard-phone.png, doors-dr-boardcard-empty-phone.png, doors-dr-boardcard-refused-phone.png"
+ },
+ {
+  "scn": "doors",
+  "size": "phone",
+  "id": "dr.boardcard-kept",
+  "what": "the refused edit changed nothing: his filing still OFT",
+  "ok": true,
+  "note": "{\"o\":true}"
+ },
+ {
+  "scn": "doors",
+  "size": "phone",
+  "id": "dr.weekcard",
+  "what": "F25 / S2 door: his SANS card on Edit Schedule's week (edit) — boxes Fly · OFT · AMT, and every box unticked is refused \"Tick at least one of Fly / OFT / AMT\"",
+  "ok": true,
+  "note": "opened ticked [\"OFT\"] · type SANS Availability · refusal {\"words\":\"\",\"toast\":\"Tick at least one of Fly / OFT / AMT\",\"save\":\"live\"}",
+  "pics": "doors-dr-weekcard-phone.png, doors-dr-weekcard-empty-phone.png, doors-dr-weekcard-refused-phone.png"
+ },
+ {
+  "scn": "doors",
+  "size": "phone",
+  "id": "dr.weekcard-kept",
+  "what": "the refused edit changed nothing: his filing still OFT",
+  "ok": true,
+  "note": "{\"o\":true}"
+ },
+ {
+  "scn": "doors",
+  "size": "phone",
+  "id": "dr.list",
+  "what": "F25 door: the Inputs page's list row (SANS) — not found",
+  "ok": "REC",
+  "note": "no row for Jester's filing drawn on the List",
+  "pics": "doors-dr-list-phone.png"
+ },
+ {
+  "scn": "doors",
+  "size": "phone",
+  "id": "dr.daytap",
+  "what": "F25 door: a tap on a SANS calendar day (Fri 17) — what opens (RECORD: the day window, whose \"+ Commitment\" is the first door)",
+  "ok": "REC",
+  "note": "{\"day\":1,\"form\":0}",
+  "pics": "doors-dr-daytap-phone.png"
+ },
+ {
+  "scn": "doors",
+  "size": "phone",
+  "id": "dr.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "doors-dr.post-postout-open-phone.png, doors-dr.post-postout-sheet-phone.png"
+ },
+ {
+  "scn": "doors",
+  "size": "phone",
+  "id": "dr.post",
+  "what": "Ranger posted SANS from Fri 17 (the Leave War's posting controls)",
+  "ok": "REC",
+  "note": "{\"line\":\"On 17 Jul: becomes SANS.\",\"pic\":\"doors-dr.post-postout-open-phone.png, doors-dr.post-postout-sheet-phone.png\",\"after\":{\"san\":false,\"sanFrom\":null},\"chips0\":\"po-date po-overseas[on] po-delete po-sans po-transfer po-line po-confirm\",\"chips1\":\"po-date po-overseas po-delete po-sans[on] po-trans"
+ },
+ {
+  "scn": "doors",
+  "size": "phone",
+  "id": "dr.member",
+  "what": "F25 / S2 door: Ranger (member) filing his own — boxes Fly · OFT · AMT, refusal \"Tick at least one of Fly / OFT / AMT\"",
+  "ok": true,
+  "note": "person Ranger · ticked [\"Fly\"] · {\"words\":\"\",\"toast\":\"Tick at least one of Fly / OFT / AMT\",\"save\":\"live\"}",
+  "pics": "doors-dr-member-phone.png, doors-dr-member-empty-phone.png, doors-dr-member-refused-phone.png"
+ },
+ {
+  "scn": "doors",
+  "size": "phone",
+  "id": "dr.member-save",
+  "what": "Ranger saves OFT for himself, then edits it to OFT + AMT",
+  "ok": "REC",
+  "note": "made {\"o\":true} "
+ },
+ {
+  "scn": "doors",
+  "size": "phone",
+  "id": "dr.member-edit",
+  "what": "S2 member: his own edit saved as OFT + AMT, letters \"O/A\"",
+  "ok": true,
+  "note": "{\"o\":true,\"a\":true} · Ranger[O · A All day Ranger · 15 Jul, 09:02 · changed by Ranger · 15 Jul, 09:02]"
+ },
+ {
+  "scn": "doors",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "form",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "form",
+  "size": "phone",
+  "id": "fm.row",
+  "what": "F26: on the phone the three boxes Fly · OFT · AMT in one row (or a clean wrap), each box the topmost thing at its middle, none under Cancel / Add",
+  "ok": true,
+  "note": "{\"labs\":[{\"l\":28,\"r\":64,\"t\":238,\"b\":253},{\"l\":80,\"r\":123,\"t\":238,\"b\":253},{\"l\":139,\"r\":184,\"t\":238,\"b\":253}],\"btns\":[{\"t\":823,\"l\":251,\"r\":317,\"b\":851},{\"t\":823,\"l\":325,\"r\":374,\"b\":851}],\"rmk\":{\"l\":28,\"r\":374,\"t\":422,\"b\":455},\"hit\":[\"box\",\"box\",\"box\"],\"oneRow\":true,\"rmkCovered\":[],\"boxCovered\":0,\"vh\":874,\"vw\":402}",
+  "pics": "form-fm-open-phone.png"
+ },
+ {
+  "scn": "form",
+  "size": "phone",
+  "id": "fm.ticks",
+  "what": "F26: tapped OFT and AMT (Fly off) — ticked as tapped",
+  "ok": true,
+  "note": "{\"labels\":[\"Fly\",\"OFT\",\"AMT\"],\"ticked\":[\"OFT\",\"AMT\"],\"lefts\":[28,80,139],\"tops\":[238,238,238],\"save\":\"live\",\"type\":\"\",\"person\":\"vinci\"}",
+  "pics": "now/form-fm-ticked-now-phone.png"
+ },
+ {
+  "scn": "form",
+  "size": "phone",
+  "id": "fm.rmk",
+  "what": "F26: Remarks tapped — the box in the screen and not under Cancel / Add (the test browser raises no keyboard: the iPhone's keys are his look, lesson 5)",
+  "ok": true,
+  "note": "{\"rmk\":{\"l\":28,\"r\":374,\"t\":422,\"b\":455},\"covered\":[],\"btns\":[{\"t\":823,\"l\":251,\"r\":317,\"b\":851},{\"t\":823,\"l\":325,\"r\":374,\"b\":851}],\"vh\":874}",
+  "pics": "now/form-fm-rmk-now-phone.png, form-fm-rmk-phone.png"
+ },
+ {
+  "scn": "form",
+  "size": "phone",
+  "id": "fm.saved",
+  "what": "F26: saved from the phone — the SANS day reads Jester \"O/A\"",
+  "ok": true,
+  "note": "Zenith[F All day Zenith · 22 Jun, 15:52] Jester[O · A All day \"walk B remark\" Saber for Jester · 15 Jul, 09:00]",
+  "pics": "form-fm-saved-phone.png"
+ },
+ {
+  "scn": "form",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "amber",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "amber",
+  "size": "phone",
+  "id": "am.a",
+  "what": "set-up: Marlin (SANS WSO, nothing filed) in OFT EP-9 10:00–11:00's rear seat",
+  "ok": true,
+  "note": "\"Marlin — SANS — no availability filed for today\""
+ },
+ {
+  "scn": "amber",
+  "size": "phone",
+  "id": "am.b",
+  "what": "set-up: Pixel (filed Fly 08:00–12:00) on VL BFM T/O 15:00 rear seat",
+  "ok": true,
+  "note": "\"Pixel — SANS — available 08:00–12:00 only\""
+ },
+ {
+  "scn": "amber",
+  "size": "phone",
+  "id": "am.c",
+  "what": "set-up: Ryder (not SANS) on the SC AM standby seat and on a ground row SA208 GROUND 09:00–10:00",
+  "ok": true,
+  "note": "\"Ryder — Illegal seat: a WSO in the front seat of SC AM 07:00–13:00\" · {\"prog\":\"SA208 GROUND\",\"str\":\"09:00\",\"end\":\"10:00\",\"who\":\"xray\",\"rid\":\"rmrldj0y5nhejmg\"}"
+ },
+ {
+  "scn": "amber",
+  "size": "phone",
+  "id": "am.f30a",
+  "what": "F30(a) / S17: Marlin's A (nothing filed) — the chip's hover and the puck's hover after \"· SANS ·\" read \"Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\", on every copy that wears it (board seat, crew list, week)",
+  "ok": true,
+  "note": "s:4.oft.2.w: chip \"Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" · puck \"Marlin · A · 4-ship FL · SANS · Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" || crew list: chip \"Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" · puck \"Marlin · A · 4-ship FL · SANS · Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" || s:4.oft.2.w: chip \"Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" · puck \"Marlin · A · 4-ship FL · SANS · Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\"",
+  "pics": "amber-am-board-phone.png"
+ },
+ {
+  "scn": "amber",
+  "size": "phone",
+  "id": "am.f30b",
+  "what": "F30(b): Pixel's A (planned outside his hours) — the same words, every copy (seat, crew list, week, his SANS card)",
+  "ok": true,
+  "note": "4.0.0.0.w: chip \"Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" · puck \"Pixel · D · wingman · SANS · Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" || SANS card: chip \"Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" · puck \"Pixel · D · wingman · SANS · Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" || crew list: chip \"Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" · puck \"Pixel · D · wingman · SANS · Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" || 4.0.0.0.w: chip \"Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" · puck \"Pixel · D · wingman · SANS · Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" || SANS card: chip \"Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" · puck \"Pixel · D · wingman · SANS · Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\""
+ },
+ {
+  "scn": "amber",
+  "size": "phone",
+  "id": "am.f30c",
+  "what": "F30(c): Ryder's A (not SANS, on shift and down for a ground event) — the chip reads the same words; his puck's hover has no \"· SANS ·\" but the same A words",
+  "ok": false,
+  "note": "4.1.0.0.p: chip none · puck \"Ryder · C · ops wingman · Qual / illegal seat\" || g:4.2: chip none · puck \"Ryder · C · ops wingman · Qual / illegal seat\" || other: chip none · puck \"Ryder · C · ops wingman · Qual / illegal seat\" || crew list: chip none · puck \"Ryder · C · ops wingman · Qual / illegal seat\" || 4.1.0.0.p: chip none · puck \"Ryder · C · ops wingman · Qual / illegal seat\" || g:4.2: chip none · puck \"Ryder · C · ops wingman · Qual / illegal seat\" || other: chip none · puck \"Ryder · C · ops wingman · Qual / illegal seat\""
+ },
+ {
+  "scn": "amber",
+  "size": "phone",
+  "id": "am.legend",
+  "what": "F30 / S17: the week's Legend keeps \"A advisory — shift, ground or SANS availability\"",
+  "ok": true,
+  "note": "[\"AA\",\"Aadvisory — shift, ground or SANS availability\"]",
+  "pics": "amber-am-legend-phone.png"
+ },
+ {
+  "scn": "amber",
+  "size": "phone",
+  "id": "am.logic",
+  "what": "F31: Admin → Logic, the flag row — A carries the new words \"Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\"",
+  "ok": true,
+  "note": "{\"t\":\"AAdvisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\",\"w\":332,\"shown\":true,\"inScreen\":true}",
+  "pics": "amber-am-logic-phone.png"
+ },
+ {
+  "scn": "amber",
+  "size": "phone",
+  "id": "am.phonetap",
+  "what": "F31 phone: no hover — a tap on Marlin's puck on the week: where, if anywhere, the A's words show (RECORD)",
+  "ok": "REC",
+  "note": "from editsched · {\"page\":\"editsched\",\"board\":true,\"toast\":\"Ryder — Overlaps standby: SA208 GROUND 09:00–10:00 & SC AM 07:00–13:00\",\"pop\":[]}",
+  "pics": "now/amber-am-tapA-now-phone.png, amber-am-tapA-phone.png"
+ },
+ {
+  "scn": "amber",
+  "size": "phone",
+  "id": "am.f40",
+  "what": "F40: as Ranger (member) on the published Fri 17 — no note shown to him; every A drawn carries the new words",
+  "ok": true,
+  "note": "note \"\" · A pucks [\"badger: A=Advisory — on shift and also down for … / Pixel · D · wingman · SANS · Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\",\"cards: A=Advisory — on shift and also down for … / Marlin · A · 4-ship FL · SANS · Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\"] · all chips [\"badger:A=A\",\"xray:Q=Q\",\"cards:A=A\",\"xray:Q=Q\"]",
+  "pics": "amber-am-member-list-clip-phone.png"
+ },
+ {
+  "scn": "amber",
+  "size": "phone",
+  "id": "am.f40-shown",
+  "what": "F40: which A chips a member sees on View-only Sched (RECORD)",
+  "ok": "REC",
+  "note": "badger, cards",
+  "pics": "amber-am-member-list-clip-phone.png"
+ },
+ {
+  "scn": "amber",
+  "size": "phone",
+  "id": "am.s17-cover",
+  "what": "S17: OFT filed all day for Marlin — his SANS line and his A gone",
+  "ok": true,
+  "note": "no SANS line · s:4.oft.2.w: chip none · puck \"Marlin · A · 4-ship FL · SANS\" || SANS card: chip none · puck \"Marlin · A · 4-ship FL · SANS\" || crew list: chip none · puck \"Marlin · A · 4-ship FL · SANS\"",
+  "pics": "amber-am-s17-cover-list-clip-phone.png"
+ },
+ {
+  "scn": "amber",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "quiet",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "quiet",
+  "size": "phone",
+  "id": "qt.plants",
+  "what": "S17: Marlin (SANS, nothing filed) on a ground row 14:00–15:00, a duty desk and SC MAIN / SC SPARE / AVALON / BB",
+  "ok": "REC",
+  "note": "ground {\"prog\":\"SA208 GROUND\",\"str\":\"14:00\",\"end\":\"15:00\",\"who\":\"cards\",\"rid\":\"rmrldi601jb1hte\"} · duty d:4.0.0.+ placed true \"Marlin — Conflict: SDO duty 07:30–17:30 & SA208 GROUND 14:00–15:00\" · SC MAIN (4.0.0.0.w): placed true note \"Marlin — Conflict: SC AM 07:00–13:00 & SDO duty 07:30–17:30\" · SC SPARE (4.0.0.2.w): placed true note \"Marlin — Conflict: SC AM SPARE 07:00–13:00 & SC AM MAIN 07:00–13:00\" · AVALON (4.1.0.0.w): placed true note \"Marlin planned\" · BB (4.2.0.0.w): placed true note \"Marlin planned\""
+ },
+ {
+  "scn": "quiet",
+  "size": "phone",
+  "id": "qt.none",
+  "what": "S17: ground, duty and standby alone — no SANS line for Marlin, and no \"A\" chip on his pucks",
+  "ok": true,
+  "note": "no SANS line · his chips [\"C\",\"C\",\"\",\"\",\"C\",\"C\"] · every line of his [\"Conflict Marlin — Conflict: SC AM 07:00–13:00 & SDO duty 07:30–17:30 ✕\",\"Conflict Marlin — Conflict: SDO duty 07:30–17:30 & SA208 GROUND 14:00–15:00 ✕\",\"Conflict Marlin — Conflict: SC AM SPARE 07:00–13:00 & SC AM MAIN 07:00–13:00 ✕\"]",
+  "pics": "quiet-qt-list-list-clip-phone.png, quiet-qt-board-phone.png"
+ },
+ {
+  "scn": "quiet",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

@@ -1,0 +1,50 @@
+{
+ "desktop.before": {
+  "name": "BOX",
+  "pucks": 8,
+  "h": 90
+ },
+ "desktop.after": {
+  "name": "BRIEF",
+  "pucks": 0,
+  "h": 15,
+  "storedLabel": "BRIEF",
+  "storedPax": 8
+ },
+ "desktop.frame": {
+  "x": 8,
+  "y": 221.125,
+  "width": 1200,
+  "height": 527.71875,
+  "cls": "sb-sec"
+ },
+ "desktop.proposed": {
+  "pucks": 8,
+  "h": 90
+ },
+ "desktop.errors": [],
+ "phone.before": {
+  "name": "BOX",
+  "pucks": 8,
+  "h": 90
+ },
+ "phone.after": {
+  "name": "BRIEF",
+  "pucks": 0,
+  "h": 15,
+  "storedLabel": "BRIEF",
+  "storedPax": 8
+ },
+ "phone.frame": {
+  "x": 8,
+  "y": 0,
+  "width": 370,
+  "height": 874,
+  "cls": "sb-sec"
+ },
+ "phone.proposed": {
+  "pucks": 8,
+  "h": 90
+ },
+ "phone.errors": []
+}

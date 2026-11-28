@@ -1,0 +1,79 @@
+[
+ {
+  "scn": "probe2",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "probe2",
+  "size": "phone",
+  "id": "post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "probe2-post-postout-open-phone.png, probe2-post-postout-sheet-phone.png"
+ },
+ {
+  "scn": "probe2",
+  "size": "phone",
+  "id": "f",
+  "what": "set-up: a new flying line on Sat (+ Wave → Flying wave), no times typed",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 1\",\"kind\":\"\",\"standalone\":false,\"cs\":\"\",\"to\":\"\",\"ld\":\"\",\"n\":1}"
+ },
+ {
+  "scn": "probe2",
+  "size": "phone",
+  "id": "b1",
+  "what": "board armed",
+  "ok": "REC",
+  "note": "armed 5.0.0.0.p · Ranger [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" printed \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" · \"SANS Avail · 0 free\" · Bolt(struck) \"SANS — no availability filed for today\", Jester(struck) \"SANS — no availability filed for today\", Kraken(struck) \"SANS — no availability filed for today\", Marlin(struck) \"WSO — cannot fly front seat\", Otter(struck) \"WSO — cannot fly front seat\", Pixel(struck) \"WSO — cannot fly front seat\", Ranger(struck) \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\", Rebel(struck) \"SANS — no availability filed for today\", Scribe(struck) \"WSO — cannot fly front seat\", Tally(struck) \"WSO — cannot fly front seat\", Zenith(struck) \"SANS — no availability filed for today\", Zulu(struck) \"WSO — cannot fly front seat\" · panel 0–402 of 402",
+  "pics": "probe2-b1-armed-clip-phone.png, probe2-b1-sans-clip-phone.png, probe2-b1-armed-phone.png"
+ },
+ {
+  "scn": "probe2",
+  "size": "phone",
+  "id": "b1j",
+  "what": "board armed: Jester",
+  "ok": "REC",
+  "note": "[SANS Avail, STRUCK] title \"Jester — SANS — no availability filed for today\" printed \"SANS — no availability filed for today\""
+ },
+ {
+  "scn": "probe2",
+  "size": "phone",
+  "id": "e1",
+  "what": "week armed",
+  "ok": "REC",
+  "note": "armed 5.0.0.0.p · day  · Ranger [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" printed \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" · \"SANS Avail · 0 free\" · Bolt(struck) \"SANS — no availability filed for today\", Jester(struck) \"SANS — no availability filed for today\", Kraken(struck) \"SANS — no availability filed for today\", Marlin(struck) \"WSO — cannot fly front seat\", Otter(struck) \"WSO — cannot fly front seat\", Pixel(struck) \"WSO — cannot fly front seat\", Ranger(struck) \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\", Rebel(struck) \"SANS — no availability filed for today\", Scribe(struck) \"WSO — cannot fly front seat\", Tally(struck) \"WSO — cannot fly front seat\", Zenith(struck) \"SANS — no availability filed for today\", Zulu(struck) \"WSO — cannot fly front seat\" · panel 119–394 of 402",
+  "pics": "probe2-e1-earmed-clip-phone.png, probe2-e1-esans-clip-phone.png, probe2-e1-earmed-phone.png"
+ },
+ {
+  "scn": "probe2",
+  "size": "phone",
+  "id": "e1p",
+  "what": "week pick",
+  "ok": "REC",
+  "note": "placed true · note \"the WAVE 1 line has no usable times, so nobody on it earns OIL for this day\"",
+  "pics": "probe2-e1-enote-clip-phone.png, probe2-e1-epicked-phone.png"
+ },
+ {
+  "scn": "probe2",
+  "size": "phone",
+  "id": "e2",
+  "what": "week unpicked Sat",
+  "ok": "REC",
+  "note": "day saturday · [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" (no reason printed) · \"SANS Avail · 0 free\" · Bolt(struck), Jester(struck), Kraken(struck), Marlin(struck), Otter(struck), Pixel(struck), Ranger(struck), Rebel(struck), Scribe(struck), Tally(struck), Zenith(struck), Zulu(struck)",
+  "pics": "probe2-e2-elist-clip-phone.png, probe2-e2-elist-phone.png"
+ },
+ {
+  "scn": "probe2",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

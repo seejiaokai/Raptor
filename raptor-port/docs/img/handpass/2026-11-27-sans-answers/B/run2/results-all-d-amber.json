@@ -1,0 +1,121 @@
+[
+ {
+  "scn": "amber",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "amber",
+  "size": "desktop",
+  "id": "am.a",
+  "what": "set-up: Marlin (SANS WSO, nothing filed) in OFT EP-9 10:00–11:00's rear seat",
+  "ok": true,
+  "note": "\"Marlin — SANS — no availability filed for today\""
+ },
+ {
+  "scn": "amber",
+  "size": "desktop",
+  "id": "am.b",
+  "what": "set-up: Pixel (filed Fly 08:00–12:00) on VL BFM T/O 15:00 rear seat",
+  "ok": true,
+  "note": "\"Pixel — SANS — available 08:00–12:00 only\""
+ },
+ {
+  "scn": "amber",
+  "size": "desktop",
+  "id": "am.c",
+  "what": "set-up: Hunter (not SANS) on the SC AM standby seat and on a ground row SA208 GROUND 09:00–10:00",
+  "ok": true,
+  "note": "\"Hunter planned\" · {\"prog\":\"SA208 GROUND\",\"str\":\"09:00\",\"end\":\"10:00\",\"who\":\"prowler\",\"rid\":\"rmrldirfq9a5y1e\"}"
+ },
+ {
+  "scn": "amber",
+  "size": "desktop",
+  "id": "am.f30a",
+  "what": "F30(a) / S17: Marlin's A (nothing filed) — the chip's hover and the puck's hover after \"· SANS ·\" read \"Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\", on every copy that wears it (board seat, crew list, week)",
+  "ok": true,
+  "note": "s:4.oft.2.w: chip \"Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" · puck \"Marlin · A · 4-ship FL · SANS · Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" || crew list: chip \"Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" · puck \"Marlin · A · 4-ship FL · SANS · Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" || s:4.oft.2.w: chip \"Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" · puck \"Marlin · A · 4-ship FL · SANS · Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\"",
+  "pics": "amber-am-board-desktop.png"
+ },
+ {
+  "scn": "amber",
+  "size": "desktop",
+  "id": "am.f30b",
+  "what": "F30(b): Pixel's A (planned outside his hours) — the same words, every copy (seat, crew list, week, his SANS card)",
+  "ok": true,
+  "note": "4.0.0.0.w: chip \"Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" · puck \"Pixel · D · wingman · SANS · Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" || SANS card: chip \"Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" · puck \"Pixel · D · wingman · SANS · Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" || crew list: chip \"Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" · puck \"Pixel · D · wingman · SANS · Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" || 4.0.0.0.w: chip \"Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" · puck \"Pixel · D · wingman · SANS · Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" || SANS card: chip \"Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" · puck \"Pixel · D · wingman · SANS · Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\""
+ },
+ {
+  "scn": "amber",
+  "size": "desktop",
+  "id": "am.f30c",
+  "what": "F30(c): Hunter's A (not SANS, on shift and down for a ground event) — the chip reads the same words; his puck's hover has no \"· SANS ·\" but the same A words",
+  "ok": true,
+  "note": "4.1.0.0.p: chip \"Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" · puck \"Hunter · IP · instructor pilot · Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" || g:4.2: chip \"Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" · puck \"Hunter · IP · instructor pilot · Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" || other: chip \"Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" · puck \"Hunter · IP · instructor pilot · Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" || crew list: chip \"Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" · puck \"Hunter · IP · instructor pilot · Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" || 4.1.0.0.p: chip \"Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" · puck \"Hunter · IP · instructor pilot · Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" || g:4.2: chip \"Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" · puck \"Hunter · IP · instructor pilot · Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" || other: chip \"Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\" · puck \"Hunter · IP · instructor pilot · Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\""
+ },
+ {
+  "scn": "amber",
+  "size": "desktop",
+  "id": "am.hover",
+  "what": "F30: the mouse over Marlin's small A on the week — the element under it carries the new words",
+  "ok": true,
+  "note": "\"Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\"",
+  "pics": "amber-am-hover-desktop.png"
+ },
+ {
+  "scn": "amber",
+  "size": "desktop",
+  "id": "am.legend",
+  "what": "F30 / S17: the week's Legend keeps \"A advisory — shift, ground or SANS availability\"",
+  "ok": true,
+  "note": "[\"AA\",\"Aadvisory — shift, ground or SANS availability\"]",
+  "pics": "amber-am-legend-desktop.png"
+ },
+ {
+  "scn": "amber",
+  "size": "desktop",
+  "id": "am.logic",
+  "what": "F31: Admin → Logic, the flag row — A carries the new words \"Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\"",
+  "ok": true,
+  "note": "{\"t\":\"AAdvisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\",\"w\":518,\"shown\":true,\"inScreen\":true}",
+  "pics": "amber-am-logic-desktop.png"
+ },
+ {
+  "scn": "amber",
+  "size": "desktop",
+  "id": "am.f40",
+  "what": "F40: as Ranger (member) on the published Fri 17 — no note shown to him; every A drawn carries the new words",
+  "ok": true,
+  "note": "note \"\" · A pucks [\"badger: A=Advisory — on shift and also down for … / Pixel · D · wingman · SANS · Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\",\"prowler: A=Advisory — on shift and also down for … / Hunter · IP · instructor pilot · Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\",\"cards: A=Advisory — on shift and also down for … / Marlin · A · 4-ship FL · SANS · Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\",\"prowler: A=Advisory — on shift and also down for … / Hunter · IP · instructor pilot · Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it\"] · all chips [\"badger:A=A\",\"prowler:A=A\",\"cards:A=A\",\"prowler:A=A\"]",
+  "pics": "amber-am-member-list-clip-desktop.png"
+ },
+ {
+  "scn": "amber",
+  "size": "desktop",
+  "id": "am.f40-shown",
+  "what": "F40: which A chips a member sees on View-only Sched (RECORD)",
+  "ok": "REC",
+  "note": "badger, prowler, cards, prowler",
+  "pics": "amber-am-member-list-clip-desktop.png"
+ },
+ {
+  "scn": "amber",
+  "size": "desktop",
+  "id": "am.s17-cover",
+  "what": "S17: OFT filed all day for Marlin — his SANS line and his A gone",
+  "ok": true,
+  "note": "no SANS line · s:4.oft.2.w: chip none · puck \"Marlin · A · 4-ship FL · SANS\" || SANS card: chip none · puck \"Marlin · A · 4-ship FL · SANS\" || crew list: chip none · puck \"Marlin · A · 4-ship FL · SANS\"",
+  "pics": "amber-am-s17-cover-list-clip-desktop.png"
+ },
+ {
+  "scn": "amber",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

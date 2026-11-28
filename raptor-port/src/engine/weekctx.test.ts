@@ -39,6 +39,7 @@ vi.mock('./weeks-data', async (importOriginal) => {
 import { weekDateLabels, shiftWeekKey } from './weeks-data'
 // eslint-disable-next-line import/first
 import { seedRunIn, prevSundaySeed } from './weekctx'
+import { coverSans } from '../testing/sanscover'
 
 const BASE = '03/08/2026'   // an arbitrary real Monday, unrelated to the seed weeks
 const wkFor = (i: number) => shiftWeekKey(BASE, i * 10)   // 10 weeks apart — no ±1/±2w overlap ever
@@ -210,3 +211,9 @@ describe('Empty/unauthored previous week', () => {
     expect(prevSundaySeed(WK)).toEqual({ events: [], input: [], dow: 'Sunday', di: null })
   })
 })
+
+/* Its subject is not SANS availability, yet the seed plans SANS men (waldo among them) with nothing filed, which since
+   owner D2579 (25 Nov 26) raises an amber line and an "A" chip that outranks TT and DT: every SANS man is covered after
+   the world is reset, so the test reads the world it was written for (testing/sanscover.ts). Registered last, so it
+   runs after the reset above. */
+beforeEach(() => { coverSans() })

@@ -1,0 +1,171 @@
+[
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "pl.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "plain-pl.post-postout-open-desktop.png, plain-pl.post-postout-sheet-desktop.png"
+ },
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "pl.1",
+  "what": "the board of Fri 17: + Wave → VL BFM 13:00–14:00, an OFT row \"EP-9\" 15:00–16:00",
+  "ok": "REC",
+  "note": "{\"l1\":{\"cs\":\"VL\",\"msn\":\"BFM\",\"to\":\"13:00\",\"ld\":\"14:00\"},\"oft\":{\"label\":\"EP-9\",\"str\":\"15:00\",\"end\":\"16:00\"}}",
+  "pics": "plain-pl-1-built-desktop.png"
+ },
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "pl.2",
+  "what": "Marlin dropped onto the line, Jester onto the OFT (tap-to-plan): each note the new line",
+  "ok": true,
+  "note": "\"Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)\" / \"Jester — SANS: no availability filed for today. Planned on Sim EP-9 15:00–16:00\"",
+  "pics": "plain-pl-2-armed-clip-desktop.png, plain-pl-2-sans-clip-desktop.png, plain-pl-2-armed-desktop.png, plain-pl-2-note-clip-desktop.png, plain-pl-2-picked-desktop.png, plain-pl-3-armed-clip-desktop.png, plain-pl-3-sans-clip-desktop.png, plain-pl-3-armed-desktop.png, plain-pl-3-note-clip-desktop.png, plain-pl-3-picked-desktop.png"
+ },
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "pl.5",
+  "what": "the board: Undo takes Jester's drop back (his line gone from the panel), Redo puts it back (his line back)",
+  "ok": true,
+  "note": "Undo \"Undo — a change to the schedule\" → \"Undid: a change to the schedule\" · panel head \"⚠ 1 issue\" · 1 line(s): [✕] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ · Redo → \"Redid: a change to the schedule\" · panel head \"⚠ 2 issues\" · 2 line(s): [✕] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || [✕] Jester — SANS: no availability filed for today. Planned on Sim EP-9 15:00–16:00 ✕",
+  "pics": "plain-pl-6-undo-desktop.png, plain-pl-7-redo-desktop.png"
+ },
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "pl.3",
+  "what": "Edit Schedule: the day's list opened by its bar — both lines",
+  "ok": true,
+  "note": "bar \"⚠ 2 issues ▲\" [adv] · 2 line(s): [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || [adv ✕] SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on Sim EP-9 15:00–16:00 ✕",
+  "pics": "plain-pl-3-list-clip-desktop.png"
+ },
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "pl.4",
+  "what": "his line hidden (✕), then flagged again (↺)",
+  "ok": true,
+  "note": "bar \"⚠ 1 issue ▲\" [adv] · 2 line(s): [adv HIDDEN struck [drawn icon: Flag this again]] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [adv ✕] SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on Sim EP-9 15:00–16:00 ✕ → bar \"⚠ 2 issues ▲\" [adv] · 2 line(s): [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || [adv ✕] SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on Sim EP-9 15:00–16:00 ✕",
+  "pics": "plain-pl-4-hidden-list-clip-desktop.png, plain-pl-5-back-list-clip-desktop.png"
+ },
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "pl.4u",
+  "what": "the top bar's Undo right after the flag-again: what it names (RECORD — a hide and a flag-again are Undo steps)",
+  "ok": "REC",
+  "note": "\"Undo — flagging a warning again\" → \"Undid: flagging a warning again\"",
+  "pics": "plain-pl-5u-undo-desktop.png"
+ },
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "pl.6",
+  "what": "Edit Schedule's crew panel opened on Fri 17 (nothing picked) and closed",
+  "ok": "REC",
+  "note": "friday · Marlin [SANS Avail, STRUCK] title \"Marlin — SANS — no availability filed for today\" (no reason printed)",
+  "pics": "plain-pl-8-elist-clip-desktop.png, plain-pl-8-elist-desktop.png"
+ },
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "pl.7",
+  "what": "the Legend: no door found on this page at this size (RECORD)",
+  "ok": "REC",
+  "note": "no Legend button drawn",
+  "pics": "plain-pl-9-nolegend-desktop.png"
+ },
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "pl.9",
+  "what": "the Scheduler Board of Fri 17 and its issues panel",
+  "ok": "REC",
+  "note": "head \"⚠ 2 issues\" · 2 line(s): [✕] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || [✕] Jester — SANS: no availability filed for today. Planned on Sim EP-9 15:00–16:00 ✕",
+  "pics": "plain-pl-11-board-desktop.png"
+ },
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "pl.10",
+  "what": "the board closed with ✓ Done",
+  "ok": true,
+  "note": "page editsched",
+  "pics": "plain-pl-12-done-desktop.png"
+ },
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "pl.11",
+  "what": "the ⓘ popup opened (both lines in it) and closed",
+  "ok": true,
+  "note": "\"Friday · Jul 17 · 1\" · Draft — not yet published 18 changes · 2 ADVISORY · 2 line(s): [] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [] Advisory · SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on Sim EP-9 15:00–16:00",
+  "pics": "plain-pl-13-ipop-clip-desktop.png"
+ },
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "pl.12",
+  "what": "Ranger (SANS from Fri 17, nothing filed) into the OFT's rear seat",
+  "ok": "REC",
+  "note": "placed true · \"Ranger — SANS: no availability filed for today. Planned on Sim EP-9 15:00–16:00\"",
+  "pics": "plain-pl-14-armed-clip-desktop.png, plain-pl-14-sans-clip-desktop.png, plain-pl-14-armed-desktop.png, plain-pl-14-note-clip-desktop.png, plain-pl-14-picked-desktop.png"
+ },
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "pl.13",
+  "what": "as Ranger: View-only Sched's Fri 17 list opened — his own line among them, words telling nobody to file",
+  "ok": true,
+  "note": "bar \"⚠ 3 issues ▲\" [adv] · 3 line(s): [adv] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [adv] SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on Sim EP-9 15:00–16:00 || [adv] SANS availability — not filed, or planned outside it Ranger — SANS: no availability filed for today. Planned on Sim EP-9 15:00–16:00",
+  "pics": "plain-pl-15-view-list-clip-desktop.png"
+ },
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "pl.14",
+  "what": "as Ranger: the bell",
+  "ok": "REC",
+  "note": "lit true · 1 line(s) · Mark all read in view · [unread] \"You're SANS from Fri 17 Jul.\" \"\" \"You're planned on Fri 17 Jul with nothing filed. Tap to file for availability.\"",
+  "pics": "plain-pl-16-bell-desktop.png"
+ },
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "pl.15",
+  "what": "the SANS reminder tapped",
+  "ok": "REC",
+  "note": "page \"inputs\" · month \"July 2026\" · window \"⠿Fri 17 JulDay flying✕FigurePilotsWSOsRequired to fly––Available2617SANS committ\"",
+  "pics": "plain-pl-17-tapped-desktop.png, plain-pl-17-after-desktop.png"
+ },
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "pl.16",
+  "what": "what the reminder opened, closed by its ✕",
+  "ok": true,
+  "note": "day window gone",
+  "pics": "plain-pl-18-closed-desktop.png"
+ },
+ {
+  "scn": "plain",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

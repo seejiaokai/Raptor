@@ -1,0 +1,132 @@
+[
+ {
+  "scn": "tab",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "tab",
+  "size": "desktop",
+  "id": "tab.row",
+  "what": "set-up: an OFT row \"EP-9\" 10:00–11:00 on Fri 17 (+ on the board, boxes typed)",
+  "ok": true,
+  "note": "{\"ri\":2,\"r\":{\"label\":\"EP-9\",\"str\":\"10:00\",\"end\":\"11:00\"}}"
+ },
+ {
+  "scn": "tab",
+  "size": "desktop",
+  "id": "tab.plant",
+  "what": "set-up: Jester tapped into its front seat",
+  "ok": true,
+  "note": "note \"Jester — SANS — no availability filed for today\"",
+  "pics": "tab-tab-plant-armed-clip-desktop.png, tab-tab-plant-sans-clip-desktop.png, tab-tab-plant-armed-desktop.png, tab-tab-plant-note-clip-desktop.png, tab-tab-plant-picked-desktop.png"
+ },
+ {
+  "scn": "tab",
+  "size": "desktop",
+  "id": "tab.a",
+  "what": "F15(a) start 10:00, end 11:00: the line reads \"SANS: no availability filed for today. Planned on OFT EP-9 10:00–11:00\"",
+  "ok": true,
+  "note": "row {\"label\":\"EP-9\",\"str\":\"10:00\",\"end\":\"11:00\"} · \"SANS: no availability filed for today. Planned on OFT EP-9 10:00–11:00\"",
+  "pics": "tab-tab-a-list-clip-desktop.png"
+ },
+ {
+  "scn": "tab",
+  "size": "desktop",
+  "id": "tab.b",
+  "what": "F15(b) the end cleared: the line reads \"SANS: no availability filed for today. Planned on OFT EP-9 10:00–11:30 (end assumed)\"",
+  "ok": true,
+  "note": "row {\"label\":\"EP-9\",\"str\":\"10:00\",\"end\":\"\"} · \"SANS: no availability filed for today. Planned on OFT EP-9 10:00–11:30 (end assumed)\"",
+  "pics": "tab-tab-b-list-clip-desktop.png"
+ },
+ {
+  "scn": "tab",
+  "size": "desktop",
+  "id": "tab.c",
+  "what": "F15(c) the start cleared too: the line reads \"SANS: no availability filed for today. Planned on OFT EP-9 (no times yet)\"",
+  "ok": true,
+  "note": "row {\"label\":\"EP-9\",\"str\":\"\",\"end\":\"\"} · \"SANS: no availability filed for today. Planned on OFT EP-9 (no times yet)\"",
+  "pics": "tab-tab-c-list-clip-desktop.png"
+ },
+ {
+  "scn": "tab",
+  "size": "desktop",
+  "id": "tab.d",
+  "what": "F15(d) the name cleared, no times: the line reads \"SANS: no availability filed for today. Planned on this OFT row (no times yet)\"",
+  "ok": true,
+  "note": "row {\"label\":\"\",\"str\":\"\",\"end\":\"\"} · \"SANS: no availability filed for today. Planned on this OFT row (no times yet)\"",
+  "pics": "tab-tab-d-list-clip-desktop.png"
+ },
+ {
+  "scn": "tab",
+  "size": "desktop",
+  "id": "tab.e",
+  "what": "F15(e) no name, start 09:00 only: the line reads \"SANS: no availability filed for today. Planned on this OFT row 09:00–10:30 (end assumed)\"",
+  "ok": true,
+  "note": "row {\"label\":\"\",\"str\":\"09:00\",\"end\":\"\"} · \"SANS: no availability filed for today. Planned on this OFT row 09:00–10:30 (end assumed)\"",
+  "pics": "tab-tab-e-list-clip-desktop.png"
+ },
+ {
+  "scn": "tab",
+  "size": "desktop",
+  "id": "tab.f",
+  "what": "F15(f) no name, start cleared, end 10:30 typed (an end with no start — the host: \"(no times yet)\", RECORD): the line reads \"SANS: no availability filed for today. Planned on this OFT row (no times yet)\"",
+  "ok": true,
+  "note": "row {\"label\":\"\",\"str\":\"\",\"end\":\"10:30\"} · \"SANS: no availability filed for today. Planned on this OFT row (no times yet)\"",
+  "pics": "tab-tab-f-list-clip-desktop.png"
+ },
+ {
+  "scn": "tab",
+  "size": "desktop",
+  "id": "tab.f-words",
+  "what": "F15(f) / S9 an end with no start: the exact words (RECORD — may go to him)",
+  "ok": "REC",
+  "note": "\"SANS: no availability filed for today. Planned on this OFT row (no times yet)\""
+ },
+ {
+  "scn": "tab",
+  "size": "desktop",
+  "id": "tab.g",
+  "what": "F15(g) no name, start 09:00 and end 10:30 typed (the same end as the assumed one): the line reads \"SANS: no availability filed for today. Planned on this OFT row 09:00–10:30\"",
+  "ok": true,
+  "note": "row {\"label\":\"\",\"str\":\"09:00\",\"end\":\"10:30\"} · \"SANS: no availability filed for today. Planned on this OFT row 09:00–10:30\"",
+  "pics": "tab-tab-g-list-clip-desktop.png"
+ },
+ {
+  "scn": "tab",
+  "size": "desktop",
+  "id": "tab.s9",
+  "what": "F15(s9) named EP-9 again, start 09:00 only, then 10:30 typed (Astra S9): the line reads \"SANS: no availability filed for today. Planned on OFT EP-9 09:00–10:30\"",
+  "ok": true,
+  "note": "row {\"label\":\"EP-9\",\"str\":\"09:00\",\"end\":\"10:30\"} · \"SANS: no availability filed for today. Planned on OFT EP-9 09:00–10:30\"",
+  "pics": "tab-tab-s9-list-clip-desktop.png"
+ },
+ {
+  "scn": "tab",
+  "size": "desktop",
+  "id": "tab.crew",
+  "what": "the OFT row's extra place armed: the crew list's SANS section (a blank SANS man's reason — sibling of the line)",
+  "ok": "REC",
+  "note": "armed s:4.oft.2.+ · \"SANS Avail · 0 free\" · Bolt struck \"SANS — no availability filed for today\" [no letters] · Jester struck \"already on Sim EP-9 10:00–11:00 · not added twice\" [no letters] · Kraken struck \"SANS — no availability filed for today\" [no letters] · Marlin struck \"SANS — no availability filed for today\" [no letters] · Otter struck \"SANS — no availability filed for today\" [no letters] · Pixel struck \"SANS — no availability filed for today\" [no letters] · Rebel struck \"SANS — no availability filed for today\" [no letters] · Scribe struck \"SANS — no availability filed for today\" [no letters] · Tally struck \"SANS — no availability filed for today\" [no letters] · Zenith struck \"SANS — no availability filed for today\" [no letters] · Zulu struck \"SANS — no availability filed for today\" [no letters] · column spread nullpx, gap after the widest (Jester: already on Sim EP-9 10:00–11:00 · not added twice) nullpx",
+  "pics": "tab-tab-crew-desktop.png"
+ },
+ {
+  "scn": "tab",
+  "size": "desktop",
+  "id": "tab.crew-why",
+  "what": "a blank SANS man on the crew list reads \"SANS — no availability filed for today\" (the note's words, D2753)",
+  "ok": true,
+  "note": "Kraken struck \"SANS — no availability filed for today\" [no letters]"
+ },
+ {
+  "scn": "tab",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

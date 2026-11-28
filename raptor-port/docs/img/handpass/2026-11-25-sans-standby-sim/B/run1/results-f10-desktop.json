@@ -1,0 +1,193 @@
+[
+ {
+  "scn": "f10",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "f10",
+  "size": "desktop",
+  "id": "f10.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "f10-f10.post-postout-open-desktop.png, f10-f10.post-postout-sheet-desktop.png"
+ },
+ {
+  "scn": "f10",
+  "size": "desktop",
+  "id": "f10.flight",
+  "what": "set-up: a new flying line on Sat (+ Wave → Flying wave) 17:00–18:00",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 1\",\"kind\":\"\",\"standalone\":false,\"cs\":\"T17\",\"to\":\"17:00\",\"ld\":\"18:00\",\"n\":1}"
+ },
+ {
+  "scn": "f10",
+  "size": "desktop",
+  "id": "f10.seats",
+  "what": "set-up: Ranger on SC AM MAIN (07:00–13:00) and the T17 flight (17:00–18:00) on Sat 18; on SC AM MAIN only on Sun 19",
+  "ok": true,
+  "note": "notes \"Ranger planned\" / \"Ranger — SANS from Fri 17 Jul: no availability filed\" / \"Ranger — Crew rest: Saturday landed 18:00 + 2h debrief (assumed) → ended 20:00 → clear 08:00. SC AM starts 07:00: 11h rest, needs 12h.\""
+ },
+ {
+  "scn": "f10",
+  "size": "desktop",
+  "id": "f10.notes",
+  "what": "the notes of the three taps (RECORD; the SC ones must carry no SANS words)",
+  "ok": "REC",
+  "note": "SC Sat \"Ranger planned\" · flight \"Ranger — SANS from Fri 17 Jul: no availability filed\" · SC Sun \"Ranger — Crew rest: Saturday landed 18:00 + 2h debrief (assumed) → ended 20:00 → clear 08:00. SC AM starts 07:00: 11h rest, needs 12h.\"",
+  "pics": "f10-f10-sc18-armed-clip-desktop.png, f10-f10-sc18-sans-clip-desktop.png, f10-f10-sc18-armed-desktop.png, f10-f10-sc18-note-clip-desktop.png, f10-f10-sc18-picked-desktop.png, f10-f10-fl18-armed-clip-desktop.png, f10-f10-fl18-sans-clip-desktop.png, f10-f10-fl18-armed-desktop.png, f10-f10-fl18-note-clip-desktop.png, f10-f10-fl18-picked-desktop.png, f10-f10-sc19-armed-clip-desktop.png, f10-f10-sc19-sans-clip-desktop.png, f10-f10-sc19-armed-desktop.png, f10-f10-sc19-note-clip-desktop.png, f10-f10-sc19-picked-desktop.png"
+ },
+ {
+  "scn": "f10",
+  "size": "desktop",
+  "id": "f10.sc-notes",
+  "what": "neither SC tap's note carries SANS words",
+  "ok": true,
+  "note": "\"Ranger planned\" / \"Ranger — Crew rest: Saturday landed 18:00 + 2h debrief (assumed) → ended 20:00 → clear 08:00. SC AM starts 07:00: 11h rest, needs 12h.\""
+ },
+ {
+  "scn": "f10",
+  "size": "desktop",
+  "id": "f10.st0",
+  "what": "Sat 18 nothing filed: warning list and his pucks",
+  "ok": "REC",
+  "note": "head \"▸⚠ 2 issues\" · 2 row(s) · Ranger's: Ranger — Long day: 13h00 (limit 12h), 07:00 → 20:00 (last landing 18:00 + 2h debrief assumed)✕ · SANS: none · seated: Ranger 5.0.0.0.p AMBER chips[R] · 5.1.0.0.p AMBER chips[R]",
+  "pics": "f10-f10-0-warn-clip-desktop.png"
+ },
+ {
+  "scn": "f10",
+  "size": "desktop",
+  "id": "f10.bell1",
+  "what": "his bell names Sat 18 once, never Sun 19 (standby only) — D2568, D2584 Q4",
+  "ok": true,
+  "note": "lit true · 1 line(s) · Mark all read in view · [unread] \"You're SANS from Fri 17 Jul.\" \"\" \"You're planned on Sat 18 Jul with nothing filed. Tap to file for availability.\"",
+  "pics": "f10-f10-bell1-desktop.png"
+ },
+ {
+  "scn": "f10",
+  "size": "desktop",
+  "id": "f10.off",
+  "what": "set-up: the T17 flight line removed by its ✕ (Ranger left on SC only that day)",
+  "ok": true,
+  "note": "note \"Line removed — T17, 17:00–18:00, Ranger\"",
+  "pics": "f10-f10-offflight-ldel-desktop.png"
+ },
+ {
+  "scn": "f10",
+  "size": "desktop",
+  "id": "f10.bell2",
+  "what": "standby alone: the bell no longer names Sat 18 (A5)",
+  "ok": true,
+  "note": "lit false · 0 line(s) · Mark all read none · empty",
+  "pics": "f10-f10-bell2-desktop.png"
+ },
+ {
+  "scn": "f10",
+  "size": "desktop",
+  "id": "f10.flight2",
+  "what": "set-up: a new flying line on Sat (+ Wave → Flying wave) 17:00–18:00",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 2\",\"kind\":\"\",\"standalone\":false,\"cs\":\"T17\",\"to\":\"17:00\",\"ld\":\"18:00\",\"n\":1}"
+ },
+ {
+  "scn": "f10",
+  "size": "desktop",
+  "id": "f10.restore",
+  "what": "set-up: the flight put back: a new line T17 17:00–18:00, Ranger tapped into its FCP",
+  "ok": true,
+  "note": "note \"Sun · Ranger — Crew rest: Saturday landed 18:00 + 2h debrief (assumed) → ended 20:00 → clear 08:00. SC AM starts 07:00: 11h rest, needs 12h.\"",
+  "pics": "f10-f10-fl18b-armed-clip-desktop.png, f10-f10-fl18b-sans-clip-desktop.png, f10-f10-fl18b-armed-desktop.png, f10-f10-fl18b-note-clip-desktop.png, f10-f10-fl18b-picked-desktop.png"
+ },
+ {
+  "scn": "f10",
+  "size": "desktop",
+  "id": "f10.bell3",
+  "what": "flight back: Sat 18 named again",
+  "ok": true,
+  "note": "lit true · 1 line(s) · Mark all read in view · [unread] \"You're SANS from Fri 17 Jul.\" \"\" \"You're planned on Sat 18 Jul with nothing filed. Tap to file for availability.\"",
+  "pics": "f10-f10-bell3-desktop.png"
+ },
+ {
+  "scn": "f10",
+  "size": "desktop",
+  "id": "f10.offsc",
+  "what": "set-up: his SC AM MAIN line removed by its ✕ (the flight left)",
+  "ok": true,
+  "note": "note \"Line removed — SC · AM, 07:00–13:00, Ranger\"",
+  "pics": "f10-f10-offsc-ldel-desktop.png"
+ },
+ {
+  "scn": "f10",
+  "size": "desktop",
+  "id": "f10.bell4",
+  "what": "standby removed, flight left: Sat 18 still named",
+  "ok": true,
+  "note": "lit true · 1 line(s) · Mark all read in view · [unread] \"You're SANS from Fri 17 Jul.\" \"\" \"You're planned on Sat 18 Jul with nothing filed. Tap to file for availability.\"",
+  "pics": "f10-f10-bell4-desktop.png"
+ },
+ {
+  "scn": "f10",
+  "size": "desktop",
+  "id": "f10.oft",
+  "what": "set-up: Saber files SANS oft all day for bane on 2026-07-18",
+  "ok": true,
+  "note": "{\"iid\":\"imrldkd6t64dne3\",\"people\":\"[{\\\"p\\\":\\\"bane\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077308101}]\",\"date\":\"Jul 18\",\"endDate\":null,\"sans\":{\"o\":true},\"allday\":true,\"e\":1439,\"remarks\":\"\",\"by\":\"stiff\"}",
+  "pics": "f10-f10.oft-form-desktop.png, f10-f10.oft-saved-desktop.png"
+ },
+ {
+  "scn": "f10",
+  "size": "desktop",
+  "id": "f10.a6",
+  "what": "set-up: OFT only filed; Ranger back on SC AM MAIN; a timed AMT 20:00–21:00 with Ranger in front",
+  "ok": true,
+  "note": "notes \"Ranger planned\" / \"Sun · Ranger — Crew rest: Saturday duty ended 21:00 → clear 09:00. SC AM starts 07:00: 10h rest, needs 12h. (+1 more)\""
+ },
+ {
+  "scn": "f10",
+  "size": "desktop",
+  "id": "f10.a6-notes",
+  "what": "the notes (RECORD): SC, then AMT",
+  "ok": "REC",
+  "note": "\"Ranger planned\" / \"Sun · Ranger — Crew rest: Saturday duty ended 21:00 → clear 09:00. SC AM starts 07:00: 10h rest, needs 12h. (+1 more)\"",
+  "pics": "f10-f10-sc-again-armed-clip-desktop.png, f10-f10-sc-again-sans-clip-desktop.png, f10-f10-sc-again-armed-desktop.png, f10-f10-sc-again-note-clip-desktop.png, f10-f10-sc-again-picked-desktop.png, f10-f10-amt-armed-clip-desktop.png, f10-f10-amt-sans-clip-desktop.png, f10-f10-amt-armed-desktop.png, f10-f10-amt-note-clip-desktop.png, f10-f10-amt-picked-desktop.png"
+ },
+ {
+  "scn": "f10",
+  "size": "desktop",
+  "id": "f10.a6-warn",
+  "what": "warning list: SANS lines name the T17 flight and the AMT, never the SC line (F10, A6)",
+  "ok": true,
+  "note": "head \"▸⚠ 4 issues\" · 4 row(s) · Ranger's: Ranger — SANS: not offering Fly today. Planned on T17 (T/O 17:00)✕ | Ranger — SANS: not offering AMT today. Planned on Sim B AMT 20:00–21:00✕ | Ranger — Long day: 14h00 (limit 12h), 07:00 → 21:00✕ · SANS: Ranger — SANS: not offering Fly today. Planned on T17 (T/O 17:00)✕ | Ranger — SANS: not offering AMT today. Planned on Sim B AMT 20:00–21:00✕ · seated: Ranger 5.0.0.0.p AMBER chips[R] · 5.2.0.0.p AMBER chips[R] · s:5.amt.0.p AMBER chips[R] · ? AMBER chips[R]",
+  "pics": "f10-f10-a6-warn-clip-desktop.png"
+ },
+ {
+  "scn": "f10",
+  "size": "desktop",
+  "id": "f10.a6-pucks",
+  "what": "amber \"A\" on his flight and AMT pucks (N9), none on his SC puck",
+  "ok": false,
+  "note": "5.0.0.0.p AMBER chips[R] · 5.2.0.0.p AMBER chips[R] · s:5.amt.0.p AMBER chips[R] · ? AMBER chips[R]",
+  "pics": "f10-f10-a6-seated-desktop.png"
+ },
+ {
+  "scn": "f10",
+  "size": "desktop",
+  "id": "f10.a6-clear",
+  "what": "flight and AMT removed, SC left: no SANS line left; his SC puck no amber (N9: it clears when he is moved off)",
+  "ok": true,
+  "note": "notes \"Line removed — T17, 17:00–18:00, Ranger\" / \"Sim row removed — AMT · B AMT, 20:00–21:00\" · head \"▸⚠ 1 issue\" · 1 row(s) · Ranger's: none · SANS: none · seated: Ranger 5.0.0.0.p · ?",
+  "pics": "f10-f10-a6b-warn-clip-desktop.png, f10-f10-a6b-seated-desktop.png"
+ },
+ {
+  "scn": "f10",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

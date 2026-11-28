@@ -12,8 +12,8 @@ import { go } from './app'
 const HEX = 'rocky'
 const FRI = 4
 const KEY = `s:${FRI}.oft.0.+`
-/* (his D2340, 23 Nov 26: the note's words now name where to file it, filing ahead being allowed) */
-const NOTE = "SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab."
+/* (his D2587, 25 Nov 26: the note never tells the scheduler to file — the second sentence went, D2340's words narrowed) */
+const NOTE = 'SANS from Fri 17 Jul: no availability filed'
 const WIDTHS = [402, 375, 320]
 const sleep = (ms: number) => new Promise(r => setTimeout(r, ms))
 
@@ -126,7 +126,9 @@ test.describe('the look-ahead SANS note on a phone (D2338, the walk\'s fit-02 / 
       expect(b!.right, `${W}: the board — the reason's right edge inside the screen ${JSON.stringify(b)}`).toBeLessThanOrEqual(W)
       expect(b!.right, `${W}: the board — inside its drawer ${JSON.stringify(b)}`).toBeLessThanOrEqual(b!.drawerRight + 1)
       expect(b!.scrollW, `${W}: the board's drawer never wider inside than it is`).toBeLessThanOrEqual(b!.clientW + 1)
-      expect(b!.lines, `${W}: the board — it wraps`).toBeGreaterThanOrEqual(2)
+      /* (D2587 shortened the words: at 402 they now fit one line, so the fit above is the test — the two-line check went
+         with the long sentence it was written for) */
+      expect(b!.lines, `${W}: the board — drawn`).toBeGreaterThanOrEqual(1)
       const bc = await oldAndNew(page, '#schedBoard', '.sb-roster')
       expect(notHex(bc.now.notes), `${W}: the board — every other reason where it was`).toEqual(notHex(bc.old.notes))
       expect(bc.now.drawer, `${W}: the board — the list as wide as it was`).toBe(bc.old.drawer)
@@ -138,7 +140,7 @@ test.describe('the look-ahead SANS note on a phone (D2338, the walk\'s fit-02 / 
       expect(e!.right, `${W}: Edit Schedule — the reason's right edge inside the screen ${JSON.stringify(e)}`).toBeLessThanOrEqual(W)
       expect(e!.right, `${W}: Edit Schedule — inside its drawer ${JSON.stringify(e)}`).toBeLessThanOrEqual(e!.drawerRight + 1)
       expect(e!.scrollW, `${W}: Edit Schedule's drawer never wider inside than it is ${JSON.stringify(e)}`).toBeLessThanOrEqual(e!.clientW + 1)
-      expect(e!.lines, `${W}: Edit Schedule — it wraps`).toBeGreaterThanOrEqual(2)
+      expect(e!.lines, `${W}: Edit Schedule — drawn`).toBeGreaterThanOrEqual(1)
       const ec = await oldAndNew(page, '.eroster', '.ros-body')
       expect(notHex(ec.now.notes), `${W}: Edit Schedule — every other reason where it was`).toEqual(notHex(ec.old.notes))
       expect(ec.now.drawer, `${W}: Edit Schedule — the drawer as wide as it was`).toBe(ec.old.drawer)
@@ -175,3 +177,109 @@ test.describe('the look-ahead SANS note on a desktop: unchanged (D2338)', () => 
     expect(errs).toEqual([])
   })
 })
+
+/* HIS D2581 / D2582 (25 Nov 26) and D2750 / D2751 (26 Nov 26) — the crew list's SANS section, as drawn
+   (docs/mock/2026-11-25-sans-d2588/, scene `col`; pictures col-new-*, col-nopick-*, col-wrap-*): the F / O / A letters of
+   what each SANS man offered stand in ONE column, straight after the widest reason; with a place picked his offered hours
+   stand on a line of their own under his letter, never cut; with none picked the badge reads "O · 08:00–10:00" whole.
+   jsdom has no layout, so the drawing's own measurements live here, on the Scheduler Board's crew list with Friday's
+   EXT SQN OFT row armed, at a desktop's 1536 and his iPhone's 402: every badge's left edge within 0.5px of the others,
+   every badge right of every puck-and-reason (the column stands after the widest reason), nothing cut, the hours'
+   left edge on the letter's, the list never running sideways. The reasons read his D2584 Q2 words. The five filings
+   are put straight into the app's inputs (this file proves the layout, not the filing; the walk files through the
+   Inputs page). */
+const COL_FRI = 4
+const COL_KEY = `s:${COL_FRI}.oft.0.+`
+/* Friday's filings: Bolt Fly only, Rebel AMT only, Kraken Fly and AMT, Jester OFT 08:00–10:00 (D2750's own case: his
+   hours), Zenith OFT all day */
+async function fileFriday(page: Page) {
+  await page.evaluate(() => {
+    const w = window as any
+    const add = (person: string, sans: any, s?: number, e?: number) => w.INPUTS.unshift({ person, date: 'Jul 17', allday: s == null,
+      ...(s == null ? {} : { s, e }), type: 'SANS Availability', sans, iid: 'e2e-col-' + person, mod: '2026-06-20' })
+    add('yeti', { f: true }); add('romeo', { a: true }); add('krait', { f: true, a: true })
+    add('ipman', { o: true }, 480, 600); add('vinci', { o: true })
+    w.afterSchedMutate(); w.renderEditWeek()
+  })
+}
+async function openBoard(page: Page) {
+  await go(page, 'editsched')
+  await tap(page, `#eWeek [data-sbday="${COL_FRI}"]`)
+  await page.waitForSelector('#schedBoard'); await sleep(700)
+}
+/* the SANS section as drawn: each row's letters (text, left edge, cut), its puck-and-reason's right edge, its reason */
+const read = (page: Page) => page.evaluate(() => {
+  const sec = [...document.querySelectorAll('#schedBoard .rall.rsans')].find(x => x.getBoundingClientRect().width > 0) as HTMLElement
+  if (!sec) return null
+  const cut = (e: Element) => [e, ...e.querySelectorAll('*')].some(x => (x as HTMLElement).scrollWidth > (x as HTMLElement).clientWidth + 0.5)
+  const rows = [...sec.querySelectorAll('.rsans-row')].map(r => {
+    const pk = r.querySelector('.rpuck') as HTMLElement, b = r.querySelector('.rsans-b') as HTMLElement | null, w = r.querySelector('.rwhy')
+    /* the hours: under the letter, inside the badge or (since chat 207) the row's own second line — found in the row */
+    const l = b && b.querySelector('.rsans-l'), h = r.querySelector('.rsans-h')
+    const txt = (e: Element | null) => e ? (e.textContent || '').replace(/\s+/g, ' ').trim() : ''
+    const rng = (e: Element | null) => { if (!e || !e.firstChild) return null; const x = document.createRange(); x.selectNodeContents(e); return [...x.getClientRects()][0] || null }
+    /* what he is drawn as — his name's puck (at least the puck width) and his reason's words, not the box the grid gives
+       him: a puck stretched to the widest reason in the list made the blank beside a short reason his, and a phone's tap
+       there planted the man above him (walker C, chat 207 — Finding 1; Fable's read, N2 / N3) */
+    const pr = pk.getBoundingClientRect(), wr = w && w.getBoundingClientRect().width > 0 ? rng(w) : null
+    /* his own width: the puck laid out at its content's width for a moment (padding, chip and reason included), at most the
+       column (a narrow list wraps the reason inside it), then given back */
+    const was = pk.style.width; pk.style.width = 'max-content'; const own = pk.getBoundingClientRect().width; pk.style.width = was
+    const drawnRight = Math.max(pr.left + Math.min(own, pr.width), wr ? wr.right : 0)
+    return { id: pk.dataset.person, why: w && w.getBoundingClientRect().width > 0 ? txt(w) : '', letters: txt(b),
+      l: txt(l), h: txt(h), lLeft: rng(l)?.left ?? null, hLeft: rng(h)?.left ?? null, hTop: rng(h)?.top ?? null, lBottom: rng(l)?.bottom ?? null,
+      bLeft: b ? b.getBoundingClientRect().left : null, pkRight: pr.right, drawnRight, cut: b ? cut(b) : false,
+      /* how many lines his reason is drawn on (walker B, chat 207 — F1: one man's hours under his letter widened the letters'
+         column and wrapped the widest reason on the desktop Board) */
+      whyLines: w && w.getBoundingClientRect().width > 0 && w.firstChild ? (() => { const x = document.createRange(); x.selectNodeContents(w); return new Set([...x.getClientRects()].map(q => Math.round(q.top))).size })() : 0 }
+  })
+  return { rows, spill: sec.scrollWidth - sec.clientWidth }
+})
+
+for (const [name, vp] of [['desktop', { width: 1536, height: 1000 }], ['phone', { width: 402, height: 874 }]] as const) {
+  test.describe(`the SANS section's letters and hours — ${name}`, () => {
+    test.use({ viewport: vp, ...(name === 'phone' ? { hasTouch: true, isMobile: true } : {}) })
+
+    test('no place picked: Jester\'s badge whole on one line, "O · 08:00–10:00"', async ({ page }) => {
+      await signIn(page); await fileFriday(page); await openBoard(page)
+      const s = await read(page)
+      const j = s!.rows.find(r => r.id === 'ipman')!
+      expect(j.letters).toBe('O · 08:00–10:00')
+      expect(j.h, 'not split with nothing picked').toBe('')
+      expect(j.cut, 'not cut').toBe(false)
+    })
+
+    test('a place picked: the letters in one column after the widest reason, Jester\'s hours under his letter, nothing cut', async ({ page }) => {
+      await signIn(page); await fileFriday(page); await openBoard(page)
+      await tap(page, `#schedBoard [data-fill="${COL_KEY}"]:visible`); await sleep(500)
+      expect(await page.evaluate(() => (window as any).ARM && (window as any).ARM.key)).toBe(COL_KEY)
+      const s = await read(page)
+      expect(s, 'the SANS section is drawn').not.toBeNull()
+      const by = (id: string) => s!.rows.find(r => r.id === id)!
+      /* his D2584 Q2 words */
+      expect(by('yeti').why).toBe('SANS — offered Fly only, not OFT')
+      expect(by('romeo').why).toBe('SANS — offered AMT only, not OFT')
+      expect(by('krait').why).toBe('SANS — offered Fly and AMT only, not OFT')
+      /* D2581 / D2582: one column, straight after the widest reason */
+      const withB = s!.rows.filter(r => r.bLeft != null)
+      expect(withB.length, 'five men wear letters').toBeGreaterThanOrEqual(5)
+      const lefts = withB.map(r => r.bLeft!)
+      expect(Math.max(...lefts) - Math.min(...lefts), `the letters' left edges ${JSON.stringify(lefts)}`).toBeLessThanOrEqual(0.5)
+      /* measured on what is drawn — the name's puck and the reason's words (Fable's read, N2: the puck's box is the grid's) */
+      const widest = Math.max(...s!.rows.map(r => r.drawnRight))
+      expect(Math.min(...lefts), 'the column stands after every puck and its reason').toBeGreaterThanOrEqual(widest - 0.5)
+      /* each man's puck no wider than what he is drawn as — never stretched to the widest reason (walker C's Finding 1) */
+      for (const r of s!.rows) expect(r.pkRight, `${r.id}'s puck ends where his name or reason ends ${JSON.stringify(r)}`).toBeLessThanOrEqual(r.drawnRight + 1)
+      /* D2750 / D2751: Jester's hours on a second line under his letter, whole */
+      const j = by('ipman')
+      expect([j.l, j.h]).toEqual(['O', '08:00–10:00'])
+      expect(Math.abs(j.hLeft! - j.lLeft!), 'the hours start under the letter').toBeLessThanOrEqual(0.5)
+      expect(j.hTop!, 'on the next line').toBeGreaterThanOrEqual(j.lBottom! - 0.5)
+      expect(s!.rows.filter(r => r.cut).map(r => r.id), 'no badge cut').toEqual([])
+      expect(s!.spill, 'the list never runs sideways').toBeLessThanOrEqual(1)
+      /* as drawn, every reason on one line on a desktop, though a man's hours stand under his letter (walker B's F1, chat 207:
+         the hours widened the letters' column and the widest reason wrapped) */
+      if (name === 'desktop') expect(s!.rows.filter(r => r.whyLines > 1).map(r => `${r.id}: ${r.why}`), 'no reason wrapped').toEqual([])
+    })
+  })
+}

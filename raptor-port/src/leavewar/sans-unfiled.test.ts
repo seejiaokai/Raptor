@@ -46,7 +46,8 @@ const at = (y: number, m: number, d: number) => vi.setSystemTime(new Date(y, m -
 /* (the writing guide §1b: a colon, not a dash, joins the opening name and its fact; the place named as the screen names it —
    the Inputs page's tab reads "SANS"; the coordinator's correction of 23 Nov 26) */
 /* (his D2340, 23 Nov 26: filing ahead is allowed, so the note names where to file it, no longer "from that day") */
-const LOOK = 'SANS from Fri 17 Jul: no availability filed. File it on the Inputs page\'s SANS tab.'
+/* his D2587 (25 Nov 26): the crew list never tells the scheduler to file — no "File it on the Inputs page's SANS tab." */
+const LOOK = 'SANS from Fri 17 Jul: no availability filed'
 const USUAL = 'SANS — no availability filed for today'
 /* his line in a day's crew list, the SANS section, nothing armed — the reason he is struck with (the puck's data-why) */
 const whyIn = (di: number, id: string): string | null => {

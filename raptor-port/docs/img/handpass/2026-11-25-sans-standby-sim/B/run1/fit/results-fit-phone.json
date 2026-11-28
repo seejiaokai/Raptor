@@ -1,0 +1,63 @@
+[
+ {
+  "scn": "fit",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "fit",
+  "size": "phone",
+  "id": "fit.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "fit-fit.post-postout-open-phone.png, fit-fit.post-postout-sheet-phone.png"
+ },
+ {
+  "scn": "fit",
+  "size": "phone",
+  "id": "fit.oftp",
+  "what": "Board, untimed OFT front seat armed: every printed reason inside the SANS Avail list",
+  "ok": true,
+  "note": "12 printed reason line(s) of 12 names · panel 158–388 of 402 · outside: none · Ranger's \"SANS from Fri 17 Jul: no availability filed\" at 158–311",
+  "pics": "fit-fit-oftp-armed-clip-phone.png, fit-fit-oftp-sans-clip-phone.png, fit-fit-oftp-armed-phone.png"
+ },
+ {
+  "scn": "fit",
+  "size": "phone",
+  "id": "fit.e",
+  "what": "Edit Schedule, the week's OFT row picked (s:5.oft.0.+): every printed reason inside the crew panel",
+  "ok": true,
+  "note": "12 printed reason line(s) of 12 names · panel 162–392 of 402 · outside: none · Ranger's \"SANS from Fri 17 Jul: no availability filed\" at 162–315",
+  "pics": "fit-fit-e-earmed-clip-phone.png, fit-fit-e-esans-clip-phone.png, fit-fit-e-earmed-phone.png"
+ },
+ {
+  "scn": "fit",
+  "size": "phone",
+  "id": "fit.oftx",
+  "what": "Board, the OFT's extra place armed (tap did NOT arm it — script click used): every printed reason inside",
+  "ok": true,
+  "note": "12 printed reason line(s) of 12 names · panel 158–388 of 402 · outside: none · Ranger's \"SANS from Fri 17 Jul: no availability filed\" at 158–311",
+  "pics": "fit-fit-oftx-armed-clip-phone.png, fit-fit-oftx-sans-clip-phone.png, fit-fit-oftx-armed-phone.png"
+ },
+ {
+  "scn": "fit",
+  "size": "phone",
+  "id": "fit.sc",
+  "what": "Board, flying SC AM MAIN FCP armed: Ranger plain (no line to fit) — the panel read",
+  "ok": true,
+  "note": "[SANS Avail, plain] title \"Ranger\" (no reason printed) · 4 printed lines",
+  "pics": "fit-fit-sc-armed-clip-phone.png, fit-fit-sc-sans-clip-phone.png, fit-fit-sc-armed-phone.png"
+ },
+ {
+  "scn": "fit",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

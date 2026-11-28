@@ -1952,12 +1952,24 @@ reach `day.fly`/`day.events` (`saExempt` / the standalone skip), so the
 advisory below never raises against them — before the carve-out `slotBar`
 greyed them while the warning list stayed silent, the exact picker-vs-validator
 drift this gate exists to avoid. The three printed reasons: `SANS — no availability filed
-for today`, `SANS — not offering Fly` (or OFT/AMT), `SANS — available
+for today`, `SANS — offered OFT only, not Fly` (what he offered, then the event armed — owner D2584 Q2, answering
+D2575; two offered "SANS — offered OFT and AMT only, not Fly"; a record that ticks nothing keeps `SANS — not offering
+Fly`; `avail.ts sansNotOfferedWhy`, pinned by `sans-offered-crew.test.ts`), `SANS — available
 08:00–12:00 only` (domain-free since the one-window rework — the window is
 the record's, not the event's). Nothing else in `slotBar` needed to change — the palette's
 strike, the printed reason (`.no.haswhy`/`.rwhy`), the green eligibility
 rings and both toasts all read `slotBar`, so grey-out was free the moment
 this one function judged right.
+
+**Standby lines and untimed sims (owner D2584, 25 Nov 26):** an SC, AVALON or BB row — MAIN or SPARE, flying or not,
+timed or not — never asks a SANS man for availability: the crew list (`avail.ts slotBarNow`, `sansStby`), this
+advisory (a `day.fly` entry with `shift` is skipped) and his reminder (`daySansSeats` skips a standalone wave) all leave
+it alone (Q4, answering D2576, D2578). An OFT or AMT seat with no times strikes a man with nothing filed in the timed
+words, as a flight with no times does (Q5, with D2573) — its extra places too (D2586). Before the times are typed, a man
+whose filing does not offer the event ("OFT only" on a flight, "Fly only" on an OFT) is struck at once, "SANS — offered
+OFT only, not Fly" (D2584 Q2; a filing ticking nothing keeps "SANS — not offering Fly"), as on a timed seat; one who
+offered the event with hours stays plain until the times are
+typed (owner D2585, narrowing D2573). Tests: `src/engine/sans-standby-sim.test.ts`, `src/engine/sans-notimes-offer.test.ts`.
 
 **The `SANS_AVAIL` advisory (`validate.ts`) — amber, wears the `A` chip**
 (owner, 26 Aug 26 — moved off `CP`, its launch chip: `CP`'s hover says a crew
@@ -1980,11 +1992,18 @@ alike). `slotStart`/`slotEnd` themselves did NOT move: absences and the
 busy-at-this-hour check still judge the occupied step→dekit window)
 and `day.events`' sim entries whose key matches
 `^s:\d+\.(amt|oft)\.` (domain is the captured word, window is the event's own
-`s→e`). For each SANS person on each check, `sansGate` decides; **only
-`'not-offered'` and `'window'` raise** `add('adv','SANS_AVAIL',...)` +
-`markRing(di,id,'adv')` + `markChip(di,id,'A')`.
+`s→e`). For each SANS person on each check, `sansGate` decides; **`'not-offered'`,
+`'window'` and, since his D2579 / D2584 Q3 (25 Nov 26), `'none'` raise**
+`add('adv','SANS_AVAIL',...)` + `markRing(di,id,'adv')` + `markChip(di,id,'A')` (the amber "A", D2583).
+The words: nothing filed "SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)" — telling
+nobody to file; the mismatch says what he offered, "SANS: offered Fly only today. Planned on …" (two:
+"offered OFT and AMT only", D2584 2a, from `sansGate`'s `offered` and `sansOfferedWords`); wrong hours
+"SANS: available 08:00–10:00 only. …". A seat with no times raises 'none' and 'not-offered', never 'window'.
+The check's name: "SANS availability — not filed, or planned outside it"; the Logic page's line "A SANS man
+planned outside the event or the hours he filed, or with nothing filed." (D2584 3b). Pinned by
+`sans-warn-lines.test.ts`.
 
-**`'none' is DELIBERATELY silent here — the scoping decision, and why it is
+**SUPERSEDED by D2579 (25 Nov 26) — kept for its history: `'none' is DELIBERATELY silent here — the scoping decision, and why it is
 correct** (owner, 14 Aug 26). The owner's own example only ever describes
 planting AGAINST a filed record ("indicates A and O… planned for F →
 advisory"): a bare no-record is not that case. And practically: the seed
@@ -3443,6 +3462,19 @@ line (`docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md`).**
   edited request's times, a Quals or posting change, a filing — takes the four down; putting it back restores them
   (AM11). This REPLACES D45's signature half (the OIL key still omits membership; `pd` carries it). A draft day's
   `pd` is ''.
+- **An input's OIL answer is left out of the signature's OIL key (D2800, D2801 — 27 Nov 26, `[OIL-LATER-PASSES-ON]`).**
+  `oilev.ts oilSignKey` reads every answer as unanswered, so on a day not yet published an answer — from the sign-off
+  list, the input's own "OIL?" sign or a bell line — leaves the names already signed; every other part of an input
+  (who, type, filing, standing, window) still binds. **Only the answer to a question open at signing (D2868, D2869 —
+  27 Nov 26):** the binding keeps each input's answer as it stood (`oa`, `oilev.ts oilAnsKept`); one the names were
+  signed over that has since changed, or been taken away, takes them down (`publish.ts oilAnsBoundOk`). A name signed
+  while the question stood open stays through every later change of that answer — its first answer and any change after
+  it (D2895, 28 Nov 26): the binding keeps that answer as unanswered, so no later answer is one it was signed over. On a published
+  day the comparison key keeps the answer, so it is still a change waiting (the count, the publish button), but the
+  binding's `pd` is read with the open-at-signing answers unanswered (`pendingKeyAtSign`), so that answer leaves the
+  names there too (narrows D103, AM11). The Logic check (`orv`, D592 (4)) reads the same answers as at signing
+  (`oilAnsAtSign`), so a Logic change that moved nobody while the question was open does not take the names down when
+  it is answered; one that moves OIL they were signed over still does.
 - **The ground programme is bound as shown (`[AMEND-SMALL-SEEN]` 9, 28 Sep 26).** The ground rows are SHOWN in time
   order whatever order they are stored in (`order.ts groundOrder`), and the change count reads that shown order — but
   the signature's digest keyed them by STORED position, so "Sort" on a published day (it re-orders the array only) took

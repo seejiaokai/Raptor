@@ -1,0 +1,223 @@
+[
+ {
+  "scn": "f9",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "f9",
+  "size": "phone",
+  "id": "f9.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "f9-f9.post-postout-open-phone.png, f9-f9.post-postout-sheet-phone.png"
+ },
+ {
+  "scn": "f9",
+  "size": "phone",
+  "id": "f9.times",
+  "what": "set-up: SC AM START only (07:00, END cleared), SC PM END only (START cleared), AVALON 19:00–07:00, BB blank",
+  "ok": true,
+  "note": "{\"sc\":[\"07:00–\",\"–19:00\"],\"av\":\"19:00–07:00\",\"bb\":\"–\"}"
+ },
+ {
+  "scn": "f9",
+  "size": "phone",
+  "id": "f9.standing by-5.0.0.0.p",
+  "what": "standing by: SC AM (START only) MAIN FCP armed — no SANS reason for Ranger or Jester, nothing filed (D2584 Q4)",
+  "ok": true,
+  "note": "armed 5.0.0.0.p · \"SANS Avail · 6 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed)",
+  "pics": "f9-f9-standing by-5000p-armed-clip-phone.png, f9-f9-standing by-5000p-sans-clip-phone.png, f9-f9-standing by-5000p-armed-phone.png"
+ },
+ {
+  "scn": "f9",
+  "size": "phone",
+  "id": "f9.standing by-5.0.0.2.w",
+  "what": "standing by: SC AM SPARE RCP armed — no SANS reason for Ranger or Jester, nothing filed (D2584 Q4)",
+  "ok": true,
+  "note": "armed 5.0.0.2.w · \"SANS Avail · 12 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed)",
+  "pics": "f9-f9-standing by-5002w-armed-clip-phone.png, f9-f9-standing by-5002w-sans-clip-phone.png, f9-f9-standing by-5002w-armed-phone.png"
+ },
+ {
+  "scn": "f9",
+  "size": "phone",
+  "id": "f9.standing by-5.0.1.0.p",
+  "what": "standing by: SC PM (END only) MAIN FCP armed — no SANS reason for Ranger or Jester, nothing filed (D2584 Q4)",
+  "ok": true,
+  "note": "armed 5.0.1.0.p · \"SANS Avail · 6 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed)",
+  "pics": "f9-f9-standing by-5010p-armed-clip-phone.png, f9-f9-standing by-5010p-sans-clip-phone.png, f9-f9-standing by-5010p-armed-phone.png"
+ },
+ {
+  "scn": "f9",
+  "size": "phone",
+  "id": "f9.standing by-5.1.0.0.p",
+  "what": "standing by: AVALON 19:00–07:00 MAIN FCP armed — no SANS reason for Ranger or Jester, nothing filed (D2584 Q4)",
+  "ok": true,
+  "note": "armed 5.1.0.0.p · \"SANS Avail · 3 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed)",
+  "pics": "f9-f9-standing by-5100p-armed-clip-phone.png, f9-f9-standing by-5100p-sans-clip-phone.png, f9-f9-standing by-5100p-armed-phone.png"
+ },
+ {
+  "scn": "f9",
+  "size": "phone",
+  "id": "f9.standing by-5.1.0.2.w",
+  "what": "standing by: AVALON SPARE RCP armed — no SANS reason for Ranger or Jester, nothing filed (D2584 Q4)",
+  "ok": true,
+  "note": "armed 5.1.0.2.w · \"SANS Avail · 4 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed)",
+  "pics": "f9-f9-standing by-5102w-armed-clip-phone.png, f9-f9-standing by-5102w-sans-clip-phone.png, f9-f9-standing by-5102w-armed-phone.png"
+ },
+ {
+  "scn": "f9",
+  "size": "phone",
+  "id": "f9.standing by-5.2.0.0.p",
+  "what": "standing by: BB (blank) MAIN FCP armed — no SANS reason for Ranger or Jester, nothing filed (D2584 Q4)",
+  "ok": true,
+  "note": "armed 5.2.0.0.p · \"SANS Avail · 6 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed)",
+  "pics": "f9-f9-standing by-5200p-armed-clip-phone.png, f9-f9-standing by-5200p-sans-clip-phone.png, f9-f9-standing by-5200p-armed-phone.png"
+ },
+ {
+  "scn": "f9",
+  "size": "phone",
+  "id": "f9.standing by-5.2.0.2.w",
+  "what": "standing by: BB SPARE RCP armed — no SANS reason for Ranger or Jester, nothing filed (D2584 Q4)",
+  "ok": true,
+  "note": "armed 5.2.0.2.w · \"SANS Avail · 12 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed)",
+  "pics": "f9-f9-standing by-5202w-armed-clip-phone.png, f9-f9-standing by-5202w-sans-clip-phone.png, f9-f9-standing by-5202w-armed-phone.png"
+ },
+ {
+  "scn": "f9",
+  "size": "phone",
+  "id": "f9.tick-5.0.0.0",
+  "what": "FLIES ticked on 5.0.0.0",
+  "ok": "REC",
+  "note": "aria-pressed true",
+  "pics": "f9-flies08-5000-on-clip-phone.png"
+ },
+ {
+  "scn": "f9",
+  "size": "phone",
+  "id": "f9.tick-5.0.1.0",
+  "what": "FLIES ticked on 5.0.1.0",
+  "ok": "REC",
+  "note": "aria-pressed true",
+  "pics": "f9-flies09-5010-on-clip-phone.png"
+ },
+ {
+  "scn": "f9",
+  "size": "phone",
+  "id": "f9.tick-5.1.0.0",
+  "what": "FLIES ticked on 5.1.0.0",
+  "ok": "REC",
+  "note": "aria-pressed true",
+  "pics": "f9-flies10-5100-on-clip-phone.png"
+ },
+ {
+  "scn": "f9",
+  "size": "phone",
+  "id": "f9.tick-5.2.0.0",
+  "what": "FLIES ticked on 5.2.0.0",
+  "ok": "REC",
+  "note": "aria-pressed true",
+  "pics": "f9-flies11-5200-on-clip-phone.png"
+ },
+ {
+  "scn": "f9",
+  "size": "phone",
+  "id": "f9.FLIES ticked-5.0.0.0.p",
+  "what": "FLIES ticked: SC AM (START only) MAIN FCP armed — no SANS reason for Ranger or Jester, nothing filed (D2584 Q4)",
+  "ok": true,
+  "note": "armed 5.0.0.0.p · \"SANS Avail · 6 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed)",
+  "pics": "f9-f9-FLIES ticked-5000p-armed-clip-phone.png, f9-f9-FLIES ticked-5000p-sans-clip-phone.png, f9-f9-FLIES ticked-5000p-armed-phone.png"
+ },
+ {
+  "scn": "f9",
+  "size": "phone",
+  "id": "f9.FLIES ticked-5.0.1.0.p",
+  "what": "FLIES ticked: SC PM (END only) MAIN FCP armed — no SANS reason for Ranger or Jester, nothing filed (D2584 Q4)",
+  "ok": true,
+  "note": "armed 5.0.1.0.p · \"SANS Avail · 6 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed)",
+  "pics": "f9-f9-FLIES ticked-5010p-armed-clip-phone.png, f9-f9-FLIES ticked-5010p-sans-clip-phone.png, f9-f9-FLIES ticked-5010p-armed-phone.png"
+ },
+ {
+  "scn": "f9",
+  "size": "phone",
+  "id": "f9.FLIES ticked-5.1.0.0.p",
+  "what": "FLIES ticked: AVALON 19:00–07:00 MAIN FCP armed — no SANS reason for Ranger or Jester, nothing filed (D2584 Q4)",
+  "ok": true,
+  "note": "armed 5.1.0.0.p · \"SANS Avail · 3 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed)",
+  "pics": "f9-f9-FLIES ticked-5100p-armed-clip-phone.png, f9-f9-FLIES ticked-5100p-sans-clip-phone.png, f9-f9-FLIES ticked-5100p-armed-phone.png"
+ },
+ {
+  "scn": "f9",
+  "size": "phone",
+  "id": "f9.FLIES ticked-5.2.0.0.p",
+  "what": "FLIES ticked: BB (blank) MAIN FCP armed — no SANS reason for Ranger or Jester, nothing filed (D2584 Q4)",
+  "ok": true,
+  "note": "armed 5.2.0.0.p · \"SANS Avail · 6 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed)",
+  "pics": "f9-f9-FLIES ticked-5200p-armed-clip-phone.png, f9-f9-FLIES ticked-5200p-sans-clip-phone.png, f9-f9-FLIES ticked-5200p-armed-phone.png"
+ },
+ {
+  "scn": "f9",
+  "size": "phone",
+  "id": "f9.BB activated by a typed B-5.2.0.1.p",
+  "what": "BB activated by a typed B: BB MAIN FCP armed — no SANS reason for Ranger or Jester, nothing filed (D2584 Q4)",
+  "ok": true,
+  "note": "armed 5.2.0.1.p · \"SANS Avail · 6 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed)",
+  "pics": "f9-f9-BB activated by a typed B-5201p-armed-clip-phone.png, f9-f9-BB activated by a typed B-5201p-sans-clip-phone.png, f9-f9-BB activated by a typed B-5201p-armed-phone.png"
+ },
+ {
+  "scn": "f9",
+  "size": "phone",
+  "id": "f9.cleared",
+  "what": "every SC and AVALON time cleared",
+  "ok": "REC",
+  "note": "{\"sc\":[\"–\",\"–\"],\"av\":{\"br\":\"\",\"rl\":\"\",\"to\":\"\",\"ld\":\"\",\"flies\":[true,false,false,false],\"cx\":[false,false,false,false]}}"
+ },
+ {
+  "scn": "f9",
+  "size": "phone",
+  "id": "f9.all times cleared-5.0.0.1.p",
+  "what": "all times cleared: SC AM MAIN FCP (row 2, unticked) armed — no SANS reason for Ranger or Jester, nothing filed (D2584 Q4)",
+  "ok": true,
+  "note": "armed 5.0.0.1.p · \"SANS Avail · 6 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed)",
+  "pics": "f9-f9-all times cleared-5001p-armed-clip-phone.png, f9-f9-all times cleared-5001p-sans-clip-phone.png, f9-f9-all times cleared-5001p-armed-phone.png"
+ },
+ {
+  "scn": "f9",
+  "size": "phone",
+  "id": "f9.all times cleared-5.0.0.0.p",
+  "what": "all times cleared: SC AM MAIN FCP (row 1, ticked) armed — no SANS reason for Ranger or Jester, nothing filed (D2584 Q4)",
+  "ok": true,
+  "note": "armed 5.0.0.0.p · \"SANS Avail · 6 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed)",
+  "pics": "f9-f9-all times cleared-5000p-armed-clip-phone.png, f9-f9-all times cleared-5000p-sans-clip-phone.png, f9-f9-all times cleared-5000p-armed-phone.png"
+ },
+ {
+  "scn": "f9",
+  "size": "phone",
+  "id": "f9.all times cleared-5.1.0.1.p",
+  "what": "all times cleared: AVALON MAIN FCP (row 2) armed — no SANS reason for Ranger or Jester, nothing filed (D2584 Q4)",
+  "ok": true,
+  "note": "armed 5.1.0.1.p · \"SANS Avail · 6 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed)",
+  "pics": "f9-f9-all times cleared-5101p-armed-clip-phone.png, f9-f9-all times cleared-5101p-sans-clip-phone.png, f9-f9-all times cleared-5101p-armed-phone.png"
+ },
+ {
+  "scn": "f9",
+  "size": "phone",
+  "id": "f9.e",
+  "what": "Edit Schedule's crew panel, BB MAIN FCP picked: no SANS reason for Ranger",
+  "ok": true,
+  "note": "armed 5.2.0.0.p · [SANS Avail, plain] title \"Ranger\" (no reason printed)",
+  "pics": "f9-f9-e-bb-earmed-clip-phone.png, f9-f9-e-bb-esans-clip-phone.png, f9-f9-e-bb-earmed-phone.png"
+ },
+ {
+  "scn": "f9",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

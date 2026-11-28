@@ -1,0 +1,103 @@
+[
+ {
+  "scn": "n57",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "n57",
+  "size": "phone",
+  "id": "n57.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "n57-n57.post-postout-open-phone.png, n57-n57.post-postout-sheet-phone.png"
+ },
+ {
+  "scn": "n57",
+  "size": "phone",
+  "id": "n57.early",
+  "what": "set-up: a new flying line on Sat (+ Wave → Flying wave) 08:00–09:00",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 1\",\"kind\":\"\",\"standalone\":false,\"cs\":\"EARLY\",\"to\":\"08:00\",\"ld\":\"09:00\",\"n\":1}"
+ },
+ {
+  "scn": "n57",
+  "size": "phone",
+  "id": "n57.set",
+  "what": "set-up: Sat 18: Ranger on the EARLY flight 08:00–09:00 FCP (Ace in its RCP); an SC wave",
+  "ok": true,
+  "note": "\"Ranger — SANS from Fri 17 Jul: no availability filed\" / \"Ace planned\""
+ },
+ {
+  "scn": "n57",
+  "size": "phone",
+  "id": "n57.sb",
+  "what": "N5: SC AM MAIN FCP (07:00–13:00, standing by) armed — Ranger already busy 08:00–09:00: the reason shown (RECORD)",
+  "ok": "REC",
+  "note": "armed 5.1.0.1.p · \"SANS Avail · 5 free\" · Ranger [SANS Avail, STRUCK] title \"Ranger — on EARLY  07:00–09:30 — inside this shift\" printed \"on EARLY 07:00–09:30 — inside this shift\" · Jester [SANS Avail, plain] title \"Jester\" (no reason printed) · Ace [Pilots · 24 free, STRUCK] title \"Ace — on EARLY  07:00–09:30 — inside this shift\" printed \"on EARLY 07:00–09:30 — inside this shift\"",
+  "pics": "n57-n57-sb-armed-clip-phone.png, n57-n57-sb-sans-clip-phone.png, n57-n57-sb-armed-phone.png"
+ },
+ {
+  "scn": "n57",
+  "size": "phone",
+  "id": "n57.sb-c",
+  "what": "N5: Ranger carries no SANS words there; his other reason (busy) still shows",
+  "ok": true,
+  "note": "[SANS Avail, STRUCK] title \"Ranger — on EARLY  07:00–09:30 — inside this shift\" printed \"on EARLY 07:00–09:30 — inside this shift\""
+ },
+ {
+  "scn": "n57",
+  "size": "phone",
+  "id": "n57.fly",
+  "what": "N5: the same seat with SC AM flying (B 06:30) — reasons (RECORD)",
+  "ok": "REC",
+  "note": "armed 5.1.0.1.p · \"SANS Avail · 5 free\" · Ranger [SANS Avail, STRUCK] title \"Ranger — already on EARLY  07:00–09:30\" printed \"already on EARLY 07:00–09:30\" · Jester [SANS Avail, plain] title \"Jester\" (no reason printed) · Ace [Pilots · 24 free, STRUCK] title \"Ace — already on EARLY  07:00–09:30\" printed \"already on EARLY 07:00–09:30\"",
+  "pics": "n57-n57-fly-armed-clip-phone.png, n57-n57-fly-sans-clip-phone.png, n57-n57-fly-armed-phone.png"
+ },
+ {
+  "scn": "n57",
+  "size": "phone",
+  "id": "n57.fly-c",
+  "what": "N5: no SANS words; his busy reason still shows",
+  "ok": true,
+  "note": "[SANS Avail, STRUCK] title \"Ranger — already on EARLY  07:00–09:30\" printed \"already on EARLY 07:00–09:30\""
+ },
+ {
+  "scn": "n57",
+  "size": "phone",
+  "id": "n57.in",
+  "what": "Ranger and Ace tapped onto flying SC AM rows (each also on EARLY 08:00–09:00): the notes",
+  "ok": "REC",
+  "note": "\"Ranger — Conflict: EARLY (T/O 08:00, landing 09:00) & SC AM 07:00–13:00 (+2 more)\" / \"Ace — Conflict: EARLY (T/O 08:00, landing 09:00) & SC AM 07:00–13:00 (+2 more)\"",
+  "pics": "n57-n57-in-armed-clip-phone.png, n57-n57-in-sans-clip-phone.png, n57-n57-in-armed-phone.png, n57-n57-in-note-clip-phone.png, n57-n57-in-picked-phone.png, n57-n57-ace-in-armed-clip-phone.png, n57-n57-ace-in-sans-clip-phone.png, n57-n57-ace-in-armed-phone.png, n57-n57-ace-in-note-clip-phone.png, n57-n57-ace-in-picked-phone.png"
+ },
+ {
+  "scn": "n57",
+  "size": "phone",
+  "id": "n57.warn",
+  "what": "N7: the warning list with both double-booked on a flying SC row (RECORD every row)",
+  "ok": "REC",
+  "note": "head \"▾⚠ 7 issues · 2 warnings\" · 7 row(s) · Ranger's: Ranger — Conflict: EARLY (T/O 08:00, landing 09:00) & SC AM 07:00–13:00✕ | Ranger — Misses EARLY brief 05:40–08:00: SC AM 07:00–13:00✕ | Ranger — Misses EARLY debrief 09:00–11:00: SC AM 07:00–13:00✕ · SANS: none · seated: Ranger 5.0.0.0.p AMBER chips[C] · 5.1.0.1.p AMBER chips[C] / dj 5.0.0.0.w AMBER chips[C] · 5.1.0.2.p AMBER chips[C] · Ace rows: Ace — Conflict: EARLY (T/O 08:00, landing 09:00) & SC AM 07:00–13:00✕ | Ace — Misses EARLY brief 05:40–08:00: SC AM 07:00–13:00✕ | Ace — Misses EARLY debrief 09:00–11:00: SC AM 07:00–13:00✕",
+  "pics": "n57-n57-warn-clip-phone.png"
+ },
+ {
+  "scn": "n57",
+  "size": "phone",
+  "id": "n57.warn-c",
+  "what": "N7: Ranger gets the same kind of non-SANS lines as the regular Ace, and no SANS line",
+  "ok": true,
+  "note": "Ranger: Ranger — Conflict: EARLY (T/O 08:00, landing 09:00) & SC AM 07:00–13:00✕ | Ranger — Misses EARLY brief 05:40–08:00: SC AM 07:00–13:00✕ | Ranger — Misses EARLY debrief 09:00–11:00: SC AM 07:00–13:00✕ · Ace: Ace — Conflict: EARLY (T/O 08:00, landing 09:00) & SC AM 07:00–13:00✕ | Ace — Misses EARLY brief 05:40–08:00: SC AM 07:00–13:00✕ | Ace — Misses EARLY debrief 09:00–11:00: SC AM 07:00–13:00✕"
+ },
+ {
+  "scn": "n57",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]
