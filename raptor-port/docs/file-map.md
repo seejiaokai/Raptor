@@ -2227,3 +2227,15 @@ and `updateAccount` where the sign-in name changes), `src/state/perms.ts` (`made
 Kestrel's sign-in: saved" now refused to Hunter, saved for a master admin). **New (test):**
 - `src/state/msq-s2-u2fix4-rename.test.ts` (Fable's proof, every case kept; both doors, the gate, the delete and re-make
   in one command, Undo and Redo refused to Hunter; 149's own admin, a master admin and a member's rename still saved).
+
+Chat A216, 28 Nov 26 — step U2's fourth fix round, part 3b (his D2907: the sign-in box on a row of a squadron's admin,
+to a Plan holder who may not make its admins). **Changed:** `src/state/accounts.ts` (`signInWords`, the ruled sentence;
+`makeAdminProblem` takes the words; `makeAdminOfStep` refuses a seat handed on in them, a man made an admin by his role
+keeping Q8's), `src/ui/UserAccess.tsx` (`SignInNote`, RoleNote's markup with those words), `src/ui/UsersPanel.tsx`
+(`rowLocks`' `nameOff`; the opened row's sign-in box read only with the line under it),
+`src/ui/scheduler/15-admin-help.css` (the row's disabled fade worn by a read-only box too),
+`src/ui/msq-s2-rejudge4.test.tsx` (`SignInNote` on the whole row's list of parts), `src/state/msq-s2-u2fix4-rename.test.ts`
+and `src/state/msq-s2-u2-doors.test.ts` (the rename refusal's expected words). **New (test):**
+- `src/ui/msq-s2-u2fix4-signin-box.test.tsx` (Hunter on Kestrel's and on another 149 admin's row: read only, reached by
+  the keyboard, the line word for word in RoleNote's markup, Member picked still greyed; Osprey's member row, Saber and
+  Kestrel as today; a master admin's row keeps its own rules; the doors' refusal in the same words).

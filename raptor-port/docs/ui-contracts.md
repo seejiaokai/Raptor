@@ -7225,7 +7225,15 @@ a person" (`#accAddRole`, the page's squadron) and in Give access (`#apvRole`, b
 `RoleSelect`), read afresh on every draw, never held by the form; the line in the Role column, 6px under the box, a pair
 holding it lined up at its head so the Sign-in box beside it does not move (`ui/postout.css`; the drawings
 `docs/mock/2026-11-25-msq-pick-guard-q3/drawn/q13-d-rec`, `q13-p-rec` — the other three places undrawn, the agent's
-reading of D2806). Pinned by `ui/msq-s2-u2-row.test.tsx`. **Bringing an admin back is NOT making one** (his D2903,
+reading of D2806). Pinned by `ui/msq-s2-u2-row.test.tsx`. **The sign-in box greyed on a row of that squadron's admin**
+(his D2907, 28 Nov 26 — the drawing `a216/cards/signin-box`, phone-after and desktop-after): for one who may not make an
+admin of the man's home squadron, on every row of its admin (judged on the row's copy of his role, as the Role box is, so
+Member picked keeps it greyed; a master admin's row keeps its own rules; none where the whole row is greyed),
+`#accEdName` is read only — never disabled, so the keyboard reaches and reads it — wearing the row's disabled fade
+(`.acc-edit input[readonly]`, `ui/scheduler/15-admin-help.css`), with one grey line under it, "Only 149's own admins or
+a master admin can change a 149 admin's sign-in." (`ui/UserAccess.tsx SignInNote`, RoleNote's markup and classes;
+`ui/UsersPanel.tsx rowLocks`'s `nameOff`, asking `mayGivePlanNow` as the doors do); the doors refuse the rename in the
+same words (`state/accounts.ts signInWords`). Pinned by `ui/msq-s2-u2fix4-signin-box.test.tsx`. **Bringing an admin back is NOT making one** (his D2903,
 28 Nov 26, replacing the agent's reading U2's fix rounds 1 and 2 had built): Enable, Restore and "Restore as" of a
 suspended or archived admin, the Leave War posting sheet's "Undo post out", a posting's date or outcome changed so
 that the archive or suspension it made is taken back, and the Undo of a Suspend (an archive is no step of Undo,

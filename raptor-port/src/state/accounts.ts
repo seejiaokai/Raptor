@@ -592,6 +592,14 @@ export const makeAdminWords = (unit: string): string => {
   const n = numOfUnit(unit)
   return `Only ${n}'s own admins or a master admin can make an admin of ${n}.`
 }
+/* THE SIGN-IN BOX'S GREY LINE ON A ROW OF THAT SQUADRON'S ADMIN, AND EVERY DOOR'S REFUSAL OF CHANGING THAT SIGN-IN (his
+   D2907, 28 Nov 26 — these words exactly): changing the sign-in of an admin of his home squadron hands his admin seat to
+   another sign-in (makeAdminOfStep below), so it is refused to one who may not make an admin of it — said in the words
+   of what he is doing; a role changed to admin keeps Q8's own sentence (makeAdminWords above) */
+export const signInWords = (unit: string): string => {
+  const n = numOfUnit(unit)
+  return `Only ${n}'s own admins or a master admin can change a ${n} admin's sign-in.`
+}
 /* the refused Undo (his D2807 — the curly apostrophe, as the app's other Undo words: the planning read's B4; the
    squadron's possessive curly too, so the one note — with the app's tail " Press Undo again for: Osprey’s role." —
    carries one kind of apostrophe: Fable's word review, U2 fix round 1, fix 9) */
@@ -603,21 +611,25 @@ export const makeAdminUndoWords = (unit: string): string => {
    Plan of it — `unit` his home that day (or, for a man the door makes, where his home will be); no home known (a shared
    store before its rows) fails closed, as the reader does. Asked of the ROLE alone, whatever his sign-in's switch or his
    archive: switching an admin back on, or restoring him, is not making one (his D2903) */
-export function makeAdminProblem(unit: string | null | undefined): string | null {
+export function makeAdminProblem(unit: string | null | undefined, words: (unit: string) => string = makeAdminWords): string | null {
   if (!unit) return 'This change could not be saved.'
-  return mayGivePlanNow(unit) ? null : makeAdminWords(unit)
+  return mayGivePlanNow(unit) ? null : words(unit)
 }
 /* Q8 OVER A WHOLE STEP AT A DOOR (U2 fix round 4, part 3 — Fable's proof 1 of the round 3 re-read; D2806): every man the
    step leaves an admin of his squadron who was not, by the one helper the gate and the Undo ask (units.ts
    madeAdminsNow), so a door never lets through what the gate refuses as "That did not save". Its new half is the sign-in
    name: Hunter (Plan of 149, not its own admin) changed a switched-off 149 admin's sign-in name to a mail of his
    choosing and pressed Enable (D2903), and whoever signed in with that mail was 149's own admin. Handing a man's admin
-   seat to another sign-in is making an admin, refused in Q8's own sentence. `list` — the accounts the step leaves;
-   `rows` — the rows it leaves (none: as they stand) */
+   seat to another sign-in is making an admin, refused — since his D2907 (28 Nov 26) in the sign-in's own sentence
+   (signInWords), the one the sign-in box's grey line says; a man the step makes an admin by his role or his man keeps
+   Q8's. Which is which, by the same helper again without the names (it then asks only the man and the role, as before):
+   a man it names only with them is a seat handed on. `list` — the accounts the step leaves; `rows` — the rows it leaves
+   (none: as they stand) */
 function makeAdminOfStep(list: readonly Account[], rows?: UnitRows): string | null {
-  const rowsB = unitRows()
-  const made = madeAdminsNow({ acctB: ACCOUNTS_LIST.map(madeAdminAcct), acctA: list.map(madeAdminAcct), rowsB, rowsA: rows ?? rowsB, today: todayIso() })
-  for (const m of made) { const q = makeAdminProblem(m.unit); if (q) return q }
+  const w = { rowsB: unitRows(), rowsA: rows ?? unitRows(), today: todayIso() }
+  const made = madeAdminsNow({ ...w, acctB: ACCOUNTS_LIST.map(madeAdminAcct), acctA: list.map(madeAdminAcct) })
+  const byRole = new Set(madeAdminsNow({ ...w, acctB: ACCOUNTS_LIST.map(a => levelAcct(a)), acctA: list.map(a => levelAcct(a)) }).map(m => m.account))
+  for (const m of made) { const q = makeAdminProblem(m.unit, byRole.has(m.account) ? makeAdminWords : signInWords); if (q) return q }
   return null
 }
 

@@ -300,10 +300,11 @@ describe('Q8 at the doors — Hunter, 149 picked, makes a 149 man an admin: refu
      Admin left picked: saved". Admin left picked is still no role made — but changing a 149 admin's sign-in name hands
      his admin seat to another sign-in, which is making an admin of 149 (D2806), so Hunter is now refused it in Q8's
      sentence; the pin's own point, Admin left picked on an admin's rename, is held for one who may — a master admin.
-     msq-s2-u2fix4-rename.test.ts holds the rest) */
+     msq-s2-u2fix4-rename.test.ts holds the rest. Since his D2907, 28 Nov 26, a rename is refused in the sign-in's own
+     sentence, the one the greyed sign-in box's line says — a role change keeps Q8's) */
   it('pin: an admin kept an admin — Kestrel\'s sign-in renamed, Admin left picked: refused to Hunter (a seat handed on), saved for a master admin', () => {
     asHunter149()
-    expect(saveAccess(ACCT.kestrel, { role: 'admin', name: 'kes@mail' })).toBe(MAKE('149'))
+    expect(saveAccess(ACCT.kestrel, { role: 'admin', name: 'kes@mail' })).toBe("Only 149's own admins or a master admin can change a 149 admin's sign-in.")
     expect(accountById(ACCT.kestrel)!.name).not.toBe('kes@mail')
     asSaber149()
     expect(saveAccess(ACCT.kestrel, { role: 'admin', name: 'kes@mail' })).toBeNull()

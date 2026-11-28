@@ -540,6 +540,9 @@ const WHOLE_MAY_USE = [
   'OpenedOn', 'Shown', 'Typed', 'useState', 'useJudgedOnDraw', 'askAgain', 'rowLocks', 'actorIsMaster', 'accessWant',
   'saveAccess', 'updateAccount', 'addAccount', 'archivePerson', 'deletePerson', 'markBack', 'done', 'notify',
   'RoleBox', 'SquadronLines', 'RolesFold', 'MAX_SIGNIN', 'DELETE_GOES',
+  /* (his D2907, U2 fix round 4 part 3b: the sign-in box's one grey line, a part handed only rowLocks' `nameOff` — a
+     squadron's id worked out from the SIGNED-IN admin's right, as RoleBox's `adminOff` is; nothing of the man) */
+  'SignInNote',
 ].sort()
 const ARCH_MAY_USE = [
   'OpenedOn', 'Shown', 'Typed', 'useState', 'useJudgedOnDraw', 'askAgain',

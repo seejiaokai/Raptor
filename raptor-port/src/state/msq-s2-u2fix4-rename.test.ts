@@ -28,6 +28,7 @@ import { rosterOf } from '../engine/roster'
 withThird()
 const reload = (): void => { unitsLoad(); accountsLoad() }
 const MAKE = "Only 149's own admins or a master admin can make an admin of 149."
+const SIGNIN = "Only 149's own admins or a master admin can change a 149 admin's sign-in."
 const freeMan = (): string | undefined =>
   rosterOf('u149', todayIso()).find(p => !accountOfPid(p) && !(PEOPLE as any)[p]?.special && !(PEOPLE as any)[p]?.archived)
 
@@ -104,18 +105,20 @@ describe('fable 1 — a 149 admin\'s row moved onto another sign-in by one who m
   })
 })
 
-describe('a 149 admin\'s sign-in name: refused to Hunter in Q8\'s sentence at both doors, kept for 149\'s own admins and a master admin', () => {
-  it('Hunter\'s rename by the Save (saveAccess): Q8\'s own sentence, nothing written', () => {
+/* (his D2907, 28 Nov 26: a rename is refused in the sign-in's own sentence, the one the greyed sign-in box's grey line
+   says — no longer Q8's, which a role change and a re-link keep, above) */
+describe('a 149 admin\'s sign-in name: refused to Hunter in the sign-in\'s sentence at both doors, kept for 149\'s own admins and a master admin', () => {
+  it('Hunter\'s rename by the Save (saveAccess): the sign-in\'s own sentence, nothing written', () => {
     const id = kestrelSuspendsA149Admin()
     asHunter()
-    expect(saveAccess(id, { name: 'mate@mail' })).toBe(MAKE)
+    expect(saveAccess(id, { name: 'mate@mail' })).toBe(SIGNIN)
     reload()
     expect(accountById(id)?.name).toBe('talon@mail')
   })
   it('Hunter\'s rename by the account\'s own door (updateAccount): the same sentence, nothing written', () => {
     const id = kestrelSuspendsA149Admin()
     asHunter()
-    expect(updateAccount(id, { name: 'mate@mail' })).toBe(MAKE)
+    expect(updateAccount(id, { name: 'mate@mail' })).toBe(SIGNIN)
     reload()
     expect(accountById(id)?.name).toBe('talon@mail')
   })
@@ -124,8 +127,8 @@ describe('a 149 admin\'s sign-in name: refused to Hunter in Q8\'s sentence at bo
     expect(saveAccess(ACCT.osprey, { role: 'admin' }), 'setup: Kestrel makes Osprey an admin of 149').toBeNull()
     reload()
     asHunter()
-    expect(saveAccess(ACCT.osprey, { name: 'mate@mail' })).toBe(MAKE)
-    expect(updateAccount(ACCT.osprey, { name: 'mate@mail' })).toBe(MAKE)
+    expect(saveAccess(ACCT.osprey, { name: 'mate@mail' })).toBe(SIGNIN)
+    expect(updateAccount(ACCT.osprey, { name: 'mate@mail' })).toBe(SIGNIN)
     reload()
     expect(accountByName('mate@mail')).toBeUndefined()
   })

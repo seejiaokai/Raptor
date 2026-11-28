@@ -14,7 +14,7 @@
    The reads behind it — each line's state and words, his lines today, "also plans" — are ui/useraccess-model.ts.
    The row's Save sends every change of these at once through the one door, state/accounts.ts saveAccess — one command,
    one Undo step; the door and the commit gate judge each part again. */
-import { makeAdminWords, type AccessLine } from '../state/accounts'
+import { makeAdminWords, signInWords, type AccessLine } from '../state/accounts'
 import { units, homeOn, todayIso } from '../state/units'
 import { numOf, lineState, type RolePick } from './useraccess-model'
 import { inSquadronOrder } from '../state/perms'
@@ -45,6 +45,13 @@ export function RoleBox(p: {
    U2 report). The box names it for a screen reader (aria-describedby). */
 export function RoleNote(p: { id: string; unit: string }) {
   return <p className="adm-note acc-sq-note acc-role-note" id={p.id}>{makeAdminWords(p.unit)}</p>
+}
+/* THE SAME GREY LINE UNDER A SIGN-IN BOX GREYED ON A ROW OF THAT SQUADRON'S ADMIN (his D2907, 28 Nov 26 — these words
+   exactly; the drawing a216/cards/signin-box/phone-after, desktop-after): RoleNote's markup and classes, so it wears the
+   same grey, size, gap and left edge under its own box; its words are the ones the doors refuse the rename in
+   (state/accounts.ts signInWords). The box names it for a screen reader (aria-describedby). */
+export function SignInNote(p: { id: string; unit: string }) {
+  return <p className="adm-note acc-sq-note acc-role-note" id={p.id}>{signInWords(p.unit)}</p>
 }
 
 const WORD: Record<AccessLine, string> = { none: 'None', view: 'View', plan: 'Plan' }

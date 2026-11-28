@@ -34,7 +34,7 @@ import {
   requestSummary, accessAlert, markRequestsSeen, MAX_SIGNIN, isAdminAccount, signedInAccount, levelIn, sessionLapsed, mayGivePlanNow,
   type Account, type AccountRole, type AccessRequest, type AccessSave, type AccessLine,
 } from '../state/accounts'
-import { RoleBox, RoleNote, SquadronLines, RolesFold } from './UserAccess'
+import { RoleBox, RoleNote, SignInNote, SquadronLines, RolesFold } from './UserAccess'
 import {
   accessLinesOf, alsoPlansOf, rolePickOf, actorIsMaster, shortRoleOf, holdsHereOf, noSignInWords, changedWhileOpenWords,
   type RolePick,
@@ -829,13 +829,19 @@ function accessWant(role: RolePick, pickNow: RolePick, lines: Record<string, Acc
    picked: a man already an admin ('admin' or 'master') is never greyed, so Member picked on an admin's row can be put
    back to Admin before Save. Not asked where the whole box is greyed (roleLocked) — one reason at a time — nor for a man
    with no home known: there is no squadron to name, and the door refuses that press in its own words. His home is one
-   of the four judged facts of the open row (OpenedOn's `home`), so while the row stands this is that very squadron. */
-function rowLocks(pid: string, role: RolePick): { rest: boolean; roleLocked: boolean; adminOff: string | null } {
+   of the four judged facts of the open row (OpenedOn's `home`), so while the row stands this is that very squadron.
+   `nameOff` (his D2907, 28 Nov 26): his home that day where his SIGN-IN box is greyed, with its one grey line — the
+   man an admin of it by the copy's role (as the row opened, like the Role box: Member picked keeps it greyed), and the
+   signed-in person one who may not make an admin of it (mayGivePlanNow, the very reader the doors ask: changing that
+   sign-in hands his admin seat to another, state/accounts.ts makeAdminOfStep); else null. A master admin's row keeps
+   its own rules, and a row greyed whole (`rest`) shows one reason, its own. */
+function rowLocks(pid: string, role: RolePick): { rest: boolean; roleLocked: boolean; adminOff: string | null; nameOff: string | null } {
   const home = homeOn(pid, todayIso())
   const rest = !home || adminOfUnit(home)
   const roleLocked = !rest || (role === 'master' && !actorIsMaster())
   const adminOff = !roleLocked && home && role !== 'admin' && role !== 'master' && !mayGivePlanNow(home) ? home : null
-  return { rest, roleLocked, adminOff }
+  const nameOff = rest && home && role === 'admin' && !mayGivePlanNow(home) ? home : null
+  return { rest, roleLocked, adminOff, nameOff }
 }
 
 /* ONE ROW PER PERSON ON THE ROSTER (D309, D310). Tap it for his sign-in, his role and his state's buttons — never your
@@ -954,7 +960,7 @@ function PersonEditor(p: {
      open work it closes is named after this press's own receipt, never in its place (the tenth round) */
   const stale = useJudgedOnDraw(p.pid, p.on, p.onStale)
   const stillHis = (): boolean => askAgain(p.pid, p.on, p.onClose, p.listed)
-  const { rest, roleLocked, adminOff } = rowLocks(p.pid, s.role)
+  const { rest, roleLocked, adminOff, nameOff } = rowLocks(p.pid, s.role)
   /* the delete's first tap arms it; Cancel, closing the editor or another row disarms it (the editor unmounts — a
      regrouping disarms it too: a delete is never left armed across a redraw of the list) */
   const [armDel, setArmDel] = useState(false)
@@ -1000,8 +1006,13 @@ function PersonEditor(p: {
     <div className="acc-edit" data-editing={s.acct ?? p.pid}>
       <div className="adm-2col">
         <div className="mfield"><label htmlFor={has ? 'accEdName' : 'accGiveName'}>Sign-in (defence mail)</label>
+          {/* (greyed, with its one grey line under it, on a row of his squadron's admin for one who may not make an admin
+              of it — his D2907, the drawing signin-box: read only, not disabled, so the keyboard still reaches and reads
+              it as the app's other read-only boxes are; the row's own disabled fade is worn by [readonly] too) */}
           <input id={has ? 'accEdName' : 'accGiveName'} value={name} maxLength={MAX_SIGNIN} placeholder="name@mail" disabled={!rest}
-            onChange={e => p.onTyped({ ...typed, name: e.target.value, set: { ...typed.set, name: true } })} /></div>
+            readOnly={!!nameOff} aria-describedby={nameOff ? 'accEdNameNote' : undefined}
+            onChange={e => p.onTyped({ ...typed, name: e.target.value, set: { ...typed.set, name: true } })} />
+          {nameOff && <SignInNote id="accEdNameNote" unit={nameOff} />}</div>
         <div className="mfield"><label htmlFor={has ? 'accEdRole' : 'accGiveRole'}>Role</label>
           {/* (no sign-in yet: Member or Admin — the mark is given on an account, D2320) */}
           {/* ("Admin" greyed with its one line under the box where he may not make an admin of the man's squadron — D2806,
