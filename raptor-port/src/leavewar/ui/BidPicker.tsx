@@ -23,11 +23,11 @@ import { awardsIn, cellProblem, clearCells, clearRecords, decideRequests, deleta
 import { LeaveWords, ReqWordsRows } from './ReqWords'
 import { draftOf, emptyDraft, heldRequest, patchOf, wordsOf, type ReqDraft } from './reqdraft'
 import { ApproveSwitch, EntryBox, MoreButton, useApproveMemory, type MoreItem } from './BidBits'
-import { compactSpan } from './bidhelpers'
+import { compactSpan, decideLook } from './bidhelpers'
 import { skipWhy } from './bidskip'
 import { OilAmount } from './OilAmount'
 import { oilAmountText, oilNumber, oilStart, type OilPick } from './oilamountwords'
-import { DeleteChip, MoveChip } from './SheetActions'
+import { DecideMark, DeleteChip, MoveChip } from './SheetActions'
 import { RangePicker, type Range } from './RangePicker'
 import { Sheet } from './Sheet'
 import { DateBox } from '../../ui/DateBox'
@@ -825,25 +825,27 @@ export function BidPicker({
               {/* Approve · Refuse — Ack is gone (D1158, 21 Oct 26): a bid simply waits until it is decided. THE DECIDED ONE
                   SAYS SO (his D1361, D1355): both rest grey, their words in their colours; the entry's state is solid green
                   or red with dark words and reads "Approved" or "Refused" — a change in kind, never a stronger shade (design
-                  lesson 54) — and a second tap on it sends the bid back to waiting. */}
+                  lesson 54) — and a second tap on it sends the bid back to waiting. …AND READS PLAINLY AS PICKED (his
+                  D2881): the decided one also wears the cyan ring the lit leave button wears, the other turns grey and
+                  stays pressable; each carries its drawn tick or cross (bidhelpers.ts decideLook, SheetActions.tsx DecideMark). */}
               <button
-                className={`dchip dec approve${!span && decide?.state === 'approved' ? ' lit' : ''}`}
+                className={`dchip dec approve${decideLook(span ? null : decide?.state, 'approved')}`}
                 disabled={!!approveHeld}
                 data-testid="decide-approve"
                 aria-pressed={!span && decide?.state === 'approved'}
                 title={approveHeld ?? (!span && decide?.state === 'approved' ? 'Approved — tap again to send it back to waiting' : undefined)}
                 onClick={() => answer('approved')}
               >
-                {!span && decide?.state === 'approved' ? 'Approved' : 'Approve'}
+                <DecideMark kind="approve" />{!span && decide?.state === 'approved' ? 'Approved' : 'Approve'}
               </button>
               <button
-                className={`dchip dec refuse${!span && decide?.state === 'refused' ? ' lit' : ''}`}
+                className={`dchip dec refuse${decideLook(span ? null : decide?.state, 'refused')}`}
                 data-testid="decide-refuse"
                 aria-pressed={!span && decide?.state === 'refused'}
                 title={!span && decide?.state === 'refused' ? 'Refused — tap again to send it back to waiting' : undefined}
                 onClick={() => answer('refused')}
               >
-                {!span && decide?.state === 'refused' ? 'Refused' : 'Refuse'}
+                <DecideMark kind="refuse" />{!span && decide?.state === 'refused' ? 'Refused' : 'Refuse'}
               </button>
             </>
           )}

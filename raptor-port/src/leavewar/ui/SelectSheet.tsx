@@ -37,7 +37,7 @@ import '../../ui/postout.css'
 import { grantOilDays, MAX_GIVEN_BY, MAX_REASON, awardsIn, clearCells, decidableIn, deletableIn, fileStraight, movableCells, placeApproved, postingBlocked, setBidStates, setCells, setRemarksOn, inOneWarCommand } from '../state/store'
 import { ApproveSwitch, MoreButton, useApproveMemory } from './BidBits'
 import { compactSpan } from './bidhelpers'
-import { DeleteChip, MoveChip } from './SheetActions'
+import { DecideMark, DeleteChip, MoveChip } from './SheetActions'
 import { awardsClause } from './awardwords'
 import { skipWhy } from './bidskip'
 import { belowZeroAsk, goesBelow, type BalanceAfter, type BelowZero } from './belowzero'
@@ -447,8 +447,9 @@ export function SelectSheet({
         <div className="bidsheet-row bp-acts" data-testid="sel-actions" role="group" aria-label="Actions">
           {/* grey at rest, their words in their colours (his D1361) — over a drag nothing is lit: its days may hold
               different answers */}
-          {decideHere && <button className="dchip dec approve" data-testid="sel-approve" onClick={() => decide('approved')}>Approve</button>}
-          {decideHere && <button className="dchip dec refuse" data-testid="sel-refuse" onClick={() => decide('refused')}>Refuse</button>}
+          {/* a picked range is never one decided state, so these only ever wait: each its drawn tick or cross (his D2881) */}
+          {decideHere && <button className="dchip dec approve" data-testid="sel-approve" onClick={() => decide('approved')}><DecideMark kind="approve" />Approve</button>}
+          {decideHere && <button className="dchip dec refuse" data-testid="sel-refuse" onClick={() => decide('refused')}><DecideMark kind="refuse" />Refuse</button>}
           {hasBids && <MoveChip testid="sel-move" onClick={() => { keepWords(); onClose(); onMove(sel) }} />}
           {canDelete && <DeleteChip testid="sel-delete" armed={confirmDel} onClick={del} />}
         </div>
