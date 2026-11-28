@@ -46,7 +46,8 @@ const at = (y: number, m: number, d: number) => vi.setSystemTime(new Date(y, m -
 /* (the writing guide §1b: a colon, not a dash, joins the opening name and its fact; the place named as the screen names it —
    the Inputs page's tab reads "SANS"; the coordinator's correction of 23 Nov 26) */
 /* (his D2340, 23 Nov 26: filing ahead is allowed, so the note names where to file it, no longer "from that day") */
-const LOOK = 'SANS from Fri 17 Jul: no availability filed. File it on the Inputs page\'s SANS tab.'
+/* his D2587 (25 Nov 26): the crew list never tells the scheduler to file — no "File it on the Inputs page's SANS tab." */
+const LOOK = 'SANS from Fri 17 Jul: no availability filed'
 const USUAL = 'SANS — no availability filed for today'
 /* his line in a day's crew list, the SANS section, nothing armed — the reason he is struck with (the puck's data-why) */
 const whyIn = (di: number, id: string): string | null => {
@@ -64,7 +65,9 @@ const wsoSeat = (di: number): string => {
   return `${di}.0.0.0.w`
 }
 /* a briefing on a day naming him — "planned with us" (D2329) */
-const plan = (di: number, id: string) => { (DAYS[di] as any).ground.push({ prog: 'BRIEFING', str: '1600', end: '1700', who: id }); afterSchedMutate() }
+/* (planned = in a flying seat or a sim, his D2564 of 24 Nov 26: this helper put him on a ground briefing, which the first
+   build counted and his rule does not — an OFT's rear seat now; a ground row naming no day: sans-planned-r5.test.ts) */
+const plan = (di: number, id: string) => { const d: any = DAYS[di]; d.sims = d.sims || {}; (d.sims.oft = d.sims.oft || []).push({ label: 'SIM', str: '1600', end: '1700', p: '', w: id }); afterSchedMutate() }
 /* his SANS availability, filed for a day */
 const file = (dt: string, id: string) => { INPUTS.push({ iid: `sa-${id}-${dt}`, person: id, date: dt, allday: true, type: 'SANS Availability', sans: { f: true }, mod: 'now' } as any); raptorNotify() }
 const sansLines = (pid: string): Notice[] => noticesFor(pid).filter(n => (n.what || [])[0]?.k === 'sansdue')

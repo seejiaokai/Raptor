@@ -282,6 +282,9 @@ touch-action: pan-x pan-y;
 }
 .mx td.bal .fb.neg,
 .mx td.bal .fb.red { color: var(--hard); }
+/* a balance never typed: the amber "–", as question 23's item 1 drew it (his D2823 — no words; the amber the person window
+   and the Balances page give a balance never typed, personwindow.css .r17-sum .war.nt) */
+.mx td.bal .fb.nt { color: #F2C879; font-weight: 600; }
 .mx td.bal .fu {
   display: block;
   height: 11px;

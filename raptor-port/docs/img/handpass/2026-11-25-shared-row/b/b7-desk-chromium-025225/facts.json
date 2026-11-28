@@ -1,0 +1,136 @@
+{
+ "pictures": [
+  {
+   "file": "b7-desk-chromium-1-before-crew.png",
+   "case": "B7",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "Ranger": {
+     "cls": "rpuck ",
+     "title": "Ranger",
+     "why": null,
+     "shown": ""
+    },
+    "Hex": {
+     "cls": "rpuck no haswhy",
+     "title": "Hex — already on VL ACM 09:35–12:30",
+     "why": "already on VL ACM 09:35–12:30",
+     "shown": "already on VL ACM 09:35–12:30"
+    }
+   }
+  },
+  {
+   "file": "b7-desk-chromium-1-before-allavail.png",
+   "case": "B7",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "title": "BRIEF Jul 15 · 10:30–10:45",
+    "tab": "Who’s available 38",
+    "ranger": [
+     "puck sm | Ranger · IP · instructor pilot · SXO | PILOTS · 23 Reaper IR Blade IP Cinch IP Comet IP Forge IP Havoc IP Misses OFT EP-4 debrief 10:30–11:00: BRIEF 10:30–10:45 Hunter IP Piston IP Ranger IP Vandal IP Warden IP Ace A Drifter A Saint B Bolt C Misses VL BFM brief 10:40–13:00: BRIEF 10:30–10:45 Outlaw C Ridge C Zenith C Misses RU BFM brief 10:40–13:00: BRIEF 10:30–10:45 Diesel D Vapor D Recon O Talisman O Wildcard O"
+    ],
+    "hex": [],
+    "foot": "Tap a puck for why. 8 men are flagged."
+   }
+  },
+  {
+   "file": "b7-desk-chromium-1-before-warnings.png",
+   "case": "B7",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Hex — On leave + planned: VL ACM (T/O 10:35)✕",
+    "Hex — On leave + planned: VL ACM (T/O 10:35)",
+    "Hex — Misses VL ACM brief 08:15–10:35: LL 08:00–10:00✕",
+    "Hex — Misses VL ACM brief 08:15–10:35: LL 08:00–10:00"
+   ]
+  },
+  {
+   "file": "b7-desk-chromium-2-after-crew.png",
+   "case": "B7",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "Ranger": {
+     "cls": "rpuck no haswhy",
+     "title": "Ranger — local leave (LL)",
+     "why": "local leave (LL)",
+     "shown": "local leave (LL)"
+    },
+    "Hex": {
+     "cls": "rpuck no haswhy",
+     "title": "Hex — already on VL ACM 09:35–12:30",
+     "why": "already on VL ACM 09:35–12:30",
+     "shown": "already on VL ACM 09:35–12:30"
+    }
+   }
+  },
+  {
+   "file": "b7-desk-chromium-2-after-allavail.png",
+   "case": "B7",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "title": "BRIEF Jul 15 · 10:30–10:45",
+    "tab": "Who’s available 37",
+    "ranger": [],
+    "hex": [],
+    "foot": "Tap a puck for why. 8 men are flagged."
+   }
+  },
+  {
+   "file": "b7-desk-chromium-2-after-warnings.png",
+   "case": "B7",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Hex — On leave + planned: VL ACM (T/O 10:35)✕",
+    "Hex — On leave + planned: VL ACM (T/O 10:35)",
+    "Hex — Misses VL ACM brief 08:15–10:35: LL 08:00–10:00✕",
+    "Hex — Misses VL ACM brief 08:15–10:35: LL 08:00–10:00"
+   ]
+  },
+  {
+   "file": "b7-desk-chromium-3-leavewar.png",
+   "case": "B7",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "cells": {
+     "bane": "LL { act hasc}",
+     "rocky": "LL { act hasc}"
+    },
+    "col": [
+     "head-2026-07-15: WED 15",
+     "count-sets-2026-07-15: 16.5",
+     "count-ip-2026-07-15: 14.5",
+     "count-iwso-2026-07-15: 7",
+     "count-opsp-2026-07-15: 10",
+     "count-opsw-2026-07-15: 9.5",
+     "count-sxo-2026-07-15: 11.5",
+     "req-p-2026-07-15: –",
+     "req-w-2026-07-15: –",
+     "avail-p-2026-07-15: 24.5",
+     "avail-w-2026-07-15: 16.5",
+     "event-0-2026-07-15: ＋"
+    ]
+   }
+  }
+ ],
+ "cases": {
+  "B7": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvj32i02ij9ze\"]; asked []; note \"\"",
+    "ALL AVAIL Meeting filed: [\"imwvj3592znhmgk\"] asked []",
+    "ground item added; new empty place g:2.3.+ (before [\"a:2.0.+\",\"s:2.amt.1.+\"], after [\"a:2.0.+\",\"s:2.amt.1.+\",\"g:2.3.+\"])",
+    "picture b7-desk-chromium-1-before-crew.png: {\"Ranger\":{\"cls\":\"rpuck \",\"title\":\"Ranger\",\"why\":null,\"shown\":\"\"},\"Hex\":{\"cls\":\"rpuck no haswhy\",\"title\":\"Hex — already on VL ACM 09:35–12:30\",\"why\":\"already on VL ACM 09:35–12:30\",\"shown\":\"already on VL ACM 09:35–12:30\"}}",
+    "picture b7-desk-chromium-1-before-allavail.png: {\"title\":\"BRIEF Jul 15 · 10:30–10:45\",\"tab\":\"Who’s available 38\",\"ranger\":[\"puck sm | Ranger · IP · instructor pilot · SXO | PILOTS · 23 Reaper IR Blade IP Cinch IP Comet IP Forge IP Havoc IP Misses OFT EP-4 debrief 10:30–11:00: BRIEF 10:30–10:45 Hunter IP Piston IP Ranger IP Vandal IP Warden IP Ace A Drifter A Saint B Bolt C Misses VL BFM brief 10:40–13:00: BRIEF 10:30–10:45 Outlaw C Ridge C Zenith C Misses RU BFM brief 10:40–13:00: BRIEF 10:30–10:45 Diesel D Vapor D Recon O Talisman O Wildcard O\"],\"hex\":[],\"foot\":\"Tap a puck for why. 8 men are flagged.\"}",
+    "picture b7-desk-chromium-1-before-warnings.png: [\"Hex — On leave + planned: VL ACM (T/O 10:35)✕\",\"Hex — On leave + planned: VL ACM (T/O 10:35)\",\"Hex — Misses VL ACM brief 08:15–10:35: LL 08:00–10:00✕\",\"Hex — Misses VL ACM brief 08:15–10:35: LL 08:00–10:00\"]",
+    "BEFORE {\"crew\":{\"Ranger\":{\"cls\":\"rpuck \",\"title\":\"Ranger\",\"why\":null,\"shown\":\"\"},\"Hex\":{\"cls\":\"rpuck no haswhy\",\"title\":\"Hex — already on VL ACM 09:35–12:30\",\"why\":\"already on VL ACM 09:35–12:30\",\"shown\":\"already on VL ACM 09:35–12:30\"}},\"picCrew\":\"b7-desk-chromium-1-before-crew.png\",\"avail\":{\"title\":\"BRIEF Jul 15 · 10:30–10:45\",\"tab\":\"Who’s available 38\",\"ranger\":[\"puck sm | Ranger · IP · instructor pilot · SXO | PILOTS · 23 Reaper IR Blade IP Cinch IP Comet IP Forge IP Havoc IP Misses OFT EP-4 debrief 10:30–11:00: BRIEF 10:30–10:45 Hunter IP Piston IP Ranger IP Vandal IP Warden IP Ace A Drifter A Saint B Bolt C Misses VL BFM brief 10:40–13:00: BRIEF 10:30–10:45 Outlaw C Ridge C Zenith C Misses RU BFM brief 10:40–13:00: BRIEF 10:30–10:45 Diesel D Vapor D Recon O Talisman O Wildcard O\"],\"hex\":[],\"foot\":\"Tap a puck for why. 8 men are flagged.\"},\"picAvail\":\"b7-desk-chromium-1-before-allavail.png\",\"warnings\":[\"Hex — On leave + planned: VL ACM (T/O 10:35)✕\",\"Hex — On leave + planned: VL ACM (T/O 10:35)\",\"Hex — Misses VL ACM brief 08:15–10:35: LL 08:00–10:00✕\",\"Hex — Misses VL ACM brief 08:15–10:35: LL 08:00–10:00\"],\"picWarn\":\"b7-desk-chromium-1-before-warnings.png\"}",
+    "after 1100: {\"store\":[\"LL Hex 08:00-10:00 \\\"\\\" [imwvj32i02ij9ze]\",\"LL Ranger 08:00-11:00 \\\"\\\" [imwvj3br1z6kfyh]\"],\"rows\":[\"Hex 08:00-10:00 \\\"\\\" [imwvj32i02ij9ze.str]\",\"Ranger 08:00-11:00 \\\"\\\" [imwvj3br1z6kfyh.str]\"]}",
+    "picture b7-desk-chromium-2-after-crew.png: {\"Ranger\":{\"cls\":\"rpuck no haswhy\",\"title\":\"Ranger — local leave (LL)\",\"why\":\"local leave (LL)\",\"shown\":\"local leave (LL)\"},\"Hex\":{\"cls\":\"rpuck no haswhy\",\"title\":\"Hex — already on VL ACM 09:35–12:30\",\"why\":\"already on VL ACM 09:35–12:30\",\"shown\":\"already on VL ACM 09:35–12:30\"}}",
+    "picture b7-desk-chromium-2-after-allavail.png: {\"title\":\"BRIEF Jul 15 · 10:30–10:45\",\"tab\":\"Who’s available 37\",\"ranger\":[],\"hex\":[],\"foot\":\"Tap a puck for why. 8 men are flagged.\"}",
+    "picture b7-desk-chromium-2-after-warnings.png: [\"Hex — On leave + planned: VL ACM (T/O 10:35)✕\",\"Hex — On leave + planned: VL ACM (T/O 10:35)\",\"Hex — Misses VL ACM brief 08:15–10:35: LL 08:00–10:00✕\",\"Hex — Misses VL ACM brief 08:15–10:35: LL 08:00–10:00\"]",
+    "AFTER {\"crew\":{\"Ranger\":{\"cls\":\"rpuck no haswhy\",\"title\":\"Ranger — local leave (LL)\",\"why\":\"local leave (LL)\",\"shown\":\"local leave (LL)\"},\"Hex\":{\"cls\":\"rpuck no haswhy\",\"title\":\"Hex — already on VL ACM 09:35–12:30\",\"why\":\"already on VL ACM 09:35–12:30\",\"shown\":\"already on VL ACM 09:35–12:30\"}},\"picCrew\":\"b7-desk-chromium-2-after-crew.png\",\"avail\":{\"title\":\"BRIEF Jul 15 · 10:30–10:45\",\"tab\":\"Who’s available 37\",\"ranger\":[],\"hex\":[],\"foot\":\"Tap a puck for why. 8 men are flagged.\"},\"picAvail\":\"b7-desk-chromium-2-after-allavail.png\",\"warnings\":[\"Hex — On leave + planned: VL ACM (T/O 10:35)✕\",\"Hex — On leave + planned: VL ACM (T/O 10:35)\",\"Hex — Misses VL ACM brief 08:15–10:35: LL 08:00–10:00✕\",\"Hex — Misses VL ACM brief 08:15–10:35: LL 08:00–10:00\"],\"picWarn\":\"b7-desk-chromium-2-after-warnings.png\"}",
+    "picture b7-desk-chromium-3-leavewar.png: {\"cells\":{\"bane\":\"LL { act hasc}\",\"rocky\":\"LL { act hasc}\"},\"col\":[\"head-2026-07-15: WED 15\",\"count-sets-2026-07-15: 16.5\",\"count-ip-2026-07-15: 14.5\",\"count-iwso-2026-07-15: 7\",\"count-opsp-2026-07-15: 10\",\"count-opsw-2026-07-15: 9.5\",\"count-sxo-2026-07-15: 11.5\",\"req-p-2026-07-15: –\",\"req-w-2026-07-15: –\",\"avail-p-2026-07-15: 24.5\",\"avail-w-2026-07-15: 16.5\",\"event-0-2026-07-15: ＋\"]}",
+    "Leave War {\"cells\":{\"bane\":\"LL { act hasc}\",\"rocky\":\"LL { act hasc}\"},\"col\":[\"head-2026-07-15: WED 15\",\"count-sets-2026-07-15: 16.5\",\"count-ip-2026-07-15: 14.5\",\"count-iwso-2026-07-15: 7\",\"count-opsp-2026-07-15: 10\",\"count-opsw-2026-07-15: 9.5\",\"count-sxo-2026-07-15: 11.5\",\"req-p-2026-07-15: –\",\"req-w-2026-07-15: –\",\"avail-p-2026-07-15: 24.5\",\"avail-w-2026-07-15: 16.5\",\"event-0-2026-07-15: ＋\"]}"
+   ]
+  }
+ },
+ "errors": []
+}

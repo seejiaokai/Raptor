@@ -1,0 +1,127 @@
+{
+ "pictures": [],
+ "cases": {
+  "desk-chromium": {
+   "log": [
+    "bundle index-C-8yJleY.js",
+    "bundle index-C-8yJleY.js",
+    "filed {\"type\":\"LL\",\"people\":[\"bane\"],\"from\":\"08:00\",\"to\":\"17:00\"} on 2026-07-13: new input [\"imwv5ik52jqh2ws\"]; asked [\"document\"]; note \"\"",
+    "bundle index-C-8yJleY.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"08:00\",\"to\":\"10:00\",\"title\":\"Range brief\"} on 2026-07-15: new input [\"imwv5irkspd7ynv\"]; asked []; note \"\"",
+    "bundle index-C-8yJleY.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"08:00\",\"to\":\"10:00\",\"title\":\"Range brief\"} on 2026-07-15: new input [\"imwv5iz9ie08wg8\"]; asked []; note \"\"",
+    "bundle index-C-8yJleY.js",
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwv5j7sevsn940\"]; asked []; note \"\"",
+    "bundle index-C-8yJleY.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"08:00\",\"to\":\"10:00\",\"title\":\"Range brief\"} on 2026-07-15: new input [\"imwv5jggfxn2zc8\"]; asked []; note \"\"",
+    "bundle index-C-8yJleY.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"08:00\",\"to\":\"10:00\",\"title\":\"Sat brief\"} on 2026-07-18: new input [\"imwv5jrtp55jipa\"]; asked [\"oil\"]; note \"\"",
+    "next day (W7) click: locator.click: Timeout 4000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#",
+    "bundle index-C-8yJleY.js",
+    "bundle index-C-8yJleY.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"08:00\",\"to\":\"10:00\",\"title\":\"Range brief\"} on 2026-07-15: new input [\"imwv5l0flmdfexm\"]; asked []; note \"\"",
+    "filed {\"type\":\"LL\",\"people\":[\"rocky\"],\"from\":\"08:00\",\"to\":\"17:00\"} on 2026-07-15: new input [\"imwv5l34u2pm5n4\"]; asked [\"document\"]; note \"\"",
+    "bundle index-C-8yJleY.js"
+   ]
+  }
+ },
+ "errors": [],
+ "results": [
+  [
+   "W2b desk-chromium ALL AVAIL start 0730 under Personal Inputs, Tab: the Common Programme row reads 07:30 at once; the caret's box holds",
+   "PASS",
+   "{\"stored\":450,\"progHas0730\":true,\"progStarts\":[\"07:30\",\"07:45\"],\"caret\":{\"focus\":\"imwv5ibr8h5njkv.end\",\"moved\":0},\"progBefore\":\"⠿ COMMON PROGRAMME Auto sort + Item To take an input off, press Reject on it in Personal Inputs below. ITEM START END PEOPLE RMKS ⠿ + ADD CXⓘ■✕ TRAINING ALL AVA\"}",
+   "a-desk-chromium-W2b-after-tab.png"
+  ],
+  [
+   "W2c desk-chromium leave end 0900 typed in the Unavailable row, Tab — RECORD the other sections at once",
+   "RECORD",
+   "{\"stored\":[480,540],\"caret\":{\"focus\":\"imwv5ik52jqh2ws.rmks\",\"moved\":0},\"before\":{\"availHasRanger\":false,\"rangerPucks\":[\"puck sm warn hard boxred\"],\"warnPucks\":12,\"warnList\":\"⚠ 21 issues · 9 warnings Saber — Conflict: OPS SHARING + NAV SYS BRIEF 17:55–18:55 & VL BFM (step 18:45, T/O 19:45) ✕ Ranger — Conflict: VL BFM (step 11:40, T/O 12:40) & Sim EP-4 12:00–13:30 ✕ Piston \"},\"after\":{\"availHasRanger\":true,\"rangerPucks\":[\"puck sm warn hard boxred\"],\"warnPucks\":12,\"warnList\":\"⚠ 18 issues · 7 warnings Saber — Conflict: OPS SHARING + NAV SYS BRIEF 17:55–18:55 & VL BFM (step 18:45, T/O 19:45) ✕ Ranger — Conflict: VL BFM (step 11:40, T/O 12:40) & Sim EP-4 12:00–13:30 ✕ Piston \"},\"availRewritten\":true}",
+   "a-desk-chromium-W2c-before.png, a-desk-chromium-W2c-after-tab.png"
+  ],
+  [
+   "W2d desk-chromium Personal Inputs folded; Ground Programme START 0915, Tab: the heading keeps its count; opened, the row reads 09:15",
+   "PASS",
+   "{\"folded\":true,\"headBefore\":\"⠿ PERSONAL INPUTS 1 input · 1 on programme ⌄\",\"headAfter\":\"⠿ PERSONAL INPUTS 1 input · 1 on programme ⌄\",\"piStart\":\"09:15\",\"caret\":{\"focus\":\"gr:2.2.end\",\"moved\":0}}",
+   "a-desk-chromium-W2d-after-tab-folded.png, a-desk-chromium-W2d-opened.png"
+  ],
+  [
+   "W2e desk-chromium \"abc\" in the input's start, Tab: a note, the box back to 08:00, the Ground Programme row 08:00",
+   "PASS",
+   "{\"note\":\"abc is not a time. Try 0900 or 09:00.\",\"box\":\"08:00\",\"ground\":\"08:00\",\"stored\":480,\"caret\":{\"focus\":\"imwv5iz9ie08wg8.end\",\"moved\":0}}",
+   "a-desk-chromium-W2e-note.png"
+  ],
+  [
+   "W3 desk-chromium Ranger's row of a shared leave: 0900, 1100, \"own hours\" — his own input, Hex keeps 08:00–10:00",
+   "FAIL",
+   "{\"rowsBefore\":[{\"k\":\"imwv5j7sevsn940~bane.str\",\"who\":\"LL LATE Ranger IP till 15 Jul\",\"s\":\"08:00\",\"e\":\"10:00\",\"r\":\"\"},{\"k\":\"imwv5j7sevsn940~rocky.str\",\"who\":\"LL LATE C Hex C till 15 Jul\",\"s\":\"08:00\",\"e\":\"10:00\",\"r\":\"\"},{\"k\":\"imwv5j2vvo4juik.str\",\"who\":\"OL Cobra IP till 15 Jul\",\"s\":\"\",\"e\":\"\",\"r\":\"Overseas leave — off island\"},{\"k\":\"imwv5j2vv68v9d9.str\",\"who\":\"ATT C Grit C till 17 Jul\",\"s\":\"\",\"e\":\"\",\"r\":\"Medically down\"},{\"k\":\"imwv5j2vvf72uje.str\",\"who\":\"OD C Nomad C till 17 Jul REJECT\",\"s\":\"\",\"e\":\"\",\"r\":\"Overseas duty — exercise, off island\"},{\"k\":\"imwv5j2wuudqk2i.str\",\"who\":\"OIL C Gambit C till 15 Jul\",\"s\":\"\",\"e\":\"\",\"r\":\"\"}],\"afterFirst\":[],\"rowsAfter\":[{\"k\":\"imwv5j7sevsn940~bane.str\",\"who\":\"LL LATE Ranger IP till 15 Jul\",\"s\":\"09:00\",\"e\":\"11:00\",\"r\":\"own hours\"},{\"k\":\"imwv5j7sevsn940~rocky.str\",\"who\":\"LL LATE C Hex C till 15 Jul\",\"s\":\"08:00\",\"e\":\"10:00\",\"r\":\"\"},{\"k\":\"imwv5j2vvo4juik.str\",\"who\":\"OL Cobra IP till 15 Jul\",\"s\":\"\",\"e\":\"\",\"r\":\"Overseas leave — off island\"},{\"k\":\"imwv5j2vv68v9d9.str\",\"who\":\"ATT C Grit C till 17 Jul\",\"s\":\"\",\"e\":\"\",\"r\":\"Medically down\"},{\"k\":\"imwv5j2vvf72uje.str\",\"who\":\"OD C Nomad C till 17 Jul REJECT\",\"s\":\"\",\"e\":\"\",\"r\":\"Overseas duty — exercise, off island\"},{\"k\":\"imwv5j2wuudqk2i.str\",\"who\":\"OIL C Gambit C till 15 Jul\",\"s\":\"\",\"e\":\"\",\"r\":\"\"}],\"records\":[],\"carets\":[{\"focus\":\"imwv5j7sevsn940~bane.end\",\"moved\":0},{\"focus\":\"imwv5j7sevsn940~bane.rmks\",\"moved\":0},{\"focus\":\"imwv5j7sevsn940~rocky.str\",\"moved\":0}]}",
+   "a-desk-chromium-W3-start-0900.png, a-desk-chromium-W3-after-three.png"
+  ],
+  [
+   "W10 desk-chromium the Tab route from the input's Ground Programme START: text boxes of the Board only, down the screen; Shift+Tab retraces",
+   "PASS",
+   "{\"stops\":[\"2.ground:gr:2.2.str@2156\",\"2.ground:gr:2.2.end@2156\",\"2.ground:gr:2.2.rmks@2157\",\"2.ground:gr:2.0.prog@2196\",\"2.ground:gr:2.0.str@2195\",\"2.ground:gr:2.0.end@2195\",\"2.ground:gr:2.0.rmks@2196\",\"2.ground:gr:2.1.prog@2230\",\"2.ground:gr:2.1.str@2229\",\"2.ground:gr:2.1.end@2229\",\"2.ground:gr:2.1.rmks@2230\",\"2.ground:gn:2@2300\",\"2.inputs:imwv5jggfxn2zc8.str@2460\",\"2.inputs:imwv5jggfxn2zc8.end@2460\",\"2.inputs:imwv5jggfxn2zc8.rmks@2461\",\"2.inputs:imwv5jggfxn2zc8.end@2460\",\"2.inputs:imwv5jggfxn2zc8.str@2460\",\"2.ground:gn:2@2300\",\"2.ground:gr:2.1.rmks@2230\"],\"wentBackUp\":0}",
+   "a-desk-chromium-W10-route-end.png"
+  ],
+  [
+   "KEEP desk-chromium OIL Earn (W4) pressed with the caret in the input's start box",
+   "COULD NOT BE MADE",
+   "{\"before\":\"imwv5jrtp55jipa.str@board\",\"rightAfter\":\"sbOil@board\",\"settled\":\"sbOil@board\"}",
+   "a-desk-chromium-KEEP-OIL.png"
+  ],
+  [
+   "KEEP desk-chromium Undo (W5 a) pressed with the caret in the input's start box",
+   "COULD NOT BE MADE",
+   "{\"before\":\"imwv5jrtp55jipa.str@board\",\"rightAfter\":\"sbUndo@board\",\"settled\":\"sbUndo@board\"}",
+   "a-desk-chromium-KEEP-Undo.png"
+  ],
+  [
+   "KEEP desk-chromium next day (W7) pressed with the caret in the input's start box",
+   "MADE",
+   "{\"before\":\"imwv5jrtp55jipa.str@board\",\"rightAfter\":\"imwv5jrtp55jipa.str@board\",\"settled\":\"imwv5jrtp55jipa.str@board\"}",
+   "a-desk-chromium-KEEP-next.png"
+  ],
+  [
+   "KEEP desk-chromium the keyboard: 40 Tabs from the box — does the route reach a button?",
+   "RECORD (a button reached)",
+   "[\"INPUT\",\"TEXTAREA\",\"BUTTON:Reject\",\"SPAN\"]",
+   ""
+  ],
+  [
+   "W11 desk-chromium signed in as Ranger (a member): no box on the schedule takes typing",
+   "PASS",
+   "{\"page\":\"viewsched\",\"board\":false,\"editable\":0,\"triedBoard\":true}",
+   "a-desk-chromium-W11-member.png"
+  ],
+  [
+   "N1b desk-chromium 60 letters in the Board's take-off box, Tab: the note's letters inside its border",
+   "PASS",
+   "{\"note\":\"abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwx\",\"box\":{\"l\":431,\"r\":1009,\"w\":577,\"top\":836,\"bottom\":874},\"innerR\":992,\"inkR\":992,\"lines\":1,\"vw\":1440,\"vh\":900,\"at\":\"foot\",\"boxAfter\":\"10:35\"}",
+   "a-desk-chromium-N1b.png"
+  ],
+  [
+   "N1c desk-chromium 60 letters in an input's start under Personal Inputs (Board), Tab: the note's letters inside its border",
+   "PASS",
+   "{\"note\":\"abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwx\",\"box\":{\"l\":431,\"r\":1009,\"w\":577,\"top\":836,\"bottom\":874},\"innerR\":992,\"inkR\":992,\"lines\":1,\"vw\":1440,\"vh\":900,\"at\":\"foot\",\"boxAfter\":\"08:00\"}",
+   "a-desk-chromium-N1c.png"
+  ],
+  [
+   "N1e desk-chromium 60 letters in an Unavailable row's start (Board), Tab: the note's letters inside its border",
+   "PASS",
+   "{\"note\":\"abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwx\",\"box\":{\"l\":431,\"r\":1009,\"w\":577,\"top\":836,\"bottom\":874},\"innerR\":992,\"inkR\":992,\"lines\":1,\"vw\":1440,\"vh\":900,\"at\":\"foot\",\"boxAfter\":\"08:00\"}",
+   "a-desk-chromium-N1e.png"
+  ],
+  [
+   "N1d desk-chromium 60 letters in the same input's start on the week, Tab: the note's letters inside its border",
+   "PASS",
+   "{\"note\":\"abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwx\",\"box\":{\"l\":431,\"r\":1009,\"w\":577,\"top\":836,\"bottom\":874},\"innerR\":992,\"inkR\":992,\"lines\":1,\"vw\":1440,\"vh\":900,\"at\":\"foot\",\"boxAfter\":\"08:00\"}",
+   "a-desk-chromium-N1d.png"
+  ],
+  [
+   "N4 desk-chromium the long note with an input's window up — RECORD where it stands",
+   "RECORD",
+   "{\"box\":{\"l\":431,\"r\":1009,\"w\":577,\"top\":836,\"bottom\":874},\"innerR\":992,\"inkR\":992,\"lines\":1,\"vw\":1440,\"vh\":900,\"at\":\"foot\"}",
+   "a-desk-chromium-N4-window-up.png"
+  ]
+ ]
+}

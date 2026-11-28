@@ -1,0 +1,90 @@
+{
+ "pictures": [
+  {
+   "file": "b8-desk-chromium-1-before-leavewar.png",
+   "case": "B8",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "Ranger": {
+     "cell": "OD",
+     "rowHead": "Ranger IP",
+     "rowHead2": "12.5 7.5"
+    },
+    "Hex": {
+     "cell": "OD",
+     "rowHead": "Hex C",
+     "rowHead2": "−2"
+    }
+   }
+  },
+  {
+   "file": "b8-desk-chromium-2-str.png",
+   "case": "B8",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "step": "str 0900 Tab",
+    "oilQuestionOpen": false,
+    "store": [
+     "OD Hex 08:00-17:00 \"\" [imwvj4mgge2fyzj]",
+     "OD Ranger 09:00-17:00 \"\" [imwvj4qzbrfhb3j]"
+    ],
+    "screen": [
+     "Ranger 09:00-17:00 \"\" [imwvj4mgge2fyzj~bane]",
+     "Hex 08:00-17:00 \"\" [imwvj4mgge2fyzj~rocky]"
+    ],
+    "caret": "imwvj4mgge2fyzj~bane.end"
+   }
+  },
+  {
+   "file": "b8-desk-chromium-2-end.png",
+   "case": "B8",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "step": "end 1600 Tab",
+    "oilQuestionOpen": false,
+    "store": [
+     "OD Hex 08:00-17:00 \"\" [imwvj4mgge2fyzj]",
+     "OD Ranger 09:00-16:00 \"\" [imwvj4qzbrfhb3j]"
+    ],
+    "screen": [
+     "Ranger 09:00-16:00 \"\" [imwvj4mgge2fyzj~bane]",
+     "Hex 08:00-17:00 \"\" [imwvj4mgge2fyzj~rocky]"
+    ],
+    "caret": "imwvj4mgge2fyzj~bane.rmks"
+   }
+  },
+  {
+   "file": "b8-desk-chromium-3-after-leavewar.png",
+   "case": "B8",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "Ranger": {
+     "cell": "OD",
+     "rowHead": "Ranger IP",
+     "rowHead2": "12.5 7.5"
+    },
+    "Hex": {
+     "cell": "OD",
+     "rowHead": "Hex C",
+     "rowHead2": "−2"
+    }
+   }
+  }
+ ],
+ "cases": {
+  "B8": {
+   "log": [
+    "filed {\"type\":\"OD\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"17:00\"} on 2026-07-18: new input [\"imwvj4mgge2fyzj\"]; asked [\"oil\"]; note \"\"",
+    "picture b8-desk-chromium-1-before-leavewar.png: {\"Ranger\":{\"cell\":\"OD\",\"rowHead\":\"Ranger IP\",\"rowHead2\":\"12.5 7.5\"},\"Hex\":{\"cell\":\"OD\",\"rowHead\":\"Hex C\",\"rowHead2\":\"−2\"}}",
+    "1-before figures {\"answers\":[\"{\\\"iid\\\":\\\"imwvj4mgge2fyzj\\\",\\\"people\\\":\\\"bane+rocky\\\",\\\"oil\\\":{\\\"2026-07-18\\\":1},\\\"s\\\":480,\\\"e\\\":1020}\"],\"lw\":{\"Ranger\":{\"cell\":\"OD\",\"rowHead\":\"Ranger IP\",\"rowHead2\":\"12.5 7.5\"},\"Hex\":{\"cell\":\"OD\",\"rowHead\":\"Hex C\",\"rowHead2\":\"−2\"}},\"pic\":\"b8-desk-chromium-1-before-leavewar.png\"}",
+    "{\"step\":\"str 0900 Tab\",\"oilQuestionOpen\":false,\"store\":[\"OD Hex 08:00-17:00 \\\"\\\" [imwvj4mgge2fyzj]\",\"OD Ranger 09:00-17:00 \\\"\\\" [imwvj4qzbrfhb3j]\"],\"screen\":[\"Ranger 09:00-17:00 \\\"\\\" [imwvj4mgge2fyzj~bane]\",\"Hex 08:00-17:00 \\\"\\\" [imwvj4mgge2fyzj~rocky]\"],\"caret\":\"imwvj4mgge2fyzj~bane.end\"}",
+    "picture b8-desk-chromium-2-str.png: {\"step\":\"str 0900 Tab\",\"oilQuestionOpen\":false,\"store\":[\"OD Hex 08:00-17:00 \\\"\\\" [imwvj4mgge2fyzj]\",\"OD Ranger 09:00-17:00 \\\"\\\" [imwvj4qzbrfhb3j]\"],\"screen\":[\"Ranger 09:00-17:00 \\\"\\\" [imwvj4mgge2fyzj~bane]\",\"Hex 08:00-17:00 \\\"\\\" [imwvj4mgge2fyzj~rocky]\"],\"caret\":\"imwvj4mgge2fyzj~bane.end\"}",
+    "{\"step\":\"end 1600 Tab\",\"oilQuestionOpen\":false,\"store\":[\"OD Hex 08:00-17:00 \\\"\\\" [imwvj4mgge2fyzj]\",\"OD Ranger 09:00-16:00 \\\"\\\" [imwvj4qzbrfhb3j]\"],\"screen\":[\"Ranger 09:00-16:00 \\\"\\\" [imwvj4mgge2fyzj~bane]\",\"Hex 08:00-17:00 \\\"\\\" [imwvj4mgge2fyzj~rocky]\"],\"caret\":\"imwvj4mgge2fyzj~bane.rmks\"}",
+    "picture b8-desk-chromium-2-end.png: {\"step\":\"end 1600 Tab\",\"oilQuestionOpen\":false,\"store\":[\"OD Hex 08:00-17:00 \\\"\\\" [imwvj4mgge2fyzj]\",\"OD Ranger 09:00-16:00 \\\"\\\" [imwvj4qzbrfhb3j]\"],\"screen\":[\"Ranger 09:00-16:00 \\\"\\\" [imwvj4mgge2fyzj~bane]\",\"Hex 08:00-17:00 \\\"\\\" [imwvj4mgge2fyzj~rocky]\"],\"caret\":\"imwvj4mgge2fyzj~bane.rmks\"}",
+    "picture b8-desk-chromium-3-after-leavewar.png: {\"Ranger\":{\"cell\":\"OD\",\"rowHead\":\"Ranger IP\",\"rowHead2\":\"12.5 7.5\"},\"Hex\":{\"cell\":\"OD\",\"rowHead\":\"Hex C\",\"rowHead2\":\"−2\"}}",
+    "3-after figures {\"answers\":[\"{\\\"iid\\\":\\\"imwvj4mgge2fyzj\\\",\\\"people\\\":\\\"rocky\\\",\\\"oil\\\":{\\\"2026-07-18\\\":1},\\\"s\\\":480,\\\"e\\\":1020}\",\"{\\\"iid\\\":\\\"imwvj4qzbrfhb3j\\\",\\\"people\\\":\\\"bane\\\",\\\"oil\\\":{\\\"2026-07-18\\\":1},\\\"s\\\":540,\\\"e\\\":960}\"],\"lw\":{\"Ranger\":{\"cell\":\"OD\",\"rowHead\":\"Ranger IP\",\"rowHead2\":\"12.5 7.5\"},\"Hex\":{\"cell\":\"OD\",\"rowHead\":\"Hex C\",\"rowHead2\":\"−2\"}},\"pic\":\"b8-desk-chromium-3-after-leavewar.png\"}"
+   ]
+  }
+ },
+ "errors": []
+}

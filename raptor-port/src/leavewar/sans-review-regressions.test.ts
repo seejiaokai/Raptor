@@ -57,9 +57,13 @@ const offer = () =>
 const backs = () =>
   noticesFor('rocky').filter(n => n.what[0]?.k === 'sansback')
 
+/* (planned = in a flying seat or a sim, his D2564 of 24 Nov 26: this helper put him on a ground briefing, which the first
+   build counted and his rule does not — an OFT's rear seat now; a ground row naming no day: sans-planned-r5.test.ts) */
 const plan = (di: number) => {
-  (DAYS[di] as any).ground.push({
-    prog: 'BRIEFING', str: '1600', end: '1700', who: 'rocky',
+  const d: any = DAYS[di]
+  d.sims = d.sims || {}
+  ;(d.sims.oft = d.sims.oft || []).push({
+    label: 'SIM', str: '1600', end: '1700', p: '', w: 'rocky',
   })
   afterSchedMutate()
 }

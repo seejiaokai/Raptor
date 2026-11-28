@@ -1,0 +1,110 @@
+[
+ [
+  "A11",
+  "desk chromium",
+  "newPO: ✕; then the day once more",
+  "closes, nothing saved by dismissal / saved changes kept; selection mark goes; the next tap takes the day's own route (D2732 Q3, D2727, D1289)",
+  "after: [page=leavewar] mark open=\"act selcell\" shut=\"act\" | next tap: [bid leaveBtns head=Cinch Mon 14 Dec Auto-approve ✕ page=leavewar] | Cinch gone 0 Piston from 12-14 Ridge blank to 12-13",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r5b/001-desk-chromium-a11-newPO-x-open.png , img/handpass/2026-11-26-msq-s4-walk/wb/r5b/002-desk-chromium-a11-newPO-x-after.png , img/handpass/2026-11-26-msq-s4-walk/wb/r5b/003-desk-chromium-a11-newPO-x-nexttap.png"
+ ],
+ [
+  "A11",
+  "desk chromium",
+  "newPO: Escape; then the day once more",
+  "closes, nothing saved by dismissal / saved changes kept; selection mark goes; the next tap takes the day's own route (D2732 Q3, D2727, D1289)",
+  "after: [page=leavewar] mark open=\"act selcell\" shut=\"act\" | next tap: [bid leaveBtns head=Cinch Mon 14 Dec Auto-approve ✕ page=leavewar] | Cinch gone 0 Piston from 12-14 Ridge blank to 12-13",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r5b/004-desk-chromium-a11-newPO-esc-open.png , img/handpass/2026-11-26-msq-s4-walk/wb/r5b/005-desk-chromium-a11-newPO-esc-after.png , img/handpass/2026-11-26-msq-s4-walk/wb/r5b/006-desk-chromium-a11-newPO-esc-nexttap.png"
+ ],
+ [
+  "A11",
+  "desk chromium",
+  "newPO: a press on the day it was opened from (a click at its centre, through the see-through backdrop) [sheet-scrim]; then the day once more",
+  "closes, nothing saved by dismissal / saved changes kept; selection mark goes; the next tap takes the day's own route (D2732 Q3, D2727, D1289)",
+  "after: [page=leavewar] mark open=\"act selcell\" shut=\"act\" | next tap: [bid leaveBtns head=Cinch Mon 14 Dec Auto-approve ✕ page=leavewar] | Cinch gone 0 Piston from 12-14 Ridge blank to 12-13",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r5b/007-desk-chromium-a11-newPO-day-open.png , img/handpass/2026-11-26-msq-s4-walk/wb/r5b/008-desk-chromium-a11-newPO-day-after.png , img/handpass/2026-11-26-msq-s4-walk/wb/r5b/009-desk-chromium-a11-newPO-day-nexttap.png"
+ ],
+ [
+  "A11",
+  "desk chromium",
+  "newPO: a press outside (blank grid bar) [sheet-scrim]; then the day once more",
+  "closes, nothing saved by dismissal / saved changes kept; selection mark goes; the next tap takes the day's own route (D2732 Q3, D2727, D1289)",
+  "after: [page=leavewar] mark open=\"act selcell\" shut=\"act\" | next tap: [bid leaveBtns head=Cinch Mon 14 Dec Auto-approve ✕ page=leavewar] | Cinch gone 0 Piston from 12-14 Ridge blank to 12-13",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r5b/010-desk-chromium-a11-newPO-out-open.png , img/handpass/2026-11-26-msq-s4-walk/wb/r5b/011-desk-chromium-a11-newPO-out-after.png , img/handpass/2026-11-26-msq-s4-walk/wb/r5b/012-desk-chromium-a11-newPO-out-nexttap.png"
+ ],
+ [
+  "A11",
+  "desk chromium",
+  "newPO: date calendar open, Escape, Escape",
+  "one Escape closes the innermost layer (the calendar), the next the sheet (design guide §2)",
+  "cal open [bid poNew cal head=Cinch Post out ✕ page=leavewar] → Esc [bid poNew head=Cinch Post out ✕ page=leavewar] → Esc [page=leavewar]",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r5b/013-desk-chromium-a11-newPO-esc-cal.png"
+ ],
+ [
+  "A11",
+  "desk chromium",
+  "newPI: ✕; then the day once more",
+  "closes, nothing saved by dismissal / saved changes kept; selection mark goes; the next tap takes the day's own route (D2732 Q3, D2727, D1289)",
+  "after: [page=leavewar] mark open=\"act selcell\" shut=\"act\" | next tap: [bid leaveBtns head=Cinch Mon 14 Dec Auto-approve ✕ page=leavewar] | Cinch gone 0 Piston from 12-14 Ridge blank to 12-13",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r5b/014-desk-chromium-a11-newPI-x-open.png , img/handpass/2026-11-26-msq-s4-walk/wb/r5b/015-desk-chromium-a11-newPI-x-after.png , img/handpass/2026-11-26-msq-s4-walk/wb/r5b/016-desk-chromium-a11-newPI-x-nexttap.png"
+ ],
+ [
+  "A11",
+  "desk chromium",
+  "newPI: Escape; then the day once more",
+  "closes, nothing saved by dismissal / saved changes kept; selection mark goes; the next tap takes the day's own route (D2732 Q3, D2727, D1289)",
+  "after: [page=leavewar] mark open=\"act selcell\" shut=\"act\" | next tap: [bid leaveBtns head=Cinch Mon 14 Dec Auto-approve ✕ page=leavewar] | Cinch gone 0 Piston from 12-14 Ridge blank to 12-13",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r5b/017-desk-chromium-a11-newPI-esc-open.png , img/handpass/2026-11-26-msq-s4-walk/wb/r5b/018-desk-chromium-a11-newPI-esc-after.png , img/handpass/2026-11-26-msq-s4-walk/wb/r5b/019-desk-chromium-a11-newPI-esc-nexttap.png"
+ ],
+ [
+  "A11",
+  "desk chromium",
+  "newPI: a press on the day it was opened from (a click at its centre, through the see-through backdrop) [sheet-scrim]; then the day once more",
+  "closes, nothing saved by dismissal / saved changes kept; selection mark goes; the next tap takes the day's own route (D2732 Q3, D2727, D1289)",
+  "after: [page=leavewar] mark open=\"act selcell\" shut=\"act\" | next tap: [bid leaveBtns head=Cinch Mon 14 Dec Auto-approve ✕ page=leavewar] | Cinch gone 0 Piston from 12-14 Ridge blank to 12-13",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r5b/020-desk-chromium-a11-newPI-day-open.png , img/handpass/2026-11-26-msq-s4-walk/wb/r5b/021-desk-chromium-a11-newPI-day-after.png , img/handpass/2026-11-26-msq-s4-walk/wb/r5b/022-desk-chromium-a11-newPI-day-nexttap.png"
+ ],
+ [
+  "A11",
+  "desk chromium",
+  "newPI: a press outside (blank grid bar) [sheet-scrim]; then the day once more",
+  "closes, nothing saved by dismissal / saved changes kept; selection mark goes; the next tap takes the day's own route (D2732 Q3, D2727, D1289)",
+  "after: [page=leavewar] mark open=\"act selcell\" shut=\"act\" | next tap: [bid leaveBtns head=Cinch Mon 14 Dec Auto-approve ✕ page=leavewar] | Cinch gone 0 Piston from 12-14 Ridge blank to 12-13",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r5b/023-desk-chromium-a11-newPI-out-open.png , img/handpass/2026-11-26-msq-s4-walk/wb/r5b/024-desk-chromium-a11-newPI-out-after.png , img/handpass/2026-11-26-msq-s4-walk/wb/r5b/025-desk-chromium-a11-newPI-out-nexttap.png"
+ ],
+ [
+  "A11",
+  "desk chromium",
+  "newPI: date calendar open, Escape, Escape",
+  "one Escape closes the innermost layer (the calendar), the next the sheet (design guide §2)",
+  "cal open [bid piNew cal head=Cinch Post in ✕ page=leavewar] → Esc [bid piNew head=Cinch Post in ✕ page=leavewar] → Esc [page=leavewar]",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r5b/026-desk-chromium-a11-newPI-esc-cal.png"
+ ],
+ [
+  "A11",
+  "desk chromium",
+  "dragPO: ✕; then the day once more",
+  "closes, nothing saved by dismissal / saved changes kept; selection mark goes; the next tap takes the day's own route (D2732 Q3, D2727, D1289)",
+  "after: [page=leavewar] mark open=\"act\" shut=\"act\" | next tap: [bid leaveBtns head=Cinch Tue 15 Dec Auto-approve ✕ page=leavewar] | Cinch gone 0 Piston from 12-14 Ridge blank to 12-13",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r5b/027-desk-chromium-a11-dragPO-x-open.png , img/handpass/2026-11-26-msq-s4-walk/wb/r5b/028-desk-chromium-a11-dragPO-x-after.png , img/handpass/2026-11-26-msq-s4-walk/wb/r5b/029-desk-chromium-a11-dragPO-x-nexttap.png"
+ ],
+ [
+  "A11",
+  "desk chromium",
+  "dragPO: Escape; then the day once more",
+  "closes, nothing saved by dismissal / saved changes kept; selection mark goes; the next tap takes the day's own route (D2732 Q3, D2727, D1289)",
+  "after: [page=leavewar] mark open=\"act\" shut=\"act\" | next tap: [bid leaveBtns head=Cinch Tue 15 Dec Auto-approve ✕ page=leavewar] | Cinch gone 0 Piston from 12-14 Ridge blank to 12-13",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r5b/030-desk-chromium-a11-dragPO-esc-open.png , img/handpass/2026-11-26-msq-s4-walk/wb/r5b/031-desk-chromium-a11-dragPO-esc-after.png , img/handpass/2026-11-26-msq-s4-walk/wb/r5b/032-desk-chromium-a11-dragPO-esc-nexttap.png"
+ ]
+]

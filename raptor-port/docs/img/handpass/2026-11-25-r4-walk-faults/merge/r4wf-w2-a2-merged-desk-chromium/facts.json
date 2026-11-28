@@ -1,0 +1,57 @@
+{
+ "pictures": [],
+ "cases": {
+  "desk-chromium": {
+   "log": [
+    "bundle index-B9okpSpf.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"06:00\",\"to\":\"07:00\",\"title\":\"Upper brief\"} on 2026-07-15: new input [\"imwvxw2m7tejvm0\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"07:10\",\"to\":\"07:50\",\"title\":\"Lower brief\"} on 2026-07-15: new input [\"imwvxw4lwz9vt6e\"]; asked []; note \"\"",
+    "bundle index-B9okpSpf.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"08:00\",\"to\":\"10:00\",\"title\":\"Range brief\"} on 2026-07-15: new input [\"imwvxwceyns55jc\"]; asked []; note \"\"",
+    "bundle index-B9okpSpf.js",
+    "published Wed: \"Wednesday published and approved\"",
+    "bundle index-B9okpSpf.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"08:00\",\"to\":\"10:00\",\"title\":\"Range brief\"} on 2026-07-15: new input [\"imwvxy1thbtr93t\"]; asked []; note \"\""
+   ]
+  }
+ },
+ "errors": [],
+ "results": [
+  [
+   "W9 desk-chromium \"xyz\" half typed in the lower input's Ground Programme remarks, Reject pressed on the upper — \"xyz\" once, on the lower row",
+   "RECORD (sourced part holds)",
+   "{\"rejectAt\":833,\"inputs\":[{\"title\":\"Upper brief\",\"acc\":\"r\",\"rej\":null,\"remarks\":\"\"},{\"title\":\"Lower brief\",\"acc\":\"g\",\"rej\":null,\"remarks\":\"xyz\"}],\"boxesHoldingXyz\":[\"gr:2.2.rmks\",\"imwvxw4lwz9vt6e.rmks\"],\"groundRowsHoldingXyz\":[{\"src\":\"imwvxw4lwz9vt6e\",\"prog\":\"LOWER BRIEF\",\"rmks\":\"xyz\"}]}",
+   "a2-desk-chromium-W9-typed.png, a2-desk-chromium-W9-after-reject.png, a2-desk-chromium-W9-settled.png"
+  ],
+  [
+   "W10d desk-chromium Personal Inputs dragged above the Ground Programme by its grip",
+   "PASS",
+   "{\"before\":[\"sb-panel.daybar\",\"2.notes\",\"2.prog\",\"2.waves\",\"2.duty\",\"2.sims\",\"2.ground\",\"2.inputs\",\"2.avail\",\"2.sans\",\"2.unav\"],\"after\":[\"sb-panel.daybar\",\"2.notes\",\"2.prog\",\"2.waves\",\"2.duty\",\"2.sims\",\"2.inputs\",\"2.ground\",\"2.avail\",\"2.sans\",\"2.unav\"]}",
+   "a2-desk-chromium-W10d-dragged.png"
+  ],
+  [
+   "W10d desk-chromium the re-ordered day: start 0900 and end 1130 typed with Tab — the Ground Programme row reads each at once, each section once",
+   "PASS",
+   "[{\"f\":\"str\",\"typed\":\"0900\",\"ground\":\"09:00\",\"caret\":{\"focus\":\"imwvxwceyns55jc.end@board\",\"moved\":0},\"once\":true,\"order\":\"sb-panel.daybar 2.notes 2.prog 2.waves 2.duty 2.sims 2.inputs 2.ground 2.avail 2.sans 2.unav\"},{\"f\":\"end\",\"typed\":\"1130\",\"ground\":\"11:30\",\"caret\":{\"focus\":\"imwvxwceyns55jc.rmks@board\",\"moved\":0},\"once\":true,\"order\":\"sb-panel.daybar 2.notes 2.prog 2.waves 2.duty 2.sims 2.inputs 2.ground 2.avail 2.sans 2.unav\"}]",
+   "a2-desk-chromium-W10d-typed.png"
+  ],
+  [
+   "W5a desk-chromium Undo three times, then Redo three times, after the drag and the two times: each section once at every step",
+   "PASS",
+   "[{\"undo\":1,\"secs\":\"sb-panel.daybar 2.notes 2.prog 2.waves 2.duty 2.sims 2.inputs 2.ground 2.avail 2.sans 2.unav\"},{\"undo\":2,\"secs\":\"sb-panel.daybar 2.notes 2.prog 2.waves 2.duty 2.sims 2.inputs 2.ground 2.avail 2.sans 2.unav\"},{\"undo\":3,\"secs\":\"sb-panel.daybar 2.notes 2.prog 2.waves 2.duty 2.sims 2.ground 2.inputs 2.avail 2.sans 2.unav\"},{\"redo\":1,\"secs\":\"sb-panel.daybar 2.notes 2.prog 2.waves 2.duty 2.sims 2.inputs 2.ground 2.avail 2.sans 2.unav\"},{\"redo\":2,\"secs\":\"sb-panel.daybar 2.notes 2.prog 2.waves 2.duty 2.sims 2.inputs 2.ground 2.avail 2.sans 2.unav\"},{\"redo\":3,\"secs\":\"sb-panel.daybar 2.notes 2.prog 2.waves 2.duty 2.sims 2.inputs 2.ground 2.avail 2.sans 2.unav\"}]",
+   "a2-desk-chromium-W5a-after-undos.png, a2-desk-chromium-W5a-after-redos.png"
+  ],
+  [
+   "W11f desk-chromium day 2: issued version 2026-07-15#0 looked at from the plans selector — no box takes typing; back to live, 0610 typed and Tab saves",
+   "PASS",
+   "{\"frozen\":{\"dprev\":[],\"boxes\":0},\"typedOnFrozen\":{\"before\":\"07:45\",\"after\":\"07:45\"},\"liveSave\":{\"box\":\"ap:2.0.str\",\"now\":\"06:10\",\"caret\":{\"focus\":\"ap:2.0.end@board\",\"moved\":0}}}",
+   "a2-desk-chromium-W11f-frozen.png, a2-desk-chromium-W11f-live-again.png"
+  ],
+  [
+   "OTHER desk-chromium the input changed on the Board (09:00–11:30 \"bring kit\") — the Board's row, the week, the Inputs page, the bell (RECORD each)",
+   "PASS (stored and on the Board); the rest RECORD",
+   "{\"onBoard\":{\"ground\":[\"09:00\",\"11:30\",\"bring kit\"]},\"week\":{\"ground\":[\"09:00\",\"11:30\",\"bring kit\"],\"inputRow\":[\"09:00\",\"11:30\"]},\"inputsDayCard\":\"LATE 09:00–11:30 RangerTRAINING Range brief · bring kit By Saber\",\"bellScheduler\":[],\"bellRanger\":[\"Range brief Wed 15 Jul / Remark changed · Saber\",\"Range brief Wed 15 Jul / Now 09:00–11:30 · Saber\",\"Range brief Wed 15 Jul / Now 09:00–10:00 · Saber\",\"Range brief Wed 15 Jul / You were added · Saber\"],\"stored\":[540,690,\"bring kit\"]}",
+   "a2-desk-chromium-OTHER-week.png, a2-desk-chromium-OTHER-inputs-day.png, a2-desk-chromium-OTHER-bell-scheduler.png, a2-desk-chromium-OTHER-bell-ranger.png"
+  ]
+ ]
+}

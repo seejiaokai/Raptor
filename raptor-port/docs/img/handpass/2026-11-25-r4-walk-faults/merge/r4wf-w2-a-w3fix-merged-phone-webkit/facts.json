@@ -1,0 +1,20 @@
+{
+ "pictures": [],
+ "cases": {
+  "phone-webkit": {
+   "log": [
+    "bundle index-B9okpSpf.js",
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvynqeqi7yj20\"]; asked []; note \"\""
+   ]
+  }
+ },
+ "errors": [],
+ "results": [
+  [
+   "W3 phone-webkit Ranger's row of a shared leave: 0900, 1100, \"own hours\" — his own input, Hex keeps 08:00–10:00",
+   "PASS",
+   "{\"rowsBefore\":[{\"k\":\"imwvynqeqi7yj20~bane.str\",\"who\":\"LL LATE Ranger IP till 15 Jul\",\"s\":\"08:00\",\"e\":\"10:00\",\"r\":\"\"},{\"k\":\"imwvynqeqi7yj20~rocky.str\",\"who\":\"LL LATE C Hex C till 15 Jul\",\"s\":\"08:00\",\"e\":\"10:00\",\"r\":\"\"},{\"k\":\"imwvyng6kycviku.str\",\"who\":\"OL Cobra IP till 15 Jul\",\"s\":\"\",\"e\":\"\",\"r\":\"Overseas leave — off island\"},{\"k\":\"imwvyng6kckfyos.str\",\"who\":\"ATT C Grit C till 17 Jul\",\"s\":\"\",\"e\":\"\",\"r\":\"Medically down\"},{\"k\":\"imwvyng6k9ujlvm.str\",\"who\":\"OD C Nomad C till 17 Jul REJECT\",\"s\":\"\",\"e\":\"\",\"r\":\"Overseas duty — exercise, off island\"},{\"k\":\"imwvyng7yrykhd5.str\",\"who\":\"OIL C Gambit C till 15 Jul\",\"s\":\"\",\"e\":\"\",\"r\":\"\"}],\"afterFirst\":[{\"iid\":\"imwvyntkzhkm3mb\",\"date\":\"Jul 15\",\"people\":[\"{\\\"p\\\":\\\"bane\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1795601310578}\"],\"s\":540,\"e\":600,\"rmks\":\"\"},{\"iid\":\"imwvynqeqi7yj20\",\"date\":\"Jul 15\",\"people\":[\"{\\\"p\\\":\\\"rocky\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1795601310578}\"],\"s\":480,\"e\":600,\"rmks\":\"\"}],\"rowsAfter\":[{\"k\":\"imwvynqeqi7yj20~bane.str\",\"who\":\"LL LATE Ranger IP till 15 Jul\",\"s\":\"09:00\",\"e\":\"11:00\",\"r\":\"own hours\"},{\"k\":\"imwvynqeqi7yj20~rocky.str\",\"who\":\"LL LATE C Hex C till 15 Jul\",\"s\":\"08:00\",\"e\":\"10:00\",\"r\":\"\"},{\"k\":\"imwvyng6kycviku.str\",\"who\":\"OL Cobra IP till 15 Jul\",\"s\":\"\",\"e\":\"\",\"r\":\"Overseas leave — off island\"},{\"k\":\"imwvyng6kckfyos.str\",\"who\":\"ATT C Grit C till 17 Jul\",\"s\":\"\",\"e\":\"\",\"r\":\"Medically down\"},{\"k\":\"imwvyng6k9ujlvm.str\",\"who\":\"OD C Nomad C till 17 Jul REJECT\",\"s\":\"\",\"e\":\"\",\"r\":\"Overseas duty — exercise, off island\"},{\"k\":\"imwvyng7yrykhd5.str\",\"who\":\"OIL C Gambit C till 15 Jul\",\"s\":\"\",\"e\":\"\",\"r\":\"\"}],\"records\":[{\"iid\":\"imwvyntkzhkm3mb\",\"date\":\"Jul 15\",\"people\":[\"{\\\"p\\\":\\\"bane\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1795601310578}\"],\"s\":540,\"e\":660,\"rmks\":\"own hours\"},{\"iid\":\"imwvynqeqi7yj20\",\"date\":\"Jul 15\",\"people\":[\"{\\\"p\\\":\\\"rocky\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1795601310578}\"],\"s\":480,\"e\":600,\"rmks\":\"\"}],\"carets\":[{\"focus\":\"imwvynqeqi7yj20~bane.end\",\"moved\":0},{\"focus\":\"imwvynqeqi7yj20~bane.rmks\",\"moved\":0},{\"focus\":\"imwvynqeqi7yj20~rocky.str\",\"moved\":0}]}",
+   "a-phone-webkit-W3-start-0900.png, a-phone-webkit-W3-after-three.png"
+  ]
+ ]
+}

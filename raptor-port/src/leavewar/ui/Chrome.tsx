@@ -237,7 +237,8 @@ export function Topbar() {
     <button type="button" className="myleave" data-testid="my-leave" onClick={() => askLw({ kind: 'person', id: me })}>
       <span className="ml-hd">My leave{mine.next && <span className="ml-next"> · next {nextLabel(mine.next)}</span>}</span>
       <span className="ml-figs">
-        <b data-testid="my-leave-lve">LVE {fig(mine.lve)}</b> · <span data-testid="my-leave-oil">OIL {fig(mine.oil)}</span> · <span data-testid="my-leave-pending">{fig(mine.pending)} pending</span>
+        {/* his LVE never typed: the amber "–", no words (D2746, his D2823 — question 23's item 2 as drawn) */}
+        <b data-testid="my-leave-lve">LVE {mine.lveNt ? <span className="nt">–</span> : fig(mine.lve)}</b> · <span data-testid="my-leave-oil">OIL {fig(mine.oil)}</span> · <span data-testid="my-leave-pending">{fig(mine.pending)} pending</span>
       </span>
       <span className="ml-go" aria-hidden="true">›</span>
     </button>

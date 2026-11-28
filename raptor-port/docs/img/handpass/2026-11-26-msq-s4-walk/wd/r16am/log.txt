@@ -1,0 +1,20 @@
+msq-s4w-lib v1 who=wd run=r16am port=4756
+wd-lib v1
+wd-amber v1
+ROW RECORD | A13 the longest warning (amber) on Saber's own Post out | 520x874-chromium | Saber's own day → ⋯ → Post out | saw: amber parts []; main {"x":25,"y":815,"w":86.8,"h":32,"r":111.8,"b":847}; line {"x":25,"y":768.3,"w":470,"h":34.7,"r":495,"b":803} "On 7 Dec: archived, account suspended."; docW 520; wrapped []
+ROW RECORD | A13 the amber line with each chip | 520x874-chromium | po-delete | saw: button {"x":25,"y":815,"w":86.8,"h":32,"r":111.8,"b":847} → {"x":25,"y":815,"w":86.8,"h":32,"r":111.8,"b":847}; chips [["Overseas Sqn",579],["✓ Delete",579],["SANS",615]]; docW 520
+ROW RECORD | A13 the amber line with each chip | 520x874-chromium | po-sans | saw: button {"x":25,"y":815,"w":86.8,"h":32,"r":111.8,"b":847} → {"x":25,"y":815,"w":86.8,"h":32,"r":111.8,"b":847}; chips [["Overseas Sqn",622.3],["Delete",622.3],["✓ SANS",658.3]]; docW 520
+ROW RECORD | A13 the amber line with each chip | 520x874-chromium | po-overseas | saw: button {"x":25,"y":815,"w":86.8,"h":32,"r":111.8,"b":847} → {"x":25,"y":815,"w":86.8,"h":32,"r":111.8,"b":847}; chips [["✓ Overseas Sqn",622.3],["Delete",622.3],["SANS",658.3]]; docW 520
+520x874-chromium errors []
+bringIn [data-testid="cell-stiff-2026-12-07"] 0 {"x":358,"y":544,"w":27,"h":22} scroll 0 177
+ROW RECORD | A13 the longest warning (amber) on Saber's own Post out | 701x900-chromium | Saber's own day → ⋯ → Post out | saw: amber parts []; main {"x":83.5,"y":841,"w":86.8,"h":32,"r":170.3,"b":873}; line {"x":83.5,"y":794.3,"w":534,"h":34.7,"r":617.5,"b":829} "On 7 Dec: archived, account suspended."; docW 701; wrapped []
+ROW RECORD | A13 the amber line with each chip | 701x900-chromium | po-delete | saw: button {"x":83.5,"y":841,"w":86.8,"h":32,"r":170.3,"b":873} → {"x":83.5,"y":841,"w":86.8,"h":32,"r":170.3,"b":873}; chips [["Overseas Sqn",657.7],["✓ Delete",657.7],["SANS",657.7]]; docW 701
+ROW RECORD | A13 the amber line with each chip | 701x900-chromium | po-sans | saw: button {"x":83.5,"y":841,"w":86.8,"h":32,"r":170.3,"b":873} → {"x":83.5,"y":841,"w":86.8,"h":32,"r":170.3,"b":873}; chips [["Overseas Sqn",684.3],["Delete",684.3],["✓ SANS",684.3]]; docW 701
+ROW RECORD | A13 the amber line with each chip | 701x900-chromium | po-overseas | saw: button {"x":83.5,"y":841,"w":86.8,"h":32,"r":170.3,"b":873} → {"x":83.5,"y":841,"w":86.8,"h":32,"r":170.3,"b":873}; chips [["✓ Overseas Sqn",684.3],["Delete",684.3],["SANS",684.3]]; docW 701
+701x900-chromium errors []
+bringIn [data-testid="cell-stiff-2026-12-07"] 0 {"x":409,"y":598,"w":27,"h":22} scroll 0 286
+ROW RECORD | A13 the longest warning (amber) on Saber's own Post out | mid-chromium | Saber's own day → ⋯ → Post out | saw: amber parts []; main {"x":245,"y":709,"w":86.8,"h":32,"r":331.8,"b":741}; line {"x":245,"y":662.3,"w":534,"h":34.7,"r":779,"b":697} "On 7 Dec: archived, account suspended."; docW 1024; wrapped []
+ROW RECORD | A13 the amber line with each chip | mid-chromium | po-delete | saw: button {"x":245,"y":709,"w":86.8,"h":32,"r":331.8,"b":741} → {"x":245,"y":709,"w":86.8,"h":32,"r":331.8,"b":741}; chips [["Overseas Sqn",525.7],["✓ Delete",525.7],["SANS",525.7]]; docW 1024
+ROW RECORD | A13 the amber line with each chip | mid-chromium | po-sans | saw: button {"x":245,"y":709,"w":86.8,"h":32,"r":331.8,"b":741} → {"x":245,"y":709,"w":86.8,"h":32,"r":331.8,"b":741}; chips [["Overseas Sqn",552.3],["Delete",552.3],["✓ SANS",552.3]]; docW 1024
+ROW RECORD | A13 the amber line with each chip | mid-chromium | po-overseas | saw: button {"x":245,"y":709,"w":86.8,"h":32,"r":331.8,"b":741} → {"x":245,"y":709,"w":86.8,"h":32,"r":331.8,"b":741}; chips [["✓ Overseas Sqn",552.3],["Delete",552.3],["SANS",552.3]]; docW 1024
+mid-chromium errors []

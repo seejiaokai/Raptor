@@ -1,0 +1,28 @@
+msq-s4w-lib v1 who=wc run=r3 port=4755
+wc-r3 v1
+ADMIN buttons ["adm-cat on:Users Sign-in and roster","adm-cat:Squadron config Duty, day & wave templat","adm-cat:Data Storage & cleanup",":Find a callsign or sign-in","acc-main acc-tap:Ace no sign-in · Pilot · CAT A","acc-main acc-tap:Anvil no sign-in · Pilot · CAT IP","acc-main acc-tap:Basher no sign-in · WSO · CAT IW","acc-main acc-tap:Blade no sign-in · Pilot · CAT IP","acc-main acc-tap:Bolt no sign-in · Pilot · CAT C","acc-main acc-tap:Cinch no sign-in · Pilot · CAT IP","acc-main acc-tap:Cinder no sign-in · WSO · CAT B","acc-main acc-tap:Cobra no sign-in · Pilot · CAT IP","acc-main acc-tap:Comet no sign-in · Pilot · CAT IP","acc-main acc-tap:Condor no sign-in · Pilot · CAT OCU","acc-main acc-tap:Cotter no sign-in · Personnel","acc-main acc-tap:Cutter no sign-in · WSO · CAT C","acc-main acc-tap:Dash no sign-in · WSO · CAT C","acc-main acc-tap:Diesel no sign-in · Pilot · CAT D","acc-main acc-tap:Drifter no sign-in · Pilot · CAT A","acc-main acc-tap:Echo no sign-in · WSO · CAT IW","acc-main acc-tap:Fable no sign-in · WSO · CAT C","acc-main acc-tap:Falcon no sign-in · WSO · CAT IW","acc-main acc-tap:Forge no sign-in · Pilot · CAT IP","acc-main acc-tap:Gambit no sign-in · Pilot · CAT C","acc-main acc-tap:Gannet no sign-in · WSO · CAT OCU","acc-main acc-tap:Ghost no sign-in · WSO · CAT C","acc-main acc-tap:Grit no sign-in · WSO · CAT C","acc-main acc-tap:Harrier no sign-in · Pilot · CAT C","acc-main acc-tap:Havoc no sign-in · Pilot · CAT IP","acc-main acc-tap:Heron no sign-in · WSO · CAT A","acc-main acc-tap:Hex hex · WSO · CAT C","acc-main acc-tap:Hunter ad2 · Pilot · CAT IP","acc-main acc-tap:Jester no sign-in · Pilot · CAT B","acc-main acc-tap:Kestrel ad9 · Pilot · CAT IP","acc-main acc-tap:Kraken no sign-in · Pilot · CAT D","acc-main acc-tap:Ledger no sign-in · WSO · CAT IW","acc-main acc-tap:Marlin no sign-in · WSO · CAT A","acc-main acc-tap:Merlin no sign-in · Pilot · CAT B","acc-main acc-tap:Nomad no sign-in · Pilot · CAT C","acc-main acc-tap:Osprey us9 · Pilot · CAT A","acc
+ROW Cinch SIGN-IN (DEFENCE MAIL) ROLE Member — own inputs, quals and bids Admin — schedules and manages Give sign-in Archive Delete Cancel
+ROW buttons Cinch [":",":Member — own inputs, quals and bids Admi","abtn primary:Give sign-in","abtn:Archive","abtn danger:Delete","abtn:Cancel"]
+ROW Hunter SIGN-IN (DEFENCE MAIL) ROLE Member — own inputs, quals and bids Admin — schedules and manages Save Suspend Archive Delete Cancel
+ROW buttons Hunter [":",":Member — own inputs, quals and bids Admi","abtn primary:Save","abtn:Suspend","abtn:Archive","abtn danger:Delete","abtn:Cancel"]
+ERROR locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('#page-admin button.acc-main').filter({ hasText: /^Saber/ }).first()[22m
+[2m    - locator resolved to <button disabled class="acc-main acc-tap" title="Your own account — another admin can change it">…</button>[22m
+[2m  - attempting click action[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is not enabled[22m
+[2m    - retrying click action[22m
+[2m    - waiting 20ms[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is not enabled[22m
+[2m    - retrying click action[22m
+[2m      - waiting 100ms[22m
+[2m    57 × waiting for element to be visible, enabled and stable[22m
+[2m       - element is not enabled[22m
+[2m     - retrying click action[22m
+[2m       - waiting 500ms[22m
+
+    at C:\Users\User\AppData\Roaming\Claude\side-session-notes\local_eeb07289-ed8b-483b-8502-00962970c7d1\s4-chat201\wc\wc-r3.mjs:12:95
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

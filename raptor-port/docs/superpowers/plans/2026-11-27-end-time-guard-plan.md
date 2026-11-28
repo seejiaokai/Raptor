@@ -1,4 +1,174 @@
-# [END-TIME-GUARD] — the build plan (overnight planner, 27 Nov 26)
+# [END-TIME-GUARD] — the build plan, REVISED by the builder (27 Nov 26, overnight, chat 202's night)
+
+Revision 1, by the overnight builder (Opus), on the two blind red-team reads of the first plan — Astra's
+(`briefs/2026-11-27-end-time-redteam-astra.md`, "not build-ready") and a fresh Opus's
+(`briefs/2026-11-27-end-time-redteam-opus.md`, "revise before building") — and Fable's cold read of the words
+(`briefs/2026-11-27-endtime-words-fable.md`, no changes, three build notes). Every finding below was checked against
+the code on `origin/main` (2eaab2769) before it was taken in; the ones that could not be checked say why.
+
+**This revision takes precedence over the first plan, kept whole below it (§§0–9), wherever the two differ.** The
+first plan's sections are referred to by their own numbers (e.g. "§1 row 16", "§3 step 6").
+
+**His D2611 governs the build:** a builder's reading is never built on. So the build makes ONLY what the rulings settle;
+every case a ruling does not settle is in "QUESTIONS FOR HIM" (§R5) with what the app does today and a recommended
+answer — and, until he answers, the app keeps doing what it does today for that case, pinned by a skipped test
+(`it.todo('… — waits on his answer Qn')`).
+
+---
+
+## R1. Each review finding — taken in, or not, and why
+
+| Finding | Checked in the code | What changes in the plan |
+|---|---|---|
+| Astra 1 — the board's flight and standby time boxes are built inline, bypassing `sbTxt`/`boxHTML` | **Confirmed**: `ui/board.ts` draws `<input class="tm…" data-bfld="ff:….to">` and `.ld` inline in the aircraft row | §1 row 8 gains the board's inline take-off/landing (flight and standby) inputs as a third builder; the outline step must mark them, start and end, grey and red, on every formation row |
+| Astra 2 — typing "TBD" is refused by the time writer | **Confirmed**: `engine/slots.ts txtSet` refuses any non-time ("TBD is not a time. Try 0900 or 09:00.") and keeps the old value | The reader counts a STORED "TBD" (any case) as empty (D2855, ruled); the writer is left exactly as it is (typing TBD stays refused) — whether it should accept or blank a typed "TBD" is question **Q14**. S3 becomes a reader test on a stored value only |
+| Astra 3 — Undo / Redo is a separate route to a published state | **Partly confirmed**: Undo and Redo replay saved images (`state/sched-commit.ts schedPostRestore`); they never call the publish commands, so the new guard does not run there. Not proved by a test tonight | Nothing built on Undo / Redo. Undo of an Unpublish (or Redo of a publish) while the working copy has a gap is question **Q15**; the first plan's "any new edit clears Redo" is withdrawn (Astra: only overlapping records are dropped) |
+| Astra 4 — the red state keyed by day alone mixes saved plans | **Confirmed** by reading: each saved plan owns its own content and signatures (`engine/drafts.ts`) | Folded into **R3/R4** as worked examples (plan A refused, switch to plan B, back to A); the red state, when built, is keyed by squadron, date AND plan |
+| Astra 5 — the AMT label test and sim free text are readings | **Confirmed**: `events.ts` uses `/^\s*BRIEF/i` and `/DEBRIEF/i`; sim `who` is a free-text label (`avail.ts`, `events.ts`) shown only when the row has no seats, never typed by a scheduler in a people box (`ui/html.ts` sim rows: `itxt` span, not editable) | The build leaves out the AMT block's BRIEF / DEBRIEF rows with nobody on them by the engine's own label test — the wider test, so a label the ruling may not mean ("BOX — DEBRIEF PRACTICE") stays as it is today (never refused) until **Q16**; sim `who` is not "someone" until **R8** |
+| Astra 6 / Opus 3b — the planned parity test with `dayEngaged` has the wrong oracle | **Confirmed**: `dayEngaged` leaves out SC SPARE, special people (ALL, ALL AVAIL) and sim `who` on purpose | The parity test is dropped. The rule is tested against the ruling's own cases only (SC SPARE alone: counted; ALL / ALL AVAIL: counted; a typed callsign not on the roster: counted; sim `who` text: waits on R8) |
+| Astra 7 — S20 is the opposite of what the app does | **Confirmed**: `ui/reqrow.ts` (owner D739, D740) — a time CLEARED on an input's row makes the input all day | S20 rewritten: clearing a time on a timed input's row makes the input all day, so the row is left out (D2852); Undo makes it timed again. Whether he wants a gap there instead is **Q17** |
+| Astra 8 — S17 and S26 cannot be done through the controls | **S26 confirmed** (the writer refuses "ASAP"); **S17 not checked tonight** (the board's BRIEF / DEBRIEF people cell — `ui/board-html.ts` — was not walked) | Reader tests (stored values) are kept apart from walk scenarios; S26 is a reader test only; S17 is walked by whatever reachable sequence exists, or marked unreachable |
+| Astra 9 — the OIL list's newer rulings (D2800, D2801) and the neighbouring job | **Not checked tonight** (outside the build's files beyond `ui/oilsign.ts`) | The time refusal runs before the OIL question (D2855, ruled) and `writeSign` refuses as the backstop for the list's Save and Later. The order against the neighbouring OIL sign-off job is for the coordinator; a held Later after a gap appears gets a test |
+| Astra 10 — "assumed times only while drafting" needs the exceptions | Agreed (no code to check) | Step 7's document words keep the AMT header exception and D605's whole-day absence warning |
+| Astra 11 / Opus 2b, 2c — F4, iPhone form arrows, VoiceOver open the sign list; the Amendments panel loses its preview lock | **2c confirmed**: `ui/ALPanel.tsx` button is `disabled={!signed \|\| previewing}`. 2b: the select is stretched over the pill and stays in the tab order (`signoffHTML`) | Screen step: while a day has a gap the sign box draws no focusable select (or `disabled tabindex=-1`), the label a `role=button aria-disabled` that refuses on click / Enter / Space; the panel's button `disabled = previewing \|\| (!signed && !gap)`. The `change` refusal stays as the backstop |
+| Astra 12 / Opus 5 — the code readers | Not a code matter | Three blind code reads (Astra, a fresh Opus, and a fresh Opus in Fable's seat this week, listed as owed) — the coordinator's to arrange |
+| Opus 1a — D2819 (Opus builds this week) was given for work Fable planned | Not a code matter | **Q18**. Tonight's build is Opus by the coordinator's instruction; the Fable-seat reads are owed |
+| Opus 1b — the board's count line would become tappable, never ruled or drawn | **Confirmed** (D2734 rules the board's words only; `board.mjs` draws a plain span) | The board's count line is plain text; the board's tap is **Q19**. Edit Schedule's tap (D2854, ruled) is a later step, not tonight |
+| Opus 1c — D360 (4)'s built "?" chip on a Common Programme placeholder with no start | Not walked tonight | Roll-call row added: HAS IT — stays (D2852 replaces only D361's unbuilt job); two marks on one gap is **Q20** |
+| Opus 1d — D605 is drafting-only now | Agreed | Step 7's marks add D605 (a pointer only) |
+| Opus 1e — sim free text "EXT SQN" | See Astra 5 | **R8** |
+| Opus 2a — no route publishes past the guard | **Confirmed**: the only callers of the publish commands are `ui/interactions.ts` (`data-beak`, `data-alpub`) and `ui/ALPanel.tsx`; the only caller of `setSign` is `ui/oilsign.ts writeSign`, reached from `ui/Shell.tsx` → `signPick` and from the list's Save / Later | None |
+| Opus 2d — guard only where the engine would act | **Confirmed** in `engine/publish.ts`: `setDayApproved` does nothing on a published day; `publishALDay` answers "…is still a draft" and "No changes to publish" first | Publish day is guarded only when `on && !dayApproved(di) && !protectedWeek()`; Publish AL only when `!protectedWeek() && dayApproved(di) && (dayHasChanges(di) \|\| correcting)`. The time refusal comes BEFORE the signature check (D2855 E1) |
+| Opus 3a — a template desk with START and no END and nobody on it is counted | Agreed — the ruling says so ("a row with a start needs its end even with nobody on it") | §1 row 21 and S50 corrected: a template with no times stays plain; one with a start only is counted at once |
+| Opus 3c — blank entries left by the delete | **Confirmed**: `engine/overlay.ts stripPersonFromDay` blanks seats and list entries to `''` in place | "Someone on it" tests trimmed, non-empty entries only; tests for `''`, `[]`, `['']`, `'  '`, `['','x']` |
+| Opus 3d — a formation with no aircraft | Agreed | A test: a take-off typed, no aircraft — counted by the start rule; an empty aircraft list is never "every aircraft cancelled" |
+| Opus 4a, 4c — steps in the wrong order; measure the fallout first | Agreed | New order (§R3): rule → refusals → demo remake → ONE full run, counted by kind → the screens |
+| Opus 4b — the demo patch must go where every reader sees it | **Confirmed**: `engine/data.ts` takes `WEEK1_DAYS_SNAP` from `DAYS` at load; tests that never boot read `DAYS` raw | The remake edits `engine/data.ts`'s seed itself (the port's seed is the source of truth), and `testing/refwin.ts` gives the original app's copy the same ends, as it already copies the port's labels by position |
+| Opus 4d — the locked look is tied to `disabled` | **Confirmed**: `04-pucks-sections.css` styles `.dbeak[disabled]` | Screen step: the same look on `[aria-disabled="true"]`, and on the panel's `.abtn.primary.locked` |
+| Opus 4e — roll-call rows missing (the "N pending" list, the "?" chip, the stale-appointment words) | Agreed (not walked) | Rows added (§R4); the stale-appointment words beside the count are **Q21** |
+| Opus 4f — measure the worst case at 402 wide | Agreed | Screen step: "12 items missing a time · 4 to sign" measured |
+| Opus 4g — keep the command layer free of the screens | **Confirmed**: `state/sched-commit.ts` reaches the screens only through hooks (`publishGate`, `HOOKS.toast`) | The rule is a pure function in `engine/`; the refusal in `state/` says the note through `HOOKS.toast(…, 'blocked')` and tells the screens through a hook the screens set, as `publishGate` is set |
+
+## R2. The rule function as it is built (supersedes §2.1)
+
+`raptor-port/src/engine/timegaps.ts` (new, port-only). One item per thing that owns a start and an end:
+
+| Item | Its two boxes | "Someone on it" (trimmed, non-empty entries only) | Left out |
+|---|---|---|---|
+| a flying or standby line, one formation | `ff:<di>.<gi>.<li>.to` / `.ld` | `a.p`, `a.w`, `a.more[]` on an aircraft not cancelled | the formation cancelled; a line with aircraft, every one cancelled (R7 — today: never refused) |
+| a duty desk | `dr:<di>.<wi>.<ri>.str` / `.end` | `r.id`, `r.more[]` — the role alone never | `r.cx`, `r.info` |
+| a sim row, AMT and OFT | `sr:<di>.<kind>.<ri>.str` / `.end` | `p`, `w`, `pax[]`, `more[]`; NOT the free-text `who` (R8) | `cx`, `info`; an AMT row the engine reads as the block's BRIEF or DEBRIEF while nobody is on it |
+| a ground programme row | `gr:<di>.<ri>.str` / `.end` | `who`, `more[]` | `cx`, `info`; a row standing for an input with All day ticked |
+| a Common Programme row | `ap:<di>.<ri>.str` / `.end` | `who` (one or a list; ALL and ALL AVAIL count), `more[]` | `cx`, `info`; a row standing for an input with All day ticked |
+
+A box is **empty** when it holds nothing or "TBD" (any case — D2855); a **clock time** when the engine's reader reads one;
+anything else is **a word** (R2 — today it is never refused). An item **counts** when someone is on it and a box is
+empty, or when its start holds a clock time and its end is empty. An item with only its end typed and nobody on it is
+not counted (R1 — today it is never refused). `items` counts items; `boxes` names the empty boxes.
+
+## R3. The steps, in the new order (supersedes §3's order)
+
+1. The rule function and its tests (§R2). 2. The refusals: sign-off (`ui/oilsign.ts signPick` — before the OIL question
+— and `writeSign` as the backstop), Publish day and Publish AL (`state/sched-commit.ts`, guarded only where the engine
+would act — Opus 2d), the words of D2854 in one place, the note through `HOOKS.toast(…,'blocked')`, a hook for the
+screens' red state. 3. The demo week remade (`engine/data.ts` + `testing/refwin.ts`; week 2 and week 149 scanned and
+filled the same way). 4. ONE full unit run under the lock, sorted by kind and counted. 5. The screens: the outline (grey;
+red once refused; never on View-only Sched or a preview), Edit Schedule's count line words, the board's count line words
+(plain text, D2734), the greyed Publish buttons that take a press (D2855 E1), the sign box that refuses a press without
+opening its list (try-out), the caret-held repaint, the drawing check. 6. Documents and records (§3 step 7). 7. Later:
+Edit Schedule's count-line tap (D2854), the Legend line (D2803, drawn first).
+
+## R4. Roll-call rows added (to §1)
+
+- 8b. The board's inline take-off / landing inputs, flight and standby lines (`ui/board.ts`) — MISSING → HAS IT.
+- 38. The day's "N pending" list window (`data-pendlist`) — MUST NOT change: an emptied time on a published day shows
+  there as any change does; no ruling adds the count there.
+- 39. D360 (4)'s "?" chip on a placeholder row with no start — HAS IT, stays (D2852 replaces only D361); Q20.
+- 40. The stale-appointment words ("SKED CK needs an appointed scheduler") on the sign-off line — stays as built
+  beside the count until Q21.
+- Row 16 (Undo / Redo) — not "unchanged code, pinned": Undo and Redo restore saved states without the guard (Q15).
+- Row 21 (templates) — a template's desk with a start and no end is counted at once, nobody on it too.
+
+## R5. QUESTIONS FOR HIM
+
+Each: when it happens, what the app does today, and the recommended answer. Until he answers, the build keeps today's
+behaviour for the case and a skipped test names the question.
+
+- **R1 — a row with only its end typed and nobody on it.** A scheduler types "— 17:00" on a Common Programme row and
+  leaves it. Today: nothing stops publishing. Recommended: counted, its start outlined — one rule, any time typed asks
+  for the other (as the try-out drew it).
+- **R2 — a word other than "TBD" in a time box** ("ASAP", "LATE"), from an older saved week (the writer refuses typing
+  one). Today: nothing stops publishing. Recommended: every word counts as empty.
+- **R3 — a box emptied after a refused press.** Today: no red at all. Recommended: red while the day still has any red
+  box; once every time is typed the day is grey again until the next refused press. With saved plans: plan A refused,
+  switch to complete plan B, back to A — A is still red (its gap was never typed); two plans never share a colour.
+- **R4 — how long red lasts.** Recommended: in this browser while he stays signed in; not shown to another scheduler on
+  another device; whether a reload keeps it, said on the build.
+- **R5 — read-only places on Edit Schedule** (a past version's preview, a parked plan's preview, the next-week peek, OIL
+  Earn mode if its boxes cannot be typed). Recommended: no outline where the box cannot be typed in.
+- **R6 — the desktop Amendments panel's "Publish AL".** Today: greyed until signed. Recommended: the same as the day's
+  Publish AL — greyed but pressable while a time is missing, refused with the same note; still locked while a past
+  version is previewed. (The refusal itself holds on every route already: it is in the command.)
+- **R7 — a flying line whose every aircraft is cancelled but the line is not, with a take-off and no landing.** Today:
+  nothing stops publishing. Recommended: never counted (a cancelled flight has no landing to type).
+- **R8 — words in a sim's people cell** (the demo's "EXT SQN" OFT row: a label, not a person; it shows only when the
+  row has no crew, and a scheduler cannot type it). Today: nothing stops publishing. Recommended: counted — anything in
+  the people cell is someone. (A row with a start typed is counted anyway, by the start rule.)
+- **R9 — a kept All-day row** (added by the overnight fixer, 27 Nov 26, from the two Opus code reads' F1). A member files
+  an All day Training for Tuesday; it lands on Tuesday's Ground Programme with his name and no times, and Tuesday is
+  published. He then moves the Training to Thursday (or deletes it). The scheduler loads Tuesday's published version back
+  onto the working copy, or switches to a saved plan that still holds the row: the row comes back "kept" — left behind
+  by an input that no longer stands on Tuesday. Is it still the All-day input's row (left out), or now the scheduler's own
+  typed row, so both its boxes count as missing and every sign-off and Publish is refused until made-up hours are typed?
+  Today: never refused — the build keeps that (left out while its input is All day, or gone and so unreadable). Recommended:
+  left out — the row still stands for an all-day activity; a scheduler who wants hours on it types them, and one who does
+  not want it deletes it.
+- **Q-W1 — the count line with one item:** "1 item missing a time · 4 to sign" (Fable's build note, the coordinator's
+  brief). Recommended: as written. Built tonight only if the screens are reached.
+- **Q-W2 — one item on Publish:** "Blocked: 1 item is missing a time, outlined in red. Thursday was not published." and
+  "… AL1 was not published." — the ruled one-item lead joined to the ruled ends. Built so tonight (the refusal must say
+  something, and this is the ruling's own "…"); recommended: as written.
+- **Q-W3 — all four names still showing (an older saved week) and a time missing:** the line reads "N items missing a
+  time" alone. Recommended: as written.
+- **Q-W4 — the count line's hover words** ("Go to the next missing time", the try-out's). Recommended: keep.
+- **Q-W5 — the Logic page's "Rows with no end time" group and the OIL lines** — true now only while a day is drafted.
+  New words drafted by Opus, adjusted by Fable, put to him. Nothing changed until he answers.
+- **Q-W6 — the Publish button's hover words while a time is missing.** Today: "Sign off CUR CK, … before publishing
+  Thursday". Recommended: keep (no new words).
+- **Q14 — typing "TBD" in a time box.** Today: refused ("TBD is not a time. Try 0900 or 09:00."), the old time kept.
+  Recommended: leave it (an empty box already shows the to-do; "TBD" reaches a box only from an older saved week, where
+  it counts as empty, D2855).
+- **Q15 — Undo of an Unpublish (or Redo of a publish) after a time was emptied on the working copy.** Undo puts back the
+  published day as it was — it publishes nothing new. Today: allowed. Recommended: leave it allowed (the issued day
+  had all its times when it was published; the gap is on the working copy and blocks its next publish).
+- **Q16 — which AMT rows are "the block's BRIEF and DEBRIEF".** The engine treats any AMT row whose label starts with
+  BRIEF, or holds DEBRIEF anywhere, as the block's header ("BOX — DEBRIEF PRACTICE" too). Today: none refused.
+  Recommended: only rows labelled exactly BRIEF or DEBRIEF are left out; any other AMT row follows the ordinary rule.
+- **Q17 — clearing a time on a timed input's row on the Ground Programme.** Today (his D739, D740): it makes the input
+  all day, so the row is left out of the rule. Recommended: leave it — the box he cleared is the input's own.
+- **Q18 — who builds this job** (Opus 1a): D2819 moved builds to Opus this week for work Fable planned; this plan was
+  Opus's. Tonight's build is Opus by the coordinator's instruction, with the Fable-seat reads owed. Recommended: keep
+  Opus's build, Fable to read the finished code after the weekly reset.
+- **Q19 — a tap on the Scheduler Board's count line.** Ruled for Edit Schedule only (D2854); the board's try-out draws
+  plain words. Recommended: the same tap on the board, drawn first.
+- **Q20 — two marks on one gap**: a Common Programme ALL AVAIL row with no start shows the built "?" chip (D360) and
+  will also show the outlined start box. Recommended: keep both for now; show him the picture.
+- **Q21 — the stale-appointment words beside the count** ("SKED CK needs an appointed scheduler" while a time is
+  missing). Recommended: keep them after the count.
+
+## R6. What tonight's build leaves out, and why
+
+- The outline, the count-line words, the greyed buttons that take a press and the sign box that refuses without opening
+  its list — the screen step (5); built only if time remains after the full run, each checked against the try-out.
+- The count line's tap on the board (Q19 — Edit Schedule's, ruled by D2854, was built by the overnight fixer, 27 Nov 26,
+  as the try-out's: each tap to the next empty box, no hover words until Q-W4), the Legend line (D2803 — drawn first),
+  the document and Logic-page words (Q-W5, after his answers), every QUESTIONS FOR HIM case.
+
+---
+
+# The first plan, kept whole (the revision above wins where they differ)
+
+## [END-TIME-GUARD] — the build plan (overnight planner, 27 Nov 26)
 
 Planned by a fresh Opus, read only. Nothing in any checkout was changed. App code was read from `origin/main`
 (eea24a984 era, 132 commits past `claude/readings-lapse-fix-fdbb3c`); the rulings from that branch. Every rule below is

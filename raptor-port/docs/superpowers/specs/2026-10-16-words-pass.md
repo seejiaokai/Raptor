@@ -84,6 +84,43 @@ period instead — "15–17 Jul", "was down 5–9 Jul" — nothing else below (t
 when). Built on `claude/sharp-goldberg-6d0656`, LOOK-checked (`raptor-port/docs/handpass/2026-10-17-words-r3.md`), pictures
 `raptor-port/docs/img/handpass/2026-10-16-words-pass/r3-built/`.
 
+## Round 4 — the passing notes and the bell's ordinary lines (24 Nov 26, chat 163)
+
+**D2520 (24 Nov 26 — "Ok as recommended to your questions"):** the pass starts again now, the passing notes first, Fable
+writing (D2441, D2393), "undone" wherever an Undo is meant (D2423). Two lists made that day from the code, by two Opus
+helpers, the host checking each point it uses: every passing note (331 rows, about 390 notes) and every line the bell can
+show (57) — `../briefs/2026-11-24-passing-notes-inventory.md`, `../briefs/2026-11-24-bell-lines-inventory.md`. **Left to
+other jobs:** the bell lines an Undo leaves behind (`[BELL-WORDS-CLEAR]`, D2392 — drawn by chat 156, his eight answers
+open); the four sets of words the two-squadron branch is putting to him (the Undo bubble on Admin → Users, the Tracker's
+failed save and failed switch, the way-back button on a held input window).
+
+**Put to him 24 Nov 26** as a page of pictures (claude.ai artifact `1vvh8CNWWnHH5x2c9GESXx`; the page
+`raptor-port/docs/mock/2026-11-24-words-r4/index.html`, built by the script kept beside it; pictures by
+`raptor-port/scripts/handpass/words-r4.mjs` on the built app, `raptor-port/docs/img/handpass/2026-11-24-words-r4/`,
+`facts.json` holding the words read from the app for each). The words, the fresh Fable's read of them (D2441) and the
+builder's answers to its doubts: `../briefs/2026-11-24-words-r4-draft.md`, `…-words-r4-fable-adjust.md`.
+
+| Q | Proposed | His answer |
+|---|---|---|
+| 1 | The bell, an input changed to another kind: "LL changed to OL · Saber" where it says "Renamed — was LL" | **yes, as recommended (D2521)** |
+| 2 | The bell, a leave made a half day: "Now LL (AM) · Saber" where it says "Now 00:00–12:00 am"; the day moved too, "Now Thu 16 Jul (AM)"; a titled input, "Now AM" | **yes, as recommended (D2521)** |
+| 3 | The bell, more than two changes in one save (only the first two are said): A "…, and 1 more change" (recommended), B every change, C as today; a word after a comma in small letters | **yes, as recommended (D2521)** |
+| 4 | One wording each for two messages worded two ways: "2560 is not a time. Try 0900 or 09:00." on an input's row as in a time box; "Ranger — already in that seat" by a drag as by a tap | **yes, as recommended (D2521)** |
+
+**D2521 (24 Nov 26 — "All as recommended"):** questions 1 to 4 as recommended (3: A), the slips not objected to; to build, failing test first, then the bug check. Shown as fixed with the round unless he objects: "to sunday" → "the next 4 weeks, to Sunday"; the publish note for a
+day no Leave War period covers takes the warning list's own sentence; "leave war period" → "Leave War period" in three
+places; "Only a scheduler answers from this list" → "… can answer from this list" (not reachable on screen). Seen in the
+run: the bell's second line is 307 px wide at his iPhone's size — Q1 and Q2 fit one line before and after, Q3's A and B
+take two where today's takes one; a tap puts only a placeholder on a seat it holds, never a man.
+
+**Built 24 Nov 26 (chat 168, `claude/words-pass-163`), failing tests first:** the bell (`state/notices.ts` — a part of
+its own for a change of kind, `{k:'kind', was, now}`; a half day `h` and `c` on the `when` part in place of clock times;
+the first two parts then "and N more change(s)"), its saved shape (`engine/schema.ts`, `docs/data-schema.md`; a line
+saved before reads as it always did); the notes in `ui/inputedit.tsx`, `ui/drag.ts`, `ui/InputsPage.tsx`
+(`engine/lookahead.ts lookaheadSavedNote`), `leavewar/sync.ts`, `ui/interactions.ts`, `ui/board.ts`, `ui/html.ts`,
+`ui/oilday.ts`; their words pinned in `ui/noteswords.test.ts` and `ui/bellnotices.test.tsx`; the bell's register and
+`ui-contracts.md` brought true. The bug check: its evidence sheet, `../../handpass/2026-11-24-words-r4-build.md`.
+
 ## Round 1b — his notes on the preview (16 Oct 26)
 
 **D942:** "Disregard this lesson" — lesson 1 struck from the guide's §9; D938's removal of the editing hint stands, for those lines only. **D943:** a short line beside the Ground Programme's name saying how to take an input off (Undo on its Personal Inputs row) — drawn first. **D944:** on a phone the board's Personal Inputs and Unavailable take one line less — drawn first. **D945** (asked while round 1b was drawn): the button on an accepted input's row reads "Reject", not "Undo" — board and week, phone and desktop; "Reject · Tue" where its row is on another day; hover text to match; what it does unchanged. Round 1b put to him as a page of pictures (claude.ai artifact `LyEcfYVzbqXnsgwscLRVvM`, four questions), drawn by `raptor-port/scripts/handpass/words-r1b.mjs`. **D946** (sent the same evening, with a picture of a new input's window): the Remarks box holds only what a person types; "till <date>" shows by default from the dates already picked, always after the remark — this brings forward the filed job of the same name (the app stops writing "till" into remarks; D728 step 2), its questions drawn and put to him first. **D947 — round 1b's answers:** (1) the board's wave header loses "In-time / Rally HH:MM · N ac"; (2) the Ground Programme's line, B: "To take an input off, press Reject on it in Personal Inputs below."; (3) on a phone an input's button sits on its puck's line, board and week; (4) no — Unavailable keeps its heading line. **D948 — the till date, answered** (page `E5EGxqoxCyCzhe3uzjYZjA`, drawn by `raptor-port/scripts/handpass/till-dates.mjs`): (1) Remarks holds only typed words, "till <date>" a grey tag after the box from the dates, in every input window; (2) B — a one-day input still says "till <that day>"; (3) every screen prints remark then date, as today. And his question (not a ruling): why the board's wave header carries "In-time / Rally 16:20 · 4 ac" — it is the wave's earliest report time and its aircraft count (`ui/html.ts waveHeadBoard`); the time is also the Available crew band's edge ("1ST WAVE AM–16:20") and the lines below show it.

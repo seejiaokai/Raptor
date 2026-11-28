@@ -1,0 +1,113 @@
+[
+ {
+  "scn": "f6all",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "f6all",
+  "size": "desktop",
+  "id": "f6all.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "f6all-f6all.post-postout-open-desktop.png, f6all-f6all.post-postout-sheet-desktop.png"
+ },
+ {
+  "scn": "f6all",
+  "size": "desktop",
+  "id": "f6all.fileR",
+  "what": "set-up: Saber files SANS fly all day for bane on 2026-07-18",
+  "ok": true,
+  "note": "{\"iid\":\"imrldiddfkld8x2\",\"people\":\"[{\\\"p\\\":\\\"bane\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077215027}]\",\"date\":\"Jul 18\",\"endDate\":null,\"sans\":{\"f\":true},\"allday\":true,\"e\":1439,\"remarks\":\"\",\"by\":\"stiff\"}",
+  "pics": "f6all-f6all.fileR-form-desktop.png, f6all-f6all.fileR-saved-desktop.png"
+ },
+ {
+  "scn": "f6all",
+  "size": "desktop",
+  "id": "f6all.fileI",
+  "what": "set-up: Saber files SANS fly all day for ipman on 2026-07-18",
+  "ok": true,
+  "note": "{\"iid\":\"imrldiiq0la2hwj\",\"people\":\"[{\\\"p\\\":\\\"ipman\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077221960}]\",\"date\":\"Jul 18\",\"endDate\":null,\"sans\":{\"f\":true},\"allday\":true,\"e\":1439,\"remarks\":\"\",\"by\":\"stiff\"}",
+  "pics": "f6all-f6all.fileI-form-desktop.png, f6all-f6all.fileI-saved-desktop.png"
+ },
+ {
+  "scn": "f6all",
+  "size": "desktop",
+  "id": "f6all.line",
+  "what": "set-up: a new flying line on Sat (+ Wave → Flying wave), no times typed",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 1\",\"kind\":\"\",\"standalone\":false,\"cs\":\"\",\"to\":\"\",\"ld\":\"\",\"n\":1}"
+ },
+ {
+  "scn": "f6all",
+  "size": "desktop",
+  "id": "f6all.b-Ranger",
+  "what": "blank flight: Ranger (filed fly \"all\") plain, no reason, not \"no availability filed\"",
+  "ok": true,
+  "note": "[SANS Avail, plain] title \"Ranger\" (no reason printed) · \"SANS Avail · 2 free\" · Jester, Ranger, Bolt(struck) \"SANS —",
+  "pics": "f6all-f6all-b-earmed-clip-desktop.png, f6all-f6all-b-esans-clip-desktop.png, f6all-f6all-b-earmed-desktop.png"
+ },
+ {
+  "scn": "f6all",
+  "size": "desktop",
+  "id": "f6all.b-Jester",
+  "what": "blank flight: Jester (filed fly \"all\") plain, no reason, not \"no availability filed\"",
+  "ok": true,
+  "note": "[SANS Avail, plain] title \"Jester\" (no reason printed) · \"SANS Avail · 2 free\" · Jester, Ranger, Bolt(struck) \"SANS —",
+  "pics": "f6all-f6all-b-earmed-clip-desktop.png, f6all-f6all-b-esans-clip-desktop.png, f6all-f6all-b-earmed-desktop.png"
+ },
+ {
+  "scn": "f6all",
+  "size": "desktop",
+  "id": "f6all.b-n",
+  "what": "\"SANS Avail · N free\" with the blank FCP picked",
+  "ok": "REC",
+  "note": "SANS Avail · 2 free"
+ },
+ {
+  "scn": "f6all",
+  "size": "desktop",
+  "id": "f6all.tt",
+  "what": "take-off 13:00 and landing 14:00 typed on the line",
+  "ok": "REC",
+  "note": "{\"to\":\"13:00\",\"ld\":\"14:00\"}"
+ },
+ {
+  "scn": "f6all",
+  "size": "desktop",
+  "id": "f6all.t-Ranger",
+  "what": "timed 13:00–14:00: Ranger (filed fly \"all\") plain, no reason, not \"no availability filed\"",
+  "ok": true,
+  "note": "[SANS Avail, plain] title \"Ranger\" (no reason printed) · \"SANS Avail · 2 free\" · Jester, Ranger, Bolt(struck) \"SANS —",
+  "pics": "f6all-f6all-t-earmed-clip-desktop.png, f6all-f6all-t-esans-clip-desktop.png, f6all-f6all-t-earmed-desktop.png"
+ },
+ {
+  "scn": "f6all",
+  "size": "desktop",
+  "id": "f6all.t-Jester",
+  "what": "timed 13:00–14:00: Jester (filed fly \"all\") plain, no reason, not \"no availability filed\"",
+  "ok": true,
+  "note": "[SANS Avail, plain] title \"Jester\" (no reason printed) · \"SANS Avail · 2 free\" · Jester, Ranger, Bolt(struck) \"SANS —",
+  "pics": "f6all-f6all-t-earmed-clip-desktop.png, f6all-f6all-t-esans-clip-desktop.png, f6all-f6all-t-earmed-desktop.png"
+ },
+ {
+  "scn": "f6all",
+  "size": "desktop",
+  "id": "f6all.t-n",
+  "what": "\"SANS Avail · N free\" with the timed FCP picked",
+  "ok": "REC",
+  "note": "SANS Avail · 2 free"
+ },
+ {
+  "scn": "f6all",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

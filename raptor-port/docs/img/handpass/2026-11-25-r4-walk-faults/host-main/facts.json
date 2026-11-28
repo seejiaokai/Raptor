@@ -1,0 +1,186 @@
+{
+ "pictures": [],
+ "cases": {
+  "desk-chromium": {
+   "log": [
+    "bundle index-DIr933hk.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"08:00\",\"to\":\"10:00\",\"title\":\"Range brief\"} on 2026-07-15: new input [\"imwv4g9yu3sgiqc\"]; asked []; note \"\""
+   ]
+  },
+  "desk-chromium-shared": {
+   "log": [
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"13:00\",\"to\":\"14:00\",\"title\":\"Sim brief\"} on 2026-07-15: new input [\"imwv4go1qbh6nsw\"]; asked []; note \"\""
+   ]
+  },
+  "phone-webkit": {
+   "log": [
+    "bundle index-DIr933hk.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"08:00\",\"to\":\"10:00\",\"title\":\"Range brief\"} on 2026-07-15: new input [\"imwv4gy0bb6h1ne\"]; asked []; note \"\""
+   ]
+  },
+  "phone-webkit-shared": {
+   "log": [
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"13:00\",\"to\":\"14:00\",\"title\":\"Sim brief\"} on 2026-07-15: new input [\"imwv4hj5t4f8biy\"]; asked []; note \"\""
+   ]
+  }
+ },
+ "errors": [],
+ "results": [
+  [
+   "H0 desk-chromium the day panel's blocks",
+   "RECORD",
+   "[\"sb-panel.daybar\",\"2.notes\",\"2.prog\",\"2.waves\",\"2.duty\",\"2.sims\",\"2.ground\",\"2.inputs\",\"2.avail\",\"2.sans\",\"2.unav\"]",
+   ""
+  ],
+  [
+   "H1 desk-chromium ground START 0830 typed: Personal Inputs reads it at once",
+   "FAIL",
+   "{\"pi\":\"09:00\",\"gr\":\"08:30\",\"caret\":\"gr:2.2.end@board\",\"rec\":510}",
+   "h1-desk-chromium-ground-0830.png"
+  ],
+  [
+   "H2 desk-chromium B3: another section's box clicked, nothing typed — the section left is written",
+   "FAIL",
+   "{\"leftWritten\":false,\"caret\":\"gr:2.2.rmks@board\",\"pi\":\"08:00\"}",
+   "h2-desk-chromium-b3.png"
+  ],
+  [
+   "H3 desk-chromium Undo after 0915: both rows back to 08:00, each section once",
+   "PASS",
+   "{\"pi\":\"08:00\",\"gr\":\"08:00\",\"rec\":480,\"secs\":[\"sb-panel.daybar\",\"2.notes\",\"2.prog\",\"2.waves\",\"2.duty\",\"2.sims\",\"2.ground\",\"2.inputs\",\"2.avail\",\"2.sans\",\"2.unav\"],\"caret\":\"BUTTON@board\"}",
+   "h3-desk-chromium-undo.png"
+  ],
+  [
+   "H3 desk-chromium Redo: both rows 09:15",
+   "PASS",
+   "{\"pi\":\"09:15\",\"gr\":\"09:15\",\"rec\":555}",
+   "h3-desk-chromium-redo.png"
+  ],
+  [
+   "H4 desk-chromium the Board closed: the week reads the saved start",
+   "PASS",
+   "{\"open\":null,\"weekGround\":\"09:15\",\"weekPI\":\"09:15\",\"rec\":555}",
+   "h4-desk-chromium-week.png"
+  ],
+  [
+   "H4 desk-chromium after a reload",
+   "PASS",
+   "{\"s\":555,\"e\":600}",
+   ""
+  ],
+  [
+   "H5 desk-chromium a shared input's end typed: its one Ground Programme row reads it at once",
+   "FAIL",
+   "{\"gr\":\"14:00\",\"caret\":\"imwv4go1qbh6nsw~rocky.rmks@board\",\"people\":2}",
+   "h5-desk-chromium-shared.png"
+  ],
+  [
+   "H0 phone-webkit the day panel's blocks",
+   "RECORD",
+   "[\"sb-panel.daybar\",\"2.notes\",\"2.prog\",\"2.waves\",\"2.duty\",\"2.sims\",\"2.ground\",\"2.inputs\",\"2.avail\",\"2.sans\",\"2.unav\"]",
+   ""
+  ],
+  [
+   "H1 phone-webkit ground START 0830 typed: Personal Inputs reads it at once",
+   "FAIL",
+   "{\"pi\":\"09:00\",\"gr\":\"08:30\",\"caret\":\"gr:2.2.end@board\",\"rec\":510}",
+   "h1-phone-webkit-ground-0830.png"
+  ],
+  [
+   "H2 phone-webkit B3: another section's box clicked, nothing typed — the section left is written",
+   "FAIL",
+   "{\"leftWritten\":false,\"caret\":\"gr:2.2.rmks@board\",\"pi\":\"08:00\"}",
+   "h2-phone-webkit-b3.png"
+  ],
+  [
+   "H3 phone-webkit Undo after 0915: both rows back to 08:00, each section once",
+   "PASS",
+   "{\"pi\":\"08:00\",\"gr\":\"08:00\",\"rec\":480,\"secs\":[\"sb-panel.daybar\",\"2.notes\",\"2.prog\",\"2.waves\",\"2.duty\",\"2.sims\",\"2.ground\",\"2.inputs\",\"2.avail\",\"2.sans\",\"2.unav\"],\"caret\":\"none\"}",
+   "h3-phone-webkit-undo.png"
+  ],
+  [
+   "H3 phone-webkit Redo: both rows 09:15",
+   "PASS",
+   "{\"pi\":\"09:15\",\"gr\":\"09:15\",\"rec\":555}",
+   "h3-phone-webkit-redo.png"
+  ],
+  [
+   "H4 phone-webkit the Board closed: the week reads the saved start",
+   "PASS",
+   "{\"open\":null,\"weekGround\":\"09:15\",\"weekPI\":\"09:15\",\"rec\":555}",
+   "h4-phone-webkit-week.png"
+  ],
+  [
+   "H4 phone-webkit after a reload",
+   "PASS",
+   "{\"s\":555,\"e\":600}",
+   ""
+  ],
+  [
+   "H5 phone-webkit a shared input's end typed: its one Ground Programme row reads it at once",
+   "FAIL",
+   "{\"gr\":\"14:00\",\"caret\":\"imwv4hj5t4f8biy~rocky.rmks@board\",\"people\":2}",
+   "h5-phone-webkit-shared.png"
+  ],
+  [
+   "N2 desk-chromium plain",
+   "RECORD",
+   "{\"l\":670,\"w\":101,\"h\":38,\"lines\":1,\"color\":\"rgb(241, 244, 247)\",\"border\":\"rgb(57, 66, 77)\",\"at\":\"foot\"}",
+   "n2-desk-chromium-plain.png"
+  ],
+  [
+   "N2 desk-chromium amber",
+   "RECORD",
+   "{\"l\":525,\"w\":390,\"h\":38,\"lines\":1,\"color\":\"rgb(229, 168, 59)\",\"border\":\"rgb(229, 168, 59)\",\"at\":\"foot\"}",
+   "n2-desk-chromium-amber.png"
+  ],
+  [
+   "N2 desk-chromium red",
+   "RECORD",
+   "{\"l\":513,\"w\":413,\"h\":38,\"lines\":1,\"color\":\"rgb(240, 85, 95)\",\"border\":\"rgb(240, 85, 95)\",\"at\":\"foot\"}",
+   "n2-desk-chromium-red.png"
+  ],
+  [
+   "N2 desk-chromium blocked",
+   "RECORD",
+   "{\"l\":586,\"w\":269,\"h\":38,\"lines\":2,\"color\":\"rgb(241, 244, 247)\",\"border\":\"rgb(57, 66, 77)\",\"at\":\"foot\"}",
+   "n2-desk-chromium-blocked.png"
+  ],
+  [
+   "N2 desk-chromium receipt",
+   "RECORD",
+   "{\"l\":360,\"w\":720,\"h\":54,\"lines\":2,\"color\":\"rgb(241, 244, 247)\",\"border\":\"rgb(57, 66, 77)\",\"at\":\"foot\"}",
+   "n2-desk-chromium-receipt.png"
+  ],
+  [
+   "N2 phone-webkit plain",
+   "RECORD",
+   "{\"l\":12,\"w\":378,\"h\":36,\"lines\":1,\"color\":\"rgb(241, 244, 247)\",\"border\":\"rgb(57, 66, 77)\",\"at\":\"foot\"}",
+   "n2-phone-webkit-plain.png"
+  ],
+  [
+   "N2 phone-webkit amber",
+   "RECORD",
+   "{\"l\":12,\"w\":378,\"h\":50,\"lines\":2,\"color\":\"rgb(229, 168, 59)\",\"border\":\"rgb(229, 168, 59)\",\"at\":\"foot\"}",
+   "n2-phone-webkit-amber.png"
+  ],
+  [
+   "N2 phone-webkit red",
+   "RECORD",
+   "{\"l\":12,\"w\":378,\"h\":50,\"lines\":2,\"color\":\"rgb(240, 85, 95)\",\"border\":\"rgb(240, 85, 95)\",\"at\":\"foot\"}",
+   "n2-phone-webkit-red.png"
+  ],
+  [
+   "N2 phone-webkit blocked",
+   "RECORD",
+   "{\"l\":12,\"w\":378,\"h\":37,\"lines\":2,\"color\":\"rgb(241, 244, 247)\",\"border\":\"rgb(57, 66, 77)\",\"at\":\"foot\"}",
+   "n2-phone-webkit-blocked.png"
+  ],
+  [
+   "N2 phone-webkit receipt",
+   "RECORD",
+   "{\"l\":12,\"w\":378,\"h\":64,\"lines\":3,\"color\":\"rgb(241, 244, 247)\",\"border\":\"rgb(57, 66, 77)\",\"at\":\"foot\"}",
+   "n2-phone-webkit-receipt.png"
+  ]
+ ]
+}

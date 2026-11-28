@@ -1,0 +1,405 @@
+<title>Four SANS Cases</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one reading column; a summary of the four answers first, then one section per question,
+   each picture in a dark frame (the app's own screens are dark) with its words under it. */
+:root {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --ink: #141a22;
+  --muted: #566271;
+  --line: #d9dee4;
+  --accent: #0a6c87;
+  --accent-soft: #e3f2f6;
+  --mark: #d81b7a;
+  --frame: #0f1419;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-data: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1217; --surface: #151c23; --ink: #e5ebf1; --muted: #9ba8b5; --line: #26313c;
+    --accent: #52c6e4; --accent-soft: #12303a; --mark: #ff5cb3; --frame: #080b0e; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1217; --surface: #151c23; --ink: #e5ebf1; --muted: #9ba8b5; --line: #26313c;
+  --accent: #52c6e4; --accent-soft: #12303a; --mark: #ff5cb3; --frame: #080b0e; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.55;
+  -webkit-text-size-adjust: 100%;
+}
+.wrap {
+  max-width: 760px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 56px;
+  display: flex; flex-direction: column; gap: 28px;
+}
+h1, h2, h3 { text-wrap: balance; margin: 0; line-height: 1.2; }
+p { margin: 0; }
+a { color: var(--accent); }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+
+.eyebrow {
+  font-family: var(--font-data); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
+}
+header { display: flex; flex-direction: column; gap: 10px; }
+header h1 { font-size: 30px; font-weight: 700; letter-spacing: -.01em; }
+header .lead { color: var(--muted); max-width: 62ch; }
+
+/* The "look at these" list — one line per question with its recommendation */
+.todo { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 6px 0; }
+.todo h2 { font-size: 13px; font-family: var(--font-data); font-weight: 500; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--muted); padding: 12px 18px 6px; }
+.todo ol { list-style: none; margin: 0; padding: 0; }
+.todo li + li { border-top: 1px solid var(--line); }
+.todo a { display: grid; grid-template-columns: 28px 1fr; gap: 2px 10px; padding: 12px 18px; text-decoration: none; color: var(--ink); }
+.todo .n { grid-row: span 2; font-family: var(--font-data); font-size: 15px; color: var(--accent); padding-top: 1px; }
+.todo .q { font-weight: 600; }
+.todo .r { color: var(--muted); font-size: 15px; }
+.todo .r b { color: var(--accent); font-weight: 600; }
+
+.cast { font-size: 15px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 18px; }
+.cast b { color: var(--ink); font-weight: 600; }
+.key { display: inline-flex; align-items: center; gap: 8px; }
+.key i { width: 22px; height: 14px; border: 2.5px solid var(--mark); border-radius: 4px; display: inline-block; }
+
+/* One question */
+.qs { display: flex; flex-direction: column; gap: 44px; }
+section.q { display: flex; flex-direction: column; gap: 16px; scroll-margin-top: 16px; }
+section.q > h2 { font-size: 24px; font-weight: 700; display: flex; gap: 12px; align-items: baseline; }
+section.q > h2 .n { font-family: var(--font-data); font-weight: 500; font-size: 15px; color: var(--accent);
+  border: 1.5px solid var(--accent); border-radius: 8px; padding: 1px 8px; flex: none; transform: translateY(-3px); }
+h3 { font-size: 13px; font-family: var(--font-data); font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.block { display: flex; flex-direction: column; gap: 8px; max-width: 65ch; }
+ul.today { margin: 0; padding-left: 1.1em; display: flex; flex-direction: column; gap: 6px; }
+.quote { font-style: normal; background: var(--accent-soft); border-radius: 5px; padding: 0 5px; white-space: normal; }
+.day { font-family: var(--font-data); font-size: .88em; letter-spacing: .02em; white-space: nowrap; }
+
+.figs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 16px; }
+figure { margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+figure .tag { font-family: var(--font-data); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+figure a.pic { display: block; background: var(--frame); border-radius: 12px; overflow: hidden; border: 1px solid var(--line); line-height: 0; }
+figure img { width: 100%; height: auto; display: block; }
+figcaption { font-size: 15px; line-height: 1.5; }
+figcaption b { font-weight: 600; }
+
+.note { font-size: 15px; color: var(--muted); border-left: 3px solid var(--line); padding-left: 12px; max-width: 65ch; }
+
+.rec { background: var(--accent-soft); border-radius: 14px; padding: 16px 18px; display: flex; flex-direction: column; gap: 8px; }
+.rec h3 { color: var(--accent); }
+.rec p { max-width: 65ch; }
+.alt { display: flex; flex-direction: column; gap: 6px; padding: 0 2px; max-width: 65ch; }
+.answer { border-top: 1px solid var(--line); padding-top: 14px; font-size: 16px; }
+.answer .lbl { color: var(--muted); }
+.answer b { font-weight: 600; }
+.answer .sep { color: var(--muted); padding: 0 6px; }
+
+/* Full-size view */
+.viewer { position: fixed; inset: 0; z-index: 20; background: #05080b; display: flex; flex-direction: column; }
+.viewer[hidden] { display: none; }
+.viewer .bar { display: flex; justify-content: flex-end; padding: calc(env(safe-area-inset-top, 0px) + 10px)
+  max(12px, env(safe-area-inset-right, 0px)) 10px max(12px, env(safe-area-inset-left, 0px)); }
+.viewer button { font: 600 16px var(--font-body); color: #fff; background: #2a333d; border: 0; border-radius: 10px; padding: 10px 16px; min-height: 44px; }
+.viewer .scroll { flex: 1; overflow: auto; -webkit-overflow-scrolling: touch;
+  padding: 0 max(12px, env(safe-area-inset-right, 0px)) calc(env(safe-area-inset-bottom, 0px) + 16px) max(12px, env(safe-area-inset-left, 0px)); }
+.viewer img { display: block; max-width: none; margin: 0 auto; }
+.viewer p { color: #c9d2db; font-size: 14px; text-align: center; padding: 10px 16px 0; margin: 0; }
+@media (max-width: 480px) { header h1 { font-size: 26px; } section.q > h2 { font-size: 21px; } }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+
+<div class="wrap">
+
+<header>
+  <span class="eyebrow">SANS reminder · four cases for you · 25 Nov</span>
+  <h1>Four SANS cases your rulings don't settle</h1>
+  <p class="lead">Last night's checks of the new SANS words found nothing broken. These four cases are ones your rulings don't settle. Each shows what the app does today.</p>
+</header>
+
+<nav class="todo" aria-label="The four questions">
+  <h2>Your four answers</h2>
+  <ol>
+    <li><a href="#q1"><span class="n">1</span><span class="q">A seat on a flight with no times typed yet</span><span class="r">Recommended: <b>strike Ranger on the crew list too</b>, so it matches his reminder.</span></a></li>
+    <li><a href="#q2"><span class="n">2</span><span class="q">The warning list when a SANS man has filed nothing</span><span class="r">Recommended: <b>keep it</b> — no SANS warning until he files.</span></a></li>
+    <li><a href="#q3"><span class="n">3</span><span class="q">He offered one thing and is planned on another</span><span class="r">Recommended: <b>keep it</b> — his reminder only asks him to file; Saber sees the mismatch.</span></a></li>
+    <li><a href="#q4"><span class="n">4</span><span class="q">Standby seats</span><span class="r">Recommended: <b>keep it</b> — SC MAIN counts, SC SPARE doesn't, AVALON once it flies.</span></a></li>
+  </ol>
+</nav>
+
+<div class="cast">
+  <span><b>Ranger</b> — SANS from Fri 17 Jul, a member, sees his bell on his phone</span>
+  <span><b>Saber</b> — the scheduler, at his desk on Edit Schedule</span>
+  <span class="key"><i aria-hidden="true"></i> pink outline: the place to look</span>
+  <span>Tap any picture to see it full size.</span>
+</div>
+
+<div class="qs">
+
+<!-- ───────────── Q1 ───────────── -->
+<section class="q" id="q1">
+  <h2><span class="n">1</span>A seat on a flight with no times typed yet</h2>
+
+  <div class="block">
+    <h3>The case</h3>
+    <p>Ranger is SANS from <span class="day">Fri 17 Jul</span> and has filed no SANS availability. Saber puts him in a seat on a <span class="day">Sat 18</span> flight that has no take-off or landing time typed yet.</p>
+  </div>
+
+  <div class="block">
+    <h3>What the app does today</h3>
+    <ul class="today">
+      <li>Ranger's bell reminder names <span class="day">Sat 18</span> — you ruled that a seat with no times yet counts.</li>
+      <li>On Saber's crew list, with that seat armed, Ranger's name is <b>not</b> struck through.</li>
+      <li>Once Saber types the times, the same armed seat strikes him through, with the reason beside his name.</li>
+    </ul>
+  </div>
+
+  <div class="figs">
+    <figure>
+      <span class="tag">Ranger's phone · the bell</span>
+      <a class="pic" href="img/q1-bell.png"><img src="img/q1-bell.png" width="1206" height="480" alt="Ranger's bell open on his phone with one unread reminder about Sat 18 Jul."></a>
+      <figcaption>His reminder reads <span class="quote">“You're planned on Sat 18 Jul with nothing filed. Tap to file for availability.”</span> The flight has no times yet, and it still counts.</figcaption>
+    </figure>
+    <figure>
+      <span class="tag">Saber's desk · crew list, seat with no times armed</span>
+      <a class="pic" href="img/q1-notimes.png"><img src="img/q1-notimes.png" width="868" height="270" alt="The crew list with a seat on the no-times flight armed. Ranger's name is plain, not struck."></a>
+      <figcaption>Saber arms a seat on that flight. Ranger is <b>plain</b> — no strike, no reason. Nothing here tells Saber that Ranger hasn't filed.</figcaption>
+    </figure>
+    <figure>
+      <span class="tag">Saber's desk · same flight, times typed</span>
+      <a class="pic" href="img/q1-timed.png"><img src="img/q1-timed.png" width="974" height="282" alt="The crew list with a seat on the same flight armed after times are typed. Ranger is struck through with the SANS reason beside him."></a>
+      <figcaption>After Saber types the times, Ranger is <b>struck through</b>: <span class="quote">“SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.”</span></figcaption>
+    </figure>
+  </div>
+
+  <div class="rec">
+    <h3>Recommended — strike him there too</h3>
+    <p>When Ranger has filed nothing, strike him on the crew list for a seat with no times as well. With nothing filed there are no times to compare, so there is no reason to wait for them. The reminder and the crew list then say the same thing.</p>
+    <p>What changes: Saber arms a seat on a flight with no times and sees Ranger struck, with the same reason as the timed seat. If Ranger has filed something, nothing changes.</p>
+  </div>
+  <div class="alt">
+    <h3>Or</h3>
+    <p>Leave the crew list as it is. Ranger stays plain on a seat with no times until Saber types them; his own reminder still names the day.</p>
+  </div>
+  <p class="answer"><span class="lbl">Your answer:</span> <b>strike him too</b> (recommended)<span class="sep">/</span>leave as is</p>
+</section>
+
+<!-- ───────────── Q2 ───────────── -->
+<section class="q" id="q2">
+  <h2><span class="n">2</span>The warning list when a SANS man has filed nothing</h2>
+
+  <div class="block">
+    <h3>The case</h3>
+    <p>The same Ranger, still with nothing filed, is in a seat on a <span class="day">Sat 18</span> flight that has its times typed.</p>
+  </div>
+
+  <div class="block">
+    <h3>What the app does today</h3>
+    <ul class="today">
+      <li>His reminder names <span class="day">Sat 18</span>, and the crew list strikes him.</li>
+      <li>The day's warning list shows <b>no</b> SANS warning. It warns only once he <b>has</b> filed and the seat falls outside what he offered — for example <span class="quote">“SANS: not offering Fly today”</span> or <span class="quote">“SANS: available 08:00–12:00 only”</span>.</li>
+      <li>It has worked this way since August.</li>
+    </ul>
+  </div>
+
+  <div class="figs">
+    <figure>
+      <span class="tag">Saber's desk · crew list, timed seat armed</span>
+      <a class="pic" href="img/q2-crew.png"><img src="img/q2-crew.png" width="974" height="282" alt="The crew list with a timed seat armed. Ranger is struck through with the SANS reason beside him."></a>
+      <figcaption>Ranger is struck, with <span class="quote">“SANS from Fri 17 Jul: no availability filed.”</span> Rebel, just below him, has filed nothing for that day either.</figcaption>
+    </figure>
+    <figure>
+      <span class="tag">Saber's desk · the day's warning list</span>
+      <a class="pic" href="img/q2-warn.png"><img src="img/q2-warn.png" width="758" height="274" alt="The day's warning list with one issue about publishing for OIL and no SANS warning."></a>
+      <figcaption>The same day's warning list has one issue — the day isn't published yet, so nobody earns OIL — and <b>nothing about Ranger</b>.</figcaption>
+    </figure>
+  </div>
+
+  <div class="rec">
+    <h3>Recommended — keep it</h3>
+    <p>The crew list and his own reminder already say it. A warning on every SANS flyer until he files would crowd the warning list on most days.</p>
+    <p>What changes: nothing.</p>
+  </div>
+  <div class="alt">
+    <h3>Or</h3>
+    <p>Add a warning on the day, <span class="quote">“SANS: nothing filed for Sat 18”</span>, for each SANS man planned with nothing filed.</p>
+  </div>
+  <p class="answer"><span class="lbl">Your answer:</span> <b>keep as is</b> (recommended)<span class="sep">/</span>add the warning</p>
+</section>
+
+<!-- ───────────── Q3 ───────────── -->
+<section class="q" id="q3">
+  <h2><span class="n">3</span>He offered one thing and is planned on another</h2>
+
+  <div class="block">
+    <h3>When this happens</h3>
+    <p>A SANS man files his own SANS availability on his phone, ticking what he offers that day: Fly, OFT or AMT. Saber plans him separately, often later. Sometimes the two don't match: he offered to fly and is planned on a sim, or he offered a sim and is planned to fly.</p>
+  </div>
+
+  <div class="block">
+    <h3>Example 1 — offered to fly, planned on a sim</h3>
+    <ul class="today">
+      <li>Saber has Ranger in the OFT sim on <span class="day">Sun 19</span>.</li>
+      <li>Ranger files SANS availability for <span class="day">Sun 19</span> and ticks <b>Fly</b> only, not OFT.</li>
+      <li><b>Ranger's bell:</b> the reminder for <span class="day">Sun 19</span> goes, because he has filed something for that day. Nothing tells him he is planned on a sim he didn't offer.</li>
+      <li><b>Saber's screen:</b> the crew list strikes Ranger for the OFT seat with <span class="quote">“SANS — not offering OFT”</span>, and the day's warning list says <span class="quote">“SANS: not offering OFT today”</span>.</li>
+    </ul>
+  </div>
+
+  <div class="block">
+    <h3>Example 2 — offered a sim, planned to fly</h3>
+    <ul class="today">
+      <li>Saber has Ranger in a seat on a <span class="day">Sat 18</span> flight.</li>
+      <li>Ranger files SANS availability for <span class="day">Sat 18</span> and ticks <b>OFT</b> only, not Fly.</li>
+      <li><b>Ranger's bell:</b> the same. The reminder for <span class="day">Sat 18</span> goes, and nothing tells him he is planned to fly.</li>
+      <li><b>Saber's screen:</b> the crew list strikes Ranger for the flying seat with <span class="quote">“SANS — not offering Fly”</span>, and the day's warning list says <span class="quote">“SANS: not offering Fly today”</span>.</li>
+    </ul>
+  </div>
+
+  <div class="block">
+    <h3>What the app does today</h3>
+    <p>Both ways round it is the same. His reminder only asks whether he has filed anything for the day. Whether what he filed matches what he is planned on is shown to Saber only.</p>
+  </div>
+
+  <div class="figs">
+    <figure>
+      <span class="tag">Ranger's phone · before he files</span>
+      <a class="pic" href="img/q3-bell-before.png"><img src="img/q3-bell-before.png" width="1206" height="480" alt="Ranger's bell with one unread reminder about Sun 19 Jul."></a>
+      <figcaption>Example 1, before he files: <span class="quote">“You're planned on Sun 19 Jul with nothing filed. Tap to file for availability.”</span></figcaption>
+    </figure>
+    <figure>
+      <span class="tag">Ranger's phone · after the Fly-only filing</span>
+      <a class="pic" href="img/q3-bell-after.png"><img src="img/q3-bell-after.png" width="1206" height="330" alt="Ranger's bell open and empty, reading Nothing new."></a>
+      <figcaption>Example 1, after he files Fly only for <span class="day">Sun 19</span>: his bell reads <b>“Nothing new”</b>. He is still planned on the OFT sim, which he didn't offer.</figcaption>
+    </figure>
+    <figure>
+      <span class="tag">Saber's desk · crew list, OFT seat armed, before he files</span>
+      <a class="pic" href="img/q3-crew-before.png"><img src="img/q3-crew-before.png" width="974" height="282" alt="The crew list with an OFT seat armed on Sun 19. Ranger is struck through with the reason no availability filed."></a>
+      <figcaption>Example 1, before Ranger files: Saber's crew list strikes him for the OFT seat with <span class="quote">“no availability filed”</span>. After he files Fly only, the strike stays and the reason changes to <span class="quote">“SANS — not offering OFT”</span>.</figcaption>
+    </figure>
+  </div>
+  <p class="note">No picture was taken of Saber's screen after the filing, or of example 2. The words quoted above are the app's own.</p>
+
+  <div class="rec">
+    <h3>Recommended — keep it</h3>
+    <p>The reminder has one job: get him to file. When what he filed doesn't match the plan, Saber sees it on the crew list and the warning list, and either changes the plan or asks him. Often the plan is what needs changing, not his availability.</p>
+    <p>What changes: nothing.</p>
+  </div>
+  <div class="alt">
+    <h3>Or — tell him too</h3>
+    <p>His bell also tells him when what he filed doesn't match what he is planned on. The line stays until he changes his availability or Saber changes the plan. Saber's screen stays as it is.</p>
+    <p>Example 1 would read: <span class="quote">“You're planned on the OFT sim on Sun 19 Jul, but you offered Fly only. Tap to change your availability.”</span></p>
+    <p>Example 2 would read: <span class="quote">“You're planned to fly on Sat 18 Jul, but you offered OFT only. Tap to change your availability.”</span></p>
+    <p>What changes: a new line on his bell, built after you approve its drawing. If you pick this, one more question follows: whether he is also told when he offered the right thing but the wrong hours.</p>
+  </div>
+  <p class="answer"><span class="lbl">Your answer:</span> <b>keep as is</b> (recommended)<span class="sep">/</span>tell him too</p>
+</section>
+
+<!-- ───────────── Q4 ───────────── -->
+<section class="q" id="q4">
+  <h2><span class="n">4</span>Standby seats</h2>
+
+  <div class="block">
+    <h3>The case</h3>
+    <p>Ranger, with nothing filed, is planned on standby on <span class="day">Sat 18</span>.</p>
+  </div>
+
+  <div class="block">
+    <h3>What the app does today</h3>
+    <ul class="today">
+      <li>An <b>SC MAIN</b> seat counts as planned: his reminder names the day, the crew list strikes him, and the warning list treats it as a planned seat.</li>
+      <li>An <b>SC SPARE</b> seat does not count: no reminder, no strike.</li>
+      <li>An <b>AVALON</b> line counts only once it is ticked FLIES.</li>
+      <li>The reminder, the crew list and the warning list agree each time.</li>
+    </ul>
+  </div>
+
+  <div class="figs">
+    <figure>
+      <span class="tag">Ranger's phone · SC MAIN</span>
+      <a class="pic" href="img/q4-bell-main.png"><img src="img/q4-bell-main.png" width="1206" height="480" alt="Ranger's bell with one unread reminder about Sat 18 Jul."></a>
+      <figcaption>On an SC MAIN seat his bell names <span class="day">Sat 18</span>: <span class="quote">“You're planned on Sat 18 Jul with nothing filed.”</span></figcaption>
+    </figure>
+    <figure>
+      <span class="tag">Saber's desk · SC MAIN seat armed</span>
+      <a class="pic" href="img/q4-crew-main.png"><img src="img/q4-crew-main.png" width="974" height="282" alt="The crew list with the SC MAIN seat armed. Ranger is struck through with the SANS reason."></a>
+      <figcaption>Saber arms the SC MAIN seat: Ranger is <b>struck</b>, with the SANS reason beside him.</figcaption>
+    </figure>
+    <figure>
+      <span class="tag">Ranger's phone · SC SPARE</span>
+      <a class="pic" href="img/q4-bell-spare.png"><img src="img/q4-bell-spare.png" width="1206" height="330" alt="Ranger's bell open and empty, reading Nothing new."></a>
+      <figcaption>On an SC SPARE seat his bell reads <b>“Nothing new”</b> — no reminder.</figcaption>
+    </figure>
+    <figure>
+      <span class="tag">Saber's desk · SC SPARE seat armed</span>
+      <a class="pic" href="img/q4-crew-spare.png"><img src="img/q4-crew-spare.png" width="868" height="270" alt="The crew list with the SC SPARE seat armed. Ranger's name is plain, not struck."></a>
+      <figcaption>Saber arms the SC SPARE seat: Ranger is <b>plain</b>. Bell and crew list agree.</figcaption>
+    </figure>
+  </div>
+
+  <div class="rec">
+    <h3>Recommended — keep it</h3>
+    <p>A SPARE, or an AVALON line that isn't flying, may never fly, so asking him to file for it would be asking too early. Once the line flies, it counts.</p>
+    <p>What changes: nothing.</p>
+  </div>
+  <div class="alt">
+    <h3>Or</h3>
+    <p>Count every standby seat — SC SPARE and an AVALON line not yet ticked FLIES too — in his reminder and on the crew list.</p>
+  </div>
+  <p class="answer"><span class="lbl">Your answer:</span> <b>keep as is</b> (recommended)<span class="sep">/</span>count every standby seat</p>
+</section>
+
+</div>
+</div>
+
+<div class="viewer" id="viewer" hidden role="dialog" aria-modal="true" aria-label="Picture at full size">
+  <div class="bar"><button type="button" id="viewerClose">Close</button></div>
+  <div class="scroll" id="viewerScroll"><img id="viewerImg" alt=""><p id="viewerCap"></p></div>
+</div>
+
+<script>
+(function () {
+  var viewer = document.getElementById('viewer')
+  var img = document.getElementById('viewerImg')
+  var cap = document.getElementById('viewerCap')
+  var closeBtn = document.getElementById('viewerClose')
+  var opener = null
+  function close() {
+    viewer.hidden = true
+    img.removeAttribute('src')
+    document.body.style.overflow = ''
+    if (opener) opener.focus()
+  }
+  document.querySelectorAll('a.pic').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault()
+      var small = a.querySelector('img')
+      opener = a
+      // Full size: the picture's own pixels, scrolled inside the viewer when wider than the screen.
+      img.src = a.getAttribute('href')
+      img.alt = small.alt
+      img.style.width = Math.min(+small.getAttribute('width'), 900) + 'px'
+      var fc = a.parentNode.querySelector('figcaption')
+      cap.textContent = fc ? fc.textContent : ''
+      viewer.hidden = false
+      document.body.style.overflow = 'hidden'
+      closeBtn.focus()
+      // Open centred on the picture, so one wider than the screen shows its middle first.
+      var sc = document.getElementById('viewerScroll')
+      var centre = function () { sc.scrollTop = 0; sc.scrollLeft = (sc.scrollWidth - sc.clientWidth) / 2 }
+      if (img.complete) centre(); else img.onload = centre
+    })
+  })
+  closeBtn.addEventListener('click', close)
+  viewer.addEventListener('click', function (e) { if (e.target === viewer || e.target.id === 'viewerScroll') close() })
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !viewer.hidden) close() })
+})()
+</script>

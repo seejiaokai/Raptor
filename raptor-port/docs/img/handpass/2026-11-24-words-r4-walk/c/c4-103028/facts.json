@@ -1,0 +1,207 @@
+{
+ "pictures": [
+  {
+   "file": "c4-a-plant.png",
+   "case": "C4",
+   "size": "desktop 1440x900 @2x",
+   "text": "No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.",
+   "geo": {
+    "l": 419,
+    "t": 836,
+    "r": 1021,
+    "b": 874,
+    "w": 603,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c4-a-publish-desk.png",
+   "case": "C4",
+   "size": "desktop 1440x900 @2x",
+   "text": "Saturday published and approved · No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.",
+   "geo": {
+    "l": 360,
+    "t": 820,
+    "r": 1080,
+    "b": 874,
+    "w": 720,
+    "h": 54,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c4-warnlist-board-desk-5.png",
+   "case": "C4",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    {
+     "shown": true,
+     "text": "No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.✕Create the 2028 period"
+    },
+    {
+     "shown": true,
+     "text": "No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War."
+    }
+   ]
+  },
+  {
+   "file": "c4-d-plant.png",
+   "case": "C4",
+   "size": "desktop 1440x900 @2x",
+   "text": "the ground programme has no usable times, so nobody on it earns OIL for this day",
+   "geo": {
+    "l": 477,
+    "t": 836,
+    "r": 963,
+    "b": 874,
+    "w": 485,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c4-d-amend-desk.png",
+   "case": "C4",
+   "size": "desktop 1440x900 @2x",
+   "text": "Published AL1 · 1 item on Sat only · approved by Anvil · Saturday 5 Feb: the ground programme has no usable times, so nobody on it earns OIL · No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.",
+   "geo": {
+    "l": 360,
+    "t": 804,
+    "r": 1080,
+    "b": 874,
+    "w": 720,
+    "h": 70,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c4-e-plant.png",
+   "case": "C4",
+   "size": "desktop 1440x900 @2x",
+   "text": "Ace planned",
+   "geo": {
+    "l": 669,
+    "t": 836,
+    "r": 771,
+    "b": 874,
+    "w": 102,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c4-e-monday-desk.png",
+   "case": "C4",
+   "size": "desktop 1440x900 @2x",
+   "text": "Monday published and approved",
+   "geo": {
+    "l": 612,
+    "t": 836,
+    "r": 828,
+    "b": 874,
+    "w": 215,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c4-b-oilquestion-desk.png",
+   "case": "C4",
+   "size": "desktop 1440x900 @2x",
+   "text": "Back"
+  },
+  {
+   "file": "c4-c-plant.png",
+   "case": "C4",
+   "size": "desktop 1440x900 @2x",
+   "text": "No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.",
+   "geo": {
+    "l": 419,
+    "t": 836,
+    "r": 1021,
+    "b": 874,
+    "w": 603,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c4-f-plant.png",
+   "case": "C4",
+   "size": "desktop 1440x900 @2x",
+   "text": "No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.",
+   "geo": {
+    "l": 419,
+    "t": 836,
+    "r": 1021,
+    "b": 874,
+    "w": 603,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c4-f-publish-phone.png",
+   "case": "C4",
+   "size": "phone 402x874 @3x",
+   "text": "Saturday published and approved · No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.",
+   "geo": {
+    "l": 12,
+    "t": 778,
+    "r": 390,
+    "b": 848,
+    "w": 378,
+    "h": 70,
+    "vw": 402,
+    "vh": 874,
+    "sw": 402
+   }
+  }
+ ],
+ "cases": {
+  "C4": {
+   "log": [
+    "bundle: index-2uyEcUJu.js",
+    "picture c4-a-plant.png: \"No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.\"",
+    "planted dj on g:5.0.+ (day 5): note \"No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.\"",
+    "picture c4-a-publish-desk.png: \"Saturday published and approved · No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.\"",
+    "picture c4-warnlist-board-desk-5.png: [{\"shown\":true,\"text\":\"No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.✕Create the 2028 period\"},{\"shown\":true,\"text\":\"No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.\"}]",
+    "picture c4-d-plant.png: \"the ground programme has no usable times, so nobody on it earns OIL for this day\"",
+    "planted dj on g:5.1.+ (day 5): note \"the ground programme has no usable times, so nobody on it earns OIL for this day\"",
+    "after the change, the Saturday's publish buttons: [{\"a\":\"alpub\",\"dis\":true,\"t\":\"Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL1\",\"shown\":true}]",
+    "signed again {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}",
+    "picture c4-d-amend-desk.png: \"Published AL1 · 1 item on Sat only · approved by Anvil · Saturday 5 Feb: the ground programme has no usable times, so nobody on it earns OIL · No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.\"",
+    "picture c4-e-plant.png: \"Ace planned\"",
+    "planted dj on g:0.0.+ (day 0): note \"Ace planned\"",
+    "picture c4-e-monday-desk.png: \"Monday published and approved\"",
+    "picture c4-b-oilquestion-desk.png: \"Back\"",
+    "(b) the Saturday's input: asks [\"oil: pressed \\\"Back\\\"\"]; made []; note \"\"; window open 1",
+    "picture c4-c-plant.png: \"No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.\"",
+    "planted dj on g:5.0.+ (day 5): note \"No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.\"",
+    "picture c4-f-plant.png: \"No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.\"",
+    "planted dj on g:5.0.+ (day 5): note \"No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.\"",
+    "phone: the Saturday's publish buttons [{\"shown\":true,\"dis\":false}]",
+    "picture c4-f-publish-phone.png: \"Saturday published and approved · No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.\"",
+    "phone note inner {\"scrollW\":376,\"clientW\":376}"
+   ]
+  }
+ },
+ "errors": []
+}

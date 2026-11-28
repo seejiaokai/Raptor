@@ -1,0 +1,39 @@
+{
+ "pictures": [],
+ "cases": {
+  "desk-chromium": {
+   "log": [
+    "bundle index-C-8yJleY.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"08:00\",\"to\":\"10:00\",\"title\":\"Sat brief\"} on 2026-07-18: new input [\"imwv5xm9gl287ur\"]; asked [\"oil\"]; note \"\"",
+    "controls found: [\"OIL Earn (W4): 1 sbOil Show who earns OIL on this day\",\"Undo (W5 a): 1 sbUndo Undo\",\"next day (W7): 1  Sun 19\"]"
+   ]
+  }
+ },
+ "errors": [],
+ "results": [
+  [
+   "KEEP desk-chromium OIL Earn (W4) pressed with the caret in the input's start box",
+   "COULD NOT BE MADE",
+   "{\"control\":\"sbOil Leave OIL mode and edit the sc\",\"before\":\"imwv5xm9gl287ur.str@board\",\"rightAfter\":\"sbOil@board\",\"settled\":\"sbOil@board\",\"sbday\":5}",
+   "a-desk-chromium-KEEP-OIL.png"
+  ],
+  [
+   "KEEP desk-chromium Undo (W5 a) pressed with the caret in the input's start box",
+   "COULD NOT BE MADE",
+   "{\"control\":\"sbUndo Undo\",\"before\":\"imwv5xm9gl287ur.str@board\",\"rightAfter\":\"sbUndo@board\",\"settled\":\"sbUndo@board\",\"sbday\":5}",
+   "a-desk-chromium-KEEP-Undo.png"
+  ],
+  [
+   "KEEP desk-chromium next day (W7) pressed with the caret in the input's start box",
+   "COULD NOT BE MADE",
+   "{\"control\":\" Sun 19\",\"before\":\"imwv5xm9gl287ur.str@board\",\"rightAfter\":\"none\",\"settled\":\"none\",\"sbday\":6}",
+   "a-desk-chromium-KEEP-next.png"
+  ],
+  [
+   "KEEP desk-chromium the keyboard: 40 Tabs from the box — does the route reach a button?",
+   "RECORD (a button reached)",
+   "[\"INPUT\",\"TEXTAREA\",\"BUTTON:Reject\",\"SPAN\"]",
+   ""
+  ]
+ ]
+}

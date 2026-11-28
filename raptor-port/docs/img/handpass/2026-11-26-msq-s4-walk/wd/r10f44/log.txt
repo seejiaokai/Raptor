@@ -1,0 +1,52 @@
+msq-s4w-lib v1 who=wd run=r10f44 port=4756
+wd-lib v1
+wd-f44 v1
+bringIn [data-testid="cell-stiff-2026-12-03"] 0 {"x":829,"y":552,"w":24,"h":22} scroll 0 185
+desk-ad-branch own-bare text: Saber Thu 3 Dec Auto-approve ✕ No manning row turns amber or red till 3 Dec Document Whole day AM PM Pick a range LL 16.5 OL 16.5 OIL −1 CCL −1 FCL −1 PL −1 EL −1 CL −1 CSE OD Grant OIL ⋯
+desk-ad-branch own-bare-more text: Saber Thu 3 Dec Auto-approve ✕ No manning row turns amber or red till 3 Dec Document Whole day AM PM Pick a range LL 16.5 OL 16.5 OIL −1 CCL −1 FCL −1 PL −1 EL −1 CL −1 CSE OD Grant OIL ⋯ Attach Other
+desk-ad-branch other-bare text: Cinch Thu 3 Dec Auto-approve ✕ No manning row turns amber or red till 3 Dec Document Whole day AM PM Pick a range LL 22.5 OL 22.5 OIL −1 CCL 2 FCL −1 PL −1 EL −1 CL −1 CSE OD Grant OIL ⋯
+desk-ad-branch drag text: Saber 9–11 Dec · 3 days Auto-approve ✕ No manning row turns amber or red till 11 Dec Document Whole day AM PM LL 14.5 OL 14.5 OIL −3 CCL −3 FCL −3 PL −3 EL −3 CL −3 CSE OD Grant OIL ⋯
+desk-ad-branch drag-more text: Saber 9–11 Dec · 3 days Auto-approve ✕ No manning row turns amber or red till 11 Dec Document Whole day AM PM LL 14.5 OL 14.5 OIL −3 CCL −3 FCL −3 PL −3 EL −3 CL −3 CSE OD Grant OIL ⋯ Attach Other Pos
+desk-ad-branch own-with-LL text: Saber Thu 3 Dec Auto-approve ✕ No manning row is amber or red Placed Saber · Thu 26 Nov, 18:29 · Approved Saber · Thu 26 Nov, 18:29 Approved Refuse ⇄Move Delete till 3 Dec Document Whole day AM PM Pic
+desk-ad-branch own-two-halves text: Saber Fri 4 Dec Auto-approve ✕ No manning row is amber or red Placed Saber · Thu 26 Nov, 18:29 · Approved Saber · Thu 26 Nov, 18:29 Approved Refuse ⇄Move Delete till 4 Dec Document Whole day AM PM Pic
+desk-ad-branch errors []
+bringIn [data-testid="cell-stiff-2026-12-03"] 0 {"x":752,"y":552,"w":24,"h":22} scroll 0 185
+desk-ad-main own-bare text: Saber Thu 3 Dec Auto-approve ✕ No manning row turns amber or red till 3 Dec Document Whole day AM PM Pick a range LL 16.5 OL 16.5 OIL −1 CCL −1 FCL −1 PL −1 EL −1 CL −1 CSE OD Grant OIL ⋯
+desk-ad-main own-bare-more text: Saber Thu 3 Dec Auto-approve ✕ No manning row turns amber or red till 3 Dec Document Whole day AM PM Pick a range LL 16.5 OL 16.5 OIL −1 CCL −1 FCL −1 PL −1 EL −1 CL −1 CSE OD Grant OIL ⋯ Attach Other
+desk-ad-main other-bare text: Cinch Thu 3 Dec Auto-approve ✕ No manning row turns amber or red till 3 Dec Document Whole day AM PM Pick a range LL 22.5 OL 22.5 OIL −1 CCL 2 FCL −1 PL −1 EL −1 CL −1 CSE OD Grant OIL ⋯
+desk-ad-main drag text: Saber 9–11 Dec · 3 days Auto-approve ✕ No manning row turns amber or red till 11 Dec Document Whole day AM PM LL 14.5 OL 14.5 OIL −3 CCL −3 FCL −3 PL −3 EL −3 CL −3 CSE OD Grant OIL ⋯
+desk-ad-main drag-more text: Saber 9–11 Dec · 3 days Auto-approve ✕ No manning row turns amber or red till 11 Dec Document Whole day AM PM LL 14.5 OL 14.5 OIL −3 CCL −3 FCL −3 PL −3 EL −3 CL −3 CSE OD Grant OIL ⋯ Attach Other Pos
+desk-ad-main own-with-LL text: Saber Thu 3 Dec Auto-approve ✕ No manning row is amber or red Placed Saber · Thu 26 Nov, 18:29 · Approved Saber · Thu 26 Nov, 18:29 Approved Refuse ⇄Move Delete till 3 Dec Document Whole day AM PM Pic
+desk-ad-main own-two-halves text: Saber Fri 4 Dec Auto-approve ✕ No manning row is amber or red Placed Saber · Thu 26 Nov, 18:29 · Approved Saber · Thu 26 Nov, 18:29 Approved Refuse ⇄Move Delete till 4 Dec Document Whole day AM PM Pic
+desk-ad-main errors []
+bringIn [data-testid="cell-bane-2026-12-03"] 0 {"x":729,"y":529,"w":24,"h":23} scroll 0 163
+desk-us-branch own-bare text: Ranger Thu 3 Dec ✕ Bidding is closed. To change your leave, seek management’s approval, then file it on the Inputs page. Your approved leave updates here by itself. CSE OD ⋯ Open the Inputs page
+desk-us-branch drag text: Ranger 9–11 Dec · 3 days ✕ till 11 Dec Document Whole day AM PM LL 12.5 OL 12.5 OIL 0 CCL 2 FCL 5 PL 1.5 EL 4 CL 0 CSE OD ⋯
+desk-us-branch errors []
+bringIn [data-testid="cell-bane-2026-12-03"] 0 {"x":840,"y":529,"w":24,"h":23} scroll 0 163
+desk-us-main own-bare text: Ranger Thu 3 Dec ✕ Bidding is closed. To change your leave, seek management’s approval, then file it on the Inputs page. Your approved leave updates here by itself. CSE OD ⋯ Open the Inputs page
+desk-us-main drag text: Ranger 9–11 Dec · 3 days ✕ till 11 Dec Document Whole day AM PM LL 12.5 OL 12.5 OIL 0 CCL 2 FCL 5 PL 1.5 EL 4 CL 0 CSE OD ⋯
+desk-us-main errors []
+phone-ad-branch own-bare text: Saber Thu 3 Dec Auto-approve ✕ No manning row turns amber or red till 3 Dec Document Whole day AM PM Pick a range LL 16.5 OL 16.5 OIL −1 CCL −1 FCL −1 PL −1 EL −1 CL −1 CSE OD Grant OIL ⋯
+phone-ad-branch own-bare-more text: Saber Thu 3 Dec Auto-approve ✕ No manning row turns amber or red till 3 Dec Document Whole day AM PM Pick a range LL 16.5 OL 16.5 OIL −1 CCL −1 FCL −1 PL −1 EL −1 CL −1 CSE OD Grant OIL ⋯ Attach Other
+phone-ad-branch other-bare text: Cinch Thu 3 Dec Auto-approve ✕ No manning row turns amber or red till 3 Dec Document Whole day AM PM Pick a range LL 22.5 OL 22.5 OIL −1 CCL 2 FCL −1 PL −1 EL −1 CL −1 CSE OD Grant OIL ⋯
+phone-ad-branch drag text: Saber 9–11 Dec · 3 days Auto-approve ✕ No manning row turns amber or red till 11 Dec Document Whole day AM PM LL 14.5 OL 14.5 OIL −3 CCL −3 FCL −3 PL −3 EL −3 CL −3 CSE OD Grant OIL ⋯
+phone-ad-branch drag-more text: Saber 9–11 Dec · 3 days Auto-approve ✕ No manning row turns amber or red till 11 Dec Document Whole day AM PM LL 14.5 OL 14.5 OIL −3 CCL −3 FCL −3 PL −3 EL −3 CL −3 CSE OD Grant OIL ⋯ Attach Other Pos
+phone-ad-branch own-with-LL text: Saber Thu 3 Dec Auto-approve ✕ No manning row is amber or red Placed Saber · Thu 26 Nov, 18:29 · Approved Saber · Thu 26 Nov, 18:29 Approved Refuse ⇄Move Delete till 3 Dec Document Whole day AM PM Pic
+phone-ad-branch own-two-halves text: Saber Fri 4 Dec Auto-approve ✕ No manning row is amber or red Placed Saber · Thu 26 Nov, 18:30 · Approved Saber · Thu 26 Nov, 18:30 Approved Refuse ⇄Move Delete till 4 Dec Document Whole day AM PM Pic
+phone-ad-branch errors []
+phone-ad-main own-bare text: Saber Thu 3 Dec Auto-approve ✕ No manning row turns amber or red till 3 Dec Document Whole day AM PM Pick a range LL 16.5 OL 16.5 OIL −1 CCL −1 FCL −1 PL −1 EL −1 CL −1 CSE OD Grant OIL ⋯
+phone-ad-main own-bare-more text: Saber Thu 3 Dec Auto-approve ✕ No manning row turns amber or red till 3 Dec Document Whole day AM PM Pick a range LL 16.5 OL 16.5 OIL −1 CCL −1 FCL −1 PL −1 EL −1 CL −1 CSE OD Grant OIL ⋯ Attach Other
+phone-ad-main other-bare text: Cinch Thu 3 Dec Auto-approve ✕ No manning row turns amber or red till 3 Dec Document Whole day AM PM Pick a range LL 22.5 OL 22.5 OIL −1 CCL 2 FCL −1 PL −1 EL −1 CL −1 CSE OD Grant OIL ⋯
+phone-ad-main drag text: Saber 9–11 Dec · 3 days Auto-approve ✕ No manning row turns amber or red till 11 Dec Document Whole day AM PM LL 14.5 OL 14.5 OIL −3 CCL −3 FCL −3 PL −3 EL −3 CL −3 CSE OD Grant OIL ⋯
+phone-ad-main drag-more text: Saber 9–11 Dec · 3 days Auto-approve ✕ No manning row turns amber or red till 11 Dec Document Whole day AM PM LL 14.5 OL 14.5 OIL −3 CCL −3 FCL −3 PL −3 EL −3 CL −3 CSE OD Grant OIL ⋯ Attach Other Pos
+phone-ad-main own-with-LL text: Saber Thu 3 Dec Auto-approve ✕ No manning row is amber or red Placed Saber · Thu 26 Nov, 18:30 · Approved Saber · Thu 26 Nov, 18:30 Approved Refuse ⇄Move Delete till 3 Dec Document Whole day AM PM Pic
+phone-ad-main own-two-halves text: Saber Fri 4 Dec Auto-approve ✕ No manning row is amber or red Placed Saber · Thu 26 Nov, 18:30 · Approved Saber · Thu 26 Nov, 18:30 Approved Refuse ⇄Move Delete till 4 Dec Document Whole day AM PM Pic
+phone-ad-main errors []
+phone-us-branch own-bare text: Ranger Thu 3 Dec ✕ Bidding is closed. To change your leave, seek management’s approval, then file it on the Inputs page. Your approved leave updates here by itself. CSE OD ⋯ Open the Inputs page
+phone-us-branch drag text: Ranger 9–11 Dec · 3 days ✕ till 11 Dec Document Whole day AM PM LL 12.5 OL 12.5 OIL 0 CCL 2 FCL 5 PL 1.5 EL 4 CL 0 CSE OD ⋯
+phone-us-branch errors []
+phone-us-main own-bare text: Ranger Thu 3 Dec ✕ Bidding is closed. To change your leave, seek management’s approval, then file it on the Inputs page. Your approved leave updates here by itself. CSE OD ⋯ Open the Inputs page
+phone-us-main drag text: Ranger 9–11 Dec · 3 days ✕ till 11 Dec Document Whole day AM PM LL 12.5 OL 12.5 OIL 0 CCL 2 FCL 5 PL 1.5 EL 4 CL 0 CSE OD ⋯
+phone-us-main errors []
+wd-f44 done 56

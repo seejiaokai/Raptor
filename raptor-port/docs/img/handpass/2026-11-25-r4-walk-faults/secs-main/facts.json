@@ -1,0 +1,44 @@
+{
+ "pictures": [],
+ "cases": {
+  "desk-chromium": {
+   "log": [
+    "bundle index-DIr933hk.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"08:00\",\"to\":\"10:00\",\"title\":\"Sat brief\"} on 2026-07-18: new input [\"imwv3h1alhi0up0\"]; asked [\"oil\"]; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"08:00\",\"to\":\"10:00\",\"title\":\"Range brief\"} on 2026-07-15: new input [\"imwv3h75nqml0se\"]; asked []; note \"\""
+   ]
+  },
+  "phone-webkit": {
+   "log": [
+    "bundle index-DIr933hk.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"08:00\",\"to\":\"10:00\",\"title\":\"Sat brief\"} on 2026-07-18: new input [\"imwv3hltxcdok8b\"]; asked [\"oil\"]; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"08:00\",\"to\":\"10:00\",\"title\":\"Range brief\"} on 2026-07-15: new input [\"imwv3hx5touwt78\"]; asked []; note \"\""
+   ]
+  }
+ },
+ "errors": [],
+ "results": [
+  [
+   "W4 desk-chromium OIL Earn, caret in input start (waves 1)",
+   "PASS",
+   "right after {\"order\":[\"OIL EARN\",\"OVERALL NOTES\",\"COMMON PROGRAMME\",\"DUTIES\",\"SIMS\",\"GROUND PROGRAMME\",\"PERSONAL INPUTS\",\"SANS AVAIL\",\"UNAVAILABLE\"],\"doubled\":[],\"title\":\"Saturday Jul 18 · scheduler board\",\"act\":\"BUTTON\"}; settled {\"order\":[\"OIL EARN\",\"OVERALL NOTES\",\"COMMON PROGRAMME\",\"DUTIES\",\"SIMS\",\"GROUND PROGRAMME\",\"PERSONAL INPUTS\",\"SANS AVAIL\",\"UNAVAILABLE\"],\"doubled\":[],\"title\":\"Saturday Jul 18 · scheduler board\",\"act\":\"BUTTON\"}; caret left {\"order\":[\"OIL EARN\",\"OVERALL NOTES\",\"COMMON PROGRAMME\",\"DUTIES\",\"SIMS\",\"GROUND PROGRAMME\",\"PERSONAL INPUTS\",\"SANS AVAIL\",\"UNAVAILABLE\"],\"doubled\":[],\"title\":\"Saturday Jul 18 · scheduler board\",\"act\":\"BODY\"}",
+   "desk-chromium-w4-lift.png, desk-chromium-w4-settled.png, desk-chromium-w4-caret-left.png"
+  ],
+  [
+   "desk-chromium",
+   "ERROR",
+   "locator.click: Timeout 4000ms exceeded."
+  ],
+  [
+   "W4 phone-webkit OIL Earn, caret in input start (waves 1)",
+   "PASS",
+   "right after {\"order\":[\"OIL EARN\",\"OVERALL NOTES\",\"COMMON PROGRAMME\",\"DUTIES\",\"SIMS\",\"GROUND PROGRAMME\",\"PERSONAL INPUTS\",\"SANS AVAIL\",\"UNAVAILABLE\"],\"doubled\":[],\"title\":\"Saturday Jul 18 · scheduler board\",\"act\":\"BODY\"}; settled {\"order\":[\"OIL EARN\",\"OVERALL NOTES\",\"COMMON PROGRAMME\",\"DUTIES\",\"SIMS\",\"GROUND PROGRAMME\",\"PERSONAL INPUTS\",\"SANS AVAIL\",\"UNAVAILABLE\"],\"doubled\":[],\"title\":\"Saturday Jul 18 · scheduler board\",\"act\":\"BODY\"}; caret left {\"order\":[\"OIL EARN\",\"OVERALL NOTES\",\"COMMON PROGRAMME\",\"DUTIES\",\"SIMS\",\"GROUND PROGRAMME\",\"PERSONAL INPUTS\",\"SANS AVAIL\",\"UNAVAILABLE\"],\"doubled\":[],\"title\":\"Saturday Jul 18 · scheduler board\",\"act\":\"BODY\"}",
+   "phone-webkit-w4-lift.png, phone-webkit-w4-settled.png, phone-webkit-w4-caret-left.png"
+  ],
+  [
+   "phone-webkit",
+   "ERROR",
+   "locator.tap: Timeout 4000ms exceeded."
+  ]
+ ]
+}

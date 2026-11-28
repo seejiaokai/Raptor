@@ -1,0 +1,12 @@
+{
+ "pictures": [],
+ "cases": {
+  "B1": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvi2xzn46iogn\"]; asked []; note \"\"",
+    "filed :: STORE [\"LL Ranger+Hex 08:00-10:00 \\\"\\\" [imwvi2xzn46iogn]\"] :: SCREEN [\"Ranger 08:00-10:00 \\\"\\\" [imwvi2xzn46iogn~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvi2xzn46iogn~rocky]\"] :: CARET BODY"
+   ]
+  }
+ },
+ "errors": []
+}

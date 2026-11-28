@@ -46,7 +46,7 @@ import { notify, loadWeek, moveSection, moveSectionTo, writeInputs } from './sta
 import { globalUndo, globalRedo } from './undo'
 import { secOrder, SECTIONS, secDefault, setSecDefault, moveSecDefault } from './engine/order'
 import { setMemberTodayForTests as lwSetMemberToday, landingOf as lwLandingOf, memberToday as lwMemberToday } from './leavewar/engine'
-import { setRole as lwSetRole, selectWar as lwSelectWar, loadWars as lwLoadWars, setCell as lwSetCell, setPostOut as lwSetPostOut, saveManningRule as lwSaveManningRule, getState as lwGetState, setDayEvent as lwSetDayEvent, createWar as lwCreateWar } from './leavewar/state/store'
+import { setRole as lwSetRole, selectWar as lwSelectWar, loadWars as lwLoadWars, setCell as lwSetCell, setPostOut as lwSetPostOut, saveManningRule as lwSaveManningRule, getState as lwGetState, setDayEvent as lwSetDayEvent, createWar as lwCreateWar, setTypedBalance as lwSetTypedBalance } from './leavewar/state/store'
 import { pinViewer, carryViewerPin, dayFacts as lwDayFacts, flyAnswer } from './leavewar/sync'
 import { setFlyDays, setFlyRun, setFlyRule } from './state/flyplan'
 
@@ -218,6 +218,9 @@ export function installProbeBridge() {
     w.INPUTS = INPUTS
     w.lwSetCell = (p: string, d: string, code: string) => lwSetCell(p, d, code)
     w.lwSetPostOut = (p: string, from: string | null) => lwSetPostOut(p, from)
+    /* a leave balance typed, as its box saves it (D1479) — a test needing a figure the demo never typed types it first (D2746:
+       a balance never typed reads "Not typed", and the below-zero question waits for a figure) */
+    w.lwTypeBalance = (p: string, kind: 'LVE' | 'CCL' | 'FCL' | 'PL' | 'EL' | 'CL', n: number) => lwSetTypedBalance(p, kind, n)
     /* a word on a day's Event line of the war on screen ("PH", "Off day") — what the calendars and Days show as a tag */
     /* …with its kind where a drawing names one ('off', 'free', 'nolv', 'work' — the Events list's drawing check, D1516) */
     w.lwSetDayEvent = (d: string, line: number, text: string, kind?: 'off' | 'free' | 'nolv' | 'work' | null) => lwSetDayEvent(d, line, text, kind ?? null)

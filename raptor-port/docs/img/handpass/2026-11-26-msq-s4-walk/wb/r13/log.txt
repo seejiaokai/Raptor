@@ -1,0 +1,8 @@
+msq-s4w-lib v1 who=wb run=r13 port=4754
+wb-r13 v1
+ERROR Error: pressLoc: not on screen
+    at pressLoc (file:///C:/Users/User/AppData/Roaming/Claude/side-session-notes/local_eeb07289-ed8b-483b-8502-00962970c7d1/s4-chat201/wb/wb-h.mjs:66:60)
+    at async file:///C:/Users/User/AppData/Roaming/Claude/side-session-notes/local_eeb07289-ed8b-483b-8502-00962970c7d1/s4-chat201/wb/wb-r13.mjs:15:3
+errors []
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

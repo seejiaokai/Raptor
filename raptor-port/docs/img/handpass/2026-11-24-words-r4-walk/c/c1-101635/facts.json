@@ -1,0 +1,509 @@
+{
+ "pictures": [
+  {
+   "file": "c1-takeoff-2560-desk.png",
+   "case": "C1",
+   "size": "desktop 1440x900 @2x",
+   "text": "2560 is not a time. Try 0900 or 09:00.",
+   "geo": {
+    "l": 603,
+    "t": 836,
+    "r": 837,
+    "b": 874,
+    "w": 233,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c1-d1-week-desk-2560-tab.png",
+   "case": "C1",
+   "size": "desktop 1440x900 @2x",
+   "text": "2560 is not a time. Try 0900 or 09:00.",
+   "geo": {
+    "l": 603,
+    "t": 836,
+    "r": 837,
+    "b": 874,
+    "w": 233,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c1-d1-week-desk-2560-enter.png",
+   "case": "C1",
+   "size": "desktop 1440x900 @2x",
+   "text": "2560 is not a time. Try 0900 or 09:00.",
+   "geo": {
+    "l": 603,
+    "t": 836,
+    "r": 837,
+    "b": 874,
+    "w": 233,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c1-d1-week-desk-0975-end.png",
+   "case": "C1",
+   "size": "desktop 1440x900 @2x",
+   "text": "0975 is not a time. Try 0900 or 09:00.",
+   "geo": {
+    "l": 603,
+    "t": 836,
+    "r": 837,
+    "b": 874,
+    "w": 233,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c1-d1-week-desk-abc.png",
+   "case": "C1",
+   "size": "desktop 1440x900 @2x",
+   "text": "abc is not a time. Try 0900 or 09:00.",
+   "geo": {
+    "l": 607,
+    "t": 836,
+    "r": 833,
+    "b": 874,
+    "w": 226,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c1-d1-week-desk-2500.png",
+   "case": "C1",
+   "size": "desktop 1440x900 @2x",
+   "text": "25:00 is not a time. Try 0900 or 09:00.",
+   "geo": {
+    "l": 602,
+    "t": 836,
+    "r": 838,
+    "b": 874,
+    "w": 236,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c1-d1-week-desk-0960.png",
+   "case": "C1",
+   "size": "desktop 1440x900 @2x",
+   "text": "0960 is not a time. Try 0900 or 09:00.",
+   "geo": {
+    "l": 603,
+    "t": 836,
+    "r": 837,
+    "b": 874,
+    "w": 233,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c1-d1-week-desk-spaces.png",
+   "case": "C1",
+   "size": "desktop 1440x900 @2x",
+   "text": "2560 is not a time. Try 0900 or 09:00.",
+   "geo": {
+    "l": 603,
+    "t": 836,
+    "r": 837,
+    "b": 874,
+    "w": 233,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c1-d1-week-desk-9.png",
+   "case": "C1",
+   "size": "desktop 1440x900 @2x",
+   "text": "9 is not a time. Try 0900 or 09:00.",
+   "geo": {
+    "l": 613,
+    "t": 836,
+    "r": 827,
+    "b": 874,
+    "w": 213,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c1-d1-week-desk-long.png",
+   "case": "C1",
+   "size": "desktop 1440x900 @2x",
+   "text": "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz01234567 is not a time. Try 0900 or 09:00.",
+   "geo": {
+    "l": 431,
+    "t": 836,
+    "r": 1009,
+    "b": 874,
+    "w": 577,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c1-d1-week-desk-good-0900.png",
+   "case": "C1",
+   "size": "desktop 1440x900 @2x",
+   "text": "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz01234567 is not a time. Try 0900 or 09:00.",
+   "geo": {
+    "l": 431,
+    "t": 836,
+    "r": 1009,
+    "b": 874,
+    "w": 577,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c1-d3-week-desk-2560-tab.png",
+   "case": "C1",
+   "size": "desktop 1440x900 @2x",
+   "text": "2560 is not a time. Try 0900 or 09:00.",
+   "geo": {
+    "l": 603,
+    "t": 836,
+    "r": 837,
+    "b": 874,
+    "w": 233,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c1-d3-week-desk-2560-enter.png",
+   "case": "C1",
+   "size": "desktop 1440x900 @2x",
+   "text": "2560 is not a time. Try 0900 or 09:00.",
+   "geo": {
+    "l": 603,
+    "t": 836,
+    "r": 837,
+    "b": 874,
+    "w": 233,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c1-d3-week-desk-0975-end.png",
+   "case": "C1",
+   "size": "desktop 1440x900 @2x",
+   "text": "0975 is not a time. Try 0900 or 09:00.",
+   "geo": {
+    "l": 603,
+    "t": 836,
+    "r": 837,
+    "b": 874,
+    "w": 233,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c1-d3b-week-2560-desk.png",
+   "case": "C1",
+   "size": "desktop 1440x900 @2x",
+   "text": "2560 is not a time. Try 0900 or 09:00.",
+   "geo": {
+    "l": 603,
+    "t": 836,
+    "r": 837,
+    "b": 874,
+    "w": 233,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c1-d2-board-desk-2560-tab.png",
+   "case": "C1",
+   "size": "desktop 1440x900 @2x",
+   "text": "2560 is not a time. Try 0900 or 09:00.",
+   "geo": {
+    "l": 603,
+    "t": 836,
+    "r": 837,
+    "b": 874,
+    "w": 233,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c1-d2-board-desk-2560-enter.png",
+   "case": "C1",
+   "size": "desktop 1440x900 @2x",
+   "text": "2560 is not a time. Try 0900 or 09:00.",
+   "geo": {
+    "l": 603,
+    "t": 836,
+    "r": 837,
+    "b": 874,
+    "w": 233,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c1-d2-board-desk-0975-end.png",
+   "case": "C1",
+   "size": "desktop 1440x900 @2x",
+   "text": "0975 is not a time. Try 0900 or 09:00.",
+   "geo": {
+    "l": 603,
+    "t": 836,
+    "r": 837,
+    "b": 874,
+    "w": 233,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c1-d2-board-desk-abc.png",
+   "case": "C1",
+   "size": "desktop 1440x900 @2x",
+   "text": "abc is not a time. Try 0900 or 09:00.",
+   "geo": {
+    "l": 607,
+    "t": 836,
+    "r": 833,
+    "b": 874,
+    "w": 226,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c1-d2-board-desk-2500.png",
+   "case": "C1",
+   "size": "desktop 1440x900 @2x",
+   "text": "25:00 is not a time. Try 0900 or 09:00.",
+   "geo": {
+    "l": 602,
+    "t": 836,
+    "r": 838,
+    "b": 874,
+    "w": 236,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c1-d2-board-desk-0960.png",
+   "case": "C1",
+   "size": "desktop 1440x900 @2x",
+   "text": "0960 is not a time. Try 0900 or 09:00.",
+   "geo": {
+    "l": 603,
+    "t": 836,
+    "r": 837,
+    "b": 874,
+    "w": 233,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c1-d2-board-desk-spaces.png",
+   "case": "C1",
+   "size": "desktop 1440x900 @2x",
+   "text": "2560 is not a time. Try 0900 or 09:00.",
+   "geo": {
+    "l": 603,
+    "t": 836,
+    "r": 837,
+    "b": 874,
+    "w": 233,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c1-d2-board-desk-9.png",
+   "case": "C1",
+   "size": "desktop 1440x900 @2x",
+   "text": "9 is not a time. Try 0900 or 09:00.",
+   "geo": {
+    "l": 613,
+    "t": 836,
+    "r": 827,
+    "b": 874,
+    "w": 213,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c1-d2-board-desk-long.png",
+   "case": "C1",
+   "size": "desktop 1440x900 @2x",
+   "text": "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz01234567 is not a time. Try 0900 or 09:00.",
+   "geo": {
+    "l": 431,
+    "t": 836,
+    "r": 1009,
+    "b": 874,
+    "w": 577,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c1-d2-board-desk-good-0900.png",
+   "case": "C1",
+   "size": "desktop 1440x900 @2x",
+   "text": "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz01234567 is not a time. Try 0900 or 09:00.",
+   "geo": {
+    "l": 431,
+    "t": 836,
+    "r": 1009,
+    "b": 874,
+    "w": 577,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c1-d3-board-2560-desk.png",
+   "case": "C1",
+   "size": "desktop 1440x900 @2x",
+   "text": "2560 is not a time. Try 0900 or 09:00.",
+   "geo": {
+    "l": 603,
+    "t": 836,
+    "r": 837,
+    "b": 874,
+    "w": 233,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c1-d4-list-saber-desk.png",
+   "case": "C1",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "inplace": 0,
+    "anyEditable": 698
+   }
+  },
+  {
+   "file": "c1-d5-typed-saber-desk.png",
+   "case": "C1",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "type": "time",
+    "disabled": false,
+    "value": "21:00"
+   }
+  }
+ ],
+ "cases": {
+  "C1": {
+   "log": [
+    "bundle desk: index-2uyEcUJu.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"10:00\",\"to\":\"11:00\",\"title\":\"Range brief\"} on 2026-07-15: new input [\"imwujiefel22aa4\"]; asked []; note \"\"",
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"span\":\"all\"} on 2026-07-15: new input [\"imwujihfthcbame\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"13:00\",\"to\":\"14:00\",\"title\":\"Sim brief\"} on 2026-07-15: new input [\"imwujik9jqwy2fy\"]; asked []; note \"\"",
+    "filed {\"iT\":\"imwujiefel22aa4\",\"iL\":\"imwujihfthcbame\",\"iT2\":\"imwujik9jqwy2fy\",\"recT\":{\"type\":\"Training\",\"title\":\"Range brief\",\"date\":\"Jul 15\",\"allday\":false,\"s\":600,\"e\":660,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"],\"acc\":\"g\"},\"recL\":{\"type\":\"LL\",\"date\":\"Jul 15\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"]},\"recT2\":{\"type\":\"Training\",\"title\":\"Sim brief\",\"date\":\"Jul 15\",\"allday\":false,\"s\":780,\"e\":840,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}}",
+    "Wed index 2",
+    "picture c1-takeoff-2560-desk.png: \"2560 is not a time. Try 0900 or 09:00.\"",
+    "door 1 keys [\"imwujiefel22aa4.str\",\"imwujiefel22aa4.end\",\"imwujiefel22aa4.rmks\"]",
+    "picture c1-d1-week-desk-2560-tab.png: \"2560 is not a time. Try 0900 or 09:00.\"",
+    "picture c1-d1-week-desk-2560-enter.png: \"2560 is not a time. Try 0900 or 09:00.\"",
+    "picture c1-d1-week-desk-0975-end.png: \"0975 is not a time. Try 0900 or 09:00.\"",
+    "picture c1-d1-week-desk-abc.png: \"abc is not a time. Try 0900 or 09:00.\"",
+    "picture c1-d1-week-desk-2500.png: \"25:00 is not a time. Try 0900 or 09:00.\"",
+    "picture c1-d1-week-desk-0960.png: \"0960 is not a time. Try 0900 or 09:00.\"",
+    "picture c1-d1-week-desk-spaces.png: \"2560 is not a time. Try 0900 or 09:00.\"",
+    "picture c1-d1-week-desk-9.png: \"9 is not a time. Try 0900 or 09:00.\"",
+    "picture c1-d1-week-desk-long.png: \"abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz01234567 is not a time. Try 0900 or 09:00.\"",
+    "picture c1-d1-week-desk-good-0900.png: \"abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz01234567 is not a time. Try 0900 or 09:00.\"",
+    "door 3 keys (LL for two) [\"imwujihfthcbame~bane.str\",\"imwujihfthcbame~bane.end\",\"imwujihfthcbame~bane.rmks\",\"imwujihfthcbame~rocky.str\",\"imwujihfthcbame~rocky.end\",\"imwujihfthcbame~rocky.rmks\"]",
+    "picture c1-d3-week-desk-2560-tab.png: \"2560 is not a time. Try 0900 or 09:00.\"",
+    "picture c1-d3-week-desk-2560-enter.png: \"2560 is not a time. Try 0900 or 09:00.\"",
+    "picture c1-d3-week-desk-0975-end.png: \"0975 is not a time. Try 0900 or 09:00.\"",
+    "picture c1-d3b-week-2560-desk.png: \"2560 is not a time. Try 0900 or 09:00.\"",
+    "board keys [\"imwujiefel22aa4.str\",\"imwujiefel22aa4.end\",\"imwujiefel22aa4.rmks\",\"imwujihfthcbame.str\",\"imwujihfthcbame.end\",\"imwujihfthcbame.rmks\"]",
+    "picture c1-d2-board-desk-2560-tab.png: \"2560 is not a time. Try 0900 or 09:00.\"",
+    "picture c1-d2-board-desk-2560-enter.png: \"2560 is not a time. Try 0900 or 09:00.\"",
+    "picture c1-d2-board-desk-0975-end.png: \"0975 is not a time. Try 0900 or 09:00.\"",
+    "picture c1-d2-board-desk-abc.png: \"abc is not a time. Try 0900 or 09:00.\"",
+    "picture c1-d2-board-desk-2500.png: \"25:00 is not a time. Try 0900 or 09:00.\"",
+    "picture c1-d2-board-desk-0960.png: \"0960 is not a time. Try 0900 or 09:00.\"",
+    "picture c1-d2-board-desk-spaces.png: \"2560 is not a time. Try 0900 or 09:00.\"",
+    "picture c1-d2-board-desk-9.png: \"9 is not a time. Try 0900 or 09:00.\"",
+    "picture c1-d2-board-desk-long.png: \"abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz01234567 is not a time. Try 0900 or 09:00.\"",
+    "picture c1-d2-board-desk-good-0900.png: \"abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz01234567 is not a time. Try 0900 or 09:00.\"",
+    "picture c1-d3-board-2560-desk.png: \"2560 is not a time. Try 0900 or 09:00.\"",
+    "picture c1-d4-list-saber-desk.png: {\"inplace\":0,\"anyEditable\":698}",
+    "picture c1-d5-typed-saber-desk.png: {\"type\":\"time\",\"disabled\":false,\"value\":\"21:00\"}"
+   ]
+  }
+ },
+ "errors": []
+}

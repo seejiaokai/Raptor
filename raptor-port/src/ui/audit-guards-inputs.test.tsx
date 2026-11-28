@@ -173,7 +173,8 @@ describe('an input time has to be a time', () => {
     const r = timed()
     expect(setInpField(r, 'str', '2570'), 'refused').toBe(false)
     expect(r.s, 'the model never moved').toBe(540)
-    expect(said.join(' ')).toMatch(/not a time/i)
+    /* round 4 (his D2521, Q4a): the schedule's own words — it names what was typed */
+    expect(said).toContain('2570 is not a time. Try 0900 or 09:00.')
   })
 
   it('refuses a minute overflow rather than rolling it an hour on', () => {
@@ -188,8 +189,19 @@ describe('an input time has to be a time', () => {
     expect(commitInputEdit(r, d)).toBe(false)
     expect(r.s).toBe(540)
     /* it used to complain that no time had been given, when one had */
-    expect(said.join(' ')).toMatch(/not a time/i)
+    expect(said).toContain('2570 is not a time. Try 0900 or 09:00.')
     expect(said.join(' ')).not.toMatch(/tick All day/i)
+  })
+
+  it('round 4 (Q4a): both boxes bad — the first is named', () => {
+    const r = timed()
+    const d: any = draftOf(r); d.allday = false; d.sTime = '2570'; d.eTime = '9999'
+    expect(commitInputEdit(r, d)).toBe(false)
+    expect(said).toContain('2570 is not a time. Try 0900 or 09:00.')
+    said.length = 0
+    const d2: any = draftOf(r); d2.allday = false; d2.sTime = '09:00'; d2.eTime = '9999'
+    expect(commitInputEdit(r, d2)).toBe(false)
+    expect(said, 'only the end bad: the end is named').toContain('9999 is not a time. Try 0900 or 09:00.')
   })
 
   it('still takes a real time, and still lets a cell be cleared to all-day', () => {

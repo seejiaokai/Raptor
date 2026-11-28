@@ -1,0 +1,236 @@
+{
+ "pictures": [
+  {
+   "file": "A5-ranger-bell-phone.png",
+   "case": "A5",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "Sim prep Fri 24 Jul / Now 00:00–12:00 · Saber",
+    "HL Thu 23 Jul / Now HL (AM) · Saber",
+    "LL Wed 22 Jul / Now Wed 22 Jul · Saber",
+    "LL Mon 20 Jul / Now 09:00–11:00 · Saber",
+    "LL Thu 16 Jul / Now Thu 16 Jul (AM) · Saber",
+    "LL Tue 14 Jul / Now all day · Saber",
+    "LL Mon 13 Jul / Now LL (PM) · Saber",
+    "LL Wed 15 Jul / Now LL (AM) · Saber",
+    "Sim prep Fri 24 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Now 00:00–12:00 · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now HL (AM) · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now Wed 22 Jul · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now 09:00–11:00 · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now Thu 16 Jul (AM) · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now all day · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now LL (PM) · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now LL (AM) · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "A5-ranger-bell-desk.png",
+   "case": "A5",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Sim prep Fri 24 Jul / Now 00:00–12:00 · Saber",
+    "HL Thu 23 Jul / Now HL (AM) · Saber",
+    "LL Wed 22 Jul / Now Wed 22 Jul · Saber",
+    "LL Mon 20 Jul / Now 09:00–11:00 · Saber",
+    "LL Thu 16 Jul / Now Thu 16 Jul (AM) · Saber",
+    "LL Tue 14 Jul / Now all day · Saber",
+    "LL Mon 13 Jul / Now LL (PM) · Saber",
+    "LL Wed 15 Jul / Now LL (AM) · Saber",
+    "Sim prep Fri 24 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Now 00:00–12:00 · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now HL (AM) · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now Wed 22 Jul · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now 09:00–11:00 · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now Thu 16 Jul (AM) · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now all day · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now LL (PM) · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now LL (AM) · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  }
+ ],
+ "cases": {
+  "A5": {
+   "log": [
+    "bundle index-2uyEcUJu.js",
+    "filed {\"type\":\"LL\",\"span\":\"all\"} on 2026-07-15: new input [\"imwujhjt85o6uws\"]; asked [\"document\"]; note \"\"",
+    "filed {\"type\":\"LL\",\"span\":\"all\"} on 2026-07-13: new input [\"imwujhme6l4ux08\"]; asked [\"document\"]; note \"\"",
+    "filed {\"type\":\"LL\",\"span\":\"am\"} on 2026-07-14: new input [\"imwujhoysnpgl9p\"]; asked [\"document\"]; note \"\"",
+    "filed {\"type\":\"LL\",\"span\":\"all\"} on 2026-07-17: new input [\"imwujhrkc4ps4zk\"]; asked [\"document\"]; note \"\"",
+    "filed {\"type\":\"LL\",\"span\":\"am\"} on 2026-07-20: new input [\"imwujhu6aqs8cj9\"]; asked [\"document\"]; note \"\"",
+    "filed {\"type\":\"LL\",\"span\":\"am\"} on 2026-07-21: new input [\"imwujhwrc0y9na8\"]; asked [\"document\"]; note \"\"",
+    "filed {\"type\":\"HL\",\"span\":\"all\"} on 2026-07-23: new input [\"imwujhzbwrglj0b\"]; asked [\"document\"]; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Sim prep\"} on 2026-07-24: new input [\"imwuji502hx6qhr\"]; asked []; note \"\"",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "all-to-AM: before {\"type\":\"LL\",\"date\":\"Jul 15\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]} after {\"type\":\"LL\",\"date\":\"Jul 15\",\"allday\":false,\"half\":\"am\",\"s\":0,\"e\":720,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]}",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "all-to-PM: before {\"type\":\"LL\",\"date\":\"Jul 13\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]} after {\"type\":\"LL\",\"date\":\"Jul 13\",\"allday\":false,\"half\":\"pm\",\"s\":721,\"e\":1439,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]}",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "AM-to-all: before {\"type\":\"LL\",\"date\":\"Jul 14\",\"allday\":false,\"half\":\"am\",\"s\":0,\"e\":720,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]} after {\"type\":\"LL\",\"date\":\"Jul 14\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]}",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "all-to-Thu-AM: before {\"type\":\"LL\",\"date\":\"Jul 17\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]} after {\"type\":\"LL\",\"date\":\"Jul 16\",\"allday\":false,\"half\":\"am\",\"s\":0,\"e\":720,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]}",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "AM-to-0900-1100: before {\"type\":\"LL\",\"date\":\"Jul 20\",\"allday\":false,\"half\":\"am\",\"s\":0,\"e\":720,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]} after {\"type\":\"LL\",\"date\":\"Jul 20\",\"allday\":false,\"s\":540,\"e\":660,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]}",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "AM-moved-only: before {\"type\":\"LL\",\"date\":\"Jul 21\",\"allday\":false,\"half\":\"am\",\"s\":0,\"e\":720,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]} after {\"type\":\"LL\",\"date\":\"Jul 22\",\"allday\":false,\"half\":\"am\",\"s\":0,\"e\":720,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]}",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "HL-all-to-AM: before {\"type\":\"HL\",\"date\":\"Jul 23\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]} after {\"type\":\"HL\",\"date\":\"Jul 23\",\"allday\":false,\"half\":\"am\",\"s\":0,\"e\":720,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]}",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "train: before {\"type\":\"Training\",\"title\":\"Sim prep\",\"date\":\"Jul 24\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]} after {\"type\":\"Training\",\"title\":\"Sim prep\",\"date\":\"Jul 24\",\"allday\":false,\"s\":0,\"e\":720,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]}",
+    "picture A5-ranger-bell-phone.png: [\"Sim prep Fri 24 Jul / Now 00:00–12:00 · Saber\",\"HL Thu 23 Jul / Now HL (AM) · Saber\",\"LL Wed 22 Jul / Now Wed 22 Jul · Saber\",\"LL Mon 20 Jul / Now 09:00–11:00 · Saber\",\"LL Thu 16 Jul / Now Thu 16 Jul (AM) · Saber\",\"LL Tue 14 Jul / Now all day · Saber\",\"LL Mon 13 Jul / Now LL (PM) · Saber\",\"LL Wed 15 Jul / Now LL (AM) · Saber\",\"Sim prep Fri 24 Jul / You were added · Saber\"]",
+    "ranger-bell bell: [\"Sim prep Fri 24 Jul / Now 00:00–12:00 · Saber\",\"HL Thu 23 Jul / Now HL (AM) · Saber\",\"LL Wed 22 Jul / Now Wed 22 Jul · Saber\",\"LL Mon 20 Jul / Now 09:00–11:00 · Saber\",\"LL Thu 16 Jul / Now Thu 16 Jul (AM) · Saber\",\"LL Tue 14 Jul / Now all day · Saber\",\"LL Mon 13 Jul / Now LL (PM) · Saber\",\"LL Wed 15 Jul / Now LL (AM) · Saber\",\"Sim prep Fri 24 Jul / You were added · Saber\"]",
+    "PASS phone: all-to-AM — \"Now LL (AM) · Saber\" — [\"LL Wed 15 Jul / Now LL (AM) · Saber\"]",
+    "PASS phone: all-to-PM — \"Now LL (PM) · Saber\" — [\"LL Mon 13 Jul / Now LL (PM) · Saber\"]",
+    "PASS phone: AM-to-all — \"Now all day · Saber\" — [\"LL Tue 14 Jul / Now all day · Saber\"]",
+    "PASS phone: all-to-Thu-AM — \"Now Thu 16 Jul (AM) · Saber\" — [\"LL Thu 16 Jul / Now Thu 16 Jul (AM) · Saber\"]",
+    "RECORD phone: AM-to-0900-1100 (RECORD) — [\"LL Mon 20 Jul / Now 09:00–11:00 · Saber\"]",
+    "RECORD phone: AM-moved-only (RECORD) — [\"LL Wed 22 Jul / Now Wed 22 Jul · Saber\"]",
+    "PASS phone: HL-all-to-AM — \"Now HL (AM) · Saber\" — [\"HL Thu 23 Jul / Now HL (AM) · Saber\"]",
+    "PASS phone: Training typed 00:00–12:00 — clock times, never \"(AM)\" — [\"Sim prep Fri 24 Jul / Now 00:00–12:00 · Saber\",\"Sim prep Fri 24 Jul / You were added · Saber\"]",
+    "picture A5-ranger-bell-desk.png: [\"Sim prep Fri 24 Jul / Now 00:00–12:00 · Saber\",\"HL Thu 23 Jul / Now HL (AM) · Saber\",\"LL Wed 22 Jul / Now Wed 22 Jul · Saber\",\"LL Mon 20 Jul / Now 09:00–11:00 · Saber\",\"LL Thu 16 Jul / Now Thu 16 Jul (AM) · Saber\",\"LL Tue 14 Jul / Now all day · Saber\",\"LL Mon 13 Jul / Now LL (PM) · Saber\",\"LL Wed 15 Jul / Now LL (AM) · Saber\",\"Sim prep Fri 24 Jul / You were added · Saber\"]",
+    "ranger-bell bell: [\"Sim prep Fri 24 Jul / Now 00:00–12:00 · Saber\",\"HL Thu 23 Jul / Now HL (AM) · Saber\",\"LL Wed 22 Jul / Now Wed 22 Jul · Saber\",\"LL Mon 20 Jul / Now 09:00–11:00 · Saber\",\"LL Thu 16 Jul / Now Thu 16 Jul (AM) · Saber\",\"LL Tue 14 Jul / Now all day · Saber\",\"LL Mon 13 Jul / Now LL (PM) · Saber\",\"LL Wed 15 Jul / Now LL (AM) · Saber\",\"Sim prep Fri 24 Jul / You were added · Saber\"]",
+    "PASS desk: all-to-AM — \"Now LL (AM) · Saber\" — [\"LL Wed 15 Jul / Now LL (AM) · Saber\"]",
+    "PASS desk: all-to-PM — \"Now LL (PM) · Saber\" — [\"LL Mon 13 Jul / Now LL (PM) · Saber\"]",
+    "PASS desk: AM-to-all — \"Now all day · Saber\" — [\"LL Tue 14 Jul / Now all day · Saber\"]",
+    "PASS desk: all-to-Thu-AM — \"Now Thu 16 Jul (AM) · Saber\" — [\"LL Thu 16 Jul / Now Thu 16 Jul (AM) · Saber\"]",
+    "RECORD desk: AM-to-0900-1100 (RECORD) — [\"LL Mon 20 Jul / Now 09:00–11:00 · Saber\"]",
+    "RECORD desk: AM-moved-only (RECORD) — [\"LL Wed 22 Jul / Now Wed 22 Jul · Saber\"]",
+    "PASS desk: HL-all-to-AM — \"Now HL (AM) · Saber\" — [\"HL Thu 23 Jul / Now HL (AM) · Saber\"]",
+    "PASS desk: Training typed 00:00–12:00 — clock times, never \"(AM)\" — [\"Sim prep Fri 24 Jul / Now 00:00–12:00 · Saber\",\"Sim prep Fri 24 Jul / You were added · Saber\"]"
+   ]
+  }
+ },
+ "errors": []
+}

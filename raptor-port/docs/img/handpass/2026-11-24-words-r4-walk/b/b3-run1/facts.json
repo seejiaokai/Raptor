@@ -1,0 +1,195 @@
+{
+ "pictures": [
+  {
+   "file": "B3-new-1-after-save-phone.png",
+   "case": "B3-new",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "(unread) OL Wed 15 Jul / Now OL (AM), LL changed to OL · Saber"
+   ]
+  },
+  {
+   "file": "B3-new-2-undo-pressed-desk.png",
+   "case": "B3-new",
+   "size": "desktop 1440x900 @2x",
+   "text": "Undid: Ranger’s OL"
+  },
+  {
+   "file": "B3-new-3-bell-after-undo-phone.png",
+   "case": "B3-new",
+   "size": "phone 402x874 @3x",
+   "text": []
+  },
+  {
+   "file": "B3-new-4-redo-pressed-desk.png",
+   "case": "B3-new",
+   "size": "desktop 1440x900 @2x",
+   "text": "Redid: Ranger’s OL"
+  },
+  {
+   "file": "B3-new-5-bell-after-redo-phone.png",
+   "case": "B3-new",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "(unread) OL Wed 15 Jul / Now OL (AM), LL changed to OL · Saber"
+   ]
+  },
+  {
+   "file": "B3-new-8-saber-tab-after-ranger-read-desk.png",
+   "case": "B3-new",
+   "size": "desktop 1440x900 @2x",
+   "text": ""
+  },
+  {
+   "file": "B3-new-9-undo2-pressed-desk.png",
+   "case": "B3-new",
+   "size": "desktop 1440x900 @2x",
+   "text": "Undid: Ranger’s OL"
+  },
+  {
+   "file": "B3-new-10-bell-after-undo2-phone.png",
+   "case": "B3-new",
+   "size": "phone 402x874 @3x",
+   "text": []
+  },
+  {
+   "file": "B3-new-9-redo2-pressed-desk.png",
+   "case": "B3-new",
+   "size": "desktop 1440x900 @2x",
+   "text": "Redid: Ranger’s OL"
+  },
+  {
+   "file": "B3-new-10-bell-after-redo2-phone.png",
+   "case": "B3-new",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "(read) OL Wed 15 Jul / Now OL (AM), LL changed to OL · Saber"
+   ]
+  },
+  {
+   "file": "B3-old-1-after-save-phone.png",
+   "case": "B3-old",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "(unread) OL Wed 15 Jul / Renamed — was LL · Saber"
+   ]
+  },
+  {
+   "file": "B3-old-2-undo-pressed-desk.png",
+   "case": "B3-old",
+   "size": "desktop 1440x900 @2x",
+   "text": "Undid: Ranger’s OL"
+  },
+  {
+   "file": "B3-old-3-bell-after-undo-phone.png",
+   "case": "B3-old",
+   "size": "phone 402x874 @3x",
+   "text": []
+  },
+  {
+   "file": "B3-old-4-redo-pressed-desk.png",
+   "case": "B3-old",
+   "size": "desktop 1440x900 @2x",
+   "text": "Redid: Ranger’s OL"
+  },
+  {
+   "file": "B3-old-5-bell-after-redo-phone.png",
+   "case": "B3-old",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "(unread) OL Wed 15 Jul / Renamed — was LL · Saber"
+   ]
+  },
+  {
+   "file": "B3-old-8-saber-tab-after-ranger-read-desk.png",
+   "case": "B3-old",
+   "size": "desktop 1440x900 @2x",
+   "text": ""
+  },
+  {
+   "file": "B3-old-9-undo2-pressed-desk.png",
+   "case": "B3-old",
+   "size": "desktop 1440x900 @2x",
+   "text": "Undid: Ranger’s OL"
+  },
+  {
+   "file": "B3-old-10-bell-after-undo2-phone.png",
+   "case": "B3-old",
+   "size": "phone 402x874 @3x",
+   "text": []
+  },
+  {
+   "file": "B3-old-9-redo2-pressed-desk.png",
+   "case": "B3-old",
+   "size": "desktop 1440x900 @2x",
+   "text": "Redid: Ranger’s OL"
+  },
+  {
+   "file": "B3-old-10-bell-after-redo2-phone.png",
+   "case": "B3-old",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "(read) OL Wed 15 Jul / Renamed — was LL · Saber"
+   ]
+  }
+ ],
+ "cases": {
+  "B3-new": {
+   "log": [
+    "bundle: index-2uyEcUJu.js",
+    "filed {\"type\":\"LL\",\"span\":\"all\",\"remarks\":\"Local leave\"} on 2026-07-15: new input [\"imwujiw9iaxknp2\"]; asked [\"document\"]; note \"\"",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "picture B3-new-1-after-save-phone.png: [\"(unread) OL Wed 15 Jul / Now OL (AM), LL changed to OL · Saber\"]",
+    "B3-new-1-after-save-phone: bell lit true; lines [\"(unread) OL Wed 15 Jul / Now OL (AM), LL changed to OL · Saber\"]",
+    "undo: button {\"disabled\":false,\"title\":\"Undo — Ranger’s OL\"}; note \"Undid: Ranger’s OL\"; record {\"type\":\"LL\",\"date\":\"Jul 15\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"Local leave\",\"people\":[\"bane\"]}",
+    "picture B3-new-2-undo-pressed-desk.png: \"Undid: Ranger’s OL\"",
+    "picture B3-new-3-bell-after-undo-phone.png: []",
+    "B3-new-3-bell-after-undo-phone: bell lit false; lines []",
+    "redo: button {\"disabled\":false,\"title\":\"Redo — Ranger’s OL\"}; note \"Redid: Ranger’s OL\"; record {\"type\":\"OL\",\"date\":\"Jul 15\",\"allday\":false,\"half\":\"am\",\"s\":0,\"e\":720,\"cx\":false,\"remarks\":\"Local leave\",\"people\":[\"bane\"]}",
+    "picture B3-new-4-redo-pressed-desk.png: \"Redid: Ranger’s OL\"",
+    "picture B3-new-5-bell-after-redo-phone.png: [\"(unread) OL Wed 15 Jul / Now OL (AM), LL changed to OL · Saber\"]",
+    "B3-new-5-bell-after-redo-phone: bell lit true; lines [\"(unread) OL Wed 15 Jul / Now OL (AM), LL changed to OL · Saber\"]",
+    "leg 2: Ranger tapped \"Now OL (AM), LL changed to OL · Saber\"",
+    "leg 2: Saber's tab after Ranger's read in the other tab: {\"signInShown\":false,\"undo\":true}",
+    "picture B3-new-8-saber-tab-after-ranger-read-desk.png: \"\"",
+    "undo2: button {\"disabled\":false,\"title\":\"Undo — Ranger’s OL\"}; note \"Undid: Ranger’s OL\"; record {\"type\":\"LL\",\"date\":\"Jul 15\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"Local leave\",\"people\":[\"bane\"]}",
+    "picture B3-new-9-undo2-pressed-desk.png: \"Undid: Ranger’s OL\"",
+    "picture B3-new-10-bell-after-undo2-phone.png: []",
+    "B3-new-10-bell-after-undo2-phone: bell lit false; lines []",
+    "redo2: button {\"disabled\":false,\"title\":\"Redo — Ranger’s OL\"}; note \"Redid: Ranger’s OL\"; record {\"type\":\"OL\",\"date\":\"Jul 15\",\"allday\":false,\"half\":\"am\",\"s\":0,\"e\":720,\"cx\":false,\"remarks\":\"Local leave\",\"people\":[\"bane\"]}",
+    "picture B3-new-9-redo2-pressed-desk.png: \"Redid: Ranger’s OL\"",
+    "picture B3-new-10-bell-after-redo2-phone.png: [\"(read) OL Wed 15 Jul / Now OL (AM), LL changed to OL · Saber\"]",
+    "B3-new-10-bell-after-redo2-phone: bell lit false; lines [\"(read) OL Wed 15 Jul / Now OL (AM), LL changed to OL · Saber\"]"
+   ]
+  },
+  "B3-old": {
+   "log": [
+    "bundle: index-CkMVta6F.js",
+    "filed {\"type\":\"LL\",\"span\":\"all\",\"remarks\":\"Local leave\"} on 2026-07-15: new input [\"imwujjtad0lobv5\"]; asked [\"document\"]; note \"\"",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "picture B3-old-1-after-save-phone.png: [\"(unread) OL Wed 15 Jul / Renamed — was LL · Saber\"]",
+    "B3-old-1-after-save-phone: bell lit true; lines [\"(unread) OL Wed 15 Jul / Renamed — was LL · Saber\"]",
+    "undo: button {\"disabled\":false,\"title\":\"Undo — Ranger’s OL\"}; note \"Undid: Ranger’s OL\"; record {\"type\":\"LL\",\"date\":\"Jul 15\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"Local leave\",\"people\":[\"bane\"]}",
+    "picture B3-old-2-undo-pressed-desk.png: \"Undid: Ranger’s OL\"",
+    "picture B3-old-3-bell-after-undo-phone.png: []",
+    "B3-old-3-bell-after-undo-phone: bell lit false; lines []",
+    "redo: button {\"disabled\":false,\"title\":\"Redo — Ranger’s OL\"}; note \"Redid: Ranger’s OL\"; record {\"type\":\"OL\",\"date\":\"Jul 15\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"Local leave\",\"people\":[\"bane\"]}",
+    "picture B3-old-4-redo-pressed-desk.png: \"Redid: Ranger’s OL\"",
+    "picture B3-old-5-bell-after-redo-phone.png: [\"(unread) OL Wed 15 Jul / Renamed — was LL · Saber\"]",
+    "B3-old-5-bell-after-redo-phone: bell lit true; lines [\"(unread) OL Wed 15 Jul / Renamed — was LL · Saber\"]",
+    "leg 2: Ranger tapped \"Renamed — was LL · Saber\"",
+    "leg 2: Saber's tab after Ranger's read in the other tab: {\"signInShown\":false,\"undo\":true}",
+    "picture B3-old-8-saber-tab-after-ranger-read-desk.png: \"\"",
+    "undo2: button {\"disabled\":false,\"title\":\"Undo — Ranger’s OL\"}; note \"Undid: Ranger’s OL\"; record {\"type\":\"LL\",\"date\":\"Jul 15\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"Local leave\",\"people\":[\"bane\"]}",
+    "picture B3-old-9-undo2-pressed-desk.png: \"Undid: Ranger’s OL\"",
+    "picture B3-old-10-bell-after-undo2-phone.png: []",
+    "B3-old-10-bell-after-undo2-phone: bell lit false; lines []",
+    "redo2: button {\"disabled\":false,\"title\":\"Redo — Ranger’s OL\"}; note \"Redid: Ranger’s OL\"; record {\"type\":\"OL\",\"date\":\"Jul 15\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"Local leave\",\"people\":[\"bane\"]}",
+    "picture B3-old-9-redo2-pressed-desk.png: \"Redid: Ranger’s OL\"",
+    "picture B3-old-10-bell-after-redo2-phone.png: [\"(read) OL Wed 15 Jul / Renamed — was LL · Saber\"]",
+    "B3-old-10-bell-after-redo2-phone: bell lit false; lines [\"(read) OL Wed 15 Jul / Renamed — was LL · Saber\"]"
+   ]
+  }
+ },
+ "errors": []
+}

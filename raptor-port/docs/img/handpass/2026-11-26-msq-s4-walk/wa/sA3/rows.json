@@ -1,0 +1,155 @@
+[
+ [
+  "A4 clear day",
+  "phone-webkit",
+  "Cinch 11 Dec (high) → day window → ⋯ Post out",
+  "day stays where it is, above the sheet, marked (D1290, D1289)",
+  "scrollY 0→0→0; cell 371-388 sheetTop 552 hit=true",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sA3/003-phone-webkit-A4-high-postout-settled.png"
+ ],
+ [
+  "F-S27(a)",
+  "phone-webkit",
+  "new posting open; two slow presses on the day (700ms apart)",
+  "1st closes, 2nd opens the day afresh — leave buttons, no posting form (D2732 Q3)",
+  "after1 bid=null poForm=null; after2 bid=605 leave=true poForm=null head=Cinch Fri 11 Dec Auto-approve ✕",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sA3/006-phone-webkit-S27a-two-slow-settled.png"
+ ],
+ [
+  "F-S27(b)",
+  "phone-webkit",
+  "posting open (yes); quick double tap on the day (150ms)",
+  "even presses → day window afresh, never the posting re-opened, never two windows",
+  "{\"bid\":605,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":null,\"confirm\":null,\"leaveGroup\":true,\"card\":null,\"head\":\"Cinch Fri 11 Dec Auto-approve ✕\",\"gone\":0}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sA3/008-phone-webkit-S27b-dbl-settled.png"
+ ],
+ [
+  "F-S27(c)",
+  "phone-webkit",
+  "posting open; three quick taps (140ms)",
+  "odd presses → closed; never the posting re-opened by itself",
+  "{\"bid\":null,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":null,\"confirm\":null,\"leaveGroup\":false,\"card\":null,\"head\":null,\"gone\":0}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sA3/010-phone-webkit-S27c-triple-settled.png"
+ ],
+ [
+  "F-S27(d)",
+  "phone-webkit",
+  "posting open; press, press again 40ms later; frame mid-way img/handpass/2026-11-26-msq-s4-walk/wa/sA3/011-phone-webkit-S27d-midway.png",
+  "two presses → day window afresh (or RECORD); never two windows / posting re-opened",
+  "{\"bid\":605,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":null,\"confirm\":null,\"leaveGroup\":true,\"card\":null,\"head\":\"Cinch Fri 11 Dec Auto-approve ✕\",\"gone\":0}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sA3/012-phone-webkit-S27d-settled.png"
+ ],
+ [
+  "F-S27(e)",
+  "phone-webkit",
+  "drift press and long press",
+  "n/a",
+  "WebKit in Playwright has no held or drifting finger — walked in Chromium only",
+  "NOT REACHED",
+  ""
+ ],
+ [
+  "A4 own row",
+  "phone-webkit",
+  "Saber's own row 9 Dec → ⋯ Post out",
+  "day marked and above the sheet; head \"Saber  Post out\" (D1290, D1568)",
+  "cell 424-442 sheetTop 552 hit=true at=cell-stiff-2026-12-09; sheet: Saber Post out ✕ POSTING ✓ Overseas Sqn Delete SANS PO FROM Wed 9 Dec 26 ▾ On 9 ",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sA3/014-phone-webkit-A4-own-postout-settled.png"
+ ],
+ [
+  "A4 other date",
+  "phone-webkit",
+  "Saber's posting open; press 4 Dec on his row",
+  "RECORD: what closes/opens; the lit day matches the window (lesson 4)",
+  "{\"bid\":null,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":null,\"confirm\":null,\"leaveGroup\":false,\"card\":null,\"head\":null,\"gone\":0} | ",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sA3/016-phone-webkit-A4-otherdate-settled.png"
+ ],
+ [
+  "A4 other man",
+  "phone-webkit",
+  "Saber's posting open; press Piston's 9 Dec",
+  "RECORD: what closes/opens; the lit cell agrees with the window (lesson 4)",
+  "{\"bid\":null,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":null,\"confirm\":null,\"leaveGroup\":false,\"card\":null,\"head\":null,\"gone\":0} | ",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sA3/018-phone-webkit-A4-otherman-settled.png"
+ ],
+ [
+  "A4 low day (bid window)",
+  "phone-webkit",
+  "Outlaw 8 Dec, low on screen → day window",
+  "the day lifted just above the window (D1290)",
+  "scrollY 0→234; cell 579-598 sheetTop 605 hit=true",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sA3/020-phone-webkit-S1-low-daywindow.png"
+ ],
+ [
+  "A4 low day (posting)",
+  "phone-webkit",
+  "⋯ → Post out (taller sheet)",
+  "the day still above the posting sheet (D1290; chat 197)",
+  "scrollY 234→287; cell 526-545 sheetTop 552 hit=true",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sA3/022-phone-webkit-S1-low-postout-settled.png"
+ ],
+ [
+  "F-S1(1)",
+  "phone-webkit",
+  "Outlaw's gone day 10 Dec at y≈813 (lower third) tapped",
+  "the existing posting sheet, head \"Outlaw  Post out\", the day just above its top (D2732 Q2, D1290)",
+  "scrollY 0→287; cell 526-545 sheetTop 552 hit=true at=c whole; sheet: Outlaw Post out ✕ POSTING ✓ Overseas Sqn Delete SANS PO FROM Tue 8 Dec 26 ▾ On 8 Dec: arch",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sA3/024-phone-webkit-S1-gone-tap1-settled.png"
+ ],
+ [
+  "F-S1(2)",
+  "phone-webkit",
+  "the same day pressed again",
+  "the sheet closes (Q3, every sheet)",
+  "{\"bid\":null,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":null,\"confirm\":null,\"leaveGroup\":false,\"card\":null,\"head\":null,\"gone\":24}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sA3/026-phone-webkit-S1-gone-tap2-settled.png"
+ ],
+ [
+  "F-S1(3)",
+  "phone-webkit",
+  "pressed a third time",
+  "the posting sheet again — not the leave buttons (D2727)",
+  "{\"bid\":null,\"postout\":552,\"postin\":null,\"select\":null,\"poForm\":612,\"confirm\":null,\"leaveGroup\":false,\"card\":null,\"head\":\"Outlaw Post out ✕\",\"gone\":24} | Outlaw Post out ✕ POSTING ✓ Overseas Sqn Delete SANS PO FROM",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sA3/028-phone-webkit-S1-gone-tap3-settled.png"
+ ],
+ [
+  "F-S1 post-in (1)",
+  "phone-webkit",
+  "Diesel posted in from 12 Dec; blank 9 Dec at y≈832 tapped",
+  "the existing Post in sheet, head \"Diesel  Post in\", the day above its top (D2732, D2743 empty day, D1290)",
+  "cell 604-621 sheetTop 628 hit=true at=cell-fantom-2026-12-09; state {\"bid\":null,\"postout\":null,\"postin\":628,\"select\":null,\"poForm\":688,\"confirm\":null,\"leaveGroup\":false,\"card\":null,\"head\":\"Diesel Post in ✕\",\"gone\":188}; sheet: Diesel Post in ✕ PI FROM Sat 12 Dec 26 ▾ Posted in on 12 Dec 26 — on the manpower from tha",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sA3/031-phone-webkit-S1-pre-tap1-settled.png"
+ ],
+ [
+  "F-S1 post-in (2)",
+  "phone-webkit",
+  "same day again",
+  "closes (Q3)",
+  "{\"bid\":null,\"postout\":null,\"postin\":null,\"select\":null,\"poForm\":null,\"confirm\":null,\"leaveGroup\":false,\"card\":null,\"head\":null,\"gone\":188}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sA3/033-phone-webkit-S1-pre-tap2-settled.png"
+ ],
+ [
+  "F-S1 post-in (3)",
+  "phone-webkit",
+  "third press",
+  "the Post in sheet again (D2743 empty day)",
+  "{\"bid\":null,\"postout\":null,\"postin\":628,\"select\":null,\"poForm\":688,\"confirm\":null,\"leaveGroup\":false,\"card\":null,\"head\":\"Diesel Post in ✕\",\"gone\":188}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wa/sA3/035-phone-webkit-S1-pre-tap3-settled.png"
+ ]
+]

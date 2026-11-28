@@ -1,0 +1,94 @@
+{
+ "pictures": [
+  {
+   "file": "c4-b-window-desk.png",
+   "case": "C4",
+   "size": "desktop 1440x900 @2x",
+   "text": "(no unanswered line)"
+  },
+  {
+   "file": "c4-b-plant.png",
+   "case": "C4",
+   "size": "desktop 1440x900 @2x",
+   "text": "the ground programme has no usable times, so nobody on it earns OIL for this day",
+   "geo": {
+    "l": 477,
+    "t": 836,
+    "r": 963,
+    "b": 874,
+    "w": 485,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c4-b-publish-desk.png",
+   "case": "C4",
+   "size": "desktop 1440x900 @2x",
+   "text": "Saturday 5 Feb published and approved. The ground programme has no usable times, so nobody on it earns OIL. · No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.",
+   "geo": {
+    "l": 360,
+    "t": 820,
+    "r": 1080,
+    "b": 874,
+    "w": 720,
+    "h": 54,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c4-c-plant.png",
+   "case": "C4",
+   "size": "desktop 1440x900 @2x",
+   "text": "No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.",
+   "geo": {
+    "l": 419,
+    "t": 836,
+    "r": 1021,
+    "b": 874,
+    "w": 603,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c4-c-publish-board-desk.png",
+   "case": "C4",
+   "size": "desktop 1440x900 @2x",
+   "text": "Saturday published and approved · No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.",
+   "geo": {
+    "l": 360,
+    "t": 820,
+    "r": 1080,
+    "b": 874,
+    "w": 720,
+    "h": 54,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  }
+ ],
+ "cases": {
+  "C4": {
+   "log": [
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"09:00\",\"to\":\"11:00\",\"title\":\"Range brief\"} on 2028-02-05: new input [\"imwuk37bw93t73r\"]; asked [\"oil\"]; note \"\"",
+    "picture c4-b-window-desk.png: \"(no unanswered line)\"",
+    "(b) the window's OIL line: \"(no unanswered line)\"",
+    "picture c4-b-plant.png: \"the ground programme has no usable times, so nobody on it earns OIL for this day\"",
+    "planted dj on g:5.1.+ (day 5): note \"the ground programme has no usable times, so nobody on it earns OIL for this day\"",
+    "picture c4-b-publish-desk.png: \"Saturday 5 Feb published and approved. The ground programme has no usable times, so nobody on it earns OIL. · No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.\"",
+    "picture c4-c-plant.png: \"No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.\"",
+    "planted dj on g:5.0.+ (day 5): note \"No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.\"",
+    "picture c4-c-publish-board-desk.png: \"Saturday published and approved · No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.\""
+   ]
+  }
+ },
+ "errors": []
+}

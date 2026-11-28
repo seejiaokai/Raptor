@@ -1,0 +1,20 @@
+[
+ [
+  "F-S22/F-S44 Undo post out built as Move is",
+  "desk-chromium",
+  "Move on a day with a leave bid; Undo post out on an existing posting",
+  "the same grey chip and the same teal arrow colour and size (D2732 Q1; Move D334)",
+  "Move {\"txt\":\"⇄Move\",\"h\":32,\"bg\":\"rgb(26, 31, 38)\",\"border\":\"solid 1px rgb(42, 49, 58)\",\"radius\":\"9px\",\"font\":\"12.5px 700\",\"color\":\"rgb(182, 192, 203)\",\"arrow\":\"⇄ rgb(59, 198, 232) 12.5px\"} | Undo {\"txt\":\"↶Undo post out\",\"h\":32,\"bg\":\"rgb(26, 31, 38)\",\"border\":\"solid 1px rgb(42, 49, 58)\",\"radius\":\"9px\",\"font\":\"12.5px 700\",\"color\":\"rgb(182, 192, 203)\",\"arrow\":\"↶ rgb(59, 198, 232) 12.5px\"}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r13mv/001-desk-chromium-move-chip.png ; img/handpass/2026-11-26-msq-s4-walk/wd/r13mv/002-desk-chromium-undo-chip.png"
+ ],
+ [
+  "F-S22/F-S44 Undo post out built as Move is",
+  "phone-webkit",
+  "Move on a day with a leave bid; Undo post out on an existing posting",
+  "the same grey chip and the same teal arrow colour and size (D2732 Q1; Move D334)",
+  "Move {\"txt\":\"⇄Move\",\"h\":30.3,\"bg\":\"rgb(26, 31, 38)\",\"border\":\"solid 1px rgb(42, 49, 58)\",\"radius\":\"9px\",\"font\":\"12.5px 700\",\"color\":\"rgb(182, 192, 203)\",\"arrow\":\"⇄ rgb(59, 198, 232) 12.5px\"} | Undo {\"txt\":\"↶Undo post out\",\"h\":30.3,\"bg\":\"rgb(26, 31, 38)\",\"border\":\"solid 1px rgb(42, 49, 58)\",\"radius\":\"9px\",\"font\":\"12.5px 700\",\"color\":\"rgb(182, 192, 203)\",\"arrow\":\"↶ rgb(59, 198, 232) 12.5px\"}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r13mv/003-phone-webkit-move-chip.png ; img/handpass/2026-11-26-msq-s4-walk/wd/r13mv/004-phone-webkit-undo-chip.png"
+ ]
+]

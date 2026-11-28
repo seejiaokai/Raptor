@@ -1,0 +1,213 @@
+{
+ "pictures": [
+  {
+   "file": "B7-1-list-top-phone.png",
+   "case": "B7",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "(unread) Sim brief Fri 17 Jul / You were added · Saber",
+    "(unread) Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber",
+    "(unread) Training Wed 15 Jul / You were added · Saber",
+    "(unread) LL Fri 17 Jul / Now LL (PM) · Saber",
+    "(unread) OL Wed 15 Jul / LL changed to OL · Saber",
+    "(unread) LL Tue 14 Jul / Now LL (AM) · Saber",
+    "(unread) OL Mon 13 Jul / LL changed to OL · Saber"
+   ]
+  },
+  {
+   "file": "B7-2-list-half-phone.png",
+   "case": "B7",
+   "size": "phone 402x874 @3x",
+   "text": {
+    "counted": 0,
+    "foot": null,
+    "scrollTop": 0,
+    "scrollMax": 0
+   }
+  },
+  {
+   "file": "B7-2-list-end-phone.png",
+   "case": "B7",
+   "size": "phone 402x874 @3x",
+   "text": {
+    "counted": 0,
+    "foot": null,
+    "scrollTop": 0,
+    "scrollMax": 0
+   }
+  },
+  {
+   "file": "B7-3-tap-changedto-phone-justafter.png",
+   "case": "B7"
+  },
+  {
+   "file": "B7-3-tap-changedto-phone-settled.png",
+   "case": "B7"
+  },
+  {
+   "file": "B7-3-tap-onemore-phone-justafter.png",
+   "case": "B7"
+  },
+  {
+   "file": "B7-3-tap-onemore-phone-settled.png",
+   "case": "B7"
+  },
+  {
+   "file": "B7-4-after-closings-phone.png",
+   "case": "B7",
+   "size": "phone 402x874 @3x",
+   "text": {
+    "closeX": 0,
+    "escape": true,
+    "outside": true,
+    "bellAgain": true
+   }
+  },
+  {
+   "file": "B7-5-after-markall-phone.png",
+   "case": "B7",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "(read) Sim brief Fri 17 Jul / You were added · Saber",
+    "(read) Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber",
+    "(read) Training Wed 15 Jul / You were added · Saber",
+    "(read) LL Fri 17 Jul / Now LL (PM) · Saber",
+    "(read) OL Wed 15 Jul / LL changed to OL · Saber",
+    "(read) LL Tue 14 Jul / Now LL (AM) · Saber",
+    "(read) OL Mon 13 Jul / LL changed to OL · Saber"
+   ]
+  },
+  {
+   "file": "B7-6-board-try-phone.png",
+   "case": "B7",
+   "size": "phone 402x874 @3x",
+   "text": "not reached: page.waitForSelector: Timeout 6000ms exceeded."
+  },
+  {
+   "file": "B7-1-list-top-desk.png",
+   "case": "B7",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "(unread) Sim brief Fri 17 Jul / You were added · Saber",
+    "(unread) Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber",
+    "(unread) Training Wed 15 Jul / You were added · Saber",
+    "(unread) LL Fri 17 Jul / Now LL (PM) · Saber",
+    "(unread) OL Wed 15 Jul / LL changed to OL · Saber",
+    "(unread) LL Tue 14 Jul / Now LL (AM) · Saber",
+    "(unread) OL Mon 13 Jul / LL changed to OL · Saber"
+   ]
+  },
+  {
+   "file": "B7-2-list-half-desk.png",
+   "case": "B7",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "counted": 0,
+    "foot": null,
+    "scrollTop": 0,
+    "scrollMax": 0
+   }
+  },
+  {
+   "file": "B7-2-list-end-desk.png",
+   "case": "B7",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "counted": 0,
+    "foot": null,
+    "scrollTop": 0,
+    "scrollMax": 0
+   }
+  },
+  {
+   "file": "B7-3-tap-changedto-desk-settled.png",
+   "case": "B7"
+  },
+  {
+   "file": "B7-3-tap-onemore-desk-settled.png",
+   "case": "B7"
+  },
+  {
+   "file": "B7-4-after-closings-desk.png",
+   "case": "B7",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "closeX": 0,
+    "escape": true,
+    "outside": true,
+    "bellAgain": true
+   }
+  },
+  {
+   "file": "B7-5-after-markall-desk.png",
+   "case": "B7",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "(read) Sim brief Fri 17 Jul / You were added · Saber",
+    "(read) Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber",
+    "(read) Training Wed 15 Jul / You were added · Saber",
+    "(read) LL Fri 17 Jul / Now LL (PM) · Saber",
+    "(read) OL Wed 15 Jul / LL changed to OL · Saber",
+    "(read) LL Tue 14 Jul / Now LL (AM) · Saber",
+    "(read) OL Mon 13 Jul / LL changed to OL · Saber"
+   ]
+  },
+  {
+   "file": "B7-6-board-try-desk.png",
+   "case": "B7",
+   "size": "desktop 1440x900 @2x",
+   "text": "not reached: page.waitForSelector: Timeout 6000ms exceeded."
+  }
+ ],
+ "cases": {
+  "B7": {
+   "log": [
+    "bundle: index-2uyEcUJu.js",
+    "filed {\"type\":\"LL\",\"span\":\"all\",\"remarks\":\"Leave 13\"} on 2026-07-13: new input [\"imwujpsvlhkwa48\"]; asked [\"document\"]; note \"\"",
+    "filed {\"type\":\"LL\",\"span\":\"all\",\"remarks\":\"Leave 14\"} on 2026-07-14: new input [\"imwujpvigq5a7rx\"]; asked [\"document\"]; note \"\"",
+    "filed {\"type\":\"LL\",\"span\":\"all\",\"remarks\":\"Leave 15\"} on 2026-07-15: new input [\"imwujpy4k79miys\"]; asked [\"document\"]; note \"\"",
+    "filed {\"type\":\"LL\",\"span\":\"all\",\"remarks\":\"Leave 17\"} on 2026-07-17: new input [\"imwujq0qv3s2nml\"]; asked [\"document\"]; note \"\"",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Training\",\"remarks\":\"Bring your kit\"} on 2026-07-15: new input [\"imwujqgui0uojjv\"]; asked []; note \"\"",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"14:00\",\"to\":\"15:00\",\"title\":\"Sim brief\",\"remarks\":\"\"} on 2026-07-17: new input [\"imwujqla72l8ahn\"]; asked []; note \"\"",
+    "phone: 7 lines; rows per line [1,2,1,1,1,1,1]; foot at top {\"counted\":0,\"foot\":null,\"scrollTop\":0,\"scrollMax\":0}",
+    "picture B7-1-list-top-phone.png: [\"(unread) Sim brief Fri 17 Jul / You were added · Saber\",\"(unread) Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\",\"(unread) Training Wed 15 Jul / You were added · Saber\",\"(unread) LL Fri 17 Jul / Now LL (PM) · Saber\",\"(unread) OL Wed 15 Jul / LL changed to OL · Saber\",\"(unread) LL Tue 14 Jul / Now LL (AM) · Saber\",\"(unread) OL Mon 13 Jul / LL changed to OL · Saber\"]",
+    "phone: foot scrolled half: {\"counted\":0,\"foot\":null,\"scrollTop\":0,\"scrollMax\":0}",
+    "picture B7-2-list-half-phone.png: {\"counted\":0,\"foot\":null,\"scrollTop\":0,\"scrollMax\":0}",
+    "phone: foot scrolled end: {\"counted\":0,\"foot\":null,\"scrollTop\":0,\"scrollMax\":0}",
+    "picture B7-2-list-end-phone.png: {\"counted\":0,\"foot\":null,\"scrollTop\":0,\"scrollMax\":0}",
+    "phone: tapped \"LL changed to OL · Saber\": window {\"open\":true,\"page\":\"inputs\",\"type\":\"OL\",\"title\":null,\"start\":\"06:00\",\"end\":\"18:00\",\"span\":[\"all\"],\"cal\":[\"2026-07-15\"]}; record {\"type\":\"OL\",\"date\":\"Jul 15\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"Leave 15\",\"people\":[\"bane\"]}",
+    "phone: unread 7 -> 6; that line now read: true",
+    "phone: tapped \"Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\": window {\"open\":true,\"page\":\"inputs\",\"type\":\"Training\",\"title\":\"Range brief\",\"start\":\"09:00\",\"end\":\"10:00\",\"span\":[],\"cal\":[]}; record {\"type\":\"Training\",\"title\":\"Range brief\",\"date\":\"Jul 16\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"Bring water\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "phone: unread 6 -> 5; that line now read: true",
+    "phone: closes by ✕ (count of such controls) 0; Escape true; a tap outside true; the bell again true",
+    "picture B7-4-after-closings-phone.png: {\"closeX\":0,\"escape\":true,\"outside\":true,\"bellAgain\":true}",
+    "phone: Mark all read: unread 5 -> 0; bell {\"lit\":false,\"bellId\":\"notifyBell\",\"more\":null,\"markAll\":false,\"listOpen\":true}",
+    "picture B7-5-after-markall-phone.png: [\"(read) Sim brief Fri 17 Jul / You were added · Saber\",\"(read) Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\",\"(read) Training Wed 15 Jul / You were added · Saber\",\"(read) LL Fri 17 Jul / Now LL (PM) · Saber\",\"(read) OL Wed 15 Jul / LL changed to OL · Saber\",\"(read) LL Tue 14 Jul / Now LL (AM) · Saber\",\"(read) OL Mon 13 Jul / LL changed to OL · Saber\"]",
+    "phone: the Scheduler Board as Ranger: not reached: page.waitForSelector: Timeout 6000ms exceeded.",
+    "picture B7-6-board-try-phone.png: \"not reached: page.waitForSelector: Timeout 6000ms exceeded.\"",
+    "desk: 7 lines; rows per line [1,2,1,1,1,1,1]; foot at top {\"counted\":0,\"foot\":null,\"scrollTop\":0,\"scrollMax\":0}",
+    "picture B7-1-list-top-desk.png: [\"(unread) Sim brief Fri 17 Jul / You were added · Saber\",\"(unread) Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\",\"(unread) Training Wed 15 Jul / You were added · Saber\",\"(unread) LL Fri 17 Jul / Now LL (PM) · Saber\",\"(unread) OL Wed 15 Jul / LL changed to OL · Saber\",\"(unread) LL Tue 14 Jul / Now LL (AM) · Saber\",\"(unread) OL Mon 13 Jul / LL changed to OL · Saber\"]",
+    "desk: foot scrolled half: {\"counted\":0,\"foot\":null,\"scrollTop\":0,\"scrollMax\":0}",
+    "picture B7-2-list-half-desk.png: {\"counted\":0,\"foot\":null,\"scrollTop\":0,\"scrollMax\":0}",
+    "desk: foot scrolled end: {\"counted\":0,\"foot\":null,\"scrollTop\":0,\"scrollMax\":0}",
+    "picture B7-2-list-end-desk.png: {\"counted\":0,\"foot\":null,\"scrollTop\":0,\"scrollMax\":0}",
+    "desk: tapped \"LL changed to OL · Saber\": window {\"open\":true,\"page\":\"inputs\",\"type\":\"OL\",\"title\":null,\"start\":\"06:00\",\"end\":\"18:00\",\"span\":[\"all\"],\"cal\":[\"2026-07-15\"]}; record {\"type\":\"OL\",\"date\":\"Jul 15\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"Leave 15\",\"people\":[\"bane\"]}",
+    "desk: unread 7 -> 6; that line now read: true",
+    "desk: tapped \"Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\": window {\"open\":true,\"page\":\"inputs\",\"type\":\"Training\",\"title\":\"Range brief\",\"start\":\"09:00\",\"end\":\"10:00\",\"span\":[],\"cal\":[]}; record {\"type\":\"Training\",\"title\":\"Range brief\",\"date\":\"Jul 16\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"Bring water\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "desk: unread 6 -> 5; that line now read: true",
+    "desk: closes by ✕ (count of such controls) 0; Escape true; a tap outside true; the bell again true",
+    "picture B7-4-after-closings-desk.png: {\"closeX\":0,\"escape\":true,\"outside\":true,\"bellAgain\":true}",
+    "desk: Mark all read: unread 5 -> 0; bell {\"lit\":false,\"bellId\":\"notifyBell\",\"more\":null,\"markAll\":false,\"listOpen\":true}",
+    "picture B7-5-after-markall-desk.png: [\"(read) Sim brief Fri 17 Jul / You were added · Saber\",\"(read) Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\",\"(read) Training Wed 15 Jul / You were added · Saber\",\"(read) LL Fri 17 Jul / Now LL (PM) · Saber\",\"(read) OL Wed 15 Jul / LL changed to OL · Saber\",\"(read) LL Tue 14 Jul / Now LL (AM) · Saber\",\"(read) OL Mon 13 Jul / LL changed to OL · Saber\"]",
+    "desk: the Scheduler Board as Ranger: not reached: page.waitForSelector: Timeout 6000ms exceeded.",
+    "picture B7-6-board-try-desk.png: \"not reached: page.waitForSelector: Timeout 6000ms exceeded.\""
+   ]
+  }
+ },
+ "errors": []
+}

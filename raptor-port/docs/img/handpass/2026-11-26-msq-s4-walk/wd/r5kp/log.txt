@@ -1,0 +1,38 @@
+msq-s4w-lib v1 who=wd run=r5kp port=4756
+wd-lib v1
+wd-kinds v1 phonewk
+phone-webkit cats ["OCU","D","C","B","A","IP","IR","FI"] too-long note 0
+phone-webkit after add note: Makes his Quals row, and his sign-in if you give one. The Leave War counts him from the post-in date.
+ROW PASS | F-S21 fixture: long new person | phone-webkit | Quals + Add person → callsign WWWWWWWWWWWWWW, pilot, CAT OCU, no sign-in → Add person; Leave War | saw: row id pmwxeehv9981c1f; too-long note shown: 0
+ROW PASS | F-S21 fixture: + SANS | phone-webkit | gear → + SANS | saw: new rows: ["ipman","romeo","yeti","vinci","krait","cards","wrangler","badger","waldo","nick","bullet"]
+ROW PASS | F-S21 Post out head and chips: pilot IP (Cinch) | phone-webkit | day → ⋯ (Attach/Other/Post out/Post in) → Post out | saw: head who="Cinch" {"x":46.7,"y":573.3,"w":46.7,"h":18,"r":93.5,"b":591.3} act {"x":103.5,"y":575.3,"w":56.2,"h":15,"r":159.6,"b":590.3} ✕ {"x":358.4,"y":574.3,"w":18.6,"h":17,"r":377,"b":591.3} oneLine true whoCut false; chips [["✓ Overseas Sqn",173,30,false],["Delete",173,30,false],["SANS",173,28,false]]; line "On 7 Dec: archived."; docW 402
+ROW PASS | F-S21 Post in head: pilot IP (Cinch) | phone-webkit | day → ⋯ → Post in | saw: who="Cinch" oneLine true whoCut false ✕in true; line "Their first day in the squadron. Days before it are blank and count nobody — leave can still be dated there."
+ROW PASS | F-S21 Post out head and chips: WSO IW (Basher) | phone-webkit | day → ⋯ (Attach/Other/Post out/Post in) → Post out | saw: head who="Basher" {"x":46.7,"y":573.3,"w":57.6,"h":18,"r":104.4,"b":591.3} act {"x":114.4,"y":575.3,"w":56.2,"h":15,"r":170.5,"b":590.3} ✕ {"x":358.4,"y":574.3,"w":18.6,"h":17,"r":377,"b":591.3} oneLine true whoCut false; chips [["✓ Overseas Sqn",173,30,false],["Delete",173,30,false],["SANS",173,28,false]]; line "On 7 Dec: archived."; docW 402
+ROW PASS | F-S21 Post in head: WSO IW (Basher) | phone-webkit | day → ⋯ → Post in | saw: who="Basher" oneLine true whoCut false ✕in true; line "Their first day in the squadron. Days before it are blank and count nobody — leave can still be dated there."
+bringIn [data-testid="cell-spanner-2026-12-07"] 0 {"x":228,"y":1325,"w":21,"h":18} scroll 0 967
+phone-webkit ground crew (Cotter) ERROR mouse.wheel: Mouse wheel is not supported in mobile WebKit
+ROW NOT REACHED | F-S21 ground crew (Cotter) | phone-webkit | stopped | saw: mouse.wheel: Mouse wheel is not supported in mobile WebKit
+ROW PASS | F-S21 Post out head and chips: CAT IR (Reaper) | phone-webkit | day → ⋯ (Attach/Other/Post out/Post in) → Post out | saw: head who="Reaper" {"x":46.7,"y":573.3,"w":58.2,"h":18,"r":104.9,"b":591.3} act {"x":114.9,"y":575.3,"w":56.2,"h":15,"r":171.1,"b":590.3} ✕ {"x":358.4,"y":574.3,"w":18.6,"h":17,"r":377,"b":591.3} oneLine true whoCut false; chips [["✓ Overseas Sqn",173,30,false],["Delete",173,30,false],["SANS",173,28,false]]; line "On 7 Dec: archived."; docW 402
+ROW PASS | F-S21 Post in head: CAT IR (Reaper) | phone-webkit | day → ⋯ → Post in | saw: who="Reaper" oneLine true whoCut false ✕in true; line "Their first day in the squadron. Days before it are blank and count nobody — leave can still be dated there."
+ROW PASS | F-S21 Post out head and chips: CAT A (Drifter) | phone-webkit | day → ⋯ (Attach/Other/Post out/Post in) → Post out | saw: head who="Drifter" {"x":46.7,"y":573.3,"w":54.6,"h":18,"r":101.3,"b":591.3} act {"x":111.3,"y":575.3,"w":56.2,"h":15,"r":167.5,"b":590.3} ✕ {"x":358.4,"y":574.3,"w":18.6,"h":17,"r":377,"b":591.3} oneLine true whoCut false; chips [["✓ Overseas Sqn",173,30,false],["Delete",173,30,false],["SANS",173,28,false]]; line "On 7 Dec: archived."; docW 402
+ROW PASS | F-S21 Post in head: CAT A (Drifter) | phone-webkit | day → ⋯ → Post in | saw: who="Drifter" oneLine true whoCut false ✕in true; line "Their first day in the squadron. Days before it are blank and count nobody — leave can still be dated there."
+ROW PASS | F-S21 Post out head and chips: CAT C (Ridge) | phone-webkit | day → ⋯ (Attach/Other/Post out/Post in) → Post out | saw: head who="Ridge" {"x":46.7,"y":573.3,"w":47,"h":18,"r":93.7,"b":591.3} act {"x":103.7,"y":575.3,"w":56.2,"h":15,"r":159.9,"b":590.3} ✕ {"x":358.4,"y":574.3,"w":18.6,"h":17,"r":377,"b":591.3} oneLine true whoCut false; chips [["✓ Overseas Sqn",173,30,false],["Delete",173,30,false],["SANS",173,28,false]]; line "On 7 Dec: archived."; docW 402
+ROW PASS | F-S21 Post in head: CAT C (Ridge) | phone-webkit | day → ⋯ → Post in | saw: who="Ridge" oneLine true whoCut false ✕in true; line "Their first day in the squadron. Days before it are blank and count nobody — leave can still be dated there."
+bringIn [data-testid="cell-salsa-2026-12-07"] 0 {"x":228,"y":760,"w":21,"h":18} scroll 0 402
+phone-webkit CAT B (Saint) ERROR mouse.wheel: Mouse wheel is not supported in mobile WebKit
+ROW NOT REACHED | F-S21 CAT B (Saint) | phone-webkit | stopped | saw: mouse.wheel: Mouse wheel is not supported in mobile WebKit
+bringIn [data-testid="cell-fantom-2026-12-07"] 0 {"x":228,"y":832,"w":21,"h":18} scroll 0 474
+phone-webkit CAT D (Diesel) ERROR mouse.wheel: Mouse wheel is not supported in mobile WebKit
+ROW NOT REACHED | F-S21 CAT D (Diesel) | phone-webkit | stopped | saw: mouse.wheel: Mouse wheel is not supported in mobile WebKit
+ROW PASS | F-S21 Post out head and chips: has a sign-in (Ranger) | phone-webkit | day → ⋯ (Attach/Other/Post out/Post in) → Post out | saw: head who="Ranger" {"x":46.7,"y":573.3,"w":58.4,"h":18,"r":105.1,"b":591.3} act {"x":115.1,"y":575.3,"w":56.2,"h":15,"r":171.3,"b":590.3} ✕ {"x":358.4,"y":574.3,"w":18.6,"h":17,"r":377,"b":591.3} oneLine true whoCut false; chips [["✓ Overseas Sqn",173,30,false],["Delete",173,30,false],["SANS",173,28,false]]; line "On 7 Dec: archived, account suspended."; docW 402
+ROW PASS | F-S21 Post in head: has a sign-in (Ranger) | phone-webkit | day → ⋯ → Post in | saw: who="Ranger" oneLine true whoCut false ✕in true; line "Their first day in the squadron. Days before it are blank and count nobody — leave can still be dated there."
+bringIn [data-testid="cell-ipman-2026-12-07"] 0 {"x":228,"y":1404,"w":21,"h":18} scroll 0 1046
+phone-webkit already SANS ERROR mouse.wheel: Mouse wheel is not supported in mobile WebKit
+ROW NOT REACHED | F-S21 already SANS | phone-webkit | stopped | saw: mouse.wheel: Mouse wheel is not supported in mobile WebKit
+bringIn [data-testid="cell-pmwxeehv9981c1f-2026-12-07"] 0 {"x":228,"y":1281,"w":21,"h":18} scroll 0 923
+phone-webkit longest callsign, no sign-in ERROR mouse.wheel: Mouse wheel is not supported in mobile WebKit
+ROW NOT REACHED | F-S21 longest callsign, no sign-in | phone-webkit | stopped | saw: mouse.wheel: Mouse wheel is not supported in mobile WebKit
+ROW PASS | F-S21 the name drawn the same for every kind | phone-webkit | the name's place in the head across kinds | saw: {"pilot IP (Cinch)":[46.7,10],"WSO IW (Basher)":[46.7,10],"CAT IR (Reaper)":[46.7,10],"CAT A (Drifter)":[46.7,10],"CAT C (Ridge)":[46.7,10],"has a sign-in (Ranger)":[46.7,10]}
+phone-webkit errors []
+errors []
+DONE 15 PASS 0 FAIL 5 OTHER of 20

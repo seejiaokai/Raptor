@@ -1,0 +1,562 @@
+{
+ "pictures": [
+  {
+   "file": "D4-fixed-1-filed-week-ground-desk.png",
+   "case": "D4-fixed",
+   "size": "desktop 1440x900 @2x",
+   "text": "08:00-10:00"
+  },
+  {
+   "file": "D4-fixed-1-filed-week-pi-desk.png",
+   "case": "D4-fixed",
+   "size": "desktop 1440x900 @2x",
+   "text": "08:00-10:00"
+  },
+  {
+   "file": "D4-fixed-1-filed-inputs-daycard-desk.png",
+   "case": "D4-fixed",
+   "size": "desktop 1440x900 @2x",
+   "text": "LATE08:00–10:00Hex, RangerTrainingRange briefBy Saber"
+  },
+  {
+   "file": "D4-fixed-2-board-open-board-ground-desk.png",
+   "case": "D4-fixed",
+   "size": "desktop 1440x900 @2x",
+   "text": "08:00-10:00"
+  },
+  {
+   "file": "D4-fixed-2-board-open-board-pi-desk.png",
+   "case": "D4-fixed",
+   "size": "desktop 1440x900 @2x",
+   "text": "08:00-10:00"
+  },
+  {
+   "file": "D4-fixed-3-after-0900-on-board-board-ground-desk.png",
+   "case": "D4-fixed",
+   "size": "desktop 1440x900 @2x",
+   "text": "08:00-10:00"
+  },
+  {
+   "file": "D4-fixed-3-after-0900-on-board-board-pi-desk.png",
+   "case": "D4-fixed",
+   "size": "desktop 1440x900 @2x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4-fixed-4-board-closed-week-ground-desk.png",
+   "case": "D4-fixed",
+   "size": "desktop 1440x900 @2x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4-fixed-4-board-closed-week-pi-desk.png",
+   "case": "D4-fixed",
+   "size": "desktop 1440x900 @2x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4-fixed-4-board-closed-inputs-daycard-desk.png",
+   "case": "D4-fixed",
+   "size": "desktop 1440x900 @2x",
+   "text": "LATE09:00–10:00Hex, RangerTrainingRange briefBy Saber"
+  },
+  {
+   "file": "D4-fixed-5-after-reload-week-ground-desk.png",
+   "case": "D4-fixed",
+   "size": "desktop 1440x900 @2x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4-fixed-5-after-reload-week-pi-desk.png",
+   "case": "D4-fixed",
+   "size": "desktop 1440x900 @2x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4-fixed-5-after-reload-inputs-daycard-desk.png",
+   "case": "D4-fixed",
+   "size": "desktop 1440x900 @2x",
+   "text": "LATE09:00–10:00Hex, RangerTrainingRange briefBy Saber"
+  },
+  {
+   "file": "D4-fixed-6-board-after-reload-board-ground-desk.png",
+   "case": "D4-fixed",
+   "size": "desktop 1440x900 @2x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4-fixed-6-board-after-reload-board-pi-desk.png",
+   "case": "D4-fixed",
+   "size": "desktop 1440x900 @2x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D3-hex-bell-phone.png",
+   "case": "D3",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "Range brief Wed 15 Jul / Now 09:00–10:00 · Saber",
+    "Range brief Wed 15 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Now 09:00–10:00 · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "D3-us-bell-phone.png",
+   "case": "D3",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "Range brief Wed 15 Jul / Now 09:00–10:00 · Saber",
+    "Range brief Wed 15 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Now 09:00–10:00 · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "D4-fixed-1-filed-week-ground-phone.png",
+   "case": "D4-fixed",
+   "size": "phone 402x874 @3x",
+   "text": "08:00-10:00"
+  },
+  {
+   "file": "D4-fixed-1-filed-week-pi-phone.png",
+   "case": "D4-fixed",
+   "size": "phone 402x874 @3x",
+   "text": "08:00-10:00"
+  },
+  {
+   "file": "D4-fixed-1-filed-inputs-daycard-phone.png",
+   "case": "D4-fixed",
+   "size": "phone 402x874 @3x",
+   "text": "LATE08:00–10:00Hex, RangerTrainingRange briefBy Saber"
+  },
+  {
+   "file": "D4-fixed-2-board-open-board-ground-phone.png",
+   "case": "D4-fixed",
+   "size": "phone 402x874 @3x",
+   "text": "08:00-10:00"
+  },
+  {
+   "file": "D4-fixed-2-board-open-board-pi-phone.png",
+   "case": "D4-fixed",
+   "size": "phone 402x874 @3x",
+   "text": "08:00-10:00"
+  },
+  {
+   "file": "D4-fixed-3-after-0900-on-board-board-ground-phone.png",
+   "case": "D4-fixed",
+   "size": "phone 402x874 @3x",
+   "text": "08:00-10:00"
+  },
+  {
+   "file": "D4-fixed-3-after-0900-on-board-board-pi-phone.png",
+   "case": "D4-fixed",
+   "size": "phone 402x874 @3x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4-fixed-4-board-closed-week-ground-phone.png",
+   "case": "D4-fixed",
+   "size": "phone 402x874 @3x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4-fixed-4-board-closed-week-pi-phone.png",
+   "case": "D4-fixed",
+   "size": "phone 402x874 @3x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4-fixed-4-board-closed-inputs-daycard-phone.png",
+   "case": "D4-fixed",
+   "size": "phone 402x874 @3x",
+   "text": "LATE09:00–10:00Hex, RangerTrainingRange briefBy Saber"
+  },
+  {
+   "file": "D4-fixed-5-after-reload-week-ground-phone.png",
+   "case": "D4-fixed",
+   "size": "phone 402x874 @3x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4-fixed-5-after-reload-week-pi-phone.png",
+   "case": "D4-fixed",
+   "size": "phone 402x874 @3x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4-fixed-5-after-reload-inputs-daycard-phone.png",
+   "case": "D4-fixed",
+   "size": "phone 402x874 @3x",
+   "text": "LATE09:00–10:00Hex, RangerTrainingRange briefBy Saber"
+  },
+  {
+   "file": "D4-fixed-6-board-after-reload-board-ground-phone.png",
+   "case": "D4-fixed",
+   "size": "phone 402x874 @3x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4-fixed-6-board-after-reload-board-pi-phone.png",
+   "case": "D4-fixed",
+   "size": "phone 402x874 @3x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4-main-1-filed-week-ground-desk.png",
+   "case": "D4-main",
+   "size": "desktop 1440x900 @2x",
+   "text": "08:00-10:00"
+  },
+  {
+   "file": "D4-main-1-filed-week-pi-desk.png",
+   "case": "D4-main",
+   "size": "desktop 1440x900 @2x",
+   "text": "08:00-10:00"
+  },
+  {
+   "file": "D4-main-1-filed-inputs-daycard-desk.png",
+   "case": "D4-main",
+   "size": "desktop 1440x900 @2x",
+   "text": "LATE08:00–10:00Hex, RangerTrainingRange briefBy Saber"
+  },
+  {
+   "file": "D4-main-2-board-open-board-ground-desk.png",
+   "case": "D4-main",
+   "size": "desktop 1440x900 @2x",
+   "text": "08:00-10:00"
+  },
+  {
+   "file": "D4-main-2-board-open-board-pi-desk.png",
+   "case": "D4-main",
+   "size": "desktop 1440x900 @2x",
+   "text": "08:00-10:00"
+  },
+  {
+   "file": "D4-main-3-after-0900-on-board-board-ground-desk.png",
+   "case": "D4-main",
+   "size": "desktop 1440x900 @2x",
+   "text": "08:00-10:00"
+  },
+  {
+   "file": "D4-main-3-after-0900-on-board-board-pi-desk.png",
+   "case": "D4-main",
+   "size": "desktop 1440x900 @2x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4-main-4-board-closed-week-ground-desk.png",
+   "case": "D4-main",
+   "size": "desktop 1440x900 @2x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4-main-4-board-closed-week-pi-desk.png",
+   "case": "D4-main",
+   "size": "desktop 1440x900 @2x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4-main-4-board-closed-inputs-daycard-desk.png",
+   "case": "D4-main",
+   "size": "desktop 1440x900 @2x",
+   "text": "LATE09:00–10:00Hex, RangerTrainingRange briefBy Saber"
+  },
+  {
+   "file": "D4-main-5-after-reload-week-ground-desk.png",
+   "case": "D4-main",
+   "size": "desktop 1440x900 @2x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4-main-5-after-reload-week-pi-desk.png",
+   "case": "D4-main",
+   "size": "desktop 1440x900 @2x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4-main-5-after-reload-inputs-daycard-desk.png",
+   "case": "D4-main",
+   "size": "desktop 1440x900 @2x",
+   "text": "LATE09:00–10:00Hex, RangerTrainingRange briefBy Saber"
+  },
+  {
+   "file": "D4-main-6-board-after-reload-board-ground-desk.png",
+   "case": "D4-main",
+   "size": "desktop 1440x900 @2x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4-main-6-board-after-reload-board-pi-desk.png",
+   "case": "D4-main",
+   "size": "desktop 1440x900 @2x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4-main-1-filed-week-ground-phone.png",
+   "case": "D4-main",
+   "size": "phone 402x874 @3x",
+   "text": "08:00-10:00"
+  },
+  {
+   "file": "D4-main-1-filed-week-pi-phone.png",
+   "case": "D4-main",
+   "size": "phone 402x874 @3x",
+   "text": "08:00-10:00"
+  },
+  {
+   "file": "D4-main-1-filed-inputs-daycard-phone.png",
+   "case": "D4-main",
+   "size": "phone 402x874 @3x",
+   "text": "LATE08:00–10:00Hex, RangerTrainingRange briefBy Saber"
+  },
+  {
+   "file": "D4-main-2-board-open-board-ground-phone.png",
+   "case": "D4-main",
+   "size": "phone 402x874 @3x",
+   "text": "08:00-10:00"
+  },
+  {
+   "file": "D4-main-2-board-open-board-pi-phone.png",
+   "case": "D4-main",
+   "size": "phone 402x874 @3x",
+   "text": "08:00-10:00"
+  },
+  {
+   "file": "D4-main-3-after-0900-on-board-board-ground-phone.png",
+   "case": "D4-main",
+   "size": "phone 402x874 @3x",
+   "text": "08:00-10:00"
+  },
+  {
+   "file": "D4-main-3-after-0900-on-board-board-pi-phone.png",
+   "case": "D4-main",
+   "size": "phone 402x874 @3x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4-main-4-board-closed-week-ground-phone.png",
+   "case": "D4-main",
+   "size": "phone 402x874 @3x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4-main-4-board-closed-week-pi-phone.png",
+   "case": "D4-main",
+   "size": "phone 402x874 @3x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4-main-4-board-closed-inputs-daycard-phone.png",
+   "case": "D4-main",
+   "size": "phone 402x874 @3x",
+   "text": "LATE09:00–10:00Hex, RangerTrainingRange briefBy Saber"
+  },
+  {
+   "file": "D4-main-5-after-reload-week-ground-phone.png",
+   "case": "D4-main",
+   "size": "phone 402x874 @3x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4-main-5-after-reload-week-pi-phone.png",
+   "case": "D4-main",
+   "size": "phone 402x874 @3x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4-main-5-after-reload-inputs-daycard-phone.png",
+   "case": "D4-main",
+   "size": "phone 402x874 @3x",
+   "text": "LATE09:00–10:00Hex, RangerTrainingRange briefBy Saber"
+  },
+  {
+   "file": "D4-main-6-board-after-reload-board-ground-phone.png",
+   "case": "D4-main",
+   "size": "phone 402x874 @3x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4-main-6-board-after-reload-board-pi-phone.png",
+   "case": "D4-main",
+   "size": "phone 402x874 @3x",
+   "text": "09:00-10:00"
+  }
+ ],
+ "cases": {
+  "D4-fixed": {
+   "log": [
+    "build D:/rw4/build-new2 bundle index-BNHpQA1S.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\",\"title\":\"Range brief\"} on 2026-07-15: new input [\"imwukt0fsedezkw\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"title\":\"Range brief\",\"date\":\"Jul 15\",\"allday\":false,\"s\":480,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "picture D4-fixed-1-filed-week-ground-desk.png: \"08:00-10:00\"",
+    "picture D4-fixed-1-filed-week-pi-desk.png: \"08:00-10:00\"",
+    "picture D4-fixed-1-filed-inputs-daycard-desk.png: \"LATE08:00–10:00Hex, RangerTrainingRange briefBy Saber\"",
+    "RECORD desk 1-filed: every place — {\"step\":\"1-filed\",\"saved\":\"08:00-10:00\",\"weekGround\":\"08:00-10:00\",\"weekPIshown\":true,\"weekPI\":\"08:00-10:00\",\"inputsDayCard\":\"LATE08:00–10:00Hex, RangerTrainingRange briefBy Saber\"}",
+    "picture D4-fixed-2-board-open-board-ground-desk.png: \"08:00-10:00\"",
+    "picture D4-fixed-2-board-open-board-pi-desk.png: \"08:00-10:00\"",
+    "RECORD desk 2-board-open: every place — {\"step\":\"2-board-open\",\"saved\":\"08:00-10:00\",\"boardGround\":\"08:00-10:00\",\"boardPI\":\"08:00-10:00\",\"boardPIkeys\":[\"imwukt0fsedezkw~rocky.str w52\"]}",
+    "RECORD desk: a pencil for the input on the Board's row (RECORD) — 1",
+    "desk: typed 0900 in INPUT; note \"\"",
+    "picture D4-fixed-3-after-0900-on-board-board-ground-desk.png: \"08:00-10:00\"",
+    "picture D4-fixed-3-after-0900-on-board-board-pi-desk.png: \"09:00-10:00\"",
+    "RECORD desk 3-after-0900-on-board: every place — {\"step\":\"3-after-0900-on-board\",\"saved\":\"09:00-10:00\",\"boardGround\":\"08:00-10:00\",\"boardPI\":\"09:00-10:00\",\"boardPIkeys\":[\"imwukt0fsedezkw~rocky.str w52\"]}",
+    "desk: board closed: true",
+    "picture D4-fixed-4-board-closed-week-ground-desk.png: \"09:00-10:00\"",
+    "picture D4-fixed-4-board-closed-week-pi-desk.png: \"09:00-10:00\"",
+    "picture D4-fixed-4-board-closed-inputs-daycard-desk.png: \"LATE09:00–10:00Hex, RangerTrainingRange briefBy Saber\"",
+    "RECORD desk 4-board-closed: every place — {\"step\":\"4-board-closed\",\"saved\":\"09:00-10:00\",\"weekGround\":\"09:00-10:00\",\"weekPIshown\":true,\"weekPI\":\"09:00-10:00\",\"inputsDayCard\":\"LATE09:00–10:00Hex, RangerTrainingRange briefBy Saber\"}",
+    "picture D4-fixed-5-after-reload-week-ground-desk.png: \"09:00-10:00\"",
+    "picture D4-fixed-5-after-reload-week-pi-desk.png: \"09:00-10:00\"",
+    "picture D4-fixed-5-after-reload-inputs-daycard-desk.png: \"LATE09:00–10:00Hex, RangerTrainingRange briefBy Saber\"",
+    "RECORD desk 5-after-reload: every place — {\"step\":\"5-after-reload\",\"saved\":\"09:00-10:00\",\"weekGround\":\"09:00-10:00\",\"weekPIshown\":true,\"weekPI\":\"09:00-10:00\",\"inputsDayCard\":\"LATE09:00–10:00Hex, RangerTrainingRange briefBy Saber\"}",
+    "picture D4-fixed-6-board-after-reload-board-ground-desk.png: \"09:00-10:00\"",
+    "picture D4-fixed-6-board-after-reload-board-pi-desk.png: \"09:00-10:00\"",
+    "RECORD desk 6-board-after-reload: every place — {\"step\":\"6-board-after-reload\",\"saved\":\"09:00-10:00\",\"boardGround\":\"09:00-10:00\",\"boardPI\":\"09:00-10:00\",\"boardPIkeys\":[\"imwukt0fsedezkw~rocky.str w52\"]}",
+    "NO PICTURE D4-fixed-7-board-pencil-desk: nothing to clip",
+    "RECORD desk: the Board's pencil on the input's row opens its window (RECORD) — {\"row\":\"sb-arow c6r inprow accd :: ⠿Range briefTrainingLATECHexCRangerIPReject\",\"opened\":true,\"startShown\":\"09:00\",\"recAfter\":{\"type\":\"Training\",\"title\":\"Range brief\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}}",
+    "build D:/rw4/build-new2 bundle index-BNHpQA1S.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\",\"title\":\"Range brief\"} on 2026-07-15: new input [\"imwuktwgdh1tdmu\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"title\":\"Range brief\",\"date\":\"Jul 15\",\"allday\":false,\"s\":480,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "phone bundle index-BNHpQA1S.js",
+    "picture D4-fixed-1-filed-week-ground-phone.png: \"08:00-10:00\"",
+    "picture D4-fixed-1-filed-week-pi-phone.png: \"08:00-10:00\"",
+    "picture D4-fixed-1-filed-inputs-daycard-phone.png: \"LATE08:00–10:00Hex, RangerTrainingRange briefBy Saber\"",
+    "RECORD phone 1-filed: every place — {\"step\":\"1-filed\",\"saved\":\"08:00-10:00\",\"weekGround\":\"08:00-10:00\",\"weekPIshown\":true,\"weekPI\":\"08:00-10:00\",\"inputsDayCard\":\"LATE08:00–10:00Hex, RangerTrainingRange briefBy Saber\"}",
+    "picture D4-fixed-2-board-open-board-ground-phone.png: \"08:00-10:00\"",
+    "picture D4-fixed-2-board-open-board-pi-phone.png: \"08:00-10:00\"",
+    "RECORD phone 2-board-open: every place — {\"step\":\"2-board-open\",\"saved\":\"08:00-10:00\",\"boardGround\":\"08:00-10:00\",\"boardPI\":\"08:00-10:00\",\"boardPIkeys\":[\"imwuktwgdh1tdmu~rocky.str w46\"]}",
+    "RECORD phone: a pencil for the input on the Board's row (RECORD) — 1",
+    "phone: typed 0900 in INPUT; note \"\"",
+    "picture D4-fixed-3-after-0900-on-board-board-ground-phone.png: \"08:00-10:00\"",
+    "picture D4-fixed-3-after-0900-on-board-board-pi-phone.png: \"09:00-10:00\"",
+    "RECORD phone 3-after-0900-on-board: every place — {\"step\":\"3-after-0900-on-board\",\"saved\":\"09:00-10:00\",\"boardGround\":\"08:00-10:00\",\"boardPI\":\"09:00-10:00\",\"boardPIkeys\":[\"imwuktwgdh1tdmu~rocky.str w46\"]}",
+    "phone: board closed: true",
+    "picture D4-fixed-4-board-closed-week-ground-phone.png: \"09:00-10:00\"",
+    "picture D4-fixed-4-board-closed-week-pi-phone.png: \"09:00-10:00\"",
+    "picture D4-fixed-4-board-closed-inputs-daycard-phone.png: \"LATE09:00–10:00Hex, RangerTrainingRange briefBy Saber\"",
+    "RECORD phone 4-board-closed: every place — {\"step\":\"4-board-closed\",\"saved\":\"09:00-10:00\",\"weekGround\":\"09:00-10:00\",\"weekPIshown\":true,\"weekPI\":\"09:00-10:00\",\"inputsDayCard\":\"LATE09:00–10:00Hex, RangerTrainingRange briefBy Saber\"}",
+    "picture D4-fixed-5-after-reload-week-ground-phone.png: \"09:00-10:00\"",
+    "picture D4-fixed-5-after-reload-week-pi-phone.png: \"09:00-10:00\"",
+    "picture D4-fixed-5-after-reload-inputs-daycard-phone.png: \"LATE09:00–10:00Hex, RangerTrainingRange briefBy Saber\"",
+    "RECORD phone 5-after-reload: every place — {\"step\":\"5-after-reload\",\"saved\":\"09:00-10:00\",\"weekGround\":\"09:00-10:00\",\"weekPIshown\":true,\"weekPI\":\"09:00-10:00\",\"inputsDayCard\":\"LATE09:00–10:00Hex, RangerTrainingRange briefBy Saber\"}",
+    "picture D4-fixed-6-board-after-reload-board-ground-phone.png: \"09:00-10:00\"",
+    "picture D4-fixed-6-board-after-reload-board-pi-phone.png: \"09:00-10:00\"",
+    "RECORD phone 6-board-after-reload: every place — {\"step\":\"6-board-after-reload\",\"saved\":\"09:00-10:00\",\"boardGround\":\"09:00-10:00\",\"boardPI\":\"09:00-10:00\",\"boardPIkeys\":[\"imwuktwgdh1tdmu~rocky.str w46\"]}",
+    "NO PICTURE D4-fixed-7-board-pencil-phone: nothing to clip",
+    "RECORD phone: the Board's pencil on the input's row opens its window (RECORD) — {\"row\":\"sb-arow c6r inprow accd :: ⠿Range briefTrainingLATECHexCRangerIPReject\",\"opened\":true,\"startShown\":\"09:00\",\"recAfter\":{\"type\":\"Training\",\"title\":\"Range brief\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}}"
+   ]
+  },
+  "D3": {
+   "log": [
+    "picture D3-hex-bell-phone.png: [\"Range brief Wed 15 Jul / Now 09:00–10:00 · Saber\",\"Range brief Wed 15 Jul / You were added · Saber\"]",
+    "hex-bell bell: [\"Range brief Wed 15 Jul / Now 09:00–10:00 · Saber\",\"Range brief Wed 15 Jul / You were added · Saber\"]",
+    "PASS phone: hex reads \"Now 09:00–10:00 · Saber\" — [\"Range brief Wed 15 Jul / Now 09:00–10:00 · Saber\"]",
+    "picture D3-us-bell-phone.png: [\"Range brief Wed 15 Jul / Now 09:00–10:00 · Saber\",\"Range brief Wed 15 Jul / You were added · Saber\"]",
+    "us-bell bell: [\"Range brief Wed 15 Jul / Now 09:00–10:00 · Saber\",\"Range brief Wed 15 Jul / You were added · Saber\"]",
+    "PASS phone: us reads \"Now 09:00–10:00 · Saber\" — [\"Range brief Wed 15 Jul / Now 09:00–10:00 · Saber\"]"
+   ]
+  },
+  "D4-main": {
+   "log": [
+    "build D:/rw4/build-main bundle index-CkMVta6F.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\",\"title\":\"Range brief\"} on 2026-07-15: new input [\"imwukutswj8cdhy\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"title\":\"Range brief\",\"date\":\"Jul 15\",\"allday\":false,\"s\":480,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "picture D4-main-1-filed-week-ground-desk.png: \"08:00-10:00\"",
+    "picture D4-main-1-filed-week-pi-desk.png: \"08:00-10:00\"",
+    "picture D4-main-1-filed-inputs-daycard-desk.png: \"LATE08:00–10:00Hex, RangerTrainingRange briefBy Saber\"",
+    "RECORD desk 1-filed: every place — {\"step\":\"1-filed\",\"saved\":\"08:00-10:00\",\"weekGround\":\"08:00-10:00\",\"weekPIshown\":true,\"weekPI\":\"08:00-10:00\",\"inputsDayCard\":\"LATE08:00–10:00Hex, RangerTrainingRange briefBy Saber\"}",
+    "picture D4-main-2-board-open-board-ground-desk.png: \"08:00-10:00\"",
+    "picture D4-main-2-board-open-board-pi-desk.png: \"08:00-10:00\"",
+    "RECORD desk 2-board-open: every place — {\"step\":\"2-board-open\",\"saved\":\"08:00-10:00\",\"boardGround\":\"08:00-10:00\",\"boardPI\":\"08:00-10:00\",\"boardPIkeys\":[\"imwukutswj8cdhy~rocky.str w52\"]}",
+    "RECORD desk: a pencil for the input on the Board's row (RECORD) — 1",
+    "desk: typed 0900 in INPUT; note \"\"",
+    "picture D4-main-3-after-0900-on-board-board-ground-desk.png: \"08:00-10:00\"",
+    "picture D4-main-3-after-0900-on-board-board-pi-desk.png: \"09:00-10:00\"",
+    "RECORD desk 3-after-0900-on-board: every place — {\"step\":\"3-after-0900-on-board\",\"saved\":\"09:00-10:00\",\"boardGround\":\"08:00-10:00\",\"boardPI\":\"09:00-10:00\",\"boardPIkeys\":[\"imwukutswj8cdhy~rocky.str w52\"]}",
+    "desk: board closed: true",
+    "picture D4-main-4-board-closed-week-ground-desk.png: \"09:00-10:00\"",
+    "picture D4-main-4-board-closed-week-pi-desk.png: \"09:00-10:00\"",
+    "picture D4-main-4-board-closed-inputs-daycard-desk.png: \"LATE09:00–10:00Hex, RangerTrainingRange briefBy Saber\"",
+    "RECORD desk 4-board-closed: every place — {\"step\":\"4-board-closed\",\"saved\":\"09:00-10:00\",\"weekGround\":\"09:00-10:00\",\"weekPIshown\":true,\"weekPI\":\"09:00-10:00\",\"inputsDayCard\":\"LATE09:00–10:00Hex, RangerTrainingRange briefBy Saber\"}",
+    "picture D4-main-5-after-reload-week-ground-desk.png: \"09:00-10:00\"",
+    "picture D4-main-5-after-reload-week-pi-desk.png: \"09:00-10:00\"",
+    "picture D4-main-5-after-reload-inputs-daycard-desk.png: \"LATE09:00–10:00Hex, RangerTrainingRange briefBy Saber\"",
+    "RECORD desk 5-after-reload: every place — {\"step\":\"5-after-reload\",\"saved\":\"09:00-10:00\",\"weekGround\":\"09:00-10:00\",\"weekPIshown\":true,\"weekPI\":\"09:00-10:00\",\"inputsDayCard\":\"LATE09:00–10:00Hex, RangerTrainingRange briefBy Saber\"}",
+    "picture D4-main-6-board-after-reload-board-ground-desk.png: \"09:00-10:00\"",
+    "picture D4-main-6-board-after-reload-board-pi-desk.png: \"09:00-10:00\"",
+    "RECORD desk 6-board-after-reload: every place — {\"step\":\"6-board-after-reload\",\"saved\":\"09:00-10:00\",\"boardGround\":\"09:00-10:00\",\"boardPI\":\"09:00-10:00\",\"boardPIkeys\":[\"imwukutswj8cdhy~rocky.str w52\"]}",
+    "NO PICTURE D4-main-7-board-pencil-desk: nothing to clip",
+    "RECORD desk: the Board's pencil on the input's row opens its window (RECORD) — {\"row\":\"sb-arow c6r inprow accd :: ⠿Range briefTrainingLATECHexCRangerIPReject\",\"opened\":true,\"startShown\":\"09:00\",\"recAfter\":{\"type\":\"Training\",\"title\":\"Range brief\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}}",
+    "build D:/rw4/build-main bundle index-CkMVta6F.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\",\"title\":\"Range brief\"} on 2026-07-15: new input [\"imwukvj67gf2mv0\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"title\":\"Range brief\",\"date\":\"Jul 15\",\"allday\":false,\"s\":480,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "phone bundle index-CkMVta6F.js",
+    "picture D4-main-1-filed-week-ground-phone.png: \"08:00-10:00\"",
+    "picture D4-main-1-filed-week-pi-phone.png: \"08:00-10:00\"",
+    "picture D4-main-1-filed-inputs-daycard-phone.png: \"LATE08:00–10:00Hex, RangerTrainingRange briefBy Saber\"",
+    "RECORD phone 1-filed: every place — {\"step\":\"1-filed\",\"saved\":\"08:00-10:00\",\"weekGround\":\"08:00-10:00\",\"weekPIshown\":true,\"weekPI\":\"08:00-10:00\",\"inputsDayCard\":\"LATE08:00–10:00Hex, RangerTrainingRange briefBy Saber\"}",
+    "picture D4-main-2-board-open-board-ground-phone.png: \"08:00-10:00\"",
+    "picture D4-main-2-board-open-board-pi-phone.png: \"08:00-10:00\"",
+    "RECORD phone 2-board-open: every place — {\"step\":\"2-board-open\",\"saved\":\"08:00-10:00\",\"boardGround\":\"08:00-10:00\",\"boardPI\":\"08:00-10:00\",\"boardPIkeys\":[\"imwukvj67gf2mv0~rocky.str w46\"]}",
+    "RECORD phone: a pencil for the input on the Board's row (RECORD) — 1",
+    "phone: typed 0900 in INPUT; note \"\"",
+    "picture D4-main-3-after-0900-on-board-board-ground-phone.png: \"08:00-10:00\"",
+    "picture D4-main-3-after-0900-on-board-board-pi-phone.png: \"09:00-10:00\"",
+    "RECORD phone 3-after-0900-on-board: every place — {\"step\":\"3-after-0900-on-board\",\"saved\":\"09:00-10:00\",\"boardGround\":\"08:00-10:00\",\"boardPI\":\"09:00-10:00\",\"boardPIkeys\":[\"imwukvj67gf2mv0~rocky.str w46\"]}",
+    "phone: board closed: true",
+    "picture D4-main-4-board-closed-week-ground-phone.png: \"09:00-10:00\"",
+    "picture D4-main-4-board-closed-week-pi-phone.png: \"09:00-10:00\"",
+    "picture D4-main-4-board-closed-inputs-daycard-phone.png: \"LATE09:00–10:00Hex, RangerTrainingRange briefBy Saber\"",
+    "RECORD phone 4-board-closed: every place — {\"step\":\"4-board-closed\",\"saved\":\"09:00-10:00\",\"weekGround\":\"09:00-10:00\",\"weekPIshown\":true,\"weekPI\":\"09:00-10:00\",\"inputsDayCard\":\"LATE09:00–10:00Hex, RangerTrainingRange briefBy Saber\"}",
+    "picture D4-main-5-after-reload-week-ground-phone.png: \"09:00-10:00\"",
+    "picture D4-main-5-after-reload-week-pi-phone.png: \"09:00-10:00\"",
+    "picture D4-main-5-after-reload-inputs-daycard-phone.png: \"LATE09:00–10:00Hex, RangerTrainingRange briefBy Saber\"",
+    "RECORD phone 5-after-reload: every place — {\"step\":\"5-after-reload\",\"saved\":\"09:00-10:00\",\"weekGround\":\"09:00-10:00\",\"weekPIshown\":true,\"weekPI\":\"09:00-10:00\",\"inputsDayCard\":\"LATE09:00–10:00Hex, RangerTrainingRange briefBy Saber\"}",
+    "picture D4-main-6-board-after-reload-board-ground-phone.png: \"09:00-10:00\"",
+    "picture D4-main-6-board-after-reload-board-pi-phone.png: \"09:00-10:00\"",
+    "RECORD phone 6-board-after-reload: every place — {\"step\":\"6-board-after-reload\",\"saved\":\"09:00-10:00\",\"boardGround\":\"09:00-10:00\",\"boardPI\":\"09:00-10:00\",\"boardPIkeys\":[\"imwukvj67gf2mv0~rocky.str w46\"]}",
+    "NO PICTURE D4-main-7-board-pencil-phone: nothing to clip",
+    "RECORD phone: the Board's pencil on the input's row opens its window (RECORD) — {\"row\":\"sb-arow c6r inprow accd :: ⠿Range briefTrainingLATECHexCRangerIPReject\",\"opened\":true,\"startShown\":\"09:00\",\"recAfter\":{\"type\":\"Training\",\"title\":\"Range brief\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}}"
+   ]
+  }
+ },
+ "errors": [
+  "D4-fixed D4-fixed-7-board-pencil-desk: nothing to clip",
+  "D4-fixed D4-fixed-7-board-pencil-phone: nothing to clip",
+  "D4-main D4-main-7-board-pencil-desk: nothing to clip",
+  "D4-main D4-main-7-board-pencil-phone: nothing to clip"
+ ]
+}

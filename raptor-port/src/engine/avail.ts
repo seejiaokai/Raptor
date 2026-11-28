@@ -85,6 +85,26 @@ export function dayEngaged(d:any,standbyFree?:any){const s=new Set(),add=(id:any
   (d.allhands||[]).forEach((x:any)=>{if(x.cx)return;if(x.info)return;(Array.isArray(x.who)?x.who:(x.who?[x.who]:[])).forEach((w:any)=>add(whoId(w)));more(x);});
   ['amt','oft'].forEach((k:any)=>((d.sims||{})[k]||[]).forEach((o:any)=>{if(!o.cx)more(o);}));
   return s;}
+/* WHO STANDS WHERE SANS AVAILABILITY IS ASKED, ON A DAY (owner D2564, 24 Nov 26 — "the SANS reminder counts a day as
+   planned only where he is in a flying seat or a sim (OFT, AMT) with nothing filed … never a ground programme row, a duty
+   desk or all hands"). SANS availability is filed for three things only — Fly, OFT, AMT — and two readers already asked
+   it of exactly those places: the checks (validate.ts sansChecks: the day's flying list and its `s:…amt` / `s:…oft`
+   entries, as events.ts buildDay collects them) and an armed seat (slotBar's SANS block, below: a flying key or a sim key,
+   a spare-like seat carved out). A third, the man's own reminder (leavewar/sansunfiled.ts), read dayEngaged instead —
+   every row he is busy on — on a builder's reading of "planned" that was never put to him (docs/bug-check-order.md §7.11,
+   lesson 32). This is the question as a function of the DAY alone, for a reader with no loaded week to ask the other two
+   through (a saved week held by the reminder): every man in a flying seat that is not cancelled and not exempt — the
+   checks' own test, waves.ts saExempt: an SC SPARE and a whole AVALON / BB wave stand by, unless the row flies — and
+   every man on an OFT or AMT row that is not cancelled, in a seat, as a passenger or dropped under it. Whether the row
+   has its times typed is not asked: he is in the seat either way. NOT dayEngaged, which answers "is he busy" for the crew
+   list's fade and ALL AVAIL, and is left as it is. leavewar/sans-planned-r5.test.ts holds this to the other two on the
+   same days, so the three cannot drift apart unseen. Port-only. */
+export function daySansSeats(d:any){const s=new Set(),add=(id:any)=>{if(id&&PEOPLE[id]&&!PEOPLE[id].special)s.add(id);};
+  /* never a standby line, flying or not (owner D2584 Q4: SC MAIN, SC SPARE, AVALON and BB need no SANS availability) */
+  ((d&&d.waves)||[]).forEach((w:any)=>((w&&w.formations)||[]).forEach((f:any)=>{if(!f||f.cx||(w&&w.standalone))return;((f.aircraft)||[]).forEach((a:any)=>{
+    if(!a||a.cx||saExempt(w,f,a))return;add(a.p);add(a.w);});}));
+  ['amt','oft'].forEach((k:any)=>(((d&&d.sims)||{})[k]||[]).forEach((o:any)=>{if(!o||o.cx)return;add(o.p);add(o.w);(o.pax||[]).forEach(add);(o.more||[]).forEach(add);}));
+  return s;}
 /* AWAY, split by whether the absence closes the DAY or only some HOURS
    (10 Aug 26, for the AM/PM half-days). Built in ONE pass because the palette
    asks about sixty people and sixty scans of the same list is the shape this
@@ -347,18 +367,29 @@ export function slotRules(key:any){
    screen. On a day SANS for him only by a posting not yet run (owner D2338, 22 Nov 26 — "no availability filed, await for
    17 Jul for SANs availability to be filed"), the words name that date and where it is filed — his own words since
    D2340 (23 Nov 26), which lets it be filed from the moment the posting is saved; from the date on, the usual words.
+   NEVER TELLS THE SCHEDULER TO FILE (owner D2587, 25 Nov 26 — "this sounds like we are telling the admin to file it. which
+   is incorrect"): filing is the SANS man's own job, so "File it on the Inputs page's SANS tab." went; no full stop, as the
+   usual words (a fresh Fable's check). His own bell keeps "Tap to file for availability." — it speaks to him.
    `iso`: the day looked at. */
 export function sansNoneWhy(p:any,iso:any):string{
   const f=sansAheadFrom(p,iso);
-  return f?`SANS from ${isoDayWords(f)}: no availability filed. File it on the Inputs page's SANS tab.`:'SANS — no availability filed for today';}
+  return f?`SANS from ${isoDayWords(f)}: no availability filed`:'SANS — no availability filed for today';}
 const SANS_KEY:any={fly:'f',oft:'o',amt:'a'};
 export const SANS_LABEL:any={fly:'Fly',oft:'OFT',amt:'AMT'};
 /* `iso`: the day being asked about — only a man who is SANS ON THAT DAY is judged (owner D2313, 22 Nov 26: a day before
    his SANS date is a regular's day, and no SANS availability is asked of it — engine/people.ts sansOn). */
+/* what he offered, as the lists say it: "Fly only", "OFT and AMT only"; '' when nothing is ticked (D2584 Q2 / 2a) */
+export function sansOfferedWords(off:any):string{const o=(off||[]);return o.length===1?`${o[0]} only`:o.length===2?`${o[0]} and ${o[1]} only`:'';}
+/* the crew list's reason for a filing that misses the event armed (owner D2584 Q2, answering D2575 — "SANS — offered Fly
+   only, not OFT", two offered "SANS — offered OFT and AMT only, not Fly", Fable's words kept as drafted); a record that
+   ticks nothing has nothing to name and keeps "SANS — not offering OFT". One body for a timed and an untimed seat. */
+export function sansNotOfferedWhy(g:any,domain:any):string{const w=sansOfferedWords(g&&g.offered);return w?`SANS — offered ${w}, not ${SANS_LABEL[domain]}`:`SANS — not offering ${SANS_LABEL[domain]}`;}
 export function sansGate(id:any,dt:any,domain:any,s:any,e:any,iso?:any):any{
   const p=PEOPLE[id]; if(!p||!sansOnP(p,iso))return {status:'na'};
   const rec=sansAvailOn(id,dt); if(!rec)return {status:'none'};
-  if(!(rec.sans&&rec.sans[SANS_KEY[domain]]))return {status:'not-offered'};
+  /* `offered`: the events he DID tick, in the card's order, so the crew and warning lists can name them (owner D2584
+     Q2 / 2a — "SANS — offered Fly only, not OFT") */
+  if(!(rec.sans&&rec.sans[SANS_KEY[domain]]))return {status:'not-offered',offered:['fly','oft','amt'].filter((k:any)=>rec.sans&&rec.sans[SANS_KEY[k]]).map((k:any)=>SANS_LABEL[k])};
   /* an ALL-DAY offer covers every slot on the day, INCLUDING one whose window
      crosses midnight — a night sortie landing after 00:00 (slotEnd>1439), an
      SC night shift (…07:00), a small-hours take-off (slotStart<0). The day-
@@ -369,7 +400,24 @@ export function sansGate(id:any,dt:any,domain:any,s:any,e:any,iso?:any):any{
   if(rec.allday)return {status:'ok'};
   const w=sansWindow(rec);
   if(w[0]<=s&&w[1]>=e)return {status:'ok'};
-  return {status:'window',off:{s:w[0],e:w[1]}};
+  /* `half`: a morning or an afternoon filing, so its reason reads as filed (owner D2759, sansWindowWhy below) */
+  return {status:'window',off:{s:w[0],e:w[1]},...(rec.half==='am'||rec.half==='pm'?{half:rec.half}:{})};
+}
+/* the crew list's reason for hours that miss the seat (owner D2759, 27 Nov 26 — "all as recommended", the SANS
+   warning-lines questions page, Q9; a fresh Fable's check of the words, chat 208): a morning or an afternoon filing
+   reads as filed, "SANS — available AM only" / "available PM only", as his badge says it — never the clock times
+   "00:00–12:00" / "12:01–23:59" the half stands for; hours he typed stay hours. */
+export function sansWindowWhy(g:any):string{
+  return g&&g.half?`SANS — available ${String(g.half).toUpperCase()} only`:`SANS — available ${hm24(g.off.s)}–${hm24(g.off.e)} only`;}
+/* THE CREW LIST'S WORDS FOR ONE GATE ANSWER — the struck reason, the drag hover and, since owner D2753 (27 Nov 26, Q1 of
+   the same page), the note after the drop, which reads these words and never the warning list's longer line (that keeps
+   the event it names). One body, so the three cannot drift; '' for an answer that strikes nothing. */
+export function sansCrewWhy(g:any,p:any,iso:any,domain:any):string{
+  if(!g)return '';
+  if(g.status==='none')return sansNoneWhy(p,iso);
+  if(g.status==='not-offered')return sansNotOfferedWhy(g,domain);
+  if(g.status==='window')return sansWindowWhy(g);
+  return '';
 }
 /* '' when they may be planned here, otherwise the reason they may not */
 /* `fromKey` (5 Sep 26): the seat the man is being MOVED from, when this is a
@@ -621,14 +669,30 @@ function slotBarNow(id:any,key:any,rules?:any,fromKey?:any){
      SANS_AVAIL against them — greying them on the picker would be the picker
      saying what the warning list will not, the drift-seam this gate must avoid. */
   const domain=r.sim?r.simKind:(String(key).indexOf(':')<0?'fly':null);
-  if(domain&&r.di>=0&&DAYS[r.di]&&sansOnP(p,dayIso(String(CURWEEK),r.di))&&r.slotStart!=null&&r.slotEnd!=null&&!spareLike0(r)){
+  /* NEVER A STANDBY LINE (owner D2584 Q4, 25 Nov 26, answering D2576, D2578): SC MAIN, SC SPARE, AVALON and BB need no SANS
+     availability, flying or not — scLine is every SC row and a flying AVALON / BB row, avJet one that stands by; the
+     validator (validate.ts, `e.shift`) and his reminder (daySansSeats) leave the same lines alone. */
+  const sansStby=!!(r.scLine||r.avFly||r.avJet);
+  if(domain&&!sansStby&&r.di>=0&&DAYS[r.di]&&sansOnP(p,dayIso(String(CURWEEK),r.di))&&r.slotStart!=null&&r.slotEnd!=null&&!spareLike0(r)){
     /* a flying seat is judged from its IN-TIME front edge (sansStart, set in
        slotRules' flying branch); a sim key sets no sansStart and falls back
        to the box's own start — a sim window is read AS FILED, unchanged */
     const g=sansGate(id,DAYS[r.di].dt,domain,r.sansStart!=null?r.sansStart:r.slotStart,r.slotEnd,dayIso(String(CURWEEK),r.di));
-    if(g.status==='none')return sansNoneWhy(p,dayIso(String(CURWEEK),r.di));
-    if(g.status==='not-offered')return `SANS — not offering ${SANS_LABEL[domain]}`;
-    if(g.status==='window')return `SANS — available ${hm24(g.off.s)}–${hm24(g.off.e)} only`;
+    {const why=sansCrewWhy(g,p,dayIso(String(CURWEEK),r.di),domain); if(why)return why;}
+  }
+  /* A FLYING SEAT WITH NO TIMES YET, NOTHING FILED (owner D2573, 25 Nov 26 — round A's Q1, "as recommended"): struck with
+     the same words as a timed seat, so the crew list agrees with his own reminder, which counts that seat already (D2568,
+     avail.ts daySansSeats). Only 'none' is asked — a man who has filed something has no window to hold against yet, as
+     before. Never a standby line (SC, AVALON, BB, flying or not — D2576, D2578: they need no SANS availability). An OFT
+     or AMT seat with no times too (owner D2584 Q5, 25 Nov 26: "as a flight with no times does").
+     A FILING THAT DOES NOT OFFER THIS EVENT (owner D2585, 25 Nov 26 — "OFT only" on a flight, "Fly only" on an OFT): struck
+     at once with the timed seat's words, since no times are needed to know it; one who offered the event with hours stays
+     plain until the times are typed ('window' and 'ok' are not asked here). */
+  if(domain&&!sansStby&&r.di>=0&&DAYS[r.di]&&(r.slotStart==null||r.slotEnd==null)&&!spareLike0(r)
+    &&sansOnP(p,dayIso(String(CURWEEK),r.di))){
+    const g0=sansGate(id,DAYS[r.di].dt,domain,null,null,dayIso(String(CURWEEK),r.di));
+    if(g0.status==='none')return sansNoneWhy(p,dayIso(String(CURWEEK),r.di));
+    if(g0.status==='not-offered')return sansNotOfferedWhy(g0,domain);
   }
   /* IS HE ALREADY BUSY AT THIS HOUR?
      The SC block above asks exactly this, for a shift. Every other slot asked

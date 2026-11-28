@@ -1,0 +1,26 @@
+{
+ "pictures": [
+  {
+   "file": "c4-g-oilq-cancel-desk.png",
+   "case": "C4",
+   "size": "desktop 1440x900 @2x",
+   "text": "Back"
+  },
+  {
+   "file": "c4-g-oilq-x-desk.png",
+   "case": "C4",
+   "size": "desktop 1440x900 @2x",
+   "text": "✕"
+  }
+ ],
+ "cases": {
+  "C4": {
+   "log": [
+    "picture c4-g-oilq-cancel-desk.png: \"Back\"",
+    "picture c4-g-oilq-x-desk.png: \"✕\"",
+    "(b3) Ranger at the OIL question: [{\"pressed\":\"Back\",\"made\":[],\"windowOpen\":1,\"note\":\"\"},{\"pressed\":\"✕\",\"made\":[],\"windowOpen\":1,\"note\":\"\"}]"
+   ]
+  }
+ },
+ "errors": []
+}

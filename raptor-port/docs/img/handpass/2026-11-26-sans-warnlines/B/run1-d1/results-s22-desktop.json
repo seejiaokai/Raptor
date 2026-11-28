@@ -1,0 +1,94 @@
+[
+ {
+  "scn": "s22",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s22",
+  "size": "desktop",
+  "id": "s22.l1",
+  "what": "set-up: VL BFM T/O 13:00 on Fri 17",
+  "ok": true,
+  "note": "{\"cs\":\"VL\",\"msn\":\"BFM\",\"to\":\"13:00\",\"ld\":\"14:00\"}"
+ },
+ {
+  "scn": "s22",
+  "size": "desktop",
+  "id": "s22.note",
+  "what": "Bolt (on the SDO desk 07:30–17:30, nothing filed) tapped into VL BFM's FCP: the note (RECORD whether the SANS line is named after the red one)",
+  "ok": "REC",
+  "note": "placed true · note \"Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) (+3 more)\"",
+  "pics": "s22-s22-bolt-armed-clip-desktop.png, s22-s22-bolt-sans-clip-desktop.png, s22-s22-bolt-armed-desktop.png, s22-s22-bolt-note-clip-desktop.png, s22-s22-bolt-picked-desktop.png"
+ },
+ {
+  "scn": "s22",
+  "size": "desktop",
+  "id": "s22.note-red",
+  "what": "the note leads with the red conflict, tells nobody to file",
+  "ok": true,
+  "note": "\"Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) (+3 more)\""
+ },
+ {
+  "scn": "s22",
+  "size": "desktop",
+  "id": "s22.list",
+  "what": "the list keeps Bolt's SANS line beside the red conflict (\"SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)\")",
+  "ok": true,
+  "note": "EDIT bar \"⚠ 4 issues · 1 warning ▲\" [hard] · 4 line(s): [hard ✕] Conflict Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) ✕ || [adv ✕] Misses flight brief Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 ✕ || [adv ✕] Misses flight debrief Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 ✕ || [adv ✕] SANS availability — not filed, or planned outside it Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ ·· INFO \"Friday · Jul 17 · 1\" · Draft — not yet published 6 changes · 1 WARNING 3 ADVISORY · 4 line(s): [] Warning · Conflict Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) || [] Advisory · Misses flight brief Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 || [] Advisory · Misses flight debrief Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 || [] Advisory · SANS availability — not filed, or planned outside it Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ·· BOARD head \"⚠ 4 issues · 1 warning\" · 4 line(s): [✕] Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) ✕ || [✕] Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 ✕ || [✕] Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 ✕ || [✕] Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ ·· PUCKS yeti week[flying line@Fri(4.0.0.0.p):red/C ; duty@Fri(d:4.0.0):red/C] board[flying line(4.0.0.0.p):red/C ; duty(d:4.0.0):red/C ; crew list (week):red/C]",
+  "pics": "s22-s22-a-e-list-clip-desktop.png, s22-s22-a-ipop-clip-desktop.png, s22-s22-a-b-clip-desktop.png, s22-s22-a-board-desktop.png"
+ },
+ {
+  "scn": "s22",
+  "size": "desktop",
+  "id": "s22.chip",
+  "what": "Bolt's seat puck: which ring and chip win (RECORD — Fable expects the red one, not \"A\")",
+  "ok": "REC",
+  "note": "flying line(4.0.0.0.p):red/C ; duty(d:4.0.0):red/C ; crew list (week):red/C · week flying line@Fri(4.0.0.0.p):red/C ; duty@Fri(d:4.0.0):red/C"
+ },
+ {
+  "scn": "s22",
+  "size": "desktop",
+  "id": "s22.chip-red",
+  "what": "his seat puck wears the red ring, not the amber \"A\" alone",
+  "ok": true,
+  "note": "flying line(4.0.0.0.p):red/C"
+ },
+ {
+  "scn": "s22",
+  "size": "desktop",
+  "id": "s22.wso",
+  "what": "Marlin (WSO, SANS, nothing filed) tapped into RU ACM's FCP: placed or refused, and the note (RECORD)",
+  "ok": "REC",
+  "note": "placed true · note \"Marlin — Illegal seat: a WSO in the front seat of RU ACM (T/O 20:00) (+1 more)\"",
+  "pics": "s22-s22-wso-armed-clip-desktop.png, s22-s22-wso-sans-clip-desktop.png, s22-s22-wso-armed-desktop.png, s22-s22-wso-note-clip-desktop.png, s22-s22-wso-picked-desktop.png"
+ },
+ {
+  "scn": "s22",
+  "size": "desktop",
+  "id": "s22.wso-list",
+  "what": "the list and Marlin's pucks after it (RECORD)",
+  "ok": "REC",
+  "note": "EDIT bar \"⚠ 6 issues · 2 warnings ▲\" [hard] · 6 line(s): [hard ✕] Conflict Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) ✕ || [hard ✕] Illegal seat Marlin — Illegal seat: a WSO in the front seat of RU ACM (T/O 20:00) ✕ || [adv ✕] Misses flight brief Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 ✕ || [adv ✕] Misses flight debrief Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 ✕ || [adv ✕] SANS availability — not filed, or planned outside it Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on RU ACM (T/O 20:00) ✕ ·· INFO \"Friday · Jul 17 · 1 X 1\" · Draft — not yet published 12 changes · 2 WARNING 4 ADVISORY · 6 line(s): [] Warning · Conflict Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) || [] Warning · Illegal seat Marlin — Illegal seat: a WSO in the front seat of RU ACM (T/O 20:00) || [] Advisory · Misses flight brief Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 || [] Advisory · Misses flight debrief Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 || [] Advisory · SANS availability — not filed, or planned outside it Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on RU ACM (T/O 20:00) ·· BOARD head \"⚠ 6 issues · 2 warnings\" · 6 line(s): [✕] Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) ✕ || [✕] Marlin — Illegal seat: a WSO in the front seat of RU ACM (T/O 20:00) ✕ || [✕] Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 ✕ || [✕] Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 ✕ || [✕] Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || [✕] Marlin — SANS: no availability filed for today. Planned on RU ACM (T/O 20:00) ✕ ·· PUCKS cards week[flying line@Fri(4.1.0.0.p):red/Q] board[flying line(4.1.0.0.p):red/Q ; crew list (week):red/Q]",
+  "pics": "s22-s22-b-e-list-clip-desktop.png, s22-s22-b-ipop-clip-desktop.png, s22-s22-b-b-clip-desktop.png, s22-s22-b-board-desktop.png"
+ },
+ {
+  "scn": "s22",
+  "size": "desktop",
+  "id": "s22.wso-sans",
+  "what": "Marlin's SANS line stands in the list whatever else the front seat raised",
+  "ok": true,
+  "note": "Conflict Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) ✕ || Illegal seat Marlin — Illegal seat: a WSO in the front seat of RU ACM (T/O 20:00) ✕ || Misses flight brief Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 ✕ || Misses flight debrief Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 ✕ || SANS availability — not filed, or planned outside it Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on RU ACM (T/O 20:00) ✕"
+ },
+ {
+  "scn": "s22",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

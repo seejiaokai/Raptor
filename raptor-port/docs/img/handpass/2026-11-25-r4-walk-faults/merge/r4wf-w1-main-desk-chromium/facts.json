@@ -1,0 +1,92 @@
+{
+ "pictures": [],
+ "cases": {
+  "desk-chromium": {
+   "log": [
+    "bundle index-DCU_WN_H.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"08:00\",\"to\":\"10:00\",\"title\":\"Range brief\"} on 2026-07-15: new input [\"imwvy2dz06ocvw2\"]; asked []; note \"\""
+   ]
+  },
+  "phone-webkit": {
+   "log": [
+    "bundle index-DCU_WN_H.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"08:00\",\"to\":\"10:00\",\"title\":\"Range brief\"} on 2026-07-15: new input [\"imwvy2ri0x8rhlb\"]; asked []; note \"\""
+   ]
+  }
+ },
+ "errors": [],
+ "results": [
+  [
+   "W1 desk-chromium step1 str=0900",
+   "FAIL",
+   "ground [\"08:00 10:00 | ⠿RANGE BRIEFTrainingRangerIP+ addCXⓘ■✕\"]; pinp [\"09:00\",\"10:00\",\"\"]; focus imwvy2dz06ocvw2.end onBoard=true; stored s=540 e=600 rmk=\"\"",
+   "w1-desk-chromium-step1.png"
+  ],
+  [
+   "W1 desk-chromium step2 str=0800",
+   "PASS",
+   "ground [\"08:00 10:00 | ⠿RANGE BRIEFTrainingRangerIP+ addCXⓘ■✕\"]; pinp [\"08:00\",\"10:00\",\"\"]; focus imwvy2dz06ocvw2.end onBoard=true; stored s=480 e=600 rmk=\"\"",
+   "w1-desk-chromium-step2.png"
+  ],
+  [
+   "W1 desk-chromium step3 end=1130",
+   "FAIL",
+   "ground [\"08:00 10:00 | ⠿RANGE BRIEFTrainingRangerIP+ addCXⓘ■✕\"]; pinp [\"08:00\",\"11:30\",\"\"]; focus imwvy2dz06ocvw2.rmks onBoard=true; stored s=480 e=690 rmk=\"\"",
+   "w1-desk-chromium-step3.png"
+  ],
+  [
+   "W1 desk-chromium step4 rmks=bring kit",
+   "FAIL",
+   "ground [\"08:00 10:00 | ⠿RANGE BRIEFTrainingRangerIP+ addCXⓘ■✕\"]; pinp [\"08:00\",\"11:30\",\"bring kit\"]; focus imwvy2a6kwm70ab.str onBoard=true; stored s=480 e=690 rmk=\"bring kit\"",
+   "w1-desk-chromium-step4.png"
+  ],
+  [
+   "W1 desk-chromium after caret leaves",
+   "RECORD",
+   "ground [\"08:00 11:30 | ⠿RANGE BRIEFTrainingRangerIP+ addbring kitCXⓘ■✕\"]; pinp [\"08:00\",\"11:30\",\"bring kit\"]",
+   ""
+  ],
+  [
+   "W1 desk-chromium after reload stored",
+   "PASS",
+   "{\"type\":\"Training\",\"title\":\"Range brief\",\"date\":\"Jul 15\",\"allday\":false,\"s\":480,\"e\":690,\"cx\":false,\"remarks\":\"bring kit\",\"people\":[\"bane\"],\"acc\":\"g\"}",
+   ""
+  ],
+  [
+   "W1 phone-webkit step1 str=0900",
+   "FAIL",
+   "ground [\"08:00 10:00 | ⠿RANGE BRIEFTrainingRangerIP+ addCXⓘ■✕\"]; pinp [\"09:00\",\"10:00\",\"\"]; focus imwvy2ri0x8rhlb.end onBoard=true; stored s=540 e=600 rmk=\"\"",
+   "w1-phone-webkit-step1.png"
+  ],
+  [
+   "W1 phone-webkit step2 str=0800",
+   "PASS",
+   "ground [\"08:00 10:00 | ⠿RANGE BRIEFTrainingRangerIP+ addCXⓘ■✕\"]; pinp [\"08:00\",\"10:00\",\"\"]; focus imwvy2ri0x8rhlb.end onBoard=true; stored s=480 e=600 rmk=\"\"",
+   "w1-phone-webkit-step2.png"
+  ],
+  [
+   "W1 phone-webkit step3 end=1130",
+   "FAIL",
+   "ground [\"08:00 10:00 | ⠿RANGE BRIEFTrainingRangerIP+ addCXⓘ■✕\"]; pinp [\"08:00\",\"11:30\",\"\"]; focus imwvy2ri0x8rhlb.rmks onBoard=true; stored s=480 e=690 rmk=\"\"",
+   "w1-phone-webkit-step3.png"
+  ],
+  [
+   "W1 phone-webkit step4 rmks=bring kit",
+   "FAIL",
+   "ground [\"08:00 10:00 | ⠿RANGE BRIEFTrainingRangerIP+ addCXⓘ■✕\"]; pinp [\"08:00\",\"11:30\",\"bring kit\"]; focus imwvy2kkrwt9nxt.str onBoard=true; stored s=480 e=690 rmk=\"bring kit\"",
+   "w1-phone-webkit-step4.png"
+  ],
+  [
+   "W1 phone-webkit after caret leaves",
+   "RECORD",
+   "ground [\"08:00 11:30 | ⠿RANGE BRIEFTrainingRangerIP+ addbring kitCXⓘ■✕\"]; pinp [\"08:00\",\"11:30\",\"bring kit\"]",
+   ""
+  ],
+  [
+   "W1 phone-webkit after reload stored",
+   "PASS",
+   "{\"type\":\"Training\",\"title\":\"Range brief\",\"date\":\"Jul 15\",\"allday\":false,\"s\":480,\"e\":690,\"cx\":false,\"remarks\":\"bring kit\",\"people\":[\"bane\"],\"acc\":\"g\"}",
+   ""
+  ]
+ ]
+}

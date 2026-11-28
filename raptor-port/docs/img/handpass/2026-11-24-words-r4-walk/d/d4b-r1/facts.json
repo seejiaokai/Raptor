@@ -1,0 +1,283 @@
+{
+ "pictures": [
+  {
+   "file": "D4b-fixed-v1-1-filed-week-ground-desk.png",
+   "case": "D4b-fixed-v1",
+   "size": "desktop 1440x900 @2x",
+   "text": "08:00-10:00"
+  },
+  {
+   "file": "D4b-fixed-v1-1-filed-week-pi-desk.png",
+   "case": "D4b-fixed-v1",
+   "size": "desktop 1440x900 @2x",
+   "text": "08:00-10:00"
+  },
+  {
+   "file": "D4b-fixed-v1-2-board-after-0900-board-ground-desk.png",
+   "case": "D4b-fixed-v1",
+   "size": "desktop 1440x900 @2x",
+   "text": "08:00-10:00"
+  },
+  {
+   "file": "D4b-fixed-v1-2-board-after-0800-board-ground-desk.png",
+   "case": "D4b-fixed-v1",
+   "size": "desktop 1440x900 @2x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4b-fixed-v1-2-board-after-0900-board-ground-desk.png",
+   "case": "D4b-fixed-v1",
+   "size": "desktop 1440x900 @2x",
+   "text": "08:00-10:00"
+  },
+  {
+   "file": "D4b-fixed-v1-4-board-closed-week-ground-desk.png",
+   "case": "D4b-fixed-v1",
+   "size": "desktop 1440x900 @2x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4b-fixed-v1-4-board-closed-week-pi-desk.png",
+   "case": "D4b-fixed-v1",
+   "size": "desktop 1440x900 @2x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4b-fixed-v1-5-after-reload-week-ground-desk.png",
+   "case": "D4b-fixed-v1",
+   "size": "desktop 1440x900 @2x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4b-fixed-v1-5-after-reload-week-pi-desk.png",
+   "case": "D4b-fixed-v1",
+   "size": "desktop 1440x900 @2x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4b-fixed-v2-1-filed-week-ground-desk.png",
+   "case": "D4b-fixed-v2",
+   "size": "desktop 1440x900 @2x",
+   "text": "08:00-10:00"
+  },
+  {
+   "file": "D4b-fixed-v2-1-filed-week-pi-desk.png",
+   "case": "D4b-fixed-v2",
+   "size": "desktop 1440x900 @2x",
+   "text": "08:00-10:00"
+  },
+  {
+   "file": "D4b-fixed-v2-2-board-after-0900-board-ground-desk.png",
+   "case": "D4b-fixed-v2",
+   "size": "desktop 1440x900 @2x",
+   "text": "08:00-10:00"
+  },
+  {
+   "file": "D4b-fixed-v2-3-board-ground-box-tapped-and-left-board-ground-desk.png",
+   "case": "D4b-fixed-v2",
+   "size": "desktop 1440x900 @2x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4b-fixed-v2-4-board-closed-week-ground-desk.png",
+   "case": "D4b-fixed-v2",
+   "size": "desktop 1440x900 @2x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4b-fixed-v2-4-board-closed-week-pi-desk.png",
+   "case": "D4b-fixed-v2",
+   "size": "desktop 1440x900 @2x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4b-fixed-v2-5-after-reload-week-ground-desk.png",
+   "case": "D4b-fixed-v2",
+   "size": "desktop 1440x900 @2x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4b-fixed-v2-5-after-reload-week-pi-desk.png",
+   "case": "D4b-fixed-v2",
+   "size": "desktop 1440x900 @2x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4b-fixed-v1-1-filed-week-ground-phone.png",
+   "case": "D4b-fixed-v1",
+   "size": "phone 402x874 @3x",
+   "text": "08:00-10:00"
+  },
+  {
+   "file": "D4b-fixed-v1-1-filed-week-pi-phone.png",
+   "case": "D4b-fixed-v1",
+   "size": "phone 402x874 @3x",
+   "text": "08:00-10:00"
+  },
+  {
+   "file": "D4b-fixed-v1-2-board-after-0900-board-ground-phone.png",
+   "case": "D4b-fixed-v1",
+   "size": "phone 402x874 @3x",
+   "text": "08:00-10:00"
+  },
+  {
+   "file": "D4b-fixed-v1-2-board-after-0800-board-ground-phone.png",
+   "case": "D4b-fixed-v1",
+   "size": "phone 402x874 @3x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4b-fixed-v1-2-board-after-0900-board-ground-phone.png",
+   "case": "D4b-fixed-v1",
+   "size": "phone 402x874 @3x",
+   "text": "08:00-10:00"
+  },
+  {
+   "file": "D4b-fixed-v1-4-board-closed-week-ground-phone.png",
+   "case": "D4b-fixed-v1",
+   "size": "phone 402x874 @3x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4b-fixed-v1-4-board-closed-week-pi-phone.png",
+   "case": "D4b-fixed-v1",
+   "size": "phone 402x874 @3x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4b-fixed-v1-5-after-reload-week-ground-phone.png",
+   "case": "D4b-fixed-v1",
+   "size": "phone 402x874 @3x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4b-fixed-v1-5-after-reload-week-pi-phone.png",
+   "case": "D4b-fixed-v1",
+   "size": "phone 402x874 @3x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4b-fixed-v2-1-filed-week-ground-phone.png",
+   "case": "D4b-fixed-v2",
+   "size": "phone 402x874 @3x",
+   "text": "08:00-10:00"
+  },
+  {
+   "file": "D4b-fixed-v2-1-filed-week-pi-phone.png",
+   "case": "D4b-fixed-v2",
+   "size": "phone 402x874 @3x",
+   "text": "08:00-10:00"
+  },
+  {
+   "file": "D4b-fixed-v2-2-board-after-0900-board-ground-phone.png",
+   "case": "D4b-fixed-v2",
+   "size": "phone 402x874 @3x",
+   "text": "08:00-10:00"
+  },
+  {
+   "file": "D4b-fixed-v2-3-board-ground-box-tapped-and-left-board-ground-phone.png",
+   "case": "D4b-fixed-v2",
+   "size": "phone 402x874 @3x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4b-fixed-v2-4-board-closed-week-ground-phone.png",
+   "case": "D4b-fixed-v2",
+   "size": "phone 402x874 @3x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4b-fixed-v2-4-board-closed-week-pi-phone.png",
+   "case": "D4b-fixed-v2",
+   "size": "phone 402x874 @3x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4b-fixed-v2-5-after-reload-week-ground-phone.png",
+   "case": "D4b-fixed-v2",
+   "size": "phone 402x874 @3x",
+   "text": "09:00-10:00"
+  },
+  {
+   "file": "D4b-fixed-v2-5-after-reload-week-pi-phone.png",
+   "case": "D4b-fixed-v2",
+   "size": "phone 402x874 @3x",
+   "text": "09:00-10:00"
+  }
+ ],
+ "cases": {
+  "D4b-fixed-v1": {
+   "log": [
+    "build D:/rw4/build-new2 bundle index-BNHpQA1S.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\",\"title\":\"Range brief\"} on 2026-07-15: new input [\"imwukxew525f35o\"]; asked []; note \"\"",
+    "picture D4b-fixed-v1-1-filed-week-ground-desk.png: \"08:00-10:00\"",
+    "picture D4b-fixed-v1-1-filed-week-pi-desk.png: \"08:00-10:00\"",
+    "RECORD desk 1-filed — {\"step\":\"1-filed\",\"saved\":\"08:00-10:00\",\"weekGround\":\"08:00-10:00\",\"weekPI\":\"08:00-10:00\"}",
+    "picture D4b-fixed-v1-2-board-after-0900-board-ground-desk.png: \"08:00-10:00\"",
+    "RECORD desk 2-board-after-0900 — {\"step\":\"2-board-after-0900\",\"saved\":\"09:00-10:00\",\"boardGround\":\"08:00-10:00\",\"boardPI\":\"09:00-10:00\",\"note\":\"\"}",
+    "picture D4b-fixed-v1-2-board-after-0800-board-ground-desk.png: \"09:00-10:00\"",
+    "RECORD desk 2-board-after-0800 — {\"step\":\"2-board-after-0800\",\"saved\":\"08:00-10:00\",\"boardGround\":\"09:00-10:00\",\"boardPI\":\"08:00-10:00\",\"note\":\"\"}",
+    "picture D4b-fixed-v1-2-board-after-0900-board-ground-desk.png: \"08:00-10:00\"",
+    "RECORD desk 2-board-after-0900 — {\"step\":\"2-board-after-0900\",\"saved\":\"09:00-10:00\",\"boardGround\":\"08:00-10:00\",\"boardPI\":\"09:00-10:00\",\"note\":\"\"}",
+    "picture D4b-fixed-v1-4-board-closed-week-ground-desk.png: \"09:00-10:00\"",
+    "picture D4b-fixed-v1-4-board-closed-week-pi-desk.png: \"09:00-10:00\"",
+    "RECORD desk 4-board-closed — {\"step\":\"4-board-closed\",\"saved\":\"09:00-10:00\",\"weekGround\":\"09:00-10:00\",\"weekPI\":\"09:00-10:00\"}",
+    "picture D4b-fixed-v1-5-after-reload-week-ground-desk.png: \"09:00-10:00\"",
+    "picture D4b-fixed-v1-5-after-reload-week-pi-desk.png: \"09:00-10:00\"",
+    "RECORD desk 5-after-reload — {\"step\":\"5-after-reload\",\"saved\":\"09:00-10:00\",\"weekGround\":\"09:00-10:00\",\"weekPI\":\"09:00-10:00\"}",
+    "build D:/rw4/build-new2 bundle index-BNHpQA1S.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\",\"title\":\"Range brief\"} on 2026-07-15: new input [\"imwukycj5xa5w9b\"]; asked []; note \"\"",
+    "picture D4b-fixed-v1-1-filed-week-ground-phone.png: \"08:00-10:00\"",
+    "picture D4b-fixed-v1-1-filed-week-pi-phone.png: \"08:00-10:00\"",
+    "RECORD phone 1-filed — {\"step\":\"1-filed\",\"saved\":\"08:00-10:00\",\"weekGround\":\"08:00-10:00\",\"weekPI\":\"08:00-10:00\"}",
+    "picture D4b-fixed-v1-2-board-after-0900-board-ground-phone.png: \"08:00-10:00\"",
+    "RECORD phone 2-board-after-0900 — {\"step\":\"2-board-after-0900\",\"saved\":\"09:00-10:00\",\"boardGround\":\"08:00-10:00\",\"boardPI\":\"09:00-10:00\",\"note\":\"\"}",
+    "picture D4b-fixed-v1-2-board-after-0800-board-ground-phone.png: \"09:00-10:00\"",
+    "RECORD phone 2-board-after-0800 — {\"step\":\"2-board-after-0800\",\"saved\":\"08:00-10:00\",\"boardGround\":\"09:00-10:00\",\"boardPI\":\"08:00-10:00\",\"note\":\"\"}",
+    "picture D4b-fixed-v1-2-board-after-0900-board-ground-phone.png: \"08:00-10:00\"",
+    "RECORD phone 2-board-after-0900 — {\"step\":\"2-board-after-0900\",\"saved\":\"09:00-10:00\",\"boardGround\":\"08:00-10:00\",\"boardPI\":\"09:00-10:00\",\"note\":\"\"}",
+    "picture D4b-fixed-v1-4-board-closed-week-ground-phone.png: \"09:00-10:00\"",
+    "picture D4b-fixed-v1-4-board-closed-week-pi-phone.png: \"09:00-10:00\"",
+    "RECORD phone 4-board-closed — {\"step\":\"4-board-closed\",\"saved\":\"09:00-10:00\",\"weekGround\":\"09:00-10:00\",\"weekPI\":\"09:00-10:00\"}",
+    "picture D4b-fixed-v1-5-after-reload-week-ground-phone.png: \"09:00-10:00\"",
+    "picture D4b-fixed-v1-5-after-reload-week-pi-phone.png: \"09:00-10:00\"",
+    "RECORD phone 5-after-reload — {\"step\":\"5-after-reload\",\"saved\":\"09:00-10:00\",\"weekGround\":\"09:00-10:00\",\"weekPI\":\"09:00-10:00\"}"
+   ]
+  },
+  "D4b-fixed-v2": {
+   "log": [
+    "build D:/rw4/build-new2 bundle index-BNHpQA1S.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\",\"title\":\"Range brief\"} on 2026-07-15: new input [\"imwukxwja1068lo\"]; asked []; note \"\"",
+    "picture D4b-fixed-v2-1-filed-week-ground-desk.png: \"08:00-10:00\"",
+    "picture D4b-fixed-v2-1-filed-week-pi-desk.png: \"08:00-10:00\"",
+    "RECORD desk 1-filed — {\"step\":\"1-filed\",\"saved\":\"08:00-10:00\",\"weekGround\":\"08:00-10:00\",\"weekPI\":\"08:00-10:00\"}",
+    "picture D4b-fixed-v2-2-board-after-0900-board-ground-desk.png: \"08:00-10:00\"",
+    "RECORD desk 2-board-after-0900 — {\"step\":\"2-board-after-0900\",\"saved\":\"09:00-10:00\",\"boardGround\":\"08:00-10:00\",\"boardPI\":\"09:00-10:00\",\"note\":\"\"}",
+    "picture D4b-fixed-v2-3-board-ground-box-tapped-and-left-board-ground-desk.png: \"09:00-10:00\"",
+    "RECORD desk 3-board-ground-box-tapped-and-left — {\"step\":\"3-board-ground-box-tapped-and-left\",\"saved\":\"09:00-10:00\",\"boardGround\":\"09:00-10:00\",\"boardPI\":\"09:00-10:00\",\"note\":\"\"}",
+    "picture D4b-fixed-v2-4-board-closed-week-ground-desk.png: \"09:00-10:00\"",
+    "picture D4b-fixed-v2-4-board-closed-week-pi-desk.png: \"09:00-10:00\"",
+    "RECORD desk 4-board-closed — {\"step\":\"4-board-closed\",\"saved\":\"09:00-10:00\",\"weekGround\":\"09:00-10:00\",\"weekPI\":\"09:00-10:00\"}",
+    "picture D4b-fixed-v2-5-after-reload-week-ground-desk.png: \"09:00-10:00\"",
+    "picture D4b-fixed-v2-5-after-reload-week-pi-desk.png: \"09:00-10:00\"",
+    "RECORD desk 5-after-reload — {\"step\":\"5-after-reload\",\"saved\":\"09:00-10:00\",\"weekGround\":\"09:00-10:00\",\"weekPI\":\"09:00-10:00\"}",
+    "build D:/rw4/build-new2 bundle index-BNHpQA1S.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\",\"title\":\"Range brief\"} on 2026-07-15: new input [\"imwukyvm4do93bi\"]; asked []; note \"\"",
+    "picture D4b-fixed-v2-1-filed-week-ground-phone.png: \"08:00-10:00\"",
+    "picture D4b-fixed-v2-1-filed-week-pi-phone.png: \"08:00-10:00\"",
+    "RECORD phone 1-filed — {\"step\":\"1-filed\",\"saved\":\"08:00-10:00\",\"weekGround\":\"08:00-10:00\",\"weekPI\":\"08:00-10:00\"}",
+    "picture D4b-fixed-v2-2-board-after-0900-board-ground-phone.png: \"08:00-10:00\"",
+    "RECORD phone 2-board-after-0900 — {\"step\":\"2-board-after-0900\",\"saved\":\"09:00-10:00\",\"boardGround\":\"08:00-10:00\",\"boardPI\":\"09:00-10:00\",\"note\":\"\"}",
+    "picture D4b-fixed-v2-3-board-ground-box-tapped-and-left-board-ground-phone.png: \"09:00-10:00\"",
+    "RECORD phone 3-board-ground-box-tapped-and-left — {\"step\":\"3-board-ground-box-tapped-and-left\",\"saved\":\"09:00-10:00\",\"boardGround\":\"09:00-10:00\",\"boardPI\":\"09:00-10:00\",\"note\":\"\"}",
+    "picture D4b-fixed-v2-4-board-closed-week-ground-phone.png: \"09:00-10:00\"",
+    "picture D4b-fixed-v2-4-board-closed-week-pi-phone.png: \"09:00-10:00\"",
+    "RECORD phone 4-board-closed — {\"step\":\"4-board-closed\",\"saved\":\"09:00-10:00\",\"weekGround\":\"09:00-10:00\",\"weekPI\":\"09:00-10:00\"}",
+    "picture D4b-fixed-v2-5-after-reload-week-ground-phone.png: \"09:00-10:00\"",
+    "picture D4b-fixed-v2-5-after-reload-week-pi-phone.png: \"09:00-10:00\"",
+    "RECORD phone 5-after-reload — {\"step\":\"5-after-reload\",\"saved\":\"09:00-10:00\",\"weekGround\":\"09:00-10:00\",\"weekPI\":\"09:00-10:00\"}"
+   ]
+  }
+ },
+ "errors": []
+}

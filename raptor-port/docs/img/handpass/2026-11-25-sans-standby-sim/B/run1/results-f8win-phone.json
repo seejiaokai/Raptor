@@ -1,0 +1,160 @@
+[
+ {
+  "scn": "f8win",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "f8win",
+  "size": "phone",
+  "id": "f8win.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "f8win-f8win.post-postout-open-phone.png, f8win-f8win.post-postout-sheet-phone.png"
+ },
+ {
+  "scn": "f8win",
+  "size": "phone",
+  "id": "f8win.fileR",
+  "what": "set-up: Saber files SANS fly 08:00–10:00 for bane on 2026-07-18",
+  "ok": true,
+  "note": "{\"iid\":\"imrldixtyqfnaik\",\"people\":\"[{\\\"p\\\":\\\"bane\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077241542}]\",\"date\":\"Jul 18\",\"endDate\":null,\"sans\":{\"f\":true},\"allday\":false,\"s\":480,\"e\":600,\"remarks\":\"\",\"by\":\"stiff\"}",
+  "pics": "f8win-f8win.fileR-form-phone.png, f8win-f8win.fileR-saved-phone.png"
+ },
+ {
+  "scn": "f8win",
+  "size": "phone",
+  "id": "f8win.fileJ",
+  "what": "set-up: Saber files SANS fly 08:00–09:00 for ipman on 2026-07-18",
+  "ok": true,
+  "note": "{\"iid\":\"imrldj5wzabut4p\",\"people\":\"[{\\\"p\\\":\\\"ipman\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077252019}]\",\"date\":\"Jul 18\",\"endDate\":null,\"sans\":{\"f\":true},\"allday\":false,\"s\":480,\"e\":540,\"remarks\":\"\",\"by\":\"stiff\"}",
+  "pics": "f8win-f8win.fileJ-form-phone.png, f8win-f8win.fileJ-saved-phone.png"
+ },
+ {
+  "scn": "f8win",
+  "size": "phone",
+  "id": "f8win.flight",
+  "what": "set-up: a new flying line on Sat (+ Wave → Flying wave) 13:00–14:00",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 1\",\"kind\":\"\",\"standalone\":false,\"cs\":\"T13\",\"to\":\"13:00\",\"ld\":\"14:00\",\"n\":1}"
+ },
+ {
+  "scn": "f8win",
+  "size": "phone",
+  "id": "f8win.sb-SCAMMAIN",
+  "what": "standing by — SC AM MAIN FCP armed: no \"not offering\" / \"available … only\" / any SANS reason for Ranger (fly [\"08:00\",\"10:00\"]) or Jester (fly [\"08:00\",\"09:00\"]) (D2584 Q4)",
+  "ok": true,
+  "note": "armed 5.0.0.0.p · \"SANS Avail · 6 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed)",
+  "pics": "f8win-f8win-sb-SCAMMAIN-armed-clip-phone.png, f8win-f8win-sb-SCAMMAIN-sans-clip-phone.png, f8win-f8win-sb-SCAMMAIN-armed-phone.png"
+ },
+ {
+  "scn": "f8win",
+  "size": "phone",
+  "id": "f8win.sb-SCAMSPARE",
+  "what": "standing by — SC AM SPARE FCP armed: no \"not offering\" / \"available … only\" / any SANS reason for Ranger (fly [\"08:00\",\"10:00\"]) or Jester (fly [\"08:00\",\"09:00\"]) (D2584 Q4)",
+  "ok": true,
+  "note": "armed 5.0.0.2.p · \"SANS Avail · 6 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed)",
+  "pics": "f8win-f8win-sb-SCAMSPARE-armed-clip-phone.png, f8win-f8win-sb-SCAMSPARE-sans-clip-phone.png, f8win-f8win-sb-SCAMSPARE-armed-phone.png"
+ },
+ {
+  "scn": "f8win",
+  "size": "phone",
+  "id": "f8win.sb-AVALONMAIN",
+  "what": "standing by — AVALON MAIN FCP armed: no \"not offering\" / \"available … only\" / any SANS reason for Ranger (fly [\"08:00\",\"10:00\"]) or Jester (fly [\"08:00\",\"09:00\"]) (D2584 Q4)",
+  "ok": true,
+  "note": "armed 5.1.0.0.p · \"SANS Avail · 3 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed)",
+  "pics": "f8win-f8win-sb-AVALONMAIN-armed-clip-phone.png, f8win-f8win-sb-AVALONMAIN-sans-clip-phone.png, f8win-f8win-sb-AVALONMAIN-armed-phone.png"
+ },
+ {
+  "scn": "f8win",
+  "size": "phone",
+  "id": "f8win.sb-BBMAIN",
+  "what": "standing by — BB MAIN FCP armed: no \"not offering\" / \"available … only\" / any SANS reason for Ranger (fly [\"08:00\",\"10:00\"]) or Jester (fly [\"08:00\",\"09:00\"]) (D2584 Q4)",
+  "ok": true,
+  "note": "armed 5.2.0.0.p · \"SANS Avail · 6 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed)",
+  "pics": "f8win-f8win-sb-BBMAIN-armed-clip-phone.png, f8win-f8win-sb-BBMAIN-sans-clip-phone.png, f8win-f8win-sb-BBMAIN-armed-phone.png"
+ },
+ {
+  "scn": "f8win",
+  "size": "phone",
+  "id": "f8win.b",
+  "what": "B typed on SC AM 06:30, AVALON 18:30, BB 07:00",
+  "ok": "REC",
+  "note": "[\"06:30\",\"18:30\",\"07:00\"]"
+ },
+ {
+  "scn": "f8win",
+  "size": "phone",
+  "id": "f8win.fly-SCAMMAIN",
+  "what": "flying (B typed) — SC AM MAIN FCP armed: no \"not offering\" / \"available … only\" / any SANS reason for Ranger (fly [\"08:00\",\"10:00\"]) or Jester (fly [\"08:00\",\"09:00\"]) (D2584 Q4)",
+  "ok": true,
+  "note": "armed 5.0.0.0.p · \"SANS Avail · 6 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed)",
+  "pics": "f8win-f8win-fly-SCAMMAIN-armed-clip-phone.png, f8win-f8win-fly-SCAMMAIN-sans-clip-phone.png, f8win-f8win-fly-SCAMMAIN-armed-phone.png"
+ },
+ {
+  "scn": "f8win",
+  "size": "phone",
+  "id": "f8win.fly-SCAMSPARE",
+  "what": "flying (B typed) — SC AM SPARE FCP armed: no \"not offering\" / \"available … only\" / any SANS reason for Ranger (fly [\"08:00\",\"10:00\"]) or Jester (fly [\"08:00\",\"09:00\"]) (D2584 Q4)",
+  "ok": true,
+  "note": "armed 5.0.0.2.p · \"SANS Avail · 6 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed)",
+  "pics": "f8win-f8win-fly-SCAMSPARE-armed-clip-phone.png, f8win-f8win-fly-SCAMSPARE-sans-clip-phone.png, f8win-f8win-fly-SCAMSPARE-armed-phone.png"
+ },
+ {
+  "scn": "f8win",
+  "size": "phone",
+  "id": "f8win.fly-AVALONMAIN",
+  "what": "flying (B typed) — AVALON MAIN FCP armed: no \"not offering\" / \"available … only\" / any SANS reason for Ranger (fly [\"08:00\",\"10:00\"]) or Jester (fly [\"08:00\",\"09:00\"]) (D2584 Q4)",
+  "ok": true,
+  "note": "armed 5.1.0.0.p · \"SANS Avail · 3 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed)",
+  "pics": "f8win-f8win-fly-AVALONMAIN-armed-clip-phone.png, f8win-f8win-fly-AVALONMAIN-sans-clip-phone.png, f8win-f8win-fly-AVALONMAIN-armed-phone.png"
+ },
+ {
+  "scn": "f8win",
+  "size": "phone",
+  "id": "f8win.fly-BBMAIN",
+  "what": "flying (B typed) — BB MAIN FCP armed: no \"not offering\" / \"available … only\" / any SANS reason for Ranger (fly [\"08:00\",\"10:00\"]) or Jester (fly [\"08:00\",\"09:00\"]) (D2584 Q4)",
+  "ok": true,
+  "note": "armed 5.2.0.0.p · \"SANS Avail · 6 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed)",
+  "pics": "f8win-f8win-fly-BBMAIN-armed-clip-phone.png, f8win-f8win-fly-BBMAIN-sans-clip-phone.png, f8win-f8win-fly-BBMAIN-armed-phone.png"
+ },
+ {
+  "scn": "f8win",
+  "size": "phone",
+  "id": "f8win.ctl",
+  "what": "control (N2): the timed 13:00–14:00 flight's FCP — Ranger struck \"SANS — available 08:00–10:00 only\", Jester \"SANS — available 08:00–09:00 only\"",
+  "ok": true,
+  "note": "armed 5.3.0.0.p · \"SANS Avail · 0 free\" · Ranger [SANS Avail, STRUCK] title \"Ranger — SANS — available 08:00–10:00 only\" printed \"SANS — available 08:00–10:00 only\" · Jester [SANS Avail, STRUCK] title \"Jester — SANS — available 08:00–09:00 only\" printed \"SANS — available 08:00–09:00 only\"",
+  "pics": "f8win-f8win-ctl-armed-clip-phone.png, f8win-f8win-ctl-sans-clip-phone.png, f8win-f8win-ctl-armed-phone.png"
+ },
+ {
+  "scn": "f8win",
+  "size": "phone",
+  "id": "f8win.drop",
+  "what": "Ranger onto the flying SC MAIN, Jester onto the flying AVALON MAIN: placed, no SANS words in either note",
+  "ok": true,
+  "note": "\"Ranger planned\" / \"Jester planned\"",
+  "pics": "f8win-f8win-drop-sc-armed-clip-phone.png, f8win-f8win-drop-sc-sans-clip-phone.png, f8win-f8win-drop-sc-armed-phone.png, f8win-f8win-drop-sc-note-clip-phone.png, f8win-f8win-drop-sc-picked-phone.png, f8win-f8win-drop-av-armed-clip-phone.png, f8win-f8win-drop-av-sans-clip-phone.png, f8win-f8win-drop-av-armed-phone.png, f8win-f8win-drop-av-note-clip-phone.png, f8win-f8win-drop-av-picked-phone.png"
+ },
+ {
+  "scn": "f8win",
+  "size": "phone",
+  "id": "f8win.warn",
+  "what": "the warning list: no SANS line (no \"not offering\", no \"available … only\"); no amber mark on their standby pucks",
+  "ok": true,
+  "note": "head \"▾⚠ 3 issues\" · 3 row(s) · Ranger's: none · SANS: none · seated: Ranger 5.0.0.0.p · ? / Jester 5.1.0.0.p AMBER chips[L] · ? AMBER chips[L]",
+  "pics": "f8win-f8win-warn-clip-phone.png, f8win-f8win-seated-phone.png"
+ },
+ {
+  "scn": "f8win",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

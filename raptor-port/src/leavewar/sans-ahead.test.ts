@@ -41,7 +41,9 @@ const P = (id: string): any => (PEOPLE as any)[id]
 const signInAs = (name: string, pass = 'x') => { resetSession(sessionFor(signIn(name, pass))); raptorNotify() }
 const FRI = 4, SAT = 5, FRI_ISO = '2026-07-17', SAT_ISO = '2026-07-18'
 const at = (y: number, m: number, d: number) => vi.setSystemTime(new Date(y, m - 1, d, 9, 0, 0))
-const LOOK = 'SANS from Fri 17 Jul: no availability filed. File it on the Inputs page\'s SANS tab.'
+/* his D2587 (25 Nov 26 — "this sounds like we are telling the admin to file it. which is incorrect"): the crew list never
+   tells the scheduler to file; the second sentence went, and the one left takes no full stop, as its siblings (Fable) */
+const LOOK = 'SANS from Fri 17 Jul: no availability filed'
 const whyIn = (di: number, id: string): string | null => {
   const html = sansAvailHTML(di, '', new Set(), new Set(), new Map(), null)
   const m = new RegExp(`<span class="rpuck[^"]*"[^>]*data-person="${id}"([^>]*)>`).exec(html)
@@ -49,7 +51,9 @@ const whyIn = (di: number, id: string): string | null => {
   const w = /data-why="([^"]*)"/.exec(m[1]!)
   return w ? w[1]!.replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/&amp;/g, '&') : ''
 }
-const plan = (di: number, id: string) => { (DAYS[di] as any).ground.push({ prog: 'BRIEFING', str: '1600', end: '1700', who: id }); afterSchedMutate() }
+/* (planned = in a flying seat or a sim, his D2564 of 24 Nov 26: this helper put him on a ground briefing, which the first
+   build counted and his rule does not — an OFT's rear seat now; a ground row naming no day: sans-planned-r5.test.ts) */
+const plan = (di: number, id: string) => { const d: any = DAYS[di]; d.sims = d.sims || {}; (d.sims.oft = d.sims.oft || []).push({ label: 'SIM', str: '1600', end: '1700', p: '', w: id }); afterSchedMutate() }
 const dt = (di: number): string => String((DAYS[di] as any).dt)
 /* his SANS availability filed through the app's one save path — the door every editor's commit passes (sansRefusal) */
 const toasts: string[] = []

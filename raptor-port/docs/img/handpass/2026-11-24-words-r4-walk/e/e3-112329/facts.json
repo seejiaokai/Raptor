@@ -1,0 +1,406 @@
+{
+ "pictures": [
+  {
+   "file": "e3-combo-ranger-bell-phone.png",
+   "case": "E3-combo",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "Meeting · briefing Wed 15 Jul / Training changed to Meeting, renamed — was Training · briefing · Saber",
+    "Training · briefing Wed 15 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Training changed to Meeting, renamed — was Training · briefing · Saber",
+     "lines": 2,
+     "fitsOneLine": false,
+     "boxWidth": 307,
+     "height": 34,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "e3-combo-before-ranger-bell-phone.png",
+   "case": "E3-combo-before",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "Meeting · briefing Wed 15 Jul / Training changed to Meeting · Saber",
+    "Training · briefing Wed 15 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Training changed to Meeting · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "e3-meeting-ranger-bell-phone.png",
+   "case": "E3-meeting",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "Meeting Wed 15 Jul / Training changed to Meeting · Saber",
+    "meeting Wed 15 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Training changed to Meeting · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "e3-safety-ranger-bell-phone.png",
+   "case": "E3-safety",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "Training · Safety Wed 15 Jul / Training changed to Meeting · Saber",
+    "Training · Safety Wed 15 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Training changed to Meeting · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "e3-brief-ranger-bell-phone.png",
+   "case": "E3-brief",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "Brief Wed 15 Jul / Training changed to Meeting · Saber",
+    "Brief Wed 15 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Training changed to Meeting · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "e3-rangeLL-ranger-bell-phone.png",
+   "case": "E3-rangeLL",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "LL Wed 15 Jul / Training changed to LL, renamed — was Range brief · Saber",
+    "Range brief Wed 15 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Training changed to LL, renamed — was Range brief · Saber",
+     "lines": 2,
+     "fitsOneLine": false,
+     "boxWidth": 307,
+     "height": 34,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "e3-give-ranger-bell-phone.png",
+   "case": "E3-give",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "Range brief Wed 15 Jul / Renamed — was Training · Saber",
+    "Training Wed 15 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Renamed — was Training · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "e3-attachTo-ranger-bell-phone.png",
+   "case": "E3-attachTo",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "Exercise Kite · 146 Sqn Wed 15 Jul / Renamed — was Exercise Kite · 145 Sqn · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Renamed — was Exercise Kite · 145 Sqn · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "e3-LLOL-ranger-bell-phone.png",
+   "case": "E3-LLOL",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "OL Wed 15 Jul / LL changed to OL · Saber",
+    "LL Wed 15 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "LL changed to OL · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "e3-LLAM-ranger-bell-phone.png",
+   "case": "E3-LLAM",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "LL Wed 15 Jul / Now LL (AM) · Saber",
+    "LL Wed 15 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Now LL (AM) · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "e3-three-ranger-bell-phone.png",
+   "case": "E3-three",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber",
+    "Training Wed 15 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber",
+     "lines": 2,
+     "fitsOneLine": false,
+     "boxWidth": 307,
+     "height": 34,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  }
+ ],
+ "cases": {
+  "E3-combo": {
+   "log": [
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Training · briefing\"} on 2026-07-15: new input [\"imwulwfwvjbp6yd\"]; asked []; note \"\"",
+    "build D:/rw4/build-new3 bundle index-DIr933hk.js",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "saved before {\"type\":\"Training\",\"title\":\"Training · briefing\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"} after {\"type\":\"Meeting\",\"title\":\"Meeting · briefing\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "phone bundle index-DIr933hk.js",
+    "picture e3-combo-ranger-bell-phone.png: [\"Meeting · briefing Wed 15 Jul / Training changed to Meeting, renamed — was Training · briefing · Saber\",\"Training · briefing Wed 15 Jul / You were added · Saber\"]"
+   ]
+  },
+  "E3-combo-before": {
+   "log": [
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Training · briefing\"} on 2026-07-15: new input [\"imwulwquth58sxw\"]; asked []; note \"\"",
+    "build D:/rw4/build-new2 bundle index-BNHpQA1S.js",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "saved before {\"type\":\"Training\",\"title\":\"Training · briefing\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"} after {\"type\":\"Meeting\",\"title\":\"Meeting · briefing\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "phone bundle index-BNHpQA1S.js",
+    "picture e3-combo-before-ranger-bell-phone.png: [\"Meeting · briefing Wed 15 Jul / Training changed to Meeting · Saber\",\"Training · briefing Wed 15 Jul / You were added · Saber\"]"
+   ]
+  },
+  "E3-meeting": {
+   "log": [
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"meeting\"} on 2026-07-15: new input [\"imwulx1pkw926rd\"]; asked []; note \"\"",
+    "build D:/rw4/build-new3 bundle index-DIr933hk.js",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "saved before {\"type\":\"Training\",\"title\":\"meeting\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"} after {\"type\":\"Meeting\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "phone bundle index-DIr933hk.js",
+    "picture e3-meeting-ranger-bell-phone.png: [\"Meeting Wed 15 Jul / Training changed to Meeting · Saber\",\"meeting Wed 15 Jul / You were added · Saber\"]"
+   ]
+  },
+  "E3-safety": {
+   "log": [
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Training · Safety\"} on 2026-07-15: new input [\"imwulxcivm9qick\"]; asked []; note \"\"",
+    "build D:/rw4/build-new3 bundle index-DIr933hk.js",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "saved before {\"type\":\"Training\",\"title\":\"Training · Safety\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"} after {\"type\":\"Meeting\",\"title\":\"Training · Safety\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "phone bundle index-DIr933hk.js",
+    "picture e3-safety-ranger-bell-phone.png: [\"Training · Safety Wed 15 Jul / Training changed to Meeting · Saber\",\"Training · Safety Wed 15 Jul / You were added · Saber\"]"
+   ]
+  },
+  "E3-brief": {
+   "log": [
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Brief\"} on 2026-07-15: new input [\"imwulxnc65goo5r\"]; asked []; note \"\"",
+    "build D:/rw4/build-new3 bundle index-DIr933hk.js",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "saved before {\"type\":\"Training\",\"title\":\"Brief\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"} after {\"type\":\"Meeting\",\"title\":\"Brief\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "phone bundle index-DIr933hk.js",
+    "picture e3-brief-ranger-bell-phone.png: [\"Brief Wed 15 Jul / Training changed to Meeting · Saber\",\"Brief Wed 15 Jul / You were added · Saber\"]"
+   ]
+  },
+  "E3-rangeLL": {
+   "log": [
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Range brief\"} on 2026-07-15: new input [\"imwulxy6x63dw4v\"]; asked []; note \"\"",
+    "build D:/rw4/build-new3 bundle index-DIr933hk.js",
+    "saved the change: asked []; note \"LL does not go on the Ground Programme — its row has been removed\"; window still open: false",
+    "saved before {\"type\":\"Training\",\"title\":\"Range brief\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"} after {\"type\":\"LL\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"]}",
+    "phone bundle index-DIr933hk.js",
+    "picture e3-rangeLL-ranger-bell-phone.png: [\"LL Wed 15 Jul / Training changed to LL, renamed — was Range brief · Saber\",\"Range brief Wed 15 Jul / You were added · Saber\"]"
+   ]
+  },
+  "E3-give": {
+   "log": [
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwuly90a44fvqz\"]; asked []; note \"\"",
+    "build D:/rw4/build-new3 bundle index-DIr933hk.js",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "saved before {\"type\":\"Training\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"} after {\"type\":\"Training\",\"title\":\"Range brief\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "phone bundle index-DIr933hk.js",
+    "picture e3-give-ranger-bell-phone.png: [\"Range brief Wed 15 Jul / Renamed — was Training · Saber\",\"Training Wed 15 Jul / You were added · Saber\"]"
+   ]
+  },
+  "E3-attachTo": {
+   "log": [
+    "filed {\"type\":\"Attach\",\"title\":\"Exercise Kite\"} on 2026-07-15: new input [\"imwulyiuw6xcwuq\"]; asked []; note \"\"",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "build D:/rw4/build-new3 bundle index-DIr933hk.js",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "saved before {\"type\":\"Attach\",\"title\":\"Exercise Kite\",\"date\":\"Jul 15\",\"allday\":false,\"s\":360,\"e\":1080,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"],\"acc\":\"u\"} after {\"type\":\"Attach\",\"title\":\"Exercise Kite\",\"date\":\"Jul 15\",\"allday\":false,\"s\":360,\"e\":1080,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"],\"acc\":\"u\"}",
+    "phone bundle index-DIr933hk.js",
+    "picture e3-attachTo-ranger-bell-phone.png: [\"Exercise Kite · 146 Sqn Wed 15 Jul / Renamed — was Exercise Kite · 145 Sqn · Saber\"]"
+   ]
+  },
+  "E3-LLOL": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"bane\"],\"span\":\"all\"} on 2026-07-15: new input [\"imwulyzecv1hpwf\"]; asked [\"document\"]; note \"\"",
+    "build D:/rw4/build-new3 bundle index-DIr933hk.js",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "saved before {\"type\":\"LL\",\"date\":\"Jul 15\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]} after {\"type\":\"OL\",\"date\":\"Jul 15\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]}",
+    "phone bundle index-DIr933hk.js",
+    "picture e3-LLOL-ranger-bell-phone.png: [\"OL Wed 15 Jul / LL changed to OL · Saber\",\"LL Wed 15 Jul / You were added · Saber\"]"
+   ]
+  },
+  "E3-LLAM": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"bane\"],\"span\":\"all\"} on 2026-07-15: new input [\"imwulz9yw2b89h2\"]; asked [\"document\"]; note \"\"",
+    "build D:/rw4/build-new3 bundle index-DIr933hk.js",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "saved before {\"type\":\"LL\",\"date\":\"Jul 15\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]} after {\"type\":\"LL\",\"date\":\"Jul 15\",\"allday\":false,\"half\":\"am\",\"s\":0,\"e\":720,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]}",
+    "phone bundle index-DIr933hk.js",
+    "picture e3-LLAM-ranger-bell-phone.png: [\"LL Wed 15 Jul / Now LL (AM) · Saber\",\"LL Wed 15 Jul / You were added · Saber\"]"
+   ]
+  },
+  "E3-three": {
+   "log": [
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Training\",\"remarks\":\"Bring your kit\"} on 2026-07-15: new input [\"imwulzkz3l6owyz\"]; asked []; note \"\"",
+    "build D:/rw4/build-new3 bundle index-DIr933hk.js",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "saved before {\"type\":\"Training\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"Bring your kit\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"} after {\"type\":\"Training\",\"title\":\"Range brief\",\"date\":\"Jul 16\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"Bring water\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "phone bundle index-DIr933hk.js",
+    "picture e3-three-ranger-bell-phone.png: [\"Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\",\"Training Wed 15 Jul / You were added · Saber\"]"
+   ]
+  }
+ },
+ "errors": []
+}

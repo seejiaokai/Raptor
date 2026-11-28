@@ -85,14 +85,16 @@ export function recs(w: any) {
    reference's own DAYS by index (only the first REFN days are compared). Copies
    the exact fields the scrub touched — allhands/ground `prog`, ground/sim `who`,
    sim `label`/`rmks` — leaving times, ids and structure untouched (they were
-   already identical, which is why parity passed before). */
+   already identical, which is why parity passed before).
+   …AND THE ENDS THE DEMO WEEK WAS GIVEN ([END-TIME-GUARD], his D2616: the demo is remade to fit the rules — engine/data.ts
+   names the seven rows): a programme or ground row's `end` is copied too, so both engines read the same remade week. */
 export function reground(w: any) {
   const refn = w.eval('DAYS.length')
   DAYS.slice(0, refn).forEach((d: any, i: number) => {
     const p = JSON.stringify({ allhands: d.allhands || [], ground: d.ground || [], sims: d.sims || { amt: [], oft: [] } })
     w.eval(`(function(p){const D=DAYS[${i}];`
-      + `if(D.allhands)D.allhands.forEach((r,j)=>{if(p.allhands[j]!=null)r.prog=p.allhands[j].prog;});`
-      + `if(D.ground)D.ground.forEach((r,j)=>{if(p.ground[j]!=null){r.prog=p.ground[j].prog;r.who=p.ground[j].who;}});`
+      + `if(D.allhands)D.allhands.forEach((r,j)=>{if(p.allhands[j]!=null){r.prog=p.allhands[j].prog;r.end=p.allhands[j].end;}});`
+      + `if(D.ground)D.ground.forEach((r,j)=>{if(p.ground[j]!=null){r.prog=p.ground[j].prog;r.who=p.ground[j].who;r.end=p.ground[j].end;}});`
       + `['amt','oft'].forEach(k=>{if(D.sims&&D.sims[k])D.sims[k].forEach((r,j)=>{const s=(p.sims[k]||[])[j];if(s!=null){r.label=s.label;if('who' in s)r.who=s.who;if('rmks' in s)r.rmks=s.rmks;}});});`
       + `})(${p})`)
   })
@@ -411,9 +413,10 @@ function rematrix(html: string): string {
        26 Aug 26). The reference has no SANS gate, so its A chip never fires for
        SANS and no compared day renders the label this week — the swap exists so
        the two CHIP_LABEL tables stay byte-identical, per the rule the RANK
-       comment above states: one table, not two that happen to agree. */
+       comment above states: one table, not two that happen to agree. Its words
+       since owner D2757 (27 Nov 26) name the man with nothing filed too. */
     ["A:'Advisory — on shift and also down for a ground event or programme item',",
-     "A:'Advisory — on shift and also down for a ground event or programme item, or planned outside SANS availability',"],
+     "A:'Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it',"],
     ["if(p&&w&&isOcu(p.q)&&isOcu(w.q)){markRing(di,ac.p,'hard');markRing(di,ac.w,'hard');add('hard','ILLEGAL_CREW',[ac.p,ac.w],`Two OCU in one aircraft (${f.label})`);}",
      "if(p&&w&&p.seat==='FCP'&&w.seat==='RCP'&&!(p.q==='IP'||p.q==='IR'||p.q==='FI')&&!isInstr(w.q)){"
      + "if(isOcu(p.q)&&isOcu(w.q)){markRing(di,ac.p,'adv');markRing(di,ac.w,'adv');markChip(di,ac.p,'CP');markChip(di,ac.w,'CP');add('adv','CREW_SOLO',[ac.p,ac.w],`${p.cs} (OCU pilot) with ${w.cs} (OCU WSO) in ${f.label} — a crew solo, only allowed under the Basic Course Syllabus`);}"

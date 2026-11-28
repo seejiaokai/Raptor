@@ -1,0 +1,233 @@
+{
+ "pictures": [
+  {
+   "file": "A2i-ranger-bell-phone.png",
+   "case": "A2i",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "Brief Wed 15 Jul / Training changed to Meeting · Saber",
+    "Brief Wed 15 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Training changed to Meeting · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "A2i-ranger-bell-desk.png",
+   "case": "A2i",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Brief Wed 15 Jul / Training changed to Meeting · Saber",
+    "Brief Wed 15 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Training changed to Meeting · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "A2i-hex-bell-phone.png",
+   "case": "A2i",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "Brief Wed 15 Jul / Training changed to Meeting · Saber",
+    "Brief Wed 15 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Training changed to Meeting · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "A2ii-ranger-bell-phone.png",
+   "case": "A2ii",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "Meeting Wed 15 Jul / Training changed to Meeting · Saber",
+    "Meeting Wed 15 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Training changed to Meeting · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "A2iii-ranger-bell-phone.png",
+   "case": "A2iii",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "Meeting Wed 15 Jul / Training changed to Meeting, renamed — was meeting · Saber",
+    "meeting Wed 15 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Training changed to Meeting, renamed — was meeting · Saber",
+     "lines": 2,
+     "fitsOneLine": false,
+     "boxWidth": 307,
+     "height": 34,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "A2iv-ranger-bell-phone.png",
+   "case": "A2iv",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "Training · Safety Wed 15 Jul / Training changed to Meeting · Saber",
+    "Training · Safety Wed 15 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Training changed to Meeting · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  }
+ ],
+ "cases": {
+  "A2i": {
+   "log": [
+    "bundle index-2uyEcUJu.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Brief\"} on 2026-07-15: new input [\"imwujh2f99pu5rb\"]; asked []; note \"\"",
+    "before: {\"type\":\"Training\",\"title\":\"Brief\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "after: {\"type\":\"Meeting\",\"title\":\"Brief\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "PASS saved: kind Meeting, title kept, hours kept — {\"type\":\"Meeting\",\"title\":\"Brief\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "picture A2i-ranger-bell-phone.png: [\"Brief Wed 15 Jul / Training changed to Meeting · Saber\",\"Brief Wed 15 Jul / You were added · Saber\"]",
+    "ranger-bell bell: [\"Brief Wed 15 Jul / Training changed to Meeting · Saber\",\"Brief Wed 15 Jul / You were added · Saber\"]",
+    "PASS phone: title \"Brief\" — \"Training changed to Meeting · Saber\" — \"Brief Wed 15 Jul / Training changed to Meeting · Saber\"",
+    "PASS phone: title \"Brief\" — bold name \"Brief\" — \"Brief\"",
+    "PASS phone: title \"Brief\" — no \"renamed\" — [\"Brief Wed 15 Jul / Training changed to Meeting · Saber\",\"Brief Wed 15 Jul / You were added · Saber\"]",
+    "picture A2i-ranger-bell-desk.png: [\"Brief Wed 15 Jul / Training changed to Meeting · Saber\",\"Brief Wed 15 Jul / You were added · Saber\"]",
+    "ranger-bell bell: [\"Brief Wed 15 Jul / Training changed to Meeting · Saber\",\"Brief Wed 15 Jul / You were added · Saber\"]",
+    "PASS desk: Ranger reads \"Training changed to Meeting · Saber\" — [\"Brief Wed 15 Jul / Training changed to Meeting · Saber\",\"Brief Wed 15 Jul / You were added · Saber\"]",
+    "picture A2i-hex-bell-phone.png: [\"Brief Wed 15 Jul / Training changed to Meeting · Saber\",\"Brief Wed 15 Jul / You were added · Saber\"]",
+    "hex-bell bell: [\"Brief Wed 15 Jul / Training changed to Meeting · Saber\",\"Brief Wed 15 Jul / You were added · Saber\"]",
+    "PASS phone: Hex reads \"Training changed to Meeting · Saber\" — [\"Brief Wed 15 Jul / Training changed to Meeting · Saber\",\"Brief Wed 15 Jul / You were added · Saber\"]"
+   ]
+  },
+  "A2ii": {
+   "log": [
+    "bundle index-2uyEcUJu.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Meeting\"} on 2026-07-15: new input [\"imwujhir5vqiwpj\"]; asked []; note \"\"",
+    "before: {\"type\":\"Training\",\"title\":\"Meeting\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "after: {\"type\":\"Meeting\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "RECORD saved: kind Meeting, title kept, hours kept — {\"type\":\"Meeting\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "picture A2ii-ranger-bell-phone.png: [\"Meeting Wed 15 Jul / Training changed to Meeting · Saber\",\"Meeting Wed 15 Jul / You were added · Saber\"]",
+    "ranger-bell bell: [\"Meeting Wed 15 Jul / Training changed to Meeting · Saber\",\"Meeting Wed 15 Jul / You were added · Saber\"]",
+    "PASS phone: title \"Meeting\" — \"Training changed to Meeting · Saber\" — \"Meeting Wed 15 Jul / Training changed to Meeting · Saber\"",
+    "PASS phone: title \"Meeting\" — bold name \"Meeting\" — \"Meeting\"",
+    "PASS phone: title \"Meeting\" — no \"renamed\" — [\"Meeting Wed 15 Jul / Training changed to Meeting · Saber\",\"Meeting Wed 15 Jul / You were added · Saber\"]"
+   ]
+  },
+  "A2iii": {
+   "log": [
+    "bundle index-2uyEcUJu.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"meeting\"} on 2026-07-15: new input [\"imwujhtlknzxxth\"]; asked []; note \"\"",
+    "before: {\"type\":\"Training\",\"title\":\"meeting\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "after: {\"type\":\"Meeting\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "RECORD saved: kind Meeting, title kept, hours kept — {\"type\":\"Meeting\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "picture A2iii-ranger-bell-phone.png: [\"Meeting Wed 15 Jul / Training changed to Meeting, renamed — was meeting · Saber\",\"meeting Wed 15 Jul / You were added · Saber\"]",
+    "ranger-bell bell: [\"Meeting Wed 15 Jul / Training changed to Meeting, renamed — was meeting · Saber\",\"meeting Wed 15 Jul / You were added · Saber\"]",
+    "RECORD phone: title \"meeting\" — the line Ranger reads (RECORD) — \"Meeting Wed 15 Jul / Training changed to Meeting, renamed — was meeting · Saber\""
+   ]
+  },
+  "A2iv": {
+   "log": [
+    "bundle index-2uyEcUJu.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Training · Safety\"} on 2026-07-15: new input [\"imwuji4i5ykizcv\"]; asked []; note \"\"",
+    "before: {\"type\":\"Training\",\"title\":\"Training · Safety\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "after: {\"type\":\"Meeting\",\"title\":\"Training · Safety\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "PASS saved: kind Meeting, title kept, hours kept — {\"type\":\"Meeting\",\"title\":\"Training · Safety\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "picture A2iv-ranger-bell-phone.png: [\"Training · Safety Wed 15 Jul / Training changed to Meeting · Saber\",\"Training · Safety Wed 15 Jul / You were added · Saber\"]",
+    "ranger-bell bell: [\"Training · Safety Wed 15 Jul / Training changed to Meeting · Saber\",\"Training · Safety Wed 15 Jul / You were added · Saber\"]",
+    "PASS phone: title \"Training · Safety\" — \"Training changed to Meeting · Saber\" — \"Training · Safety Wed 15 Jul / Training changed to Meeting · Saber\"",
+    "PASS phone: title \"Training · Safety\" — bold name \"Training · Safety\" — \"Training · Safety\"",
+    "PASS phone: title \"Training · Safety\" — no \"renamed\" — [\"Training · Safety Wed 15 Jul / Training changed to Meeting · Saber\",\"Training · Safety Wed 15 Jul / You were added · Saber\"]"
+   ]
+  }
+ },
+ "errors": []
+}

@@ -26,6 +26,7 @@ import { Matrix } from './Matrix'
 import { SelectSheet } from './SelectSheet'
 import { LeaveWords } from './ReqWords'
 import { setLeaveRemarks } from '../../ui/inputedit'
+import { docAdd, rowDocIds } from '../../state/docs'
 
 const ISNAP = JSON.stringify(INPUTS)
 const TARGET = '2026-01-30'
@@ -125,22 +126,50 @@ describe('his own leave\'s words row redraws from what it saved (W1)', () => {
   beforeEach(wired)
   it('a document removed, and a till ticked again, show at once', () => {
     const row = fileAbsence('dusk', 'LL', '2026-02-10', '2026-02-10', { lw: true, remarks: 'Bali' })
-    expect(setLeaveRemarks(row, 'Bali', 'dusk', ['doc-a'])).toBe(true)
+    const docA = docAdd(new Blob(['x'], { type: 'image/png' }) as any).id   // a REAL document: a made-up id was dropped at the save, so nothing was ever there to remove
+    expect(docA, 'the document was kept').toBeTruthy()
+    expect(setLeaveRemarks(row, 'Bali', 'dusk', [docA])).toBe(true)
     const live = () => INPUTS.find((r: any) => r.iid === row.iid)
     render(<LeaveWords row={live()} personId="dusk" testPrefix="w" />)
-    expect(screen.getByTestId('w-doc-row').textContent).toContain('doc-a'.slice(0, 0))
-    const chipX = screen.getByTestId('w-doc-row').querySelector('.docchip .docdel, button[aria-label^="Remove"], .chip-x')   // the ✕ — the chip's name is a button of its own since D1292 (it opens the file) as HTMLElement | null
-    if (chipX) {
-      fireEvent.click(chipX)
-      expect((live() as any).docIds ?? [], 'saved without it').toHaveLength(0)
-      expect(screen.getByTestId('w-doc-row').querySelector('.docchip, .chip'), 'drawn without it').toBeNull()
-    }
+    /* THE REMOVAL IS ASKED, NEVER SKIPPED (Astra's read of pull request 845, finding 3, 25 Nov 26): this stood behind
+       "if the ✕ is found" after an assertion that the row's text holds '' — with no ✕ found the test passed and proved
+       nothing about a document removed */
+    expect(rowDocIds(live()), 'the document is on his leave').toEqual([docA])
+    const chipX = screen.getByTestId('w-doc-row').querySelector('.docchip .docdel, button[aria-label^="Remove"], .chip-x') as HTMLElement | null   // the ✕ — the chip's name is a button of its own since D1292 (it opens the file)
+    expect(chipX, 'the document\'s chip wears its ✕').toBeTruthy()
+    fireEvent.click(chipX!)
+    expect(rowDocIds(live()), 'saved without it').toHaveLength(0)
+    expect(screen.getByTestId('w-doc-row').querySelector('.docchip, .chip'), 'drawn without it').toBeNull()
     const tick = screen.getByTestId('w-till') as HTMLInputElement
     const on0 = tick.checked
     fireEvent.click(tick)
     expect((screen.getByTestId('w-till') as HTMLInputElement).checked).toBe(!on0)
     fireEvent.click(screen.getByTestId('w-till'))
     expect((screen.getByTestId('w-till') as HTMLInputElement).checked, 'ticked again, drawn ticked').toBe(on0)
+  })
+})
+
+/* CHAT 170'S NIGHT WALK, W3 (25 Nov 26) — the same address on the war's side: the window on one man's cell of a leave
+   filed for several keeps the leave it was opened on. Its first save gives him a leave of his own (setLeaveRemarks); the
+   window then re-read the SHARED leave by its id — now only the other man's — and drew HIS remark box from it, and its
+   next save went there too. It reads and saves his own leave now (inputedit.tsx rowInputOf). */
+describe('the window on one man\'s cell of a shared leave follows him to his own leave (chat 170\'s night walk, W3)', () => {
+  beforeEach(wired)
+  it('two saves with the window open: both on his own leave; the box shows his words, the other man keeps none', async () => {
+    const { commitInput } = await import('../../ui/inputedit')
+    const D = { type: 'LL', allday: true, half: '', start: '2026-02-10', end: '', sTime: '', eTime: '', remarks: '', sans: null, docIds: [] }
+    expect(commitInput(null, D, ['dusk', 'rocky'])).toBe(true)
+    const shared = INPUTS.find((r: any) => r.type === 'LL' && r.date === 'Feb 10' && (r.people || []).length === 2) as any
+    expect(shared).toBeTruthy()
+    render(<LeaveWords row={shared} personId="dusk" testPrefix="w" />)
+    const box = () => screen.getByTestId('w-remarks') as HTMLTextAreaElement
+    const words = () => INPUTS.filter((r: any) => r.type === 'LL' && r.date === 'Feb 10').map((r: any) => `${(r.people || []).map((e: any) => e.p).join('+')} "${r.remarks || ''}"`).sort()
+    fireEvent.change(box(), { target: { value: 'Dental' } }); fireEvent.blur(box())
+    expect(words(), 'his first save: a leave of his own').toEqual(['dusk "Dental"', 'rocky ""'])
+    expect(box().value, 'the box shows HIS words, never the other man\'s').toBe('Dental')
+    fireEvent.change(box(), { target: { value: 'Dental, then gym' } }); fireEvent.blur(box())
+    expect(words(), 'his second save reaches his own leave').toEqual(['dusk "Dental, then gym"', 'rocky ""'])
+    expect(box().value).toBe('Dental, then gym')
   })
 })
 

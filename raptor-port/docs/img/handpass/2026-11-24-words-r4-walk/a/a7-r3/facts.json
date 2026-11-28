@@ -1,0 +1,481 @@
+{
+ "pictures": [
+  {
+   "file": "A7-i-list-window-desk.png",
+   "case": "A7",
+   "size": "desktop 1440x900 @2x",
+   "text": "the window opened by this door"
+  },
+  {
+   "file": "A7-iv-board-nowindow-desk.png",
+   "case": "A7",
+   "size": "desktop 1440x900 @2x",
+   "text": "after the press"
+  },
+  {
+   "file": "A7-drag-escape-carried-desk.png",
+   "case": "A7",
+   "size": "desktop 1440x900 @2x",
+   "text": "the bar carried"
+  },
+  {
+   "file": "A7-drag-dropped-carried-desk.png",
+   "case": "A7",
+   "size": "desktop 1440x900 @2x",
+   "text": "the bar carried"
+  },
+  {
+   "file": "A7-dragAM-dropped-carried-desk.png",
+   "case": "A7",
+   "size": "desktop 1440x900 @2x",
+   "text": "the bar carried"
+  },
+  {
+   "file": "A7-ranger-bell-phone.png",
+   "case": "A7",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "LL Thu 23 Jul / Now Thu 23 Jul · Saber",
+    "LL Tue 21 Jul / Now Tue 21 Jul · Saber",
+    "Door esBox Fri 17 Jul / Now 08:00–10:00 · Saber",
+    "Door esPen Wed 15 Jul / Now 08:00–10:00 · Saber",
+    "Door card Tue 14 Jul / Now 08:00–10:00 · Saber",
+    "Door list Mon 13 Jul / Now 08:00–10:00 · Saber",
+    "LL Wed 22 Jul / You were added · Saber",
+    "LL Mon 20 Jul / You were added · Saber",
+    "Door sbBox Sat 18 Jul / You were added · Saber",
+    "Door esBox Fri 17 Jul / You were added · Saber",
+    "Door sbPen Thu 16 Jul / You were added · Saber",
+    "Door esPen Wed 15 Jul / You were added · Saber",
+    "Door card Tue 14 Jul / You were added · Saber",
+    "Door list Mon 13 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Now Thu 23 Jul · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now Tue 21 Jul · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now 08:00–10:00 · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now 08:00–10:00 · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now 08:00–10:00 · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now 08:00–10:00 · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 300,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 300,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 300,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "A7-ranger-bell-desk.png",
+   "case": "A7",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "LL Thu 23 Jul / Now Thu 23 Jul · Saber",
+    "LL Tue 21 Jul / Now Tue 21 Jul · Saber",
+    "Door esBox Fri 17 Jul / Now 08:00–10:00 · Saber",
+    "Door esPen Wed 15 Jul / Now 08:00–10:00 · Saber",
+    "Door card Tue 14 Jul / Now 08:00–10:00 · Saber",
+    "Door list Mon 13 Jul / Now 08:00–10:00 · Saber",
+    "LL Wed 22 Jul / You were added · Saber",
+    "LL Mon 20 Jul / You were added · Saber",
+    "Door sbBox Sat 18 Jul / You were added · Saber",
+    "Door esBox Fri 17 Jul / You were added · Saber",
+    "Door sbPen Thu 16 Jul / You were added · Saber",
+    "Door esPen Wed 15 Jul / You were added · Saber",
+    "Door card Tue 14 Jul / You were added · Saber",
+    "Door list Mon 13 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Now Thu 23 Jul · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now Tue 21 Jul · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now 08:00–10:00 · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now 08:00–10:00 · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now 08:00–10:00 · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now 08:00–10:00 · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 262,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 262,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 262,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 262,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "A7-hex-bell-phone.png",
+   "case": "A7",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "Door esBox Fri 17 Jul / Now 08:00–10:00 · Saber",
+    "Door esPen Wed 15 Jul / Now 08:00–10:00 · Saber",
+    "Door card Tue 14 Jul / Now 08:00–10:00 · Saber",
+    "Door list Mon 13 Jul / Now 08:00–10:00 · Saber",
+    "Door sbBox Sat 18 Jul / You were added · Saber",
+    "Door esBox Fri 17 Jul / You were added · Saber",
+    "Door sbPen Thu 16 Jul / You were added · Saber",
+    "Door esPen Wed 15 Jul / You were added · Saber",
+    "Door card Tue 14 Jul / You were added · Saber",
+    "Door list Mon 13 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Now 08:00–10:00 · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now 08:00–10:00 · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now 08:00–10:00 · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now 08:00–10:00 · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 300,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 300,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 300,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 300,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 300,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "A7-v-bell-tap-desk.png",
+   "case": "A7",
+   "size": "desktop 1440x900 @2x",
+   "text": "LLThu 23 JulNow Thu 23 Jul · Sabernow"
+  }
+ ],
+ "cases": {
+  "A7": {
+   "log": [
+    "bundle index-2uyEcUJu.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Door list\"} on 2026-07-13: new input [\"imwujtrp4nfuyg8\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Door card\"} on 2026-07-14: new input [\"imwujtulqvccgt4\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Door esPen\"} on 2026-07-15: new input [\"imwujtxgfs7hiz8\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Door sbPen\"} on 2026-07-16: new input [\"imwuju0clvbogc7\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Door esBox\"} on 2026-07-17: new input [\"imwuju36w7x9w23\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Door sbBox\"} on 2026-07-18: new input [\"imwuju6xm7vc00y\"]; asked [\"oil\"]; note \"\"",
+    "filed {\"type\":\"LL\",\"people\":[\"bane\"],\"span\":\"all\"} on 2026-07-20: new input [\"imwuju9m1kwg9b9\"]; asked [\"document\"]; note \"\"",
+    "filed {\"type\":\"LL\",\"people\":[\"bane\"],\"span\":\"am\"} on 2026-07-22: new input [\"imwujucc9iw8k5s\"]; asked [\"document\"]; note \"\"",
+    "made {\"list\":\"imwujtrp4nfuyg8\",\"card\":\"imwujtulqvccgt4\",\"esPen\":\"imwujtxgfs7hiz8\",\"sbPen\":\"imwuju0clvbogc7\",\"esBox\":\"imwuju36w7x9w23\",\"sbBox\":\"imwuju6xm7vc00y\",\"drag\":\"imwuju9m1kwg9b9\",\"dragAM\":\"imwujucc9iw8k5s\"}",
+    "picture A7-i-list-window-desk.png: \"the window opened by this door\"",
+    "i-list: saved; asked []; note \"\"",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "NO PICTURE A7-iii-editsched-window-desk: nothing to clip",
+    "iii-editsched: saved; asked []; note \"Input updated\"",
+    "RECORD Edit Schedule: the shared input's start boxes (one row or one per man?) — [\"imwuju36w7x9w23~rocky.str\"]",
+    "esBox note \"Input updated\"",
+    "board pencil: locator.click: Timeout 8000ms exceeded.",
+    "picture A7-iv-board-nowindow-desk.png: \"after the press\"",
+    "FAIL iv-board: the door opens the input's window — \"no window\"",
+    "RECORD the Board: the shared input's start boxes — []",
+    "picture A7-drag-escape-carried-desk.png: \"the bar carried\"",
+    "RECORD drag-escape: carried (ghost 1); a question asked? — {\"question\":[],\"before\":{\"type\":\"LL\",\"date\":\"Jul 20\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]},\"after\":{\"type\":\"LL\",\"date\":\"Jul 20\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]},\"note\":\"\"}",
+    "picture A7-drag-dropped-carried-desk.png: \"the bar carried\"",
+    "RECORD drag-dropped: carried (ghost 1); a question asked? — {\"question\":[],\"before\":{\"type\":\"LL\",\"date\":\"Jul 20\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]},\"after\":{\"type\":\"LL\",\"date\":\"Jul 21\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]},\"note\":\"Moved to 21 Jul\"}",
+    "picture A7-dragAM-dropped-carried-desk.png: \"the bar carried\"",
+    "RECORD dragAM-dropped: carried (ghost 1); a question asked? — {\"question\":[],\"before\":{\"type\":\"LL\",\"date\":\"Jul 22\",\"allday\":false,\"half\":\"am\",\"s\":0,\"e\":720,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]},\"after\":{\"type\":\"LL\",\"date\":\"Jul 23\",\"allday\":false,\"half\":\"am\",\"s\":0,\"e\":720,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]},\"note\":\"Moved to 23 Jul\"}",
+    "list now {\"type\":\"Training\",\"title\":\"Door list\",\"date\":\"Jul 13\",\"allday\":false,\"s\":480,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "card now {\"type\":\"Training\",\"title\":\"Door card\",\"date\":\"Jul 14\",\"allday\":false,\"s\":480,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "esPen now {\"type\":\"Training\",\"title\":\"Door esPen\",\"date\":\"Jul 15\",\"allday\":false,\"s\":480,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "sbPen now {\"type\":\"Training\",\"title\":\"Door sbPen\",\"date\":\"Jul 16\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "esBox now {\"type\":\"Training\",\"title\":\"Door esBox\",\"date\":\"Jul 17\",\"allday\":false,\"s\":480,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "sbBox now {\"type\":\"Training\",\"title\":\"Door sbBox\",\"date\":\"Jul 18\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "drag now {\"type\":\"LL\",\"date\":\"Jul 21\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]}",
+    "dragAM now {\"type\":\"LL\",\"date\":\"Jul 23\",\"allday\":false,\"half\":\"am\",\"s\":0,\"e\":720,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]}",
+    "picture A7-ranger-bell-phone.png: [\"LL Thu 23 Jul / Now Thu 23 Jul · Saber\",\"LL Tue 21 Jul / Now Tue 21 Jul · Saber\",\"Door esBox Fri 17 Jul / Now 08:00–10:00 · Saber\",\"Door esPen Wed 15 Jul / Now 08:00–10:00 · Saber\",\"Door card Tue 14 Jul / Now 08:00–10:00 · Saber\",\"Door list Mon 13 Jul / Now 08:00–10:00 · Saber\",\"LL Wed 22 Jul / You were added · Saber\",\"LL Mon 20 Jul / You were added · Saber\",\"Door sbBox Sat 18 Jul / You were added · Saber\",\"Door esBox Fri 17 Jul / You were added · Saber\",\"Door sbPen Thu 16 Jul / You were added · Saber\",\"Door esPen Wed 15 Jul / You were added · Saber\",\"Door card Tue 14 Jul / You were added · Saber\",\"Door list Mon 13 Jul / You were added · Saber\"]",
+    "ranger-bell bell: [\"LL Thu 23 Jul / Now Thu 23 Jul · Saber\",\"LL Tue 21 Jul / Now Tue 21 Jul · Saber\",\"Door esBox Fri 17 Jul / Now 08:00–10:00 · Saber\",\"Door esPen Wed 15 Jul / Now 08:00–10:00 · Saber\",\"Door card Tue 14 Jul / Now 08:00–10:00 · Saber\",\"Door list Mon 13 Jul / Now 08:00–10:00 · Saber\",\"LL Wed 22 Jul / You were added · Saber\",\"LL Mon 20 Jul / You were added · Saber\",\"Door sbBox Sat 18 Jul / You were added · Saber\",\"Door esBox Fri 17 Jul / You were added · Saber\",\"Door sbPen Thu 16 Jul / You were added · Saber\",\"Door esPen Wed 15 Jul / You were added · Saber\",\"Door card Tue 14 Jul / You were added · Saber\",\"Door list Mon 13 Jul / You were added · Saber\"]",
+    "RECORD phone us: door list (RECORD; the card's words are the baseline) — [\"Door list Mon 13 Jul / Now 08:00–10:00 · Saber\"]",
+    "RECORD phone us: door card (RECORD; the card's words are the baseline) — [\"Door card Tue 14 Jul / Now 08:00–10:00 · Saber\"]",
+    "RECORD phone us: door esPen (RECORD; the card's words are the baseline) — [\"Door esPen Wed 15 Jul / Now 08:00–10:00 · Saber\"]",
+    "RECORD phone us: door sbPen (RECORD; the card's words are the baseline) — []",
+    "RECORD phone us: door esBox (RECORD; the card's words are the baseline) — [\"Door esBox Fri 17 Jul / Now 08:00–10:00 · Saber\"]",
+    "RECORD phone us: door sbBox (RECORD; the card's words are the baseline) — []",
+    "RECORD phone: the drags (RECORD; none expected for the Escape) — [\"LL Thu 23 Jul / Now Thu 23 Jul · Saber\",\"LL Tue 21 Jul / Now Tue 21 Jul · Saber\",\"LL Wed 22 Jul / You were added · Saber\",\"LL Mon 20 Jul / You were added · Saber\"]",
+    "picture A7-ranger-bell-desk.png: [\"LL Thu 23 Jul / Now Thu 23 Jul · Saber\",\"LL Tue 21 Jul / Now Tue 21 Jul · Saber\",\"Door esBox Fri 17 Jul / Now 08:00–10:00 · Saber\",\"Door esPen Wed 15 Jul / Now 08:00–10:00 · Saber\",\"Door card Tue 14 Jul / Now 08:00–10:00 · Saber\",\"Door list Mon 13 Jul / Now 08:00–10:00 · Saber\",\"LL Wed 22 Jul / You were added · Saber\",\"LL Mon 20 Jul / You were added · Saber\",\"Door sbBox Sat 18 Jul / You were added · Saber\",\"Door esBox Fri 17 Jul / You were added · Saber\",\"Door sbPen Thu 16 Jul / You were added · Saber\",\"Door esPen Wed 15 Jul / You were added · Saber\",\"Door card Tue 14 Jul / You were added · Saber\",\"Door list Mon 13 Jul / You were added · Saber\"]",
+    "ranger-bell bell: [\"LL Thu 23 Jul / Now Thu 23 Jul · Saber\",\"LL Tue 21 Jul / Now Tue 21 Jul · Saber\",\"Door esBox Fri 17 Jul / Now 08:00–10:00 · Saber\",\"Door esPen Wed 15 Jul / Now 08:00–10:00 · Saber\",\"Door card Tue 14 Jul / Now 08:00–10:00 · Saber\",\"Door list Mon 13 Jul / Now 08:00–10:00 · Saber\",\"LL Wed 22 Jul / You were added · Saber\",\"LL Mon 20 Jul / You were added · Saber\",\"Door sbBox Sat 18 Jul / You were added · Saber\",\"Door esBox Fri 17 Jul / You were added · Saber\",\"Door sbPen Thu 16 Jul / You were added · Saber\",\"Door esPen Wed 15 Jul / You were added · Saber\",\"Door card Tue 14 Jul / You were added · Saber\",\"Door list Mon 13 Jul / You were added · Saber\"]",
+    "RECORD desk us: door list (RECORD; the card's words are the baseline) — [\"Door list Mon 13 Jul / Now 08:00–10:00 · Saber\"]",
+    "RECORD desk us: door card (RECORD; the card's words are the baseline) — [\"Door card Tue 14 Jul / Now 08:00–10:00 · Saber\"]",
+    "RECORD desk us: door esPen (RECORD; the card's words are the baseline) — [\"Door esPen Wed 15 Jul / Now 08:00–10:00 · Saber\"]",
+    "RECORD desk us: door sbPen (RECORD; the card's words are the baseline) — []",
+    "RECORD desk us: door esBox (RECORD; the card's words are the baseline) — [\"Door esBox Fri 17 Jul / Now 08:00–10:00 · Saber\"]",
+    "RECORD desk us: door sbBox (RECORD; the card's words are the baseline) — []",
+    "RECORD desk: the drags (RECORD; none expected for the Escape) — [\"LL Thu 23 Jul / Now Thu 23 Jul · Saber\",\"LL Tue 21 Jul / Now Tue 21 Jul · Saber\",\"LL Wed 22 Jul / You were added · Saber\",\"LL Mon 20 Jul / You were added · Saber\"]",
+    "picture A7-hex-bell-phone.png: [\"Door esBox Fri 17 Jul / Now 08:00–10:00 · Saber\",\"Door esPen Wed 15 Jul / Now 08:00–10:00 · Saber\",\"Door card Tue 14 Jul / Now 08:00–10:00 · Saber\",\"Door list Mon 13 Jul / Now 08:00–10:00 · Saber\",\"Door sbBox Sat 18 Jul / You were added · Saber\",\"Door esBox Fri 17 Jul / You were added · Saber\",\"Door sbPen Thu 16 Jul / You were added · Saber\",\"Door esPen Wed 15 Jul / You were added · Saber\",\"Door card Tue 14 Jul / You were added · Saber\",\"Door list Mon 13 Jul / You were added · Saber\"]",
+    "hex-bell bell: [\"Door esBox Fri 17 Jul / Now 08:00–10:00 · Saber\",\"Door esPen Wed 15 Jul / Now 08:00–10:00 · Saber\",\"Door card Tue 14 Jul / Now 08:00–10:00 · Saber\",\"Door list Mon 13 Jul / Now 08:00–10:00 · Saber\",\"Door sbBox Sat 18 Jul / You were added · Saber\",\"Door esBox Fri 17 Jul / You were added · Saber\",\"Door sbPen Thu 16 Jul / You were added · Saber\",\"Door esPen Wed 15 Jul / You were added · Saber\",\"Door card Tue 14 Jul / You were added · Saber\",\"Door list Mon 13 Jul / You were added · Saber\"]",
+    "RECORD phone hex: door list (RECORD; the card's words are the baseline) — [\"Door list Mon 13 Jul / Now 08:00–10:00 · Saber\"]",
+    "RECORD phone hex: door card (RECORD; the card's words are the baseline) — [\"Door card Tue 14 Jul / Now 08:00–10:00 · Saber\"]",
+    "RECORD phone hex: door esPen (RECORD; the card's words are the baseline) — [\"Door esPen Wed 15 Jul / Now 08:00–10:00 · Saber\"]",
+    "RECORD phone hex: door sbPen (RECORD; the card's words are the baseline) — []",
+    "RECORD phone hex: door esBox (RECORD; the card's words are the baseline) — [\"Door esBox Fri 17 Jul / Now 08:00–10:00 · Saber\"]",
+    "RECORD phone hex: door sbBox (RECORD; the card's words are the baseline) — []",
+    "picture A7-v-bell-tap-desk.png: \"LLThu 23 JulNow Thu 23 Jul · Sabernow\"",
+    "RECORD (v) a tap on Ranger's first bell line opens the input's window (RECORD; read-only?) — {\"line\":\"LLThu 23 JulNow Thu 23 Jul · Sabernow\",\"window\":true,\"readOnly\":0,\"page\":\"inputs\"}"
+   ]
+  }
+ },
+ "errors": [
+  "A7 A7-iii-editsched-window-desk: nothing to clip"
+ ]
+}

@@ -125,6 +125,31 @@
 
   .bp-war { font: 800 15px system-ui; }
   .bp .neg { color: #FF7A84; }
+
+  /* A BALANCE NEVER TYPED (D2746, question 11 A — drawn docs/img/handpass/2026-11-26-lw-postin-balance/marked/q11-*.png):
+     its box empty, its edge "No grade"'s dashed amber (.bp-gr.none); a read-only figure the amber dash; War bal's place
+     "Not typed" in the same amber. The person window's tile box takes the same edge (personwindow.css .r17-box). */
+  .bp-bx.nt:not(:focus) { border: 1px dashed rgba(242, 200, 121, .8); background: transparent; }
+  /* NO WORDS ON THIS PAGE (D2820, question 28 A, 27 Nov 26 — "not typed seems abit excessive"): a read-only figure never
+     typed and War bal's place take an empty outline in the empty box's own dashed amber, the size of the box a typeable
+     row shows in that column (.bp-bx 54 × 28, .sm 44; a phone's rules below set 30 tall), so the row's height and every
+     column stay as they were. War bal's is 40 × 28 on a desktop — at 44 its column grew 4px and OIL and every small kind
+     moved right (measured on the drawing, scripts/handpass/lw-postin-q28-draw.mjs) — and 44 × 30 on a phone. */
+  .bp-ro.nt, .bp-nto { display: inline-block; box-sizing: border-box; width: 54px; min-width: 54px; height: 28px; padding: 0; border: 1px dashed rgba(242, 200, 121, .8); border-radius: 7px; vertical-align: middle; }
+  .bp-ro.nt.sm { width: 44px; min-width: 44px; }
+  .bp-nto { width: 40px; min-width: 40px; }
+  .bp-row .bp-nto { width: 44px; min-width: 44px; height: 30px; }
+  /* THE ONE LINE WHERE A BALANCE CAN BE TYPED (D2749, D2812): once above the rows, as drawn
+     (scripts/handpass/lw-postin-bal-q16b-draw.mjs pageShot — 13px, #9aa4b2, 8px 16px 8px, its line 2px below that) */
+  .bp-pi { flex: none; margin: 10px 16px 8px; color: #9aa4b2; font: 400 13px/1.45 system-ui; }
+  /* ON A DESKTOP (his D2822, 27 Nov 26): in the headings' empty top-left corner over NAME and GRADE, set at NAME's left,
+     its foot the phone's gap above those two headings' words (measured: scripts/handpass/lw-postin-gap-measure.mjs) — the
+     heading cell's own small capitals and spacing never reach it; the corner keeps its 30px, so the second heading row's
+     sticky place holds */
+  /* above the second heading row (same sticky layer, later in the page, so it painted over the line's last 4px and cut
+     its letters' tails — the re-walk's picture, 27 Nov 26) */
+  .bp-table th.pic { vertical-align: bottom; z-index: 3; }
+  .bp-table th.pic .bp-pi { margin: 0; position: relative; top: 4px; font: 400 13px/1.45 system-ui; letter-spacing: normal; text-transform: none; color: #9aa4b2; white-space: nowrap; }
   .bp-pend { color: #c9d1d9; }
   .bp-pend.pd { color: #F2C879; }
   /* A PENDING FIGURE, option B (D2154, D2156): no minus; the grid's pending look, hollow and dashed, in amber. LVE's in its

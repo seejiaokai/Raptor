@@ -1,0 +1,14 @@
+msq-s4w-lib v1 who=wd run=r18jump port=4756
+wd-lib v1
+wd-jump v1
+bringIn [data-testid="cell-stiff-2026-12-07"] 0 {"x":825,"y":552,"w":27,"h":22} scroll 0 185
+ROW FAIL | lesson 27 chips jump when Delete is chosen | desk-chromium | Saber (master admin) 7 Dec → ⋯ → Post out → Delete | saw: before {"overseas":684.3,"delete":684.3,"button":841,"sheetTop":604.3} after {"overseas":657.7,"delete":657.7,"button":841,"sheetTop":577.7}; Overseas chip moved -26.6px
+desk-chromium errors []
+bringIn [data-testid="cell-stiff-2026-12-07"] 0 {"x":995,"y":552,"w":27,"h":22} scroll 0 185
+ROW RECORD | lesson 27 chips jump when Delete is chosen | desk-chromium-main | Saber (master admin) 7 Dec → ⋯ → Post out → Delete | saw: before {"overseas":764.3,"delete":764.3,"button":841,"sheetTop":482.3} after {"overseas":732.7,"delete":732.7,"button":841,"sheetTop":450.7}; Overseas chip moved -31.6px
+desk-chromium-main errors []
+ROW FAIL | lesson 27 chips jump when Delete is chosen | phone-chromium | Cinch 7 Dec → ⋯ → Post out → Delete | saw: before {"overseas":622.3,"delete":622.3,"button":815,"sheetTop":542.3} after {"overseas":605.7,"delete":605.7,"button":815,"sheetTop":525.7}; Overseas chip moved -16.6px
+phone-chromium errors []
+ROW RECORD | lesson 27 chips jump when Delete is chosen | phone-chromium-main | Cinch 7 Dec → ⋯ → Post out → Delete | saw: before {"overseas":702.3,"delete":702.3,"button":815,"sheetTop":420.3} after {"overseas":685.7,"delete":685.7,"button":815,"sheetTop":403.7}; Overseas chip moved -16.6px
+phone-chromium-main errors []
+wd-jump done

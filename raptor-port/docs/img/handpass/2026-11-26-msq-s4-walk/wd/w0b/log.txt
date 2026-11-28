@@ -1,0 +1,20 @@
+msq-s4w-lib v1 who=wd run=w0b port=4756
+wd-lib v1
+wd-widths v1 m720
+m720 accent rgb(59, 198, 232)
+bringIn [data-testid="cell-spanner-2026-12-07"] 0 {"x":358,"y":1777,"w":27,"h":22} scroll 0 1410
+bringIn [data-testid="cell-spanner-2026-12-07"] 1 {"x":358,"y":685,"w":27,"h":22} scroll 0 318
+bringIn [data-testid="cell-spanner-2026-12-07"] 2 {"x":358,"y":685,"w":27,"h":22} scroll 0 318
+bringIn [data-testid="cell-spanner-2026-12-07"] 3 {"x":358,"y":685,"w":27,"h":22} scroll 0 318
+bringIn [data-testid="cell-spanner-2026-12-07"] 4 {"x":358,"y":685,"w":27,"h":22} scroll 0 318
+bringIn [data-testid="cell-spanner-2026-12-07"] 5 {"x":358,"y":685,"w":27,"h":22} scroll 0 318
+bringIn [data-testid="cell-spanner-2026-12-07"] 6 {"x":358,"y":685,"w":27,"h":22} scroll 0 318
+bringIn [data-testid="cell-spanner-2026-12-07"] 7 {"x":358,"y":685,"w":27,"h":22} scroll 0 318
+bringIn [data-testid="cell-spanner-2026-12-07"] 8 {"x":358,"y":685,"w":27,"h":22} scroll 0 318
+bringIn [data-testid="cell-spanner-2026-12-07"] 9 {"x":358,"y":685,"w":27,"h":22} scroll 0 318
+bringIn [data-testid="cell-spanner-2026-12-07"] 10 {"x":358,"y":685,"w":27,"h":22} scroll 0 318
+bringIn [data-testid="cell-spanner-2026-12-07"] 11 {"x":358,"y":685,"w":27,"h":22} scroll 0 318
+m720 A13-ground ERROR bringIn: could not bring [data-testid="cell-spanner-2026-12-07"] into sight
+ROW NOT REACHED | A13-ground | m720 | phase stopped | saw: ERROR bringIn: could not bring [data-testid="cell-spanner-2026-12-07"] into sight
+m720 errors []
+wd-widths done

@@ -1,0 +1,11 @@
+{
+ "pictures": [],
+ "cases": {
+  "c6": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"bane\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwviv3pvi3ijgk\"]; asked [\"document\"]; note \"\""
+   ]
+  }
+ },
+ "errors": []
+}

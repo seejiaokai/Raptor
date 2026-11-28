@@ -1,0 +1,171 @@
+{
+ "pictures": [
+  {
+   "file": "b9-desk-chromium-1-allchanges.png",
+   "case": "B9",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "title": "Changes · Wednesday 15/7 Not yet published",
+    "tabs": [
+     "New to you 0",
+     "All changes 5 [on]"
+    ],
+    "groups": [
+     {
+      "head": "▾ Input · Ranger · LL · 3 10:50",
+      "lines": [
+       "LL 15 Jul · remarks own hours Saber · 25/11 10:50",
+       "LL 15 Jul · times 09:00–10:00 → 09:00–11:00 Saber · 25/11 10:50",
+       "LL added · 15 Jul Saber · 25/11 10:50"
+      ]
+     },
+     {
+      "head": "▾ Input · Hex · LL · 2 10:50",
+      "lines": [
+       "Ranger · LL 15 Jul · taken out Saber · 25/11 10:50",
+       "Hex, Ranger · LL added · 15 Jul Saber · 25/11 10:50"
+      ]
+     }
+    ],
+    "foot": "Tap a change to go to it — the window stays open."
+   }
+  },
+  {
+   "file": "b9-desk-chromium-2-tap-0-0.png",
+   "case": "B9",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "text": "LL 15 Jul · remarks own hours Saber · 25/11 10:50",
+    "landed": {
+     "lit": "LL 09:00 11:00 Ranger IP LATE own hourstill 15 Jul",
+     "cls": "pl-row chgflash",
+     "row": "imwvj0nlh3wddge",
+     "puck": "bane",
+     "day": "2",
+     "note": "",
+     "winOpen": true
+    }
+   }
+  },
+  {
+   "file": "b9-desk-chromium-2-tap-0-1.png",
+   "case": "B9",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "text": "LL 15 Jul · times 09:00–10:00 → 09:00–11:00 Saber · 25/11 10:50",
+    "landed": {
+     "lit": "LL 09:00 11:00 Ranger IP LATE own hourstill 15 Jul",
+     "cls": "pl-row chgflash",
+     "row": "imwvj0nlh3wddge",
+     "puck": "bane",
+     "day": "2",
+     "note": "",
+     "winOpen": true
+    }
+   }
+  },
+  {
+   "file": "b9-desk-chromium-2-tap-0-2.png",
+   "case": "B9",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "text": "LL added · 15 Jul Saber · 25/11 10:50",
+    "landed": {
+     "lit": "LL 09:00 11:00 Ranger IP LATE own hourstill 15 Jul",
+     "cls": "pl-row chgflash",
+     "row": "imwvj0nlh3wddge",
+     "puck": "bane",
+     "day": "2",
+     "note": "",
+     "winOpen": true
+    }
+   }
+  },
+  {
+   "file": "b9-desk-chromium-2-tap-1-0.png",
+   "case": "B9",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "text": "Ranger · LL 15 Jul · taken out Saber · 25/11 10:50",
+    "landed": {
+     "lit": "LL 08:00 10:00 C Hex C LATE till 15 Jul",
+     "cls": "pl-row chgflash",
+     "row": "imwvj0ll7dw6ndv",
+     "puck": "rocky",
+     "day": "2",
+     "note": "",
+     "winOpen": true
+    }
+   }
+  },
+  {
+   "file": "b9-desk-chromium-2-tap-1-1.png",
+   "case": "B9",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "text": "Hex, Ranger · LL added · 15 Jul Saber · 25/11 10:50",
+    "landed": {
+     "lit": "LL 08:00 10:00 C Hex C LATE till 15 Jul",
+     "cls": "pl-row chgflash",
+     "row": "imwvj0ll7dw6ndv",
+     "puck": "rocky",
+     "day": "2",
+     "note": "",
+     "winOpen": true
+    }
+   }
+  },
+  {
+   "file": "b9-desk-chromium-3-bell-us.png",
+   "case": "B9",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "LL Wed 15 Jul / Remark changed · Saber",
+    "LL Wed 15 Jul / Now 09:00–11:00 · Saber",
+    "LL Wed 15 Jul / Now 09:00–10:00 · Saber",
+    "LL Wed 15 Jul / You were added · Saber"
+   ]
+  },
+  {
+   "file": "b9-desk-chromium-4-viewonly-ranger.png",
+   "case": "B9",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Hex 08:00-10:00 \"LATEtill 15 Jul\"",
+    "Ranger 09:00-11:00 \"LATEown hours till 15 Jul\""
+   ]
+  },
+  {
+   "file": "b9-desk-chromium-3-bell-hex.png",
+   "case": "B9",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "LL Wed 15 Jul / Ranger taken off · Saber",
+    "LL Wed 15 Jul / You were added · Saber"
+   ]
+  }
+ ],
+ "cases": {
+  "B9": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvj0ll7dw6ndv\"]; asked []; note \"\"",
+    "after the three changes :: STORE [\"LL Hex 08:00-10:00 \\\"\\\" [imwvj0ll7dw6ndv]\",\"LL Ranger 09:00-11:00 \\\"own hours\\\" [imwvj0nlh3wddge]\"] :: SCREEN [\"Hex 08:00-10:00 \\\"\\\" [imwvj0ll7dw6ndv]\",\"Ranger 09:00-11:00 \\\"own hours\\\" [imwvj0nlh3wddge]\"] :: CARET BODY",
+    "changes window: {\"title\":\"Changes · Wednesday 15/7 Not yet published\",\"tabs\":[\"New to you 0\",\"All changes 5 [on]\"],\"groups\":[{\"head\":\"▾ Input · Ranger · LL · 3 10:50\",\"lines\":[\"LL 15 Jul · remarks own hours Saber · 25/11 10:50\",\"LL 15 Jul · times 09:00–10:00 → 09:00–11:00 Saber · 25/11 10:50\",\"LL added · 15 Jul Saber · 25/11 10:50\"]},{\"head\":\"▾ Input · Hex · LL · 2 10:50\",\"lines\":[\"Ranger · LL 15 Jul · taken out Saber · 25/11 10:50\",\"Hex, Ranger · LL added · 15 Jul Saber · 25/11 10:50\"]}],\"foot\":\"Tap a change to go to it — the window stays open.\"}",
+    "picture b9-desk-chromium-1-allchanges.png: {\"title\":\"Changes · Wednesday 15/7 Not yet published\",\"tabs\":[\"New to you 0\",\"All changes 5 [on]\"],\"groups\":[{\"head\":\"▾ Input · Ranger · LL · 3 10:50\",\"lines\":[\"LL 15 Jul · remarks own hours Saber · 25/11 10:50\",\"LL 15 Jul · times 09:00–10:00 → 09:00–11:00 Saber · 25/11 10:50\",\"LL added · 15 Jul Saber · 25/11 10:50\"]},{\"head\":\"▾ Input · Hex · LL · 2 10:50\",\"lines\":[\"Ranger · LL 15 Jul · taken out Saber · 25/11 10:50\",\"Hex, Ranger · LL added · 15 Jul Saber · 25/11 10:50\"]}],\"foot\":\"Tap a change to go to it — the window stays open.\"}",
+    "picture b9-desk-chromium-2-tap-0-0.png: {\"text\":\"LL 15 Jul · remarks own hours Saber · 25/11 10:50\",\"landed\":{\"lit\":\"LL 09:00 11:00 Ranger IP LATE own hourstill 15 Jul\",\"cls\":\"pl-row chgflash\",\"row\":\"imwvj0nlh3wddge\",\"puck\":\"bane\",\"day\":\"2\",\"note\":\"\",\"winOpen\":true}}",
+    "picture b9-desk-chromium-2-tap-0-1.png: {\"text\":\"LL 15 Jul · times 09:00–10:00 → 09:00–11:00 Saber · 25/11 10:50\",\"landed\":{\"lit\":\"LL 09:00 11:00 Ranger IP LATE own hourstill 15 Jul\",\"cls\":\"pl-row chgflash\",\"row\":\"imwvj0nlh3wddge\",\"puck\":\"bane\",\"day\":\"2\",\"note\":\"\",\"winOpen\":true}}",
+    "picture b9-desk-chromium-2-tap-0-2.png: {\"text\":\"LL added · 15 Jul Saber · 25/11 10:50\",\"landed\":{\"lit\":\"LL 09:00 11:00 Ranger IP LATE own hourstill 15 Jul\",\"cls\":\"pl-row chgflash\",\"row\":\"imwvj0nlh3wddge\",\"puck\":\"bane\",\"day\":\"2\",\"note\":\"\",\"winOpen\":true}}",
+    "picture b9-desk-chromium-2-tap-1-0.png: {\"text\":\"Ranger · LL 15 Jul · taken out Saber · 25/11 10:50\",\"landed\":{\"lit\":\"LL 08:00 10:00 C Hex C LATE till 15 Jul\",\"cls\":\"pl-row chgflash\",\"row\":\"imwvj0ll7dw6ndv\",\"puck\":\"rocky\",\"day\":\"2\",\"note\":\"\",\"winOpen\":true}}",
+    "picture b9-desk-chromium-2-tap-1-1.png: {\"text\":\"Hex, Ranger · LL added · 15 Jul Saber · 25/11 10:50\",\"landed\":{\"lit\":\"LL 08:00 10:00 C Hex C LATE till 15 Jul\",\"cls\":\"pl-row chgflash\",\"row\":\"imwvj0ll7dw6ndv\",\"puck\":\"rocky\",\"day\":\"2\",\"note\":\"\",\"winOpen\":true}}",
+    "taps: [{\"k\":\"0.0\",\"text\":\"LL 15 Jul · remarks own hours Saber · 25/11 10:50\",\"landed\":{\"lit\":\"LL 09:00 11:00 Ranger IP LATE own hourstill 15 Jul\",\"cls\":\"pl-row chgflash\",\"row\":\"imwvj0nlh3wddge\",\"puck\":\"bane\",\"day\":\"2\",\"note\":\"\",\"winOpen\":true}},{\"k\":\"0.1\",\"text\":\"LL 15 Jul · times 09:00–10:00 → 09:00–11:00 Saber · 25/11 10:50\",\"landed\":{\"lit\":\"LL 09:00 11:00 Ranger IP LATE own hourstill 15 Jul\",\"cls\":\"pl-row chgflash\",\"row\":\"imwvj0nlh3wddge\",\"puck\":\"bane\",\"day\":\"2\",\"note\":\"\",\"winOpen\":true}},{\"k\":\"0.2\",\"text\":\"LL added · 15 Jul Saber · 25/11 10:50\",\"landed\":{\"lit\":\"LL 09:00 11:00 Ranger IP LATE own hourstill 15 Jul\",\"cls\":\"pl-row chgflash\",\"row\":\"imwvj0nlh3wddge\",\"puck\":\"bane\",\"day\":\"2\",\"note\":\"\",\"winOpen\":true}},{\"k\":\"1.0\",\"text\":\"Ranger · LL 15 Jul · taken out Saber · 25/11 10:50\",\"landed\":{\"lit\":\"LL 08:00 10:00 C Hex C LATE till 15 Jul\",\"cls\":\"pl-row chgflash\",\"row\":\"imwvj0ll7dw6ndv\",\"puck\":\"rocky\",\"day\":\"2\",\"note\":\"\",\"winOpen\":true}},{\"k\":\"1.1\",\"text\":\"Hex, Ranger · LL added · 15 Jul Saber · 25/11 10:50\",\"landed\":{\"lit\":\"LL 08:00 10:00 C Hex C LATE till 15 Jul\",\"cls\":\"pl-row chgflash\",\"row\":\"imwvj0ll7dw6ndv\",\"puck\":\"rocky\",\"day\":\"2\",\"note\":\"\",\"winOpen\":true}}]",
+    "picture b9-desk-chromium-3-bell-us.png: [\"LL Wed 15 Jul / Remark changed · Saber\",\"LL Wed 15 Jul / Now 09:00–11:00 · Saber\",\"LL Wed 15 Jul / Now 09:00–10:00 · Saber\",\"LL Wed 15 Jul / You were added · Saber\"]",
+    "us's bell: [\"LL Wed 15 Jul / Remark changed · Saber\",\"LL Wed 15 Jul / Now 09:00–11:00 · Saber\",\"LL Wed 15 Jul / Now 09:00–10:00 · Saber\",\"LL Wed 15 Jul / You were added · Saber\"]",
+    "picture b9-desk-chromium-4-viewonly-ranger.png: [\"Hex 08:00-10:00 \\\"LATEtill 15 Jul\\\"\",\"Ranger 09:00-11:00 \\\"LATEown hours till 15 Jul\\\"\"]",
+    "view-only week (Ranger): [\"Hex 08:00-10:00 \\\"LATEtill 15 Jul\\\"\",\"Ranger 09:00-11:00 \\\"LATEown hours till 15 Jul\\\"\"]",
+    "picture b9-desk-chromium-3-bell-hex.png: [\"LL Wed 15 Jul / Ranger taken off · Saber\",\"LL Wed 15 Jul / You were added · Saber\"]",
+    "hex's bell: [\"LL Wed 15 Jul / Ranger taken off · Saber\",\"LL Wed 15 Jul / You were added · Saber\"]"
+   ]
+  }
+ },
+ "errors": []
+}

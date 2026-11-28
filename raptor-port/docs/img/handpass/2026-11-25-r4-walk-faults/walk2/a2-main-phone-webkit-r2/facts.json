@@ -1,0 +1,29 @@
+{
+ "pictures": [],
+ "cases": {
+  "phone-webkit": {
+   "log": [
+    "bundle index-DIr933hk.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"06:00\",\"to\":\"07:00\",\"title\":\"Upper brief\"} on 2026-07-15: new input [\"imwv5yxpcskg440\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"07:10\",\"to\":\"07:50\",\"title\":\"Lower brief\"} on 2026-07-15: new input [\"imwv5z1cor6sp6a\"]; asked []; note \"\"",
+    "bundle index-DIr933hk.js",
+    "published Wed: \"Wednesday published and approved\""
+   ]
+  }
+ },
+ "errors": [],
+ "results": [
+  [
+   "W9 phone-webkit \"xyz\" half typed in the lower input's Ground Programme remarks, Reject pressed on the upper — \"xyz\" once, on the lower row",
+   "RECORD (sourced part holds)",
+   "{\"rejectAt\":1000,\"inputs\":[{\"title\":\"Upper brief\",\"acc\":\"r\",\"rej\":null,\"remarks\":\"\"},{\"title\":\"Lower brief\",\"acc\":\"g\",\"rej\":null,\"remarks\":\"xyz\"}],\"boxesHoldingXyz\":[\"gr:2.2.rmks\",\"imwv5z1cor6sp6a.rmks\"],\"groundRowsHoldingXyz\":[{\"src\":\"imwv5z1cor6sp6a\",\"prog\":\"LOWER BRIEF\",\"rmks\":\"xyz\"}]}",
+   "a2-phone-webkit-W9-typed.png, a2-phone-webkit-W9-after-reject.png, a2-phone-webkit-W9-settled.png"
+  ],
+  [
+   "W11f phone-webkit day 2: issued version 2026-07-15#0 looked at from the plans selector — no box takes typing; back to live, 0610 typed and Tab saves",
+   "PASS",
+   "{\"frozen\":{\"dprev\":[],\"boxes\":0},\"typedOnFrozen\":{\"before\":\"07:45\",\"after\":\"07:45\"},\"liveSave\":{\"box\":\"ap:2.0.str\",\"now\":\"06:10\",\"caret\":{\"focus\":\"ap:2.0.end@board\",\"moved\":0}}}",
+   "a2-phone-webkit-W11f-frozen.png, a2-phone-webkit-W11f-live-again.png"
+  ]
+ ]
+}

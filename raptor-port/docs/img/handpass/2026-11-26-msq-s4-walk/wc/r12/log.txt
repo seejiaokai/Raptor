@@ -1,0 +1,2 @@
+msq-s4w-lib v1 who=wc run=r12 port=4755
+wc-r12 v1

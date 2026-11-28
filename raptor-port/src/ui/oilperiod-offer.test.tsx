@@ -73,7 +73,7 @@ describe('the day offers to create the leave war period it says is missing', () 
     setRole('admin')
     draw()
     offer()!.dispatchEvent(new MouseEvent('click', { bubbles: true }))
-    expect(said).toEqual(['The 2028 leave war period is created. Open its dates for bidding here.'])
+    expect(said).toEqual(['The 2028 Leave War period is created. Open its dates for bidding here.'])
     said = []
     draw()
     offer()!.dispatchEvent(new MouseEvent('click', { bubbles: true }))

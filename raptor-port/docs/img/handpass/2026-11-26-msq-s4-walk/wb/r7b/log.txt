@@ -1,0 +1,11 @@
+msq-s4w-lib v1 who=wb run=r7b port=4754
+wb-r7 v1
+ERROR locator.boundingBox: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('[data-testid="postout-undo"]').first()[22m
+
+    at Module.box (C:\Users\User\projects\Raptor\.claude\worktrees\msq-s4-walk-c1b6e5\raptor-port\scripts\handpass\msq\msq-s4w-lib.mjs:156:47)
+    at C:\Users\User\AppData\Roaming\Claude\side-session-notes\local_eeb07289-ed8b-483b-8502-00962970c7d1\s4-chat201\wb\wb-r7.mjs:99:55
+errors []
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

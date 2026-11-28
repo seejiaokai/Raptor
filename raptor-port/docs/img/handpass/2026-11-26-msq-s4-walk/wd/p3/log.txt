@@ -1,0 +1,7 @@
+msq-s4w-lib v1 who=wd run=p3 port=4756
+wd-lib v1
+wd-probe3 v1
+DEC box {"x":481,"y":207,"w":38,"h":22} NOV {"x":440,"y":207,"w":38,"h":22}
+at DEC {"at":"stage","ch":["mjump on ov=visible sw=36 cw=36","months ov=visible sw=488 cw=488","mstrow ov=visible sw=488 cw=488","mstick ov=visible sw=623 cw=190"," ov=visible sw=9563 cw=9563","mstripe ov=visible sw=9563 cw=9563"]}
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

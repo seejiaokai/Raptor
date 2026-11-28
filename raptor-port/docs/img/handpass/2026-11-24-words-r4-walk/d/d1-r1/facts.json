@@ -1,0 +1,153 @@
+{
+ "pictures": [
+  {
+   "file": "D1-before-ranger-bell-phone.png",
+   "case": "D1-before",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "Meeting Wed 15 Jul / Training changed to Meeting, renamed — was meeting · Saber",
+    "meeting Wed 15 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Training changed to Meeting, renamed — was meeting · Saber",
+     "lines": 2,
+     "fitsOneLine": false,
+     "boxWidth": 307,
+     "height": 34,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "D1-before-ranger-bell-desk.png",
+   "case": "D1-before",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Meeting Wed 15 Jul / Training changed to Meeting, renamed — was meeting · Saber",
+    "meeting Wed 15 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Training changed to Meeting, renamed — was meeting · Saber",
+     "lines": 2,
+     "fitsOneLine": false,
+     "boxWidth": 269,
+     "height": 34,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "D1-fixed-ranger-bell-phone.png",
+   "case": "D1-fixed",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "Meeting Wed 15 Jul / Training changed to Meeting · Saber",
+    "meeting Wed 15 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Training changed to Meeting · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "D1-fixed-ranger-bell-desk.png",
+   "case": "D1-fixed",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Meeting Wed 15 Jul / Training changed to Meeting · Saber",
+    "meeting Wed 15 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Training changed to Meeting · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  }
+ ],
+ "cases": {
+  "D1-before": {
+   "log": [
+    "build D:/rw4/build-new bundle index-2uyEcUJu.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"meeting\"} on 2026-07-15: new input [\"imwukkvzd2b8dzm\"]; asked []; note \"\"",
+    "before: {\"type\":\"Training\",\"title\":\"meeting\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "FAIL saved: kind Meeting, title \"meeting\" kept, 09:00-10:00 kept — {\"type\":\"Meeting\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "phone bundle index-2uyEcUJu.js",
+    "picture D1-before-ranger-bell-phone.png: [\"Meeting Wed 15 Jul / Training changed to Meeting, renamed — was meeting · Saber\",\"meeting Wed 15 Jul / You were added · Saber\"]",
+    "ranger-bell bell: [\"Meeting Wed 15 Jul / Training changed to Meeting, renamed — was meeting · Saber\",\"meeting Wed 15 Jul / You were added · Saber\"]",
+    "PASS phone: the old words \"Training changed to Meeting, renamed — was meeting · Saber\" — \"Meeting Wed 15 Jul / Training changed to Meeting, renamed — was meeting · Saber\"",
+    "desk bundle index-2uyEcUJu.js",
+    "picture D1-before-ranger-bell-desk.png: [\"Meeting Wed 15 Jul / Training changed to Meeting, renamed — was meeting · Saber\",\"meeting Wed 15 Jul / You were added · Saber\"]",
+    "ranger-bell bell: [\"Meeting Wed 15 Jul / Training changed to Meeting, renamed — was meeting · Saber\",\"meeting Wed 15 Jul / You were added · Saber\"]",
+    "PASS desk: the old words \"Training changed to Meeting, renamed — was meeting · Saber\" — \"Meeting Wed 15 Jul / Training changed to Meeting, renamed — was meeting · Saber\""
+   ]
+  },
+  "D1-fixed": {
+   "log": [
+    "build D:/rw4/build-new2 bundle index-BNHpQA1S.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"meeting\"} on 2026-07-15: new input [\"imwukl9yn68pwet\"]; asked []; note \"\"",
+    "before: {\"type\":\"Training\",\"title\":\"meeting\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "FAIL saved: kind Meeting, title \"meeting\" kept, 09:00-10:00 kept — {\"type\":\"Meeting\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "phone bundle index-BNHpQA1S.js",
+    "picture D1-fixed-ranger-bell-phone.png: [\"Meeting Wed 15 Jul / Training changed to Meeting · Saber\",\"meeting Wed 15 Jul / You were added · Saber\"]",
+    "ranger-bell bell: [\"Meeting Wed 15 Jul / Training changed to Meeting · Saber\",\"meeting Wed 15 Jul / You were added · Saber\"]",
+    "PASS phone: \"Training changed to Meeting · Saber\" — \"Meeting Wed 15 Jul / Training changed to Meeting · Saber\"",
+    "PASS phone: no \"renamed\" in any line — [\"Meeting Wed 15 Jul / Training changed to Meeting · Saber\",\"meeting Wed 15 Jul / You were added · Saber\"]",
+    "PASS phone: bold name \"Meeting\" — \"Meeting\"",
+    "desk bundle index-BNHpQA1S.js",
+    "picture D1-fixed-ranger-bell-desk.png: [\"Meeting Wed 15 Jul / Training changed to Meeting · Saber\",\"meeting Wed 15 Jul / You were added · Saber\"]",
+    "ranger-bell bell: [\"Meeting Wed 15 Jul / Training changed to Meeting · Saber\",\"meeting Wed 15 Jul / You were added · Saber\"]",
+    "PASS desk: \"Training changed to Meeting · Saber\" — \"Meeting Wed 15 Jul / Training changed to Meeting · Saber\"",
+    "PASS desk: no \"renamed\" in any line — [\"Meeting Wed 15 Jul / Training changed to Meeting · Saber\",\"meeting Wed 15 Jul / You were added · Saber\"]",
+    "PASS desk: bold name \"Meeting\" — \"Meeting\""
+   ]
+  }
+ },
+ "errors": []
+}

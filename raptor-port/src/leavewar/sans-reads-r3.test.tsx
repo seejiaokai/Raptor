@@ -34,7 +34,7 @@ import { commitAs } from '../command/commit'
 import { systemActor } from '../command/actor'
 import { commitSettingsIntent, settingsStore } from '../state/people-settings-commit'
 import { setHome, setUnitSeeds, unitsLoad, homeOn } from '../state/units'
-import { dayEngaged } from '../engine/avail'
+import { dayEngaged, daySansSeats } from '../engine/avail'
 import { dayIso } from '../engine/verid'
 import { requestsSig, deletedSig, loadedSrcSig } from '../engine/overlay'
 import { sansUnfiledDays, sansUnfiledLines } from './sansunfiled'
@@ -49,10 +49,12 @@ const signInAs = (name: string, pass = 'x') => { resetSession(sessionFor(signIn(
 const WED = '2026-07-15', THU = '2026-07-16', FRI = '2026-07-17', SAT = '2026-07-18', SUN = '2026-07-19'
 const THUI = 3, SATI = 5, SUNI = 6
 const at = (y: number, m: number, d: number) => vi.setSystemTime(new Date(y, m - 1, d, 9, 0, 0))
-const plan = (di: number, id = 'rocky') => { (DAYS[di] as any).ground.push({ prog: 'BRIEFING', str: '1600', end: '1700', who: id }); afterSchedMutate() }
+/* (planned = in a flying seat or a sim, his D2564 of 24 Nov 26: this helper put him on a ground briefing, which the first
+   build counted and his rule does not — an OFT's rear seat now; a ground row naming no day: sans-planned-r5.test.ts) */
+const plan = (di: number, id = 'rocky') => { const d: any = DAYS[di]; d.sims = d.sims || {}; (d.sims.oft = d.sims.oft || []).push({ label: 'SIM', str: '1600', end: '1700', p: '', w: id }); afterSchedMutate() }
 const unplan = (di: number, id = 'rocky') => {
-  const g: any[] = (DAYS[di] as any).ground
-  const i = g.findIndex(r => r && r.prog === 'BRIEFING' && r.who === id)
+  const g: any[] = (DAYS[di] as any).sims.oft
+  const i = g.findIndex(r => r && r.label === 'SIM' && r.w === id)
   expect(i).toBeGreaterThanOrEqual(0)
   g.splice(i, 1); afterSchedMutate()
 }
@@ -332,25 +334,34 @@ describe('O3-1 — a "taken back" from an untick\'s Undo, the untick put back by
 })
 
 /* ==== 6. ASTRA'S F2: a held week's reading follows the home squadron its requests land by ==== */
-describe('Astra F2 — a man moved squadron: the held weeks ahead are read again', () => {
+/* RE-PINNED BY HIS D2564 (24 Nov 26, round 5): Astra's case was a Meeting on Tue 28 Jul naming a day in his reminder, the
+   day staying after he moved squadron and the Meeting left 142's saved week. A Meeting lands on the ground programme,
+   which no longer puts a day in the reminder, so Tue 28 is never named now — before the move, after it, undone or redone;
+   each "names it" below reads "does not". Kept and still held: the saved week itself follows the move (the busy read,
+   dayEngaged), and the reminder equals a fresh reading at every step — now with a real seat of his in that week (Wed 29
+   Jul, an OFT), which a home change does not move. That no saved week is read again for a home change:
+   sans-held-weeks-r5.test.tsx. */
+describe('Astra F2 — a man moved squadron: the reminder equals a fresh reading at every step (his Meeting never in it: D2564)', () => {
   /* his days from a held week ahead, worked out afresh from the saved weeks (engine/weekstash.ts stashDays) */
   const heldFresh = (pid = 'rocky'): string[] => {
     const out: string[] = []
-    for (const wk of stashKeys()) (stashDays(wk)?.days || []).forEach((d: any, i: number) => { if (d && (dayEngaged(d) as Set<string>).has(pid) && !sansAvailOn(pid, d.dt)) out.push(dayIso(wk, i)) })
+    for (const wk of stashKeys()) (stashDays(wk)?.days || []).forEach((d: any, i: number) => { if (d && (daySansSeats(d) as Set<string>).has(pid) && !sansAvailOn(pid, d.dt)) out.push(dayIso(wk, i)) })
     return out.filter(d => d >= '2026-07-20').sort()
   }
   const heldNow = (pid = 'rocky'): string[] => sansUnfiledDays(pid).filter(d => d >= '2026-07-20')
   const setUp = () => {
     ticked()
-    loadWeek('27/07/2026'); plan(0, 'bane')
+    loadWeek('27/07/2026'); plan(0, 'bane'); plan(2)
     loadWeek('13/07/2026'); raptorNotify()
     expect(commitNewInput({ person: 'rocky', type: 'Meeting', start: '2026-07-28', allday: false, sTime: '09:00', eTime: '10:00', remarks: 'R3 home change' } as any)).toBe(true)
     raptorNotify()
-    expect(sansUnfiledDays('rocky')).toContain('2026-07-28')
+    expect((dayEngaged(stashDays('27/07/2026')!.days[1]) as Set<string>).has('rocky'), 'the Meeting stands on 142\'s saved Tue 28').toBe(true)
+    expect(sansUnfiledDays('rocky')).not.toContain('2026-07-28')
+    expect(heldNow()).toEqual(['2026-07-29'])
   }
   beforeEach(() => { setUnitSeeds(true); unitsLoad() })
   afterEach(() => { switchUnit('u142'); loadWeek('13/07/2026'); setUnitSeeds(true); unitsLoad(); raptorNotify() })
-  it('Hex moved to 149 from tomorrow, 142 and this week on screen: his Meeting on Tue 28 Jul leaves 142\'s week, and his reminder', () => {
+  it('Hex moved to 149 from tomorrow, 142 and this week on screen: his Meeting on Tue 28 Jul leaves 142\'s week; his reminder never named it, and keeps his seat on Wed 29', () => {
     setUp()
     const key = [stashGet('27/07/2026'), requestsSig(), deletedSig(), loadedSrcSig()]
     expect(setHome('rocky', 'u149')).toMatchObject({ ok: true }); raptorNotify()
@@ -368,7 +379,7 @@ describe('Astra F2 — a man moved squadron: the held weeks ahead are read again
     expect(heldNow()).toEqual(heldFresh()); expect(heldNow()).not.toContain('2026-07-28')
     expect(globalUndo().ok).toBe(true); raptorNotify()
     expect(homeOn('rocky', '2026-07-28')).toBe('u142')
-    expect(heldNow()).toEqual(heldFresh()); expect(heldNow()).toContain('2026-07-28')
+    expect(heldNow()).toEqual(heldFresh()); expect(heldNow()).toEqual(['2026-07-29'])
     expect(globalRedo().ok).toBe(true); raptorNotify()
     expect(homeOn('rocky', '2026-07-28')).toBe('u149')
     expect(heldNow()).toEqual(heldFresh()); expect(heldNow()).not.toContain('2026-07-28')
@@ -384,7 +395,7 @@ describe('Astra F2 — a man moved squadron: the held weeks ahead are read again
     switchUnit('u149'); raptorNotify()
     expect(sansUnfiledDays('rocky')).toEqual([])
     switchUnit('u142'); raptorNotify()
-    expect(heldNow()).toEqual(heldFresh()); expect(heldNow()).toContain('2026-07-28')
+    expect(heldNow()).toEqual(heldFresh()); expect(heldNow()).toEqual(['2026-07-29'])
   })
 })
 
@@ -416,11 +427,14 @@ describe('O3-2 — a plain row added to or taken off the week on screen reads no
     unplan(THUI, 'bane'); raptorNotify()
     expect(weekReads(() => { sansUnfiledLines('rocky') })).toBe(0)
   })
-  it('…while a request landing a row on the week on screen still does (the key reacts to what it must)', () => {
+  /* RE-PINNED BY HIS D2564 (round 5): this case held that a request landing a row on the week on screen DID read the held
+     weeks again ("the key reacts to what it must") — it had to while a ground row could put a day in the reminder. Only a
+     flying seat or a sim does now, and a request lands on neither, so it reads none (sans-held-weeks-r5.test.tsx) */
+  it('…and a request landing a row on the week on screen reads none either, since D2564 (it once had to)', () => {
     tick()
     hold(2, new Date(2026, 6, 27))
     sansUnfiledLines('rocky')
     expect(commitNewInput({ person: 'bane', type: 'Meeting', start: THU, allday: false, sTime: '09:00', eTime: '10:00', remarks: 'O3-2' } as any)).toBe(true); raptorNotify()
-    expect(weekReads(() => { sansUnfiledLines('rocky') })).toBeGreaterThan(0)
+    expect(weekReads(() => { sansUnfiledLines('rocky') })).toBe(0)
   })
 })

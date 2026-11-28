@@ -1,0 +1,121 @@
+<title>Words Round 4</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one reading column, the four decisions first, then each with its real screen, then what is fixed without a question. The app's own dark. */
+:root{--bg:#0b0e13;--panel:#151a21;--panel2:#1b222b;--line:#2a323d;--ink:#e8edf2;--ink2:#a9b4c0;--cyan:#39c6e6;--amber:#ffc83d;color-scheme:dark;
+--ui:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--ui);padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px));padding-block:20px 56px;overflow-wrap:anywhere}
+main{max-width:980px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr);gap:18px;min-width:0}
+h1{font-size:25px;line-height:1.2;margin:0;text-wrap:balance}
+h2{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--cyan);margin:18px 0 0}
+h3{font-size:18px;line-height:1.3;margin:0;text-wrap:balance}
+h4{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);margin:6px 0 0}
+p{margin:0}.lead{color:var(--ink2);max-width:68ch}.lead b{color:var(--ink)}
+.asks{background:var(--panel);border:1px solid var(--amber);border-radius:10px;padding:16px;display:grid;gap:12px}
+.asks h2{margin:0;color:var(--amber)}
+.asks ol{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.asks li{display:grid;gap:2px}.asks a{color:var(--cyan);text-decoration:none}.asks a b{font-weight:600}.rec{color:var(--ink2);font-size:14px}
+.gaps{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:6px}
+.gaps ul{margin:0;padding-left:18px;color:var(--ink2);display:grid;gap:4px}.gaps h2{margin:0}
+section{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;grid-template-columns:minmax(0,1fr);gap:10px;min-width:0;scroll-margin-top:12px}
+.qn{display:block;font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--amber);margin-bottom:2px}
+.eg{color:var(--ink2);max-width:72ch}
+dl{margin:0;display:grid;gap:8px}dl div{display:grid;grid-template-columns:86px minmax(0,1fr);gap:10px}
+dt{font-size:12px;font-weight:600;color:var(--ink2);padding-top:2px}dd{margin:0;color:var(--ink2);min-width:0}
+.new dt{color:var(--amber)}.new dd{color:var(--ink)}.rc dd{color:var(--ink2)}.rc dd b{color:var(--ink)}
+.pics{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));gap:12px;align-items:start}
+figure{margin:0;display:grid;gap:5px;min-width:0}figcaption{font-size:12.5px;color:var(--ink2)}
+.zoom{all:unset;display:block;cursor:zoom-in;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:#000}
+.zoom:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}.zoom img{display:block;width:100%;height:auto}
+details.all{border-top:1px solid var(--line);padding-top:10px}
+summary{cursor:pointer;color:var(--cyan);font-weight:600;min-height:32px;padding:4px 0}
+summary:focus-visible{outline:2px solid var(--cyan);outline-offset:2px;border-radius:4px}
+ol.lines{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:10px}
+.line{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:grid;gap:7px;min-width:0}
+.what{font-size:13.5px;color:var(--ink2)}.num{font-weight:600;color:var(--ink);margin-right:4px}
+.cmp{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:8px}
+.was,.now{display:grid;gap:1px;align-content:start;min-width:0;font-size:13px;line-height:1.35;padding:7px 9px;border-radius:6px;background:var(--panel)}
+.now{box-shadow:inset 0 0 0 1px rgba(255,200,61,.45)}
+.lab{font-size:11px;font-weight:600;color:var(--ink2);margin-bottom:2px}.now .lab{color:var(--amber)}
+.ln-t b{font-weight:600}.ln-t i{font-style:normal;color:var(--ink2)}.ln-w{color:var(--ink2)}.ln-gone{color:var(--ink2)}
+.note{font-size:12.5px;color:var(--ink2)}
+.wrapnote{font-size:13px;color:var(--ink2)}
+.r2{background:color-mix(in srgb,var(--amber) 18%,transparent);border-radius:3px}
+.ln-alt{font-size:11px;font-weight:600;color:var(--ink2);margin-top:6px}
+#big{position:fixed;inset:0;background:rgba(5,7,10,.96);display:flex;align-items:flex-start;justify-content:center;padding:max(14px,env(safe-area-inset-top,0px)) max(14px,env(safe-area-inset-right,0px)) max(14px,env(safe-area-inset-bottom,0px)) max(14px,env(safe-area-inset-left,0px));z-index:20;overflow:auto;cursor:zoom-out}
+#big[hidden]{display:none}
+#big img{max-width:100%;height:auto;margin:auto}
+</style>
+<main id="top">
+<h1>The words pass, round 4: the bell's everyday lines and two messages</h1>
+<p class="lead"><b>Nothing in the app has changed. These are drawings for you to approve.</b> Each "Today" picture is the real app. Each "New" picture is that same screen with only the words changed, and the new words are ringed in green. The bell pictures are at iPhone size. Tap any picture to enlarge it.</p>
+<div class="asks">
+<h2>What to look at now: four questions</h2>
+<ol><li><a href="#q1"><b>1. When an input is changed to another kind, should the bell say what it changed to, where it says "Renamed" today?</b></a><span class="rec">I recommend: Yes. "LL changed to OL" says what happened; nothing was renamed.</span></li><li><a href="#q2"><b>2. When a leave is made a half day, should the bell say AM or PM, where it prints clock times today?</b></a><span class="rec">I recommend: Yes. "Now LL (AM)", the way the rest of the app writes a half day.</span></li><li><a href="#q3"><b>3. When more than two things change in one save, should the bell say that more changed?</b></a><span class="rec">I recommend: A, add "and 1 more change". Today the third change is never mentioned.</span></li><li><a href="#q4"><b>4. Two messages read differently depending on how you got to them. Should each be given one wording?</b></a><span class="rec">I recommend: Yes to both. Same mistake, same words.</span></li></ol>
+</div>
+<div class="gaps">
+<h2>Fixed with this round unless you object</h2>
+<ul><li>Four small slips in wording, shown <a href="#slips" style="color:var(--cyan)">at the foot of this page</a>. They need no decision, but say so if you disagree with any.</li></ul>
+</div>
+<section id="q1">
+<h3><span class="qn">Question 1</span> When an input is changed to another kind, should the bell say what it changed to, where it says "Renamed" today?</h3>
+<p class="eg">Saber opens Ranger's LL on Wed 15 Jul on the Inputs page and changes it to OL. Ranger opens the bell.</p>
+<dl><div><dt>Today</dt><dd>Ranger's bell shows "OL · Wed 15 Jul", then "Renamed — was LL · Saber". Nothing was renamed: the kind of leave changed.</dd></div><div class="new"><dt>New</dt><dd>It would show "LL changed to OL · Saber". The same for any kind, for example "Training changed to Meeting · Saber".</dd></div><div class="rc"><dt>I recommend</dt><dd><b>Yes.</b> The Leave War's own bell line already says it this way: "LL bid changed to OL · Saber". "Renamed" stays for a real rename, for example "Renamed — was Training". The new line is one word longer than today's (4 words for 3).</dd></div></dl>
+<div class="pics"><figure><button type="button" class="zoom" data-src="img/q1-phone-bell-today.png" aria-label="Enlarge: Today, iPhone"><img src="img/q1-phone-bell-today.png" alt="Today, iPhone" loading="lazy"></button><figcaption>Today, iPhone</figcaption></figure><figure><button type="button" class="zoom" data-src="img/q1-phone-bell-after.png" aria-label="Enlarge: New, iPhone"><img src="img/q1-phone-bell-after.png" alt="New, iPhone" loading="lazy"></button><figcaption>New, iPhone</figcaption></figure></div>
+</section>
+<section id="q2">
+<h3><span class="qn">Question 2</span> When a leave is made a half day, should the bell say AM or PM, where it prints clock times today?</h3>
+<p class="eg">Saber changes Ranger's LL on Wed 15 Jul from the whole day to the morning only. Ranger opens the bell.</p>
+<dl><div><dt>Today</dt><dd>Ranger's bell shows "LL · Wed 15 Jul", then "Now 00:00–12:00 am · Saber". For the afternoon it shows "Now 12:01–23:59 pm · Saber".</dd></div><div class="new"><dt>New</dt><dd>It would show "Now LL (AM) · Saber", or "Now LL (PM) · Saber" for the afternoon. If the day moves as well: "Now Thu 16 Jul (AM) · Saber". For an input that has a title: "Now AM · Saber".</dd></div><div class="rc"><dt>I recommend</dt><dd><b>Yes.</b> On 30 Oct you chose AM and PM after the code, "LL (AM)", wherever the Leave War writes a half day. This carries the same form over to the bell line a change on the Inputs page makes, which that answer did not cover. The clock times go: they only ever meant "the morning half". The new line is no longer than today's.</dd></div></dl>
+<div class="pics"><figure><button type="button" class="zoom" data-src="img/q2-phone-bell-today.png" aria-label="Enlarge: Today, iPhone"><img src="img/q2-phone-bell-today.png" alt="Today, iPhone" loading="lazy"></button><figcaption>Today, iPhone</figcaption></figure><figure><button type="button" class="zoom" data-src="img/q2-phone-bell-after.png" aria-label="Enlarge: New, iPhone"><img src="img/q2-phone-bell-after.png" alt="New, iPhone" loading="lazy"></button><figcaption>New, iPhone</figcaption></figure></div>
+</section>
+<section id="q3">
+<h3><span class="qn">Question 3</span> When more than two things change in one save, should the bell say that more changed?</h3>
+<p class="eg">In one save Saber moves "Training" from Wed 15 to Thu 16 Jul, renames it "Range brief" and changes its remark. Ranger is in it and opens the bell.</p>
+<dl><div><dt>Today</dt><dd>Ranger's bell shows "Range brief · Thu 16 Jul", then "Now Thu 16 Jul, Renamed — was Training · Saber". The changed remark is never mentioned, and nothing shows that more changed. The bell only ever says the first two changes. That limit was my choice when the bell was built; you were not asked.</dd></div><div class="new"><dt>A</dt><dd>"Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber" ("and 2 more changes" for two). It takes two lines on an iPhone, where today's takes one.</dd></div><div class="new"><dt>B</dt><dd>Say every change: "Now Thu 16 Jul, renamed — was Training, remark changed · Saber". Also two lines here, and longer with each further change.</dd></div><div><dt>C</dt><dd>Leave it as today.</dd></div><div class="rc"><dt>I recommend</dt><dd><b>A.</b> The line stays short, Ranger is told that more changed, and a tap opens the input as it now stands. With A or B, a word after a comma starts with a small letter ("renamed", "now") unless it is a name.</dd></div></dl>
+<div class="pics"><figure><button type="button" class="zoom" data-src="img/q3-phone-bell-today.png" aria-label="Enlarge: Today, iPhone"><img src="img/q3-phone-bell-today.png" alt="Today, iPhone" loading="lazy"></button><figcaption>Today, iPhone</figcaption></figure><figure><button type="button" class="zoom" data-src="img/q3-phone-bell-after-a.png" aria-label="Enlarge: A, iPhone"><img src="img/q3-phone-bell-after-a.png" alt="A, iPhone" loading="lazy"></button><figcaption>A, iPhone</figcaption></figure><figure><button type="button" class="zoom" data-src="img/q3-phone-bell-after-b.png" aria-label="Enlarge: B, iPhone"><img src="img/q3-phone-bell-after-b.png" alt="B, iPhone" loading="lazy"></button><figcaption>B, iPhone</figcaption></figure></div>
+</section>
+<section id="q4">
+<h3><span class="qn">Question 4</span> Two messages read differently depending on how you got to them. Should each be given one wording?</h3>
+<h4>A time the app cannot read</h4>
+<p class="eg">Saber types 2560 into a take-off box on Edit Schedule. Then Saber types 2560 into the start time on an input's row on the schedule.</p>
+<dl><div><dt>Today</dt><dd>The take-off box answers "2560 is not a time. Try 0900 or 09:00." The input's row answers "That is not a time — try 0900 or 09:00".</dd></div><div class="new"><dt>New</dt><dd>Both answer "2560 is not a time. Try 0900 or 09:00." It names what was typed and has no dash.</dd></div></dl>
+<div class="pics"><figure><button type="button" class="zoom" data-src="img/q4a-1-schedule-time-today.png" aria-label="Enlarge: Today, a take-off box"><img src="img/q4a-1-schedule-time-today.png" alt="Today, a take-off box" loading="lazy"></button><figcaption>Today, a take-off box</figcaption></figure><figure><button type="button" class="zoom" data-src="img/q4a-2-input-time-today.png" aria-label="Enlarge: Today, an input's row"><img src="img/q4a-2-input-time-today.png" alt="Today, an input's row" loading="lazy"></button><figcaption>Today, an input's row</figcaption></figure><figure><button type="button" class="zoom" data-src="img/q4a-2-input-time-after.png" aria-label="Enlarge: New, an input's row"><img src="img/q4a-2-input-time-after.png" alt="New, an input's row" loading="lazy"></button><figcaption>New, an input's row</figcaption></figure></div>
+<h4>Someone put on the seat they already hold</h4>
+<p class="eg">Saber drags Ranger onto the seat Ranger already holds. Separately, Saber taps the ALL AVAIL placeholder onto a seat it already holds.</p>
+<dl><div><dt>Today</dt><dd>The drag answers "Already in that seat". The tap answers "ALL AVAIL — already in that seat". (A tap can only do this with a placeholder, never with a person.)</dd></div><div class="new"><dt>New</dt><dd>Both name who it is: "Ranger — already in that seat".</dd></div><div class="rc"><dt>I recommend</dt><dd><b>Yes to both.</b> The dash in the seat message stays for this round. It belongs to a family of seat messages that all read "Ranger — reason", and they are better changed together when the dashes are looked at.</dd></div></dl>
+<div class="pics"><figure><button type="button" class="zoom" data-src="img/q4b-2-drag-today.png" aria-label="Enlarge: Today, by a drag"><img src="img/q4b-2-drag-today.png" alt="Today, by a drag" loading="lazy"></button><figcaption>Today, by a drag</figcaption></figure><figure><button type="button" class="zoom" data-src="img/q4b-1-tap-today.png" aria-label="Enlarge: Today, by a tap"><img src="img/q4b-1-tap-today.png" alt="Today, by a tap" loading="lazy"></button><figcaption>Today, by a tap</figcaption></figure><figure><button type="button" class="zoom" data-src="img/q4b-2-drag-after.png" aria-label="Enlarge: New, by a drag"><img src="img/q4b-2-drag-after.png" alt="New, by a drag" loading="lazy"></button><figcaption>New, by a drag</figcaption></figure></div>
+</section>
+<h2 id="slips">Fixed with this round unless you object: four slips</h2>
+<section>
+<h3>A lost capital letter</h3>
+<p class="eg">Saber saves how far ahead the Inputs page opens for everyone.</p>
+<dl><div><dt>Today</dt><dd>"Everyone now opens on next 4 weeks, to sunday"</dd></div><div class="new"><dt>New</dt><dd>"Everyone now opens on the next 4 weeks, to Sunday"</dd></div></dl>
+<div class="pics"><figure><button type="button" class="zoom" data-src="img/s1-lookahead-today.png" aria-label="Enlarge: Today"><img src="img/s1-lookahead-today.png" alt="Today" loading="lazy"></button><figcaption>Today</figcaption></figure><figure><button type="button" class="zoom" data-src="img/s1-lookahead-after.png" aria-label="Enlarge: New"><img src="img/s1-lookahead-after.png" alt="New" loading="lazy"></button><figcaption>New</figcaption></figure></div>
+</section>
+<section>
+<h3>One message, two wordings: no Leave War period</h3>
+<p class="eg">Saber publishes a Saturday in a year that has no Leave War period yet. (The demo has periods for 2026 and 2027, so the picture says 2028.)</p>
+<dl><div><dt>Today</dt><dd>After publishing: "Saturday published and approved · there is no leave war period for 2028, so no OIL can be earned for this day — create the period on the Leave War". But when a man is put on that same Saturday, the app already says it better: "No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War."</dd></div><div class="new"><dt>New</dt><dd>After publishing it uses that same sentence: "Saturday published and approved. No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War."</dd></div></dl>
+<div class="pics"><figure><button type="button" class="zoom" data-src="img/s2-no-period-today.png" aria-label="Enlarge: Today, after publishing"><img src="img/s2-no-period-today.png" alt="Today, after publishing" loading="lazy"></button><figcaption>Today, after publishing</figcaption></figure><figure><button type="button" class="zoom" data-src="img/s2-0-plant-note-today.png" aria-label="Enlarge: Today, the sentence the app already uses elsewhere"><img src="img/s2-0-plant-note-today.png" alt="Today, the sentence the app already uses elsewhere" loading="lazy"></button><figcaption>Today, the sentence the app already uses elsewhere</figcaption></figure></div>
+</section>
+<section>
+<h3>Two more, with no picture</h3>
+<dl><div><dt>Capitals</dt><dd>"leave war period" is written in small letters in three places. It becomes "Leave War period", the app's own name: "Only a scheduler can create a Leave War period", "The 2026 Leave War period is created. Open its dates for bidding here.", and the hint on the "Create the 2026 period" button.</dd></div><div><dt>One odd refusal</dt><dd>"Only a scheduler answers from this list" becomes "Only a scheduler can answer from this list", like its thirteen relatives ("Only a scheduler can accept inputs"). Nobody can reach this message through the screen today, so there is no picture of it.</dd></div></dl>
+</section>
+<div class="gaps">
+<h2>Left for later rounds</h2>
+<ul><li>One wording for a save that failed. There are seven today. The commonest is already in a question the two-squadron chat is putting to you, so this waits for your answer there.</li><li>The dashes: 103 messages join two thoughts with a dash. They come area by area.</li><li>Three more cases where the bell says "Renamed": an input given a title, a title removed, and an Attach whose "To" changed.</li></ul>
+</div>
+</main>
+<div id="big" hidden tabindex="-1" role="dialog" aria-label="Enlarged picture"><img alt=""></div>
+<script>
+(function(){var b=document.getElementById('big'),i=b.querySelector('img'),from=null;
+function shut(){b.hidden=true;i.removeAttribute('src');if(from)from.focus()}
+document.addEventListener('click',function(e){var z=e.target.closest&&e.target.closest('.zoom');if(z){from=z;i.src=z.dataset.src;i.alt=z.querySelector('img').alt;b.hidden=false;b.scrollTop=0;b.focus();return}if(!b.hidden&&b.contains(e.target))shut()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!b.hidden)shut()})})();
+</script>

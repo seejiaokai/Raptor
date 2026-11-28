@@ -153,3 +153,5 @@ script already pictures re-runs that one step into a new folder (§5; `docs/walk
     as a look for his PC.
 32. A ruled word the build had to read, or a question the app already answers elsewhere: each place's rule side by
     side; a case on each side of every open reading, marked to show him — never a pass.
+33. Every line of words pictured is read as its reader: who sees it, and does it ask that person to do what is theirs; a
+    ruling on one line lists its sibling lines, and any left as it was is put to him with its picture.

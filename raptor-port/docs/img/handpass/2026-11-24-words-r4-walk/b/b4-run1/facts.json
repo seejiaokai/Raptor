@@ -1,0 +1,127 @@
+{
+ "pictures": [
+  {
+   "file": "B4-01-unread-start-phone.png",
+   "case": "B4",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "(unread) OL Wed 15 Jul / LL changed to OL · Saber"
+   ]
+  },
+  {
+   "file": "B4-02-unread-reload-phone.png",
+   "case": "B4",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "(unread) OL Wed 15 Jul / LL changed to OL · Saber"
+   ]
+  },
+  {
+   "file": "B4-03-unread-signout-in-phone.png",
+   "case": "B4",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "(unread) OL Wed 15 Jul / LL changed to OL · Saber"
+   ]
+  },
+  {
+   "file": "B4-04-unread-week-there-back-phone.png",
+   "case": "B4",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "(unread) OL Wed 15 Jul / LL changed to OL · Saber"
+   ]
+  },
+  {
+   "file": "B4-05-unread-leavewar-back-phone.png",
+   "case": "B4",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "(unread) OL Wed 15 Jul / LL changed to OL · Saber"
+   ]
+  },
+  {
+   "file": "B4-tap-phone-justafter.png",
+   "case": "B4"
+  },
+  {
+   "file": "B4-tap-phone-settled.png",
+   "case": "B4"
+  },
+  {
+   "file": "B4-06-read-start-phone.png",
+   "case": "B4",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "(read) OL Wed 15 Jul / LL changed to OL · Saber"
+   ]
+  },
+  {
+   "file": "B4-07-read-reload-phone.png",
+   "case": "B4",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "(read) OL Wed 15 Jul / LL changed to OL · Saber"
+   ]
+  },
+  {
+   "file": "B4-08-read-signout-in-phone.png",
+   "case": "B4",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "(read) OL Wed 15 Jul / LL changed to OL · Saber"
+   ]
+  },
+  {
+   "file": "B4-09-read-week-there-back-phone.png",
+   "case": "B4",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "(read) OL Wed 15 Jul / LL changed to OL · Saber"
+   ]
+  },
+  {
+   "file": "B4-10-read-leavewar-back-phone.png",
+   "case": "B4",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "(read) OL Wed 15 Jul / LL changed to OL · Saber"
+   ]
+  }
+ ],
+ "cases": {
+  "B4": {
+   "log": [
+    "bundle: index-2uyEcUJu.js",
+    "filed {\"type\":\"LL\",\"span\":\"all\",\"remarks\":\"Local leave\"} on 2026-07-15: new input [\"imwujnel819fxup\"]; asked [\"document\"]; note \"\"",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "unread-start: lit true; [\"(unread) OL Wed 15 Jul / LL changed to OL · Saber\"]",
+    "picture B4-01-unread-start-phone.png: [\"(unread) OL Wed 15 Jul / LL changed to OL · Saber\"]",
+    "the reload showed the sign-in screen",
+    "unread-reload: lit true; [\"(unread) OL Wed 15 Jul / LL changed to OL · Saber\"]",
+    "picture B4-02-unread-reload-phone.png: [\"(unread) OL Wed 15 Jul / LL changed to OL · Saber\"]",
+    "unread-signout-in: lit true; [\"(unread) OL Wed 15 Jul / LL changed to OL · Saber\"]",
+    "picture B4-03-unread-signout-in-phone.png: [\"(unread) OL Wed 15 Jul / LL changed to OL · Saber\"]",
+    "unread-week-there-back: lit true; [\"(unread) OL Wed 15 Jul / LL changed to OL · Saber\"]",
+    "picture B4-04-unread-week-there-back-phone.png: [\"(unread) OL Wed 15 Jul / LL changed to OL · Saber\"]",
+    "unread-leavewar-back: lit true; [\"(unread) OL Wed 15 Jul / LL changed to OL · Saber\"]",
+    "picture B4-05-unread-leavewar-back-phone.png: [\"(unread) OL Wed 15 Jul / LL changed to OL · Saber\"]",
+    "tap opened: {\"open\":true,\"type\":\"OL\",\"page\":\"inputs\"}",
+    "read-start: lit false; [\"(read) OL Wed 15 Jul / LL changed to OL · Saber\"]",
+    "picture B4-06-read-start-phone.png: [\"(read) OL Wed 15 Jul / LL changed to OL · Saber\"]",
+    "the reload showed the sign-in screen",
+    "read-reload: lit false; [\"(read) OL Wed 15 Jul / LL changed to OL · Saber\"]",
+    "picture B4-07-read-reload-phone.png: [\"(read) OL Wed 15 Jul / LL changed to OL · Saber\"]",
+    "read-signout-in: lit false; [\"(read) OL Wed 15 Jul / LL changed to OL · Saber\"]",
+    "picture B4-08-read-signout-in-phone.png: [\"(read) OL Wed 15 Jul / LL changed to OL · Saber\"]",
+    "read-week-there-back: lit false; [\"(read) OL Wed 15 Jul / LL changed to OL · Saber\"]",
+    "picture B4-09-read-week-there-back-phone.png: [\"(read) OL Wed 15 Jul / LL changed to OL · Saber\"]",
+    "read-leavewar-back: lit false; [\"(read) OL Wed 15 Jul / LL changed to OL · Saber\"]",
+    "picture B4-10-read-leavewar-back-phone.png: [\"(read) OL Wed 15 Jul / LL changed to OL · Saber\"]",
+    "the same words every time: true ([\"OL Wed 15 Jul / LL changed to OL · Saber\"])",
+    "read states: unread-start=unread; unread-reload=unread; unread-signout-in=unread; unread-week-there-back=unread; unread-leavewar-back=unread; read-start=read; read-reload=read; read-signout-in=read; read-week-there-back=read; read-leavewar-back=read"
+   ]
+  }
+ },
+ "errors": []
+}

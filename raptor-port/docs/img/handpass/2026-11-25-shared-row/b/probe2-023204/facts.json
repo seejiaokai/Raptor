@@ -1,0 +1,14 @@
+{
+ "pictures": [],
+ "cases": {
+  "P": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvicwxnwqipm3\"]; asked []; note \"\"",
+    "windows []",
+    "inpEdit ids [\"inpEditPop= DIV\",\"inpEditTitle= B\",\"inpEditClose= BUTTON\",\"inpEditType=LL SELECT\",\"inpEditSpan= DIV\",\"inpEditStart=08:00 INPUT\",\"inpEditEnd=10:00 INPUT\",\"inpEditRmk= INPUT\",\"inpEditTill=on INPUT\",\"inpEditDel= BUTTON\",\"inpEditCancel= BUTTON\",\"inpEditSave= BUTTON\"]",
+    "pp [\"dj:false\",\"shaft:false\",\"slash:false\",\"snap:false\",\"taipan:false\",\"beams:false\",\"fantom:false\",\"slipway:false\",\"chaps:false\",\"bruise:false\",\"boosh:false\",\"prowler:false\",\"pike:false\",\"casper:false\",\"pump:false\",\"bane:true\",\"dice:false\",\"prism:false\",\"razer:false\",\"stiff:false\",\"salsa:false\",\"mamba:false\",\"haowen:false\",\"ignite:false\",\"harpoon:false\",\"split:false\",\"vegas:false\",\"nact:false\",\"bapster:false\",\"glass:false\",\"ammo:false\",\"psy:false\",\"spaceman:false\",\"freak:false\",\"plasma:false\",\"riddler:false\",\"sufa:false\",\"rocky:true\",\"drill:false\",\"nasty:false\",\"dirty:false\",\"pain:false\",\"xray:false\",\"stuff:false\",\"wolf:false\",\"divot:false\",\"shrek:false\",\"yeti:false\",\"ipman:false\",\"krait:false\",\"cards:false\",\"wrangler:false\",\"badger:false\",\"romeo:false\",\"waldo:false\",\"nick:false\",\"vinci:false\",\"bullet:false\",\"spanner:false\",\"torque:false\",\"gizmo:false\"]"
+   ]
+  }
+ },
+ "errors": []
+}

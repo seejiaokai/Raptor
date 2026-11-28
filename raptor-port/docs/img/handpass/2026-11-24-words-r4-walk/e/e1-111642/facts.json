@@ -1,0 +1,221 @@
+{
+ "pictures": [
+  {
+   "file": "e1-fixed-fly-week-note.png",
+   "case": "E1-fixed",
+   "size": "desktop 1440x900 @2x",
+   "text": "Saber — already in that seat",
+   "geo": {
+    "l": 626,
+    "t": 836,
+    "r": 814,
+    "b": 874,
+    "vw": 1440,
+    "vh": 900
+   }
+  },
+  {
+   "file": "e1-fixed-duty-week-note.png",
+   "case": "E1-fixed",
+   "size": "desktop 1440x900 @2x",
+   "text": "Sidewinder — already in that seat",
+   "geo": {
+    "l": 612,
+    "t": 836,
+    "r": 828,
+    "b": 874,
+    "vw": 1440,
+    "vh": 900
+   }
+  },
+  {
+   "file": "e1-fixed-ground-week-note.png",
+   "case": "E1-fixed",
+   "size": "desktop 1440x900 @2x",
+   "text": "Ace — already in that seat",
+   "geo": {
+    "l": 632,
+    "t": 836,
+    "r": 808,
+    "b": 874,
+    "vw": 1440,
+    "vh": 900
+   }
+  },
+  {
+   "file": "e1-fixed-placeholder-week-note.png",
+   "case": "E1-fixed",
+   "size": "desktop 1440x900 @2x",
+   "text": "ALL AVAIL — already in that seat",
+   "geo": {
+    "l": 615,
+    "t": 836,
+    "r": 825,
+    "b": 874,
+    "vw": 1440,
+    "vh": 900
+   }
+  },
+  {
+   "file": "e1-fixed-seatpuck-week-note.png",
+   "case": "E1-fixed",
+   "size": "desktop 1440x900 @2x",
+   "text": "Saber — already in that seat",
+   "geo": {
+    "l": 626,
+    "t": 836,
+    "r": 814,
+    "b": 874,
+    "vw": 1440,
+    "vh": 900
+   }
+  },
+  {
+   "file": "e1-fixed-fly-board-note.png",
+   "case": "E1-fixed",
+   "size": "desktop 1440x900 @2x",
+   "text": "Saber — already in that seat",
+   "geo": {
+    "l": 626,
+    "t": 836,
+    "r": 814,
+    "b": 874,
+    "vw": 1440,
+    "vh": 900
+   }
+  },
+  {
+   "file": "e1-fixed-duty-board-note.png",
+   "case": "E1-fixed",
+   "size": "desktop 1440x900 @2x",
+   "text": "Sidewinder — already in that seat",
+   "geo": {
+    "l": 612,
+    "t": 836,
+    "r": 828,
+    "b": 874,
+    "vw": 1440,
+    "vh": 900
+   }
+  },
+  {
+   "file": "e1-fixed-ground-board-note.png",
+   "case": "E1-fixed",
+   "size": "desktop 1440x900 @2x",
+   "text": "Ace — already in that seat",
+   "geo": {
+    "l": 632,
+    "t": 836,
+    "r": 808,
+    "b": 874,
+    "vw": 1440,
+    "vh": 900
+   }
+  },
+  {
+   "file": "e1-fixed-placeholder-board-note.png",
+   "case": "E1-fixed",
+   "size": "desktop 1440x900 @2x",
+   "text": "ALL AVAIL — already in that seat",
+   "geo": {
+    "l": 615,
+    "t": 836,
+    "r": 825,
+    "b": 874,
+    "vw": 1440,
+    "vh": 900
+   }
+  },
+  {
+   "file": "e1-fixed-seatpuck-board-note.png",
+   "case": "E1-fixed",
+   "size": "desktop 1440x900 @2x",
+   "text": "Saber — already in that seat",
+   "geo": {
+    "l": 626,
+    "t": 836,
+    "r": 814,
+    "b": 874,
+    "vw": 1440,
+    "vh": 900
+   }
+  },
+  {
+   "file": "e1-phone-week-note.png",
+   "case": "E1-phone",
+   "size": "phone 402x874 @3x",
+   "text": "Saber — already in that seat",
+   "geo": {
+    "l": 12,
+    "t": 810,
+    "r": 390,
+    "b": 848,
+    "vw": 402,
+    "vh": 874
+   }
+  },
+  {
+   "file": "e1-phone-board-note.png",
+   "case": "E1-phone",
+   "size": "phone 402x874 @3x",
+   "text": "Saber — already in that seat",
+   "geo": {
+    "l": 12,
+    "t": 810,
+    "r": 390,
+    "b": 848,
+    "vw": 402,
+    "vh": 874
+   }
+  }
+ ],
+ "cases": {
+  "E1-fixed": {
+   "log": [
+    "build D:/rw4/build-new3 bundle index-DIr933hk.js",
+    "placeholder put in s:0.amt.1.pax.8: [\"allavail\"]; note \"ALL AVAIL planned\"",
+    "week seats {\"fly\":{\"key\":\"0.0.0.0.p\",\"who\":\"stiff\"},\"duty\":{\"key\":\"d:0.0.0\",\"who\":\"mamba\"},\"ground\":{\"key\":\"g:0.0\",\"who\":\"dj\"},\"emptyFly\":null,\"emptyDuty\":null,\"emptyAny\":null}",
+    "picture e1-fixed-fly-week-note.png: \"Saber — already in that seat\"",
+    "e1-fixed-fly-week: {\"note\":\"Saber — already in that seat\",\"before\":[\"stiff\"],\"after\":[\"stiff\"],\"hist\":[2,2],\"undo\":[{\"disabled\":false,\"title\":\"Undo — a change to the schedule\"},{\"disabled\":false,\"title\":\"Undo — a change to the schedule\"}],\"seatClassAtDrop\":\"seat lift-land\"}",
+    "picture e1-fixed-duty-week-note.png: \"Sidewinder — already in that seat\"",
+    "e1-fixed-duty-week: {\"note\":\"Sidewinder — already in that seat\",\"before\":[\"mamba\"],\"after\":[\"mamba\"],\"hist\":[2,2],\"undo\":[{\"disabled\":false,\"title\":\"Undo — a change to the schedule\"},{\"disabled\":false,\"title\":\"Undo — a change to the schedule\"}],\"seatClassAtDrop\":\"seat lift-land\"}",
+    "picture e1-fixed-ground-week-note.png: \"Ace — already in that seat\"",
+    "e1-fixed-ground-week: {\"note\":\"Ace — already in that seat\",\"before\":[\"dj\"],\"after\":[\"dj\"],\"hist\":[2,2],\"undo\":[{\"disabled\":false,\"title\":\"Undo — a change to the schedule\"},{\"disabled\":false,\"title\":\"Undo — a change to the schedule\"}],\"seatClassAtDrop\":\"seat lift-land\"}",
+    "picture e1-fixed-placeholder-week-note.png: \"ALL AVAIL — already in that seat\"",
+    "e1-fixed-placeholder-week: {\"note\":\"ALL AVAIL — already in that seat\",\"before\":[\"allavail\"],\"after\":[\"allavail\"],\"hist\":[2,2],\"undo\":[{\"disabled\":false,\"title\":\"Undo — a change to the schedule\"},{\"disabled\":false,\"title\":\"Undo — a change to the schedule\"}],\"seatClassAtDrop\":\"seat lift-land\"}",
+    "e1-fixed-other-week: {\"note\":\"\",\"before\":[],\"after\":[],\"hist\":[2,3],\"undo\":[{\"disabled\":false,\"title\":\"Undo — a change to the schedule\"},{\"disabled\":false,\"title\":\"Undo — a change to the schedule\"}],\"seatClassAtDrop\":\"ppl one lift-land\"}",
+    "picture e1-fixed-seatpuck-week-note.png: \"Saber — already in that seat\"",
+    "board seats {\"fly\":{\"key\":\"0.0.0.0.p\",\"who\":\"stiff\"},\"duty\":{\"key\":\"d:0.0.0\",\"who\":\"mamba\"},\"ground\":{\"key\":\"g:0.0\",\"who\":\"dj\"},\"emptyFly\":null,\"emptyDuty\":null,\"emptyAny\":null}",
+    "picture e1-fixed-fly-board-note.png: \"Saber — already in that seat\"",
+    "e1-fixed-fly-board: {\"note\":\"Saber — already in that seat\",\"before\":[\"stiff\"],\"after\":[\"stiff\"],\"hist\":[4,4],\"undo\":[{\"disabled\":false,\"title\":\"Undo — a change to the schedule\"},{\"disabled\":false,\"title\":\"Undo — a change to the schedule\"}],\"seatClassAtDrop\":\"seat lift-land\"}",
+    "picture e1-fixed-duty-board-note.png: \"Sidewinder — already in that seat\"",
+    "e1-fixed-duty-board: {\"note\":\"Sidewinder — already in that seat\",\"before\":[\"mamba\"],\"after\":[\"mamba\"],\"hist\":[4,4],\"undo\":[{\"disabled\":false,\"title\":\"Undo — a change to the schedule\"},{\"disabled\":false,\"title\":\"Undo — a change to the schedule\"}],\"seatClassAtDrop\":\"seat lift-land\"}",
+    "picture e1-fixed-ground-board-note.png: \"Ace — already in that seat\"",
+    "e1-fixed-ground-board: {\"note\":\"Ace — already in that seat\",\"before\":[\"dj\"],\"after\":[\"dj\"],\"hist\":[4,4],\"undo\":[{\"disabled\":false,\"title\":\"Undo — a change to the schedule\"},{\"disabled\":false,\"title\":\"Undo — a change to the schedule\"}],\"seatClassAtDrop\":\"seat lift-land\"}",
+    "picture e1-fixed-placeholder-board-note.png: \"ALL AVAIL — already in that seat\"",
+    "e1-fixed-placeholder-board: {\"note\":\"ALL AVAIL — already in that seat\",\"before\":[\"allavail\"],\"after\":[\"allavail\"],\"hist\":[4,4],\"undo\":[{\"disabled\":false,\"title\":\"Undo — a change to the schedule\"},{\"disabled\":false,\"title\":\"Undo — a change to the schedule\"}],\"seatClassAtDrop\":\"seat lift-land\"}",
+    "e1-fixed-other-board: {\"note\":\"\",\"before\":[],\"after\":[\"beams\"],\"hist\":[4,5],\"undo\":[{\"disabled\":false,\"title\":\"Undo — a change to the schedule\"},{\"disabled\":false,\"title\":\"Undo — a change to the schedule\"}],\"seatClassAtDrop\":\"seat lift-land\"}",
+    "picture e1-fixed-seatpuck-board-note.png: \"Saber — already in that seat\""
+   ]
+  },
+  "E1-before": {
+   "log": [
+    "build D:/rw4/build-new2 bundle index-BNHpQA1S.js",
+    "week seats {\"fly\":{\"key\":\"0.0.0.0.p\",\"who\":\"stiff\"},\"duty\":{\"key\":\"d:0.0.0\",\"who\":\"mamba\"},\"ground\":{\"key\":\"g:0.0\",\"who\":\"dj\"},\"emptyFly\":null,\"emptyDuty\":null,\"emptyAny\":null}",
+    "e1-before-fly-week: {\"note\":\"\",\"before\":[\"stiff\"],\"after\":[\"stiff\"],\"hist\":[1,1],\"undo\":[{\"disabled\":true,\"title\":\"Undo\"},{\"disabled\":true,\"title\":\"Undo\"}],\"seatClassAtDrop\":\"seat lift-land\"}",
+    "e1-before-duty-week: {\"note\":\"\",\"before\":[\"mamba\"],\"after\":[\"mamba\"],\"hist\":[1,1],\"undo\":[{\"disabled\":true,\"title\":\"Undo\"},{\"disabled\":true,\"title\":\"Undo\"}],\"seatClassAtDrop\":\"seat lift-land\"}",
+    "board seats {\"fly\":{\"key\":\"0.0.0.0.p\",\"who\":\"stiff\"},\"duty\":{\"key\":\"d:0.0.0\",\"who\":\"mamba\"},\"ground\":{\"key\":\"g:0.0\",\"who\":\"dj\"},\"emptyFly\":null,\"emptyDuty\":null,\"emptyAny\":null}",
+    "e1-before-fly-board: {\"note\":\"\",\"before\":[\"stiff\"],\"after\":[\"stiff\"],\"hist\":[1,1],\"undo\":[{\"disabled\":true,\"title\":\"Undo\"},{\"disabled\":true,\"title\":\"Undo\"}],\"seatClassAtDrop\":\"seat lift-land\"}",
+    "e1-before-duty-board: {\"note\":\"\",\"before\":[\"mamba\"],\"after\":[\"mamba\"],\"hist\":[1,1],\"undo\":[{\"disabled\":true,\"title\":\"Undo\"},{\"disabled\":true,\"title\":\"Undo\"}],\"seatClassAtDrop\":\"seat lift-land\"}"
+   ]
+  },
+  "E1-phone": {
+   "log": [
+    "bundle index-DIr933hk.js",
+    "picture e1-phone-week-note.png: \"Saber — already in that seat\"",
+    "picture e1-phone-board-note.png: \"Saber — already in that seat\""
+   ]
+  }
+ },
+ "errors": []
+}

@@ -1,0 +1,56 @@
+[
+ [
+  "A14 / F-S16 (2a)",
+  "desk chromium",
+  "Cinch empty 14 Dec: remark typed, PM, Auto-approve switched; ⋯ → Post out; ✕; the day again",
+  "no leave part shows in the posting; nothing written to the day by ✕; RECORD what the typed words and choices became, beside main (D2653; way-C)",
+  "window before: {\"remarks\":\"\",\"duration\":\"Whole day\",\"auto\":\"true\",\"head\":\"Cinch Mon 14 Dec Auto-approve ✕\"} | typed: {\"remarks\":\"wb typed note\",\"duration\":\"PM\",\"auto\":\"false\",\"head\":\"Cinch Mon 14 Dec Auto-approve ✕\"} | posting [bid poNew head=Cinch Post out ✕ page=leavewar] parts po-title,bid-cancel,po-overseas,po-delete,po-sans,po-date,po-line,po-confirm | cell after ✕: act \"\" | reopened: {\"remarks\":\"\",\"duration\":\"Whole day\",\"auto\":\"false\",\"head\":\"Cinch Mon 14 Dec Auto-approve ✕\"}",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r10/001-desk-chromium-a14-typed.png , img/handpass/2026-11-26-msq-s4-walk/wb/r10/002-desk-chromium-a14-posting.png , img/handpass/2026-11-26-msq-s4-walk/wb/r10/003-desk-chromium-a14-reopen-after-x.png"
+ ],
+ [
+  "A14 / F-S16 (2b)",
+  "desk chromium",
+  "Cinch 14 Dec: remark \"wb second note\", AM; ⋯ → Post out dated 21 Dec → Post out; the day again",
+  "opening or pressing a posting creates neither leave nor an award; RECORD what became of the words, beside main",
+  "typed: {\"remarks\":\"wb second note\",\"duration\":\"AM\",\"auto\":\"false\",\"head\":\"Cinch Mon 14 Dec Auto-approve ✕\"} | after Post out: cell 14 act \"\"; gone from 12-21 | reopened 14 Dec: {\"remarks\":\"\",\"duration\":\"Whole day\",\"auto\":\"false\",\"head\":\"Cinch Mon 14 Dec Auto-approve ✕\"}",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r10/004-desk-chromium-a14-reopen-after-postout.png"
+ ],
+ [
+  "A14 / F-S16 (3)",
+  "desk chromium",
+  "Piston 15–18 Dec dragged, Remarks \"wb drag words\"; ⋯ → Post out; ✕; drag again; then words \"wb drag words 2\" → ⋯ → Post out → Post out",
+  "nothing typed saved or lost DIFFERENTLY from main (D1339: the drag window's words go with its press); RECORD both builds",
+  "typed {\"remarks\":\"wb drag words\",\"duration\":\"Whole day\",\"auto\":\"false\",\"head\":\"Piston 15–18 Dec · 4 days Auto-approve ✕\"} | after ✕: cell 15 act \"\" | dragged again: {\"remarks\":\"\",\"duration\":\"Whole day\",\"auto\":\"false\",\"head\":\"Piston 15–18 Dec · 4 days Auto-approve ✕\"} | after Post out: cell 15 gone act hasc \"PO\"; gone from 12-15",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r10/005-desk-chromium-a14-drag-posting.png , img/handpass/2026-11-26-msq-s4-walk/wb/r10/006-desk-chromium-a14-drag-reopen.png , img/handpass/2026-11-26-msq-s4-walk/wb/r10/007-desk-chromium-a14-drag-posted.png"
+ ],
+ [
+  "A14 / F-S16 run 2",
+  "desk chromium",
+  "Ridge 10 Dec: LL placed with remark \"approved one\"; reopened, remark retyped \"changed words\" (no blur), ⋯ → Post out, ✕, reopened",
+  "the posting shows none of the entry's details; RECORD what the retyped words became, beside main",
+  "cell act hasc \"LL\" | before: {\"remarks\":\"approved one\",\"duration\":\"Whole day\",\"auto\":\"false\",\"head\":\"Ridge Thu 10 Dec Auto-approve ✕\"} | posting [bid poNew head=Ridge Post out ✕ page=leavewar] leave parts visible: [] | reopened: {\"remarks\":\"changed words\",\"duration\":\"Whole day\",\"auto\":\"false\",\"head\":\"Ridge Thu 10 Dec Auto-approve ✕\"}",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r10/008-desk-chromium-a14-run2-posting.png , img/handpass/2026-11-26-msq-s4-walk/wb/r10/009-desk-chromium-a14-run2-reopen.png"
+ ],
+ [
+  "F-S30",
+  "desk chromium",
+  "new sheet open; press: another man's day (Anvil 14 Dec) [sheet-scrim]",
+  "as on main with the old posting rows (compare); a change of period closes the sheet; what lights on the grid matches the sheet's head and date; nothing posted",
+  "before [bid poNew head=Cinch Post out ✕ page=leavewar] → after [page=leavewar]; lit []; open layers []; Cinch gone 11, Basher from 12-21",
+  "FAIL",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r10/010-desk-chromium-fs30-new-otherDay-open.png , img/handpass/2026-11-26-msq-s4-walk/wb/r10/011-desk-chromium-fs30-new-otherDay-after.png"
+ ],
+ [
+  "F-S30",
+  "desk chromium",
+  "new sheet open; press: the wheel over the grid (pointer on the grid, above the sheet) [grid at y480: sheet-scrim]",
+  "as on main with the old posting rows (compare); a change of period closes the sheet; what lights on the grid matches the sheet's head and date; nothing posted",
+  "before [bid poNew head=Cinch Post out ✕ page=leavewar] → after [bid poNew head=Cinch Post out ✕ page=leavewar]; lit [\"cell-snap-2026-12-14\"]; open layers [\"Post out\"]; Cinch gone 11, Basher from 12-21",
+  "FAIL",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r10/012-desk-chromium-fs30-new-wheelGrid-open.png , img/handpass/2026-11-26-msq-s4-walk/wb/r10/013-desk-chromium-fs30-new-wheelGrid-after.png"
+ ]
+]

@@ -1,0 +1,79 @@
+[
+ {
+  "scn": "f3b",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "f3b",
+  "size": "desktop",
+  "id": "f3b.line",
+  "what": "set-up: a new flying line on Sat (+ Wave → Flying wave), no times typed",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 1\",\"kind\":\"\",\"standalone\":false,\"cs\":\"\",\"to\":\"\",\"ld\":\"\",\"n\":1}"
+ },
+ {
+  "scn": "f3b",
+  "size": "desktop",
+  "id": "f3b.seat",
+  "what": "set-up: Ranger tapped into the FCP of the new Sat line (seat tapped, then his name)",
+  "ok": true,
+  "note": "armed 5.0.0.0.p · note \"the WAVE 1 line has no usable times, so nobody on it earns OIL for this day\"",
+  "pics": "f3b-f3b-seat5w0-note-clip-desktop.png, f3b-f3b-seat5w0-picked-desktop.png"
+ },
+ {
+  "scn": "f3b",
+  "size": "desktop",
+  "id": "f3b.line",
+  "what": "set-up: a new flying line on Mon (+ Wave → Flying wave), no times typed",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 3\",\"kind\":\"\",\"standalone\":false,\"cs\":\"\",\"to\":\"\",\"ld\":\"\",\"n\":1}"
+ },
+ {
+  "scn": "f3b",
+  "size": "desktop",
+  "id": "f3b.seat",
+  "what": "set-up: Ranger tapped into the FCP of the new Mon line (seat tapped, then his name)",
+  "ok": true,
+  "note": "armed 0.2.0.0.p · note \"Ranger planned\"",
+  "pics": "f3b-f3b-seat0w2-note-clip-desktop.png, f3b-f3b-seat0w2-picked-desktop.png"
+ },
+ {
+  "scn": "f3b",
+  "size": "desktop",
+  "id": "f3b.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "f3b-f3b.post-postout-open-desktop.png, f3b-f3b.post-postout-sheet-desktop.png"
+ },
+ {
+  "scn": "f3b",
+  "size": "desktop",
+  "id": "f3b.1",
+  "what": "seats first, posting after: Ranger's bell still \"You're planned on Sat 18, Mon 20 Jul with nothing filed. Tap to file for availability.\" (the same as posting first)",
+  "ok": true,
+  "note": "lit true · 1 line(s) · Mark all read in view · [unread] \"You're SANS from Fri 17 Jul.\" \"\" \"You're planned on Sat 18, Mon 20 Jul with nothing filed. Tap to file for availability.\"",
+  "pics": "f3b-f3b-bell-desktop.png"
+ },
+ {
+  "scn": "f3b",
+  "size": "desktop",
+  "id": "f3b.2",
+  "what": "Saber picks the other seat of the Sat 18 flight: Ranger struck",
+  "ok": true,
+  "note": "[SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" printed \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\"",
+  "pics": "f3b-f3b-rcp-armed-clip-desktop.png, f3b-f3b-rcp-sans-clip-desktop.png, f3b-f3b-rcp-armed-desktop.png"
+ },
+ {
+  "scn": "f3b",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

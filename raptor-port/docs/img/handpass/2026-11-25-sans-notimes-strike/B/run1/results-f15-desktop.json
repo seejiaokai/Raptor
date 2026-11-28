@@ -1,0 +1,106 @@
+[
+ {
+  "scn": "f15",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "f15",
+  "size": "desktop",
+  "id": "f15.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "f15-f15.post-postout-open-desktop.png, f15-f15.post-postout-sheet-desktop.png"
+ },
+ {
+  "scn": "f15",
+  "size": "desktop",
+  "id": "f15.file",
+  "what": "set-up: Ranger files Fly 2026-07-18 on the SANS tab",
+  "ok": true,
+  "note": "{\"iid\":\"imrldif79x1wyhg\",\"people\":\"[{\\\"p\\\":\\\"bane\\\",\\\"by\\\":\\\"bane\\\",\\\"at\\\":1784077217397}]\",\"date\":\"Jul 18\",\"endDate\":null,\"sans\":{\"f\":true},\"allday\":true,\"e\":1439,\"remarks\":\"\",\"by\":\"bane\"}",
+  "pics": "f15-f15.file-form-desktop.png, f15-f15.file-saved-desktop.png"
+ },
+ {
+  "scn": "f15",
+  "size": "desktop",
+  "id": "f15.l18",
+  "what": "set-up: a new flying line on Sat (+ Wave → Flying wave), no times typed",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 1\",\"kind\":\"\",\"standalone\":false,\"cs\":\"\",\"to\":\"\",\"ld\":\"\",\"n\":1}"
+ },
+ {
+  "scn": "f15",
+  "size": "desktop",
+  "id": "f15.l19",
+  "what": "set-up: a new flying line on Sun (+ Wave → Flying wave), no times typed",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 1\",\"kind\":\"\",\"standalone\":false,\"cs\":\"\",\"to\":\"\",\"ld\":\"\",\"n\":1}"
+ },
+ {
+  "scn": "f15",
+  "size": "desktop",
+  "id": "f15.1",
+  "what": "Sat 18 (filed Fly all day): Ranger plain",
+  "ok": true,
+  "note": "[SANS Avail, plain] title \"Ranger\" (no reason printed)",
+  "pics": "f15-f15-18-earmed-clip-desktop.png, f15-f15-18-esans-clip-desktop.png, f15-f15-18-earmed-desktop.png"
+ },
+ {
+  "scn": "f15",
+  "size": "desktop",
+  "id": "f15.2",
+  "what": "Sun 19 (nothing filed): Ranger struck \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\"",
+  "ok": true,
+  "note": "[SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" printed \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\"",
+  "pics": "f15-f15-19-earmed-clip-desktop.png, f15-f15-19-esans-clip-desktop.png, f15-f15-19-earmed-desktop.png"
+ },
+ {
+  "scn": "f15",
+  "size": "desktop",
+  "id": "f15.3",
+  "what": "his bell before he is seated anywhere Sat 18 – Sun 19",
+  "ok": "REC",
+  "note": "lit false · 0 line(s) · Mark all read none · empty",
+  "pics": "f15-f15-bell0-desktop.png"
+ },
+ {
+  "scn": "f15",
+  "size": "desktop",
+  "id": "f15.seat5",
+  "what": "set-up: Ranger tapped into the Sat blank FCP",
+  "ok": true,
+  "note": "note \"the WAVE 1 line has no usable times, so nobody on it earns OIL for this day\"",
+  "pics": "f15-f15-seat5-note-clip-desktop.png, f15-f15-seat5-picked-desktop.png"
+ },
+ {
+  "scn": "f15",
+  "size": "desktop",
+  "id": "f15.seat6",
+  "what": "set-up: Ranger tapped into the Sun blank FCP",
+  "ok": true,
+  "note": "note \"the WAVE 1 line has no usable times, so nobody on it earns OIL for this day\"",
+  "pics": "f15-f15-seat6-note-clip-desktop.png, f15-f15-seat6-picked-desktop.png"
+ },
+ {
+  "scn": "f15",
+  "size": "desktop",
+  "id": "f15.4",
+  "what": "seated on both: his bell names Sun 19 only",
+  "ok": true,
+  "note": "lit true · 1 line(s) · Mark all read in view · [unread] \"You're SANS from Fri 17 Jul.\" \"\" \"You're planned on Sun 19 Jul with nothing filed. Tap to file for availability.\"",
+  "pics": "f15-f15-bell1-desktop.png"
+ },
+ {
+  "scn": "f15",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

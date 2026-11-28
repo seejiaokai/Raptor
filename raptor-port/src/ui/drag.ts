@@ -8,6 +8,7 @@ import { slotVal, setSlotVal, fillSlot, lastFilled, sentinelSeatOK } from '../en
 import { slotBar, rowTwice } from '../engine/avail'
 import { WARN } from '../engine/validate'
 import { keyDay } from '../engine/keys'
+import { rowKeyNow } from '../engine/rowinput'
 import { onRosterOf } from '../engine/roster'
 import { dayIso } from '../engine/verid'
 import { CURWEEK } from '../engine/waves'
@@ -240,7 +241,7 @@ export function applyDrop(el: any, x: any, y: any) {
        calling afterSchedMutate() — reassignInput's commitInputEdit already
        ran the input funnel's full epilogue (validate, notify, ONE history
        step) and a second call here would push a second step for the one drop. */
-    if (view.armedKey() === `iu:${iid}`) view.disarmSlot()
+    if (view.armedKey() && rowKeyNow(view.armedKey()) === rowKeyNow(`iu:${iid}`)) view.disarmSlot()   // the same row, whichever address each still carries (engine/rowinput.ts)
     ROS_REOPEN = false
     DRAG = null; dndOff(); notify(); return true
   }
@@ -425,7 +426,17 @@ export function applyDrop(el: any, x: any, y: any) {
       HOOKS.toast(`${PEOPLE[id] ? PEOPLE[id].cs + ' — ' : ''}${t}`, 'warn')
       DRAG = null; dndOff(); return true
     }
+    /* THE SEAT HE ALREADY HOLDS, said in the tap's words, naming the man (his D2521 Q4b): "Ranger — already in that seat"
+       — for a seat's own puck let go on it (the last branch below), and for his NAME carried from the crew list onto it,
+       the tap's true twin, which used to write the same value back and say nothing (the fresh, blind Fable read of
+       round 4, its finding 2, chat 170). Nothing is written, so nothing rebuilds: the seat is lit directly (below). */
+    const same = () => {
+      const seat = slotEl.matches('[data-slot]') ? slotEl : slotEl.querySelector(`[data-slot="${targetKey}"]`)
+      const v = slotVal(targetKey), who = (PEOPLE[v] && PEOPLE[v].cs) || v
+      DRAG = null; dndOff(); landOn(seat); toast(`${who} — already in that seat`); return false
+    }
     if (DRAG.kind === 'roster') {
+      if (DRAG.id && slotVal(targetKey) === DRAG.id) return same()
       if (!sentinelSeatOK(targetKey, DRAG.id)) return refuse(DRAG.id, targetKey)
       if (twice(DRAG.id, targetKey)) return false
       setSlotVal(targetKey, DRAG.id); asks = [[DRAG.id, targetKey]]
@@ -463,10 +474,7 @@ export function applyDrop(el: any, x: any, y: any) {
        surface question markLand answers cannot arise: this element IS the one he
        dropped on). The toast stays; it says WHY nothing moved, the flash says
        where the puck is. */
-    else {
-      const seat = slotEl.matches('[data-slot]') ? slotEl : slotEl.querySelector(`[data-slot="${targetKey}"]`)
-      DRAG = null; dndOff(); landOn(seat); toast('Already in that seat'); return false
-    }
+    else return same()
     return done(targetKey, asks)
   }
   if (cell) return onCell(cell.dataset.fill)      // dropped on an empty / shared people cell

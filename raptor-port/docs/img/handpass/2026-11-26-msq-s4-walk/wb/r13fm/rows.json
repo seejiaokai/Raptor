@@ -1,0 +1,47 @@
+[
+ [
+  "F-S43",
+  "desk chromium main",
+  "Admin → Users: Ace's row opened, then its Delete pressed once",
+  "exactly as on main — Admin → Users' own Delete and its question unchanged (D2732 Q4 \"on the Leave War's cards only\"; D2653 c)",
+  "opened: [\"Give sign-in | bg rgb(59, 198, 232) | border solid rgb(59, 198, 232) | text rgb(5, 42, 52) | 95×28 @559,404\",\"Archive | bg rgb(26, 31, 38) | border solid rgb(42, 49, 58) | text rgb(241, 244, 247) | 70×28 @660,404\",\"Delete | bg rgb(26, 31, 38) | border solid rgba(240, 85, 95, 0.5) | text rgb(251, 180, 185) | 62×28 @736,404\",\"Cancel | bg rgb(26, 31, 38) | border solid rgb(42, 49, 58) | text rgb(241, 244, 247) | 65×28 @804,404\"] || after one Delete press: [\"Give sign-in | bg rgb(59, 198, 232) | border solid rgb(59, 198, 232) | text rgb(5, 42, 52) | 95×28 @559,404\",\"Archive | bg rgb(26, 31, 38) | border solid rgb(42, 49, 58) | text rgb(241, 244, 247) | 70×28 @660,404\",\"Tap again to delete Ace | bg rgba(240, 85, 95, 0.15) | border solid rgb(240, 85, 95) | text rgb(255, 255, 255) | 159×28 @736,404\",\"Cancel | bg rgb(26, 31, 38) | border solid rgb(42, 49, 58) | text rgb(241, 244, 247) | 65×28 @900,404\"] || text: Ace no sign-in · Pilot · CAT A SIGN-IN (DEFENCE MAIL) ROLE Member — own inputs, quals and bids Admin — schedules and manages Give sign-in Archive Tap again to delete Ace Cancel Goes: his account, his Quals row, every day still to come. Days he flew keep his puck",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r13fm/001-desk-chromium-main-f43-ace-open.png , img/handpass/2026-11-26-msq-s4-walk/wb/r13fm/002-desk-chromium-main-f43-ace-delete-armed.png"
+ ],
+ [
+  "F-S43",
+  "desk chromium main",
+  "Admin → Users: Ace → Archive (pressed, and its confirm if it asks)",
+  "exactly as on main",
+  "after the first press: [] || Ace archived Ace archived",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r13fm/003-desk-chromium-main-f43-ace-archive-pressed.png , img/handpass/2026-11-26-msq-s4-walk/wb/r13fm/004-desk-chromium-main-f43-ace-archived.png"
+ ],
+ [
+  "F-S43",
+  "desk chromium main",
+  "Admin → Users: the archived Ace found by the search and opened (callsign, Post in date, Restore, Delete)",
+  "exactly as on main",
+  "[\"Restore | bg rgb(59, 198, 232) | border solid rgb(59, 198, 232) | text rgb(5, 42, 52) | 71×28 @559,537\",\"Delete | bg rgb(26, 31, 38) | border solid rgba(240, 85, 95, 0.5) | text rgb(251, 180, 185) | 62×28 @636,537\",\"Cancel | bg rgb(26, 31, 38) | border solid rgb(42, 49, 58) | text rgb(241, 244, 247) | 65×28 @704,537\"] || Ace no sign-in · Pilot · CAT A Archived 26 Nov 26 by Saber CALLSIGN/NAME POST IN Thu 26 Nov 26 ▾ The Leave War counts him from the post-in date. Restore Delete Cancel ADD A PERSON CALLSIGN/NAME INITIALS PILOT, WSO OR PERSONNEL Pick… Pilot WSO Personnel (ground crew) CAT Pick… SIGN-IN (DEFENCE MAIL) P",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r13fm/005-desk-chromium-main-f43-find-ace.png , img/handpass/2026-11-26-msq-s4-walk/wb/r13fm/006-desk-chromium-main-f43-archived-ace-open.png"
+ ],
+ [
+  "F-S43",
+  "desk chromium main",
+  "the archived Ace → Delete pressed once",
+  "exactly as on main",
+  "[\"Restore | bg rgb(59, 198, 232) | border solid rgb(59, 198, 232) | text rgb(5, 42, 52) | 71×28 @559,537\",\"Tap again to delete Ace | bg rgba(240, 85, 95, 0.15) | border solid rgb(240, 85, 95) | text rgb(255, 255, 255) | 159×28 @636,537\",\"Cancel | bg rgb(26, 31, 38) | border solid rgb(42, 49, 58) | text rgb(241, 244, 247) | 65×28 @800,537\"] || Ace no sign-in · Pilot · CAT A Archived 26 Nov 26 by Saber CALLSIGN/NAME POST IN Thu 26 Nov 26 ▾ The Leave War counts him from the post-in date. Restore Tap again to delete Ace Cancel Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can’t be undone. ADD A PERSO",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r13fm/007-desk-chromium-main-f43-archived-ace-delete-armed.png"
+ ],
+ [
+  "F-S43",
+  "desk chromium main",
+  "Inputs: + Input, words typed, the window's ✕ → \"Close it and lose them?\"",
+  "exactly as on main (D1626, D1627)",
+  "typed in a box: false; ✕ found: false; \"\" || []",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r13fm/008-desk-chromium-main-f43-input-window.png , img/handpass/2026-11-26-msq-s4-walk/wb/r13fm/009-desk-chromium-main-f43-input-close-question.png"
+ ]
+]

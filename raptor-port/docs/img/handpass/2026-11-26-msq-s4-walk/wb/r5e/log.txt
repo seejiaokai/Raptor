@@ -1,0 +1,13 @@
+msq-s4w-lib v1 who=wb run=r5e port=4754
+wb-r5 v2
+rows ["row-dice:Reaper","row-shaft:Anvil","row-snap:Cinch","row-pump:Piston","row-bane:Ranger","row-stiff:Saber","row-mamba:Sidewinder","row-nact:Warden","row-slipway:Drifter","row-razer:Ridge","row-glass:Basher","row-freak:Echo","row-slash:Blade","row-taipan:Cobra","row-beams:Comet","row-chaps:Forge","row-boosh:Havoc","row-prowler:Hunter","row-harpoon:Trident","row-split:Vandal","row-dj:Ace","row-salsa:Saint","row-bruise:Gambit","row-pike:Nomad"]
+cell 14 open bid: act selcell
+cell 14 open PO: act selcell
+cell 14 closed: act
+keys {"Reaper":"dice","Anvil":"shaft","Cinch":"snap","Piston":"pump","Ranger":"bane","Saber":"stiff","Sidewinder":"mamba","Warden":"nact","Drifter":"slipway","Ridge":"razer","Basher":"glass","Echo":"freak","Blade":"slash","Cobra":"taipan","Comet":"beams","Forge":"chaps","Havoc":"boosh","Hunter":"prowler","Trident":"harpoon","Vandal":"split","Ace":"dj","Saint":"salsa","Gambit":"bruise","Nomad":"pike","Outlaw":"casper","Diesel":"fantom","Vapor":"vegas","Ledger":"drill","Quill":"nasty","Relay":"dirty","Scope":"stuff","Static":"wolf","Cinder":"ammo","Rune":"pain","Cutter":"psy","Dash":"spaceman","Fable":"plasma","Ghost":"riddler","Grit":"sufa","Hex":"rocky","Ryder":"xray","Vector":"divot","Wisp":"shrek","Recon":"prism","Talisman":"haowen","Wildcard":"bapster","Cotter":"spanner","Ratchet":"torque","Widget":"gizmo"}
+fixtures: Piston gone ["12-14","12-15","12-16","12-17","12-18","12-19","12-20","12-21","12-22","12-23","12-24","12-25","12-26","12-27","12-28","12-29","12-30","12-31"] Ridge gone ["12-01","12-02","12-03","12-04","12-05","12-06","12-07","12-08","12-09","12-10","12-11","12-12","12-13"]
+reopen from 2026-12-21
+ROW PASS | A11 | desk chromium | existing Post out (Piston): date → 21 Dec, ✕, reopen from 22 Dec | saw: line before ✕ "On 21 Dec: archived."; gone from 12-21; reopened date "Mon 21 Dec 26 ▾"
+errors w1 []
+errors []
+DONE 1 PASS 0 FAIL 0 OTHER of 1

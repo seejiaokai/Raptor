@@ -178,6 +178,57 @@ export function swapDayAround(live: Element, html: string, prev: DayChunks | nul
   })
   return { chunks: shown, held }
 }
+/* THE SCHEDULER BOARD'S DAY, THE SAME HOLD AT THE GRAIN OF ITS SECTIONS ([UI-SLEEK-PASS] round 4's leftovers (4) — walker
+   c's lead, walker d's reproduction, 24 Nov 26; the same on `main`). The board draws a whole day as ONE panel, and while
+   the caret was anywhere in it the panel was not written at all: an input's start typed under Personal Inputs (0900,
+   Tab — the caret on to its End box) saved, and the Board's own Ground Programme row for it went on reading 08:00 until
+   the caret left the board, one change behind for as long as he typed on — and every other section of the day (Available
+   crew, Unavailable, the Common Programme, the duties) held the same way. The week writes every block but the caret's (swapDayAround,
+   above); this is the same for the board's panel, whose blocks are its top-level children — the day bar and one
+   section each (board.ts boardHTMLBody). Every changed section is written except the one that holds the caret, which is
+   remembered as OWED, so the paint after the caret leaves rewrites it. `prev` is what each child showed as last written
+   (null when none is known); anything that does not line up child for child writes nothing, as before — a section
+   added or removed, a word outside any element, and (Fable's scenario design, 25 Nov 26 — B1, B2, B4) the SAME number
+   of children but not the same ones in each place: a section dragged to another place or its drag undone, another day
+   (the day arrow pressed with the caret in an In-time line), OIL Earn switched on (its sections unwrapped). Matched by
+   place alone, those drew one section twice and lost another until the caret left. So each child is known by WHICH
+   block it is (`blockId`: a board section by its `data-secmove`, the day and the section; anything else by its tag and
+   class), and every place must hold the same block before anything is written. Hands back what is now shown, and
+   whether anything is still owed. */
+export type PanelKids = { html: string[]; ids: string[] }
+const blockId = (el: Element): string => el.tagName + (el.hasAttribute('data-secmove') ? '#' + el.getAttribute('data-secmove') : '.' + (el.getAttribute('class') || ''))
+export function swapKidsAround(live: Element, html: string, prev: PanelKids | null, keep: Element): { kids: PanelKids | null; held: boolean } {
+  const tpl = document.createElement('template')
+  tpl.innerHTML = html
+  const loose = Array.from(tpl.content.childNodes).some(n => n.nodeType !== 1 && !(n.nodeType === 3 && !(n.textContent || '').trim()))
+  const nk = Array.from(tpl.content.children), lk = kidsOf(live), ids = nk.map(blockId)
+  if (loose || !prev || prev.html.length !== nk.length || lk.length !== nk.length || ids.some((id, i) => id !== prev.ids[i])) return { kids: prev, held: true }
+  let held = false
+  const kids = nk.map((n, i) => {
+    const s = n.outerHTML
+    if (s === prev.html[i]) return s
+    const l = lk[i]!
+    if (l === keep || l.contains(keep)) { held = true; return OWED }
+    l.replaceWith(n); return s
+  })
+  return { kids: { html: kids, ids }, held }
+}
+/* is a section of this panel still owed somewhere the caret is NOT? (Fable's scenario design, B3, 25 Nov 26: the caret
+   moved to another section with nothing new saved — the section it left was owed, and only the next save or the caret
+   leaving every box wrote it.) The Board asks this when the focus moves, and paints only when it is so. */
+export function owesBeside(live: Element, kids: PanelKids | null, keep: Element): boolean {
+  if (!kids) return false
+  const lk = kidsOf(live)
+  return kids.html.some((s, i) => s === OWED && !!lk[i] && lk[i] !== keep && !lk[i]!.contains(keep))
+}
+/* the canonical markup of each top-level child of a panel's string, and which block each is — what swapKidsAround
+   compares, parsed, never read off the live (decorated) nodes */
+export function kidsOfHTML(html: string): PanelKids {
+  const tpl = document.createElement('template')
+  tpl.innerHTML = html
+  const kids = Array.from(tpl.content.children)
+  return { html: kids.map(c => c.outerHTML), ids: kids.map(blockId) }
+}
 /* run a write that may move things above the caret, and put the page back so the box he is typing in stays where it
    was on screen (Chromium's own scroll anchoring usually has already; Safari has none) */
 export function holdingPlace(caret: Element, write: () => void): void {

@@ -1,0 +1,15 @@
+msq-s4w-lib v1 who=wb run=r13f port=4754
+wb-r13 v2
+Ace: SPAN.acc-name
+ROW RECORD | F-S43 | desk chromium | Admin → Users: Ace's row opened, then its Delete pressed once | saw: opened: ["Give sign-in | bg rgb(59, 198, 232) | border solid rgb(59, 198, 232) | text rgb(5, 42, 52) | 95×28 @559,404","Archive | bg rgb(26, 31, 38) | border solid rgb(42, 49, 58) | text rgb(241, 244, 247) | 70×28 @660,404","Delete | bg rgb(26, 31, 38) | border solid rgba(240, 85, 95, 0.5) | text rgb(251, 180, 185) | 62×28 @736,404","Cancel | bg rgb(26, 31, 38) | border solid rgb(42, 49, 58) | tex
+Ace again: SPAN.acc-name
+ROW RECORD | F-S43 | desk chromium | Admin → Users: Ace → Archive (pressed, and its confirm if it asks) | saw: after the first press: [] || Ace archived Ace archived
+search box: INPUT.
+ROW RECORD | F-S43 | desk chromium | Admin → Users: the archived Ace found by the search and opened (callsign, Post in date, Restore, Delete) | saw: ["Restore | bg rgb(59, 198, 232) | border solid rgb(59, 198, 232) | text rgb(5, 42, 52) | 71×28 @559,537","Delete | bg rgb(26, 31, 38) | border solid rgba(240, 85, 95, 0.5) | text rgb(251, 180, 185) | 62×28 @636,537","Cancel | bg rgb(26, 31, 38) | border solid rgb(42, 49, 58) | text rgb(241, 244, 247) | 65×28 @704,537"] || Ace no sign-in · Pilot · CAT A Archived 26 Nov 26 by Saber CALLSIGN/NAME PO
+ROW RECORD | F-S43 | desk chromium | the archived Ace → Delete pressed once | saw: ["Restore | bg rgb(59, 198, 232) | border solid rgb(59, 198, 232) | text rgb(5, 42, 52) | 71×28 @559,537","Tap again to delete Ace | bg rgba(240, 85, 95, 0.15) | border solid rgb(240, 85, 95) | text rgb(255, 255, 255) | 159×28 @636,537","Cancel | bg rgb(26, 31, 38) | border solid rgb(42, 49, 58) | text rgb(241, 244, 247) | 65×28 @800,537"] || Ace no sign-in · Pilot · CAT A Archived 26 Nov 26 by Sa
+inputs buttons ["↶","↷","Insights","Logout","SABER · ADMIN","Inputs","SANS","Medical\n2\n1","‹","NOVEMBER 2026","›","Today","Calendar","List","How this works"]
+pressing Inputs
+ROW RECORD | F-S43 | desk chromium | Inputs: + Input, words typed, the window's ✕ → "Close it and lose them?" | saw: typed in a box: false; ✕ found: false; "" || []
+errors []
+errors []
+DONE 0 PASS 0 FAIL 5 OTHER of 5

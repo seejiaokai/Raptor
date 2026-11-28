@@ -1,0 +1,28 @@
+{
+ "pictures": [
+  {
+   "file": "A1-tap-bell-settled-phone.png",
+   "case": "A1tap",
+   "size": "phone 402x874 @3x",
+   "text": "A1-tap-bell"
+  },
+  {
+   "file": "A1-tap-line-settled-phone.png",
+   "case": "A1tap",
+   "size": "phone 402x874 @3x",
+   "text": "A1-tap-line"
+  }
+ ],
+ "cases": {
+  "A1tap": {
+   "log": [
+    "filed {\"type\":\"LL\",\"span\":\"all\"} on 2026-07-15: new input [\"imwujw1mjin504h\"]; asked [\"document\"]; note \"\"",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "picture A1-tap-bell-settled-phone.png: \"A1-tap-bell\"",
+    "picture A1-tap-line-settled-phone.png: \"A1-tap-line\"",
+    "RECORD phone: a tap on \"LL changed to OL\" opens the input's window, Inputs behind (RECORD) — {\"line\":\"OLWed 15 JulLL changed to OL · Sabernow\",\"window\":true,\"page\":\"inputs\",\"type\":\"OL\"}"
+   ]
+  }
+ },
+ "errors": []
+}

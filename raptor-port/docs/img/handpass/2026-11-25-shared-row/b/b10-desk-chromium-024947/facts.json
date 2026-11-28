@@ -1,0 +1,37 @@
+{
+ "pictures": [
+  {
+   "file": "b10b-desk-0-ground.png",
+   "case": "B10-b",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "before": "08:00"
+   }
+  },
+  {
+   "file": "b10b-desk-1-after.png",
+   "case": "B10-b",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "left": [
+     "Meeting Ranger+Hex 09:00-10:00 \"\" acc:g [imwvizp4quwex1g]"
+    ],
+    "shownNow": "09:00",
+    "note": ""
+   }
+  }
+ ],
+ "cases": {
+  "B10-b": {
+   "log": [
+    "filed {\"type\":\"Meeting\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\",\"title\":\"Sync\"} on 2026-07-15: new input [\"imwvizp4quwex1g\"]; asked []; note \"\"",
+    "filed [\"Meeting Ranger+Hex 08:00-10:00 \\\"\\\" acc:g [imwvizp4quwex1g]\"]",
+    "accept buttons [\"x:Reject\"]",
+    "accepted: note \"\" store [\"Meeting Ranger+Hex 08:00-10:00 \\\"\\\" acc:g [imwvizp4quwex1g]\"] ground key gr:2.2",
+    "picture b10b-desk-0-ground.png: {\"before\":\"08:00\"}",
+    "picture b10b-desk-1-after.png: {\"left\":[\"Meeting Ranger+Hex 09:00-10:00 \\\"\\\" acc:g [imwvizp4quwex1g]\"],\"shownNow\":\"09:00\",\"note\":\"\"}"
+   ]
+  }
+ },
+ "errors": []
+}

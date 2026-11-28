@@ -46,11 +46,11 @@ const login = (name: string, pass = 'x') => {
 }
 const plan = (di: number) => {
   const d: any = DAYS[di]
-  d.waves = []; d.sims = {}; d.dutywaves = []
-  d.notes = []; d.allhands = []
-  d.ground = [{
-    prog: 'BRIEFING', str: '1600', end: '1700', who: 'rocky',
-  }]
+  /* (planned = in a flying seat or a sim, his D2564 of 24 Nov 26: this put him on a ground briefing, which the first build
+     counted and his rule does not — an OFT's rear seat now; sans-planned-r5.test.ts) */
+  d.waves = []; d.dutywaves = []
+  d.notes = []; d.allhands = []; d.ground = []
+  d.sims = { oft: [{ label: 'SIM', str: '1600', end: '1700', p: '', w: 'rocky' }] }
   afterSchedMutate()
 }
 

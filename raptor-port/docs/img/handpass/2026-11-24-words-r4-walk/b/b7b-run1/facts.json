@@ -1,0 +1,173 @@
+{
+ "pictures": [
+  {
+   "file": "B7b-1-foot-top-phone.png",
+   "case": "B7b",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "(unread) Sim brief 12 Fri 24 Jul / You were added · Saber",
+    "(unread) Sim brief 11 Thu 23 Jul / You were added · Saber",
+    "(unread) Sim brief 10 Wed 22 Jul / You were added · Saber",
+    "(unread) Sim brief 9 Tue 21 Jul / You were added · Saber",
+    "(unread) Sim brief 8 Mon 20 Jul / You were added · Saber",
+    "(unread) Sim brief 7 Sun 19 Jul / You were added · Saber",
+    "(unread) Sim brief 6 Sat 18 Jul / You were added · Saber",
+    "(unread) Sim brief 5 Fri 17 Jul / You were added · Saber",
+    "(unread) Sim brief 4 Thu 16 Jul / You were added · Saber",
+    "(unread) Sim brief 3 Wed 15 Jul / You were added · Saber",
+    "(unread) Sim brief 2 Tue 14 Jul / You were added · Saber",
+    "(unread) Sim brief 1 Mon 13 Jul / You were added · Saber"
+   ]
+  },
+  {
+   "file": "B7b-2-foot-third-phone.png",
+   "case": "B7b",
+   "size": "phone 402x874 @3x",
+   "text": {
+    "counted": 2,
+    "foot": "↓ 2 more",
+    "scrollTop": 49,
+    "scrollMax": 147,
+    "listBottom": 566,
+    "screen": 874
+   }
+  },
+  {
+   "file": "B7b-2-foot-twothirds-phone.png",
+   "case": "B7b",
+   "size": "phone 402x874 @3x",
+   "text": {
+    "counted": 1,
+    "foot": "↓ 1 more",
+    "scrollTop": 98,
+    "scrollMax": 147,
+    "listBottom": 566,
+    "screen": 874
+   }
+  },
+  {
+   "file": "B7b-2-foot-end-phone.png",
+   "case": "B7b",
+   "size": "phone 402x874 @3x",
+   "text": {
+    "counted": 0,
+    "foot": null,
+    "scrollTop": 147,
+    "scrollMax": 147,
+    "listBottom": 566,
+    "screen": 874
+   }
+  },
+  {
+   "file": "B7b-1-foot-top-desk.png",
+   "case": "B7b",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "(unread) Sim brief 12 Fri 24 Jul / You were added · Saber",
+    "(unread) Sim brief 11 Thu 23 Jul / You were added · Saber",
+    "(unread) Sim brief 10 Wed 22 Jul / You were added · Saber",
+    "(unread) Sim brief 9 Tue 21 Jul / You were added · Saber",
+    "(unread) Sim brief 8 Mon 20 Jul / You were added · Saber",
+    "(unread) Sim brief 7 Sun 19 Jul / You were added · Saber",
+    "(unread) Sim brief 6 Sat 18 Jul / You were added · Saber",
+    "(unread) Sim brief 5 Fri 17 Jul / You were added · Saber",
+    "(unread) Sim brief 4 Thu 16 Jul / You were added · Saber",
+    "(unread) Sim brief 3 Wed 15 Jul / You were added · Saber",
+    "(unread) Sim brief 2 Tue 14 Jul / You were added · Saber",
+    "(unread) Sim brief 1 Mon 13 Jul / You were added · Saber"
+   ]
+  },
+  {
+   "file": "B7b-2-foot-third-desk.png",
+   "case": "B7b",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "counted": 2,
+    "foot": "↓ 2 more",
+    "scrollTop": 49,
+    "scrollMax": 147,
+    "listBottom": 570,
+    "screen": 900
+   }
+  },
+  {
+   "file": "B7b-2-foot-twothirds-desk.png",
+   "case": "B7b",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "counted": 1,
+    "foot": "↓ 1 more",
+    "scrollTop": 98,
+    "scrollMax": 147,
+    "listBottom": 570,
+    "screen": 900
+   }
+  },
+  {
+   "file": "B7b-2-foot-end-desk.png",
+   "case": "B7b",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "counted": 0,
+    "foot": null,
+    "scrollTop": 147,
+    "scrollMax": 147,
+    "listBottom": 570,
+    "screen": 900
+   }
+  },
+  {
+   "file": "B7b-3-saber-topbar-desk.png",
+   "case": "B7b",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "(unread) Meeting Wed 15 Jul / Training changed to Meeting, remark changed · Ranger",
+    "(unread) Training Wed 15 Jul / You were added · Ranger"
+   ]
+  }
+ ],
+ "cases": {
+  "B7b": {
+   "log": [
+    "bundle: index-2uyEcUJu.js",
+    "Saber id: stiff",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"14:00\",\"to\":\"15:00\",\"title\":\"Sim brief 1\",\"remarks\":\"\"} on 2026-07-13: new input [\"imwujsmwmdixdu2\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"14:00\",\"to\":\"15:00\",\"title\":\"Sim brief 2\",\"remarks\":\"\"} on 2026-07-14: new input [\"imwujsowceucz7s\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"14:00\",\"to\":\"15:00\",\"title\":\"Sim brief 3\",\"remarks\":\"\"} on 2026-07-15: new input [\"imwujsqvoe37t6n\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"14:00\",\"to\":\"15:00\",\"title\":\"Sim brief 4\",\"remarks\":\"\"} on 2026-07-16: new input [\"imwujssvdaxh8ol\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"14:00\",\"to\":\"15:00\",\"title\":\"Sim brief 5\",\"remarks\":\"\"} on 2026-07-17: new input [\"imwujsuu6fjgb7s\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"14:00\",\"to\":\"15:00\",\"title\":\"Sim brief 6\",\"remarks\":\"\"} on 2026-07-18: new input [\"imwujsxj1u9bg4y\"]; asked [\"oil\"]; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"14:00\",\"to\":\"15:00\",\"title\":\"Sim brief 7\",\"remarks\":\"\"} on 2026-07-19: new input [\"imwujt079d7mtpk\"]; asked [\"oil\"]; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"14:00\",\"to\":\"15:00\",\"title\":\"Sim brief 8\",\"remarks\":\"\"} on 2026-07-20: new input [\"imwujt26ic2y59k\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"14:00\",\"to\":\"15:00\",\"title\":\"Sim brief 9\",\"remarks\":\"\"} on 2026-07-21: new input [\"imwujt45dgk9fot\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"14:00\",\"to\":\"15:00\",\"title\":\"Sim brief 10\",\"remarks\":\"\"} on 2026-07-22: new input [\"imwujt64712yfw3\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"14:00\",\"to\":\"15:00\",\"title\":\"Sim brief 11\",\"remarks\":\"\"} on 2026-07-23: new input [\"imwujt82lcybkbr\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"14:00\",\"to\":\"15:00\",\"title\":\"Sim brief 12\",\"remarks\":\"\"} on 2026-07-24: new input [\"imwujta0xszsx3r\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"stiff\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Training\",\"remarks\":\"Kit\"} on 2026-07-15: new input [\"imwujtg3ksbafex\"]; asked []; note \"\"",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "picture B7b-1-foot-top-phone.png: [\"(unread) Sim brief 12 Fri 24 Jul / You were added · Saber\",\"(unread) Sim brief 11 Thu 23 Jul / You were added · Saber\",\"(unread) Sim brief 10 Wed 22 Jul / You were added · Saber\",\"(unread) Sim brief 9 Tue 21 Jul / You were added · Saber\",\"(unread) Sim brief 8 Mon 20 Jul / You were added · Saber\",\"(unread) Sim brief 7 Sun 19 Jul / You were added · Saber\",\"(unread) Sim brief 6 Sat 18 Jul / You were added · Saber\",\"(unread) Sim brief 5 Fri 17 Jul / You were added · Saber\",\"(unread) Sim brief 4 Thu 16 Jul / You were added · Saber\",\"(unread) Sim brief 3 Wed 15 Jul / You were added · Saber\",\"(unread) Sim brief 2 Tue 14 Jul / You were added · Saber\",\"(unread) Sim brief 1 Mon 13 Jul / You were added · Saber\"]",
+    "picture B7b-2-foot-third-phone.png: {\"counted\":2,\"foot\":\"↓ 2 more\",\"scrollTop\":49,\"scrollMax\":147,\"listBottom\":566,\"screen\":874}",
+    "picture B7b-2-foot-twothirds-phone.png: {\"counted\":1,\"foot\":\"↓ 1 more\",\"scrollTop\":98,\"scrollMax\":147,\"listBottom\":566,\"screen\":874}",
+    "picture B7b-2-foot-end-phone.png: {\"counted\":0,\"foot\":null,\"scrollTop\":147,\"scrollMax\":147,\"listBottom\":566,\"screen\":874}",
+    "phone top: scroll 0/147; lines below counted 3; foot says \"↓ 3 more\"; MATCH",
+    "phone third: scroll 49/147; lines below counted 2; foot says \"↓ 2 more\"; MATCH",
+    "phone twothirds: scroll 98/147; lines below counted 1; foot says \"↓ 1 more\"; MATCH",
+    "phone end: scroll 147/147; lines below counted 0; foot says null; MATCH (no foot, none below)",
+    "picture B7b-1-foot-top-desk.png: [\"(unread) Sim brief 12 Fri 24 Jul / You were added · Saber\",\"(unread) Sim brief 11 Thu 23 Jul / You were added · Saber\",\"(unread) Sim brief 10 Wed 22 Jul / You were added · Saber\",\"(unread) Sim brief 9 Tue 21 Jul / You were added · Saber\",\"(unread) Sim brief 8 Mon 20 Jul / You were added · Saber\",\"(unread) Sim brief 7 Sun 19 Jul / You were added · Saber\",\"(unread) Sim brief 6 Sat 18 Jul / You were added · Saber\",\"(unread) Sim brief 5 Fri 17 Jul / You were added · Saber\",\"(unread) Sim brief 4 Thu 16 Jul / You were added · Saber\",\"(unread) Sim brief 3 Wed 15 Jul / You were added · Saber\",\"(unread) Sim brief 2 Tue 14 Jul / You were added · Saber\",\"(unread) Sim brief 1 Mon 13 Jul / You were added · Saber\"]",
+    "picture B7b-2-foot-third-desk.png: {\"counted\":2,\"foot\":\"↓ 2 more\",\"scrollTop\":49,\"scrollMax\":147,\"listBottom\":570,\"screen\":900}",
+    "picture B7b-2-foot-twothirds-desk.png: {\"counted\":1,\"foot\":\"↓ 1 more\",\"scrollTop\":98,\"scrollMax\":147,\"listBottom\":570,\"screen\":900}",
+    "picture B7b-2-foot-end-desk.png: {\"counted\":0,\"foot\":null,\"scrollTop\":147,\"scrollMax\":147,\"listBottom\":570,\"screen\":900}",
+    "desk top: scroll 0/147; lines below counted 3; foot says \"↓ 3 more\"; MATCH",
+    "desk third: scroll 49/147; lines below counted 2; foot says \"↓ 2 more\"; MATCH",
+    "desk twothirds: scroll 98/147; lines below counted 1; foot says \"↓ 1 more\"; MATCH",
+    "desk end: scroll 147/147; lines below counted 0; foot says null; MATCH (no foot, none below)",
+    "Saber top bar: [\"(unread) Meeting Wed 15 Jul / Training changed to Meeting, remark changed · Ranger\",\"(unread) Training Wed 15 Jul / You were added · Ranger\"] note \"\"",
+    "picture B7b-3-saber-topbar-desk.png: [\"(unread) Meeting Wed 15 Jul / Training changed to Meeting, remark changed · Ranger\",\"(unread) Training Wed 15 Jul / You were added · Ranger\"]",
+    "ERROR page.waitForSelector: Timeout 8000ms exceeded."
+   ]
+  }
+ },
+ "errors": [
+  "B7b: page.waitForSelector: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#schedBoard') to be visible\u001b[22m\n\u001b[2m    19 × locator resolved to hidden <div hidden=\"\" id=\"schedBoard\" data-kblayer=\"\" class=\"schedboard\">…</div>\u001b[22m\n\n    at C:\\Users\\User\\projects\\Raptor-words\\raptor-port\\scripts\\handpass\\wr4-b-7b.mjs:75:70"
+ ]
+}

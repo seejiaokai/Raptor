@@ -1,0 +1,27 @@
+msq-s4w-lib v1 who=host run=r0 port=4753
+host-r0 v1
+desk-chromium cell {"x":1166,"y":485,"w":27,"h":22}
+desk-chromium bid window 1
+desk-chromium sheet text: Cinch Post out ✕ POSTING ✓ Overseas Sqn Delete SANS PO FROM Mon 14 Dec 26 ▾ On 14 Dec: archived. Post out
+desk-chromium cell after {"x":1166,"y":485,"w":27,"h":22} sheet {"x":440,"y":604,"w":560,"h":282}
+ROW PASS | host-r0 | desk-chromium | day → ⋯ → Post out | saw: Cinch Post out ✕ POSTING ✓ Overseas Sqn Delete SANS PO FROM Mon 14 Dec 26 ▾ On 14 Dec: archived. Post out
+desk-chromium errors []
+phone-webkit cell {"x":364,"y":371,"w":21,"h":18}
+phone-webkit bid window 1
+phone-webkit sheet text: Cinch Post out ✕ POSTING ✓ Overseas Sqn Delete SANS PO FROM Mon 14 Dec 26 ▾ On 14 Dec: archived. Post out
+phone-webkit cell after {"x":364,"y":371,"w":21,"h":18} sheet {"x":12,"y":552,"w":378,"h":308}
+ROW PASS | host-r0 | phone-webkit | day → ⋯ → Post out | saw: Cinch Post out ✕ POSTING ✓ Overseas Sqn Delete SANS PO FROM Mon 14 Dec 26 ▾ On 14 Dec: archived. Post out
+phone-webkit errors []
+phone-chromium cell {"x":363,"y":369,"w":22,"h":18}
+phone-chromium bid window 1
+phone-chromium sheet text: Cinch Post out ✕ POSTING ✓ Overseas Sqn Delete SANS PO FROM Mon 14 Dec 26 ▾ On 14 Dec: archived. Post out
+phone-chromium cell after {"x":363,"y":369,"w":22,"h":18} sheet {"x":12,"y":542,"w":378,"h":318}
+ROW PASS | host-r0 | phone-chromium | day → ⋯ → Post out | saw: Cinch Post out ✕ POSTING ✓ Overseas Sqn Delete SANS PO FROM Mon 14 Dec 26 ▾ On 14 Dec: archived. Post out
+phone-chromium errors []
+desk-chromium-main cell {"x":1126,"y":485,"w":27,"h":22}
+desk-chromium-main bid window 1
+desk-chromium-main sheet text: Cinch Mon 14 Dec Auto-approve ✕ No manning row turns amber or red till 14 Dec Document Whole day AM PM Pick a range LL 22.5 OL 22.5 OIL −1 CCL 2 FCL −1 PL −1 EL −1 CL −1 PO FROM Mon 14 Dec 26 ▾ POSTING ✓ Overseas Sqn Delete SANS Transfer to Sqn On 14 Dec: archived. Post out
+desk-chromium-main cell after {"x":1126,"y":485,"w":27,"h":22} sheet {"x":440,"y":482,"w":560,"h":404}
+ROW PASS | host-r0 | desk-chromium-main | day → ⋯ → Post out | saw: Cinch Mon 14 Dec Auto-approve ✕ No manning row turns amber or red till 14 Dec Document Whole day AM PM Pick a range LL 2
+desk-chromium-main errors []
+host-r0 done

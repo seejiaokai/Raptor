@@ -1,0 +1,92 @@
+{
+ "pictures": [
+  {
+   "file": "b1-phone-chromium-0-filed.png",
+   "case": "B1",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "Ranger 08:00-10:00 \"\" [imwvi4o09d77nxm~bane]",
+    "Hex 08:00-10:00 \"\" [imwvi4o09d77nxm~rocky]"
+   ]
+  },
+  {
+   "file": "b1-phone-chromium-1a-lift.png",
+   "case": "B1",
+   "size": "phone 402x874 @3x",
+   "text": "within 100ms of the lift"
+  },
+  {
+   "file": "b1-phone-chromium-1-str.png",
+   "case": "B1",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "Ranger 09:00-10:00 \"\" [imwvi4o09d77nxm~bane]",
+    "Hex 08:00-10:00 \"\" [imwvi4o09d77nxm~rocky]"
+   ]
+  },
+  {
+   "file": "b1-phone-chromium-2a-lift.png",
+   "case": "B1",
+   "size": "phone 402x874 @3x",
+   "text": "within 100ms of the lift"
+  },
+  {
+   "file": "b1-phone-chromium-2-end.png",
+   "case": "B1",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "Ranger 09:00-11:00 \"\" [imwvi4o09d77nxm~bane]",
+    "Hex 08:00-10:00 \"\" [imwvi4o09d77nxm~rocky]"
+   ]
+  },
+  {
+   "file": "b1-phone-chromium-3-rmks.png",
+   "case": "B1",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "Ranger 09:00-11:00 \"own hours\" [imwvi4o09d77nxm~bane]",
+    "Hex 08:00-10:00 \"\" [imwvi4o09d77nxm~rocky]"
+   ]
+  },
+  {
+   "file": "b1-phone-chromium-4-left.png",
+   "case": "B1",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "Hex 08:00-10:00 \"\" [imwvi4o09d77nxm]",
+    "Ranger 09:00-11:00 \"own hours\" [imwvi4r0edtdkkd]"
+   ]
+  },
+  {
+   "file": "b1-phone-chromium-5-reload.png",
+   "case": "B1",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "Hex 08:00-10:00 \"\" [imwvi4o09d77nxm]",
+    "Ranger 09:00-11:00 \"own hours\" [imwvi4r0edtdkkd]"
+   ]
+  }
+ ],
+ "cases": {
+  "B1": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvi4o09d77nxm\"]; asked []; note \"\"",
+    "filed :: STORE [\"LL Ranger+Hex 08:00-10:00 \\\"\\\" [imwvi4o09d77nxm]\"] :: SCREEN [\"Ranger 08:00-10:00 \\\"\\\" [imwvi4o09d77nxm~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvi4o09d77nxm~rocky]\"] :: CARET BODY",
+    "picture b1-phone-chromium-0-filed.png: [\"Ranger 08:00-10:00 \\\"\\\" [imwvi4o09d77nxm~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvi4o09d77nxm~rocky]\"]",
+    "picture b1-phone-chromium-1a-lift.png: \"within 100ms of the lift\"",
+    "str 0900, tap next box (typed in imwvi4o09d77nxm~bane.str) :: STORE [\"LL Hex 08:00-10:00 \\\"\\\" [imwvi4o09d77nxm]\",\"LL Ranger 09:00-10:00 \\\"\\\" [imwvi4r0edtdkkd]\"] :: SCREEN [\"Ranger 09:00-10:00 \\\"\\\" [imwvi4o09d77nxm~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvi4o09d77nxm~rocky]\"] :: CARET imwvi4o09d77nxm~bane.end",
+    "picture b1-phone-chromium-1-str.png: [\"Ranger 09:00-10:00 \\\"\\\" [imwvi4o09d77nxm~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvi4o09d77nxm~rocky]\"]",
+    "picture b1-phone-chromium-2a-lift.png: \"within 100ms of the lift\"",
+    "end 1100, tap next box (typed in imwvi4o09d77nxm~bane.end) :: STORE [\"LL Hex 08:00-10:00 \\\"\\\" [imwvi4o09d77nxm]\",\"LL Ranger 09:00-11:00 \\\"\\\" [imwvi4r0edtdkkd]\"] :: SCREEN [\"Ranger 09:00-11:00 \\\"\\\" [imwvi4o09d77nxm~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvi4o09d77nxm~rocky]\"] :: CARET imwvi4o09d77nxm~bane.rmks",
+    "picture b1-phone-chromium-2-end.png: [\"Ranger 09:00-11:00 \\\"\\\" [imwvi4o09d77nxm~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvi4o09d77nxm~rocky]\"]",
+    "rmks own hours, Tab (typed in imwvi4o09d77nxm~bane.rmks) :: STORE [\"LL Hex 08:00-10:00 \\\"\\\" [imwvi4o09d77nxm]\",\"LL Ranger 09:00-11:00 \\\"own hours\\\" [imwvi4r0edtdkkd]\"] :: SCREEN [\"Ranger 09:00-11:00 \\\"own hours\\\" [imwvi4o09d77nxm~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvi4o09d77nxm~rocky]\"] :: CARET imwvi4o09d77nxm~rocky.str",
+    "picture b1-phone-chromium-3-rmks.png: [\"Ranger 09:00-11:00 \\\"own hours\\\" [imwvi4o09d77nxm~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvi4o09d77nxm~rocky]\"]",
+    "caret left (pressed DIV.dsec) :: STORE [\"LL Hex 08:00-10:00 \\\"\\\" [imwvi4o09d77nxm]\",\"LL Ranger 09:00-11:00 \\\"own hours\\\" [imwvi4r0edtdkkd]\"] :: SCREEN [\"Hex 08:00-10:00 \\\"\\\" [imwvi4o09d77nxm]\",\"Ranger 09:00-11:00 \\\"own hours\\\" [imwvi4r0edtdkkd]\"] :: CARET BODY",
+    "picture b1-phone-chromium-4-left.png: [\"Hex 08:00-10:00 \\\"\\\" [imwvi4o09d77nxm]\",\"Ranger 09:00-11:00 \\\"own hours\\\" [imwvi4r0edtdkkd]\"]",
+    "after reload :: STORE [\"LL Hex 08:00-10:00 \\\"\\\" [imwvi4o09d77nxm]\",\"LL Ranger 09:00-11:00 \\\"own hours\\\" [imwvi4r0edtdkkd]\"] :: SCREEN [\"Hex 08:00-10:00 \\\"\\\" [imwvi4o09d77nxm]\",\"Ranger 09:00-11:00 \\\"own hours\\\" [imwvi4r0edtdkkd]\"] :: CARET BODY",
+    "picture b1-phone-chromium-5-reload.png: [\"Hex 08:00-10:00 \\\"\\\" [imwvi4o09d77nxm]\",\"Ranger 09:00-11:00 \\\"own hours\\\" [imwvi4r0edtdkkd]\"]"
+   ]
+  }
+ },
+ "errors": []
+}

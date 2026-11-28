@@ -226,3 +226,17 @@ fs.writeFileSync(${JSON.stringify(pids)}, process.pid + ' ' + c.pid); setInterva
     done(dir);
   }
 });
+
+// his D2752 (26 Nov 26): "could not read main's side" on pull request 850 was the tool's own file limit — the branch's
+// scan skipped a check, so no comparison ran. The message names every skipped-check reason the report gives.
+test('a degraded report names the reason a check was skipped', () => {
+  const r = read({ mode: 'diff', baselineDegraded: true, projects: [{ skippedChecks: ['dead-code'],
+    skippedCheckReasons: { 'dead-code': 'Maintainability analysis was incomplete: source-file-limit (5017 observed, limit 5000).' } }] }, 'origin/main');
+  assert.equal(r.status, 'error');
+  assert.match(r.reason, /could not read origin\/main's side/);
+  assert.match(r.reason, /dead-code: Maintainability analysis was incomplete: source-file-limit \(5017 observed, limit 5000\)/);
+});
+test('a degraded report with no reason given reads as before', () => {
+  const r = read({ mode: 'diff', baselineDegraded: true, projects: [{}] }, 'origin/main');
+  assert.equal(r.reason, "React Doctor could not read origin/main's side, so it compared nothing (its own pass/fail is switched off then)");
+});

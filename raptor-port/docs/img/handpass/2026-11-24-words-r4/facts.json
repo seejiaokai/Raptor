@@ -1,0 +1,317 @@
+{
+ "pictures": [
+  {
+   "file": "q1-phone-bell-today.png",
+   "case": "q1",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "OL Wed 15 Jul / Renamed — was LL · Saber"
+   ],
+   "line": "OL Wed 15 Jul / Renamed — was LL · Saber",
+   "fit": [
+    {
+     "what": "Renamed — was LL · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "q1-phone-bell-after.png",
+   "case": "q1",
+   "size": "phone 402x874 @3x",
+   "text": "LL changed to OL · Saber",
+   "swappedFrom": "Renamed — was LL · Saber",
+   "fit": [
+    {
+     "what": "LL changed to OL · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "q2-phone-bell-today.png",
+   "case": "q2",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "LL Wed 15 Jul / Now 00:00–12:00 am · Saber"
+   ],
+   "line": "LL Wed 15 Jul / Now 00:00–12:00 am · Saber",
+   "fit": [
+    {
+     "what": "Now 00:00–12:00 am · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "q2-phone-bell-after.png",
+   "case": "q2",
+   "size": "phone 402x874 @3x",
+   "text": "Now LL (AM) · Saber",
+   "swappedFrom": "Now 00:00–12:00 am · Saber",
+   "fit": [
+    {
+     "what": "Now LL (AM) · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "q3-phone-bell-today.png",
+   "case": "q3",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "Range brief Thu 16 Jul / Now Thu 16 Jul, Renamed — was Training · Saber",
+    "Training Wed 15 Jul / You were added · Saber"
+   ],
+   "line": "Range brief Thu 16 Jul / Now Thu 16 Jul, Renamed — was Training · Saber",
+   "fit": [
+    {
+     "what": "Now Thu 16 Jul, Renamed — was Training · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "q3-phone-bell-after-a.png",
+   "case": "q3",
+   "size": "phone 402x874 @3x",
+   "text": "Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber",
+   "swappedFrom": "Now Thu 16 Jul, Renamed — was Training · Saber",
+   "fit": [
+    {
+     "what": "Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber",
+     "lines": 2,
+     "fitsOneLine": false,
+     "boxWidth": 307,
+     "height": 34,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "q3-phone-bell-after-b.png",
+   "case": "q3",
+   "size": "phone 402x874 @3x",
+   "text": "Now Thu 16 Jul, renamed — was Training, remark changed · Saber",
+   "swappedFrom": "Now Thu 16 Jul, Renamed — was Training · Saber",
+   "fit": [
+    {
+     "what": "Now Thu 16 Jul, renamed — was Training, remark changed · Saber",
+     "lines": 2,
+     "fitsOneLine": false,
+     "boxWidth": 307,
+     "height": 34,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "q4a-1-schedule-time-today.png",
+   "case": "q4a",
+   "size": "desktop 1440x900 @2x",
+   "text": "2560 is not a time. Try 0900 or 09:00."
+  },
+  {
+   "file": "q4a-2-input-time-today.png",
+   "case": "q4a",
+   "size": "desktop 1440x900 @2x",
+   "text": "That is not a time — try 0900 or 09:00"
+  },
+  {
+   "file": "q4a-2-input-time-after.png",
+   "case": "q4a",
+   "size": "desktop 1440x900 @2x",
+   "text": "2560 is not a time. Try 0900 or 09:00.",
+   "swappedFrom": "That is not a time — try 0900 or 09:00"
+  },
+  {
+   "file": "q4b-1-tap-today.png",
+   "case": "q4b",
+   "size": "desktop 1440x900 @2x",
+   "text": "ALL AVAIL — already in that seat"
+  },
+  {
+   "file": "q4b-2-drag-today.png",
+   "case": "q4b",
+   "size": "desktop 1440x900 @2x",
+   "text": "Already in that seat"
+  },
+  {
+   "file": "q4b-2-drag-after.png",
+   "case": "q4b",
+   "size": "desktop 1440x900 @2x",
+   "text": "Ranger — already in that seat",
+   "swappedFrom": "Already in that seat"
+  },
+  {
+   "file": "s2-0-plant-note-today.png",
+   "case": "s2",
+   "size": "desktop 1440x900 @2x",
+   "text": "No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War."
+  },
+  {
+   "file": "s2-no-period-today.png",
+   "case": "s2",
+   "size": "desktop 1440x900 @2x",
+   "text": "Saturday published and approved · there is no leave war period for 2028, so no OIL can be earned for this day — create the period on the Leave War"
+  },
+  {
+   "file": "s2-no-period-after.png",
+   "case": "s2",
+   "size": "desktop 1440x900 @2x",
+   "text": "Saturday published and approved · No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.",
+   "swappedFrom": "Saturday published and approved · there is no leave war period for 2028, so no OIL can be earned for this day — create the period on the Leave War"
+  },
+  {
+   "file": "s1-lookahead-today.png",
+   "case": "s1",
+   "size": "desktop 1440x900 @2x",
+   "text": "Everyone now opens on next 4 weeks, to sunday"
+  },
+  {
+   "file": "s1-lookahead-after.png",
+   "case": "s1",
+   "size": "desktop 1440x900 @2x",
+   "text": "Everyone now opens on the next 4 weeks, to Sunday",
+   "swappedFrom": "Everyone now opens on next 4 weeks, to sunday"
+  }
+ ],
+ "cases": {
+  "q1": {
+   "log": [
+    "filed {\"type\":\"LL\",\"span\":\"all\",\"remarks\":\"Local leave\"} on 2026-07-15: new input [\"imwufw2wcyosup5\"]; asked [\"document\"]; note \"\"",
+    "Ranger's LL as saved: {\"type\":\"LL\",\"date\":\"Jul 15\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"Local leave\",\"people\":[\"bane\"]}",
+    "type options: [\"LL\",\"OL\",\"OIL\",\"CCL\",\"PL\",\"FCL\",\"EL\",\"CL\",\"HL\",\"OML\",\"ATT C\",\"ATT B\",\"Upchit\",\"Training\",\"CSE\",\"Meeting\",\"Attach\",\"Personal\",\"Appointment\",\"Duty\",\"Event\",\"OD\",\"Other\"]",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "after Saber's save: {\"type\":\"OL\",\"date\":\"Jul 15\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"Local leave\",\"people\":[\"bane\"]}",
+    "notices to Ranger in store: [{\"name\":\"OL\",\"day\":\"2026-07-15\",\"what\":[{\"k\":\"title\",\"was\":\"LL\"}]}]",
+    "Ranger's bell, as the app prints it: [\"OL Wed 15 Jul / Renamed — was LL · Saber\"]",
+    "picture q1-phone-bell-today.png: [\"OL Wed 15 Jul / Renamed — was LL · Saber\"]",
+    "picture q1-phone-bell-after.png: \"LL changed to OL · Saber\""
+   ],
+   "asDrafted": true
+  },
+  "q2": {
+   "log": [
+    "filed {\"type\":\"LL\",\"span\":\"all\",\"remarks\":\"Local leave\"} on 2026-07-15: new input [\"imwufwhacy2e4gz\"]; asked [\"document\"]; note \"\"",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "after Saber's save: {\"type\":\"LL\",\"date\":\"Jul 15\",\"allday\":false,\"half\":\"am\",\"s\":0,\"e\":720,\"cx\":false,\"remarks\":\"Local leave\",\"people\":[\"bane\"]}",
+    "Ranger's bell, as the app prints it: [\"LL Wed 15 Jul / Now 00:00–12:00 am · Saber\"]",
+    "picture q2-phone-bell-today.png: [\"LL Wed 15 Jul / Now 00:00–12:00 am · Saber\"]",
+    "picture q2-phone-bell-after.png: \"Now LL (AM) · Saber\""
+   ],
+   "asDrafted": true
+  },
+  "q3": {
+   "log": [
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Training\",\"remarks\":\"Bring your kit\"} on 2026-07-15: new input [\"imwufwwa6tjivgn\"]; asked []; note \"\"",
+    "filed: {\"type\":\"Training\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"Bring your kit\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "the window's dates now read: \"Jul 16\"",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "after the one save: {\"type\":\"Training\",\"title\":\"Range brief\",\"date\":\"Jul 16\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"Bring water\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "notices to Ranger in store: [{\"name\":\"Training\",\"day\":\"2026-07-15\",\"what\":[{\"k\":\"in\"}]},{\"name\":\"Range brief\",\"day\":\"2026-07-16\",\"what\":[{\"k\":\"when\",\"a\":\"2026-07-16\",\"b\":\"2026-07-16\"},{\"k\":\"title\",\"was\":\"Training\"},{\"k\":\"rmk\"}]}]",
+    "Ranger's bell, as the app prints it: [\"Range brief Thu 16 Jul / Now Thu 16 Jul, Renamed — was Training · Saber\",\"Training Wed 15 Jul / You were added · Saber\"]",
+    "picture q3-phone-bell-today.png: [\"Range brief Thu 16 Jul / Now Thu 16 Jul, Renamed — was Training · Saber\",\"Training Wed 15 Jul / You were added · Saber\"]",
+    "picture q3-phone-bell-after-a.png: \"Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\"",
+    "picture q3-phone-bell-after-b.png: \"Now Thu 16 Jul, renamed — was Training, remark changed · Saber\""
+   ],
+   "asPredicted": true
+  },
+  "q4a": {
+   "log": [
+    "the schedule's time box: {\"key\":\"ff:0.0.0.to\",\"was\":\"12:40\"}",
+    "picture q4a-1-schedule-time-today.png: \"2560 is not a time. Try 0900 or 09:00.\"",
+    "an input's start-time cell: {\"key\":\"imwufx35uud8pde.str\",\"was\":\"\",\"tag\":\"SPAN\"}",
+    "picture q4a-2-input-time-today.png: \"That is not a time — try 0900 or 09:00\"",
+    "picture q4a-2-input-time-after.png: \"2560 is not a time. Try 0900 or 09:00.\""
+   ]
+  },
+  "q4b": {
+   "log": [
+    "an empty seat on Monday's board: \"s:0.amt.1.pax.8\"",
+    "armed: \"s:0.amt.1.pax.8\"",
+    "planted Anvil: the seat holds \"shaft\"; still armed: null; note \"Anvil planned\"",
+    "a tap on his seat again — armed: null",
+    "NOT REACHED (tap, a real man): once he is in it, his seat cannot be armed again by a tap — the placeholder route (the code's own comment, state/view.ts placeArmed) instead",
+    "an empty seat \"s:0.amt.1.pax.9\", a placeholder in the crew list \"allavail\"",
+    "placeholder put: the seat holds \"allavail\"; note \"ALL AVAIL planned\"",
+    "its seat tapped — armed: \"s:0.amt.1.pax.9\"",
+    "picture q4b-1-tap-today.png: \"ALL AVAIL — already in that seat\"",
+    "the seat for the drag: {\"key\":\"0.0.0.1.p\",\"id\":\"bane\",\"cs\":\"Ranger\"}",
+    "picture q4b-2-drag-today.png: \"Already in that seat\"",
+    "picture q4b-2-drag-after.png: \"Ranger — already in that seat\""
+   ]
+  },
+  "q4c": {
+   "log": [
+    "NOT REACHABLE through the screen: the OIL list window closes itself and draws nothing for a non-admin (the same test as its Save)"
+   ]
+  },
+  "s1": {
+   "log": [
+    "the setting as it stands: 2 weeks, to Sunday: false",
+    "picture s1-lookahead-today.png: \"Everyone now opens on next 4 weeks, to sunday\"",
+    "picture s1-lookahead-after.png: \"Everyone now opens on the next 4 weeks, to Sunday\""
+   ]
+  },
+  "s2": {
+   "log": [
+    "the week loaded: [\"0:Monday Jan 31\",\"1:Tuesday Feb 1\",\"2:Wednesday Feb 2\",\"3:Thursday Feb 3\",\"4:Friday Feb 4\",\"5:Saturday Feb 5\",\"6:Sunday Feb 6\"]",
+    "the Saturday is empty; \"+ Item\" there: 1",
+    "the Saturday's ground now: [{\"prog\":\"\",\"str\":\"08:00\",\"end\":\"16:00\",\"who\":\"\",\"rid\":\"rmwufxtyaziiimu\"}]",
+    "an empty place on the Saturday: \"g:5.0.+\"",
+    "picture s2-0-plant-note-today.png: \"No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.\"",
+    "put dj on g:5.0.+: the place now holds \"dj\"; note \"No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.\"",
+    "signed: {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}",
+    "picture s2-no-period-today.png: \"Saturday published and approved · there is no leave war period for 2028, so no OIL can be earned for this day — create the period on the Leave War\"",
+    "picture s2-no-period-after.png: \"Saturday published and approved · No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.\""
+   ]
+  }
+ },
+ "errors": []
+}

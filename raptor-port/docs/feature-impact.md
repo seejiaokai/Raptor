@@ -1177,7 +1177,16 @@ truth: a flying spare would be standing by on one screen and flying on another. 
   "N SANS offering" count. Change what a status means, or add a fourth
   domain, and check all of them; a badge or a grey-out reader that stops
   calling `sansGate`/`sansBadge` and starts reading the record itself is a
-  new drift-seam the moment it happens. The record now carries ordinary
+  new drift-seam the moment it happens. **A fourth reader of the same
+  question (24 Nov 26, his D2564):** the SANS man's own bell reminder
+  (`leavewar/sansunfiled.ts`) lists the days he is in a flying seat or a sim
+  with nothing filed. It reads saved weeks that are not loaded, so it cannot
+  ask through `slotBar` or `validate()`; it asks `avail.ts daySansSeats`, the
+  same places as a function of the day alone. It once read `dayEngaged`
+  (every row he is busy on) and so counted ground rows, duty desks and all
+  hands — the drift this line warns of. Change which seats the gate judges
+  (a new domain, a new exempt kind) and change `daySansSeats` with it;
+  `leavewar/sans-planned-r5.test.ts` fails when the three disagree. The record now carries ordinary
   top-level `s`/`e`/`half` — the exclusion from the absence/clash machinery
   is TYPE-based (`inpShow`, `isAway`), pinned by `sansavail.test.ts`'s leak
   guard; any new consumer of input times must decide whether SANS rows

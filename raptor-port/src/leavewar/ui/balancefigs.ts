@@ -8,6 +8,8 @@ import { balanceProblem, leaveFiguresOf, setTypedBalance } from '../state/store'
  *  red "no entry" sign — never "Not saved", the failed-save band's alone; the box's other refusals ("Type a whole number…")
  *  stay red tags (BalancesPage.tsx ErrWords) */
 export const BLOCKED = 'Blocked'
+/** carried forward typed while the Official bal box is still empty (D2746) — a box refusal, the red tag under the box */
+export const CF_FIRST = 'Type the Official bal first'
 
 /** a figure as the page writes it — the app's one helper (figwords.ts) */
 export { figWords } from './figwords'
@@ -19,6 +21,10 @@ export { figWords } from './figwords'
 export function saveTypedFigure(pid: string, kind: BalKind, n: number, part?: 'cf'): string | null {
   const k = leaveFiguresOf(pid).kinds[kind]
   if (kind === 'LVE') {
+    /* CARRIED FORWARD BEFORE ANY FIGURE (D2746): both boxes stand empty until a figure is typed, and carried forward is a
+       part of that figure — saved alone it would make the 0 counted underneath his typed figure, the very "0" the ruling
+       took off the screen. So it waits, and says what comes first */
+    if (part === 'cf' && k.notTyped) return CF_FIRST
     const amount = part === 'cf' ? k.app : n
     /* the carried-forward box typed past its bounds is CLAMPED to 0 … the figure (the spec §1.1), never refused — walker D's
        FAIL 7, 29 Oct 26: "25" beside an App bal of 20 was refused "Carried forward is from 0 to 20"; it saves 20, and the
@@ -26,7 +32,11 @@ export function saveTypedFigure(pid: string, kind: BalKind, n: number, part?: 'c
        clamp that lands on the figure already shown saves nothing, as a figure typed equal to it does (FigBox) */
     /* only a half is clamped (the fresh read of the fixes, finding 4): clamped first, "25.3" became 20 and saved, nothing said */
     const half = Number.isFinite(n) && Number.isInteger(n * 2)
-    const cf = part === 'cf' ? (half ? Math.max(0, Math.min(n, Math.max(amount, 0))) : n) : Math.max(0, Math.min(k.cf, Math.max(n, 0)))
+    /* a FIRST figure typed into the empty box carries nothing forward (the fresh Opus code read's F1, 27 Nov 26): the
+       carried-forward box stood empty too, and the cf counted underneath "Not typed" is no figure (D2746) — kept, it saved a
+       first 20 as "20 incl. 20", wiped as carried-forward days on the next 1 Jan */
+    const shownCf = k.notTyped ? 0 : k.cf
+    const cf = part === 'cf' ? (half ? Math.max(0, Math.min(n, Math.max(amount, 0))) : n) : Math.max(0, Math.min(shownCf, Math.max(n, 0)))
     if (part === 'cf' && cf === k.cf) return null
     const why = balanceProblem(pid, 'LVE', amount, cf)
     if (why) return why

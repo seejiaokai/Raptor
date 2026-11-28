@@ -1,0 +1,20 @@
+{
+ "pictures": [],
+ "cases": {
+  "phone-webkit": {
+   "log": [
+    "bundle index-CHEKfrl-.js",
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvh0z6ryu1jln\"]; asked []; note \"\""
+   ]
+  }
+ },
+ "errors": [],
+ "results": [
+  [
+   "W3 phone-webkit Ranger's row of the shared leave: 0900, 1100, \"own hours\" — Ranger 09:00–11:00 \"own hours\" on an input of his own; Hex 08:00–10:00, no remark",
+   "PASS",
+   "[{\"step\":\"filed\",\"store\":[\"Ranger+Hex 480-600 \\\"\\\" [imwvh0z6ryu1jln]\"],\"screen\":[\"Ranger 08:00-10:00 \\\"\\\" [imwvh0z6ryu1jln~bane.str]\",\"Hex 08:00-10:00 \\\"\\\" [imwvh0z6ryu1jln~rocky.str]\"]},{\"step\":\"str 0900, Tab\",\"typedIn\":\"imwvh0z6ryu1jln~bane.str\",\"store\":[\"Hex 480-600 \\\"\\\" [imwvh0z6ryu1jln]\",\"Ranger 540-600 \\\"\\\" [imwvh12b54ffraj]\"],\"screen\":[\"Ranger 09:00-10:00 \\\"\\\" [imwvh0z6ryu1jln~bane.str]\",\"Hex 08:00-10:00 \\\"\\\" [imwvh0z6ryu1jln~rocky.str]\"],\"caret\":\"imwvh0z6ryu1jln~bane.end\"},{\"step\":\"end 1100, Tab\",\"typedIn\":\"imwvh0z6ryu1jln~bane.end\",\"store\":[\"Hex 480-600 \\\"\\\" [imwvh0z6ryu1jln]\",\"Ranger 540-660 \\\"\\\" [imwvh12b54ffraj]\"],\"screen\":[\"Ranger 09:00-11:00 \\\"\\\" [imwvh0z6ryu1jln~bane.str]\",\"Hex 08:00-10:00 \\\"\\\" [imwvh0z6ryu1jln~rocky.str]\"],\"caret\":\"imwvh0z6ryu1jln~bane.rmks\"},{\"step\":\"rmks own hours, Tab\",\"typedIn\":\"imwvh0z6ryu1jln~bane.rmks\",\"store\":[\"Hex 480-600 \\\"\\\" [imwvh0z6ryu1jln]\",\"Ranger 540-660 \\\"own hours\\\" [imwvh12b54ffraj]\"],\"screen\":[\"Ranger 09:00-11:00 \\\"own hours\\\" [imwvh0z6ryu1jln~bane.str]\",\"Hex 08:00-10:00 \\\"\\\" [imwvh0z6ryu1jln~rocky.str]\"],\"caret\":\"imwvh0z6ryu1jln~rocky.str\"},{\"step\":\"caret left (blank space clicked)\",\"store\":[\"Hex 480-600 \\\"\\\" [imwvh0z6ryu1jln]\",\"Ranger 540-660 \\\"own hours\\\" [imwvh12b54ffraj]\"],\"screen\":[\"Hex 08:00-10:00 \\\"\\\" [imwvh0z6ryu1jln.str]\",\"Ranger 09:00-11:00 \\\"own hours\\\" [imwvh12b54ffraj.str]\"]}]",
+   "w3-phone-webkit-caret-still-in.png, w3-phone-webkit-caret-left.png"
+  ]
+ ]
+}

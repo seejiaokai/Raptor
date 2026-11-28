@@ -5,6 +5,7 @@ import { noteText } from '../engine/note'
 import { PEOPLE, isSpecial, whoId, QCHIP, QCLASS, LEVELNAME, byCrew, sansOn } from '../engine/people'
 import { personShown, briefLeadShown, withFaceAttrs, withDrawDay } from '../engine/faceattrs'
 import { odOut, isOD, listedPersonal, listedUnavail, INPUTS, sansFaceShown, idsOf, inputsOn, remarksShown, remarksTyped, tillOf, shortYear, inputOnAny, withFrozenInputs, inputReadPass, inputCoversDate, inpLabel, inpKindTag, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote, facesOf, facesDrawn, iuTail } from '../engine/inputs'
+import { unavailFaces } from '../engine/rowinput'
 import { isStandalone, scSpare, dayCount, mColor, saExempt, saFlies, saAnyFlies, saTyped, saDeskFlies, SAWAVE } from '../engine/waves'
 import { intimeFold } from '../engine/events'
 import { reportingIssuesForWave,stated,REPORTING_LABEL,REPORT_WORD } from '../engine/reporting'
@@ -18,6 +19,7 @@ import { rowElsewhere, isoDayWords } from '../engine/weekstash'
 import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, restTraceEntries, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal, withOfficialWarn, officialWarn, fltNoLen, fltNoLenMsg, versionFaceWarn, withVersionWarn } from '../engine/validate'
 import { availByWave, personBusy, dayOff, dayEngaged, personWarns, dayTasked } from '../engine/avail'
 import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayShownPendCount, dayDelta, dayDiscardCount, alColor, signOf, signMissing, signShown, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, verLabel, protectedWeek, notYetSigned, verSigners, publishReadPass, unpublishBackTo, pendingInputIds } from '../engine/publish'
+import { timeGapsOf } from '../engine/timegaps'
 import { verSeq, dayIso } from '../engine/verid'
 import { rosterOf } from '../engine/roster'
 import { UNIT } from '../engine/unitview'
@@ -428,6 +430,13 @@ export function viewVerSelHTML(di:any){
     +`<option value="working"${work?' selected':''}>Working draft — not issued</option>`
     +`</select>`
 }
+/* [END-TIME-GUARD] — EDIT SCHEDULE'S LEGEND LINE FOR THE OUTLINE (his D2803, D2860: approved as drawn,
+   docs/mock/2026-11-27-morning-drawings/legend.mjs): at the Legend's foot an empty time box outlined grey, one outlined
+   red, then his words. Edit Schedule's Legend only — View-only Sched never shows the outline (D2853), so its Legend never
+   names it; kept apart from legendHTML(), which both Legends share and the reference's item set pins (html.test.ts). */
+export function timeLegendHTML(){
+  return `<span style="margin-left:8px" data-leg="timegap"><span class="qk tg-leg" style="background:transparent;box-shadow:inset 0 0 0 1px var(--ink-3);border-radius:4px;min-width:26px;padding:0;margin-right:3px"></span><span class="qk tg-leg" style="background:transparent;box-shadow:inset 0 0 0 1px var(--hard);border-radius:4px;min-width:26px;padding:0;margin-right:5px"></span>Time missing, fill it</span>`;
+}
 export function legendHTML(){
   return `<span><i style="background:var(--fcp)"></i>FCP (pilot)</span><span><i style="background:var(--rcp)"></i>RCP (WSO)</span><span data-leg="pers"><i style="background:var(--pers);box-shadow:inset 0 0 0 1px var(--pers-line)"></i>Personnel (ground crew)</span>
     <span style="margin-left:8px">Level:</span>
@@ -450,7 +459,7 @@ export function legendHTML(){
     <span><span class="qk" style="background:#F0555F">Q</span>qual / illegal seat</span>
     <span><span class="qk" style="background:#E5A83B;color:#12100a">DT</span>double turn</span>
     <span><span class="qk" style="background:#E5A83B;color:#12100a">TT</span>tight turn</span>
-    <span><span class="qk" style="background:#E5A83B;color:#12100a">A</span>advisory — shift + ground</span>
+    <span><span class="qk" style="background:#E5A83B;color:#12100a">A</span>advisory — shift, ground or SANS availability</span>
     <span><span class="qk" style="background:#E5A83B;color:#12100a">CP</span>crew pairing — needs approval</span>
     <span><span class="qk" style="background:#E5A83B;color:#12100a">B</span>misses flight brief</span>
     <span><span class="qk" style="background:#E5A83B;color:#12100a">B</span>misses sim brief</span>
@@ -1220,7 +1229,7 @@ export function dayWarnHTML(di:any){
            what is missing and leaving him to find the Leave War himself is half
            an answer. The year is read from the SAME hook the warning was
            written from, never parsed back out of its sentence. */
-        +(!PV&&!hid&&mkPeriod(w,di)?`<button class="witem-act" data-mkperiod="${esc(mkPeriod(w,di))}" title="Creates the ${esc(mkPeriod(w,di))} leave war period, with nothing open for bidding, and takes you to the Leave War to open its dates">Create the ${esc(mkPeriod(w,di))} period</button>`:'')
+        +(!PV&&!hid&&mkPeriod(w,di)?`<button class="witem-act" data-mkperiod="${esc(mkPeriod(w,di))}" title="Creates the ${esc(mkPeriod(w,di))} Leave War period, with nothing open for bidding, and takes you to the Leave War to open its dates">Create the ${esc(mkPeriod(w,di))} period</button>`:'')
         +`</div>`;
     };
     /* an OFFICIAL-only warning (it clears once the day is signed): struck through,
@@ -1547,7 +1556,7 @@ export function lateChip(inp:any){
   const late=inp?lateMates(inp).filter((r:any)=>isLateInput(r)):[];
   if(!late.length)return '';
   const off=!late.some((r:any)=>lateShown(r));
-  return `<button class="latechip${off?' off':''}" data-lateoff="${esc(inpId(late[0]))}" aria-pressed="${off?'true':'false'}" title="${off?'LATE mark hidden here and on the week — tap to show it again':'Tap to hide this LATE mark from the board and the week (the Inputs page keeps it)'}">LATE</button>`;}
+  return `<button class="latechip${off?' off':''}" data-lateoff="${esc(inpId(late[0]))}"${iuWhoAtt(late[0])} aria-pressed="${off?'true':'false'}" title="${off?'LATE mark hidden here and on the week — tap to show it again':'Tap to hide this LATE mark from the board and the week (the Inputs page keeps it)'}">LATE</button>`;}
 /* the same mark on a row that CAME from an input — the ground row acceptInput
    builds, which carries the source input's key in `src`. This is what carries
    the mark onto the view-only page for a personal input: accepting it is the
@@ -1700,6 +1709,11 @@ export function dayStatHTML(di:any,ed:any){
           ? `<button class="dpend dpendbtn dchg" data-chgday="${di}" data-chgtab="all" aria-haspopup="dialog" title="Every change on ${d.dow} and who made it">${cc.all}&nbsp;change${cc.all>1?'s':''}</button>`
           : '';
     const sgOK=daySigned(di);
+    /* [END-TIME-GUARD] (his D2855 E1, D2853): the greyed Publish day / Publish AL still takes a press while an item on the
+       day is missing a time — locked as before (aria-disabled, the same look), the press refused with the note
+       (state/sched-commit.ts); with nothing missing it is disabled exactly as before. The Amendments panel's own Publish AL
+       is left as it is until his answer (the plan's R6). */
+    const lockAt=timeGapsOf(+di).items?' aria-disabled="true"':' disabled';
     /* THE BEAK (§9, closes BUG-2): on a NEVER-published day it first-approves
        (Publish day). On a PUBLISHED day it renders NOTHING here — a published
        version is frozen, and its status is the green title tag; amending is edit
@@ -1709,7 +1723,7 @@ export function dayStatHTML(di:any,ed:any){
       : workView
       ? `<span class="dbeak ro work" title="${d.dow} is published, but this is the working draft — not what was issued">Working draft</span>`
       : (ed&&!ok)
-      ? `<button class="dbeak ${!sgOK?'locked':''}" data-beak="${di}"${!sgOK?' disabled':''} title="${sgOK?'Publish '+d.dow+' — approve this day only':'Sign off '+signMissing(di).join(', ')+' before publishing '+d.dow}">Publish day</button>`
+      ? `<button class="dbeak ${!sgOK?'locked':''}" data-beak="${di}"${!sgOK?lockAt:''} title="${sgOK?'Publish '+d.dow+' — approve this day only':'Sign off '+signMissing(di).join(', ')+' before publishing '+d.dow}">Publish day</button>`
       : ok
       ? ''   /* published: stamp retired — the green title tag names the issued version (verTagHTML) */
       : '';   /* unpublished view: no stamp — its title tag already reads DRAFT (owner D950 R1, 17 Oct 26 — the words pass, round 2:
@@ -1725,7 +1739,7 @@ export function dayStatHTML(di:any,ed:any){
        actions under a preview, so drop the button there. */
     const alN=nextSeq(di);
     const alpub=(ed&&ok&&nd&&!DPREV.has(+di))
-      ? `<button class="dbeak dalpub${sgOK?'':' locked'}" data-alpub="${di}"${sgOK?'':' disabled'} title="${sgOK
+      ? `<button class="dbeak dalpub${sgOK?'':' locked'}" data-alpub="${di}"${sgOK?'':lockAt} title="${sgOK
           ?`Publish AL${alN} — ${nd} change${nd>1?'s':''} on ${d.dow} only`
           :`Sign off ${signMissing(di).join(', ')} before publishing AL${alN}`}">Publish AL${alN}</button>`
       :'';
@@ -2214,8 +2228,9 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
          filed, so the line never says "accepted" for a man who is not (state/inputgroup.ts entryLines). THE UNAVAILABLE
          LIST IS LEFT AS IT IS — a row a man (D737): every record there is a line of its own. */
       /* (…since the one-rule build an input is ONE record with its people: a line under Personal Inputs is the record's
-         faces — a puck a person; the Unavailable list a face a row — engine/inputs.ts facesOf) */
-      const lines:any[][]=acc?rows.map((r:any)=>facesDrawn(r)).filter((l:any[])=>l.length):rows.flatMap((r:any)=>facesOf(r).map((f:any)=>[f]));
+         faces — a puck a person; the Unavailable list a face a row — engine/inputs.ts facesOf, in the order
+         engine/rowinput.ts unavailFaces gives: a man cut out of a shared input keeps his row where it stood) */
+      const lines:any[][]=acc?rows.map((r:any)=>facesDrawn(r)).filter((l:any[])=>l.length):unavailFaces(rows).map((f:any)=>[f]);
       /* PERSONAL INPUTS folds to a one-line summary by default (owner, Aug 26).
          Now that activity inputs auto-land on the ground programme, this block
          is the faded audit echo, not the primary planning surface — so it folds
@@ -2385,10 +2400,20 @@ export function inpRmkCell(inp:any,ed:any,dt?:any){
     +`data-inp="${esc(iuTail(inp))}.rmks" data-ph="remarks">${esc(remarksTyped(inp.remarks, inp))}</span>${till?`<span class="rk-till">${esc(till)}</span>`:''}</span>`;
 }
 /* `att` carries an Unavailable row's waiting mark (unavPendAtt, below) onto the name — the span or the button alike */
+/* THE BUTTONS OF ONE MAN'S UNAVAILABLE ROW NAME THEIR MAN (the fresh, blind Fable scenario designer's S1, S2, S11 —
+   25 Nov 26, chat 178). The row's three text boxes carry `<iid>~<person>` (iuTail), so a change typed on them follows
+   him to the input of his own (engine/rowinput.ts); its buttons — the type label that opens the input's window, Reject,
+   the LATE chip — carried the input's bare id, and on the row held back from repainting (the caret still in its
+   section: on an iPhone a tapped button leaves it there) that id was the OTHERS' input after his first change: the
+   label opened Hex's leave from Ranger's row, Reject sent Hex's duty back, the chip hid Hex's mark. The id stays as it
+   was — every reader of it is untouched — and the man rides beside it; the press asks rowInputOf (ui/interactions.ts).
+   Only where the row is one man's: under Unavailable, of an input that holds several (a Personal Inputs line is the
+   input's one line for everyone, D661, D739). */
+export const iuWhoAtt=(inp:any):string=>inp&&inp.several&&inp.person!=null&&listedUnavail(inp)?` data-iuw="${esc(String(inp.person))}"`:'';
 export function inpEditLabel(inp:any,ed:any,txt:any,cls:any,att?:string){
   const t=esc(txt);
   if(!ed)return `<span class="${cls}"${att||''}>${t}</span>`;
-  return `<button class="${cls} inpedit" data-inpedit="${esc(inpId(inp))}"${att||''} title="Edit this input — times, type, remarks or delete">${t}</button>`;
+  return `<button class="${cls} inpedit" data-inpedit="${esc(inpId(inp))}"${iuWhoAtt(inp)}${att||''} title="Edit this input — times, type, remarks or delete">${t}</button>`;
 }
 /* THE WAITING MARK ON AN UNAVAILABLE ROW (owner D1784, 8 Nov 26 — "An input filed, changed or moved after its day was
    published wears the same waiting mark on its Unavailable row as on a Ground Programme row — its name underlined dotted
@@ -2456,6 +2481,8 @@ function grRowHTML(d:any,di:any,x:any,ri:any,ed:any):string{
 export function accCtl(di:any,inp:any){
   if(!canEditSched())return `<span class="accs"></span>`;
   const k=esc(inpId(inp));
+  /* (the id, and on one man's Unavailable row his name beside it — iuWhoAtt, above; every button below carries both) */
+  const ka=`data-acck="${k}"${iuWhoAtt(inp)}`;
   /* 'r' (removed — dormant, see engine/inputs.ts inputDormant) is NOT
      "accepted": the row was undone, so this offers Accept again, which is the
      one way back to a flagging state. Only 'g'/'u' show Reject. */
@@ -2468,11 +2495,11 @@ export function accCtl(di:any,inp:any){
      stay: they are the button's look and its route, not its words. Its hover text starts with its verb (design guide §1b). */
   if(inp.acc==='g'){
     const dj=acceptedDay(inp), other=dj>=0&&dj!==+di&&DAYS[dj]?String(DAYS[dj].dow||''):'';
-    if(other)return `<span class="accs"><button class="accb undo" data-acc="x" data-accd="${di}" data-acck="${k}" title="Take its row off ${esc(other)}'s ground programme">Reject · ${esc(other.slice(0,3))}</button></span>`;
+    if(other)return `<span class="accs"><button class="accb undo" data-acc="x" data-accd="${di}" ${ka} title="Take its row off ${esc(other)}'s ground programme">Reject · ${esc(other.slice(0,3))}</button></span>`;
   }
   /* AN OVERSEAS DUTY UNDER UNAVAILABLE BY ITS KIND (no mark) takes the same Reject as one filed there (his D1393) */
-  if(isOD(inp.type)&&!odOut(inp)&&inp.acc!=='u')return `<span class="accs"><button class="accb undo" data-acc="x" data-accd="${di}" data-acck="${k}" title="Take it back out of Unavailable, into Personal Inputs">Reject</button></span>`;
-  if(inp.acc&&inp.acc!=='r')return `<span class="accs"><button class="accb undo" data-acc="x" data-accd="${di}" data-acck="${k}" title="${inp.acc==='u'?'Take it back out of Unavailable, into Personal Inputs':'Take its row off the ground programme'}">Reject</button></span>`;
+  if(isOD(inp.type)&&!odOut(inp)&&inp.acc!=='u')return `<span class="accs"><button class="accb undo" data-acc="x" data-accd="${di}" ${ka} title="Take it back out of Unavailable, into Personal Inputs">Reject</button></span>`;
+  if(inp.acc&&inp.acc!=='r')return `<span class="accs"><button class="accb undo" data-acc="x" data-accd="${di}" ${ka} title="${inp.acc==='u'?'Take it back out of Unavailable, into Personal Inputs':'Take its row off the ground programme'}">Reject</button></span>`;
   /* ITS ROW IS ON ANOTHER WEEK ([REQ-ORPHAN-ROW], 28 Sep 26): a request covering Sun 19 – Mon 20 Jul landed on Sunday keeps
      its one row in week 1 (D175 — one request, one row). On week 2 its card offered Accept, which made a second row; it now
      says where the row is instead. (Its filing stays this week's own, so a published Monday's count never moves by a week
@@ -2482,7 +2509,7 @@ export function accCtl(di:any,inp:any){
     if(away&&away!=='unreadable'){ const w=isoDayWords(away.iso);
       return `<span class="accs"><span class="acc-away" title="Its row is on the ground programme of ${esc(w)} — load that week to change it">On ${esc(w)}</span></span>`; }
   }
-  const b=(dest:any,lbl:any,ttl:any)=>`<button class="accb" data-acc="${dest}" data-accd="${di}" data-acck="${k}" title="${ttl}">${lbl}</button>`;
+  const b=(dest:any,lbl:any,ttl:any)=>`<button class="accb" data-acc="${dest}" data-accd="${di}" ${ka} title="${ttl}">${lbl}</button>`;
   return `<span class="accs">`
     /* an input filed for ALL AVAIL / ALL is never filed under Unavailable — that names a real person's day
        ([INPUT-ALL-AVAIL]; the door behind this is slots.ts acceptInput) */
@@ -2513,6 +2540,23 @@ export function signoffHTML(di:any,full:any){
   const missing=new Set(miss);
   const stale=SIGN_ROLES.filter((r:any)=>r[2]&&g[r[0]]&&missing.has(r[1])).map((r:any)=>r[1]);
   const why=(l:any)=>stale.includes(l)?`${l} needs an appointed scheduler`:l;
+  /* [END-TIME-GUARD] WHILE AN ITEM ON THE DAY IS MISSING A TIME (his D2612, D2854; the approved try-out): a press on a box
+     is refused, so the box takes the press itself and its list can neither open nor take the keys — the select is
+     disabled and out of the tab order (Windows F4, the iPhone's form arrows and a screen reader's double tap open a select
+     a mouse catch cannot stop — the fresh Opus red-team read, 2b), the pill a button for the keys (interactions.ts
+     routeClick / routeOpenKey say the note: state/timeguard.ts). */
+  /* Not on a protected week: the quarantine keeps its own first word, as at every other sign and publish door (the
+     Fable-seat code read, F3 — the board still draws this bar there). */
+  const gaps=timeGapsOf(+di).items, lock=!!gaps&&!protectedWeek(), blockAt=lock?' role="button" tabindex="0" aria-disabled="true"':'';
+  /* …and the status line says how many items are missing a time, before "N to sign" (D2854); on the board, with no names
+     of the boxes still to sign until the last time is typed, so it stays one line on a phone (D2734). The week keeps the
+     stale-appointment words after it, as built (the plan's Q21). Once all four show (an older saved week, Q-W3) the line
+     is as before. */
+  const gapLead=gaps?`<span class="tg-n">${gaps} item${gaps===1?'':'s'} missing a time</span> · `:'';
+  /* ON EDIT SCHEDULE THE LINE IS A BUTTON while it names the count: a tap on it goes to each empty box in turn (his D2854;
+     the try-out's count tap — interactions.ts routeClick, ui/timegap-paint.ts nextGapBox). The board's line stays words
+     (the plan's Q19); no hover words until his answer (Q-W4). */
+  const tapTag=!full&&gaps&&miss.length?'button':'span';
   return `<span class="so-h">Sign-off</span>`
     +SIGN_ROLES.map(([k,lbl,sch]:any)=>{
       const v=g[k], ids=signPeople(sch,v,di);
@@ -2522,9 +2566,9 @@ export function signoffHTML(di:any,full:any){
          value; it re-renders on every reflow, the same path that used to move
          the `selected` attribute. */
       const shown=v&&PEOPLE[v]?PEOPLE[v].cs:(ids.length?'— name —':'— none appointed —');
-      return `<label class="sgn ${v?'on':''}${sch?' sch':''}" title="${esc(lbl)}${sch?' — appointed schedulers only':''}${v&&PEOPLE[v]?' — '+esc(PEOPLE[v].name||PEOPLE[v].cs):''}">`
+      return `<label class="sgn ${v?'on':''}${sch?' sch':''}${lock?' tg-block':''}" title="${esc(lbl)}${sch?' — appointed schedulers only':''}${v&&PEOPLE[v]?' — '+esc(PEOPLE[v].name||PEOPLE[v].cs):''}"${blockAt}>`
         +`<span class="k">${esc(lbl)}</span><span class="v">${esc(shown)}</span>`
-        +`<select data-sign="${k}" data-signday="${di}" aria-label="${esc(lbl)} — ${esc((DAYS[di]||{}).dow||'')}">`
+        +`<select data-sign="${k}" data-signday="${di}" aria-label="${esc(lbl)} — ${esc((DAYS[di]||{}).dow||'')}"${lock?' disabled tabindex="-1"':''}>`
         +`<option value="">${ids.length?'— name —':'— none appointed —'}</option>`
         +ids.map((id:any)=>`<option value="${id}"${id===v?' selected':''}>${esc(PEOPLE[id].cs)}</option>`).join('')
         +`</select></label>`;}).join('')
@@ -2535,15 +2579,16 @@ export function signoffHTML(di:any,full:any){
        issued version and says whether there is anything to publish — the old flat
        "can be published" wrongly implied a publish button that (correctly) is not
        there when nothing has changed. dayDelta is the ONE eligibility authority. */
-    +`<span class="so-state ${miss.length?'no':'yes'}">${
-        miss.length ? `${miss.length} to sign${full?' · '+miss.map(why).join(', '):stale.length?' · '+stale.map(why).join(', '):''}`
+    +`<${tapTag} class="so-state ${miss.length?'no':'yes'}${gaps&&miss.length?' tg-has':''}${tapTag==='button'?' tg-tap':''}"${tapTag==='button'?` type="button" data-tgnext="${di}"`:''}>${
+        miss.length&&gaps ? `${gapLead}${miss.length} to sign${!full&&stale.length?' · '+stale.map(why).join(', '):''}`
+        : miss.length ? `${miss.length} to sign${full?' · '+miss.map(why).join(', '):stale.length?' · '+stale.map(why).join(', '):''}`
         : !dayApproved(di) ? 'Signed — this day can be published'
         : (()=>{const cv=dayCurVer(di); if(cv==null) return 'Signed';   // approved but no resolvable snapshot (probe/import) → no ALNaN label (Fable #3)
             const chg=dayShownPendCount(di);   // the ONE count the day head shows (D109 — a man moved is one change)
             return chg
               ? `Published at ${esc(verLabel(cv))} · ${chg} change${chg>1?'s':''} to publish — Publish AL${nextSeq(di)}`
               : `Published at ${esc(verLabel(cv))} — no changes to publish`;})()
-      }</span>`;
+      }</${tapTag}>`;
 }
 /* =====================================================================
    DAY DETAILS — the ⓘ chip on every day head. Approval state, which AL

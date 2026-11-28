@@ -1,0 +1,105 @@
+[
+ {
+  "id": "F0 fixture: three men on the Balances page",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Buzzard=pmwxxegk3cojfny Lynx=pmwxxej3od2x0ox Pelican=pmwxxele1pcwetw",
+  "pics": []
+ },
+ {
+  "id": "F1 fixture: Pelican 24 typed",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "War bal 24",
+  "pics": []
+ },
+ {
+  "id": "B3a \"Type the Official bal first\" fully in sight",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "\"Type the Official bal first\" [64.7,396.8 149.3x27.6] 12px rgb(255, 179, 185); window [10,197.3 382x479.4]; on top",
+  "pics": [
+   "03-cf-first-refused"
+  ]
+ },
+ {
+  "id": "B3d what the refusal tag stands over",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "tag [64.7,396.8 149.3x27.6]; \"till 31 Dec\" [40,395.8 184.4x12] covered 1642.3px²; the one line [40,420.8 184.4x15.9] covered 536.5px² (its top 420.8, the tag's foot 424.4)",
+  "pics": [
+   "03b-cf-first-refused-crop"
+  ]
+ },
+ {
+  "id": "B3b nothing saved by the refusal",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "War bal still \"Not typed\"",
+  "pics": [
+   "03-cf-first-refused"
+  ]
+ },
+ {
+  "id": "B3e the refusal after the box is emptied and left",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "refusal still shown: true",
+  "pics": [
+   "03c-cf-cleared-tap-away"
+  ]
+ },
+ {
+  "id": "B3c cleared and left: still never typed",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "War bal \"Not typed\", carried box \"\", error shown: true",
+  "pics": [
+   "03c-cf-cleared-tap-away"
+  ]
+ },
+ {
+  "id": "B5a 0 typed saves (tap away): the box shows 0, no dashed edge",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "CCL box \"0\" edge solid rgb(102, 113, 127) class mth-in bp-bx sm z",
+  "pics": [
+   "05a-buzzard-CCL-0-tap-away"
+  ]
+ },
+ {
+  "id": "B5b the other kinds stay never typed",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "LVE box \"\", War bal \"Not typed\"",
+  "pics": [
+   "05a-buzzard-CCL-0-tap-away"
+  ]
+ },
+ {
+  "id": "B5c typed 0: the below-zero question, fully in sight above the buttons",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "\"That takes Buzzard to −1 CCL. Tap the same leave again to go ahead.\" [25,722.3 352x16.7]; CCL button top y=745; on top",
+  "pics": [
+   "05d-buzzard-CCL-first-tap-q",
+   "05d-buzzard-CCL-first-tap"
+  ]
+ },
+ {
+  "id": "B5d the second tap places it",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "window open false; day reads \"CCL\"",
+  "pics": [
+   "05e-buzzard-CCL-second-tap"
+  ]
+ },
+ {
+  "id": "B5e CCL now reads below zero",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "CCL box \"−1\"",
+  "pics": []
+ }
+]

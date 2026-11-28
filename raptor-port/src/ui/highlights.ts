@@ -7,11 +7,13 @@ import { isMe } from '../state/perms'
 import { slotBar } from '../engine/avail'
 import { inputReadPass } from '../engine/inputs'
 import { slotVal } from '../engine/slots'
+import { rowKeyNow } from '../engine/rowinput'
 import { WARN } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
 import { isNewFlag, NEWFLAGS } from '../state/dropflag'
 import { hsSet, hsSync, panForget } from './pan'
 import { paintLand } from './lift'
+import { paintTimeGaps } from './timegap-paint'
 
 /* A ONE-SHOT callback run at the end of the next highlight pass — i.e. in the
    SAME task as the innerHTML swap that just changed the layout, before the
@@ -42,6 +44,9 @@ export function warnOnBoard(){return SBDAY!=null&&!!WFOCUS&&WFOCUS.di===SBDAY;}
    Anything that was not red used to light amber, so three men with a long work day and nothing else read as advised. */
 const litSev=(el:any,sev:any)=>{ if(sev==='note')el.classList.add('notef'); else if(sev!=='hard')el.classList.add('advf'); };
 export function refreshHighlights(){
+  /* [END-TIME-GUARD] the outline round each empty time box the rule names (ui/timegap-paint.ts) — here because every
+     surface calls this pass after it draws, the section held round the caret included (D2853) */
+  paintTimeGaps();
   const wf=warnFocusMap();
   const hlActive=HLSET.size>0||!!SEARCH;
   const selActive=!!SELID;
@@ -162,8 +167,11 @@ export function paintArm(){
      ARM.key for a grammar this attribute was never meant to speak. The SAME
      iid renders on every day a multi-day filing covers, so all of them ring
      together — there is no single "its" day to prefer. */
+  /* …compared as the two addresses stand NOW (engine/rowinput.ts rowKeyNow): armed on one man's held row, the key names
+     the shared input, and the row repaints with his own input's address — the ring stays on it */
+  const armedNow=rowKeyNow(ARM.key);
   document.querySelectorAll('[data-inpseat]').forEach((el:any)=>{
-    if('iu:'+el.dataset.inpseat===ARM.key)el.classList.add('armed');});
+    if(rowKeyNow('iu:'+el.dataset.inpseat)===armedNow)el.classList.add('armed');});
 }
 /* THE JUST-ADDED BLUE BOX (owner, 14 Aug 26 — "everytime I add a new row block
    or wave there will be a blue box around the new thing for around 6 seconds").

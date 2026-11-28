@@ -1,0 +1,119 @@
+[
+ [
+  "A3/F-S34(a) new Post in, one-day window",
+  "desk-chromium",
+  "Sidewinder 21 Dec → ⋯ → Post in",
+  "the posting alone: \"Sidewinder  Post in\", \"PI from\", its line on a strip, blue \"Post in\"; no leave parts (D2653, D2732)",
+  "bid-picker: Sidewinder Post in ✕ PI FROM Mon 21 Dec 26 ▾ Their first day in the squadron. Days before it are blank and count nobody — leave can still be dated there. Post in | pi-date=Mon 21 Dec 26 ▾ ; pi-confirm=Post in | button bg rgb(59, 198, 232) | leave parts shown: 0",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r11/001-desk-chromium-r11-new-postin.png"
+ ],
+ [
+  "F-S9 new sheet line",
+  "desk-chromium",
+  "read the Post in line",
+  "RECORD (a reading for him, lesson 32)",
+  "bid-picker: Sidewinder Post in ✕ PI FROM Mon 21 Dec 26 ▾ Their first day in the squadron. Days before it are blank and count nobody — leave can still be dated there. Post in",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r11/001-desk-chromium-r11-new-postin.png"
+ ],
+ [
+  "A3 Post in confirmed",
+  "desk-chromium",
+  "press Post in",
+  "days before 21 Dec blank, counting nobody (D308, D320); from 21 Dec normal",
+  "10 Dec: gone act |  | kids: | 20 Dec: gone weekend act |  | kids: | 21 Dec: act |  | kids: | window: none",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r11/002-desk-chromium-r11-after-postin.png"
+ ],
+ [
+  "D2743 LL before post-in",
+  "desk-chromium",
+  "tap Sidewinder's 15 Dec (before his post-in 21 Dec) holding his pending LL",
+  "that entry's own window, as on any other day — never the Post in sheet (D2743)",
+  "bid-picker: Sidewinder Tue 15 Dec Auto-approve ✕ No manning row turns amber or red Placed Saber · Thu 26 Nov, 18:12 Approve Refuse ⇄Move Delete till 15 Dec Document Whole day AM PM Pick a range LL 11 OL 11 OIL −1 CCL −1 FCL −1 PL −1 EL −1 CL −1 CSE OD Grant OIL ⋯",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r11/003-desk-chromium-r11-ll-before-pi.png"
+ ],
+ [
+  "D2743 OD before post-in",
+  "desk-chromium",
+  "tap the middle day of Sidewinder's 16–18 Dec OD",
+  "the OD's own whole window (D2743, D1565)",
+  "bid-picker: Sidewinder 16–18 Dec Auto-approve ✕ No manning row turns amber or red OD Whole day · change it on the Inputs page till 18 Dec Document Whole day AM PM All 3 days Thu 17 LL 8 OL 8 OIL −3 CCL −3 FCL −3 PL −3 EL −3 CL −3 CSE OD Grant OIL ⋯",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r11/004-desk-chromium-r11-od-before-pi.png"
+ ],
+ [
+  "D2743 empty day before post-in",
+  "desk-chromium",
+  "tap Sidewinder's empty 10 Dec",
+  "the existing Post in sheet (D2743); no leave buttons (D2727)",
+  "postin-sheet: Sidewinder Post in ✕ PI FROM Mon 21 Dec 26 ▾ Posted in on 21 Dec 26 — on the manpower from that day. Days before it count nobody, but leave can still be dated there. ↶Undo post in | leave buttons: 0",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r11/005-desk-chromium-r11-empty-before-pi.png"
+ ],
+ [
+  "F-S9 existing sheet line",
+  "desk-chromium",
+  "read the existing Post in sheet",
+  "RECORD the line (lesson 32 — a reading for him)",
+  "postin-sheet: Sidewinder Post in ✕ PI FROM Mon 21 Dec 26 ▾ Posted in on 21 Dec 26 — on the manpower from that day. Days before it count nobody, but leave can still be dated there. ↶Undo post in",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r11/005-desk-chromium-r11-empty-before-pi.png"
+ ],
+ [
+  "F-S34(d) Q3 on a blank pre-post-in day",
+  "desk-chromium",
+  "press 10 Dec under the open Post in sheet, then again",
+  "first press closes it; the next opens the Post in sheet again (D2732 Q3, D2727)",
+  "first: none (covered=true at sheet-scrim) | second: postin-sheet (covered=false at cell-mamba-2026-12-10)",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r11/006-desk-chromium-r11-q3-first.png ; img/handpass/2026-11-26-msq-s4-walk/wc/r11/007-desk-chromium-r11-q3-second.png"
+ ],
+ [
+  "A3 existing sheet date move",
+  "desk-chromium",
+  "existing Post in sheet: PI from → 28 Dec; close; reopen",
+  "the grid follows the new date; closing does not undo it (existing-posting contract)",
+  "value 2026-12-28 | 24 Dec: gone act |  | kids: | 21 Dec: gone act |  | kids: | reopened: postin-sheet: Sidewinder Post in ✕ PI FROM Mon 28 Dec 26 ▾ Posted in on 28 Dec 26 — on the manpower from that day. Days before it count nobody, but leave can still be dated there. ↶Undo post in",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r11/008-desk-chromium-r11-moved.png ; img/handpass/2026-11-26-msq-s4-walk/wc/r11/009-desk-chromium-r11-reopened.png"
+ ],
+ [
+  "A3-move-date-undo",
+  "desk-chromium",
+  "step threw",
+  "",
+  "locator.fill: Timeout 30000ms exceeded.",
+  "NOT REACHED",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r11/010-desk-chromium-A3-move-date-undo-error.png"
+ ],
+ [
+  "A3/F-S34(c) Post in from a drag",
+  "desk-chromium",
+  "drag Warden 22–24 Dec → ⋯ → Post in",
+  "the posting alone, head \"Warden  Post in\", the box holding the range's first day 22 Dec (D2732 Q2)",
+  "select-sheet: Warden Post in ✕ PI FROM Tue 22 Dec 26 ▾ Their first day in the squadron. Days before it are blank and count nobody — leave can still be dated there. Post in | sel-pi-date=Tue 22 Dec 26 ▾ ; sel-pi-confirm=Post in ; sel-po-title=Post in | values sel-pi-date=2026-12-22",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r11/011-desk-chromium-r11-drag-postin.png"
+ ],
+ [
+  "A3 drag Post in confirmed",
+  "desk-chromium",
+  "press sel-pi-confirm",
+  "Warden blank before 22 Dec",
+  "21 Dec: gone act |  | kids: | 22 Dec: act |  | kids:",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r11/012-desk-chromium-r11-drag-postin-done.png"
+ ],
+ [
+  "F-S9 doors: drag across blank pre-post-in days",
+  "desk-chromium",
+  "drag Warden 16–17 Dec (before his post-in 22 Dec)",
+  "RECORD which window, and whether leave can be dated there from the war",
+  "select-sheet: Warden 16–17 Dec · 2 days Auto-approve ✕ No manning row turns amber or red till 17 Dec Document Whole day AM PM LL 11 OL 11 OIL −2 CCL −2 FCL −2 PL −2 EL −2 CL −2 CSE OD Grant OIL ⋯ | sel-LL offered",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r11/013-desk-chromium-r11-drag-blank.png"
+ ]
+]

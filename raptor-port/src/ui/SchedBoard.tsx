@@ -21,7 +21,7 @@ import { versionFaceWarn } from '../engine/validate'
 import { isDraftVer, draftVerLabel } from '../engine/drafts'
 import { withDaySnap, withVersionFlags, refreshWaveReports } from './html'
 import { glyphSvg, EYE_INNER } from './glyphs'
-import { holdingPlace } from './dayswap'
+import { holdingPlace, swapKidsAround, kidsOfHTML, owesBeside, type PanelKids } from './dayswap'
 import { useSheetFocus, useEscClose, locate, pressedByKeys, menuItems, escCloses } from './sheetfocus'
 import { wireBoardEscape } from './boardescape'
 import { reconcileMissionRoleOffer } from './mission-role-offer'
@@ -374,6 +374,9 @@ export function SchedBoard() {
      unrelated panel's change and keeps a board edit inside the phone
      budget. */
   const panelPrev = useRef<any>({})
+  /* a panel written section by section under the caret: what each of its sections shows now, and the navigation
+     generation of its last whole write (put, below) */
+  const panelKids = useRef<Record<string, { nav: number; kids: PanelKids | null }>>({})
   const pendingPaint = useRef<{ di: number; nav: number } | null>(null)
   const [settledPaint, setSettledPaint] = useState(0)
   useEffect(() => {
@@ -387,7 +390,14 @@ export function SchedBoard() {
         if (CURPAGE !== 'editsched' || SBDAY !== pending.di || navGen() !== pending.nav) {
           pendingPaint.current = null; return
         }
-        if (editingText()) return
+        if (editingText()) {
+          /* …OR THE CARET HAS MOVED TO ANOTHER SECTION OF THE BOARD, AND THE ONE IT LEFT IS STILL OWED (Fable's scenario
+             design, B3, 25 Nov 26 — a box of another section clicked, nothing typed): the paint under the caret writes
+             that section and holds the new one, so it runs now rather than at the next save */
+          const c = textCaret(), b = boardRef.current, rec = panelKids.current.board
+          if (!c || !b || !b.contains(c) || !rec || !owesBeside(b, rec.kids, c)) return
+          setSettledPaint(n => n + 1); return
+        }
         pendingPaint.current = null
         setSettledPaint(n => n + 1) // UI only: no mutation, history or validation.
       }, 0)
@@ -421,7 +431,7 @@ export function SchedBoard() {
        by the setPage fix above, and this guard's ONE job is deciding
        whether the panels have a day to render, which SBDAY alone answers
        correctly. */
-    if (SBDAY == null) { panelPrev.current = {}; pendingPaint.current = null; return }
+    if (SBDAY == null) { panelPrev.current = {}; panelKids.current = {}; pendingPaint.current = null; return }
     /* WHILE A TEXT BOX HAS THE CARET, EVERY PANEL THAT DOES NOT HOLD IT IS STILL WRITTEN (W15, the Codex stack check,
        5 Oct 26; D509 — a timing warning "shows in the warning list"). The board used to write nothing at all until the
        caret left text; on the Tab route that is a whole day, and the list said "No conflicts" beside a line it should
@@ -437,10 +447,25 @@ export function SchedBoard() {
     const di = SBDAY
     const put = (el: HTMLElement, key: string, html: string) => {
       if (panelPrev.current[key] === html) return
-      /* the caret's own panel: owed, written when the caret leaves — and remembered as owed, not as what it last showed,
-         or an Undo that puts it back to that leaves the typed value on screen (the re-walk of the D994 batch, 19 Oct 26) */
-      if (caret && el.contains(caret)) { delete panelPrev.current[key]; return }
-      el.innerHTML = html; panelPrev.current[key] = html
+      /* the caret's own panel: owed, written whole when the caret leaves — and remembered as owed, not as what it last
+         showed, or an Undo that puts it back to that leaves the typed value on screen (the re-walk of the D994 batch,
+         19 Oct 26). INSIDE IT, EVERY SECTION BUT THE CARET'S IS WRITTEN NOW ([UI-SLEEK-PASS] round 4's leftovers (4),
+         25 Nov 26 — ui/dayswap.ts swapKidsAround): the board's whole day is this one panel, so an input's start typed under
+         Personal Inputs left its Ground Programme row one change behind for as long as the caret stayed on the board.
+         `panelKids` is what each of its sections now shows (an owed one marked so), for the next paint under the caret. */
+      if (caret && el.contains(caret)) {
+        /* …NOT AFTER THE WEEK, THE PAGE OR THE SESSION HAS MOVED UNDER IT (the fresh Opus read's finding 1, 25 Nov 26): the
+           week stepped on the Board keeps the same weekday, so every section keeps its day and name — only the week tells
+           this Monday's from next Monday's, and the caret's section would have stayed last week's beside the new week's
+           others. A change of the navigation generation since the panel was last written whole writes nothing, as before */
+        const rec = panelKids.current[key]
+        if (!rec || rec.nav !== navGen()) { delete panelPrev.current[key]; return }
+        const r = swapKidsAround(el, html, rec.kids || (typeof panelPrev.current[key] === 'string' ? kidsOfHTML(panelPrev.current[key]) : null), caret)
+        rec.kids = r.kids
+        if (r.held) delete panelPrev.current[key]; else panelPrev.current[key] = html
+        return
+      }
+      el.innerHTML = html; panelPrev.current[key] = html; panelKids.current[key] = { nav: navGen(), kids: null }
     }
     /* with a caret, the writes above it must not move the box he is typing in */
     const set = (el: HTMLElement, key: string, html: string) => { if (caret && caret.isConnected) holdingPlace(caret, () => put(el, key, html)); else put(el, key, html) }
@@ -502,8 +527,10 @@ export function SchedBoard() {
     refreshHighlights()
     /* the gold dots, as on the edit week ([HIST-PHONE-HIDE], D345) — over the board wrap, where the bubble is wired */
     refreshHistDots(wrapRef.current)
-    /* an open Blue/Red question hangs inside the board's own panel — put it back after a rewrite (P2-F3, as on the week) */
-    reconcileMissionRoleOffer()
+    /* an open Blue/Red question hangs inside the board's own panel — put it back after a rewrite (P2-F3, as on the week);
+       with the caret on the board, inside the held place too (Astra's read, finding 2, 25 Nov 26): a section above the
+       caret written under it takes its question away, and putting it back moves the box he is typing in down by its height */
+    if (caret && caret.isConnected) holdingPlace(caret, reconcileMissionRoleOffer); else reconcileMissionRoleOffer()
     /* a repaint replaces a panel's markup wholesale, so a bubble that is up
        may have just lost the cell it hangs on — re-anchor it, or take it down
        if the row has gone (audit, 12 Aug 26). Before this it only noticed on

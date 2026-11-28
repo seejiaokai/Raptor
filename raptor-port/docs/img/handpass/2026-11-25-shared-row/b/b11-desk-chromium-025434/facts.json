@@ -1,0 +1,93 @@
+{
+ "pictures": [
+  {
+   "file": "b11a-desk-0-filed.png",
+   "case": "B11-a",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Ranger :: LL :: 00:00-12:00 :: LATE till 15 Jul",
+    "Hex :: LL :: 00:00-12:00 :: LATE till 15 Jul"
+   ]
+  },
+  {
+   "file": "b11a-desk-1-end-1100.png",
+   "case": "B11-a",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Hex :: LL :: 00:00-12:00 :: LATE till 15 Jul",
+    "Ranger :: LL :: 00:00-11:00 :: LATE till 15 Jul"
+   ]
+  },
+  {
+   "file": "b11a-desk-2-end-1200.png",
+   "case": "B11-a",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Hex :: LL :: 00:00-12:00 :: LATE till 15 Jul",
+    "Ranger :: LL :: 00:00-12:00 :: LATE till 15 Jul"
+   ]
+  },
+  {
+   "file": "b11b-desk-0-sun.png",
+   "case": "B11-b",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Ranger :: LL :: - :: LATE till 20 Jul",
+    "Hex :: LL :: - :: LATE till 20 Jul"
+   ]
+  },
+  {
+   "file": "b11b-desk-1-sun-0900.png",
+   "case": "B11-b",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Hex :: LL :: - :: LATE till 20 Jul",
+    "Ranger :: LL :: 09:00-23:59 :: LATE till 20 Jul"
+   ]
+  },
+  {
+   "file": "b11b-desk-2-mon.png",
+   "case": "B11-b",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Hex :: LL :: - :: LATE till 20 Jul",
+    "Ranger :: LL :: 09:00-23:59 :: LATE till 20 Jul"
+   ]
+  },
+  {
+   "file": "b11b-desk-3-mon-remark.png",
+   "case": "B11-b",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Hex :: LL :: - :: LATE till 20 Jul",
+    "Ranger :: LL :: 09:00-23:59 :: LATE nexttill 20 Jul"
+   ]
+  }
+ ],
+ "cases": {
+  "B11-a": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"span\":\"am\"} on 2026-07-15: new input [\"imwvj5ugjwk8a9n\"]; asked []; note \"\"",
+    "{\"step\":\"filed AM\",\"store\":[\"Ranger+Hex Jul 15 00:00-12:00 half:am \\\"\\\" [imwvj5ugjwk8a9n]\"],\"rows\":[\"Ranger :: LL :: 00:00-12:00 :: LATE till 15 Jul\",\"Hex :: LL :: 00:00-12:00 :: LATE till 15 Jul\"]}",
+    "picture b11a-desk-0-filed.png: [\"Ranger :: LL :: 00:00-12:00 :: LATE till 15 Jul\",\"Hex :: LL :: 00:00-12:00 :: LATE till 15 Jul\"]",
+    "{\"step\":\"Ranger end 1100 Tab, clicked away\",\"store\":[\"Hex Jul 15 00:00-12:00 half:am \\\"\\\" [imwvj5ugjwk8a9n]\",\"Ranger Jul 15 00:00-11:00 \\\"\\\" [imwvj5wj3mfk6g5]\"],\"rows\":[\"Hex :: LL :: 00:00-12:00 :: LATE till 15 Jul\",\"Ranger :: LL :: 00:00-11:00 :: LATE till 15 Jul\"]}",
+    "picture b11a-desk-1-end-1100.png: [\"Hex :: LL :: 00:00-12:00 :: LATE till 15 Jul\",\"Ranger :: LL :: 00:00-11:00 :: LATE till 15 Jul\"]",
+    "{\"step\":\"Ranger end 1200 Tab, clicked away\",\"store\":[\"Hex Jul 15 00:00-12:00 half:am \\\"\\\" [imwvj5ugjwk8a9n]\",\"Ranger Jul 15 00:00-12:00 half:am \\\"\\\" [imwvj5wj3mfk6g5]\"],\"rows\":[\"Hex :: LL :: 00:00-12:00 :: LATE till 15 Jul\",\"Ranger :: LL :: 00:00-12:00 :: LATE till 15 Jul\"]}",
+    "picture b11a-desk-2-end-1200.png: [\"Hex :: LL :: 00:00-12:00 :: LATE till 15 Jul\",\"Ranger :: LL :: 00:00-12:00 :: LATE till 15 Jul\"]"
+   ]
+  },
+  "B11-b": {
+   "log": [
+    "filed: dates Jul 19 → Jul 20; new [\"imwvj64ewl8agfk\"]; store [\"Ranger+Hex Jul 19→Jul 20 allday \\\"\\\" [imwvj64ewl8agfk]\"]",
+    "picture b11b-desk-0-sun.png: [\"Ranger :: LL :: - :: LATE till 20 Jul\",\"Hex :: LL :: - :: LATE till 20 Jul\"]",
+    "{\"step\":\"Sunday: Ranger start 0900 Tab\",\"store\":[\"Hex Jul 19→Jul 20 allday \\\"\\\" [imwvj64ewl8agfk]\",\"Ranger Jul 19→Jul 20 09:00-23:59 \\\"\\\" [imwvj66hqjlg818]\"],\"sun\":[\"Hex :: LL :: - :: LATE till 20 Jul\",\"Ranger :: LL :: 09:00-23:59 :: LATE till 20 Jul\"]}",
+    "picture b11b-desk-1-sun-0900.png: [\"Hex :: LL :: - :: LATE till 20 Jul\",\"Ranger :: LL :: 09:00-23:59 :: LATE till 20 Jul\"]",
+    "{\"step\":\"next week (loadWeek (no arrow found)): Monday read\",\"store\":[\"Hex Jul 19→Jul 20 allday \\\"\\\" [imwvj64ewl8agfk]\",\"Ranger Jul 19→Jul 20 09:00-23:59 \\\"\\\" [imwvj66hqjlg818]\"],\"mon\":[\"Hex :: LL :: - :: LATE till 20 Jul\",\"Ranger :: LL :: 09:00-23:59 :: LATE till 20 Jul\"]}",
+    "picture b11b-desk-2-mon.png: [\"Hex :: LL :: - :: LATE till 20 Jul\",\"Ranger :: LL :: 09:00-23:59 :: LATE till 20 Jul\"]",
+    "{\"step\":\"Monday: Ranger remark \\\"next\\\" Tab\",\"store\":[\"Hex Jul 19→Jul 20 allday \\\"\\\" [imwvj64ewl8agfk]\",\"Ranger Jul 19→Jul 20 09:00-23:59 \\\"next\\\" [imwvj66hqjlg818]\"],\"mon\":[\"Hex :: LL :: - :: LATE till 20 Jul\",\"Ranger :: LL :: 09:00-23:59 :: LATE nexttill 20 Jul\"]}",
+    "picture b11b-desk-3-mon-remark.png: [\"Hex :: LL :: - :: LATE till 20 Jul\",\"Ranger :: LL :: 09:00-23:59 :: LATE nexttill 20 Jul\"]"
+   ]
+  }
+ },
+ "errors": []
+}

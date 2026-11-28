@@ -1,0 +1,96 @@
+{
+ "pictures": [
+  {
+   "file": "b4-desk-chromium-0-tue-filed.png",
+   "case": "B4",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Ranger - \"\" [imwvixelns1h7x6~bane]",
+    "Hex - \"\" [imwvixelns1h7x6~rocky]",
+    "Outlaw - \"\" [imwvixelns1h7x6~casper]"
+   ]
+  },
+  {
+   "file": "b4-desk-chromium-1-tue-held.png",
+   "case": "B4",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Ranger 09:00-11:00 \"A2\" [imwvixelns1h7x6~bane]",
+    "Hex - \"B\" [imwvixelns1h7x6~rocky]",
+    "Outlaw - \"C\" [imwvixelns1h7x6~casper]"
+   ]
+  },
+  {
+   "file": "b4-desk-chromium-2-tue-left.png",
+   "case": "B4",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Outlaw - \"C\" [imwvixelns1h7x6]",
+    "Hex - \"B\" [imwvixjgfrohrjh]",
+    "Ranger 09:00-11:00 \"A2\" [imwvixh0b8szjzp]"
+   ]
+  },
+  {
+   "file": "b4-desk-chromium-3-mon.png",
+   "case": "B4",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Outlaw - \"C\" [imwvixelns1h7x6]",
+    "Hex - \"B\" [imwvixjgfrohrjh]",
+    "Ranger 09:00-11:00 \"A2\" [imwvixh0b8szjzp]"
+   ]
+  },
+  {
+   "file": "b4-desk-chromium-3-wed.png",
+   "case": "B4",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Outlaw - \"C\" [imwvixelns1h7x6]",
+    "Hex - \"B\" [imwvixjgfrohrjh]",
+    "Ranger 09:00-11:00 \"A2\" [imwvixh0b8szjzp]"
+   ]
+  },
+  {
+   "file": "b4-desk-chromium-4-leavewar.png",
+   "case": "B4",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "bane-13": "LL { act hasc}",
+    "bane-14": "LL { act hasc}",
+    "bane-15": "LL { act hasc}",
+    "rocky-13": "LL { act hasc}",
+    "rocky-14": "LL { act hasc}",
+    "rocky-15": "LL { act hasc}",
+    "casper-13": "LL { act hasc}",
+    "casper-14": "LL { act hasc}",
+    "casper-15": "LL { act hasc}"
+   }
+  }
+ ],
+ "cases": {
+  "B4": {
+   "log": [
+    "filed: dates read \"Jul 13 → Jul 15\"; asked []; note \"\"; new [\"imwvixelns1h7x6\"]; store [\"Ranger+Hex+Outlaw Jul 13→Jul 15 allday \\\"\\\" [imwvixelns1h7x6]\"]",
+    "Tuesday rows [\"Ranger - \\\"\\\" [imwvixelns1h7x6~bane]\",\"Hex - \\\"\\\" [imwvixelns1h7x6~rocky]\",\"Outlaw - \\\"\\\" [imwvixelns1h7x6~casper]\"]",
+    "picture b4-desk-chromium-0-tue-filed.png: [\"Ranger - \\\"\\\" [imwvixelns1h7x6~bane]\",\"Hex - \\\"\\\" [imwvixelns1h7x6~rocky]\",\"Outlaw - \\\"\\\" [imwvixelns1h7x6~casper]\"]",
+    "{\"step\":\"Ranger str \\\"0900\\\" Tab\",\"typedIn\":\"imwvixelns1h7x6~bane.str\",\"store\":[\"Hex+Outlaw Jul 13→Jul 15 allday \\\"\\\" [imwvixelns1h7x6]\",\"Ranger Jul 13→Jul 15 09:00-23:59 \\\"\\\" [imwvixh0b8szjzp]\"],\"screen\":[\"Ranger 09:00-23:59 \\\"\\\" [imwvixelns1h7x6~bane]\",\"Hex - \\\"\\\" [imwvixelns1h7x6~rocky]\",\"Outlaw - \\\"\\\" [imwvixelns1h7x6~casper]\"],\"caret\":\"imwvixelns1h7x6~bane.end\",\"arrivedShows\":\"23:59\"}",
+    "{\"step\":\"Ranger end \\\"1100\\\" Tab\",\"typedIn\":\"imwvixelns1h7x6~bane.end\",\"store\":[\"Hex+Outlaw Jul 13→Jul 15 allday \\\"\\\" [imwvixelns1h7x6]\",\"Ranger Jul 13→Jul 15 09:00-11:00 \\\"\\\" [imwvixh0b8szjzp]\"],\"screen\":[\"Ranger 09:00-11:00 \\\"\\\" [imwvixelns1h7x6~bane]\",\"Hex - \\\"\\\" [imwvixelns1h7x6~rocky]\",\"Outlaw - \\\"\\\" [imwvixelns1h7x6~casper]\"],\"caret\":\"imwvixelns1h7x6~bane.rmks\",\"arrivedShows\":\"\"}",
+    "{\"step\":\"Ranger rmks \\\"A\\\" Tab\",\"typedIn\":\"imwvixelns1h7x6~bane.rmks\",\"store\":[\"Hex+Outlaw Jul 13→Jul 15 allday \\\"\\\" [imwvixelns1h7x6]\",\"Ranger Jul 13→Jul 15 09:00-11:00 \\\"A\\\" [imwvixh0b8szjzp]\"],\"screen\":[\"Ranger 09:00-11:00 \\\"A\\\" [imwvixelns1h7x6~bane]\",\"Hex - \\\"\\\" [imwvixelns1h7x6~rocky]\",\"Outlaw - \\\"\\\" [imwvixelns1h7x6~casper]\"],\"caret\":\"imwvixelns1h7x6~rocky.str\",\"arrivedShows\":\"\"}",
+    "{\"step\":\"Hex str \\\"1300\\\" Tab\",\"typedIn\":\"imwvixelns1h7x6~rocky.str\",\"store\":[\"Outlaw Jul 13→Jul 15 allday \\\"\\\" [imwvixelns1h7x6]\",\"Hex Jul 13→Jul 15 13:00-23:59 \\\"\\\" [imwvixjgfrohrjh]\",\"Ranger Jul 13→Jul 15 09:00-11:00 \\\"A\\\" [imwvixh0b8szjzp]\"],\"screen\":[\"Ranger 09:00-11:00 \\\"A\\\" [imwvixelns1h7x6~bane]\",\"Hex 13:00-23:59 \\\"\\\" [imwvixelns1h7x6~rocky]\",\"Outlaw - \\\"\\\" [imwvixelns1h7x6~casper]\"],\"caret\":\"imwvixelns1h7x6~rocky.end\",\"arrivedShows\":\"23:59\"}",
+    "{\"step\":\"Hex rmks \\\"B\\\" Tab\",\"typedIn\":\"imwvixelns1h7x6~rocky.rmks\",\"store\":[\"Outlaw Jul 13→Jul 15 allday \\\"\\\" [imwvixelns1h7x6]\",\"Hex Jul 13→Jul 15 13:00-23:59 \\\"B\\\" [imwvixjgfrohrjh]\",\"Ranger Jul 13→Jul 15 09:00-11:00 \\\"A\\\" [imwvixh0b8szjzp]\"],\"screen\":[\"Ranger 09:00-11:00 \\\"A\\\" [imwvixelns1h7x6~bane]\",\"Hex 13:00-23:59 \\\"B\\\" [imwvixelns1h7x6~rocky]\",\"Outlaw - \\\"\\\" [imwvixelns1h7x6~casper]\"],\"caret\":\"imwvixelns1h7x6~casper.str\",\"arrivedShows\":\"\"}",
+    "{\"step\":\"Ranger rmks \\\"A2\\\" Tab\",\"typedIn\":\"imwvixelns1h7x6~bane.rmks\",\"store\":[\"Outlaw Jul 13→Jul 15 allday \\\"\\\" [imwvixelns1h7x6]\",\"Hex Jul 13→Jul 15 13:00-23:59 \\\"B\\\" [imwvixjgfrohrjh]\",\"Ranger Jul 13→Jul 15 09:00-11:00 \\\"A2\\\" [imwvixh0b8szjzp]\"],\"screen\":[\"Ranger 09:00-11:00 \\\"A2\\\" [imwvixelns1h7x6~bane]\",\"Hex 13:00-23:59 \\\"B\\\" [imwvixelns1h7x6~rocky]\",\"Outlaw - \\\"\\\" [imwvixelns1h7x6~casper]\"],\"caret\":\"imwvixelns1h7x6~rocky.str\",\"arrivedShows\":\"13:00\"}",
+    "{\"step\":\"Hex str \\\"\\\" Tab\",\"typedIn\":\"imwvixelns1h7x6~rocky.str\",\"store\":[\"Outlaw Jul 13→Jul 15 allday \\\"\\\" [imwvixelns1h7x6]\",\"Hex Jul 13→Jul 15 allday \\\"B\\\" [imwvixjgfrohrjh]\",\"Ranger Jul 13→Jul 15 09:00-11:00 \\\"A2\\\" [imwvixh0b8szjzp]\"],\"screen\":[\"Ranger 09:00-11:00 \\\"A2\\\" [imwvixelns1h7x6~bane]\",\"Hex - \\\"B\\\" [imwvixelns1h7x6~rocky]\",\"Outlaw - \\\"\\\" [imwvixelns1h7x6~casper]\"],\"caret\":\"imwvixelns1h7x6~rocky.end\",\"arrivedShows\":\"\"}",
+    "{\"step\":\"Outlaw rmks \\\"C\\\" Tab\",\"typedIn\":\"imwvixelns1h7x6~casper.rmks\",\"store\":[\"Outlaw Jul 13→Jul 15 allday \\\"C\\\" [imwvixelns1h7x6]\",\"Hex Jul 13→Jul 15 allday \\\"B\\\" [imwvixjgfrohrjh]\",\"Ranger Jul 13→Jul 15 09:00-11:00 \\\"A2\\\" [imwvixh0b8szjzp]\"],\"screen\":[\"Ranger 09:00-11:00 \\\"A2\\\" [imwvixelns1h7x6~bane]\",\"Hex - \\\"B\\\" [imwvixelns1h7x6~rocky]\",\"Outlaw - \\\"C\\\" [imwvixelns1h7x6~casper]\"],\"caret\":\"imwvix91aor02yg.str\",\"arrivedShows\":\"\"}",
+    "picture b4-desk-chromium-1-tue-held.png: [\"Ranger 09:00-11:00 \\\"A2\\\" [imwvixelns1h7x6~bane]\",\"Hex - \\\"B\\\" [imwvixelns1h7x6~rocky]\",\"Outlaw - \\\"C\\\" [imwvixelns1h7x6~casper]\"]",
+    "{\"step\":\"clicked away\",\"store\":[\"Outlaw Jul 13→Jul 15 allday \\\"C\\\" [imwvixelns1h7x6]\",\"Hex Jul 13→Jul 15 allday \\\"B\\\" [imwvixjgfrohrjh]\",\"Ranger Jul 13→Jul 15 09:00-11:00 \\\"A2\\\" [imwvixh0b8szjzp]\"],\"screen\":[\"Outlaw - \\\"C\\\" [imwvixelns1h7x6]\",\"Hex - \\\"B\\\" [imwvixjgfrohrjh]\",\"Ranger 09:00-11:00 \\\"A2\\\" [imwvixh0b8szjzp]\"]}",
+    "picture b4-desk-chromium-2-tue-left.png: [\"Outlaw - \\\"C\\\" [imwvixelns1h7x6]\",\"Hex - \\\"B\\\" [imwvixjgfrohrjh]\",\"Ranger 09:00-11:00 \\\"A2\\\" [imwvixh0b8szjzp]\"]",
+    "picture b4-desk-chromium-3-mon.png: [\"Outlaw - \\\"C\\\" [imwvixelns1h7x6]\",\"Hex - \\\"B\\\" [imwvixjgfrohrjh]\",\"Ranger 09:00-11:00 \\\"A2\\\" [imwvixh0b8szjzp]\"]",
+    "picture b4-desk-chromium-3-wed.png: [\"Outlaw - \\\"C\\\" [imwvixelns1h7x6]\",\"Hex - \\\"B\\\" [imwvixjgfrohrjh]\",\"Ranger 09:00-11:00 \\\"A2\\\" [imwvixh0b8szjzp]\"]",
+    "Mon / Wed rows {\"Mon\":[\"Outlaw - \\\"C\\\" [imwvixelns1h7x6]\",\"Hex - \\\"B\\\" [imwvixjgfrohrjh]\",\"Ranger 09:00-11:00 \\\"A2\\\" [imwvixh0b8szjzp]\"],\"Wed\":[\"Outlaw - \\\"C\\\" [imwvixelns1h7x6]\",\"Hex - \\\"B\\\" [imwvixjgfrohrjh]\",\"Ranger 09:00-11:00 \\\"A2\\\" [imwvixh0b8szjzp]\"]}",
+    "Leave War cells {\"bane-13\":\"LL { act hasc}\",\"bane-14\":\"LL { act hasc}\",\"bane-15\":\"LL { act hasc}\",\"rocky-13\":\"LL { act hasc}\",\"rocky-14\":\"LL { act hasc}\",\"rocky-15\":\"LL { act hasc}\",\"casper-13\":\"LL { act hasc}\",\"casper-14\":\"LL { act hasc}\",\"casper-15\":\"LL { act hasc}\"}",
+    "picture b4-desk-chromium-4-leavewar.png: {\"bane-13\":\"LL { act hasc}\",\"bane-14\":\"LL { act hasc}\",\"bane-15\":\"LL { act hasc}\",\"rocky-13\":\"LL { act hasc}\",\"rocky-14\":\"LL { act hasc}\",\"rocky-15\":\"LL { act hasc}\",\"casper-13\":\"LL { act hasc}\",\"casper-14\":\"LL { act hasc}\",\"casper-15\":\"LL { act hasc}\"}"
+   ]
+  }
+ },
+ "errors": []
+}

@@ -88,6 +88,57 @@ test('D731 (1) — a phone, a window up: the passing note is at the top of the s
     expect(844 - foot!.bottom, 'at the foot, where it always was').toBeLessThan(40)
   } finally { await context.close() }
 })
+/* THE NOTE'S BOX BREAKS A WORD TOO LONG FOR IT ([UI-SLEEK-PASS] round 4's leftovers (1) — walker c's C7, 24 Nov 26; the
+   same on `main`). Sixty letters with no space typed into a time box: the note naming what was typed ran about 10px past
+   its own border on a phone (Chromium and WebKit), because a box breaks lines only at spaces unless it is told
+   otherwise. Typed the way a person types it — a take-off box on Edit Schedule, tapped, the letters, Tab — and the
+   note's words measured against its own border, at a phone's two widths. An ordinary note's lines are not touched: a
+   box breaks inside a word only where the word cannot fit (the desktop's one-line note below). */
+const LONG = 'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz01234567'   // 60 letters, no space
+for (const width of [390, 320]) {
+  test(`the note's box — a phone ${width} wide: 60 letters typed in a time box stay inside the note's border`, async ({ browser, baseURL }) => {
+    const context = await browser.newContext({ baseURL, viewport: { width, height: 844 }, isMobile: true, hasTouch: true })
+    const page: Page = await context.newPage()
+    try {
+      await login(page); await go(page, 'editsched')
+      const key = await page.evaluate(() => {
+        const e = [...document.querySelectorAll('#eWeek [data-txt^="ff:"][data-txt$=".to"]')].find(x => x.getBoundingClientRect().width > 4)
+        if (!e) return null
+        e.scrollIntoView({ block: 'center' }); return e.getAttribute('data-txt')
+      })
+      expect(key, 'a take-off box is drawn (or this test proves nothing)').toBeTruthy()
+      await page.locator(`#eWeek [data-txt="${key}"]`).first().tap()
+      await page.keyboard.press('Control+A'); await page.keyboard.type(LONG); await page.keyboard.press('Tab')
+      const note = page.locator('#toastEl')
+      await expect(note).toHaveText(`${LONG} is not a time. Try 0900 or 09:00.`)
+      const m = await page.evaluate(() => {
+        const t = document.getElementById('toastEl')!
+        const r = document.createRange(); r.selectNodeContents(t)
+        const ink = [...r.getClientRects()], box = t.getBoundingClientRect(), cs = getComputedStyle(t)
+        /* the border's inner edge: the words must stay inside the padding, as every other note's do */
+        const inL = box.left + parseFloat(cs.borderLeftWidth) + parseFloat(cs.paddingLeft)
+        const inR = box.right - parseFloat(cs.borderRightWidth) - parseFloat(cs.paddingRight)
+        return { inL, inR, left: box.left, right: box.right, inkL: Math.min(...ink.map(x => x.left)), inkR: Math.max(...ink.map(x => x.right)), vw: innerWidth, scrollW: t.scrollWidth, clientW: t.clientWidth }
+      })
+      expect(m.inkR, 'the words end inside the note’s border').toBeLessThanOrEqual(m.inR + 0.5)
+      expect(m.inkL, 'and start inside it').toBeGreaterThanOrEqual(m.inL - 0.5)
+      expect(m.scrollW, 'nothing of the note runs over').toBeLessThanOrEqual(m.clientW)
+      expect(m.left, 'the note is on the screen').toBeGreaterThanOrEqual(0)
+      expect(m.right).toBeLessThanOrEqual(m.vw)
+    } finally { await context.close() }
+  })
+}
+test('the note’s box — a desktop: an ordinary note is still one line, as wide as its words', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await login(page); await go(page, 'inputs')
+  await page.evaluate(() => (window as any).toast('Training changed to Meeting, renamed — was Range brief · Saber'))
+  const m = await page.evaluate(() => {
+    const t = document.getElementById('toastEl')!, r = document.createRange(); r.selectNodeContents(t)
+    return { lines: new Set([...r.getClientRects()].map(x => Math.round(x.top))).size, scrollW: t.scrollWidth, clientW: t.clientWidth }
+  })
+  expect(m.lines, 'one line').toBe(1)
+  expect(m.scrollW).toBeLessThanOrEqual(m.clientW)
+})
 test('D731 (1) — a desktop keeps the note at the foot with a window up', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 })
   await login(page); await go(page, 'inputs')

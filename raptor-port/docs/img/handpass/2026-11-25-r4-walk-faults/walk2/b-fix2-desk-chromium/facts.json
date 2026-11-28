@@ -1,0 +1,51 @@
+{
+ "pictures": [],
+ "cases": {
+  "desk-chromium": {
+   "log": [
+    "bundle index-BZt7HLBD.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"05:00\",\"to\":\"06:00\",\"title\":\"Early brief\"} on 2026-07-13: new input [\"imwv5dmof4ccwbg\"]; asked []; note \"\"",
+    "Ranger flies Monday wave 1, formation 1, line 2; take-off 12:40; input imwv5dmof4ccwbg"
+   ]
+  }
+ },
+ "errors": [],
+ "results": [
+  [
+   "B0 desk-chromium the question raised by \"DS FOR RU\" in the first formation's Remarks",
+   "PASS",
+   "{\"questions\":1}",
+   "b-desk-chromium-b0-question.png"
+  ],
+  [
+   "B1 desk-chromium \"1300\" typed in Ranger's input END, Tab: REMARKS holds its place, keeps the caret, the question stays",
+   "PASS",
+   "{\"flyingSectionRewritten\":true,\"endMovedBy\":0,\"before\":{\"boxTop\":490.7,\"focusIsBox\":false,\"focus\":\"imwv5dmof4ccwbg.end\",\"caretPos\":[4,4],\"value\":\"\",\"question\":{\"top\":-1805,\"h\":69,\"connected\":true,\"n\":1},\"scroller\":\"sb-boardwrap\",\"scrollTop\":2971,\"scrollY\":0,\"wavesMarked\":true,\"groundRow\":null},\"rightAfterTab\":{\"boxTop\":490.7,\"focusIsBox\":true,\"focus\":\"imwv5dmof4ccwbg.rmks\",\"caretPos\":[0,0],\"value\":\"\",\"question\":{\"top\":-1805,\"h\":69,\"connected\":true,\"n\":1},\"scroller\":\"sb-boardwrap\",\"scrollTop\":2971,\"scrollY\":0,\"wavesMarked\":false,\"groundRow\":null},\"settled\":{\"boxTop\":490.7,\"focusIsBox\":true,\"focus\":\"imwv5dmof4ccwbg.rmks\",\"caretPos\":[0,0],\"value\":\"\",\"question\":{\"top\":-1805,\"h\":69,\"connected\":true,\"n\":1},\"scroller\":\"sb-boardwrap\",\"scrollTop\":2971,\"scrollY\":0,\"wavesMarked\":false,\"groundRow\":null}}",
+   "b-desk-chromium-B1-before-tab.png, b-desk-chromium-B1-after-tab.png"
+  ],
+  [
+   "B1b desk-chromium \"0600\" typed in Ranger's input END, Tab: REMARKS holds its place, keeps the caret, the question stays",
+   "PASS",
+   "{\"flyingSectionRewritten\":false,\"endMovedBy\":0,\"before\":{\"boxTop\":490.7,\"focusIsBox\":false,\"focus\":\"imwv5dmof4ccwbg.end\",\"caretPos\":[4,4],\"value\":\"\",\"question\":{\"top\":-1805,\"h\":69,\"connected\":true,\"n\":1},\"scroller\":\"sb-boardwrap\",\"scrollTop\":2971,\"scrollY\":0,\"wavesMarked\":true,\"groundRow\":null},\"rightAfterTab\":{\"boxTop\":490.7,\"focusIsBox\":true,\"focus\":\"imwv5dmof4ccwbg.rmks\",\"caretPos\":[0,0],\"value\":\"\",\"question\":{\"top\":-1805,\"h\":69,\"connected\":true,\"n\":1},\"scroller\":\"sb-boardwrap\",\"scrollTop\":2971,\"scrollY\":0,\"wavesMarked\":true,\"groundRow\":null},\"settled\":{\"boxTop\":490.7,\"focusIsBox\":true,\"focus\":\"imwv5dmof4ccwbg.rmks\",\"caretPos\":[0,0],\"value\":\"\",\"question\":{\"top\":-1805,\"h\":69,\"connected\":true,\"n\":1},\"scroller\":\"sb-boardwrap\",\"scrollTop\":2971,\"scrollY\":0,\"wavesMarked\":true,\"groundRow\":null}}",
+   "b-desk-chromium-B1b-before-tab.png, b-desk-chromium-B1b-after-tab.png"
+  ],
+  [
+   "B1c desk-chromium \"1300\" typed in Ranger's input END, Tab: REMARKS holds its place, keeps the caret, the question stays",
+   "PASS",
+   "{\"flyingSectionRewritten\":false,\"endMovedBy\":0,\"before\":{\"boxTop\":490.7,\"focusIsBox\":false,\"focus\":\"imwv5dmof4ccwbg.end\",\"caretPos\":[4,4],\"value\":\"\",\"question\":{\"top\":-1805,\"h\":69,\"connected\":true,\"n\":1},\"scroller\":\"sb-boardwrap\",\"scrollTop\":2971,\"scrollY\":0,\"wavesMarked\":true,\"groundRow\":null},\"rightAfterTab\":{\"boxTop\":490.7,\"focusIsBox\":true,\"focus\":\"imwv5dmof4ccwbg.rmks\",\"caretPos\":[0,0],\"value\":\"\",\"question\":{\"top\":-1805,\"h\":69,\"connected\":true,\"n\":1},\"scroller\":\"sb-boardwrap\",\"scrollTop\":2971,\"scrollY\":0,\"wavesMarked\":true,\"groundRow\":null},\"settled\":{\"boxTop\":490.7,\"focusIsBox\":true,\"focus\":\"imwv5dmof4ccwbg.rmks\",\"caretPos\":[0,0],\"value\":\"\",\"question\":{\"top\":-1805,\"h\":69,\"connected\":true,\"n\":1},\"scroller\":\"sb-boardwrap\",\"scrollTop\":2971,\"scrollY\":0,\"wavesMarked\":true,\"groundRow\":null}}",
+   "b-desk-chromium-B1c-before-tab.png, b-desk-chromium-B1c-after-tab.png"
+  ],
+  [
+   "B1d desk-chromium \"0600\" typed in Ranger's input END, Tab: REMARKS holds its place, keeps the caret, the question stays",
+   "PASS",
+   "{\"flyingSectionRewritten\":false,\"endMovedBy\":0,\"before\":{\"boxTop\":490.7,\"focusIsBox\":false,\"focus\":\"imwv5dmof4ccwbg.end\",\"caretPos\":[4,4],\"value\":\"\",\"question\":{\"top\":-1805,\"h\":69,\"connected\":true,\"n\":1},\"scroller\":\"sb-boardwrap\",\"scrollTop\":2971,\"scrollY\":0,\"wavesMarked\":true,\"groundRow\":null},\"rightAfterTab\":{\"boxTop\":490.7,\"focusIsBox\":true,\"focus\":\"imwv5dmof4ccwbg.rmks\",\"caretPos\":[0,0],\"value\":\"\",\"question\":{\"top\":-1805,\"h\":69,\"connected\":true,\"n\":1},\"scroller\":\"sb-boardwrap\",\"scrollTop\":2971,\"scrollY\":0,\"wavesMarked\":true,\"groundRow\":null},\"settled\":{\"boxTop\":490.7,\"focusIsBox\":true,\"focus\":\"imwv5dmof4ccwbg.rmks\",\"caretPos\":[0,0],\"value\":\"\",\"question\":{\"top\":-1805,\"h\":69,\"connected\":true,\"n\":1},\"scroller\":\"sb-boardwrap\",\"scrollTop\":2971,\"scrollY\":0,\"wavesMarked\":true,\"groundRow\":null}}",
+   "b-desk-chromium-B1d-before-tab.png, b-desk-chromium-B1d-after-tab.png"
+  ],
+  [
+   "B2 desk-chromium \"+ Line\" pressed with the caret in a Ground Programme box (Astra's steps)",
+   "COULD NOT BE MADE",
+   "{\"plusLineOnScreenAt\":-1068,\"flyingSectionRewritten\":true,\"boxMovedBy\":1638.1,\"before\":{\"boxTop\":491,\"focusIsBox\":true,\"focus\":\"gr:0.0.rmks\",\"caretPos\":[3,3],\"value\":\"xyz\",\"question\":{\"top\":-1302,\"h\":69,\"connected\":true,\"n\":1},\"scroller\":\"sb-boardwrap\",\"scrollTop\":2468,\"scrollY\":0,\"wavesMarked\":true,\"groundRow\":null},\"rightAfterPress\":{\"boxTop\":2129.1,\"focusIsBox\":false,\"focus\":\"BODY\",\"caretPos\":null,\"value\":\"xyz\",\"question\":{\"top\":260,\"h\":69,\"connected\":true,\"n\":1},\"scroller\":\"sb-boardwrap\",\"scrollTop\":906,\"scrollY\":0,\"wavesMarked\":false,\"groundRow\":null},\"settled\":{\"boxTop\":2129.1,\"focusIsBox\":false,\"focus\":\"BODY\",\"caretPos\":null,\"value\":\"xyz\",\"question\":{\"top\":260,\"h\":69,\"connected\":true,\"n\":1},\"scroller\":\"sb-boardwrap\",\"scrollTop\":906,\"scrollY\":0,\"wavesMarked\":false,\"groundRow\":null}}",
+   "b-desk-chromium-B2-before-line.png, b-desk-chromium-B2-after-line.png"
+  ]
+ ]
+}

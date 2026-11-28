@@ -1,0 +1,29 @@
+[
+ [
+  "F-S43",
+  "desk chromium",
+  "Admin → Users: Ace's row → Delete → its own question",
+  "exactly as on main — Admin → Users' own Delete keeps its red look (D2732 Q4: the grey is on the Leave War's cards only; D2653 c)",
+  "question \"Tap again to delete Ace\"; buttons: [\"Archive [] bg rgb(26, 31, 38) border solid rgb(42, 49, 58) 70×28 @660,404\",\"Cancel [] bg rgb(26, 31, 38) border solid rgb(42, 49, 58) 65×28 @900,404\"]",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r13d/001-desk-chromium-admin-ace-open.png , img/handpass/2026-11-26-msq-s4-walk/wb/r13d/002-desk-chromium-admin-ace-delete-question.png"
+ ],
+ [
+  "F-S43",
+  "desk chromium",
+  "Archive",
+  "",
+  "no Archive button found",
+  "NOT REACHED",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r13d/001-desk-chromium-admin-ace-open.png"
+ ],
+ [
+  "F-S43",
+  "desk chromium",
+  "Admin → Users: the archived Ace opened (callsign, Post in date, Restore, Delete)",
+  "exactly as on main",
+  "[]",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r13d/003-desk-chromium-admin-ace-restore-sheet.png"
+ ]
+]

@@ -1,0 +1,205 @@
+{
+ "pictures": [
+  {
+   "file": "b12-desk-chromium-0-typed.png",
+   "case": "B12",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Hex 08:00-10:00 \"\" [imwvj75kp4xa2xg]",
+    "Ranger 09:00-11:00 \"own hours\" [imwvj77jblzgb40]"
+   ]
+  },
+  {
+   "file": "b12-desk-chromium-1-open-Cancel.png",
+   "case": "B12",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "title": "Ranger · 15 Jul",
+    "vals": {
+     "start": "09:00",
+     "end": "11:00",
+     "rmk": "own hours"
+    }
+   }
+  },
+  {
+   "file": "b12-desk-chromium-2-closed-Cancel.png",
+   "case": "B12",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "closed": true,
+    "escAsk": 0,
+    "store": [
+     "LL Hex 08:00-10:00 \"\" [imwvj75kp4xa2xg]",
+     "LL Ranger 09:00-11:00 \"own hours\" [imwvj77jblzgb40]"
+    ],
+    "page": "editsched",
+    "board": 0,
+    "otherWins": [],
+    "note": "",
+    "scrollMoved": false
+   }
+  },
+  {
+   "file": "b12-desk-chromium-1-open-X.png",
+   "case": "B12",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "title": "Ranger · 15 Jul",
+    "vals": {
+     "start": "09:00",
+     "end": "11:00",
+     "rmk": "own hours"
+    }
+   }
+  },
+  {
+   "file": "b12-desk-chromium-2-closed-X.png",
+   "case": "B12",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "closed": true,
+    "escAsk": 0,
+    "store": [
+     "LL Hex 08:00-10:00 \"\" [imwvj75kp4xa2xg]",
+     "LL Ranger 09:00-11:00 \"own hours\" [imwvj77jblzgb40]"
+    ],
+    "page": "editsched",
+    "board": 0,
+    "otherWins": [],
+    "note": "",
+    "scrollMoved": false
+   }
+  },
+  {
+   "file": "b12-desk-chromium-1-open-Escape.png",
+   "case": "B12",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "title": "Ranger · 15 Jul",
+    "vals": {
+     "start": "09:00",
+     "end": "11:00",
+     "rmk": "own hours"
+    }
+   }
+  },
+  {
+   "file": "b12-desk-chromium-2-closed-Escape.png",
+   "case": "B12",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "closed": true,
+    "escAsk": 0,
+    "store": [
+     "LL Hex 08:00-10:00 \"\" [imwvj75kp4xa2xg]",
+     "LL Ranger 09:00-11:00 \"own hours\" [imwvj77jblzgb40]"
+    ],
+    "page": "editsched",
+    "board": 0,
+    "otherWins": [],
+    "note": "",
+    "scrollMoved": false
+   }
+  },
+  {
+   "file": "b12-desk-chromium-1-open-outside.png",
+   "case": "B12",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "title": "Ranger · 15 Jul",
+    "vals": {
+     "start": "09:00",
+     "end": "11:00",
+     "rmk": "own hours"
+    }
+   }
+  },
+  {
+   "file": "b12-desk-chromium-2-closed-outside.png",
+   "case": "B12",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "closed": true,
+    "escAsk": 0,
+    "store": [
+     "LL Hex 08:00-10:00 \"\" [imwvj75kp4xa2xg]",
+     "LL Ranger 09:00-11:00 \"own hours\" [imwvj77jblzgb40]"
+    ],
+    "page": "editsched",
+    "board": 0,
+    "otherWins": [],
+    "note": "",
+    "scrollMoved": false
+   }
+  },
+  {
+   "file": "b12-desk-chromium-3-after-undo.png",
+   "case": "B12",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "store": [
+     "LL Hex 08:00-10:00 \"\" [imwvj75kp4xa2xg]",
+     "LL Ranger 09:00-11:00 \"\" [imwvj77jblzgb40]"
+    ],
+    "rows": [
+     "Hex 08:00-10:00 \"\" [imwvj75kp4xa2xg]",
+     "Ranger 09:00-11:00 \"\" [imwvj77jblzgb40]"
+    ],
+    "note": "Undid: Ranger’s LL"
+   }
+  },
+  {
+   "file": "b12-desk-chromium-4-inputs-day.png",
+   "case": "B12",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "LATENo document08:00–10:00HexLLBy Saber",
+    "LATENo document09:00–11:00RangerLLBy Saber"
+   ]
+  },
+  {
+   "file": "b12-desk-chromium-5-board.png",
+   "case": "B12",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Hex 08:00-10:00 \"\" [imwvj75kp4xa2xg.str]",
+    "Ranger 09:00-11:00 \"\" [imwvj77jblzgb40.str]"
+   ]
+  },
+  {
+   "file": "b12-desk-chromium-6-bell-admin.png",
+   "case": "B12",
+   "size": "desktop 1440x900 @2x",
+   "text": []
+  }
+ ],
+ "cases": {
+  "B12": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvj75kp4xa2xg\"]; asked []; note \"\"",
+    "typed {\"store\":[\"LL Hex 08:00-10:00 \\\"\\\" [imwvj75kp4xa2xg]\",\"LL Ranger 09:00-11:00 \\\"own hours\\\" [imwvj77jblzgb40]\"],\"rows\":[\"Hex 08:00-10:00 \\\"\\\" [imwvj75kp4xa2xg]\",\"Ranger 09:00-11:00 \\\"own hours\\\" [imwvj77jblzgb40]\"]}",
+    "picture b12-desk-chromium-0-typed.png: [\"Hex 08:00-10:00 \\\"\\\" [imwvj75kp4xa2xg]\",\"Ranger 09:00-11:00 \\\"own hours\\\" [imwvj77jblzgb40]\"]",
+    "picture b12-desk-chromium-1-open-Cancel.png: {\"title\":\"Ranger · 15 Jul\",\"vals\":{\"start\":\"09:00\",\"end\":\"11:00\",\"rmk\":\"own hours\"}}",
+    "picture b12-desk-chromium-2-closed-Cancel.png: {\"closed\":true,\"escAsk\":0,\"store\":[\"LL Hex 08:00-10:00 \\\"\\\" [imwvj75kp4xa2xg]\",\"LL Ranger 09:00-11:00 \\\"own hours\\\" [imwvj77jblzgb40]\"],\"page\":\"editsched\",\"board\":0,\"otherWins\":[],\"note\":\"\",\"scrollMoved\":false}",
+    "close by Cancel: {\"way\":\"Cancel\",\"pressed\":\"Cancel\",\"label\":\"<button class=\\\"ntx inpedit\\\" data-inpedit=\\\"imwvj77jblzgb40\\\" title=\\\"Edit this input — times, type, remarks or delete\\\" data-shrb12=\\\"1\\\">LL</button>\",\"opened\":true,\"title\":\"Ranger · 15 Jul\",\"vals\":{\"start\":\"09:00\",\"end\":\"11:00\",\"rmk\":\"own hours\"},\"after\":{\"closed\":true,\"escAsk\":0,\"store\":[\"LL Hex 08:00-10:00 \\\"\\\" [imwvj75kp4xa2xg]\",\"LL Ranger 09:00-11:00 \\\"own hours\\\" [imwvj77jblzgb40]\"],\"page\":\"editsched\",\"board\":0,\"otherWins\":[],\"note\":\"\",\"scrollMoved\":false},\"storeSame\":true,\"pageSame\":true}",
+    "picture b12-desk-chromium-1-open-X.png: {\"title\":\"Ranger · 15 Jul\",\"vals\":{\"start\":\"09:00\",\"end\":\"11:00\",\"rmk\":\"own hours\"}}",
+    "picture b12-desk-chromium-2-closed-X.png: {\"closed\":true,\"escAsk\":0,\"store\":[\"LL Hex 08:00-10:00 \\\"\\\" [imwvj75kp4xa2xg]\",\"LL Ranger 09:00-11:00 \\\"own hours\\\" [imwvj77jblzgb40]\"],\"page\":\"editsched\",\"board\":0,\"otherWins\":[],\"note\":\"\",\"scrollMoved\":false}",
+    "close by X: {\"way\":\"X\",\"pressed\":\"X\",\"label\":\"<button class=\\\"ntx inpedit\\\" data-inpedit=\\\"imwvj77jblzgb40\\\" title=\\\"Edit this input — times, type, remarks or delete\\\" data-shrb12=\\\"1\\\">LL</button>\",\"opened\":true,\"title\":\"Ranger · 15 Jul\",\"vals\":{\"start\":\"09:00\",\"end\":\"11:00\",\"rmk\":\"own hours\"},\"after\":{\"closed\":true,\"escAsk\":0,\"store\":[\"LL Hex 08:00-10:00 \\\"\\\" [imwvj75kp4xa2xg]\",\"LL Ranger 09:00-11:00 \\\"own hours\\\" [imwvj77jblzgb40]\"],\"page\":\"editsched\",\"board\":0,\"otherWins\":[],\"note\":\"\",\"scrollMoved\":false},\"storeSame\":true,\"pageSame\":true}",
+    "picture b12-desk-chromium-1-open-Escape.png: {\"title\":\"Ranger · 15 Jul\",\"vals\":{\"start\":\"09:00\",\"end\":\"11:00\",\"rmk\":\"own hours\"}}",
+    "picture b12-desk-chromium-2-closed-Escape.png: {\"closed\":true,\"escAsk\":0,\"store\":[\"LL Hex 08:00-10:00 \\\"\\\" [imwvj75kp4xa2xg]\",\"LL Ranger 09:00-11:00 \\\"own hours\\\" [imwvj77jblzgb40]\"],\"page\":\"editsched\",\"board\":0,\"otherWins\":[],\"note\":\"\",\"scrollMoved\":false}",
+    "close by Escape: {\"way\":\"Escape\",\"pressed\":\"Escape\",\"label\":\"<button class=\\\"ntx inpedit\\\" data-inpedit=\\\"imwvj77jblzgb40\\\" title=\\\"Edit this input — times, type, remarks or delete\\\" data-shrb12=\\\"1\\\">LL</button>\",\"opened\":true,\"title\":\"Ranger · 15 Jul\",\"vals\":{\"start\":\"09:00\",\"end\":\"11:00\",\"rmk\":\"own hours\"},\"after\":{\"closed\":true,\"escAsk\":0,\"store\":[\"LL Hex 08:00-10:00 \\\"\\\" [imwvj75kp4xa2xg]\",\"LL Ranger 09:00-11:00 \\\"own hours\\\" [imwvj77jblzgb40]\"],\"page\":\"editsched\",\"board\":0,\"otherWins\":[],\"note\":\"\",\"scrollMoved\":false},\"storeSame\":true,\"pageSame\":true}",
+    "picture b12-desk-chromium-1-open-outside.png: {\"title\":\"Ranger · 15 Jul\",\"vals\":{\"start\":\"09:00\",\"end\":\"11:00\",\"rmk\":\"own hours\"}}",
+    "picture b12-desk-chromium-2-closed-outside.png: {\"closed\":true,\"escAsk\":0,\"store\":[\"LL Hex 08:00-10:00 \\\"\\\" [imwvj75kp4xa2xg]\",\"LL Ranger 09:00-11:00 \\\"own hours\\\" [imwvj77jblzgb40]\"],\"page\":\"editsched\",\"board\":0,\"otherWins\":[],\"note\":\"\",\"scrollMoved\":false}",
+    "close by outside: {\"way\":\"outside\",\"pressed\":\"outside at 20,450 on DIV.airpop\",\"label\":\"<button class=\\\"ntx inpedit\\\" data-inpedit=\\\"imwvj77jblzgb40\\\" title=\\\"Edit this input — times, type, remarks or delete\\\" data-shrb12=\\\"1\\\">LL</button>\",\"opened\":true,\"title\":\"Ranger · 15 Jul\",\"vals\":{\"start\":\"09:00\",\"end\":\"11:00\",\"rmk\":\"own hours\"},\"after\":{\"closed\":true,\"escAsk\":0,\"store\":[\"LL Hex 08:00-10:00 \\\"\\\" [imwvj75kp4xa2xg]\",\"LL Ranger 09:00-11:00 \\\"own hours\\\" [imwvj77jblzgb40]\"],\"page\":\"editsched\",\"board\":0,\"otherWins\":[],\"note\":\"\",\"scrollMoved\":false},\"storeSame\":true,\"pageSame\":true}",
+    "picture b12-desk-chromium-3-after-undo.png: {\"store\":[\"LL Hex 08:00-10:00 \\\"\\\" [imwvj75kp4xa2xg]\",\"LL Ranger 09:00-11:00 \\\"\\\" [imwvj77jblzgb40]\"],\"rows\":[\"Hex 08:00-10:00 \\\"\\\" [imwvj75kp4xa2xg]\",\"Ranger 09:00-11:00 \\\"\\\" [imwvj77jblzgb40]\"],\"note\":\"Undid: Ranger’s LL\"}",
+    "undo: Undo — Ranger’s LL {\"store\":[\"LL Hex 08:00-10:00 \\\"\\\" [imwvj75kp4xa2xg]\",\"LL Ranger 09:00-11:00 \\\"\\\" [imwvj77jblzgb40]\"],\"rows\":[\"Hex 08:00-10:00 \\\"\\\" [imwvj75kp4xa2xg]\",\"Ranger 09:00-11:00 \\\"\\\" [imwvj77jblzgb40]\"],\"note\":\"Undid: Ranger’s LL\"}",
+    "picture b12-desk-chromium-4-inputs-day.png: [\"LATENo document08:00–10:00HexLLBy Saber\",\"LATENo document09:00–11:00RangerLLBy Saber\"]",
+    "picture b12-desk-chromium-5-board.png: [\"Hex 08:00-10:00 \\\"\\\" [imwvj75kp4xa2xg.str]\",\"Ranger 09:00-11:00 \\\"\\\" [imwvj77jblzgb40.str]\"]",
+    "picture b12-desk-chromium-6-bell-admin.png: []",
+    "inputs [\"LATENo document08:00–10:00HexLLBy Saber\",\"LATENo document09:00–11:00RangerLLBy Saber\"] board [\"Hex 08:00-10:00 \\\"\\\" [imwvj75kp4xa2xg.str]\",\"Ranger 09:00-11:00 \\\"\\\" [imwvj77jblzgb40.str]\"] bell []"
+   ]
+  }
+ },
+ "errors": []
+}

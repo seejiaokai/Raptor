@@ -1,0 +1,20 @@
+msq-s4w-lib v1 who=wd run=r3low port=4756
+wd-lib v1
+wd-lowrow v1
+t520 Cotter cell at the foot {"x":290,"y":671,"w":22,"h":18}
+ROW RECORD | lesson 11 low row: one-day window | t520 | page at its foot, tap Cotter 7 Dec | saw: {"cellY":671,"cellB":689,"sheetTop":595,"hit":false,"at":"inped-rmk bp-rmk dark"}
+ROW RECORD | lesson 11 low row: posting sheet | t520 | ⋯ → Post out | saw: {"cellY":671,"cellB":689,"sheetTop":578,"hit":false,"at":"po-delete"}
+t520 errors []
+t520-main Cotter cell at the foot {"x":290,"y":671,"w":22,"h":18}
+ROW RECORD | lesson 11 low row: one-day window | t520-main | page at its foot, tap Cotter 7 Dec | saw: {"cellY":671,"cellB":689,"sheetTop":595,"hit":false,"at":"inped-rmk bp-rmk dark"}
+ROW RECORD | lesson 11 low row: posting sheet | t520-main | ⋯ → Post out | saw: {"cellY":671,"cellB":689,"sheetTop":456,"hit":false,"at":"bidsheet-row postout"}
+t520-main errors []
+t700 Cotter cell at the foot {"x":291,"y":671,"w":22,"h":18}
+ROW RECORD | lesson 11 low row: one-day window | t700 | page at its foot, tap Cotter 7 Dec | saw: {"cellY":671,"cellB":689,"sheetTop":595,"hit":false,"at":"bid-remarks"}
+ROW RECORD | lesson 11 low row: posting sheet | t700 | ⋯ → Post out | saw: {"cellY":671,"cellB":689,"sheetTop":578,"hit":false,"at":"po-overseas"}
+t700 errors []
+t700-main Cotter cell at the foot {"x":291,"y":671,"w":22,"h":18}
+ROW RECORD | lesson 11 low row: one-day window | t700-main | page at its foot, tap Cotter 7 Dec | saw: {"cellY":671,"cellB":689,"sheetTop":595,"hit":false,"at":"bid-remarks"}
+ROW RECORD | lesson 11 low row: posting sheet | t700-main | ⋯ → Post out | saw: {"cellY":671,"cellB":689,"sheetTop":456,"hit":false,"at":"bidsheet-row postout"}
+t700-main errors []
+wd-lowrow done

@@ -1,0 +1,417 @@
+{
+ "pictures": [
+  {
+   "file": "D2-ranger-bell-phone.png",
+   "case": "D2",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber",
+    "LL Thu 23 Jul / Now LL (AM) · Saber",
+    "OL Wed 22 Jul / LL changed to OL · Saber",
+    "Brief Tue 21 Jul / Renamed — was brief · Saber",
+    "Range brief Mon 20 Jul / Renamed — was Training · Saber",
+    "LL Fri 17 Jul / Training changed to LL, renamed — was Range brief · Saber",
+    "Training · Safety Wed 15 Jul / Training changed to Meeting · Saber",
+    "Brief Tue 14 Jul / Training changed to Meeting · Saber",
+    "Meeting Mon 13 Jul / Training changed to Meeting · Saber",
+    "Training Fri 24 Jul / You were added · Saber",
+    "LL Thu 23 Jul / You were added · Saber",
+    "LL Wed 22 Jul / You were added · Saber",
+    "brief Tue 21 Jul / You were added · Saber",
+    "Training Mon 20 Jul / You were added · Saber",
+    "Range brief Fri 17 Jul / You were added · Saber",
+    "Training · Safety Wed 15 Jul / You were added · Saber",
+    "Brief Tue 14 Jul / You were added · Saber",
+    "Meeting Mon 13 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber",
+     "lines": 2,
+     "fitsOneLine": false,
+     "boxWidth": 307,
+     "height": 34,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now LL (AM) · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "LL changed to OL · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Renamed — was brief · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Renamed — was Training · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Training changed to LL, renamed — was Range brief · Saber",
+     "lines": 2,
+     "fitsOneLine": false,
+     "boxWidth": 307,
+     "height": 34,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Training changed to Meeting · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Training changed to Meeting · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Training changed to Meeting · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 300,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "D2-ranger-bell-desk.png",
+   "case": "D2",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber",
+    "LL Thu 23 Jul / Now LL (AM) · Saber",
+    "OL Wed 22 Jul / LL changed to OL · Saber",
+    "Brief Tue 21 Jul / Renamed — was brief · Saber",
+    "Range brief Mon 20 Jul / Renamed — was Training · Saber",
+    "LL Fri 17 Jul / Training changed to LL, renamed — was Range brief · Saber",
+    "Training · Safety Wed 15 Jul / Training changed to Meeting · Saber",
+    "Brief Tue 14 Jul / Training changed to Meeting · Saber",
+    "Meeting Mon 13 Jul / Training changed to Meeting · Saber",
+    "Training Fri 24 Jul / You were added · Saber",
+    "LL Thu 23 Jul / You were added · Saber",
+    "LL Wed 22 Jul / You were added · Saber",
+    "brief Tue 21 Jul / You were added · Saber",
+    "Training Mon 20 Jul / You were added · Saber",
+    "Range brief Fri 17 Jul / You were added · Saber",
+    "Training · Safety Wed 15 Jul / You were added · Saber",
+    "Brief Tue 14 Jul / You were added · Saber",
+    "Meeting Mon 13 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber",
+     "lines": 2,
+     "fitsOneLine": false,
+     "boxWidth": 269,
+     "height": 34,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now LL (AM) · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "LL changed to OL · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Renamed — was brief · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Renamed — was Training · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Training changed to LL, renamed — was Range brief · Saber",
+     "lines": 2,
+     "fitsOneLine": false,
+     "boxWidth": 269,
+     "height": 34,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Training changed to Meeting · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Training changed to Meeting · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Training changed to Meeting · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 262,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 262,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  }
+ ],
+ "cases": {
+  "D2": {
+   "log": [
+    "bundle index-BNHpQA1S.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Meeting\"} on 2026-07-13: new input [\"imwukm839gd1vfh\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Brief\"} on 2026-07-14: new input [\"imwukmazdd2yyzx\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Training · Safety\"} on 2026-07-15: new input [\"imwukmdtne3chk1\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Range brief\"} on 2026-07-17: new input [\"imwukmgqcx7me2e\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\"} on 2026-07-20: new input [\"imwukmjk47f0lya\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"brief\"} on 2026-07-21: new input [\"imwukmmewk51mhp\"]; asked []; note \"\"",
+    "filed {\"type\":\"LL\",\"people\":[\"bane\"],\"span\":\"all\"} on 2026-07-22: new input [\"imwukmp7n0549sy\"]; asked [\"document\"]; note \"\"",
+    "filed {\"type\":\"LL\",\"people\":[\"bane\"],\"span\":\"all\"} on 2026-07-23: new input [\"imwukmrwb874zzf\"]; asked [\"document\"]; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Training\",\"remarks\":\"Bring your kit\"} on 2026-07-24: new input [\"imwukmuqxccusr5\"]; asked []; note \"\"",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "Meeting: before {\"type\":\"Training\",\"title\":\"Meeting\",\"date\":\"Jul 13\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"} after {\"type\":\"Meeting\",\"date\":\"Jul 13\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "Brief: before {\"type\":\"Training\",\"title\":\"Brief\",\"date\":\"Jul 14\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"} after {\"type\":\"Meeting\",\"title\":\"Brief\",\"date\":\"Jul 14\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "Safety: before {\"type\":\"Training\",\"title\":\"Training · Safety\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"} after {\"type\":\"Meeting\",\"title\":\"Training · Safety\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "saved the change: asked []; note \"LL does not go on the Ground Programme — its row has been removed\"; window still open: false",
+    "RangeLL: before {\"type\":\"Training\",\"title\":\"Range brief\",\"date\":\"Jul 17\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"} after {\"type\":\"LL\",\"date\":\"Jul 17\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"]}",
+    "saved the change: asked []; note \"LL does not go on the Ground Programme — its row has been removed\"; window still open: false",
+    "give: before {\"type\":\"Training\",\"date\":\"Jul 20\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"]} after {\"type\":\"Training\",\"title\":\"Range brief\",\"date\":\"Jul 20\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"]}",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "brief: before {\"type\":\"Training\",\"title\":\"brief\",\"date\":\"Jul 21\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"]} after {\"type\":\"Training\",\"title\":\"Brief\",\"date\":\"Jul 21\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"]}",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "LLOL: before {\"type\":\"LL\",\"date\":\"Jul 22\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]} after {\"type\":\"OL\",\"date\":\"Jul 22\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]}",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "LLAM: before {\"type\":\"LL\",\"date\":\"Jul 23\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]} after {\"type\":\"LL\",\"date\":\"Jul 23\",\"allday\":false,\"half\":\"am\",\"s\":0,\"e\":720,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]}",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "three: before {\"type\":\"Training\",\"date\":\"Jul 24\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"Bring your kit\",\"people\":[\"bane\",\"rocky\"]} after {\"type\":\"Training\",\"title\":\"Range brief\",\"date\":\"Jul 16\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"Bring water\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "phone bundle index-BNHpQA1S.js",
+    "picture D2-ranger-bell-phone.png: [\"Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\",\"LL Thu 23 Jul / Now LL (AM) · Saber\",\"OL Wed 22 Jul / LL changed to OL · Saber\",\"Brief Tue 21 Jul / Renamed — was brief · Saber\",\"Range brief Mon 20 Jul / Renamed — was Training · Saber\",\"LL Fri 17 Jul / Training changed to LL, renamed — was Range brief · Saber\",\"Training · Safety Wed 15 Jul / Training changed to Meeting · Saber\",\"Brief Tue 14 Jul / Training changed to Meeting · Saber\",\"Meeting Mon 13 Jul / Training changed to Meeting · Saber\",\"Training Fri 24 Jul / You were added · Saber\",\"LL Thu 23 Jul / You were added · Saber\",\"LL Wed 22 Jul / You were added · Saber\",\"brief Tue 21 Jul / You were added · Saber\",\"Training Mon 20 Jul / You were added · Saber\",\"Range brief Fri 17 Jul / You were added · Saber\",\"Training · Safety Wed 15 Jul / You were added · Saber\",\"Brief Tue 14 Jul / You were added · Saber\",\"Meeting Mon 13 Jul / You were added · Saber\"]",
+    "ranger-bell bell: [\"Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\",\"LL Thu 23 Jul / Now LL (AM) · Saber\",\"OL Wed 22 Jul / LL changed to OL · Saber\",\"Brief Tue 21 Jul / Renamed — was brief · Saber\",\"Range brief Mon 20 Jul / Renamed — was Training · Saber\",\"LL Fri 17 Jul / Training changed to LL, renamed — was Range brief · Saber\",\"Training · Safety Wed 15 Jul / Training changed to Meeting · Saber\",\"Brief Tue 14 Jul / Training changed to Meeting · Saber\",\"Meeting Mon 13 Jul / Training changed to Meeting · Saber\",\"Training Fri 24 Jul / You were added · Saber\",\"LL Thu 23 Jul / You were added · Saber\",\"LL Wed 22 Jul / You were added · Saber\",\"brief Tue 21 Jul / You were added · Saber\",\"Training Mon 20 Jul / You were added · Saber\",\"Range brief Fri 17 Jul / You were added · Saber\",\"Training · Safety Wed 15 Jul / You were added · Saber\",\"Brief Tue 14 Jul / You were added · Saber\",\"Meeting Mon 13 Jul / You were added · Saber\"]",
+    "PASS phone: Meeting — \"Training changed to Meeting · Saber\" — [\"Meeting Mon 13 Jul / Training changed to Meeting · Saber\"]",
+    "PASS phone: Meeting — no \"renamed\" — [\"Meeting Mon 13 Jul / Training changed to Meeting · Saber\"]",
+    "PASS phone: Brief — \"Training changed to Meeting · Saber\" — [\"Brief Tue 14 Jul / Training changed to Meeting · Saber\"]",
+    "PASS phone: Brief — no \"renamed\" — [\"Brief Tue 14 Jul / Training changed to Meeting · Saber\"]",
+    "PASS phone: Brief — bold name \"Brief\" — [\"Brief Tue 14 Jul / Training changed to Meeting · Saber\"]",
+    "PASS phone: Safety — \"Training changed to Meeting · Saber\" — [\"Training · Safety Wed 15 Jul / Training changed to Meeting · Saber\"]",
+    "PASS phone: Safety — no \"renamed\" — [\"Training · Safety Wed 15 Jul / Training changed to Meeting · Saber\"]",
+    "PASS phone: RangeLL — \"Training changed to LL, renamed — was Range brief · Saber\" — [\"LL Fri 17 Jul / Training changed to LL, renamed — was Range brief · Saber\"]",
+    "PASS phone: give — \"Renamed — was Training · Saber\" — [\"Range brief Mon 20 Jul / Renamed — was Training · Saber\"]",
+    "RECORD phone: brief (RECORD) — [\"Brief Tue 21 Jul / Renamed — was brief · Saber\"]",
+    "PASS phone: LLOL — \"LL changed to OL · Saber\" — [\"OL Wed 22 Jul / LL changed to OL · Saber\"]",
+    "PASS phone: LLOL — no \"renamed\" — [\"OL Wed 22 Jul / LL changed to OL · Saber\"]",
+    "PASS phone: LLAM — \"Now LL (AM) · Saber\" — [\"LL Thu 23 Jul / Now LL (AM) · Saber\"]",
+    "PASS phone: LLAM — no \"renamed\" — [\"LL Thu 23 Jul / Now LL (AM) · Saber\"]",
+    "PASS phone: three — \"Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\" — [\"Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\"]",
+    "desk bundle index-BNHpQA1S.js",
+    "picture D2-ranger-bell-desk.png: [\"Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\",\"LL Thu 23 Jul / Now LL (AM) · Saber\",\"OL Wed 22 Jul / LL changed to OL · Saber\",\"Brief Tue 21 Jul / Renamed — was brief · Saber\",\"Range brief Mon 20 Jul / Renamed — was Training · Saber\",\"LL Fri 17 Jul / Training changed to LL, renamed — was Range brief · Saber\",\"Training · Safety Wed 15 Jul / Training changed to Meeting · Saber\",\"Brief Tue 14 Jul / Training changed to Meeting · Saber\",\"Meeting Mon 13 Jul / Training changed to Meeting · Saber\",\"Training Fri 24 Jul / You were added · Saber\",\"LL Thu 23 Jul / You were added · Saber\",\"LL Wed 22 Jul / You were added · Saber\",\"brief Tue 21 Jul / You were added · Saber\",\"Training Mon 20 Jul / You were added · Saber\",\"Range brief Fri 17 Jul / You were added · Saber\",\"Training · Safety Wed 15 Jul / You were added · Saber\",\"Brief Tue 14 Jul / You were added · Saber\",\"Meeting Mon 13 Jul / You were added · Saber\"]",
+    "ranger-bell bell: [\"Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\",\"LL Thu 23 Jul / Now LL (AM) · Saber\",\"OL Wed 22 Jul / LL changed to OL · Saber\",\"Brief Tue 21 Jul / Renamed — was brief · Saber\",\"Range brief Mon 20 Jul / Renamed — was Training · Saber\",\"LL Fri 17 Jul / Training changed to LL, renamed — was Range brief · Saber\",\"Training · Safety Wed 15 Jul / Training changed to Meeting · Saber\",\"Brief Tue 14 Jul / Training changed to Meeting · Saber\",\"Meeting Mon 13 Jul / Training changed to Meeting · Saber\",\"Training Fri 24 Jul / You were added · Saber\",\"LL Thu 23 Jul / You were added · Saber\",\"LL Wed 22 Jul / You were added · Saber\",\"brief Tue 21 Jul / You were added · Saber\",\"Training Mon 20 Jul / You were added · Saber\",\"Range brief Fri 17 Jul / You were added · Saber\",\"Training · Safety Wed 15 Jul / You were added · Saber\",\"Brief Tue 14 Jul / You were added · Saber\",\"Meeting Mon 13 Jul / You were added · Saber\"]",
+    "PASS desk: Meeting — \"Training changed to Meeting · Saber\" — [\"Meeting Mon 13 Jul / Training changed to Meeting · Saber\"]",
+    "PASS desk: Meeting — no \"renamed\" — [\"Meeting Mon 13 Jul / Training changed to Meeting · Saber\"]",
+    "PASS desk: Brief — \"Training changed to Meeting · Saber\" — [\"Brief Tue 14 Jul / Training changed to Meeting · Saber\"]",
+    "PASS desk: Brief — no \"renamed\" — [\"Brief Tue 14 Jul / Training changed to Meeting · Saber\"]",
+    "PASS desk: Brief — bold name \"Brief\" — [\"Brief Tue 14 Jul / Training changed to Meeting · Saber\"]",
+    "PASS desk: Safety — \"Training changed to Meeting · Saber\" — [\"Training · Safety Wed 15 Jul / Training changed to Meeting · Saber\"]",
+    "PASS desk: Safety — no \"renamed\" — [\"Training · Safety Wed 15 Jul / Training changed to Meeting · Saber\"]",
+    "PASS desk: RangeLL — \"Training changed to LL, renamed — was Range brief · Saber\" — [\"LL Fri 17 Jul / Training changed to LL, renamed — was Range brief · Saber\"]",
+    "PASS desk: give — \"Renamed — was Training · Saber\" — [\"Range brief Mon 20 Jul / Renamed — was Training · Saber\"]",
+    "RECORD desk: brief (RECORD) — [\"Brief Tue 21 Jul / Renamed — was brief · Saber\"]",
+    "PASS desk: LLOL — \"LL changed to OL · Saber\" — [\"OL Wed 22 Jul / LL changed to OL · Saber\"]",
+    "PASS desk: LLOL — no \"renamed\" — [\"OL Wed 22 Jul / LL changed to OL · Saber\"]",
+    "PASS desk: LLAM — \"Now LL (AM) · Saber\" — [\"LL Thu 23 Jul / Now LL (AM) · Saber\"]",
+    "PASS desk: LLAM — no \"renamed\" — [\"LL Thu 23 Jul / Now LL (AM) · Saber\"]",
+    "PASS desk: three — \"Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\" — [\"Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\"]"
+   ]
+  }
+ },
+ "errors": []
+}

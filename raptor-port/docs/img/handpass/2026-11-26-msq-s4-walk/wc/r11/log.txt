@@ -1,0 +1,20 @@
+msq-s4w-lib v1 who=wc run=r11 port=4755
+wc-r11 v1
+fix  act hasc | LL | kids:c k-ll s-w whole /  act hasc | OD | kids:c k-od s-a whole jl jr raptor
+ROW PASS | A3/F-S34(a) new Post in, one-day window | desk-chromium | Sidewinder 21 Dec → ⋯ → Post in | saw: bid-picker: Sidewinder Post in ✕ PI FROM Mon 21 Dec 26 ▾ Their first day in the squadron. Days before it are blank and count nobody — leave can still be dated there. Post in | pi-date=Mon 21 Dec 26 ▾ ; pi-confirm=Post in | button bg rgb(59, 198, 232) | leave parts shown: 0
+ROW RECORD | F-S9 new sheet line | desk-chromium | read the Post in line | saw: bid-picker: Sidewinder Post in ✕ PI FROM Mon 21 Dec 26 ▾ Their first day in the squadron. Days before it are blank and count nobody — leave can still be dated there. Post in
+after confirm none gone act |  | kids: / act |  | kids:
+ROW RECORD | A3 Post in confirmed | desk-chromium | press Post in | saw: 10 Dec: gone act |  | kids: | 20 Dec: gone weekend act |  | kids: | 21 Dec: act |  | kids: | window: none
+ROW PASS | D2743 LL before post-in | desk-chromium | tap Sidewinder's 15 Dec (before his post-in 21 Dec) holding his pending LL | saw: bid-picker: Sidewinder Tue 15 Dec Auto-approve ✕ No manning row turns amber or red Placed Saber · Thu 26 Nov, 18:12 Approve Refuse ⇄Move Delete till 15 Dec Document Whole day AM PM Pick a range LL 11 OL 11 OIL −1 CCL −1 FCL −1 PL −1 EL −1 CL −1 CSE OD Grant OIL ⋯
+ROW PASS | D2743 OD before post-in | desk-chromium | tap the middle day of Sidewinder's 16–18 Dec OD | saw: bid-picker: Sidewinder 16–18 Dec Auto-approve ✕ No manning row turns amber or red OD Whole day · change it on the Inputs page till 18 Dec Document Whole day AM PM All 3 days Thu 17 LL 8 OL 8 OIL −3 CCL −3 FCL −3 PL −3 EL −3 CL −3 CSE OD Grant OIL ⋯
+ROW PASS | D2743 empty day before post-in | desk-chromium | tap Sidewinder's empty 10 Dec | saw: postin-sheet: Sidewinder Post in ✕ PI FROM Mon 21 Dec 26 ▾ Posted in on 21 Dec 26 — on the manpower from that day. Days before it count nobody, but leave can still be dated there. ↶Undo post in | leave buttons: 0
+ROW RECORD | F-S9 existing sheet line | desk-chromium | read the existing Post in sheet | saw: postin-sheet: Sidewinder Post in ✕ PI FROM Mon 21 Dec 26 ▾ Posted in on 21 Dec 26 — on the manpower from that day. Days before it count nobody, but leave can still be dated there. ↶Undo post in
+ROW PASS | F-S34(d) Q3 on a blank pre-post-in day | desk-chromium | press 10 Dec under the open Post in sheet, then again | saw: first: none (covered=true at sheet-scrim) | second: postin-sheet (covered=false at cell-mamba-2026-12-10)
+ROW PASS | A3 existing sheet date move | desk-chromium | existing Post in sheet: PI from → 28 Dec; close; reopen | saw: value 2026-12-28 | 24 Dec: gone act |  | kids: | 21 Dec: gone act |  | kids: | reopened: postin-sheet: Sidewinder Post in ✕ PI FROM Mon 28 Dec 26 ▾ Posted in on 28 Dec 26 — on the manpower from that day. Days before it count nobody, but leave can still be dated there. ↶Undo post in
+STEP ERROR A3-move-date-undo locator.fill: Timeout 30000ms exceeded.
+ROW NOT REACHED | A3-move-date-undo | desk-chromium | step threw | saw: locator.fill: Timeout 30000ms exceeded.
+ROW PASS | A3/F-S34(c) Post in from a drag | desk-chromium | drag Warden 22–24 Dec → ⋯ → Post in | saw: select-sheet: Warden Post in ✕ PI FROM Tue 22 Dec 26 ▾ Their first day in the squadron. Days before it are blank and count nobody — leave can still be dated there. Post in | sel-pi-date=Tue 22 Dec 26 ▾ ; sel-pi-confirm=Post in ; sel-po-title=Post in | values sel-pi-date=2026-12-22
+ROW RECORD | A3 drag Post in confirmed | desk-chromium | press sel-pi-confirm | saw: 21 Dec: gone act |  | kids: | 22 Dec: act |  | kids:
+ROW RECORD | F-S9 doors: drag across blank pre-post-in days | desk-chromium | drag Warden 16–17 Dec (before his post-in 22 Dec) | saw: select-sheet: Warden 16–17 Dec · 2 days Auto-approve ✕ No manning row turns amber or red till 17 Dec Document Whole day AM PM LL 11 OL 11 OIL −2 CCL −2 FCL −2 PL −2 EL −2 CL −2 CSE OD Grant OIL ⋯ | sel-LL offered
+errors []
+DONE 7 PASS 0 FAIL 6 OTHER of 13

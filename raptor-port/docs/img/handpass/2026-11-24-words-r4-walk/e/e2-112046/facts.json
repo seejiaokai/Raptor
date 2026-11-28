@@ -1,0 +1,198 @@
+{
+ "pictures": [
+  {
+   "file": "e2-fixed-rows.png",
+   "case": "E2-fixed",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "0": {
+     "prog": "",
+     "str": "08:00",
+     "end": "16:00",
+     "rmks": "",
+     "people": [
+      "dj"
+     ]
+    },
+    "1": {
+     "prog": "",
+     "str": "",
+     "end": "",
+     "rmks": "",
+     "people": [
+      "dj"
+     ]
+    }
+   }
+  },
+  {
+   "file": "e2-fixed-publish-desk.png",
+   "case": "E2-fixed",
+   "size": "desktop 1440x900 @2x",
+   "text": "Saturday 5 Feb published and approved. The ground programme has no usable times, so nobody on it earns OIL. No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.",
+   "geo": {
+    "l": 360,
+    "t": 820,
+    "r": 1080,
+    "b": 874,
+    "vw": 1440,
+    "vh": 900
+   }
+  },
+  {
+   "file": "e2-before-rows.png",
+   "case": "E2-before",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "0": {
+     "prog": "",
+     "str": "08:00",
+     "end": "16:00",
+     "rmks": "",
+     "people": [
+      "dj"
+     ]
+    },
+    "1": {
+     "prog": "",
+     "str": "",
+     "end": "",
+     "rmks": "",
+     "people": [
+      "dj"
+     ]
+    }
+   }
+  },
+  {
+   "file": "e2-before-publish-desk.png",
+   "case": "E2-before",
+   "size": "desktop 1440x900 @2x",
+   "text": "Saturday 5 Feb published and approved. The ground programme has no usable times, so nobody on it earns OIL. · No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.",
+   "geo": {
+    "l": 360,
+    "t": 820,
+    "r": 1080,
+    "b": 874,
+    "vw": 1440,
+    "vh": 900
+   }
+  },
+  {
+   "file": "e2-one-publish-week-desk.png",
+   "case": "E2-one",
+   "size": "desktop 1440x900 @2x",
+   "text": "Saturday published and approved · No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.",
+   "geo": {
+    "l": 360,
+    "t": 820,
+    "r": 1080,
+    "b": 874,
+    "vw": 1440,
+    "vh": 900
+   }
+  },
+  {
+   "file": "e2-amend-desk.png",
+   "case": "E2-one",
+   "size": "desktop 1440x900 @2x",
+   "text": "Published AL1 · 1 item on Sat only · approved by Anvil · No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.",
+   "geo": {
+    "l": 360,
+    "t": 820,
+    "r": 1080,
+    "b": 874,
+    "vw": 1440,
+    "vh": 900
+   }
+  },
+  {
+   "file": "e2-fixed-rows.png",
+   "case": "E2-fixed",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "0": {
+     "prog": "",
+     "str": "08:00",
+     "end": "16:00",
+     "rmks": "",
+     "people": [
+      "dj"
+     ]
+    },
+    "1": {
+     "prog": "",
+     "str": "",
+     "end": "",
+     "rmks": "",
+     "people": [
+      "dj"
+     ]
+    }
+   }
+  },
+  {
+   "file": "e2-fixed-publish-phone.png",
+   "case": "E2-fixed",
+   "size": "phone 402x874 @3x",
+   "text": "Saturday 5 Feb published and approved. The ground programme has no usable times, so nobody on it earns OIL. No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.",
+   "geo": {
+    "l": 12,
+    "t": 762,
+    "r": 390,
+    "b": 848,
+    "vw": 402,
+    "vh": 874
+   }
+  }
+ ],
+ "cases": {
+  "E2-fixed": {
+   "log": [
+    "build D:/rw4/build-new3 bundle index-DIr933hk.js",
+    "timed row: start typed, end typed",
+    "timed row: row 0 {\"prog\":\"\",\"str\":\"08:00\",\"end\":\"16:00\",\"rmks\":\"\",\"people\":[\"dj\"]}; dj put; note \"No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.\"",
+    "timeless row: row 1 {\"prog\":\"\",\"str\":\"\",\"end\":\"\",\"rmks\":\"\",\"people\":[\"dj\"]}; dj put; note \"the ground programme has no usable times, so nobody on it earns OIL for this day\"",
+    "picture e2-fixed-rows.png: {\"0\":{\"prog\":\"\",\"str\":\"08:00\",\"end\":\"16:00\",\"rmks\":\"\",\"people\":[\"dj\"]},\"1\":{\"prog\":\"\",\"str\":\"\",\"end\":\"\",\"rmks\":\"\",\"people\":[\"dj\"]}}",
+    "picture e2-fixed-publish-desk.png: \"Saturday 5 Feb published and approved. The ground programme has no usable times, so nobody on it earns OIL. No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.\"",
+    "build D:/rw4/build-new3 bundle index-DIr933hk.js",
+    "timed row: start typed, end typed",
+    "timed row: row 0 {\"prog\":\"\",\"str\":\"08:00\",\"end\":\"16:00\",\"rmks\":\"\",\"people\":[\"dj\"]}; dj put; note \"No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.\"",
+    "timeless row: row 1 {\"prog\":\"\",\"str\":\"\",\"end\":\"\",\"rmks\":\"\",\"people\":[\"dj\"]}; dj put; note \"the ground programme has no usable times, so nobody on it earns OIL for this day\"",
+    "picture e2-fixed-rows.png: {\"0\":{\"prog\":\"\",\"str\":\"08:00\",\"end\":\"16:00\",\"rmks\":\"\",\"people\":[\"dj\"]},\"1\":{\"prog\":\"\",\"str\":\"\",\"end\":\"\",\"rmks\":\"\",\"people\":[\"dj\"]}}",
+    "phone bundle index-DIr933hk.js",
+    "picture e2-fixed-publish-phone.png: \"Saturday 5 Feb published and approved. The ground programme has no usable times, so nobody on it earns OIL. No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.\""
+   ]
+  },
+  "E2-before": {
+   "log": [
+    "build D:/rw4/build-new2 bundle index-BNHpQA1S.js",
+    "timed row: start typed, end typed",
+    "timed row: row 0 {\"prog\":\"\",\"str\":\"08:00\",\"end\":\"16:00\",\"rmks\":\"\",\"people\":[\"dj\"]}; dj put; note \"No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.\"",
+    "timeless row: row 1 {\"prog\":\"\",\"str\":\"\",\"end\":\"\",\"rmks\":\"\",\"people\":[\"dj\"]}; dj put; note \"the ground programme has no usable times, so nobody on it earns OIL for this day\"",
+    "picture e2-before-rows.png: {\"0\":{\"prog\":\"\",\"str\":\"08:00\",\"end\":\"16:00\",\"rmks\":\"\",\"people\":[\"dj\"]},\"1\":{\"prog\":\"\",\"str\":\"\",\"end\":\"\",\"rmks\":\"\",\"people\":[\"dj\"]}}",
+    "picture e2-before-publish-desk.png: \"Saturday 5 Feb published and approved. The ground programme has no usable times, so nobody on it earns OIL. · No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.\""
+   ]
+  },
+  "E2-one": {
+   "log": [
+    "bundle index-DIr933hk.js",
+    "timed row: start typed, end typed",
+    "timed row: row 0 {\"prog\":\"\",\"str\":\"08:00\",\"end\":\"16:00\",\"rmks\":\"\",\"people\":[\"dj\"]}; dj put; note \"No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.\"",
+    "picture e2-one-publish-week-desk.png: \"Saturday published and approved · No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.\"",
+    "remark: typed",
+    "row now {\"prog\":\"\",\"str\":\"08:00\",\"end\":\"16:00\",\"rmks\":\"Kit check\",\"people\":[\"dj\"]}",
+    "amendment publish: greyed: Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL1 — signed again {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}",
+    "picture e2-amend-desk.png: \"Published AL1 · 1 item on Sat only · approved by Anvil · No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.\""
+   ]
+  },
+  "E2-one-board": {
+   "log": [
+    "bundle index-DIr933hk.js",
+    "timed row: start typed, end typed",
+    "timed row: row 0 {\"prog\":\"\",\"str\":\"08:00\",\"end\":\"16:00\",\"rmks\":\"\",\"people\":[\"dj\"]}; dj put; note \"No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.\""
+   ]
+  }
+ },
+ "errors": []
+}

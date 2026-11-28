@@ -98,6 +98,8 @@
   .appr-bal { font-weight: 700; }
   .appr-bal small { font-size: 10.5px; font-weight: 500; color: var(--ink-3); }
   .appr-bal.neg { color: var(--hard); }
+  /* his balance never typed: the amber "–" (D2823 — question 23's item 3; "Not typed" did not fit the column) */
+  .appr-bal .nt { color: #F2C879; font-weight: 600; }
   .appr-avail { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; }
   .appr-av { display: grid; grid-template-columns: 40px auto; column-gap: 6px; align-items: baseline; font-variant-numeric: tabular-nums; font-weight: 700; }
   /* a row's name stands right against its number; a name longer than its column runs out to the left, never over the number */

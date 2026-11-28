@@ -1,0 +1,139 @@
+[
+ {
+  "id": "s2.0 a drag across Thu 3 – Wed 9 Dec opens the drag window and places one LL",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "window \"3–9 Dec · 7 days\", placed=true",
+  "pics": [
+   "s2-01-drag-window"
+  ]
+ },
+ {
+  "id": "s2.1 LL 3–9 Dec across a 7 Dec post-in: only 7, 8, 9 Dec deducted",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "expected Official 21 / War 21 on both surfaces; saw Balances off=21 cf=0 pend=– war=21 | window off=21 pend=– war=21 taken=\"0 taken\"",
+  "pics": [
+   "s2-02-kite-across-bal",
+   "s2-02-kite-across-pw"
+  ]
+ },
+ {
+  "id": "s2.2 the days before post-in still drawn on the grid as part of the leave",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "cells 03:LL 04:LL 07:LL 08:LL 09:LL (a joined bar writes its code once)",
+  "pics": [
+   "s2-03-grid-across"
+  ]
+ },
+ {
+  "id": "s2.3 LL AM Fri 4 Dec (before post-in): nothing deducted",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "expected Official 24 / War 24 on both surfaces; saw Balances off=24 cf=0 pend=– war=24 | window off=24 pend=– war=24 taken=\"0 taken\"",
+  "pics": [
+   "s2-04-plover-am-4dec-bal",
+   "s2-04-plover-am-4dec-pw"
+  ]
+ },
+ {
+  "id": "s2.4 LL PM Mon 7 Dec (the post-in day): half a day deducted",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "expected Official 23.5 / War 23.5 on both surfaces; saw Balances off=23 cf=0 pend=– war=23 | window off=23 pend=– war=23 taken=\"0 taken\"",
+  "pics": [
+   "s2-05-plover-pm-7dec-bal",
+   "s2-05-plover-pm-7dec-pw"
+  ]
+ },
+ {
+  "id": "s4.0 Gull on the war: Official 24, Pending 1 (15 Dec), War 23 — 2 Dec never deducted",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "Balances off=24 cf=0 pend=1 war=23 | window off=24 pend=−1 war=23 taken=\"0 taken\"",
+  "pics": [
+   "s4-01-shown-bal",
+   "s4-01-shown-pw"
+  ]
+ },
+ {
+  "id": "s4.1 SANS ticked, \"+ SANS\" off: Gull has no row on the grid (the premise)",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "SANS group shown=false, his rows=1, his record {}",
+  "pics": [
+   "s4-02-quals-sans",
+   "s4-03-sans-off"
+  ]
+ },
+ {
+  "id": "s4.2 hidden: Approvals' LVE BAL on his 15 Dec line reads 23 (2 Dec still not deducted)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "LVE BAL \"23\"",
+  "pics": [
+   "s4-04-approvals-hidden"
+  ]
+ },
+ {
+  "id": "s4.3 hidden, signed in as Gull: My leave LVE 23; his window Official 24 / War 23",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "My leave \"LVE 23\", window {\"off\":\"24\",\"pend\":\"−1\",\"war\":\"23\",\"line\":\"Only leave after post-in is deducted.\"}",
+  "pics": [
+   "s4-05-myleave-hidden",
+   "s4-06-his-window-hidden"
+  ]
+ },
+ {
+  "id": "s4.4 \"+ SANS\" on again: Official 24, War 23 — the switch changes no figure",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "group shown=true; Balances off=24 cf=0 pend=1 war=23 | window off=24 pend=−1 war=23 taken=\"0 taken\"",
+  "pics": [
+   "s4-08-shown-again-bal",
+   "s4-08-shown-again-pw"
+  ]
+ },
+ {
+  "id": "s5.1 Swift posted out from 7 Dec (Overseas Sqn), LL Tue 8 Dec approved: still deducted (D1541)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "expected Official 23 / War 23 on both surfaces (post out: ok; placed=true); saw Balances off=23 cf=0 pend=– war=23 | window off=23 pend=– war=23 taken=\"0 taken\"",
+  "pics": [
+   "s5-02-swift-after-po-bal",
+   "s5-02-swift-after-po-pw"
+  ]
+ },
+ {
+  "id": "s5.2 Tern, bids 2 Dec (before post-in) and 8 Dec: Pending 1 (only 8 Dec), War 23",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "Balances off=24 cf=0 pend=1 war=23 | window off=24 pend=−1 war=23 taken=\"0 taken\"",
+  "pics": [
+   "s5-03-tern-bids-bal",
+   "s5-03-tern-bids-pw"
+  ]
+ },
+ {
+  "id": "s5.3 Approvals: Tern's two lines, LVE BAL 23 on both",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "[{\"text\":\"Tern O posting in 7 Dec LL Wed 2 Dec › 1 day 23 27 Nov 02:21 · by Saber Approve Refuse\",\"bal\":\"23\"},{\"text\":\"Tern O posting in 7 Dec LL Tue 8 Dec › 1 day 23 P 28 27 Nov 02:21 · by Saber Approve Refuse\",\"bal\":\"23\"}]",
+  "pics": [
+   "s5-04-approvals-tern"
+  ]
+ },
+ {
+  "id": "s5.4 both approved on Approvals: Official 23, nothing pending, War 23 (2 Dec's approval deducts nothing)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Balances off=23 cf=0 pend=– war=23 | window off=23 pend=– war=23 taken=\"0 taken\"",
+  "pics": [
+   "s5-05-approvals-approved",
+   "s5-06-tern-approved-bal",
+   "s5-06-tern-approved-pw"
+  ]
+ }
+]

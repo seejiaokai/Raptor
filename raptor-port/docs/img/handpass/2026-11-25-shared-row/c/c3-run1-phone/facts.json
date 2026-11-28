@@ -1,0 +1,51 @@
+{
+ "pictures": [],
+ "cases": {
+  "c3A": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvikohmj8nbbc\"]; asked []; note \"\""
+   ]
+  },
+  "c3ALL": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvil73i8mke5l\"]; asked []; note \"\""
+   ]
+  },
+  "c3B": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"]} on 2026-07-16: new input [\"imwvilm5q7ni0h3\"]; asked []; note \"\""
+   ]
+  },
+  "c3BLL": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"]} on 2026-07-16: new input [\"imwvim46vvdoiv6\"]; asked []; note \"\""
+   ]
+  },
+  "c3CDelete": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvimhg1gvp9nu\"]; asked []; note \"\""
+   ]
+  },
+  "c3CRefuse": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvin044ducsxa\"]; asked []; note \"\""
+   ]
+  },
+  "c3CApproved": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvinip36vdfu7\"]; asked []; note \"\""
+   ]
+  },
+  "c3CMove": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvio1bw0r2119\"]; asked []; note \"\""
+   ]
+  },
+  "c3F": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"rocky\"],\"from\":\"08:00\",\"to\":\"09:00\"} on 2026-07-15: new input [\"imwvioibvf6gpjq\"]; asked [\"document\"]; note \"\""
+   ]
+  }
+ },
+ "errors": []
+}

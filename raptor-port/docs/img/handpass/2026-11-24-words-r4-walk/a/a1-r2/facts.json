@@ -1,0 +1,138 @@
+{
+ "pictures": [
+  {
+   "file": "A1-saber-bell-desk.png",
+   "case": "A1",
+   "size": "desktop 1440x900 @2x",
+   "text": [],
+   "fit": []
+  },
+  {
+   "file": "A1-ranger-bell-phone.png",
+   "case": "A1",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "OL Fri 17 Jul / LL changed to OL · Saber",
+    "LL Fri 17 Jul / You were added · Saber",
+    "OL Wed 15 Jul / LL changed to OL · Saber"
+   ],
+   "fit": [
+    {
+     "what": "LL changed to OL · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "LL changed to OL · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "A1-ranger-bell-desk.png",
+   "case": "A1",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "OL Fri 17 Jul / LL changed to OL · Saber",
+    "LL Fri 17 Jul / You were added · Saber",
+    "OL Wed 15 Jul / LL changed to OL · Saber"
+   ],
+   "fit": [
+    {
+     "what": "LL changed to OL · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "LL changed to OL · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "A1-hex-bell-phone.png",
+   "case": "A1",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "OL Fri 17 Jul / LL changed to OL · Saber",
+    "LL Fri 17 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "LL changed to OL · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  }
+ ],
+ "cases": {
+  "A1": {
+   "log": [
+    "bundle index-2uyEcUJu.js",
+    "filed {\"type\":\"LL\",\"span\":\"all\",\"remarks\":\"Local leave\"} on 2026-07-15: new input [\"imwujfl2k375xx5\"]; asked [\"document\"]; note \"\"",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "own after: {\"type\":\"OL\",\"date\":\"Jul 15\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"Local leave\",\"people\":[\"bane\"]}",
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"span\":\"all\"} on 2026-07-17: new input [\"imwujfu5t8ysxvk\"]; asked []; note \"\"",
+    "group before: {\"type\":\"LL\",\"date\":\"Jul 17\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"]}",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "group after: {\"type\":\"OL\",\"date\":\"Jul 17\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\",\"rocky\"]}",
+    "picture A1-saber-bell-desk.png: []",
+    "saber-bell bell: []",
+    "PASS Saber's own bell holds no \"changed to\" line (D769) — []",
+    "picture A1-ranger-bell-phone.png: [\"OL Fri 17 Jul / LL changed to OL · Saber\",\"LL Fri 17 Jul / You were added · Saber\",\"OL Wed 15 Jul / LL changed to OL · Saber\"]",
+    "ranger-bell bell: [\"OL Fri 17 Jul / LL changed to OL · Saber\",\"LL Fri 17 Jul / You were added · Saber\",\"OL Wed 15 Jul / LL changed to OL · Saber\"]",
+    "PASS phone: Ranger reads bold \"OL Wed 15 Jul\" / \"LL changed to OL · Saber\" — [\"OL Fri 17 Jul / LL changed to OL · Saber\",\"LL Fri 17 Jul / You were added · Saber\",\"OL Wed 15 Jul / LL changed to OL · Saber\"]",
+    "PASS phone: Ranger reads the group input \"OL Fri 17 Jul\" / \"LL changed to OL · Saber\" — [\"OL Fri 17 Jul / LL changed to OL · Saber\",\"LL Fri 17 Jul / You were added · Saber\",\"OL Wed 15 Jul / LL changed to OL · Saber\"]",
+    "picture A1-ranger-bell-desk.png: [\"OL Fri 17 Jul / LL changed to OL · Saber\",\"LL Fri 17 Jul / You were added · Saber\",\"OL Wed 15 Jul / LL changed to OL · Saber\"]",
+    "ranger-bell bell: [\"OL Fri 17 Jul / LL changed to OL · Saber\",\"LL Fri 17 Jul / You were added · Saber\",\"OL Wed 15 Jul / LL changed to OL · Saber\"]",
+    "PASS desk: Ranger reads both \"LL changed to OL · Saber\" lines — [\"OL Fri 17 Jul / LL changed to OL · Saber\",\"LL Fri 17 Jul / You were added · Saber\",\"OL Wed 15 Jul / LL changed to OL · Saber\"]",
+    "picture A1-hex-bell-phone.png: [\"OL Fri 17 Jul / LL changed to OL · Saber\",\"LL Fri 17 Jul / You were added · Saber\"]",
+    "hex-bell bell: [\"OL Fri 17 Jul / LL changed to OL · Saber\",\"LL Fri 17 Jul / You were added · Saber\"]",
+    "PASS phone: Hex reads \"OL Fri 17 Jul\" / \"LL changed to OL · Saber\" — [\"OL Fri 17 Jul / LL changed to OL · Saber\",\"LL Fri 17 Jul / You were added · Saber\"]"
+   ]
+  }
+ },
+ "errors": []
+}

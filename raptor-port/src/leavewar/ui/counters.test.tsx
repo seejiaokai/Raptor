@@ -244,6 +244,15 @@ describe('an over-wide value drops a type size rather than spilling (spec §2)',
   const LL = (value: number) => ({ label: 'LL', tone: 'amber' as const, value })
   const OL = (value: number) => ({ label: 'OL', tone: 'red' as const, value })
 
+  it('D2823: a balance never typed reads the amber "–", never a number, never red, never words', () => {
+    const { container } = render(<FigureCell figure={FIGURES[0]!} lines={{ top: -3, used: [], nt: true }} personId="x" extraClass="bal act" />)
+    const fb = container.querySelector('.fb')!
+    expect(fb.textContent).toBe('–')
+    expect(fb.className).toContain('nt')
+    expect(fb.className).not.toContain('neg')
+    expect(container.textContent).not.toContain('Not typed')
+  })
+
   it('leaves an ordinary box alone — two digits over one', () => {
     expect(box(26, [OL(4)]).classList.contains('wide')).toBe(false)
   })

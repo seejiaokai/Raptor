@@ -1,0 +1,65 @@
+[
+ [
+  "A10 fixture",
+  "desk-chromium",
+  "Cinch and Anvil alike: AM LL + PM OL on 15 Dec; OD 16–18 Dec with an LL on 17 Dec; then Cinch posted out (Overseas) from 14 Dec",
+  "the combinations landed (a refused combination kept as its disposition)",
+  "snap 15 Dec reopened: bid-picker: Cinch Tue 15 Dec Auto-approve ✕ No manning row is amber or red Placed Saber · Thu 26 Nov, 18:25 Approve Refu || snap: 15 act hasc | LL OL | kids:c k-ll s-w top,c k-ol s-w bot | 17 act hasc | OD LL | kids:c k-od s-a left bx-tilt raptor,c k-ll s-w right bx-tilt || shaft 15 Dec reopened: bid-picker: Anvil Tue 15 Dec Auto-approve ✕ No manning row is amber or red Placed Saber · Thu 26 Nov, 18:26 Approve Refu || shaft: 15 act hasc | LL OL | kids:c k-ll s-w top,c k-ol s-w bot | 17 act hasc | OD LL | kids:c k-od s-a left bx-tilt raptor,c k-ll s-w right bx-tilt",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r19/001-desk-chromium-r19-shapes-grid.png"
+ ],
+ [
+  "A10 2026-12-15",
+  "desk-chromium",
+  "tap Cinch 2026-12-15 (gone) and Anvil 2026-12-15 (ordinary), the same entries",
+  "the same ruled window as the ordinary-day counterpart (D1722, D1565, D1466)",
+  "GONE daylist: LL AM · pending Placed Saber · Thu 26 Nov, 18:25 Approve Refuse ⇄Move Delete till 15 Dec Document OL PM · pending Placed Saber · Thu 26 Nov, 18:25 Approve Refuse ⇄Move Delete till 15 Dec Document ### ORDINARY daylist: LL AM · pending Placed Saber · Thu 26 Nov, 18:26 Approve Refuse ⇄Move Delete till 15 Dec Document OL PM · pending Placed Saber · Thu 26 Nov, 18:26 Approve Refuse ⇄Move Delete till 15 Dec Document",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r19/002-desk-chromium-r19-gone-2026-12-15.png ; img/handpass/2026-11-26-msq-s4-walk/wc/r19/003-desk-chromium-r19-ordinary-2026-12-15.png"
+ ],
+ [
+  "A10 2026-12-16",
+  "desk-chromium",
+  "tap Cinch 2026-12-16 (gone) and Anvil 2026-12-16 (ordinary), the same entries",
+  "the same ruled window as the ordinary-day counterpart (D1722, D1565, D1466)",
+  "GONE bid-picker: Cinch 16–18 Dec Auto-approve ✕ No manning row turns amber or red OD Whole day · change it on the Inputs page till 18 Dec Document Whole day AM PM All 3 days Wed 16 LL 19.5 OL 19.5 OIL −3 CCL 0 FCL −3 PL −3 EL −3 CL −3 CSE OD Grant OIL ⋯ ### ORDINARY bid-picker: Anvil 16–18 Dec Auto-approve ✕ No manning row is amber or red OD Whole day · change it on the Inputs page till 18 Dec Document Whole day AM PM All 3 days Wed 16 LL 15 OL 15 OIL −3 CCL −1 FCL −3 PL −3 EL −3 CL −3 CSE OD Grant OIL ⋯",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r19/004-desk-chromium-r19-gone-2026-12-16.png ; img/handpass/2026-11-26-msq-s4-walk/wc/r19/005-desk-chromium-r19-ordinary-2026-12-16.png"
+ ],
+ [
+  "A10 2026-12-17",
+  "desk-chromium",
+  "tap Cinch 2026-12-17 (gone) and Anvil 2026-12-17 (ordinary), the same entries",
+  "the same ruled window as the ordinary-day counterpart (D1722, D1565, D1466)",
+  "GONE daylist: LL Pending Placed Saber · Thu 26 Nov, 18:26 Approve Refuse ⇄Move Delete till 17 Dec Document OD Change it on the Inputs page ### ORDINARY daylist: LL Pending Placed Saber · Thu 26 Nov, 18:26 Approve Refuse ⇄Move Delete till 17 Dec Document OD Change it on the Inputs page",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r19/006-desk-chromium-r19-gone-2026-12-17.png ; img/handpass/2026-11-26-msq-s4-walk/wc/r19/007-desk-chromium-r19-ordinary-2026-12-17.png"
+ ],
+ [
+  "F-S35 with \"+ SANS\" on",
+  "desk-chromium",
+  "+ SANS on; Blade posted SANS today (line \"On 26 Nov: becomes SANS.\"), Cobra SANS from 14 Dec; tap their days",
+  "the same way-C sheet from either place (it does not depend on where the row is drawn)",
+  "rows: Blade [\"?\"] Cobra [\"?\"] | slash 2026-12-01: bid-picker: Blade Tue 1 Dec Auto-approve ✕ No manning row turns amber or red till 1 Dec Document Whole day AM PM Pick a range LL 30.5 OL 30.5 OIL 2 CCL −1 FCL −1 PL −1 EL −1 CL −1 CSE OD Grant OIL ⋯ || taipan 2026-12-15: postout-sheet: Cobra Post out ✕ POSTING Overseas Sqn Delete ✓ SANS PO FROM Mon 14 Dec 26 ▾ On 14 Dec: becomes SANS. ↶Undo post out || taipan 2026-12-10: bid-picker: Cobra Thu 10 Dec Auto-approve ✕ No manning row turns amber or red till 10 Dec Document Whole day AM PM Pick a range LL 28 OL 28 OIL −1 CCL −1 FCL −1 PL −1 EL −1 CL −1 CSE OD Grant OIL ⋯",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r19/008-desk-chromium-r19-sans-on-grid.png"
+ ],
+ [
+  "F-S35 with \"+ SANS\" off",
+  "desk-chromium",
+  "the SANS group hidden; tap the same days in the old place",
+  "the same sheet; his name's purple SANS line (D1692, D1711)",
+  "rows: Blade [\"?\"] | slash 2026-12-01: bid-picker: Blade Tue 1 Dec Auto-approve ✕ No manning row turns amber or red till 1 Dec Document Whole day AM PM Pick a range LL 30.5 OL 30.5 OIL 2 CCL −1 FCL −1 PL −1 EL −1 CL −1 CSE OD Grant OIL ⋯ || taipan 2026-12-15: postout-sheet: Cobra Post out ✕ POSTING Overseas Sqn Delete ✓ SANS PO FROM Mon 14 Dec 26 ▾ On 14 Dec: becomes SANS. ↶Undo post out",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r19/012-desk-chromium-r19-sans-off.png"
+ ],
+ [
+  "F-S35 SANS group",
+  "desk-chromium",
+  "step threw",
+  "",
+  "locator.boundingBox: Timeout 5000ms exceeded.",
+  "NOT REACHED",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r19/013-desk-chromium-F-S35_SANS_group-error.png"
+ ]
+]

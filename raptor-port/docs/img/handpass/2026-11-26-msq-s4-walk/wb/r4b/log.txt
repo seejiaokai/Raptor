@@ -1,0 +1,16 @@
+msq-s4w-lib v1 who=wb run=r4b port=4754
+wb-r4 v2
+rows ["row-dice:Reaper","row-shaft:Anvil","row-snap:Cinch","row-pump:Piston","row-bane:Ranger","row-stiff:Saber","row-mamba:Sidewinder","row-nact:Warden","row-slipway:Drifter","row-razer:Ridge","row-glass:Basher","row-freak:Echo","row-slash:Blade","row-taipan:Cobra","row-beams:Comet","row-chaps:Forge","row-boosh:Havoc","row-prowler:Hunter","row-harpoon:Trident","row-split:Vandal","row-dj:Ace","row-salsa:Saint","row-bruise:Gambit","row-pike:Nomad","row-casper:Outlaw","row-fantom:Diesel","row-vegas:Vapor","row-drill:Ledger","row-nasty:Quill","row-dirty:Relay"]
+ROW PASS | F-S5(c) | desk chromium | new PO sheet, SANS chosen, date → 21 Dec (On 21 Dec: becomes SANS. | Mon 21 Dec 26 ▾); exit: a press on the day itself (a mouse click at its centre, through the sheet's see-through backdrop) [landed on [object Object]]; then tap Cinch 14 Dec; then ⋯ → Post out | saw: after exit: [page=leavewar] gone=[] 14Dec.class="act" | next tap: [bid leaveBtns head=Cinch Mon 14 Dec Auto-approve ✕ page=leavewar] | reopened PO: overseas=✓ Overseas Sqn[on] ; delete=Delete ; sans=SANS ; date=Mon 14 Dec 26 ▾ ; line=On 14 Dec: archived.
+ROW RECORD | F-S5(f) | desk chromium | new PO sheet, SANS chosen, date → 21 Dec (On 21 Dec: becomes SANS. | Mon 21 Dec 26 ▾); exit: a press on another day of Cinch's row (10 Dec) [landed on [object Object]]; then tap Cinch 14 Dec; then ⋯ → Post out | saw: after exit: [page=leavewar] gone=[] 14Dec.class="act" | next tap: [bid leaveBtns head=Cinch Mon 14 Dec Auto-approve ✕ page=leavewar] | reopened PO: overseas=✓ Overseas Sqn[on] ; delete=Delete ; sans=SANS ; date=Mon 14 Dec 26 ▾ ; line=On 14 Dec: archived.
+fs5g the grid is not on screen after the exit; page  url about:blank
+ROW RECORD | F-S5(g) | desk chromium | new PO sheet, SANS chosen, date → 21 Dec (On 21 Dec: becomes SANS. | Mon 21 Dec 26 ▾); exit: the browser Back; then tap Cinch 14 Dec; then ⋯ → Post out | saw: after exit: [] gone=[] 14Dec.class="null" | next tap: [] | reopened PO: 
+ERROR page.evaluate: TypeError: window.go is not a function
+    at eval (eval at evaluate (:311:30), <anonymous>:1:14)
+    at UtilityScript.evaluate (<anonymous>:313:16)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
+    at Module.lw (C:\Users\User\projects\Raptor\.claude\worktrees\msq-s4-walk-c1b6e5\raptor-port\scripts\handpass\msq\msq-s4w-lib.mjs:110:16)
+    at C:\Users\User\AppData\Roaming\Claude\side-session-notes\local_eeb07289-ed8b-483b-8502-00962970c7d1\s4-chat201\wb\wb-r4.mjs:72:98
+errors branch []
+errors []
+DONE 1 PASS 0 FAIL 2 OTHER of 3

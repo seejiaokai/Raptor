@@ -1,0 +1,29 @@
+msq-s4w-lib v1 who=wb run=r7 port=4754
+wb-r7 v1
+ROW PASS | A2 | desk chromium | new one-day sheet (Cinch 14 Dec): Delete, Post out → the card | saw: Delete dashed rgb(138, 150, 163) bg rgb(26, 31, 38) (62×36); Cancel bg rgb(59, 198, 232) (65×36); above its anchor by 9px; inside screen true; "Delete Cinch? On 14 Dec the app deletes him automatically. Days he flew keep his puck. Delete Cancel"
+ROW PASS | A2 | desk chromium | the card's Delete pressed once | saw: line before "On 14 Dec the app deletes him automatically. Days he flew keep his puck."; gone from 12-14 (18 days); reopened: Overseas Sqn / ✓ Delete[on] / SANS | Mon 14 Dec 26 ▾ | On 14 Dec the app deletes him automatically. Days he flew ke
+ROW PASS | A2 | desk chromium | drag sheet (Anvil 15–18 Dec): ⋯ → Post out, Delete, Post out → the card | saw: Delete dashed rgb(138, 150, 163) bg rgb(26, 31, 38) (62×36); Cancel bg rgb(59, 198, 232) (65×36); above its anchor by 9px; inside screen true; "Delete Anvil? On 15 Dec the app deletes him automatically. Days he flew keep his puck. Delete Cancel"
+ROW PASS | A2 | desk chromium | the drag card's Delete pressed once | saw: gone from 12-15 (17 days); state [page=leavewar]
+ROW PASS | A2 / F-S12(b) | desk chromium | existing Overseas posting (Piston 21 Dec): its Delete chip → the card | saw: Delete dashed rgb(138, 150, 163) bg rgb(26, 31, 38) (62×36); Cancel bg rgb(59, 198, 232) (65×36); below its anchor by 9px; inside screen true; "Delete Piston? On 21 Dec the app deletes him automatically. Days he flew keep his puck. Delete Cancel"
+ROW PASS | A2 | desk chromium | the existing card's Delete pressed once; then Admin → Users | saw: sheet after: Overseas Sqn / ✓ Delete[on] / SANS | Mon 21 Dec 26 ▾ | On 21 Dec the app deletes him automatically. Days he flew ke || Admin → Users: {"Cinch":"Cinch no sign-in · Pilot · CAT IP POSTING OUT 14 DEC · AUTO DELETE","Anvil":"Anvil no sign-in · Pilot · CAT IP POSTING OUT 15 DEC · AUTO DELETE","Piston":"Piston no sign-in · Pilot · CAT IP POSTING OUT 21 DEC · AUTO DELETE"}
+ROW PASS | A2 / F-S12(c) | desk chromium | existing Delete posting (Warden 21 Dec): PO from → today 26 Nov → the question | saw: Delete dashed rgb(138, 150, 163) bg rgb(26, 31, 38) (62×36); Cancel bg rgb(59, 198, 232) (65×36); above its anchor by 9px; inside screen true; "Delete Warden now? On 26 Nov the app deletes him automatically. Days he flew keep his puck. Delete Cancel" | grid still from 12-21
+ROW PASS | A2 | desk chromium | "Delete Warden now?" up; Cancel; then reopen | saw: card gone, [poOld head=Warden Post out ✕ page=leavewar], date box "Mon 21 Dec 26 ▾"; grid from 12-21; reopened date "Mon 21 Dec 26 ▾"
+ROW PASS | A2 | desk chromium | "Delete Warden now?" up; Escape; then reopen | saw: card gone, [poOld head=Warden Post out ✕ page=leavewar], date box "Mon 21 Dec 26 ▾"; grid from 12-21; reopened date "Mon 21 Dec 26 ▾"
+ROW RECORD | A2 | desk chromium | "Delete Warden now?" up; a press on the sheet outside the card [postout-sheet]; then reopen | saw: card UP, [poOld card head=Warden Post out ✕ page=leavewar], date box "Thu 26 Nov 26 ▾"; grid from 12-21; reopened date "Mon 21 Dec 26 ▾"
+ROW RECORD | A2 | desk chromium | "Delete Warden now?" up; a press outside the sheet [sheet-scrim]; then reopen | saw: card gone, [page=leavewar], date box ""; grid from 12-21; reopened date "Mon 21 Dec 26 ▾"
+ROW RECORD | A2 | desk chromium | "Delete Warden now?" → Delete | saw: after: [page=leavewar], Warden rows on grid 1; Admin → Users: {"Warden":"(no row)","Piston":"Piston no sign-in · Pilot · CAT IP POSTING OUT 21 DEC · AUTO DELETE"}
+ROW PASS | F-S12(a) | desk chromium | Basher's existing sheet, outcome Overseas | saw: head "Basher Post out ✕" | chips ✓ Overseas Sqn[on] / Delete / SANS | Mon 21 Dec 26 ▾ | line "On 21 Dec: archived." | foot ["↶Undo post out"] arrow rgb(59, 198, 232) | old words false
+ROW PASS | F-S12(a) | desk chromium | Basher's existing sheet, outcome SANS | saw: head "Basher Post out ✕" | chips Overseas Sqn / Delete / ✓ SANS[on] | Mon 21 Dec 26 ▾ | line "On 21 Dec: becomes SANS." | foot ["↶Undo post out"] arrow rgb(59, 198, 232) | old words false
+ROW PASS | F-S12(a) | desk chromium | Basher's existing sheet, outcome none (SANS tapped again) | saw: head "Basher Post out ✕" | chips Overseas Sqn / Delete / SANS | Mon 21 Dec 26 ▾ | line "On 21 Dec: off the manpower, nothing else." | foot ["↶Undo post out"] arrow rgb(59, 198, 232) | old words false
+ROW PASS | F-S12(a) | desk chromium | Basher's existing sheet, outcome Delete waiting | saw: head "Basher Post out ✕" | chips Overseas Sqn / ✓ Delete[on] / SANS | Mon 21 Dec 26 ▾ | line "On 21 Dec the app deletes him automatically. Days he flew ke" | foot ["↶Undo post out"] arrow rgb(59, 198, 232) | old words false
+ROW FAIL | F-S12(e) | desk chromium | Basher's sheet opened from 2026-12-21 | saw: head "Basher Post out ✕" | date Mon 21 Dec 26 ▾
+ROW FAIL | F-S12(e) | desk chromium | Basher's sheet opened from 2026-12-31 | saw: head "Basher Post out ✕" | date Mon 21 Dec 26 ▾
+ERROR locator.boundingBox: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('[data-testid="postout-undo"]').first()[22m
+
+    at Module.box (C:\Users\User\projects\Raptor\.claude\worktrees\msq-s4-walk-c1b6e5\raptor-port\scripts\handpass\msq\msq-s4w-lib.mjs:156:47)
+    at C:\Users\User\AppData\Roaming\Claude\side-session-notes\local_eeb07289-ed8b-483b-8502-00962970c7d1\s4-chat201\wb\wb-r7.mjs:98:55
+errors []
+errors []
+DONE 13 PASS 2 FAIL 3 OTHER of 18
