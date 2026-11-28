@@ -234,6 +234,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [CHAT66-OPEN-ROUND] — his answer to the night of 11 Nov 26's question 1 (the bell) and that night's small round of questions, put to him only when he says (D994).
 
 **Checks and tooling**
+- [VERCEL-NOT-CHASED] — the shipping rule and the deploy notes still say a change is done only when live on Vercel; his D2906 leaves a refused live build, previews from GitHub.
 - [DATECAL-GLIDE-TEST-FLAKE] — the date calendar's "a glide caught, held still, then dragged" test failed on GitHub in six runs on 17 Nov 26, each passing on re-run, in its setup's 28 quick arrow presses; first find out whether the app itself loses quick presses on a slow machine, then fix (pull request 802 waits, test-only).
 - [LW-ZOOM-TEST-SLOW] — the Leave War desktop browser test "a pinch (phone) or Ctrl+scroll (desktop) zooms the whole grid down and back" timed out twice in one GitHub run (3 Nov 26, at 31.8s and 32.0s) and passed on the next commit's run; watch it (D84).
 - [REVIEW-LAYERS] — his five rulings from the review-process page (D1407–D1411): the scorecard's baseline first, then notes-only pull requests merging by themselves, the secrets scan, the security read, the reader's test set. Steps 1 (the scorecard) and 4 (the secrets scan) built 31 Oct 26, not merged; two repository settings his to approve.
@@ -322,6 +323,11 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [VERCEL-NOT-CHASED] The shipping rule still waits for Vercel's live build (his D2906, 28 Nov 26, chat 210) — OPEN
+**What it is:** his D2906 — "Leave it. I don't bother about vercel since the limit is so limited. I'll use GitHub from now on for preview": a merge whose live build Vercel refuses for its daily limit is left (no retry, no spare build, no Promote asked of him), a change is done once `main`'s own run is green, and previews for his look come from GitHub (his D2839, 27 Nov 26, on the multi-squadron branches, filed there as [GH-PAGES-PREVIEW-DOCS]). The shipping rule still says "Done means LIVE — and live means ON VERCEL" and waits for a READY production deployment (D143), and its steps and the deploy notes send previews to Vercel.
+**To do:** rewrite the shipping rule's "done" section and link steps, the deploy notes' Vercel recovery steps (the spare-branch Promote), and the agent's own note on a missed Vercel merge, as D2906 and D2839 say — one change with [GH-PAGES-PREVIEW-DOCS] once that branch is in `main`. A rule-file and working-guide change: two readers (Astra and a fresh Opus), then his "merge live".
+**Where:** Checks and tooling; next after the multi-squadron branches bring D2839 to `main`.
 
 ### [ACCOUNT-STATUS-TOLD] A person told on his own bell when his account status changes (his D2251, 21 Nov 26, chat 128) — OPEN
 **What it is:** his D2251 — "the players should be informed when their account status changes": a line on the person's own bell whenever he is made an admin or a member, suspended or enabled, given or losing View or Plan of a squadron (a move, or a change to member, ending it included — D2203, D2250), made or unmade a master admin; it names what changed and who changed it.

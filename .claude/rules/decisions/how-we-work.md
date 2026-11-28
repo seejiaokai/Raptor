@@ -76,6 +76,7 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 - Three points of the SWiFT build-and-deploy kit are set aside on his order: all its red flags (whether the flying schedule or the Tracker count as operational information among them), its rule against hosting on Vercel and its rule that the project be private; Vercel and the public project stay until he says otherwise, and none is put back to him unasked [D1530].
 - The kit's own files, marked for use inside the service only, are not put into the public project — the agent's reading of keeping the project public, not checked with him [D1530].
 - Vercel is on Pro from 8 Nov 26; he spends no more than the plan, US$20 a month, its usage included: the Basic build machine, a US$1 budget that only warns (its pause off), the free plan again if it warns [D1794]; a notes-only push is to skip its build, [VERCEL-SKIP-NOTES] [D2032].
+- A merge whose live build Vercel refuses for its daily limit is left: not retried, no spare build, no Promote asked of him; done once `main`'s own run is green; previews for his look come from GitHub — [VERCEL-NOT-CHASED] [D2906, D143].
 - Two guards stand: a backgrounded npm command must move into `raptor-port` [D162]; the push-and-lock guard [D976].
 - Helpers', reviewers' and chats' own working copies leave out the walk pictures, never the main folder; none is deleted; a task fetches what it needs, `lean-copy.mjs get` [D2290, D2292].
 
