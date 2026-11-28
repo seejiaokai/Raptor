@@ -1942,7 +1942,8 @@
    drawings' colours, D1427), the classes given by bidhelpers.ts decideLook, the mark SheetActions.tsx DecideMark. The decided one keeps its
    solid fill and dark words and wears the window's own "this one is picked" mark, the lit leave button's cyan ring below
    (.tchip.lv.lit) — a line, never a glow (D881); the other turns grey, its fill, size and place as at rest, still
-   pressable; each carries a drawn tick or cross before its word, in its words' colour. Size, row and words unchanged. */
+   pressable; each carries a drawn tick or cross before its word, in its words' colour. Size, row and words unchanged
+   (Approvals' desktop pair keeps its 100 width — approvals.css). */
 .bidsheet .dchip.dec,
 .appr-btns > .appr-ok,
 .appr-btns > .appr-no { display: inline-flex; align-items: center; justify-content: center; }
@@ -1951,18 +1952,37 @@
 .bidsheet .dchip.dec.dec-off,
 .bidsheet .dl-acts .dchip.dec.dec-off,
 .appr-btns > .dec-off { color: #7d8794; border-color: var(--edge); }
+/* THE KEYBOARD ON A DECIDE BUTTON (his D842 "one ring, never two" — a picked answer with the keys on it shows ONE ring, a
+   little thicker; D1646 / D1771 the app's cyan focus ring; D2881 the decided one's ring). The decided one: the same cyan
+   ring in the same place, 3px with the keys on it, so the keys show and it is still one ring. Any other decide button —
+   the grey one, or one waiting: the app's cyan focus ring, never the browser's white one, drawn ON its own edge (offset
+   -1px) so a focused grey button never wears the decided one's ring beside it. Weighed to beat Approvals' own
+   `.appr-ok:focus-visible` (approvals.css), whatever order the two files load in. */
+.bidsheet .dchip.dec:focus-visible,
+.appr-btns > .appr-ok:focus-visible,
+.appr-btns > .appr-no:focus-visible { outline: 2px solid var(--accent); outline-offset: -1px; }
+.bidsheet .dchip.dec.dec-ring:focus-visible,
+.appr-btns > .appr-ok.dec-ring:focus-visible,
+.appr-btns > .appr-no.dec-ring:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 /* on a phone the mark and the window's decide words a little smaller, as drawn (E3-*-phone: 12px, the words .9 of the
-   row's), so "Approved" and its tick stand clear inside the edge at 390 wide (lesson 59) — measured 2px from the edge
-   at the full size */
+   row's), and the decide buttons' side padding 2px with no letter spacing (the four even columns kept — D1330), so
+   "Approved" or "Refused" and its mark stand inside the edge down to 360 wide (his D1387, lesson 59) */
 @media (max-width: 600px) {
   .dec-ic { width: 12px; height: 12px; margin-right: 4px; }
   /* the smaller words keep the row's height: stretched to Move and Delete beside them (31 tall alone, the row 32) */
   .bidsheet .dchip.dec { font-size: 11.5px; align-self: stretch; }
+  .bidsheet .bp-acts > .dchip.dec,
+  .bidsheet .dl-acts.bp-acts .dchip.dec { letter-spacing: 0; padding-left: 2px; padding-right: 2px; }
+}
+/* narrower than 380 (a 375 or 360 phone): the window's mark 11px and its gap 3px, so "Approved" and its mark keep about
+   1.5px clear of the edge at 360 in Apple-like (Arial) letters — at 390 and 402 the drawing's 12px and 4px stand */
+@media (max-width: 379px) {
+  .bidsheet .dchip.dec .dec-ic { width: 11px; height: 11px; margin-right: 3px; }
 }
 /* Approvals' phone line (`.appr-l1`, drawn below 700 wide — D1435, D1441): its buttons are as wide as their words, beside
    the request's dates, so the mark is smaller still — 9px and a 2px gap keep a half-day date ("10 Feb AM ›") on one line
-   at his iPhone's 402, measured in WebKit (76 wide there); below about 400 such a date takes two lines inside the
-   buttons' height */
+   at his iPhone's 402, measured in WebKit (76 wide there); at 390 such a date takes two lines, at 360 three and the line
+   grows to 45 (main: two, 36) — whether this line keeps the mark is his call, pending */
 .appr-l1 .appr-btns .dec-ic { width: 9px; height: 9px; margin-right: 2px; }
 
 /* REMARKS AND DOCUMENT ON ONE ROW (change 4): the box takes the room, then its "till", then the Document button */

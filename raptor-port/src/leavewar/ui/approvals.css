@@ -115,8 +115,13 @@
   .appr-btns { display: flex; gap: 8px; justify-content: flex-end; }
   /* the built size and row height, in his drawings' colours (D1427 — r22-2-desk at rest, r22-3-desk lit; measured off the
      drawings): at rest a dark fill with a faint edge, the words green and red; lit, solid green or red with dark words */
-  .appr-ok, .appr-no { min-height: 36px; min-width: 100px; padding: 0 12px; border-radius: 8px; border: 1px solid #27303B; background: #12161B;
+  /* …and with the decided look's drawn mark before the word (his D2881, "size unchanged") still 100 wide, the pair one
+     width, their edges where they were: the side padding 12 → 3 and the mark 12px with a 4px gap (below), so the mark
+     and "Approved" stand clear inside the edge (the words centred in the 100: about 6px each side in this PC's letters,
+     4 in Arial's wider ones) — the phone line keeps its own padding below */
+  .appr-ok, .appr-no { min-height: 36px; min-width: 100px; padding: 0 3px; border-radius: 8px; border: 1px solid #27303B; background: #12161B;
     font: inherit; font-size: 14px; font-weight: 800; cursor: pointer; white-space: nowrap; }
+  .appr-btns .dec-ic { width: 12px; height: 12px; margin-right: 4px; }
   /* …at rest the faint edge its own colour, its words' colour at 45%, and lit the window's cyan ring, the other grey — the
      war's one decided look, its recipe in bidpicker.css (THE DECIDED LOOK — his D2881) */
   .appr-ok { color: #7EE2A0; border-color: rgba(126, 226, 160, .45); }

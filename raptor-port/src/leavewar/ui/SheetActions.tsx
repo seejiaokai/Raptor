@@ -14,10 +14,11 @@
 //
 // THE ONE DECIDED LOOK (his D2881, 28 Nov 26 — "A, solid + cyan ring", answering his D2880 "Doesn't feel like approved is
 // selected"; drawing of record docs/mock/2026-11-27-decide-buttons/img/trio-E3-*.png): wherever the war decides — the bid
-// windows, the day's list, the picked-days sheet and Approvals — Approve and Refuse draw their mark and their state from
-// HERE, so the four places wear one look. Waiting, each shows a drawn tick or cross before its word; decided, the picked
-// one keeps its solid fill and wears the window's cyan ring (`dec-ring`), the other turns grey (`dec-off`) and stays
-// pressable. The classes come from bidhelpers.ts `decideLook`; the recipe is one block of bidpicker.css (THE DECIDED LOOK).
+// windows, the day's list, the picked-days sheet and Approvals — Approve and Refuse draw their mark from HERE
+// (`DecideMark`) and take their state's classes from bidhelpers.ts (`decideLook`), so the four places wear one look.
+// Waiting, each shows a drawn tick or cross before its word; decided, the picked one keeps its solid fill and wears the
+// window's cyan ring (`dec-ring`), the other turns grey (`dec-off`) and stays pressable. The look is one block of
+// bidpicker.css (THE DECIDED LOOK), its keyboard ring too.
 
 /** the drawn tick (Approve) or cross (Refuse) before the word — drawn by the app in the button's own colour, never a
  *  typed ✓ / ✕, which each device's font draws its own way (the one-icon rule, D1134, D1508) */

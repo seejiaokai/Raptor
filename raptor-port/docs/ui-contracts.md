@@ -12288,11 +12288,15 @@ Its open day is its own listener set — opening, stepping, or a bid placed with
   wears the window's picked-leave cyan ring (`dec-ring` — 2px accent outline, 2px offset, never a glow) and the other turns
   grey (`dec-off` — words #7d8794, the plain edge, its fill and size as at rest), still pressable; at rest each wears a
   faint edge of its own colour (its words' colour at 45%); every state carries a drawn tick or cross before the word
-  (`DecideMark`, an SVG in the words' colour — 14px; under 600 wide 12px, the window's decide words 11.5px, as drawn, so
-  "Approved" and its tick stand clear inside the edge at 390, the row still 32 tall); place and words unchanged. One recipe for
+  (`DecideMark`, an SVG in the words' colour — 14px; under 600 wide 12px, the window's decide words 11.5px as drawn, no
+  letter spacing and 2px side padding, the four columns kept even, the row still 32 tall — so "Approved" or "Refused" and
+  its mark stand inside the edge down to 360 wide). With the keys on it the decided one's ring is 3px, one ring (his D842);
+  any other decide button takes the app's cyan focus ring on its own edge (offset −1px), never the browser's nor the
+  decided one's ring. Place and words unchanged. One recipe for
   the bid windows, the day's list, the picked-days sheet (only ever waiting) and Approvals: `bidhelpers.ts` `decideLook`,
   `SheetActions.tsx` `DecideMark` and bidpicker.css "THE DECIDED LOOK". Pinned by `litdecide.test.tsx` (D2881 block),
-  `selectsheet.test.tsx` and `m4page.test.tsx`.
+  `selectsheet.test.tsx` and `m4page.test.tsx`; the drawn look — ring, 3px under the keys, grey, inside the edge at 360
+  and 402, Approvals' desktop 100 — by `e2e/decidelook-leavewar.spec.ts`.
 - **The manning bubble (D1358, D1360, D1364):** one note, always at the foot of the screen (`.mn-foot`, testid
   `manning-bubble`), in the colour of the worst level it names; its words "This bid: Available P 27 → 26 · IP 16 → 15",
   each pair in its colour, a filing named ("This overseas duty", "This course", "This Other", "This Attach"); "Show ›"
@@ -12370,9 +12374,10 @@ Built on `claude/leave-war-m4-planning-d18224` from `docs/superpowers/plans/2026
   where it is until he leaves Approvals or changes the dates, and a second tap on the lit button sends it back to pending.
   The lit one wears the cyan ring and the other turns grey, each with its drawn tick or cross, as in the bid windows
   (D2881 — built; his drawings' colours kept, D1427, the rest edge his green or red at 45%); the buttons keep the longer
-  word's width, the mark inside it (D1435) — on a desktop Approve is 114 wide with its mark (100 before), Refuse 101; on
-  the phone's line the mark is 9px with a 2px gap, so a half-day date ("10 Feb AM ›") keeps one line at 402 in WebKit,
-  and below about 400 takes two lines inside the buttons' height.
+  word's width, the mark inside it (D1435) — on a desktop both stay 100 wide, the side padding 6px and the mark 12px with
+  a 4px gap; on the phone's line the mark is 9px with a 2px gap, so a half-day date ("10 Feb AM ›") keeps one line at 402
+  in WebKit, takes two lines at 390, and at 360 three, the line then 45 tall (main: two lines, 36) — whether the phone
+  line keeps the mark is his call, pending.
   A line the rules refuse says why, in red, under its dates; one drawn from a state since changed says what happened
   ("Already refused by Hex", "Moved to Thu 29 Jan", "No longer there" — B8). Approve all approves exactly what the list
   shows: one tap arms it ("Approve 13 — tap again"), anything that changes what the list shows disarms it.
