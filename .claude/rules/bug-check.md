@@ -51,7 +51,7 @@ Then, before you execute anything:
   called review pile-on (D353, D590, D601, D790, D903, D1734, D1738, D1739, D1761, D1770).
 - **Who builds and who reads is stated once,** in `.claude/rules/decisions/how-we-work.md` §Models and readers (D2460).
 - One line of it, for this check: where Fable reads code, it is a fresh, blind helper beside Astra's and the fresh Opus
-  read, never in their place (D903, D1770, D2258, D2440, D2894).
+  read, never in their place (D903, D1770, D2258, D2440, D2905).
 
 ## What is not a finding (D56) — read this before you spend anything
 
