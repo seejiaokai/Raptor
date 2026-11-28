@@ -12332,7 +12332,8 @@ Built on `claude/leave-war-m4-planning-d18224` from `docs/superpowers/plans/2026
 - **Deciding (D1361, D1330, D1421):** Approve and Refuse rest grey, their words green and red; a tap decides that line at
   once (one command, one Undo — `store.ts decideRequests`) and its button lights ("Approved" / "Refused"); the line stays
   where it is until he leaves Approvals or changes the dates, and a second tap on the lit button sends it back to pending.
-  To change by D2881 (not built): the lit one wears the cyan ring and the other turns grey, as in the bid windows.
+  To change by D2881 (not built): the lit one wears the cyan ring and the other turns grey, as in the bid windows; on a
+  phone this list's buttons carry no drawn tick or cross (D2921), so a half-day date keeps to one line.
   A line the rules refuse says why, in red, under its dates; one drawn from a state since changed says what happened
   ("Already refused by Hex", "Moved to Thu 29 Jan", "No longer there" — B8). Approve all approves exactly what the list
   shows: one tap arms it ("Approve 13 — tap again"), anything that changes what the list shows disarms it.
