@@ -5,7 +5,8 @@ import { chromium, webkit, devices, OUT_DEFAULT } from './lwdl-pw.mjs'
 import path from 'node:path'
 import { mkdirSync, writeFileSync, appendFileSync } from 'node:fs'
 export const PORT = process.env.PORT || 4192
-export const BASE = `http://127.0.0.1:${PORT}/`
+/* HOST: a preview started from the app's launch list answers on localhost only (chat 197) */
+export const BASE = `http://${process.env.HOST || '127.0.0.1'}:${PORT}/`
 export const TAG = process.env.TAG || 'branch'
 export const OUT = process.env.LWDL_OUT || (TAG === 'branch' ? OUT_DEFAULT : OUT_DEFAULT + '/main')
 mkdirSync(OUT, { recursive: true })
