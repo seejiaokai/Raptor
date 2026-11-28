@@ -2129,3 +2129,16 @@ recheck every standing resource (locks, loops, write rights) after a restart, be
 **Issue:** two of the orchestrator's own decisions (keep a form open in a case the ruling says closes; stay silent where the ruling says a note shows) were labelled "the agent's reading" and would have been built; both blind red-team readers flagged them independently as narrowing the owner's ruling. A third decision broke the save gate's own day check (a blocker) and was caught the same way.
 **Suggested improvement:** before writing any decision on an open point, read the ruling's full row and test each decision against its literal words: an exception the ruling does not name is either built as ruled or put to the owner — never decided and labelled a reading; and a decision that changes what a saved record carries is checked against the gate's own checks before it is written.
 **Principle:** a label ("reading") does not make a departure from a rule safe; decisions on open points get the same blind read as the plan itself, and a decision's cheapest check is the rule's literal text.
+
+### Observation 1111: A blind reader's copy cut from a lean working copy — export the index, not the commit; and a long test list by filters
+
+**Status:** OPEN
+**Date:** 28 Nov 26
+**Session context:** Chat A212 (S2, Admin → Users across squadrons): four blind reading copies of U2's second fix round, and the host's own test run of 230 files. (Numbered past 1108–1110, taken on other open branches.)
+**Skill:** New skill candidate: blind-read copies (the four-reader code read's set-up); also `raptor-port/docs/walk-scripts.md` / `gates-and-deploy.md` for the test-list trap
+**Type:** internal
+**Phase/Area:** Making the readers' copies; the host's re-run of a fix round
+
+**Issue:** (1) `git archive <sha> | tar -x` from a lean working copy exports the WHOLE commit — every walk picture the lean copy leaves out — 9 GB and more than ten minutes for the first of four copies, the pipe's two processes outliving the stopped command for a while (a removal of the half-made folder failed "Directory not empty" until they ended). An exclude for one picture folder was not enough: the pictures sit in several folders. (2) `npx vitest run $(git ls-files …)` with 230 files failed at once with "The command line is too long" (Windows), and the script went on to the build, so the log's tail looked green until the vitest exit line was read.
+**Suggested improvement:** For a reading copy from a lean worktree at a clean HEAD: `git checkout-index -a --prefix=<copy>/` (it skips what the lean copy leaves out; four copies in about two minutes), after checking HEAD is the commit to read and the tree is clean; then blank the builder's HANDOFF block, remove its report and briefs, add the patches and the brief, and link `node_modules` as a junction. For a long test list: give vitest path FILTERS (`npx vitest run msq- guard src/undo/ …`), never an expanded file list; and a check script tests each step's own exit before going on. Both belong in a short "reading copies" section the four-reader read points to.
+**Principle:** Export from the same view of the tree you work in, not from the full history; and a list that grows with the project is passed as a pattern, never as arguments.

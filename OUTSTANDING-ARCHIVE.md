@@ -8943,3 +8943,11 @@ A walk script written partly in another letter coding (Latin-1) made the code ch
 ### [USERS-ARCH-FOLD-DRAFT] Folding Archived resets an open archived editor (found 8 Nov 26, walker C of pull request 702)
 **What:** on Admin → Users, with an archived man's editor open, a new callsign typed and Delete armed, folding the Archived group and unfolding it shows the editor still open, but its box reads his old callsign again and Delete is no longer armed; the roster's editors keep both through the same fold. The same on `main` and on pull request 702's branch (`raptor-port/docs/handpass/parts/2026-11-08-rd-last-findings-walkC.md`, S14 "Fold Archived, unfold — archived"). Nothing saved is wrong — only typing not yet saved is dropped, silently. **To do:** keep the archived editor's typing and armed Delete across the fold as the roster's are, or close it on the fold so it does not look kept; a test red first. **Place:** low, the agent's — with the next People and accounts job.
 
+
+*Moved here 2026-11-28 by backlog-archive.mjs ([LW-UNDO-POSTOUT-ADMIN-WORDS]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/superpowers/briefs/2026-11-27-msq-s2-u2-report.md`.*
+
+### [LW-UNDO-POSTOUT-ADMIN-WORDS] "Undo post out" of an admin by one who may not make that squadron's admins: the wrong words (28 Nov 26, read from the code by the builder of U2's first fix round; filed by chat 205) — OPEN
+**What:** U2's fix round makes Enable and Restore of an admin "making an admin" (the agent's reading of R2), asked at both doors with D2806's sentence. The Leave War's "Undo post out" (a restore with no post-in date) is not asked at its own door; the save check catches it through the archived-mark trigger, so Hunter, 142's admin who also plans 149, undoing the post out of Kestrel, 149's admin, is refused — nothing is written — but told "That did not save" instead of "Only 149's own admins or a master admin can make an admin of 149." Not tested yet.
+**To do:** a failing test first; the Undo-post-out door asks the same check as `restoreProblem` (`restoreMakesAdminProblem`) and says D2806's sentence.
+**Where:** the Leave War (`leavewar/sync.ts`, its undo of a post out); People & accounts.
+
