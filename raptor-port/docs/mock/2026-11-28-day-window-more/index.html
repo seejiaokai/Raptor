@@ -1,0 +1,487 @@
+<title>Day Window Questions</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f4f6f9;
+    --surface: #ffffff;
+    --surface-2: #eef2f6;
+    --line: #d5dce5;
+    --text: #17202b;
+    --muted: #55637a;
+    --accent: #0b7f96;
+    --accent-soft: #e2f3f6;
+    --rec: #0f6b4f;
+    --rec-soft: #e4f4ec;
+    --rec-line: #9fd3bd;
+    --accent-line: #8fcbd6;
+    --warn: #8a5a00;
+    --warn-soft: #fbf1dc;
+    --shot-bg: #0c1118;
+    --shadow: 0 1px 2px rgba(20, 30, 45, .08);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0b1220;
+      --surface: #111a2b;
+      --surface-2: #162236;
+      --line: #25344d;
+      --text: #e8edf2;
+      --muted: #9aa9bd;
+      --accent: #3fd0e6;
+      --accent-soft: #10303c;
+      --rec: #6fdcae;
+      --rec-soft: #103227;
+      --rec-line: #1f5a45;
+      --accent-line: #1f5c6b;
+      --warn: #f0c065;
+      --warn-soft: #33280f;
+      --shot-bg: #070b12;
+      --shadow: none;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0b1220;
+    --surface: #111a2b;
+    --surface-2: #162236;
+    --line: #25344d;
+    --text: #e8edf2;
+    --muted: #9aa9bd;
+    --accent: #3fd0e6;
+    --accent-soft: #10303c;
+    --rec: #6fdcae;
+    --rec-soft: #103227;
+    --warn: #f0c065;
+    --warn-soft: #33280f;
+    --shot-bg: #070b12;
+    --shadow: none;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Inter, -apple-system, "SF Pro Text", "Segoe UI", Roboto, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-text-size-adjust: 100%;
+    overflow-x: hidden;
+  }
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding-block: 24px 56px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  h1 { font-size: 26px; line-height: 1.2; margin: 0 0 6px; letter-spacing: -.01em; }
+  h2 { font-size: 20px; line-height: 1.25; margin: 44px 0 12px; letter-spacing: -.005em; }
+  h3 { font-size: 18px; line-height: 1.3; margin: 0 0 4px; }
+  h4 {
+    font-size: 12px; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--muted); margin: 20px 0 4px; font-weight: 600;
+  }
+  p { margin: 0 0 10px; }
+  .lede { color: var(--muted); margin-bottom: 18px; }
+  .kicker {
+    font-size: 12px; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--accent); font-weight: 600; margin-bottom: 6px;
+  }
+  .quote { font-style: normal; color: var(--text); background: var(--surface-2); border-radius: 4px; padding: 0 4px; }
+
+  /* What to look at now */
+  .now {
+    background: var(--surface);
+    border: 1px solid var(--accent-line);
+    border-radius: 10px;
+    padding: 16px 16px 6px;
+    box-shadow: var(--shadow);
+  }
+  .now h2 { margin: 0 0 4px; font-size: 18px; }
+  .now ol { list-style: none; margin: 10px 0 0; padding: 0; }
+  .now li { border-top: 1px solid var(--line); }
+  .now a {
+    display: grid; grid-template-columns: 28px 1fr; gap: 8px;
+    padding: 12px 0; color: inherit; text-decoration: none;
+  }
+  .now .n {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--accent-soft); color: var(--accent);
+    font-weight: 700; font-size: 14px; display: grid; place-items: center; margin-top: 1px;
+  }
+  .now .q { font-weight: 600; }
+  .now .r { color: var(--rec); display: block; font-weight: 500; }
+  .how { font-size: 14px; color: var(--muted); margin: 12px 0 10px; }
+
+  /* A question */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 18px 16px 8px;
+    margin: 0 0 18px;
+    box-shadow: var(--shadow);
+    scroll-margin-top: 12px;
+  }
+  .card .num {
+    display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 6px;
+  }
+  .rec {
+    background: var(--rec-soft);
+    border: 1px solid var(--rec-line);
+    border-radius: 8px;
+    padding: 12px 14px 4px;
+    margin: 16px 0 14px;
+  }
+  .rec h4 { color: var(--rec); margin-top: 0; }
+  .choice { margin: 0 0 10px; padding: 0; list-style: none; }
+  .choice li { padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; margin-bottom: 8px; }
+  .choice b { display: block; }
+  .cost { color: var(--warn); }
+
+  /* Pictures */
+  figure { margin: 14px 0 16px; }
+  .shot {
+    display: block; width: 100%; padding: 10px; margin: 0;
+    background: var(--shot-bg); border: 1px solid var(--line); border-radius: 8px;
+    cursor: zoom-in; text-align: center; font: inherit; color: inherit;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .shot:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .shot img { max-width: 100%; height: auto; display: block; margin: 0 auto; border-radius: 4px; }
+  figcaption { font-size: 14px; color: var(--muted); margin-top: 6px; }
+  figcaption b { color: var(--text); font-weight: 600; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: start; }
+  .pair figure { margin: 0; }
+  .pair + figcaption, .pairnote { font-size: 14px; color: var(--muted); margin: 6px 0 16px; }
+  .zoomhint { font-size: 13px; color: var(--muted); margin: -4px 0 14px; }
+
+  /* Fixes */
+  .fix { border-top: 1px solid var(--line); padding: 16px 0 4px; }
+  .fix:first-of-type { border-top: 0; padding-top: 4px; }
+  .fix p { margin-bottom: 8px; }
+  .says, .true { display: block; }
+  .tag {
+    display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    padding: 1px 7px; border-radius: 4px; margin-right: 6px; vertical-align: 1px;
+  }
+  .tag.s { background: var(--warn-soft); color: var(--warn); }
+  .tag.t { background: var(--rec-soft); color: var(--rec); }
+
+  /* Small points */
+  details {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+    padding: 0 16px; box-shadow: var(--shadow);
+  }
+  summary {
+    cursor: pointer; padding: 14px 0; font-weight: 600; list-style: none;
+    display: flex; justify-content: space-between; gap: 12px; align-items: center;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "Show"; color: var(--accent); font-weight: 600; font-size: 14px; }
+  details[open] summary::after { content: "Hide"; }
+  .small { list-style: none; margin: 0; padding: 0 0 8px; counter-reset: sp; }
+  .small li {
+    counter-increment: sp; border-top: 1px solid var(--line);
+    padding: 12px 0 12px 34px; position: relative;
+  }
+  .small li::before {
+    content: counter(sp); position: absolute; left: 0; top: 12px;
+    width: 24px; text-align: right; color: var(--muted); font-weight: 600; font-size: 14px;
+  }
+  .small .r { display: block; color: var(--rec); font-weight: 500; margin-top: 2px; }
+  .small .r.change { color: var(--warn); }
+
+  .next { list-style: none; margin: 0; padding: 0; }
+  .next li { border-top: 1px solid var(--line); padding: 10px 0; }
+  .next li:first-child { border-top: 0; }
+  .foot { font-size: 14px; color: var(--muted); margin-top: 28px; }
+
+  /* Lightbox */
+  .lb {
+    position: fixed; inset: 0; z-index: 50; display: none;
+    background: rgba(4, 8, 14, .94); overflow: auto; -webkit-overflow-scrolling: touch;
+    padding: 56px 12px 24px; cursor: zoom-out;
+  }
+  .lb.on { display: block; }
+  .lb img { display: block; margin: 0 auto; max-width: none; border-radius: 4px; }
+  .lb-close {
+    position: fixed; top: 10px; right: max(12px, env(safe-area-inset-right, 0px)); z-index: 51;
+    height: 36px; padding: 0 14px; border-radius: 18px;
+    border: 1px solid #3a4a63; background: #162236; color: #e8edf2;
+    font: 600 14px Inter, -apple-system, "Segoe UI", sans-serif; cursor: pointer;
+  }
+  .lb-close:focus-visible { outline: 2px solid #3fd0e6; outline-offset: 2px; }
+
+  @media (max-width: 380px) {
+    .pair { grid-template-columns: 1fr; }
+  }
+
+  /* Round 2 */
+  :root { --new: #fff1bf; --new-text: #5c4300; --new-line: #e2c25a; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --new: #4a3a0c; --new-text: #ffe08a; --new-line: #7a611a; }
+  }
+  :root[data-theme="dark"] { --new: #4a3a0c; --new-text: #ffe08a; --new-line: #7a611a; --rec-line: #1f5a45; --accent-line: #1f5c6b; }
+  .tagnew {
+    display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    padding: 1px 7px; border-radius: 4px; background: var(--new); color: var(--new-text); vertical-align: 1px;
+  }
+  mark { background: var(--new); color: var(--new-text); border-radius: 3px; padding: 0 2px; }
+  .card.isnew { border-color: var(--new-line); }
+  .done {
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px;
+    padding: 14px 16px 6px; margin-top: 14px;
+  }
+  .done h2 { margin: 0 0 6px; font-size: 16px; }
+  .done ul { margin: 0 0 8px; padding-left: 20px; font-size: 15px; }
+  .done li { margin-bottom: 6px; }
+  .card.pts { padding-top: 4px; }
+  .card.pts .small li:first-child { border-top: 0; }
+  h2[id] { scroll-margin-top: 12px; }
+  .small.e li { padding-left: 42px; }
+  .small.e li::before { content: "E" counter(sp); width: 32px; text-align: left; }
+  .fix figure { margin-bottom: 10px; }
+  @media (max-width: 560px) { .pair.stack { grid-template-columns: 1fr; } }
+  .second { border: 1px solid var(--new-line); border-radius: 8px; padding: 12px 14px 4px; margin: 14px 0; }
+  .second h4 { margin-top: 0; color: var(--new-text); }
+  .second p:last-child { margin-bottom: 4px; }
+  .shot.tall img { max-height: 520px; width: auto; }
+  .shot.crop img { width: 100%; aspect-ratio: 1143 / 560; object-fit: cover; object-position: 0 84%; }
+  details.answered { margin-top: 28px; }
+  details.answered ul { margin: 0 0 12px; padding-left: 20px; font-size: 15px; }
+  details.answered li { margin-bottom: 6px; }
+</style>
+
+<div class="wrap">
+
+  <div class="kicker">TALON · Leave War · 28 Nov 26</div>
+  <h1>The new day window: questions</h1>
+  <p class="lede">The day window you approved is being built in three pieces. Before it is built, these seven questions decide what some cards do, the drawings in Q8 show cards your approved drawings did not cover, and Q9 lists four things I had to assume. Nothing here is built yet.</p>
+
+  <section class="now" aria-labelledby="now-h">
+    <h2 id="now-h">What to look at now</h2>
+    <ol>
+      <li><a href="#q1"><span class="n">Q1</span><span><span class="q">A group leave: when does Cutter leave the group?</span> <span class="r">Recommended: only when a change is made for him. This changes your 27 Nov answer.</span></span></a></li>
+      <li><a href="#q2"><span class="n">Q2</span><span><span class="q">A group's course or overseas duty: Move and Delete on its card?</span> <span class="r">Recommended: yes, as on a group leave's card.</span></span></a></li>
+      <li><a href="#q3"><span class="n">Q3</span><span><span class="q">A pending bid: two taps to change LL to OL?</span> <span class="r">Recommended: two taps, as for approved leave.</span></span></a></li>
+      <li><a href="#q4"><span class="n">Q4</span><span><span class="q">Show Auto-approve when an admin changes approved leave?</span> <span class="r">Recommended: show it.</span></span></a></li>
+      <li><a href="#q5"><span class="n">Q5</span><span><span class="q">His approved leave on a closed or past day: what can he do?</span> <span class="r">Recommended: Delete only on the Leave War.</span></span></a></li>
+      <li><a href="#q6"><span class="n">Q6</span><span><span class="q">"To review" on Edit Schedule: the same as the Board?</span> <span class="r">Recommended: the same.</span></span></a></li>
+      <li><a href="#q7"><span class="n">Q7</span><span><span class="q">His own leave with set hours: no Move on the Leave War?</span> <span class="r">Recommended: no Move.</span></span></a></li>
+      <li><a href="#q8"><span class="n">Q8</span><span><span class="q">Nine more drawings: build them as drawn?</span> <span class="r">Recommended: yes.</span></span></a></li>
+      <li><a href="#q9"><span class="n">Q9</span><span><span class="q">Four things I assumed: is any wrong?</span> <span class="r">Recommended: keep all four.</span></span></a></li>
+    </ol>
+    <p class="how">Answer in the chat, for example "all as recommended", or "Q1 B, rest as recommended". Tap a picture to see it full size. Yellow outlines mark what is new.</p>
+  </section>
+
+  <!-- ============ Q1 ============ -->
+  <article class="card isnew" id="q1">
+    <span class="num">Q1</span>
+    <h3>A group leave: when does Cutter leave the group?</h3>
+    <p><b>Example:</b> Cutter, Ghost and Dash (WSOs) share an LL on Mon 21 Dec. Hex (admin) opens Cutter's day, presses "Cutter" on the card, then closes the window without changing anything.</p>
+    <figure>
+      <button class="shot" type="button"><img src="img/b7b-cutter-only-phone.png" alt="On a phone. The group LL's card for Mon 21 Dec with Cutter pressed in the Change line: only Cutter's puck shows."></button>
+      <figcaption>Your approved drawing: "Cutter" pressed shows only his puck.</figcaption>
+    </figure>
+    <ul class="choice">
+      <li><b>A (recommended): he leaves the group only when a change is made for him.</b> Closed with no change, all three stay on one leave. This changes your 27 Nov answer.</li>
+      <li><b>B: he leaves the group the moment "Cutter" is pressed,</b> your 27 Nov answer. Closed with no change he stays on a leave of his own, and one Undo puts him back.</li>
+    </ul>
+  </article>
+
+  <!-- ============ Q2 ============ -->
+  <article class="card isnew" id="q2">
+    <span class="num">Q2</span>
+    <h3>A group's course or overseas duty: Move and Delete on its card?</h3>
+    <p><b>Example:</b> Cutter, Ghost and Dash (WSOs) are on one CSE on Mon 14 Dec. Hex (admin) taps Cutter's day.</p>
+    <figure>
+      <button class="shot" type="button"><img src="img/s05-q2-group-course-phone.png" alt="On a phone. The group course's card with Move and Delete, and a Change line with 3 pax and Cutter."></button>
+      <figcaption>A: the group course's card, worked like the group leave's.</figcaption>
+    </figure>
+    <ul class="choice">
+      <li><b>A (recommended): yes.</b> "3 pax" moves or deletes it for all three, "Cutter" for him alone, the same as a group leave.</li>
+      <li><b>B: no.</b> The card shows the three pucks and the pencil; moving or deleting is done in the course's own window.</li>
+    </ul>
+  </article>
+
+  <!-- ============ Q3 ============ -->
+  <article class="card isnew" id="q3">
+    <span class="num">Q3</span>
+    <h3>A pending bid: two taps to change LL to OL?</h3>
+    <p><b>Example:</b> Cutter (WSO) has a pending LL on Wed 2 Dec. Saber (admin) opens his day and taps OL.</p>
+    <figure>
+      <button class="shot" type="button"><img src="img/s13-q3-pending-second-tap-phone.png" alt="On a phone. Cutter's pending LL card after one tap on OL: a line above the leave buttons says only one kind of leave a day, tap OL again to change this LL to OL."></button>
+      <figcaption>A: after the first tap on OL, the line above the leave buttons.</figcaption>
+    </figure>
+    <ul class="choice">
+      <li><b>A (recommended): two taps, as for approved leave.</b> One habit everywhere, and nothing changes by a slip.</li>
+      <li><b>B: one tap changes a pending bid at once;</b> two taps only on approved leave.</li>
+    </ul>
+  </article>
+
+  <!-- ============ Q4 ============ -->
+  <article class="card isnew" id="q4">
+    <span class="num">Q4</span>
+    <h3>Show the Auto-approve switch when an admin changes approved leave?</h3>
+    <p><b>Example:</b> Hex (admin) turned Auto-approve off last week. Today he changes Cutter's (WSO) approved LL to OL. You ruled the result follows his switch, so it goes back to pending. The switch is not on that card, so nothing warns him.</p>
+    <div class="pair">
+      <figure>
+        <button class="shot" type="button"><img src="img/s04-A-switch-shown-phone.png" alt="On a phone. Cutter's approved LL card with the Auto-approve switch, off, in the window's title bar."></button>
+        <figcaption>A: the switch shown, here off. The leave buttons turn dashed, so he sees a change would be pending.</figcaption>
+      </figure>
+      <figure>
+        <button class="shot" type="button"><img src="img/s04-B-hidden-clean-phone.png" alt="On a phone. The same card with no switch in the title bar."></button>
+        <figcaption>B: hidden, as first drawn.</figcaption>
+      </figure>
+    </div>
+    <ul class="choice">
+      <li><b>A (recommended): show the switch in the title bar whenever the card has leave buttons,</b> so he sees what will happen.</li>
+      <li><b>B: keep it hidden,</b> as first drawn.</li>
+      <li><b>C: an admin's change always stays approved,</b> whatever his switch says.</li>
+    </ul>
+  </article>
+
+  <!-- ============ Q5 ============ -->
+  <article class="card isnew" id="q5">
+    <span class="num">Q5</span>
+    <h3>His approved leave on a day closed for bidding, or already past: what can he do on the Leave War?</h3>
+    <p><b>Example:</b> Ranger (member) has an approved LL on Mon 30 Nov. Bidding for that day has closed. You ruled a move or change on the Leave War sends his leave back to pending, and nothing pending can go on a closed day.</p>
+    <div class="pair">
+      <figure>
+        <button class="shot" type="button"><img src="img/s03-A-closed-phone.png" alt="On a phone. Ranger's approved LL on a closed day: Delete, Remarks and Document, and a line saying to delete it here or change it on the Inputs page."></button>
+        <figcaption>A: Delete only, and where to change it.</figcaption>
+      </figure>
+      <figure>
+        <button class="shot" type="button"><img src="img/s03-B-closed-phone.png" alt="On a phone. The same card with only Remarks and Document, and a line pointing to the Inputs page."></button>
+        <figcaption>B: remarks and Document only.</figcaption>
+      </figure>
+    </div>
+    <ul class="choice">
+      <li><b>A (recommended): Delete only on the Leave War;</b> to move or change it he uses the Inputs page, where it stays approved.</li>
+      <li><b>B: only his remarks and Document</b> on the Leave War.</li>
+      <li><b>C: move and change it as on an open day;</b> it goes back to pending, on a day closed for bidding.</li>
+    </ul>
+  </article>
+
+  <!-- ============ Q6 ============ -->
+  <article class="card isnew" id="q6">
+    <span class="num">Q6</span>
+    <h3>"To review" on Edit Schedule's week: the same as on the Scheduler Board?</h3>
+    <p><b>Example:</b> Zenith (member) has a Meeting on Monday's Ground Programme. Saber (scheduler), on Edit Schedule, wants it off.</p>
+    <div class="pair">
+      <figure>
+        <button class="shot" type="button"><img src="img/s08-none-ground-desktop.png" alt="On a desktop. Edit Schedule's week: Reject on the Meeting's row of the Ground Programme."></button>
+        <figcaption>A: Reject on the row itself.</figcaption>
+      </figure>
+      <figure>
+        <button class="shot" type="button"><img src="img/s08-one-review-desktop.png" alt="On a desktop. Edit Schedule's week: To review holding the rejected Meeting, with its two buttons to put it back, Ground and Unavail."></button>
+        <figcaption>A: "To review" with the rejected Meeting.</figcaption>
+      </figure>
+    </div>
+    <ul class="choice">
+      <li><b>A (recommended): the same as the Board.</b> Reject on the row, and "To review" holding only what was rejected.</li>
+      <li><b>B: keep "Personal Inputs" on Edit Schedule as today;</b> only the Board changes.</li>
+    </ul>
+  </article>
+
+  <!-- ============ Q7 ============ -->
+  <article class="card isnew" id="q7">
+    <span class="num">Q7</span>
+    <h3>His own approved leave with set hours: no Move on the Leave War?</h3>
+    <p><b>Example:</b> Ranger (member) has an approved LL on Tue 8 Dec, 10:00 to 15:00, filed on the Inputs page. He opens it on the Leave War.</p>
+    <figure>
+      <button class="shot" type="button"><img src="img/s02b-hours-member-phone.png" alt="On a phone. Ranger's own LL 10:00 to 15:00: the pencil, Delete, Remarks and Document; no Move, no leave buttons."></button>
+      <figcaption>A: the pencil, Delete, Remarks and Document.</figcaption>
+    </figure>
+    <ul class="choice">
+      <li><b>A (recommended): no Move, the one exception to your rule that his approved leave keeps Move.</b> A moved leave becomes a whole-day bid and would lose its hours; the pencil changes its days or hours instead.</li>
+      <li><b>B: Move too,</b> the moved leave becoming a whole-day bid, pending.</li>
+    </ul>
+  </article>
+
+  <!-- ============ Q8 ============ -->
+  <article class="card isnew" id="q8">
+    <span class="num">Q8</span>
+    <h3>Nine more drawings: build them as drawn?</h3>
+    <p>Your approved drawings did not show these. Reply "Q8 yes", or name the one to change.</p>
+    <div class="pair">
+      <figure><button class="shot" type="button"><img src="img/s01-several-days-phone.png" alt="On a phone. Ghost's LL over five days: All 5 days and Wed 16 where Pick a range stands."></button><figcaption><b>Q8a</b> A leave of several days: "All 5 days" or the day tapped.</figcaption></figure>
+      <figure><button class="shot" type="button"><img src="img/s02a-hours-admin-phone.png" alt="On a phone. An admin on a leave with set hours: the pencil, Move, Delete, Remarks and Document."></button><figcaption><b>Q8b</b> An admin on leave with set hours: no leave buttons.</figcaption></figure>
+      <figure><button class="shot" type="button"><img src="img/s05-group-meanwhile-phone.png" alt="On a phone. A group leave's card with the three pucks, the pencil and one line saying to use the pencil."></button><figcaption><b>Q8c</b> A group leave until Q1 and Q2 are built: pucks and pencil.</figcaption></figure>
+      <figure><button class="shot" type="button"><img src="img/s06-also-since-phone.png" alt="On a phone. Approvals' Also since you last looked: Approved leave deleted by Ranger."></button><figcaption><b>Q8d</b> Approvals: a member deleted his approved leave.</figcaption></figure>
+      <figure><button class="shot" type="button"><img src="img/s07-bell-lines-phone.png" alt="On a phone. The bell's list with three new lines at the top."></button><figcaption><b>Q8e</b> The bell: an admin changed his leave's kind or half, and when that leaves it pending.</figcaption></figure>
+      <figure><button class="shot" type="button"><img src="img/s09-member-other-day-phone.png" alt="On a phone. A member looking at another man's day: cards with no buttons."></button><figcaption><b>Q8f</b> A member on another man's day: read only.</figcaption></figure>
+      <figure><button class="shot" type="button"><img src="img/s10-refused-phone.png" alt="On a phone. A refused bid's card."></button><figcaption><b>Q8g</b> A refused bid.</figcaption></figure>
+      <figure><button class="shot" type="button"><img src="img/s11-oil-earned-phone.png" alt="On a phone. An OIL the schedule earned, FO star, as a card with no buttons."></button><figcaption><b>Q8h</b> OIL the schedule earned: no buttons.</figcaption></figure>
+      <figure><button class="shot" type="button"><img src="img/s12-replaced-notice-phone.png" alt="On a phone. Under Cutter's CSE card, a notice: Cutter's LL bid was replaced by CSE (Saber), with OK, seen."></button><figcaption><b>Q8i</b> A bid replaced by a course: the notice, with "OK, seen".</figcaption></figure>
+    </div>
+  </article>
+
+  <!-- ============ Q9 ============ -->
+  <article class="card isnew" id="q9">
+    <span class="num">Q9</span>
+    <h3>Four things I assumed: is any wrong?</h3>
+    <p>Your rulings do not settle these, so the drawings rest on my reading of them. Reply "Q9 yes" to keep all four, or name the one that is wrong.</p>
+    <ul class="choice">
+      <li><b>Q9a · A change of half follows Auto-approve too.</b> Hex (admin), his switch off, makes Cutter's approved whole-day LL an LL (AM): it goes back to pending, as a change of kind does.</li>
+      <li><b>Q9b · On a half day the line names the half.</b> Cutter holds LL (AM) and Hex taps OL with AM picked: "Only one kind of leave at a time. Tap OL again to change this LL (AM) to OL."</li>
+      <li><b>Q9c · The admins see when a member deletes his approved leave.</b> Ranger deletes his approved LL: Approvals shows "Approved leave deleted by Ranger" (Q8d).</li>
+      <li><b>Q9d · The earned-OIL card drops "given by Weekend/PH".</b> The day's own date already says why (Q8h).</li>
+    </ul>
+  </article>
+
+</div>
+
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Picture, full size" hidden>
+  <button class="lb-close" id="lbClose" type="button">Close</button>
+</div>
+
+<script>
+(function () {
+  var lb = document.getElementById('lb');
+  var img = null;
+  var closeBtn = document.getElementById('lbClose');
+  var opener = null;
+
+  function open(btn) {
+    var src = btn.querySelector('img');
+    if (!src) return;
+    opener = btn;
+    img = document.createElement('img');
+    lb.appendChild(img);
+    img.src = src.getAttribute('src');
+    img.alt = src.getAttribute('alt') || '';
+    var nat = src.naturalWidth || parseInt(src.getAttribute('width'), 10) || 600;
+    var room = Math.max(200, window.innerWidth - 24);
+    // Full size at least; a small picture is enlarged to fill the screen's width, up to twice its size.
+    var w = Math.max(nat, Math.min(room, nat * 2));
+    img.style.width = w + 'px';
+    lb.hidden = false;
+    lb.classList.add('on');
+    lb.scrollTop = 0;
+    lb.scrollLeft = 0;
+    closeBtn.focus();
+  }
+  function close() {
+    lb.classList.remove('on');
+    lb.hidden = true;
+    if (img) { lb.removeChild(img); img = null; }
+    if (opener) { opener.focus(); opener = null; }
+  }
+
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest ? e.target.closest('.shot') : null;
+    if (btn) { open(btn); return; }
+    if (lb.classList.contains('on') && (e.target === lb || e.target === closeBtn || e.target === img)) close();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && lb.classList.contains('on')) close();
+  });
+})();
+</script>

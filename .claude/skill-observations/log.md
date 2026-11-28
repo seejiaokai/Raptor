@@ -1949,3 +1949,16 @@ Met again 27 Nov 26 (chat 192, the clean sheet for the same question): the metho
 **Issue:** renumbering this branch's two clashing rulings in the merge's working tree did not help: `--merge` still saw the old numbers on "this branch" and stopped. The merge had to be aborted, the renumber committed on the branch first (with `Docs-guard-allow: D<old>` trailers, or the rulings check calls the old numbers lost), and the merge redone.
 **Suggested improvement:** in the shipping steps' "bring main in": before `git merge`, compare both sides' new ruling numbers (each side's full rows); renumber clashes in a commit of their own with `Docs-guard-allow: D<old>` trailers; only then merge.
 **Principle:** A merge helper that reads one side from its last commit cannot see fixes staged in the merge itself; settle what it compares before the merge starts.
+
+### Observation 1117: A questions page drafted while its pictures were still being drawn named nine files that never existed
+
+**Status:** OPEN
+**Date:** 28 Nov 26
+**Session context:** chat 199, the day-window plan's twelve drawings and his questions page (a helper drew the pictures in the background while the host drafted the page)
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** putting drawings to the owner on a page
+
+**Issue:** To save time the host wrote the page's picture paths from the brief's state names before the drawing helper had finished; the helper chose its own file names, so nine of nineteen pictures on the page pointed at files that did not exist, and three examples named a person or date the pictures did not show. A fresh word reviewer caught both; the page would otherwise have shown broken pictures and examples that disagree with their pictures.
+**Suggested improvement:** In the mock-up guide's "put it to him" step: a page is written from the drawing helper's report (its file list and what each picture actually shows), never from the brief; and before publishing, a one-line check that every picture the page names exists (`grep -o 'img/[^"]*' index.html | while read f; do [ -f "$f" ] || echo MISSING $f; done`), plus a read of each example against its picture's person and date.
+**Principle:** Describe what was produced, not what was asked for: a page about pictures is written from the pictures that exist, and every reference is checked to resolve before it is shown.

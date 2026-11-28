@@ -641,7 +641,7 @@ differ). So:
 #### Step 9b — draw what the approved drawings do not show, and put it to him · after 3 · parallel with 4–9
 Nothing he has not seen is built (D1625; round 1, M7). The drawings of record show one-day entries, an admin on six
 kinds, and one member frame. These states are new and undrawn:
-- **Files (new, notes only):** `docs/mock/2026-11-29-day-window-more/draw-more.mjs` (the drawing script's own world and
+- **Files (new, notes only):** `docs/mock/2026-11-28-day-window-more/draw-more.mjs` (the drawing script's own world and
   CSS, `docs/mock/2026-11-28-what-we-build/draw-war-window.mjs`, on the real app at 402×874 and 1536×864), its `img/`,
   one questions page (an Artifact, each question numbered on the picture — D2920); the words by Opus, then a fresh
   Fable (D2441).
@@ -664,6 +664,13 @@ kinds, and one member frame. These states are new and undrawn:
   window — and steps 6, 7, 13, 15 and 16 build only the parts already drawn.
 - **Put to him as one small round**, with Q3–Q5 (and Q1, Q2 when step 16 is next): each question one decision, when
   it happens in real life, a worked example, a recommendation (D2439, D541).
+- **Done, chat 199 (28 Nov 26):** drawn in `docs/mock/2026-11-28-day-window-more/` (not `…-11-29-…`; `draw-more.mjs`,
+  its words in one table `W`, run `--size d|p`), words adjusted by a fresh Fable (D2441; its read
+  `docs/mock/2026-11-28-day-window-more/fable-words.md`), and put to him on one page with Q1–Q7, the drawings as Q8a–i
+  and four readings as Q9a–d (`index.html` there). Left for the build, from that read: (1) s08's note under "To
+  review", "…Delete it here if it should go entirely.", points at a Delete the row no longer has: put to him with
+  branch B's look (its first sentence stays); (2) where the second tap's result will be pending (a member on his own
+  approved leave, an admin with Auto-approve off), w1 may add "It will be pending." — drawn first, with step 7.
 
 #### Step 10 — the new window's frame and the routing (b1, the title bar, Auto-approve) · after 9
 - **Files:** new `src/leavewar/ui/DayWindow.tsx` (+ `daywindow.test.tsx`); `ui/Matrix.tsx` (3684–3790 and the mounts at
