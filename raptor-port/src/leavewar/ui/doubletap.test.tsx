@@ -12,21 +12,23 @@ import { INPUTS } from '../../engine/inputs'
 import { initStore, lwHistInit, setRole } from '../state/store'
 import { setLwOnScreen } from '../state/screen'
 import { memoryBackend } from '../state/storage'
+import { atOneMoment } from '../testkit'
 import { Matrix } from './Matrix'
 
 const ISNAP = JSON.stringify(INPUTS)
 const DAY = '2026-01-30'
 const picker = () => screen.queryByTestId('bid-picker')
-/* a finger's tap: its press (a touch) and then its click */
-const tap = (el: Element, x = 10, y = 10) => {
+/* a finger's tap: its press (a touch) and then its click — at one moment on the clock, whatever the machine's speed
+   (testkit `atOneMoment`) */
+const tap = (el: Element, x = 10, y = 10) => atOneMoment(() => {
   el.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 3, pointerType: 'touch', button: 0, clientX: x, clientY: y }))
   fireEvent.click(el, { detail: 1, clientX: x, clientY: y })
-}
-/* a mouse's click: its press and then its click, `detail` the browser's count */
-const mouse = (el: Element, detail: number, x = 10, y = 10) => {
+})
+/* a mouse's click: its press and then its click, `detail` the browser's count — at one moment, as a tap */
+const mouse = (el: Element, detail: number, x = 10, y = 10) => atOneMoment(() => {
   el.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 1, pointerType: 'mouse', button: 0, clientX: x, clientY: y }))
   fireEvent.click(el, { detail, clientX: x, clientY: y })
-}
+})
 
 beforeEach(() => {
   INPUTS.length = 0

@@ -19,7 +19,7 @@ import { setFlyDays } from '../../state/flyplan'
 import { initStore, lwHistInit, setRole } from '../state/store'
 import { setLwOnScreen } from '../state/screen'
 import { memoryBackend } from '../state/storage'
-import { elevenCounters } from '../testkit'
+import { atOneMoment, elevenCounters } from '../testkit'
 import { setDaysWin } from '../../ui/pops'
 import { DaysWindow } from '../../ui/DaysWindow'
 import { LeaveWarPage } from '../LeaveWarPage'
@@ -34,11 +34,12 @@ const CELL = 'cell-asics-2026-01-29'
 const PENDING = 'cell-asics-2026-01-23'   // the seed's pending half day of LL — its window's Move picks it up
 const MON = '2026-01-05', TUE = '2026-01-06', WED = '2026-01-07'
 const picker = () => screen.queryByTestId('bid-picker')
-/* a finger's tap: its press (a touch) and then its click */
-const tap = (el: Element, x = 10, y = 10) => {
+/* a finger's tap: its press (a touch) and then its click — at one moment on the clock, whatever the machine's speed
+   (testkit `atOneMoment`) */
+const tap = (el: Element, x = 10, y = 10) => atOneMoment(() => {
   el.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 3, pointerType: 'touch', button: 0, clientX: x, clientY: y }))
   fireEvent.click(el, { detail: 1, clientX: x, clientY: y })
-}
+})
 /* the second tap, where the first one landed: a day's cell behind the window that just closed */
 const second = (what: string, cell = CELL) => {
   tap(screen.getByTestId(cell))
@@ -49,17 +50,18 @@ const opens = (what: string) => {
   expect(picker(), `${what}: the tap on the day is his — it opens`).toBeTruthy()
 }
 const wait = (ms: number) => act(async () => { await new Promise(r => setTimeout(r, ms)) })
-/* a finger's tap with its lift: its press, its release and then its click (the guard counts a press's age from its lift) */
-const tapUp = (el: Element, x = 10, y = 10) => {
+/* a finger's tap with its lift: its press, its release and then its click (the guard counts a press's age from its lift)
+   — at one moment, as a tap */
+const tapUp = (el: Element, x = 10, y = 10) => atOneMoment(() => {
   el.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 3, pointerType: 'touch', button: 0, clientX: x, clientY: y }))
   el.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, pointerId: 3, pointerType: 'touch', button: 0, clientX: x, clientY: y }))
   fireEvent.click(el, { detail: 1, clientX: x, clientY: y })
-}
-/* a mouse's click: its press and then its click, `detail` the browser's count */
-const mouse = (el: Element, detail: number, x = 10, y = 10) => {
+})
+/* a mouse's click: its press and then its click, `detail` the browser's count — at one moment, as a tap */
+const mouse = (el: Element, detail: number, x = 10, y = 10) => atOneMoment(() => {
   el.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 1, pointerType: 'mouse', button: 0, clientX: x, clientY: y }))
   fireEvent.click(el, { detail, clientX: x, clientY: y })
-}
+})
 
 const mem = new Map<string, string>()
 const origEFP = document.elementFromPoint
