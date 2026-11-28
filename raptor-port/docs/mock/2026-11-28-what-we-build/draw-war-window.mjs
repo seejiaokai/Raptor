@@ -72,7 +72,11 @@ const FRAMES = [
     cards: [{ box: 'c k-ll s-a whole', t: 'LL', main: 'Approved · AM', pucks: ['psy'], sub: PLACED('Cutter'), acts: ['approved', 'refuseOff', 'move', 'del'], rmk: 'full', leave: 'LL', dur: 'AM' }],
     add: { dur: 'PM' }, say: 'A morning leave: the free afternoon keeps the usual buttons to add leave.' },
   { id: 'm1-own-approved', role: 'us', who: RAN, iso: '2026-12-03', date: 'Thu 3 Dec',
-    cards: [{ box: 'c k-ll s-a whole', t: 'LL', main: 'Approved · Whole day', pucks: ['bane'], sub: PLACED('Saber'), acts: [], rmk: 'full' }], say: 'Ranger, a member, on his own approved leave: its state and its Document.' },
+    /* his D2898: his own approved leave keeps Move, Delete, its Duration and the leave buttons — no Approve or Refuse.
+       His remarks-only window has no Duration or leave buttons to borrow, so the window is opened on an empty day of his
+       (tapIso) and drawn as 3 Dec's. */
+    tapIso: '2026-12-07',
+    cards: [{ box: 'c k-ll s-a whole', t: 'LL', main: 'Approved · Whole day', pucks: ['bane'], sub: PLACED('Saber'), acts: ['move', 'del'], rmk: 'full', leave: 'LL', dur: 'Whole day', mark: 'member' }], say: 'Ranger, a member, on his own approved leave: Move, Delete, its Duration and leave buttons; no Approve or Refuse.' },
 ]
 
 const CSS = `
@@ -180,6 +184,7 @@ async function mark(p, f, on) {
     const list = []
     f.cards.forEach((c, i) => {
       if (c.mark === 'pen') list.push([`.rd-card[data-rd="${i + 1}"] .ev-pen`, '1'])
+      if (c.mark === 'member') { list.push([`.rd-card[data-rd="${i + 1}"] .dl-acts .move`, '1']); list.push([`.rd-card[data-rd="${i + 1}"] [aria-label="Which leave"]`, '2']) }
       if (c.mark === 'note') list.push([`.rd-card[data-rd="${i + 1}"] .rd-noteline`, '1'])
       if (c.mark === 'cutter') { list.push([`.rd-card[data-rd="${i + 1}"] .rd-change .pchip.on`, '1']); list.push([`.rd-card[data-rd="${i + 1}"] .rd-pucks`, '2']) }
       if (c.mark === 'group') { list.push([`.rd-card[data-rd="${i + 1}"] .ev-pen`, '1']); list.push([`.rd-card[data-rd="${i + 1}"] .dl-acts .move`, '2']) }
@@ -187,7 +192,7 @@ async function mark(p, f, on) {
     for (const [sel, text] of list) {
       const e = [...document.querySelectorAll(sel)].find(x => x.getBoundingClientRect().width > 0); if (!e) continue
       e.classList.add('rd-new')
-      if (text === '2' && sel.includes('.move')) { const d = e.nextElementSibling; if (d) d.classList.add('rd-new') }
+      if (sel.includes('.move')) { const d = e.nextElementSibling; if (d) d.classList.add('rd-new') }
       const r = e.getBoundingClientRect(), t = document.createElement('span'); t.className = 'rd-tag'; t.textContent = text; document.body.appendChild(t)
       t.style.left = (sel.includes('.rd-pucks') ? r.right + 4 : Math.max(2, r.left - t.getBoundingClientRect().width - 4)) + 'px'; t.style.top = Math.max(2, r.top + r.height / 2 - 9) + 'px'
     }
@@ -210,7 +215,7 @@ async function draw(p, f0) {
   const f = { ...f0, ACT, PEN }
   try {
     await tap(p, f.who, BASE)
-    await reach(p, f.who, f.iso)
+    await reach(p, f.who, f.tapIso || f.iso)
     const r = await p.evaluate(transform, f)
     if (!r.ok) throw new Error(JSON.stringify(r))
     console.log(`${f.id}: window ${r.height}px tall, top ${r.top} · sideways ${r.sheetOver} · spills ${JSON.stringify(r.spill)}`)

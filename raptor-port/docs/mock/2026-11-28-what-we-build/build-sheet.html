@@ -60,7 +60,18 @@ details li b{color:var(--ink)}
   <h1>What we would build</h1>
   <p class="lede">Everything you ruled on the Leave War window, the period list and "To review", drawn on the real app. Yellow marks show what is new since your last look.</p>
 
-  <div class="round"><b>New since your last look</b> (in yellow below): every card shows its people as small pucks, one person too · pressing Cutter on a group leave shows only his puck · a course or overseas-duty day keeps the leave buttons, so leave can still go on it (my first drawing left them off by mistake) · a new question just below: what tapping OL on an LL day does.</div>
+  <div class="round"><b>New since your last look</b> (in yellow below): every card shows its people as small pucks, one person too · pressing Cutter on a group leave shows only his puck · a course or overseas-duty day keeps the leave buttons, so leave can still go on it (my first drawing left them off by mistake) · a member edits his own approved leave · two new questions just below.</div>
+
+  <section class="ask" aria-labelledby="q3" style="border-color:var(--mark);margin-bottom:12px">
+    <div class="q" id="q3"><span class="fresh">New ·</span> Ranger's LL on Thu 3 Dec is approved. His plans change, so he moves it to Fri 4 Dec himself (or makes it AM). Is it still approved?</div>
+    <div class="when">When: a member changes his own leave on the Leave War after it was approved. Deleting it always just removes it.</div>
+    <div class="grid" id="mem"></div>
+    <div class="opts">
+      <div class="opt rec"><span class="k">1</span><div><b>Stays approved; the admins' bell tells them.</b> (Recommended.) It's the same as when he changes his leave on the Inputs page today, so both pages give the same result.</div></div>
+      <div class="opt"><span class="k">2</span><div><b>Goes back to waiting for an admin.</b> Safer for manning, but the same change on the Inputs page would stay approved, so the two pages would differ.</div></div>
+    </div>
+    <div class="reply">Reply in the chat: <code>1</code> or <code>2</code>.</div>
+  </section>
 
   <section class="ask" aria-labelledby="q2" style="border-color:var(--mark)">
     <div class="q" id="q2"><span class="fresh">New ·</span> Cutter has an approved LL on Wed 9 Dec. You tap OL on it. What happens?</div>
@@ -105,7 +116,6 @@ details li b{color:var(--ink)}
       <li><b>F1</b> One page, "Availability", for the Leave War and the Inputs page. Recommended: yes, step by step.</li>
       <li><b>F4</b> Approvals opens on "All", person by person, as you expect. Recommended: yes.</li>
       <li><b>B</b> "Change for Cutter only" on the Inputs page and the schedule too. Recommended: yes.</li>
-      <li><b>C</b> A member can move his own approved leave on the Leave War, as he can on the Inputs page. Recommended: yes.</li>
       <li><b>D</b> A group's overseas duty or course is one item on both pages; half days offered. Recommended: yes.</li>
       <li><b>E</b> An admin can add men to leave that came from one man's approved bid. Recommended: yes, built last.</li>
       <li><b>3</b> On the grid, a group's box shows nothing extra; a tap rings the others in the group. Recommended: yes.</li>
@@ -117,7 +127,7 @@ details li b{color:var(--ink)}
   <details>
     <summary>Removed: answered, or no longer needed</summary>
     <ul>
-      <li><b>F2, F3, F5, F7, F8, 6, 9</b> answered by you.</li>
+      <li><b>F2, F3, F5, F7, F8, 6, 9</b> answered by you. <b>C</b> (a member moves his own approved leave): answered by you, wider — he can move, delete and swap it.</li>
       <li><b>F6</b> (one window for every tap) and <b>4</b> (a group leave's window): now the drawings above.</li>
       <li><b>8</b> ("Change for Cutter only" on the Leave War): built into the group card as you drew it.</li>
       <li><b>A</b> replaced by F1. <b>1</b> (one row under Unavailable) and <b>2</b> (the "Blocked" notes): already ruled; built as drawn before.</li>
@@ -145,7 +155,7 @@ const WAR = [
   ['b5-course', true, 'Course from the Inputs page', `Move, Delete and remarks right here. ${NEW(1)} the ${PEN} for its title and hours. <span class="fresh">Leave can still be added on a course day: the leave buttons stay.</span>`],
   ['b9-pencil-open', false, `After the ${PEN} on the course`, 'Its own window opens over the Leave War. Close it and you are back where you were.'],
   ['b1-empty', false, 'An empty day', 'As today. The manning line now sits under the date.'],
-  ['m1-own-approved', false, 'Ranger (a member), his own approved leave', 'What it is, his remarks and Document. Nothing he may not do.'],
+  ['m1-own-approved', true, '<span class="fresh">Ranger (a member), his own approved leave</span>', `<span class="fresh">${NEW(1)} Move and Delete. ${NEW(2)} Whole day / AM / PM and the leave buttons to swap it. No Approve or Refuse.</span>`],
 ]
 const PER = [['p1-periods', true, 'The period list', `${NEW(1)} "+ New period" is now the first line. Deleting or archiving a period comes later, drawn first.`]]
 const REV = [
@@ -172,7 +182,8 @@ const OPT = [
   ['b3o1-replace-tap', true, 'Option 1', `${NEW(1)} "Only one kind of leave a day. Tap OL again to change this LL to OL."`],
   ['b3o2-delete-first', true, 'Option 2', `${NEW(1)} "Only one kind of leave a day. Delete this LL first, then add OL."`],
 ]
-function all() { draw('opt', OPT); draw('war', WAR); draw('periods', PER); draw('review', REV) }
+const MEM = [['m1-own-approved', true, 'Ranger, his own approved LL', `${NEW(1)} Move and Delete. ${NEW(2)} the leave buttons. No Approve or Refuse.`]]
+function all() { draw('mem', MEM); draw('opt', OPT); draw('war', WAR); draw('periods', PER); draw('review', REV) }
 function setSize(s) {
   size = s
   document.getElementById('segPhone').setAttribute('aria-pressed', s === 'phone')
