@@ -296,8 +296,16 @@ describe('Q8 at the doors — Hunter, 149 picked, makes a 149 man an admin: refu
     expect(approveRequest(a, to, 'admin'), 'approveRequest').toBeNull()
     expect(approveRequestNew(b, np('Wren'), 'admin'), 'approveRequestNew').toBeNull()
   })
-  it('pin: an admin kept an admin — Hunter renames Kestrel\'s sign-in, Admin left picked: saved', () => {
+  /* (U2 fix round 4, part 3 — Fable's proof 1 of the round 3 re-read: this pin read "Hunter renames Kestrel's sign-in,
+     Admin left picked: saved". Admin left picked is still no role made — but changing a 149 admin's sign-in name hands
+     his admin seat to another sign-in, which is making an admin of 149 (D2806), so Hunter is now refused it in Q8's
+     sentence; the pin's own point, Admin left picked on an admin's rename, is held for one who may — a master admin.
+     msq-s2-u2fix4-rename.test.ts holds the rest) */
+  it('pin: an admin kept an admin — Kestrel\'s sign-in renamed, Admin left picked: refused to Hunter (a seat handed on), saved for a master admin', () => {
     asHunter149()
+    expect(saveAccess(ACCT.kestrel, { role: 'admin', name: 'kes@mail' })).toBe(MAKE('149'))
+    expect(accountById(ACCT.kestrel)!.name).not.toBe('kes@mail')
+    asSaber149()
     expect(saveAccess(ACCT.kestrel, { role: 'admin', name: 'kes@mail' })).toBeNull()
     expect(accountById(ACCT.kestrel)!.name).toBe('kes@mail')
   })

@@ -413,10 +413,21 @@ export function mayGivePlanAt(acct: (LevelAccount & { on?: boolean }) | null | u
    was out of force did not: a Plan holder of 149 wrote an admin's role on a 149 sign-in that was switched off, or whose
    man was archived or marked a placeholder, and the next Enable, Restore or lifted mark by one who may brought back an
    admin nobody entitled had made (the security reader's S1 and S2 — U2 fix round 3, fix 2). Both went with that half:
-   "in force" no longer enters into it, and no mark is watched. */
+   "in force" no longer enters into it, and no mark is watched.
+   HIS ADMIN SEAT HANDED TO ANOTHER SIGN-IN IS MAKING AN ADMIN (U2 fix round 4, part 3 — Fable's proof 1 of the round 3
+   re-read; D2806): keyed by the man alone, a row whose sign-in name changed made nobody an admin here, so Hunter (Plan of
+   149, not its own admin) changed a switched-off 149 admin's sign-in name to a mail of his choosing, pressed Enable
+   (D2903) — and whoever signed in with that mail was 149's own admin. So an admin of his home squadron, after, whose
+   sign-in name is not the one the same man's admin row had before — the row renamed, or deleted and made again under
+   another name — is made one too. A master admin's account is left to its own rules (only a master admin changes it,
+   D2205), and a caller that hands no names asks only the man and the role, as before. */
 export interface MadeAdmin { account: string; pid: string; unit: string }
+type NamedLevelAccount = LevelAccount & { name?: string }
+/* the same man's admin row, now under another sign-in name (the half above) */
+const seatHanded = (x: NamedLevelAccount, y: NamedLevelAccount): boolean =>
+  !y.master && x.name != null && y.name != null && String(x.name) !== String(y.name)
 export function madeAdminsIn(w: {
-  acctB: readonly LevelAccount[]; acctA: readonly LevelAccount[]; rowsB: UnitRows; rowsA: UnitRows; today: string; fallback: string | null
+  acctB: readonly NamedLevelAccount[]; acctA: readonly NamedLevelAccount[]; rowsB: UnitRows; rowsA: UnitRows; today: string; fallback: string | null
 }): MadeAdmin[] {
   const out: MadeAdmin[] = []
   for (const y of w.acctA) {
@@ -424,7 +435,7 @@ export function madeAdminsIn(w: {
     const u = homeUnitOn(w.rowsA, String(y.pid), w.today, w.fallback)
     if (u == null || levelFrom(y, u, w.today, w.rowsA, w.fallback) !== 'admin') continue
     const x = w.acctB.find(z => String(z.pid) === String(y.pid))
-    if (x && levelFrom(x, u, w.today, w.rowsB, w.fallback) === 'admin') continue
+    if (x && levelFrom(x, u, w.today, w.rowsB, w.fallback) === 'admin' && !seatHanded(x, y)) continue
     out.push({ account: y.id, pid: String(y.pid), unit: u })
   }
   return out

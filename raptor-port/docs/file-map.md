@@ -2216,3 +2216,14 @@ account, Plan and every other bell door: a signed-in person's line under an id t
 - `src/state/msq-s2-u2fix4-squat.test.ts` (the three readers' proofs, every case kept, the squat now refused at the gate;
   the squat already on the bell not marking the move told; each reserved family refused for a member and an admin; the
   honest telling).
+
+Chat A216, 28 Nov 26 — step U2's fourth fix round, part 3 (a 149 admin's row handed to another sign-in; Fable's proof 1
+of the round 3 re-read). **Changed:** `src/state/units-model.ts` (`madeAdminsIn`: an admin of his home squadron whose
+sign-in name is not the one the same man's admin row had before — renamed, or deleted and made again under another
+name — is an admin made; a master admin's account left to its own rules), `src/state/accounts.ts` (`madeAdminAcct`, the
+account with its sign-in name as that helper reads it; `makeAdminOfStep`, Q8 over a whole step, asked by `saveAccess`
+and `updateAccount` where the sign-in name changes), `src/state/perms.ts` (`madeAdminViolation` hands the names),
+`src/state/undo-wire.ts` (`makeAdminStuck` the same), `src/state/msq-s2-u2-doors.test.ts` (the pin "Hunter renames
+Kestrel's sign-in: saved" now refused to Hunter, saved for a master admin). **New (test):**
+- `src/state/msq-s2-u2fix4-rename.test.ts` (Fable's proof, every case kept; both doors, the gate, the delete and re-make
+  in one command, Undo and Redo refused to Hunter; 149's own admin, a master admin and a member's rename still saved).

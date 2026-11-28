@@ -19,7 +19,7 @@ import { roleStore, invalidateRoleTargets } from './mission-roles'
 import { decodeRoleId } from '../engine/mission-role'
 import { peopleStore, settingsStore } from './people-settings-commit'
 import { rosterRestoreProblem } from './roster-restore'
-import { seedAccounts, levelIn, accountById, ACCOUNT_PFX, signedInAccount, adminNow, masterRightLeft, accountsAfter, ACCOUNTS_LIST, mayGivePlanNow, mayGivePlanByAccount, makeAdminUndoWords, readAccounts, levelAcct, adminLineAudience } from './accounts'
+import { seedAccounts, levelIn, accountById, ACCOUNT_PFX, signedInAccount, adminNow, masterRightLeft, accountsAfter, ACCOUNTS_LIST, mayGivePlanNow, mayGivePlanByAccount, makeAdminUndoWords, readAccounts, madeAdminAcct, adminLineAudience } from './accounts'
 import { unitRows, homeOn, unitRowsBefore, unitRowsAfter, unitById, madeAdminsNow, grantRowHolds } from './units'
 import { setDescribeUnits } from '../undo/describe'
 import { store } from '../engine/hooks'
@@ -779,7 +779,9 @@ function makeAdminStuck(entry: UndoEntry, dir: 'undo' | 'redo'): string | boolea
      role he had, which is not making an admin, so it goes through for whoever may manage the squadron's people; round
      1's fix 4 handed each side's switch and people to the helper and blocked it — gone) */
   const made = madeAdminsNow({
-    acctB: readAccounts(accountRowsNow()).map(x => levelAcct(x)), acctA: readAccounts(after).map(x => levelAcct(x)),
+    /* (with each account's sign-in name, as the gate hands them — U2 fix round 4, part 3: the Undo or Redo of a 149
+       admin's rename hands his seat to another sign-in) */
+    acctB: readAccounts(accountRowsNow()).map(madeAdminAcct), acctA: readAccounts(after).map(madeAdminAcct),
     rowsB: unitRowsAfter([]), rowsA: unitRowsAfter(changes as any), today: todayIso(),
   })
   for (const m of made) {

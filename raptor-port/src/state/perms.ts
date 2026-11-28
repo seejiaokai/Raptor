@@ -34,7 +34,7 @@ import { deriveActor } from '../command/actor'
 import { voidedOil } from '../engine/oil'
 /* the seeded accounts, read only by the posting pass's first-write rule below (accounts.ts imports this file; the call is
    made only when a command is judged, never as the module loads) */
-import { seedAccounts, ACCOUNTS_LIST, isMasterAccount, accountBefore, levelAcct, readAccounts, adminLineAudience, adminLineAudienceOn, type Account } from './accounts'
+import { seedAccounts, ACCOUNTS_LIST, isMasterAccount, accountBefore, levelAcct, madeAdminAcct, readAccounts, adminLineAudience, adminLineAudienceOn, type Account } from './accounts'
 import { unitRowsBefore, unitRowsAfter, levelBefore, homeBefore, homeChangesBefore, todayIso, homeOn, levelOfAccount, setNewHomeUnit, grantBefore, grantRowHolds, datedBreach, lockBreach, everOfBefore, units as storeUnits, unitById as storeUnitById, mayGivePlanOn, madeAdminsNow } from './units'
 import { PEOPLE, sansStart, sansStop } from '../engine/people'
 import { UNIT, BOOT_UNIT } from '../engine/unitview'
@@ -3190,7 +3190,9 @@ function madeAdminViolation(env: CommitEnvelope): string | null {
   if (!accts && !madePerson) return null
   const w = worldsOf(env) ?? buildWorlds(env)
   const today = todayIso()
-  const made = madeAdminsNow({ acctB: w.acctB.map(x => levelAcct(x)), acctA: w.acctA.map(x => levelAcct(x)), rowsB: w.rowsB, rowsA: w.rowsA, today })
+  /* (with each account's sign-in name — U2 fix round 4, part 3: a 149 admin's row renamed, or deleted and made again
+     under another name, hands his admin seat to another sign-in, so it is an admin made — accounts.ts madeAdminAcct) */
+  const made = madeAdminsNow({ acctB: w.acctB.map(madeAdminAcct), acctA: w.acctA.map(madeAdminAcct), rowsB: w.rowsB, rowsA: w.rowsA, today })
   for (const m of made) {
     if (mayGivePlanOf(m.unit, planActorOf(env), w.rowsB, today)) continue
     /* (the posting pass's own hard rule names an account it does not owe first, as it did before the app's actor was judged

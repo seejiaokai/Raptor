@@ -76,7 +76,7 @@ import {
   postInProblem, newHomeProblem, type NewPerson,
 } from './roster-add'
 import { HOOKS } from '../engine/hooks'
-import { putNewHome, dropGrantsOfAccount, dropGrantRows, levelOfAccount, levelBefore, homeBefore, todayIso, homeOn, units, unitById, unitRows, grantOfOn, grantRowHolds, lockBreach, rowsDraft, putGrantLine, mayGivePlanOn } from './units'
+import { putNewHome, dropGrantsOfAccount, dropGrantRows, levelOfAccount, levelBefore, homeBefore, todayIso, homeOn, units, unitById, unitRows, grantOfOn, grantRowHolds, lockBreach, rowsDraft, putGrantLine, mayGivePlanOn, madeAdminsNow } from './units'
 import { moveFrom, type UnitRows, type Grant, type GrantLevel } from './units-model'
 import type { LockBreach } from './lastadmin'
 import { noticeDay } from './notices'
@@ -529,6 +529,12 @@ export const signedInAccount = (): Account | undefined => (SESSION ? accountById
    its link day. */
 export const levelAcct = (a: { id: string; pid: unknown; pidFrom?: string; role: string; master?: boolean; adminOf?: string; adminFrom?: string }, role: string = a.role): LevelAccount =>
   ({ id: a.id, pid: String(a.pid), pidFrom: a.pidFrom, role, master: a.master === true, ...(a.role === 'admin' && a.adminOf ? { adminOf: a.adminOf, adminFrom: a.adminFrom } : {}) })
+/* AN ACCOUNT AS THE MADE-AN-ADMIN HELPER READS IT (units-model.ts madeAdminsIn — U2 fix round 4, part 3): levelAcct's
+   reading with its sign-in name, so a 149 admin's row put on another sign-in reads as an admin made. One body for the
+   doors (makeAdminOfStep below), the gate (perms.ts madeAdminViolation) and the Undo's check (undo-wire.ts
+   makeAdminStuck) */
+export const madeAdminAcct = (a: Parameters<typeof levelAcct>[0] & { name?: string }): LevelAccount & { name?: string } =>
+  ({ ...levelAcct(a), name: a.name })
 /* WHERE AN ADMIN ROLE IS RECORDED AS GIVEN (K3): nothing where the plain reading already makes him an admin of the
    squadron he is in today (a man who has not moved since his first home row — every seeded admin, every new account);
    else his squadron of today, from today — an admin made after his move. `a` — the row as it will be saved. */
@@ -600,6 +606,19 @@ export const makeAdminUndoWords = (unit: string): string => {
 export function makeAdminProblem(unit: string | null | undefined): string | null {
   if (!unit) return 'This change could not be saved.'
   return mayGivePlanNow(unit) ? null : makeAdminWords(unit)
+}
+/* Q8 OVER A WHOLE STEP AT A DOOR (U2 fix round 4, part 3 — Fable's proof 1 of the round 3 re-read; D2806): every man the
+   step leaves an admin of his squadron who was not, by the one helper the gate and the Undo ask (units.ts
+   madeAdminsNow), so a door never lets through what the gate refuses as "That did not save". Its new half is the sign-in
+   name: Hunter (Plan of 149, not its own admin) changed a switched-off 149 admin's sign-in name to a mail of his
+   choosing and pressed Enable (D2903), and whoever signed in with that mail was 149's own admin. Handing a man's admin
+   seat to another sign-in is making an admin, refused in Q8's own sentence. `list` — the accounts the step leaves;
+   `rows` — the rows it leaves (none: as they stand) */
+function makeAdminOfStep(list: readonly Account[], rows?: UnitRows): string | null {
+  const rowsB = unitRows()
+  const made = madeAdminsNow({ acctB: ACCOUNTS_LIST.map(madeAdminAcct), acctA: list.map(madeAdminAcct), rowsB, rowsA: rows ?? rowsB, today: todayIso() })
+  for (const m of made) { const q = makeAdminProblem(m.unit); if (q) return q }
+  return null
 }
 
 /* NEVER A SQUADRON LEFT WITH NO ADMIN OF ITS OWN (D2184 Q10 — "and so is any later step that would cause it, such as
@@ -896,6 +915,9 @@ export function updateAccount(id: string, patch: { name?: any; role?: AccountRol
   const planIds = new Set(plans.map(g => g.id))
   const rowsA = relink ? rowsDraft(unitRows(), { dropGrants: g => g.account === a.id })
     : plans.length ? rowsDraft(unitRows(), { dropGrants: g => planIds.has(g.id) }) : undefined
+  /* (Q8 over the whole step where the sign-in name changes — an admin of his squadron's seat handed to another sign-in:
+     makeAdminOfStep above) */
+  if (next.name !== a.name) { const q = makeAdminOfStep(list, rowsA); if (q) return q }
   const locked = lockProblem(list, undefined, rowsA)
   if (locked) return locked
   /* a sign-in name taken by a rename answers a request waiting under it, as adding an
@@ -1033,6 +1055,9 @@ export function saveAccess(id: string, want: AccessSave): string | null {
   const list = ACCOUNTS_LIST.map(x => (x.id === a.id ? next0 : x))
   if (masterCh && !list.some(x => x.master && x.role === 'admin')) return 'At least one master admin must be left'
   const rowsA = rowsDraft(unitRows(), { dropGrants: g => gone.has(g.id), grants: laid })
+  /* (Q8 over the whole Save where the sign-in name changes — an admin of his squadron's seat handed to another sign-in:
+     makeAdminOfStep above) */
+  if (nameCh) { const q = makeAdminOfStep(list, rowsA); if (q) return q }
   const locked = lockProblem(list, undefined, rowsA)
   if (locked) return locked
   const accountCh = roleCh || masterCh || nameCh
