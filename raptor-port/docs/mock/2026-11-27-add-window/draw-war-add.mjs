@@ -1,4 +1,4 @@
-// Chat 192, 27 Nov 26 — his D2866: "dropdown kept i was asking about the redesign for this", with a picture of the Leave
+// Chat 192, 27 Nov 26 — his D2928: "dropdown kept i was asking about the redesign for this", with a picture of the Leave
 // War's window. His F5 question ("what about inputting new inputs like LL OL CSE etc? Are there buttons for it?") is about
 // the clean sheet's window opened from the war's grid. Drawn on the REAL app as Saber (admin), on Cutter's empty Wed 22 Jul:
 //   w1 today — the war's window on an empty day: the leave buttons (each with what is left) and CSE · OD · Grant OIL · ⋯
@@ -6,7 +6,7 @@
 //      own rows), then Post out and Post in
 //   w3 today — after pressing CSE: the window's line sends you to the Inputs page for the rest
 //   w4 proposed — after pressing CSE: the entry's own window opens right there — the Inputs page's own window (cloned
-//      from the real one, filled the same: CSE, Cutter, Wed 22 Jul), its Type dropdown kept (D2866)
+//      from the real one, filled the same: CSE, Cutter, Wed 22 Jul), its Type dropdown kept (D2928)
 // Nothing under raptor-port/src changes; w3's press files a CSE in the demo data of the drawing's own browser only.
 // Run from raptor-port/, one size a process, against an already-served build:
 //   node docs/mock/2026-11-27-add-window/draw-war-add.mjs --size d --url http://127.0.0.1:4181/ [--pw <package.json>]

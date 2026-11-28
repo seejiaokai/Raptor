@@ -36,7 +36,7 @@ const ACT = {
   approved: `<button class="dchip dk-b dk-a on dk-ring">${TICK}Approved</button>`, refuseOff: `<button class="dchip dk-b dk-r dk-off">${CROSS}Refuse</button>`,
   move: '<button class="dchip move"><span class="mvarr" aria-hidden="true">⇄</span>Move</button>', del: '<button class="dchip del">Delete</button>', edit: '<button class="dchip">Edit…</button>' }
 const PLACED = who => `<span class="bp-placedline">Placed <b>${who}</b> · Fri 27 Nov, 12:46</span>`
-/* v1.1 (his D2895, 28 Nov 26): every card wears its people as mini pucks, a one-man card its one puck too;
+/* v1.1 (his D2929, 28 Nov 26): every card wears its people as mini pucks, a one-man card its one puck too;
    (his D2896): on a group card, pressing the man's own button in the Change line shows only his puck (frame b7b);
    b5: leave can be placed over a course (D1552), so the course day keeps the buttons to add leave. */
 const LL_PEND = { box: 'c k-ll s-w whole', t: 'LL', main: 'Pending · Whole day', pucks: ['psy'], sub: PLACED('Saber'), acts: ['approve', 'refuse', 'move', 'del'], rmk: 'full', leave: 'LL', dur: 'Whole day' }
