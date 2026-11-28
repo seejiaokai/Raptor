@@ -1857,3 +1857,29 @@ recheck every standing resource (locks, loops, write rights) after a restart, be
 **Issue:** two failures came from the merge itself, not from either side. (1) A size limit had to rise because both sides' lines were joined; raising it inside the merge commit failed the document check ("a ceiling changed in a commit that also touches raptor-port/src" — the merge brings main's code in), so the unpushed merge commit had to be amended and the raise moved to its own commit. (2) While the merge was uncommitted, the branch's new readings check counted main's code comments as "lines this branch adds" (it diffs against the old merge base) and listed eleven; once committed they were not new.
 **Suggested improvement:** records-merge.mjs's closing advice (or the shipping steps' merge section) says: settle the clashes, commit the merge with every limit as main had it, then raise any limit the joined lines need in a separate notes-only commit; and read a check's "new" findings again after the merge commit, never during it.
 **Principle:** A check that compares against a merge base gives answers about the merge-in-progress, not the branch; commit the merge first, then judge what the check says, and keep changes that a check confines to notes-only commits out of a merge commit.
+
+### Observation 1115: A pull request's file list from gh stops at 100 files, so a "notes only" judgement made from it can miss a script
+
+**Status:** OPEN
+**Date:** 28 Nov 26
+**Session context:** chat 198 — deciding whether the notes branch's pull request could merge by itself as notes only
+**Skill:** New skill candidate: ship-notes-only (the shipping steps' "only notes" check)
+**Type:** open-source
+**Phase/Area:** the file-list check before a notes-only merge
+
+**Issue:** `gh pr view <n> --json files` returned the first 100 files of a pull request holding more; filtering that list showed only rulings and documents, while the branch also changed `raptor-port/scripts/docsize.mjs` (found only when bringing `main` in clashed on it). The pull request would have been judged notes-only on a partial list.
+**Suggested improvement:** in the shipping steps' "only notes" check, list the files with `git diff --name-only origin/main...origin/<branch>` (no cap), never from `gh pr view --json files`.
+**Principle:** A tool's list that may be paginated or capped is not the whole list; a rule that turns on "every file is one of…" must read an uncapped source.
+
+### Observation 1116: The rulings merge reads ruling numbers from the branch's last commit, so a D78 renumber must be committed before bringing main in
+
+**Status:** OPEN
+**Date:** 28 Nov 26
+**Session context:** chat 198 — bringing `main` into the notes branch, two ruling numbers taken on both sides
+**Skill:** New skill candidate: merge-main-records (the shipping steps' "bring main in")
+**Type:** internal
+**Phase/Area:** `backlog-archive.mjs --rulings --merge` during a merge with a number clash
+
+**Issue:** renumbering this branch's two clashing rulings in the merge's working tree did not help: `--merge` still saw the old numbers on "this branch" and stopped. The merge had to be aborted, the renumber committed on the branch first (with `Docs-guard-allow: D<old>` trailers, or the rulings check calls the old numbers lost), and the merge redone.
+**Suggested improvement:** in the shipping steps' "bring main in": before `git merge`, compare both sides' new ruling numbers (each side's full rows); renumber clashes in a commit of their own with `Docs-guard-allow: D<old>` trailers; only then merge.
+**Principle:** A merge helper that reads one side from its last commit cannot see fixes staged in the merge itself; settle what it compares before the merge starts.
