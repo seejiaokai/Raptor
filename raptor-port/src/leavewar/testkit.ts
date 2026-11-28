@@ -39,3 +39,19 @@ export function elevenCounters(): void {
     if (was !== 'admin') setRole(was)
   }
 }
+
+/** ONE PRESS AT ONE MOMENT ON THE CLOCK (the gates of 28 Nov 26, pull request 861). The grid's double-tap guard
+ *  (Matrix.tsx `guardGrid`) counts a press inside a window only if the window closed within 1 s of it — in a real browser
+ *  the close follows its press within a frame. In jsdom the close waits for the whole save and the grid's re-draw, so on
+ *  GitHub's busy runner (four test files at once) the event window's Save once took past 1 s between its press and its
+ *  close: the guard, rightly, did not arm, and the test failed on the machine's speed, not the app's behaviour. A test's
+ *  press-and-click is therefore run with the clock standing still — the test measures what a person does, never how fast
+ *  the machine is (D87: wait on what the test needs, never a fixed time). Whatever clock was in place before (a test's
+ *  own) is put back after; a real wait between two presses still moves the clock as ever. */
+export function atOneMoment<T>(fn: () => T): T {
+  const own = Object.prototype.hasOwnProperty.call(performance, 'now')
+  const was = performance.now
+  const t = was.call(performance)
+  performance.now = () => t
+  try { return fn() } finally { if (own) performance.now = was; else delete (performance as { now?: unknown }).now }
+}

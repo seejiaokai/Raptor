@@ -1,0 +1,44 @@
+msq-s4w-lib v1 who=wa run=sD2 port=4753
+wa-lib v1
+wa-sD v2
+phone-chromium drag 200,750->150 scrollY 0 -> 585
+phone-chromium drag 200,750->150 scrollY 585 -> 629
+phone-chromium drag 200,750->150 scrollY 629 -> 629
+phone-chromium drag 200,750->150 scrollY 629 -> 629
+phone-chromium drag 200,750->150 scrollY 629 -> 629
+phone-chromium drag 200,750->150 scrollY 629 -> 629
+ROW FAIL | F-S3(1) | phone-chromium | page at its foot (scrollY 629); Widget (last row) 10 Dec tapped | saw: cell 715-733 sheetTop 595 hit=false at=span-range scrollY 629
+ROW RECORD | F-S3(2) | phone-chromium | ⋯ → Post out on the last row | saw: cell 715-733 sheetTop 578 hit=false at=po-fields scrollY 629; chips: Widget Post out ✕ POSTING ✓ Overseas Sqn Delete PO FROM Thu 10 Dec 26 ▾ On 10 Dec: archive
+ROW RECORD | F-S3(3)(4) | phone-chromium | press the day | saw: press: [data-testid="cell-gizmo-2026-12-10"] is covered at its centre by po-fields
+phone-chromium drag 200,500->100 scrollY 629 -> 629
+phone-chromium drag 200,500->100 scrollY 629 -> 629
+phone-chromium drag 200,150->500 scrollY 629 -> 294
+ROW PASS | F-S3(5) | phone-chromium | posting open; flick hard to the foot, then back (lesson 24); picture img/handpass/2026-11-26-msq-s4-walk/wa/sD2/006-phone-chromium-S3-flick-foot.png | saw: {"before":{"y":629,"sheet":{"x":12,"y":578,"w":378,"h":282},"head":{"x":11,"y":49,"w":380,"h":44}},"after":{"y":294,"sheet":{"x":12,"y":578,"w":378,"h":282},"head":{"x":11,"y":49,"w":380,"h":44},"st":{"bid":578,"postout":null,"postin":null,"select":null,"poForm":638,"confirm":815,"leaveGroup":false,"card":null,"head":"Widget Post out ✕","gone":0}}}
+phone-chromium drag 200,160->520 scrollY 299 -> 0
+phone-chromium drag 200,160->520 scrollY 0 -> 0
+phone-chromium drag 200,160->520 scrollY 0 -> 0
+phone-chromium drag 200,520->130 scrollY 0 -> 437
+phone-chromium drag 200,520->130 scrollY 437 -> 629
+phone-chromium drag 200,520->130 scrollY 629 -> 629
+phone-chromium drag 200,520->130 scrollY 629 -> 629
+phone-chromium drag 200,520->130 scrollY 629 -> 629
+phone-chromium drag 200,520->130 scrollY 629 -> 629
+ROW PASS | F-S40 flicks | phone-chromium | posting open (scrollY 0→299 on opening); flicked to the top (img/handpass/2026-11-26-msq-s4-walk/wa/sD2/008-phone-chromium-S40-flicked-top.png) and the foot (img/handpass/2026-11-26-msq-s4-walk/wa/sD2/009-phone-chromium-S40-flicked-foot.png) | saw: scrollY top 0, foot 629; sheet {"x":12,"y":542,"w":378,"h":318}→{"x":12,"y":542,"w":378,"h":318}; {"bid":542,"postout":null,"postin":null,"select":null,"poForm":602,"confirm":815,"leaveGroup":false,"card":null,"head":"Outlaw Post out ✕","gone":0}
+phone-chromium drag 200,160->344.5 scrollY 629 -> 459
+ROW PASS | F-S40 Q3 after flicks | phone-chromium | the day back in sight (356); pressed | saw: closed=true; scrollY before open 0, after open 299, after close 459
+phone-chromium drag 200,742->572 scrollY 459 -> 459
+ROW RECORD | F-S40 flick the sheet | phone-chromium | a flick up on the sheet itself | saw: scrollY 459→459; sheet {"x":12,"y":542,"w":378,"h":318}→{"x":12,"y":542,"w":378,"h":318}
+phone-chromium-main drag 200,750->150 scrollY 0 -> 585
+phone-chromium-main drag 200,750->150 scrollY 585 -> 629
+phone-chromium-main drag 200,750->150 scrollY 629 -> 629
+phone-chromium-main drag 200,750->150 scrollY 629 -> 629
+phone-chromium-main drag 200,750->150 scrollY 629 -> 629
+phone-chromium-main drag 200,750->150 scrollY 629 -> 629
+ROW FAIL | F-S3(1) | phone-chromium-main | page at its foot (scrollY 629); Widget (last row) 10 Dec tapped | saw: cell 715-733 sheetTop 595 hit=false at=span-range scrollY 629
+ROW RECORD | F-S3(2) | phone-chromium-main | ⋯ → Post out on the last row | saw: cell 715-733 sheetTop 420 hit=false at=bidsheet-row postout po-outcomes scrollY 629; chips: Widget Thu 10 Dec Auto-approve ✕ No manning row turns amber or red till 10 Dec Document Wh
+ROW RECORD | F-S3(3)(4) | phone-chromium-main | press the day | saw: press: [data-testid="cell-gizmo-2026-12-10"] is covered at its centre by bidsheet-row postout po-outcomes
+phone-chromium-main drag 200,500->100 scrollY 629 -> 629
+phone-chromium-main drag 200,500->100 scrollY 629 -> 629
+phone-chromium-main drag 200,150->500 scrollY 629 -> 294
+ROW FAIL | F-S3(5) | phone-chromium-main | posting open; flick hard to the foot, then back (lesson 24); picture img/handpass/2026-11-26-msq-s4-walk/wa/sD2/018-phone-chromium-main-S3-flick-foot.png | saw: {"before":{"y":629,"sheet":{"x":12,"y":420,"w":378,"h":440},"head":{"x":11,"y":49,"w":380,"h":44}},"after":{"y":294,"sheet":{"x":12,"y":420,"w":378,"h":440},"head":{"x":11,"y":49,"w":380,"h":44},"st":{"bid":420,"postout":null,"postin":null,"select":null,"poForm":null,"confirm":815,"leaveGroup":true,"card":null,"head":"Widget Thu 10 Dec Auto-approve ✕","gone":0}}}
+wa-sD done

@@ -1,0 +1,170 @@
+[
+ {
+  "scene": "F7",
+  "size": "desktop",
+  "what": "staged: the duty filed",
+  "v": {
+   "iid": "imrldi4kgtk65t6",
+   "type": "Duty",
+   "acc": "g",
+   "oil": {
+    "2026-07-18": 0.5
+   },
+   "people": [
+    {
+     "p": "shaft",
+     "by": "stiff",
+     "at": 1784077203616
+    }
+   ]
+  }
+ },
+ {
+  "scene": "F7",
+  "size": "desktop",
+  "what": "Saturday published: the note",
+  "v": "Saturday published and approved"
+ },
+ {
+  "scene": "F7",
+  "size": "desktop",
+  "what": "anything published",
+  "v": true
+ },
+ {
+  "scene": "F7",
+  "size": "desktop",
+  "what": "the man on the Leave War",
+  "v": {
+   "id": "shaft",
+   "cs": "Anvil"
+  }
+ },
+ {
+  "scene": "F7",
+  "size": "desktop",
+  "what": "shaft's Sat 18 box",
+  "v": "HO*"
+ },
+ {
+  "scene": "F7",
+  "size": "desktop",
+  "what": "the card: \"Where it came from\" (today)",
+  "v": "Earned off a duty input that was accepted — change that input, not the schedule."
+ },
+ {
+  "scene": "F7",
+  "size": "desktop",
+  "what": "errors",
+  "v": []
+ },
+ {
+  "scene": "F7",
+  "size": "phone",
+  "what": "the man on the Leave War",
+  "v": {
+   "id": "shaft",
+   "cs": "Anvil"
+  }
+ },
+ {
+  "scene": "F7",
+  "size": "phone",
+  "what": "shaft's Sat 18 box",
+  "v": "HO*"
+ },
+ {
+  "scene": "F7",
+  "size": "phone",
+  "what": "the card: \"Where it came from\" (today)",
+  "v": "Earned off a duty input that was accepted — change that input, not the schedule."
+ },
+ {
+  "scene": "F7",
+  "size": "phone",
+  "what": "errors",
+  "v": []
+ },
+ {
+  "scene": "SB",
+  "size": "desktop",
+  "what": "staged: the SC line and its front seat",
+  "v": {
+   "gi": 2,
+   "ok": true,
+   "label": "SC",
+   "f": "{\"cs\":\"SC\",\"msn\":\"AM\",\"shift\":\"AM\",\"to\":\"07:00\",\"ld\":\"13:00\",\"aircraft\":[{\"p\":\"romeo\",\"w\":\"\",\"area\":\"\",\"rmks\":\"\",\"opts\":{},\"spare\":false,\"role\":\"MAIN\",\"rid\":\"rmrldi3cuut1f1q\"},{\"p\":\"\",\"w\":\"\",\"area\":\"\",\"rmks\":\"\",\"opts\":{},\"spare\":false,\"role\":\"MAIN\",\"rid\":\"rmrldi3cuqulcee\"},{\"p\":\"\",\"w\":\"\",\"area\":\"\",\""
+  }
+ },
+ {
+  "scene": "SB",
+  "size": "desktop",
+  "what": "staged: the training filed",
+  "v": {
+   "iid": "imrldi4zw3teu41",
+   "type": "Meeting",
+   "acc": "g",
+   "people": [
+    {
+     "p": "romeo",
+     "by": "stiff",
+     "at": 1784077204172
+    }
+   ]
+  }
+ },
+ {
+  "scene": "SB",
+  "size": "desktop",
+  "what": "Monday holds the SC line and the meeting",
+  "v": {
+   "sc": true,
+   "mtg": true
+  }
+ },
+ {
+  "scene": "SB",
+  "size": "desktop",
+  "what": "the standby line and its ✕ hover words (today)",
+  "v": {
+   "text": "Overlaps standbyRebel — Overlaps standby: RANGE BRIEF 09:00–10:00 & SC AM 07:00–13:00✕",
+   "x": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes"
+  }
+ },
+ {
+  "scene": "SB",
+  "size": "desktop",
+  "what": "the note after ✕ (today)",
+  "v": "Warning hidden: no flag, not counted. It returns if the warning changes."
+ },
+ {
+  "scene": "SB",
+  "size": "desktop",
+  "what": "errors",
+  "v": []
+ },
+ {
+  "scene": "SB",
+  "size": "phone",
+  "what": "Monday holds the SC line and the meeting",
+  "v": {
+   "sc": true,
+   "mtg": true
+  }
+ },
+ {
+  "scene": "SB",
+  "size": "phone",
+  "what": "the standby line and its ✕ hover words (today)",
+  "v": {
+   "none": true,
+   "lines": []
+  }
+ },
+ {
+  "scene": "sb",
+  "size": "p",
+  "what": "STOPPED",
+  "v": "SB: no \"Overlaps standby\" line on Monday"
+ }
+]

@@ -3385,6 +3385,14 @@ beside every badge.
   `!isSansAvail(...)` guards so a SANS row never draws in their blocks;
   `sbInputsHTML`'s bands view keeps its `ty-sn` chip colour (a probe-bridge
   builder only since 22 Aug 26 — the board no longer renders the band).
+- **The crew list's SANS section is one grid (owner D2581 / D2582, D2750 / D2751 — `ui/palette-html.ts sansAvailHTML`,
+  `12-schedule-editing.css` `.rall.rsans`; pins `src/ui/sans-column.test.ts`, `e2e/sans-unfiled-wrap.spec.ts`):** every
+  row takes the section's three columns (subgrid) — the puck with its reason, the F / O / A letters, the remarks — so the
+  letters start at one place, straight after the widest puck-and-reason, never at the row's right edge. Each puck stays
+  as wide as its own name and reason (`justify-self:start`): stretched to the column, the blank beside a short reason
+  became his, and a phone's tap there planted the man above him (walker C, chat 207). With a place picked the badge's
+  hours (or AM / PM) stand on a line under the letters, never cut; with none picked the badge reads whole ("O ·
+  08:00–10:00"). The first column still shrinks to the puck in a narrow list, the reason wrapping inside it (D2338).
 
 ## The Available-crew panel folds (owner, Aug 26 — OPEN by default)
 
@@ -6930,13 +6938,38 @@ Pinned in `ui/accounts-ui.test.tsx` (AC10) and `ui/memberview.test.tsx`.
 - **The board's desktop layout on a phone pinches, and its drag follows the edge (D1107):** pinch to zoom in and out; a puck carried to the edge of what is on screen scrolls the board that way (the design guide §5A, D895). Its design questions go to him with pictures first; [BOARD-PHONE-PINCH-ZOOM].
 - **Quals on a phone pinches too (D1108):** its wide table zooms in and out, its pinned heading row and name column kept in line (D993); the same round of questions and the same job, [BOARD-PHONE-PINCH-ZOOM].
 
-## A posting out — four chips, one line, "Post out" (`[POST-OUT-OUTCOMES]`, 27 Sep 26 — D229, D294, D298, D300)
+## A posting out — its chips, one line, "Post out" (`[POST-OUT-OUTCOMES]`, 27 Sep 26 — D229, D294, D298, D300; once "four chips", three since "Transfer to Sqn" waits for the Transfer step, D2659)
+
+**WAY C (his D2648, D2653; his go for the multi-squadron build's section 4, D2732, 26 Nov 26 — these rows reach `main`
+with that build's batch).** Every posting sheet — Post out and Post in from a day's sheet and from a drag, and an
+existing posting's sheet — is the posting's ALONE: while it is open the leave's parts step aside (the day line, who
+placed it, the actions row, Remarks and Document, Duration, the leave buttons, the row under the leaves, the OIL detail,
+Auto-approve), and the head names the act, "Cinch  Post out" / "Cinch  Post in" (`.po-act`), the day only in its date
+box (D1462 narrowed for these sheets; lesson 105). Order down the sheet: the chips (equal; one row at a desk, two to a
+line at ≤520px), "PO from" (label over box, the box half the width — the other half is the Transfer step's "To
+squadron"), the one line on a strip (`.po-line`), an amber line (the last admin, D306, just above the button), the
+button — "Post out" / "Post in" in the app's main-button blue (`.dchip.po-main`; his 18 Aug 26 grey hatched chip set
+aside, D2653 b), a refusal's reason under it. An existing posting's foot holds "Undo post out" / "Undo post in" alone,
+design A (D2732 Q1): Move's grey chip with the top bar's Undo arrow in teal, "(PO)"/"(PI)" dropped. The "Delete Cinch?"
+card's Delete is the Leave War's dashed grey Delete (`.abtn.po-del`, D2732 Q4, D332), on the three sheets' cards, and
+"Delete Cinch now?" (the date's question) wears it too, Cancel staying blue (his D2744). A press on the day under an open posting
+closes it, the next opens the day afresh (Q3). "Place leave or OIL here instead…" is gone from both posting sheets (his
+D2727): an admin's tap on a BARE day outside a man's time opens the posting sheet only; a gone day that already holds an
+entry opens what that day opens on any other day (D1722, D1725 — the door the three restored browser tests of
+`e2e/leavewar.spec.ts` R3b, D1541's and R3c-2 take); a day before his post-in date that holds an entry opens that entry's
+own window the same way, an empty one the Post in sheet (his D2743 — the code reads' F1 / A); a member's own tap on his own such day
+still opens the bid sheet. While a posting is open its window is named for it to a screen reader ("Post out" / "Post
+in"), the keys go to its first control when the menu item pressed left the screen, and on a phone the day it was opened
+from — or a drag's first day, over one man — is scrolled just above it (D1290; `cellinsight.ts`, every posting window
+and the drag window; chat 197, the three code reads' finds, pinned by `leavewar/ui/msq-s4-reads.test.tsx`). Built in `OutcomeChips.tsx`'s shared parts and `bidpicker.css` `.bidsheet .po-form`; pinned
+by `leavewar/ui/msq-s4-posting.test.tsx` and `e2e/msq-s4-posting-leavewar.spec.ts`. Where the older text below says
+otherwise about the look or order, this paragraph wins; what each posting DOES is unchanged.
 
 The approved mock-up `docs/mock/post-out.html` §1 is the design of record (D299). On EVERY posting door — the bid sheet's
 PO (`po-*`), an existing posting's Post out sheet (`postout-*`), the drag selection's PO (`sel-po-*`) — the same row:
-the date once, in its own box ("PO from"); four short chips `leavewar/ui/OutcomeChips.tsx` — "Overseas Sqn" (the
-default — the old "Archive on PO date"), "Delete", "SANS" (never offered for a ground-crew man — SANS is an aircrew status, his D1709, 5 Nov 26; the writer `sync.ts postOutProblem` refuses it too), "Transfer to Sqn" (drawn, not pressable — "Comes with the
-shared database", D281); ONE line saying what the chosen one does on the date ("On 14 Oct: archived, account
+the date once, in its own box ("PO from"); the short chips `leavewar/ui/OutcomeChips.tsx` — "Overseas Sqn" (the
+default — the old "Archive on PO date"), "Delete", "SANS" (never offered for a ground-crew man — SANS is an aircrew status, his D1709, 5 Nov 26; the writer `sync.ts postOutProblem` refuses it too); "Transfer to Sqn" was drawn greyed ("Comes with the
+shared database", D281) and is LEFT OUT altogether until the Transfer step (his D2659, 26 Nov 26), so three chips for an aircrew man, two for ground crew; ONE line saying what the chosen one does on the date ("On 14 Oct: archived, account
 suspended." — the account named only when he has one; "archived on Quals" until Quals lost its archive, D310); the button just "Post out" (D300; "Post in" likewise). Tapping
 the chosen chip again un-chooses it — "off the manpower, nothing else" (the agent's call, on his look card). **A Delete
 asks twice** (D287 (3)): the bid sheet's button turns into "Tap again to delete <callsign>"; on the Post out sheet (which
@@ -12201,7 +12234,11 @@ Duration → Which leave → Also (the admin's +OIL · PO · PI). On an empty da
 - **Approval carries them** (7.2, `sync.ts doorApprove` / `doorDecideApproved`): onto the leave on the Inputs page and back
   at a put-back; a run joins only days with the same words, tick and documents; a join keeps every paper; a request that
   carries its own unticked till joins only a leave showing the same (one with none takes its neighbour's — D953).
-- **On a phone** a window opening over a low cell first scrolls the cell just above the window (5.7, `Matrix.tsx`).
+- **On a phone** a window opening over a low cell first scrolls the cell just above the window (5.7, `Matrix.tsx`) — and
+  again, once, as the window becomes a posting (Post out or Post in from its ⋯): the posting's sheet is taller than the
+  leave's and rose over the day it was opened from, so his D2732 Q3 press on that day landed on the sheet (chat 196, 26 Nov
+  26; one body, `cellinsight.ts keepCellAboveSheet`, called by both; pinned by `msq-s4-posting.test.tsx` PT10 and the
+  phone case of `e2e/msq-s4-posting-leavewar.spec.ts`).
 
 **The Inputs page, the same night (7.4 — D1150, D1179):** the input window draws its Document row for every kind; a NEW leave
 (or one retyped into leave) with none asks "No document — <callsign>, <kind>" / "Attach the approval from the leave app now,
@@ -12254,9 +12291,20 @@ Its open day is its own listener set — opening, stepping, or a bid placed with
   grey (`.dchip.dec`), their words green and red; the entry's state is solid — #57C97A / #F0555F, words #0b1116 — and reads
   "Approved" or "Refused"; a second tap on either sends the bid back to waiting. A refused bid's leave button wears the
   window's ring beside the lit Refuse (an admin's window; a member's own refused bid lights nothing). Over a picked range or
-  a drag nothing is lit. Pinned by `leavewar/ui/litdecide.test.tsx`. **To change (D2881, 28 Nov 26, not built — filed as
-  [LW-DECIDE-LOOK]):** the decided one also wears the window's picked-leave cyan ring and the other turns grey, still
-  pressable; at rest a drawn tick or cross and a faint edge of its own colour; size, place and words unchanged.
+  a drag nothing is lit. Pinned by `leavewar/ui/litdecide.test.tsx`. **Read plainly as picked (D2881, 28 Nov 26 — built,
+  [LW-DECIDE-LOOK]; drawing of record `docs/mock/2026-11-27-decide-buttons/img/trio-E3-*.png`):** the decided one also
+  wears the window's picked-leave cyan ring (`dec-ring` — 2px accent outline, 2px offset, never a glow) and the other turns
+  grey (`dec-off` — words #7d8794, the plain edge, its fill and size as at rest), still pressable; at rest each wears a
+  faint edge of its own colour (its words' colour at 45%); every state carries a drawn tick or cross before the word
+  (`DecideMark`, an SVG in the words' colour — 14px; under 600 wide 12px, the window's decide words 11.5px as drawn, no
+  letter spacing and 2px side padding, the four columns kept even, the row still 32 tall — so "Approved" or "Refused" and
+  its mark stand inside the edge down to 360 wide). With the keys on it the decided one's ring is 3px, one ring (his D842);
+  any other decide button takes the app's cyan focus ring on its own edge (offset −1px), never the browser's nor the
+  decided one's ring. Place and words unchanged. One recipe for
+  the bid windows, the day's list, the picked-days sheet (only ever waiting) and Approvals: `bidhelpers.ts` `decideLook`,
+  `SheetActions.tsx` `DecideMark` and bidpicker.css "THE DECIDED LOOK". Pinned by `litdecide.test.tsx` (D2881 block),
+  `selectsheet.test.tsx` and `m4page.test.tsx`; the drawn look — ring, 3px under the keys, grey, inside the edge at 360
+  and 402, Approvals' desktop 100 — by `e2e/decidelook-leavewar.spec.ts`.
 - **The manning bubble (D1358, D1360, D1364):** one note, always at the foot of the screen (`.mn-foot`, testid
   `manning-bubble`), in the colour of the worst level it names; its words "This bid: Available P 27 → 26 · IP 16 → 15",
   each pair in its colour, a filing named ("This overseas duty", "This course", "This Other", "This Attach"); "Show ›"
@@ -12332,8 +12380,12 @@ Built on `claude/leave-war-m4-planning-d18224` from `docs/superpowers/plans/2026
 - **Deciding (D1361, D1330, D1421):** Approve and Refuse rest grey, their words green and red; a tap decides that line at
   once (one command, one Undo — `store.ts decideRequests`) and its button lights ("Approved" / "Refused"); the line stays
   where it is until he leaves Approvals or changes the dates, and a second tap on the lit button sends it back to pending.
-  To change by D2881 (not built): the lit one wears the cyan ring and the other turns grey, as in the bid windows; on a
-  phone this list's buttons carry no drawn tick or cross (D2921), so a half-day date keeps to one line.
+  The lit one wears the cyan ring and the other turns grey, each with its drawn tick or cross, as in the bid windows
+  (D2881 — built; his drawings' colours kept, D1427, the rest edge his green or red at 45%); the buttons keep the longer
+  word's width, the mark inside it (D1435) — on a desktop both stay 100 wide, the side padding 6px and the mark 12px with
+  a 4px gap; the phone's line draws no tick or cross (his D2921, 28 Nov 26), so a half-day date ("23 Jan AM ›", "28 May PM
+  ›") keeps one line at 402 and 390 and two at 360, the line 78 tall as before — the ring and the grey stay. Pinned by
+  `m4page.test.tsx` (D2921) and `e2e/decidelook-leavewar.spec.ts` (390 wide).
   A line the rules refuse says why, in red, under its dates; one drawn from a state since changed says what happened
   ("Already refused by Hex", "Moved to Thu 29 Jan", "No longer there" — B8). Approve all approves exactly what the list
   shows: one tap arms it ("Approve 13 — tap again"), anything that changes what the list shows disarms it.
@@ -12428,11 +12480,22 @@ superseded sections above). Code: `leavewar/ui/BalancesPage.tsx` (the page, `Fig
   whose stints miss the period, are not listed. Each name is the schedule's own puck (D1476, D1482 — `sync.ts puckHtml`, the one
   Approvals draws, not `NamePuck`); a tap on a name opens his person window (D1148; reading 23 — not drawn).
 - **The Balances view's columns (D1482, D1486, D1487):** GRADE · AUTO + LVE ON 1 JAN (a box with the grade and its "+36", its list
-  of grades with their days and "No grade" in amber dashed; a member sees his grade as words with its "+36"); LVE: APP BAL (box),
+  of grades with their days and "No grade" in amber dashed; a member sees his grade as words with its "+36"); LVE: OFFICIAL BAL
+  (box — "App bal" until D2810; on a phone its heading two lines, OFFICIAL over BAL, as drawn — one line ran into CARRIED),
   INCL. CARRIED FWD (box), PENDING (amber), WAR BAL (bold); OIL read only, "0 ›" opening his OIL tracker on his row (D1255 —
   the `lwnav` ask `{ kind: 'oil', id }`); OTHER LEAVE: CCL, FCL, PL, EL, CL — a box each, the pending figure in amber after it,
   every box keeping its column. Every figure is the store's one engine (`leaveFiguresOf`), so this page, the person window, the
   grid, My leave and Approvals cannot disagree (`docs/feature-impact.md` §One balance engine).
+- **The posted-in man's balance ([LW-POSTIN-BALANCE], built 27 Nov 26 — D2746, D2749, D2810, D2812):** in the Balances view,
+  whenever a box is drawn on any row (an admin always; a member while unlocked), ONE grey line stands once above the rows,
+  "Only leave after post-in is deducted." (`bal-postin`; 13px, as drawn `docs/img/handpass/2026-11-26-lw-postin-balance/
+  marked/q16-final-*.png`) — no other instruction, no fold, and no line naming where or when a figure was typed (D2812). A kind
+  never typed (`KindFigures.notTyped` — no typed row and no old opening) stands EMPTY in its box with "No grade"'s dashed amber
+  edge (`.bp-bx.nt`; any figure typed there saves, a 0 too), read only it is an amber "–", and War bal reads "Not typed" in
+  amber (`.bp-nt`), never 0 or a figure below it (D2746, drawn `marked/q11-balances.png`); carried forward typed before any
+  Official bal is refused at its box, "Type the Official bal first" (`balancefigs.ts CF_FIRST`); the below-zero question waits
+  for a figure (`belowzero.ts goesBelow`). The grid's figure beside the name, My leave, Approvals' LVE BAL and the leave
+  buttons' "left" still show the figure counted from 0 — to be drawn first (D1625), filed under the item.
 - **A BOX ONLY WHERE THE VIEWER MAY TYPE — `balanceProblem` is the ONE rule** (`state/store.ts`): an admin any row; a member his own
   row while unlocked (D1242, D1487). The page asks it only to decide whether to draw a box; the store asks it again when the box
   SAVES (§Lock for members). A box saves on **Enter or on leaving it, never on each key**; **Escape puts the old figure back** and
@@ -12440,7 +12503,7 @@ superseded sections above). Code: `leavewar/ui/BalancesPage.tsx` (the page, `Fig
   the person, kind and shown figure are taken when the box takes the keyboard, so typing in one man's box and then pressing
   another name, Days taken, Lock, Grades… or the top bar's Undo / Redo still saves to the first man (the scenario designer's
   ★17); a box taken off the screen with figures in it (Days taken redraws the row) saves them as it goes, and a refusal there
-  is said in a passing note ("Ranger LVE App bal not saved: Locked by admin" — D850). **`inputMode="text"`**, as the war's
+  is said in a passing note ("Blocked: Ranger LVE Official bal. Locked by admin." — D850, D1667, D2810). **`inputMode="text"`**, as the war's
   Required and Available point boxes (★20): an iPhone's decimal keypad has no minus key and a figure below zero may be typed;
   "-2", "−2", "2.5" and "+3" are read, anything else shows `balanceProblem`'s words at the box. A save of either LVE box writes
   the whole row afresh (the spec §1.1); the door is `saveTypedFigure`, shared with the person window. Whether his iPhone shows a
@@ -12509,7 +12572,7 @@ superseded sections above). Code: `leavewar/ui/BalancesPage.tsx` (the page, `Fig
 
 **On a phone the carried line's date stands on its own line (D1520, 29 Oct 26 — his "a"):** under "incl. [n] carried fwd", in the
 same grey, so it never runs past the LVE tile (his iPhone picture: it ran into OIL); a desktop keeps the one line "incl. [n]
-carried fwd · till <date>". On a phone App bal · Pending · War bal spread across the tile, War bal ending at its right edge (the
+carried fwd · till <date>". On a phone Official bal · Pending · War bal spread across the tile, War bal ending at its right edge (the
 agent's fault fix with D1519's job — "17.5" and "−12.5" had run under OIL). `PersonWindow.tsx` (`r17-till`), `personwindow.css`;
 pinned in `e2e/leavewar.spec.ts`.
 
@@ -12519,8 +12582,11 @@ Built to `docs/mock/lw-overhaul/full-m5a-person.mjs` (round 20d's tiles: `m5a-p2
 `ui/gridfigures.test.tsx`. It REPLACES the old figures sheet (`PersonFiguresSheet`) and the breakdown sheet
 (`FigureBreakdownSheet`) — `CounterSheet.tsx` is deleted.
 - **The tiles:** the heading — his name, ✕; then BALANCES with the padlock and "Locked for members" (admin) or "Locked by admin"
-  (member) while locked. LVE (its box, "3 taken"; App bal · Pending · War bal on one line, the pending figure amber; "incl. [2]
-  carried fwd · till 31 Dec" under App bal); OIL ("0 ›", opening his OIL tracker — D1209, D1008; never a box); MED (days this year
+  (member) while locked. LVE (its box, "3 taken"; Official bal · Pending · War bal on one line, the pending figure amber — "App
+  bal" until D2810; "incl. [2] carried fwd · till 31 Dec" under Official bal; where a box is drawn, the one line "Only leave
+  after post-in is deducted." last in the tile, its own row — D2749, D2812, `pw-postin`; a kind never typed: the box empty
+  with the dashed amber edge, an amber "–" read only, War bal "Not typed" in amber, a small tile's "War bal" line "–" —
+  D2746, [LW-POSTIN-BALANCE]); OIL ("0 ›", opening his OIL tracker — D1209, D1008; never a box); MED (days this year
   up to today); then CCL, FCL, PL, EL, CL each a box and, only while its Pending is not 0, "Pending −1 / War bal 2" as a little
   list (D1253). **Every kind shows, whatever `figureHidden` says.** The boxes are the Balances page's `FigBox`, the same rules
   (`balanceProblem`, Enter or leaving, Escape, the man taken at focus, `inputMode="text"`), saved through `saveTypedFigure`; an

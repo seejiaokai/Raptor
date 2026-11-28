@@ -1,0 +1,138 @@
+[
+ {
+  "scene": "F6",
+  "size": "desktop",
+  "what": "the Logic line today",
+  "v": {
+   "line": "Every input closes the man for the hours it covers, from the moment it is filed. One a scheduler has taken off the programme closes nothing.",
+   "row": "Note: An input closes its hoursEvery input closes the man for the hours it covers, from the moment it is filed. One a scheduler has taken off the programme closes nothing."
+  }
+ },
+ {
+  "scene": "F6",
+  "size": "phone",
+  "what": "the Logic line today",
+  "v": {
+   "line": "Every input closes the man for the hours it covers, from the moment it is filed. One a scheduler has taken off the programme closes nothing.",
+   "row": "Note: An input closes its hoursEvery input closes the man for the hours it covers, from the moment it is filed. One a scheduler has taken off the programme closes nothing."
+  }
+ },
+ {
+  "scene": "F4",
+  "size": "desktop",
+  "what": "Legend labels today",
+  "v": [
+   "Bmisses flight brief",
+   "Bmisses sim brief",
+   "Dmisses flight debrief",
+   "Dmisses sim debrief"
+  ]
+ },
+ {
+  "scene": "F4",
+  "size": "desktop",
+  "what": "warning short names today (Monday)",
+  "v": [
+   "Misses flight brief | Misses flight briefSaber — Misses VL BFM brief 17:25–19:45: OPS SHARING + NAV SYS BRIEF 17:55–18:55✕",
+   "Misses flight brief | Misses flight briefRanger — Misses VL BFM brief 10:20–12:40: Sim EP-4 12:00–13:30✕",
+   "Misses flight brief | Misses flight briefPiston — Misses RU BFM brief 11:20–13:40: STANDARDISATION MEETING 13:30–14:30✕",
+   "Misses sim brief | Misses sim briefRanger — Misses OFT EP-4 brief 11:30–12:00: VL BFM (step 11:40, T/O 12:40)✕",
+   "Misses sim debrief | Misses sim debriefRanger — Misses OFT EP-4 debrief 13:30–14:00: VL BFM (T/O 12:40, landing 14:05)✕"
+  ]
+ },
+ {
+  "scene": "F4",
+  "size": "desktop",
+  "what": "Logic page flag key today",
+  "v": [
+   "Advisory: Misses flight brief",
+   "Advisory: Misses flight debrief",
+   "Advisory: Misses sim brief",
+   "Advisory: Misses sim debrief",
+   "BMisses flight brief",
+   "DMisses flight debrief",
+   "BMisses sim brief",
+   "DMisses sim debrief"
+  ]
+ },
+ {
+  "scene": "F4",
+  "size": "phone",
+  "what": "Legend labels today",
+  "v": [
+   "Bmisses flight brief",
+   "Bmisses sim brief",
+   "Dmisses flight debrief",
+   "Dmisses sim debrief"
+  ]
+ },
+ {
+  "scene": "F4",
+  "size": "phone",
+  "what": "warning short names today (Monday)",
+  "v": [
+   "Misses flight brief | Misses flight briefSaber — Misses VL BFM brief 17:25–19:45: OPS SHARING + NAV SYS BRIEF 17:55–18:55✕",
+   "Misses flight brief | Misses flight briefRanger — Misses VL BFM brief 10:20–12:40: Sim EP-4 12:00–13:30✕",
+   "Misses flight brief | Misses flight briefPiston — Misses RU BFM brief 11:20–13:40: STANDARDISATION MEETING 13:30–14:30✕",
+   "Misses sim brief | Misses sim briefRanger — Misses OFT EP-4 brief 11:30–12:00: VL BFM (step 11:40, T/O 12:40)✕",
+   "Misses sim debrief | Misses sim debriefRanger — Misses OFT EP-4 debrief 13:30–14:00: VL BFM (T/O 12:40, landing 14:05)✕"
+  ]
+ },
+ {
+  "scene": "F4",
+  "size": "phone",
+  "what": "Logic page flag key today",
+  "v": [
+   "Advisory: Misses flight brief",
+   "Advisory: Misses flight debrief",
+   "Advisory: Misses sim brief",
+   "Advisory: Misses sim debrief",
+   "BMisses flight brief",
+   "DMisses flight debrief",
+   "BMisses sim brief",
+   "DMisses sim debrief"
+  ]
+ },
+ {
+  "scene": "F5",
+  "size": "desktop",
+  "what": "the clash line and its ✕ hover words (today)",
+  "v": {
+   "text": "ConflictRanger — Conflict: VL BFM (step 11:40, T/O 12:40) & Sim EP-4 12:00–13:30✕",
+   "x": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes"
+  }
+ },
+ {
+  "scene": "F5",
+  "size": "desktop",
+  "what": "the note after ✕ (today)",
+  "v": "Warning hidden: no flag, not counted. It returns if the warning changes."
+ },
+ {
+  "scene": "F5",
+  "size": "desktop",
+  "what": "the line after ✕",
+  "v": "witem hard hid"
+ },
+ {
+  "scene": "F5",
+  "size": "phone",
+  "what": "the clash line and its ✕ hover words (today)",
+  "v": {
+   "text": "ConflictRanger — Conflict: VL BFM (step 11:40, T/O 12:40) & Sim EP-4 12:00–13:30✕",
+   "x": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes"
+  }
+ },
+ {
+  "scene": "F5",
+  "size": "phone",
+  "what": "the note after ✕ (today)",
+  "v": "Warning hidden: no flag, not counted. It returns if the warning changes."
+ },
+ {
+  "scene": "F5",
+  "size": "phone",
+  "what": "the line after ✕",
+  "v": "witem hard hid"
+ }
+]

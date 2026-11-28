@@ -1,0 +1,56 @@
+[
+ [
+  "F-S29",
+  "desk chromium main",
+  "Anvil posted out Overseas from 21 Dec; his ordinary 14 Dec → ⋯ → Post out → Post out",
+  "RECORD what ⋯ offers and with which date and chip the sheet opens; pressing Post out MOVES the one posting, never makes a second (as on main)",
+  "⋯: [\"Attach\",\"Other\",\"Post out\",\"Post in\"]; sheet chip \"✓ Overseas Sqn\" date \"Mon 14 Dec 26 ▾\"; after: gone from 12-14 (18 days); reopened: ✓ Overseas Sqn | Mon 14 Dec 26 ▾ | On 14 Dec: archived.",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r9m/001-desk-chromium-main-fs29-menu.png , img/handpass/2026-11-26-msq-s4-walk/wb/r9m/002-desk-chromium-main-fs29-sheet.png , img/handpass/2026-11-26-msq-s4-walk/wb/r9m/003-desk-chromium-main-fs29-after.png"
+ ],
+ [
+  "F-S29",
+  "desk chromium main",
+  "his last day in (13 Dec, the yellow line) tapped",
+  "an ordinary day's window (leave buttons)",
+  "[bid leaveBtns head=Anvil Sun 13 Dec Auto-approve ✕ page=leavewar]",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r9m/004-desk-chromium-main-fs29-lastday.png"
+ ],
+ [
+  "F-S38",
+  "desk chromium main",
+  "Ridge's 2026-11-10 (bidding closed, in the past) → ⋯ → Post out",
+  "posting sheets are the admin's, open at any time (D328); where the one-day window does not open on main, none here either — RECORD",
+  "day: [bid leaveBtns head=Ridge Tue 10 Nov Auto-approve ✕ page=leavewar]; Post out: [bid leaveBtns poNew head=Ridge Tue 10 Nov Auto-approve ✕ page=leavewar] date \"Tue 10 Nov 26 ▾\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r9m/005-desk-chromium-main-fs38-day-2026-11-10.png , img/handpass/2026-11-26-msq-s4-walk/wb/r9m/006-desk-chromium-main-fs38-po-2026-11-10.png"
+ ],
+ [
+  "F-S38",
+  "desk chromium main",
+  "Ridge's 2026-11-25 (bidding closed, in the past) → ⋯ → Post out",
+  "posting sheets are the admin's, open at any time (D328); where the one-day window does not open on main, none here either — RECORD",
+  "day: [bid leaveBtns head=Ridge Wed 25 Nov Auto-approve ✕ page=leavewar]; Post out: [bid leaveBtns poNew head=Ridge Wed 25 Nov Auto-approve ✕ page=leavewar] date \"Wed 25 Nov 26 ▾\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r9m/007-desk-chromium-main-fs38-day-2026-11-25.png , img/handpass/2026-11-26-msq-s4-walk/wb/r9m/008-desk-chromium-main-fs38-po-2026-11-25.png"
+ ],
+ [
+  "F-S38",
+  "desk chromium main",
+  "Ridge's 2026-11-26 (bidding closed, today) → ⋯ → Post out",
+  "posting sheets are the admin's, open at any time (D328); where the one-day window does not open on main, none here either — RECORD",
+  "day: [bid leaveBtns head=Ridge Thu 26 Nov Auto-approve ✕ page=leavewar]; Post out: [bid leaveBtns poNew head=Ridge Thu 26 Nov Auto-approve ✕ page=leavewar] date \"Thu 26 Nov 26 ▾\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r9m/009-desk-chromium-main-fs38-day-2026-11-26.png , img/handpass/2026-11-26-msq-s4-walk/wb/r9m/010-desk-chromium-main-fs38-po-2026-11-26.png"
+ ],
+ [
+  "F-S38",
+  "desk chromium main",
+  "Basher posted out Overseas from 2 Nov (line \"On 2 Nov: archived.\"); then his gone day 2026-11-02 in November tapped",
+  "RECORD: the existing sheet opens on a past gone day (D328 \"open at any time\")",
+  "gone 11-02…11-30; tap → [poOld head=Basher Mon 2 Nov ✕ page=leavewar]",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r9m/011-desk-chromium-main-fs38-pastgone.png"
+ ]
+]

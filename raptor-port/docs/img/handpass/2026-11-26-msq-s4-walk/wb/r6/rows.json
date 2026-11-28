@@ -1,0 +1,254 @@
+[
+ [
+  "F-S6",
+  "desk chromium",
+  "new sheet, Delete card up; exit: the card's Cancel",
+  "card closes, sheet stays, Delete still chosen; in NO case is anyone deleted or the posting changed",
+  "after: card gone; [bid poNew head=Cinch Post out ✕ page=leavewar]; Delete chip pressed=true; SANS chip pressed=false; Cinch gone days 0; Piston from 12-21; rows 2/2",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r6/001-desk-chromium-fs6-new-cancel-card.png , img/handpass/2026-11-26-msq-s4-walk/wb/r6/002-desk-chromium-fs6-new-cancel-after.png"
+ ],
+ [
+  "F-S6",
+  "desk chromium",
+  "new sheet, Delete card up; exit: Escape once, then Escape again [after Esc 1: card gone, sheet [bid poNew head=Cinch Post out ✕ page=leavewar], Delete chip pressed=true]",
+  "first Esc closes the CARD only (Delete still chosen), second closes the sheet; in NO case is anyone deleted or the posting changed",
+  "after: card gone; [page=leavewar]; Delete chip pressed=null; SANS chip pressed=null; Cinch gone days 0; Piston from 12-21; rows 2/2",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r6/003-desk-chromium-fs6-new-esc-card.png , img/handpass/2026-11-26-msq-s4-walk/wb/r6/005-desk-chromium-fs6-new-esc-after.png"
+ ],
+ [
+  "F-S6",
+  "desk chromium",
+  "new sheet, Delete card up; exit: a press on the sheet outside the card (the POSTING label's row, right side) [bid-picker]",
+  "RECORD — never deletes; one tap does one thing (lesson 19); in NO case is anyone deleted or the posting changed",
+  "after: card UP; [bid poNew card head=Cinch Post out ✕ page=leavewar]; Delete chip pressed=true; SANS chip pressed=false; Cinch gone days 0; Piston from 12-21; rows 2/2",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r6/006-desk-chromium-fs6-new-sheet-card.png , img/handpass/2026-11-26-msq-s4-walk/wb/r6/007-desk-chromium-fs6-new-sheet-after.png"
+ ],
+ [
+  "F-S6",
+  "desk chromium",
+  "new sheet, Delete card up; exit: a press on the page outside the sheet (blank grid bar) [sheet-scrim]",
+  "RECORD — never deletes; one tap does one thing (lesson 19); in NO case is anyone deleted or the posting changed",
+  "after: card gone; [page=leavewar]; Delete chip pressed=null; SANS chip pressed=null; Cinch gone days 0; Piston from 12-21; rows 2/2",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r6/008-desk-chromium-fs6-new-page-card.png , img/handpass/2026-11-26-msq-s4-walk/wb/r6/009-desk-chromium-fs6-new-page-after.png"
+ ],
+ [
+  "F-S6",
+  "desk chromium",
+  "new sheet, Delete card up; exit: the sheet's ✕",
+  "card and sheet both go, nothing posted; in NO case is anyone deleted or the posting changed",
+  "after: card gone; [page=leavewar]; Delete chip pressed=null; SANS chip pressed=null; Cinch gone days 0; Piston from 12-21; rows 2/2",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r6/010-desk-chromium-fs6-new-x-card.png , img/handpass/2026-11-26-msq-s4-walk/wb/r6/011-desk-chromium-fs6-new-x-after.png"
+ ],
+ [
+  "F-S6",
+  "desk chromium",
+  "new sheet, Delete card up; exit: a press on the day (its centre, through the backdrop) [sheet-scrim]",
+  "RECORD — never deletes; one tap does one thing (lesson 19); in NO case is anyone deleted or the posting changed",
+  "after: card gone; [page=leavewar]; Delete chip pressed=null; SANS chip pressed=null; Cinch gone days 0; Piston from 12-21; rows 2/2",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r6/012-desk-chromium-fs6-new-day-card.png , img/handpass/2026-11-26-msq-s4-walk/wb/r6/013-desk-chromium-fs6-new-day-after.png"
+ ],
+ [
+  "F-S6",
+  "desk chromium",
+  "new sheet, Delete card up; exit: a press on another chip (SANS)",
+  "the chip takes the question back (contract: \"any chip\"); in NO case is anyone deleted or the posting changed",
+  "after: card gone; [bid poNew head=Cinch Post out ✕ page=leavewar]; Delete chip pressed=false; SANS chip pressed=true; Cinch gone days 0; Piston from 12-21; rows 2/2",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r6/014-desk-chromium-fs6-new-chip-card.png , img/handpass/2026-11-26-msq-s4-walk/wb/r6/015-desk-chromium-fs6-new-chip-after.png"
+ ],
+ [
+  "F-S6",
+  "desk chromium",
+  "new sheet, Delete card up; exit: a change of the PO from date [NOT PRESSABLE: press: [data-testid=\"po-date\"] is covered at its centre by askcard-sub]",
+  "a date change takes the question back; in NO case is anyone deleted or the posting changed",
+  "after: card UP; [bid poNew card head=Cinch Post out ✕ page=leavewar]; Delete chip pressed=true; SANS chip pressed=false; Cinch gone days 0; Piston from 12-21; rows 2/2",
+  "FAIL",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r6/016-desk-chromium-fs6-new-date-card.png , img/handpass/2026-11-26-msq-s4-walk/wb/r6/017-desk-chromium-fs6-new-date-after.png"
+ ],
+ [
+  "F-S6",
+  "desk chromium",
+  "new sheet, Delete card up; exit: leaving the Leave War (top bar Inputs, pressed until it opens) and coming back [page=leavewar → page=inputs]",
+  "no armed card waiting on return (contract); in NO case is anyone deleted or the posting changed",
+  "after: card gone; [page=leavewar]; Delete chip pressed=null; SANS chip pressed=null; Cinch gone days 0; Piston from 12-21; rows 2/2",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r6/018-desk-chromium-fs6-new-tab-card.png , img/handpass/2026-11-26-msq-s4-walk/wb/r6/019-desk-chromium-fs6-new-tab-after.png"
+ ],
+ [
+  "F-S6",
+  "desk chromium",
+  "drag sheet, Delete card up; exit: the card's Cancel",
+  "card closes, sheet stays, Delete still chosen; in NO case is anyone deleted or the posting changed",
+  "after: card gone; [sel selPo head=Cinch Post out ✕ page=leavewar]; Delete chip pressed=true; SANS chip pressed=false; Cinch gone days 0; Piston from 12-21; rows 2/2",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r6/020-desk-chromium-fs6-drag-cancel-card.png , img/handpass/2026-11-26-msq-s4-walk/wb/r6/021-desk-chromium-fs6-drag-cancel-after.png"
+ ],
+ [
+  "F-S6",
+  "desk chromium",
+  "drag sheet, Delete card up; exit: Escape once, then Escape again [after Esc 1: card gone, sheet [sel selPo head=Cinch Post out ✕ page=leavewar], Delete chip pressed=true]",
+  "first Esc closes the CARD only (Delete still chosen), second closes the sheet; in NO case is anyone deleted or the posting changed",
+  "after: card gone; [page=leavewar]; Delete chip pressed=null; SANS chip pressed=null; Cinch gone days 0; Piston from 12-21; rows 2/2",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r6/022-desk-chromium-fs6-drag-esc-card.png , img/handpass/2026-11-26-msq-s4-walk/wb/r6/024-desk-chromium-fs6-drag-esc-after.png"
+ ],
+ [
+  "F-S6",
+  "desk chromium",
+  "drag sheet, Delete card up; exit: a press on the sheet outside the card (the POSTING label's row, right side) [select-sheet]",
+  "RECORD — never deletes; one tap does one thing (lesson 19); in NO case is anyone deleted or the posting changed",
+  "after: card UP; [sel selPo card head=Cinch Post out ✕ page=leavewar]; Delete chip pressed=true; SANS chip pressed=false; Cinch gone days 0; Piston from 12-21; rows 2/2",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r6/025-desk-chromium-fs6-drag-sheet-card.png , img/handpass/2026-11-26-msq-s4-walk/wb/r6/026-desk-chromium-fs6-drag-sheet-after.png"
+ ],
+ [
+  "F-S6",
+  "desk chromium",
+  "drag sheet, Delete card up; exit: a press on the page outside the sheet (blank grid bar) [DIV.filters lw-gridbar]",
+  "RECORD — never deletes; one tap does one thing (lesson 19); in NO case is anyone deleted or the posting changed",
+  "after: card UP; [sel selPo card head=Cinch Post out ✕ page=leavewar]; Delete chip pressed=true; SANS chip pressed=false; Cinch gone days 0; Piston from 12-21; rows 2/2",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r6/027-desk-chromium-fs6-drag-page-card.png , img/handpass/2026-11-26-msq-s4-walk/wb/r6/028-desk-chromium-fs6-drag-page-after.png"
+ ],
+ [
+  "F-S6",
+  "desk chromium",
+  "drag sheet, Delete card up; exit: the sheet's ✕",
+  "card and sheet both go, nothing posted; in NO case is anyone deleted or the posting changed",
+  "after: card gone; [page=leavewar]; Delete chip pressed=null; SANS chip pressed=null; Cinch gone days 0; Piston from 12-21; rows 2/2",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r6/029-desk-chromium-fs6-drag-x-card.png , img/handpass/2026-11-26-msq-s4-walk/wb/r6/030-desk-chromium-fs6-drag-x-after.png"
+ ],
+ [
+  "F-S6",
+  "desk chromium",
+  "drag sheet, Delete card up; exit: a press on the day (its centre, through the backdrop) [cell-snap-2026-12-15]",
+  "RECORD — never deletes; one tap does one thing (lesson 19); in NO case is anyone deleted or the posting changed",
+  "after: card gone; [bid leaveBtns head=Cinch Tue 15 Dec Auto-approve ✕ page=leavewar]; Delete chip pressed=null; SANS chip pressed=null; Cinch gone days 0; Piston from 12-21; rows 2/2",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r6/031-desk-chromium-fs6-drag-day-card.png , img/handpass/2026-11-26-msq-s4-walk/wb/r6/032-desk-chromium-fs6-drag-day-after.png"
+ ],
+ [
+  "F-S6",
+  "desk chromium",
+  "drag sheet, Delete card up; exit: a press on another chip (SANS)",
+  "the chip takes the question back (contract: \"any chip\"); in NO case is anyone deleted or the posting changed",
+  "after: card gone; [sel selPo head=Cinch Post out ✕ page=leavewar]; Delete chip pressed=false; SANS chip pressed=true; Cinch gone days 0; Piston from 12-21; rows 2/2",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r6/033-desk-chromium-fs6-drag-chip-card.png , img/handpass/2026-11-26-msq-s4-walk/wb/r6/034-desk-chromium-fs6-drag-chip-after.png"
+ ],
+ [
+  "F-S6",
+  "desk chromium",
+  "drag sheet, Delete card up; exit: a change of the PO from date [NOT PRESSABLE: press: [data-testid=\"sel-po-date\"] is covered at its centre by askcard-sub]",
+  "a date change takes the question back; in NO case is anyone deleted or the posting changed",
+  "after: card UP; [sel selPo card head=Cinch Post out ✕ page=leavewar]; Delete chip pressed=true; SANS chip pressed=false; Cinch gone days 0; Piston from 12-21; rows 2/2",
+  "FAIL",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r6/035-desk-chromium-fs6-drag-date-card.png , img/handpass/2026-11-26-msq-s4-walk/wb/r6/036-desk-chromium-fs6-drag-date-after.png"
+ ],
+ [
+  "F-S6",
+  "desk chromium",
+  "drag sheet, Delete card up; exit: leaving the Leave War (top bar Inputs, pressed until it opens) and coming back [sel selPo page=inputs]",
+  "no armed card waiting on return (contract); in NO case is anyone deleted or the posting changed",
+  "after: card gone; [sel selPo head=Cinch Post out ✕ page=leavewar]; Delete chip pressed=true; SANS chip pressed=false; Cinch gone days 0; Piston from 12-21; rows 2/2",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r6/037-desk-chromium-fs6-drag-tab-card.png , img/handpass/2026-11-26-msq-s4-walk/wb/r6/038-desk-chromium-fs6-drag-tab-after.png"
+ ],
+ [
+  "F-S6",
+  "desk chromium",
+  "old sheet, Delete card up; exit: the card's Cancel",
+  "card closes, sheet stays, Delete still chosen; in NO case is anyone deleted or the posting changed",
+  "after: card gone; [poOld head=Piston Post out ✕ page=leavewar]; Delete chip pressed=false; SANS chip pressed=false; Cinch gone days 0; Piston from 12-21; rows 2/2",
+  "FAIL",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r6/039-desk-chromium-fs6-old-cancel-card.png , img/handpass/2026-11-26-msq-s4-walk/wb/r6/040-desk-chromium-fs6-old-cancel-after.png"
+ ],
+ [
+  "F-S6",
+  "desk chromium",
+  "old sheet, Delete card up; exit: Escape once, then Escape again [after Esc 1: card gone, sheet [poOld head=Piston Post out ✕ page=leavewar], Delete chip pressed=false]",
+  "first Esc closes the CARD only (Delete still chosen), second closes the sheet; in NO case is anyone deleted or the posting changed",
+  "after: card gone; [page=leavewar]; Delete chip pressed=null; SANS chip pressed=null; Cinch gone days 0; Piston from 12-21; rows 2/2",
+  "FAIL",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r6/041-desk-chromium-fs6-old-esc-card.png , img/handpass/2026-11-26-msq-s4-walk/wb/r6/043-desk-chromium-fs6-old-esc-after.png"
+ ],
+ [
+  "F-S6",
+  "desk chromium",
+  "old sheet, Delete card up; exit: a press on the sheet outside the card (the POSTING label's row, right side) [postout-sheet]",
+  "RECORD — never deletes; one tap does one thing (lesson 19); in NO case is anyone deleted or the posting changed",
+  "after: card UP; [poOld card head=Piston Post out ✕ page=leavewar]; Delete chip pressed=true; SANS chip pressed=false; Cinch gone days 0; Piston from 12-21; rows 2/2",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r6/044-desk-chromium-fs6-old-sheet-card.png , img/handpass/2026-11-26-msq-s4-walk/wb/r6/045-desk-chromium-fs6-old-sheet-after.png"
+ ],
+ [
+  "F-S6",
+  "desk chromium",
+  "old sheet, Delete card up; exit: a press on the page outside the sheet (blank grid bar) [sheet-scrim]",
+  "RECORD — never deletes; one tap does one thing (lesson 19); in NO case is anyone deleted or the posting changed",
+  "after: card gone; [page=leavewar]; Delete chip pressed=null; SANS chip pressed=null; Cinch gone days 0; Piston from 12-21; rows 2/2",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r6/046-desk-chromium-fs6-old-page-card.png , img/handpass/2026-11-26-msq-s4-walk/wb/r6/047-desk-chromium-fs6-old-page-after.png"
+ ],
+ [
+  "F-S6",
+  "desk chromium",
+  "old sheet, Delete card up; exit: the sheet's ✕",
+  "card and sheet both go, nothing posted; in NO case is anyone deleted or the posting changed",
+  "after: card gone; [page=leavewar]; Delete chip pressed=null; SANS chip pressed=null; Cinch gone days 0; Piston from 12-21; rows 2/2",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r6/048-desk-chromium-fs6-old-x-card.png , img/handpass/2026-11-26-msq-s4-walk/wb/r6/049-desk-chromium-fs6-old-x-after.png"
+ ],
+ [
+  "F-S6",
+  "desk chromium",
+  "old sheet, Delete card up; exit: a press on the day (its centre, through the backdrop) [sheet-scrim]",
+  "RECORD — never deletes; one tap does one thing (lesson 19); in NO case is anyone deleted or the posting changed",
+  "after: card gone; [page=leavewar]; Delete chip pressed=null; SANS chip pressed=null; Cinch gone days 0; Piston from 12-21; rows 2/2",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r6/050-desk-chromium-fs6-old-day-card.png , img/handpass/2026-11-26-msq-s4-walk/wb/r6/051-desk-chromium-fs6-old-day-after.png"
+ ],
+ [
+  "F-S6",
+  "desk chromium",
+  "old sheet, Delete card up; exit: a press on another chip (SANS)",
+  "the chip takes the question back (contract: \"any chip\"); in NO case is anyone deleted or the posting changed",
+  "after: card gone; [poOld head=Piston Post out ✕ page=leavewar]; Delete chip pressed=false; SANS chip pressed=true; Cinch gone days 0; Piston from 12-21; rows 2/2",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r6/052-desk-chromium-fs6-old-chip-card.png , img/handpass/2026-11-26-msq-s4-walk/wb/r6/053-desk-chromium-fs6-old-chip-after.png"
+ ],
+ [
+  "F-S6",
+  "desk chromium",
+  "old sheet, Delete card up; exit: a change of the PO from date [date box pressed; cal true]",
+  "a date change takes the question back; in NO case is anyone deleted or the posting changed",
+  "after: card UP; [poOld card cal head=Piston Post out ✕ page=leavewar]; Delete chip pressed=true; SANS chip pressed=false; Cinch gone days 0; Piston from 12-21; rows 2/2",
+  "FAIL",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r6/054-desk-chromium-fs6-old-date-card.png , img/handpass/2026-11-26-msq-s4-walk/wb/r6/055-desk-chromium-fs6-old-date-after.png"
+ ],
+ [
+  "F-S6",
+  "desk chromium",
+  "old sheet, Delete card up; exit: the armed Delete chip tapped again",
+  "backs out WITHOUT changing the posting to \"nothing else\" (contract); in NO case is anyone deleted or the posting changed",
+  "after: card gone; [poOld head=Piston Post out ✕ page=leavewar]; Delete chip pressed=false; SANS chip pressed=false; Cinch gone days 0; Piston from 12-21; rows 2/2",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r6/056-desk-chromium-fs6-old-armed-card.png , img/handpass/2026-11-26-msq-s4-walk/wb/r6/057-desk-chromium-fs6-old-armed-after.png"
+ ],
+ [
+  "F-S6",
+  "desk chromium",
+  "old sheet, Delete card up; exit: leaving the Leave War (top bar Inputs, pressed until it opens) and coming back [page=leavewar → page=inputs]",
+  "no armed card waiting on return (contract); in NO case is anyone deleted or the posting changed",
+  "after: card gone; [page=leavewar]; Delete chip pressed=null; SANS chip pressed=null; Cinch gone days 0; Piston from 12-21; rows 2/2",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r6/058-desk-chromium-fs6-old-tab-card.png , img/handpass/2026-11-26-msq-s4-walk/wb/r6/059-desk-chromium-fs6-old-tab-after.png"
+ ]
+]

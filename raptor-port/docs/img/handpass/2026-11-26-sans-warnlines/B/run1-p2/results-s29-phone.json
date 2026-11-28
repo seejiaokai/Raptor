@@ -1,0 +1,71 @@
+[
+ {
+  "scn": "s29",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s29",
+  "size": "phone",
+  "id": "s29.plant",
+  "what": "Marlin planted: his line, ring and \"A\"",
+  "ok": true,
+  "note": "EDIT bar \"⚠ 1 issue ▲\" [adv] · 1 line(s): [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ ·· INFO \"Friday · Jul 17 · 1\" · Draft — not yet published 6 changes · 1 ADVISORY · 1 line(s): [] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ·· BOARD head \"▾ ⚠ 1 issue\" · 1 line(s): [✕] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ ·· PUCKS cards week[flying line@Fri(4.0.0.0.w):amber/A] board[flying line(4.0.0.0.w):amber/A ; crew list (week):amber/A]",
+  "pics": "s29-s29-1-e-list-clip-phone.png, s29-s29-1-ipop-clip-phone.png, s29-s29-1-b-clip-phone.png, s29-s29-1-board-phone.png"
+ },
+ {
+  "scn": "s29",
+  "size": "phone",
+  "id": "s29.undo",
+  "what": "the board's Undo: the line gone in every place, the count down by one, no ring left on any copy",
+  "ok": true,
+  "note": "\"Undo — a change to the schedule\" → \"Undid: a change to the schedule\" · EDIT bar \"(no bar)\" [] · 0 line(s) ·· INFO \"Friday · Jul 17 · 1\" · Draft — not yet published 7 changes ·  · 0 line(s) ·· BOARD head \"▸ No conflicts flagged for Friday ✓\" · 0 line(s) · other [\"No conflicts flagged for this day ✓\"] ·· PUCKS cards week[no puck drawn] board[crew list (week):no ring]",
+  "pics": "s29-s29-2-e-list-phone.png, s29-s29-2-ipop-clip-phone.png, s29-s29-2-b-clip-phone.png, s29-s29-2-board-phone.png"
+ },
+ {
+  "scn": "s29",
+  "size": "phone",
+  "id": "s29.redo",
+  "what": "Redo: the line, ring, \"A\" and count back, exactly one line for him",
+  "ok": true,
+  "note": "\"Redo — a change to the schedule\" → \"Redid: a change to the schedule\" · EDIT bar \"⚠ 1 issue ▲\" [adv] · 1 line(s): [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ ·· INFO \"Friday · Jul 17 · 1\" · Draft — not yet published 8 changes · 1 ADVISORY · 1 line(s): [] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ·· BOARD head \"▾ ⚠ 1 issue\" · 1 line(s): [✕] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ ·· PUCKS cards week[flying line@Fri(4.0.0.0.w):amber/A] board[flying line(4.0.0.0.w):amber/A ; crew list (week):amber/A]",
+  "pics": "s29-s29-3-e-list-clip-phone.png, s29-s29-3-ipop-clip-phone.png, s29-s29-3-b-clip-phone.png, s29-s29-3-board-phone.png"
+ },
+ {
+  "scn": "s29",
+  "size": "phone",
+  "id": "s29.file",
+  "what": "set-up: Saber files SANS fly all day for wrangler on 2026-07-17",
+  "ok": true,
+  "note": "{\"iid\":\"imrldjoqi8878uk\",\"people\":\"[{\\\"p\\\":\\\"wrangler\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077276411}]\",\"date\":\"Jul 17\",\"endDate\":null,\"sans\":{\"f\":true},\"allday\":true,\"e\":1439,\"remarks\":\"\",\"by\":\"stiff\"}",
+  "pics": "s29-s29.file-form-phone.png, s29-s29.file-saved-phone.png"
+ },
+ {
+  "scn": "s29",
+  "size": "phone",
+  "id": "s29.o",
+  "what": "set-up: Otter (filed) on VL ACM 16:00: no SANS line",
+  "ok": true,
+  "note": "\"Otter planned\""
+ },
+ {
+  "scn": "s29",
+  "size": "phone",
+  "id": "ERR",
+  "what": "script stopped",
+  "ok": false,
+  "note": "locator.tap: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#undoBtn:visible').first()\u001b[22m\n\u001b[2m    - locator resolved to <button id=\"undoBtn\" class=\"abtn hbtn\" aria-label=\"Undo\" title=\"Undo — Otter’s SANS Availability\">…</button>\u001b[22m\n\u001b[2m  - attempting tap action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m  ",
+  "pics": "s29-ERR-phone.png"
+ },
+ {
+  "scn": "s29",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

@@ -81,20 +81,28 @@ describe('seedDemoSans, wired through initStore()', () => {
     expect(sansRows().filter((r: any) => r.person === 'vinci').length).toBe(1)
   })
 
-  it('validate() after boot raises zero SANS_AVAIL, and no warning set grows for these six people', () => {
+  /* Since owner D2579 (25 Nov 26) a SANS man planned with nothing filed raises one amber line, so the pristine week
+     raises it for every planned SANS man, the six seeded ones among them. The seed's records each cover what that man is
+     planned on, so after boot none of the six is flagged and their only lost lines are those "nothing filed" ones; the
+     four SANS men the seed files nothing for (cards, wrangler, yeti, badger) keep theirs — the demo shows the line. */
+  it('validate() after boot raises no SANS_AVAIL for the six seeded people, and no other warning set grows for them', () => {
     const before = validate()                              // pristine week, no seed at all
     const beforeCodes = new Set(before.all.map((w: any) => w.code))
     const people = ['nick', 'romeo', 'vinci', 'waldo', 'krait', 'bullet']
     const named = (list: any[]) => list.filter((w: any) => (w.who || []).some((id: string) => people.includes(id)))
+    const notSans = (list: any[]) => list.filter((w: any) => w.code !== 'SANS_AVAIL')
     const beforeNamed = named(before.all)
 
     initStore()
     const after = validate()
 
-    expect(after.all.filter((w: any) => w.code === 'SANS_AVAIL')).toEqual([])
+    expect(named(after.all).filter((w: any) => w.code === 'SANS_AVAIL')).toEqual([])
+    expect(after.all.filter((w: any) => w.code === 'SANS_AVAIL').map((w: any) => w.who.join()).sort())
+      .toEqual(['badger', 'badger', 'cards', 'wrangler', 'yeti'])
+    expect(after.all.filter((w: any) => w.code === 'SANS_AVAIL').every((w: any) => /^SANS: no availability filed for today\./.test(w.msg))).toBe(true)
     const newCodes = [...new Set(after.all.map((w: any) => w.code))].filter(c => !beforeCodes.has(c))
     expect(newCodes).toEqual([])
-    expect(named(after.all).length).toBe(beforeNamed.length)
+    expect(notSans(named(after.all)).length).toBe(notSans(beforeNamed).length)
   })
 
   it("the week's edit-mode day HTML for a seeded day (Jul 14: romeo + bullet) renders the SANS card grid", () => {

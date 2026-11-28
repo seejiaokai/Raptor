@@ -1,0 +1,8 @@
+msq-s4w-lib v1 who=wb run=r11t port=4754
+wb-r11 v1
+ROW RECORD | F-S32 | desk chromium | case 1, then a fresh third tab reads the store | saw: store: Cinch gone from 12-21; line "On 21 Dec the app deletes him automatically. Days he flew keep his puck."
+ERROR Error: stop after case 1 (time)
+    at file:///C:/Users/User/AppData/Roaming/Claude/side-session-notes/local_eeb07289-ed8b-483b-8502-00962970c7d1/s4-chat201/wb/wb-r11.mjs:73:37
+errors []
+errors []
+DONE 0 PASS 0 FAIL 1 OTHER of 1

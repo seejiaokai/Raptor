@@ -1,0 +1,1928 @@
+# The rulings audit — slice 4, the schedule's day (rows, seats, duty desks, the crew list, the warning list and its words, caps)
+
+Written 24 Nov 26 by a fresh Opus helper, blind to the other slices, for
+`../plans/2026-11-24-rulings-audit-plan.md` (§3, §4, §5, §10) and `2026-11-24-rulings-audit-slice-brief.md`. Reading only:
+nothing in the app, a drawing or a rule was changed. The app read is this working copy (branch
+`claude/readings-lapse-fix-fdbb3c`); nothing in this slice lives only on the SANS branch.
+
+**Counts:** MISMATCH 5 (F1, F4, F5, F6, F10) · OPEN READING 6 (F2, F3, F7, F8, F9, F11) · NO RULING 0. (A twelfth, D1118's ATT B reading, is folded into F3.)
+
+## Findings
+
+| Id | Class | The item (what a person sees or the app does) | Where | Ruling(s) and his words quoted | The difference, in one sentence | The reading's standing | Harm | The question it would become |
+|---|---|---|---|---|---|---|---|---|
+| F1 | MISMATCH (two surfaces differ, no ruling names it) | A man only standing by (SC SPARE, AVALON or BB that does not fly) is free to the crew list, the seat check and the warning list, but busy to the ALL AVAIL crowd for every item overlapping his standby hours — so he is dropped from that item's count and, in OIL Earn, from its OIL | `src/engine/avail.ts:16-54` `personBusy` (every non-cancelled row naming him, standby rows included) read by `src/leavewar/sync.ts:2066` `availableFor`; against `avail.ts:72-87` `dayEngaged(d, true)` (the crew list) and the validator, where SPARE / AVALON / BB rows are no events (`avail.ts:63`, D2061 row) | D1120: *"If the person is planned to be on standby which is SC spare, BB, avalon, they should not be faded as they are available to be planned."* · D2061: *"They can be doing other things during standby."* · D2065: *"for planning they can be planned for other thing"* · D37 (the crowd counts "who has nothing else on the programme at that time") · D36 (the narrow window) | His standby rulings say the man may be planned for other things; the crowd reads a standby row as "something else on the programme" and leaves him out — D1120's row names the crew list, the day's figures and the Leave War, never the crowd | Never put: D1120's row is silent on the crowd; D37's words were given for named tasks, before the standby rulings; searched the full rows (D27, D36, D37, D1120, D2061–D2065, D2329), the archive, `OUTSTANDING.md` | OIL (the crowd on a weekend or holiday item earns); told wrongly (the count) | "A man on SC SPARE, AVALON or BB standby: is he in an ALL AVAIL crowd for a briefing during his standby hours?" — worked example: Saturday (a weekend), Hex on SC SPARE 07:00–13:00; an OPS BRIEF 09:00–10:00 for ALL AVAIL. The crew list shows Hex free and counts him in "N free"; the ALL AVAIL count leaves him out and he earns no OIL from the brief. |
+| F2 | OPEN READING | A SANS man with nothing filed for the day, once he is in a flying seat or a sim, raises nothing in the warning list (no ring, no line); the Logic page says so: "Filing nothing raises nothing." | `src/engine/validate.ts:1515-1545` (only `not-offered` and `window` raise; the note of 14 Aug 26 gives the builder's reasons); `src/ui/logic-html.ts:189` (the `sansavail` line); against `avail.ts:351-372` (the crew list strikes him, an armed seat refuses with the reason) | D2564: the reminder counts "a flying seat or a sim … the same the crew list greys and the warning reads" · D605 (a whole-day absence flagged "the moment he is seated") · D2560 (a filing he deleted himself) | The crew list and the seat check treat "nothing filed" as a reason he may not be planned; the warning list, which is what stays on the day and its published face, says nothing | Never put: the silence rests on the builder's note (validate.ts, 14 Aug 26: "the owner's own example only ever describes planting against a filed record"); no row answers it (searched SANS / "nothing filed" / "no availability filed" / "advisory" across the full rows, the archive, the backlog). Slice 5 owns the SANS side of this pair too | Published record (a day goes out with a SANS man in a seat he never offered, nothing flagged) | "A SANS man in a flying seat with nothing filed for that day — should the day's warning list flag it, as it does a filing that does not cover the seat?" — worked example: Ranger (SANS) filed Fly for Tue 21 Jul and was put in VL BFM; he then deleted his filing. The crew list strikes him; Tuesday's warnings stay clean and the day can be published so. |
+| F3 | OPEN READING | Three answers to "is he tasked that day": the crew list leaves a man on AVALON or BB standby (and its desk) out of "tasked" and counts him in "N free"; the day panel's "Aircrew tasked" and the free-crew strip by wave count him tasked / not free; a man on ATT B who is also tasked keeps the faded look | `avail.ts:113-115` `dayTasked(d, true)` for the crew list (`ui/palette-html.ts`) vs `dayTasked(d)` for `ui/html.ts` (the day panel) and `availByWave` (`avail.ts:120-150`, which also reads `personBusy`, standby rows included) | D1120's statement and its readings: *"(2) a duty desk minted from an AVALON or BB template is that standby's desk … (3) a man also tasked elsewhere that day stays faded … (4) only the crew list's look and count change: the Leave War's clash with leave and the day's own figures … are left as they are."* · D1118's reading: *"A man on ATT B who is also tasked that day keeps today's faded look (the agent's reading)"* (this was F12, folded here: one decision about the crew list's sets) | His words name the fade only; that the day's figures and the free-crew strip keep a standing-by man as tasked, and the other three readings, are the build's | Disclosed, unanswered: D1120's and D1118's rows say "told to him"; no answer found (searched "tasked", "standby", "free all day", "Aircrew tasked" in the full rows and the backlog) | Told wrongly (the day's figures) | "On a day where Hex stands AVALON and has nothing else: the crew list shows him free, the day's 'Aircrew tasked' counts him and the free-crew strip leaves him out of every wave. Should the day's figures read him as free too?" |
+| F4 | MISMATCH (two surfaces differ, no ruling names it) | On a day before a man's archive (an earlier day of the loaded week, or a past week loaded for a correcting amendment) the crew list leaves him out, because it reads today's archive mark; the ALL AVAIL crowd and the day's "Free all day" read him by date and count him | `src/ui/palette-html.ts:157, 270` (`!PEOPLE[id].archived`) over `rosOn` (`:17`, by date); against `sync.ts` `availableFor` (stints by date, D327) and `avail.ts:131` `rosterShown(dayIso)` | D327: *"shouldnt all avail crowd remain the same as per how that was ppublished?"* → an archived man stays in the crowd "on every day before his archive" · D323 (archive is "posted out from today, his past kept") · D297 (a deleted man read by date) | D323/D327 read an archived man by date everywhere they speak; the crew list alone reads him by today | Never put: no row names the crew list on a day before an archive (searched archive / "crew list" / "palette" / D320–D327, D297, D2328 in the full rows, the archive and the backlog) | Low — planning a correction on a past day; who may be planned | "Ranger was archived on Thursday. On Monday of the same week, the crew list no longer offers him, though he was here that day and the ALL AVAIL count includes him. Should the crew list read him by the day, as the crowd does?" |
+| F5 | MISMATCH (a later ruling not carried to every place it governs) | The Legend's four labels read "misses flight brief", "misses sim brief", "misses flight debrief", "misses sim debrief", and the warnings' short names read "Misses flight brief" etc.; the filed rewording names only the four sentence bodies | `src/ui/html.ts:455-458` (the Legend); `src/engine/validate.ts:30, 77` (the short names); the filing: `OUTSTANDING.md` [ALL-AVAIL-WINDOW-FLAGS] (names `engine/validate.ts` bodies only) | D2424 (24 Nov 26): *"Actually I think the term misses brief is not true. Because sometimes the scheduler might cater like a brief much earlier … And they could attend it."* → "must not say he 'misses' it" · D2427 ("overlaps") · earlier D2078 (16 Nov 26) approved the Legend's "misses flight brief" | D2424 is later than D2078 and says the mark must not say "misses"; the Legend and the short names still do, and the build filed for D2424 will leave them (D90, D201: what the old ruling left behind is fixed in the same change) | Clear later ruling — not a reading | Wording only | None — a fault to file: the Legend and the short names join [ALL-AVAIL-WINDOW-FLAGS]'s words, drafted and adjusted (D2441), drawn first. (Whether the Legend's name should say "overlaps flight brief" is the drafting's, not a question.) |
+| F6 | MISMATCH (the seat check and the warning list differ) | A WSO (or a ground crewman) dropped in an AVALON or BB front seat whose START and END are still blank: the crew list and the drop say "WSO — cannot fly front seat", the man is planted ("everything plants, warning after"), and the warning list shows nothing — no line, ring or Q chip — until times are typed | `avail.ts:434-435` (said before the drop) vs `validate.ts` (the standing-line front-seat checks run only with times; `:1496-1498` for the SPARE row, `:1162-1164`) | D2074 ("Illegal seat"); the standing rule the code cites at every seat check — the picker and the warning list "cannot drift apart" (owner, 13 Aug 26: "everything plants, warning after"); D605 (lifting the silence that came from a missing time, for absences) | The seat rule is said before the drop and then never kept, so a day can be published with a WSO in a front seat and no flag | Already found and filed — [STANDBY-NO-TIMES-SEAT] (16 Nov 26), drawn for him as held-fixes Q1 (`raptor-port/docs/mock/2026-11-17-held-fixes/page.html`), his answer awaited | Published record | Already on his held-fixes page, Q1 — no new question; the host may list it with the faults |
+| F7 | OPEN READING | (a) A plain duty desk (not made from an SC, AVALON or BB template) with START typed and END blank is counted by crew rest as ending one hour after START (the Logic "Assumed length, no end time"); (b) a standby-template desk left out of crew rest still keeps that assumed hour for every other check; (c) where one commitment is found twice, the plainer reading of its end wins; (d) a standby shift that flies, with END blank, is treated as a shift with no END | `src/engine/assumedlanding.test.ts:172-226` (C0020–C0023: "a plain desk (no SC template) with END blank keeps the assumed hour: ended 21:00, Saturday 07:00 breaks it"); `src/engine/events.ts:514` (C0040); `ui/logic-html.ts:108` | D2073's row: *"The agent's reading, not checked with him: only a desk made from an SC shift template, not every duty row with no END."* · D2080's row: *"Its assumed hour still stands for every other check, as D2073's does (the agent's reading)."* · D2055's row: *"The agent's reading, not checked: the same for a shift that flies."* | His answers covered the SC-template desk (D2073) and the AVALON / BB desk once its wave flies (D2080); every other desk, and the other checks, are the build's choice | Never put (the rows say "not checked with him"); the test comment C0021 says "told to him", which the row contradicts — searched D2055, D2072, D2073, D2079, D2080, "no END", "assumed hour" in the full rows and the backlog | Published record (a red crew-rest line, or none, from a guessed end) | "A plain SDO desk on Friday, 20:00 with no end typed: crew rest today reads it as ending 21:00, so a 07:00 brief on Saturday is a crew-rest breach. Leave it out until its end is typed, as the SC desk is, or keep the one-hour guess?" |
+| F8 | OPEN READING | A standby row (SC SPARE, AVALON, BB) on a shift that flies counts as a jet and a sortie as soon as one seat holds anyone; only a row with both seats empty is left out | `src/engine/rulesfirst-2-standby.test.ts:194` (C0085: *"the agent's reading: 'neither seat' — one seat is somebody"*); the day heading's count and `engine/insights.ts` | D1062: *"An SC AM with R typed and both SPARE rows empty reads 2 jets, not 4"*; its row: *"The agent's reading: 'nobody seated' means neither seat holds a person or a placeholder."* | His case had both seats empty; a half-crewed spare row is the build's reading | Never put (searched D1062, D1009, "nobody seated", "spare row" in the full rows and the backlog) | Told wrongly (the day's and Insights' counts) — low | "On a flying SC AM, a SPARE row with only its front seat filled: does it count as a jet in the day's count and Insights?" |
+| F9 | OPEN READING | A man with a whole-day input of any kind (a course, an overseas duty, an all-day meeting — not only leave and medical) is flagged red the moment he is seated on a line or row with no times yet; "whole day" is the All day tick, a record with no usable hours, or 00:00–23:59 | `src/engine/validate.ts:975` and its block (`blankabsence.test.ts`); `ui/logic-html.ts:188` ("A seat with no times") | D605: *"Merge live. 4 yes as recommended"* to "a man on all-day leave or a downchit … should he be flagged the moment he is seated?"; its row, reading (6): *"applied to EVERY input type the timed check already flags — a whole-day course, an overseas duty or an all-day meeting too … (his words named leave and grounding; this wider reach is the agent's and his to narrow)"* | His question and answer were about leave and grounding; the reach to every input kind and the meaning of "whole day" are the build's | Disclosed, unanswered (the row: "told to him in its report"; no answer found — searched D605, "whole day", "no times", [BLANK-TIMES-ABSENCE]) | Published record (a red line on a published day) — low | "Ranger has an all-day Training on Tuesday. A scheduler puts him on a duty desk with no times yet: should that raise the red warning at once, as leave does, or wait for the desk's times?" |
+| F10 | MISMATCH (wording only) | Hiding a warning: the tooltip says "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes", the passing note "Warning hidden: no flag, not counted. It returns if the warning changes." | `src/ui/board.ts:546`, `src/ui/html.ts:1216` (W1677, W2039), `src/ui/interactions.ts:1873` (W2471); keyed by `src/engine/warnhide.ts:20` | D2001: *"a hidden clash stays hidden while the same man is on the same two items, whatever their times, and comes back when the man or either item is a different one"* | A scheduler who reads "comes back if the situation changes" expects a retimed clash to come back; by D2001 it stays hidden | Clear ruling — not a reading | Wording only | None — a wording fault: the words say what brings a hidden clash back (another man, or another item). Opus drafts, a fresh Fable adjusts (D2441). |
+| F11 | OPEN READING (a drawing not yet built) | The caps and ops limits design: eight questions put once (what the form holds, who fills it, how often each test clears, whether a flyer not done raises an amber line, what "toggle off the check" switches off, where it opens, published days, members' view) and a reading R4 (a man on leave or overseas) | `raptor-port/docs/mock/2026-11-17-caps-r1/page.html`; `raptor-port/docs/superpowers/specs/2026-11-17-caps-design.md` (Q1–Q8, R4); the cancelled draft `…/specs/2026-10-05-caps-ops-limits.md` | D2084 (the weekly form, cleared every week, one button showing who completed, "a click switches the check off", detail asked in rounds) · D2186 (paused until he calls) | The design's detail rests on recommendations put to him once and never answered, and R4 is "the agent's reading, not ruled" | Disclosed, unanswered — and paused by his word (D2186), so it waits for its own round (plan §7: drawings may wait for each feature's design round) | None until built | Asked when he calls for caps — its own round, not this audit's |
+
+## Side-by-side tables (step B's questions for this slice)
+
+### Q15 — is a SANS man with nothing filed, put in a flying seat or a sim, flagged (the schedule's side)
+
+| Surface | The rule it applies | The ruling it rests on |
+|---|---|---|
+| The crew list | struck ("SANS — no availability filed for today", or D2338/D2340's words before his date) | D2338, D2340, D2420 (no reason line for a scheduler) |
+| An armed seat, the drag's reason, the toast | the same reason; the plant still writes | D2338, D2340; "everything plants, warning after" |
+| The warning list | nothing | the builder's note of 14 Aug 26 only → **F2** |
+| The Logic page | "Filing nothing raises nothing." | the same note → **F2** |
+
+### Q18 — is this input late (the schedule's side)
+
+| Surface | The rule | The ruling |
+|---|---|---|
+| The week, the board, View-only Sched (`ui/html.ts:1533-1550`) | `isLateInput` and not dropped (`state/view.ts:217 lateShown`, the live record's `lateOff`) | D1586, D1620, D1621 |
+| The board's chip tap (`ui/interactions.ts:1238-1261`) | only an admin writes the drop; for everyone | D1586, D1621; D785 |
+| The Inputs page, the SANS calendar (`sanscal-model.ts:123`) | always `isLateInput` | D1586 ("the Inputs page keeps printing the mark as the paperwork record") |
+
+**MATCH** — the difference is ruled.
+
+### Q20 — is he busy at this time
+
+| Surface | Standby rows (SC SPARE, AVALON, BB not flying) | The ruling |
+|---|---|---|
+| The crew list's fade and "N free" | not busy | D1120 |
+| The seat check (`slotBarNow`) | not busy, except two SC or AVALON places in the same hours (`scSeatHit`, `avSeatHit`) | D2065, owner 31 Aug and 7 Sep 26 |
+| The warning list | not events | D2061, D2062, D2065 |
+| The ALL AVAIL crowd (`personBusy`) | busy for any item overlapping his standby hours | none names it → **F1** |
+| The free-crew strip (`availByWave`) | busy (reads `personBusy`) | D1120 reading (4) → **F3** |
+
+### Q21 — is he tasked that day
+
+| Surface | The set | The ruling |
+|---|---|---|
+| The crew list | rows without standby rows, plus a timed commitment under Unavailable | D1120, D1357, D1372 |
+| The day panel's "Aircrew tasked", the free-crew strip | the same with AVALON / BB standby rows (an SC SPARE never counts) | D1120 reading (4), disclosed → **F3** |
+| The ALL AVAIL crowd's "SANS planned with us" | rows only; commitments keep him out by their own test | D2329 (SANS), D1357 — the code's note says why; MATCH |
+| The SANS reminder | rows only | slice 5 (D2564) |
+
+### Q22 — may he be planned into this seat: the reason before the drop and the warning after
+
+| Seat rule | Before the drop (`avail.ts slotBarNow`) | After (`validate.ts`) | Verdict |
+|---|---|---|---|
+| Ground crew in a front seat (jet or sim) | "ground crew — rear seat only" (`:434`) | "Illegal seat: ground crew in the front seat …" (`:1162`, `:1338`, `:1496`, `:1564`) | agree, with times |
+| A WSO in a front seat | "WSO — cannot fly front seat" (`:435`) | "Illegal seat: a WSO in the front seat …" (`:1163`, `:1344`, `:1497`, `:1565`) | agree with times; **AVALON / BB with no times: F6** |
+| CAT IW in FCP | "CAT IW — a WSO category" (`:440`) | the same (`:1164`, `:1348`, `:1498`) | agree |
+| Any pilot in a back seat | nothing (owner, 7 Sep 26) | nothing | agree |
+| A ground crewman in a rear seat | nothing | amber "Approval needed: incentive passenger" (`:1339`) | warned after — "everything plants, warning after"; agree |
+| SC currency (SC line; AVALON / BB jet seat) | "not SC DAY / SC NIGHT current" (`:446`, `:450`) | SC_QUAL (`:1150`, `:1420`) — `scQualOK` both | agree |
+| AAR currency (front seat) | "not … current" (`:515`) | AAR_QUAL (`:1363`) — `aarOK` both; AAR_INSTR is a pairing, warned after | agree |
+| Two SC / AVALON places in the same hours | `scSeatHit`, `avSeatHit` | the same bodies (DOUBLE_BOOK) | agree (one body) |
+| Crew rest, days in a row | `restClear`, `crossDayIfPlaced` | the same | agree (one body) |
+| One man twice on a row | refused (`rowTwice`) | — (never written) | D271 |
+| Pilot + WSO pairing without an instructor | nothing | warning after (`:1327`) | agree — "warning after" |
+
+**Rulings:** D271, D274, D276, D278, D33, D605, D2074, D1996, D2065.
+
+### Q23 — how long is his working day
+
+| Surface | Body | Ruling |
+|---|---|---|
+| The long-day note, Insights' hours | `validate.ts workSpan` (to the assumed landing since D2053) | D606, D1786, D2053 |
+| Crew rest | the day before's end (assumed landing + debrief) | D1990, D2046, D2010 |
+| OIL | `oil.ts fltOilWin` with its three kept values | D48, D592 (slice 1) |
+
+**MATCH** — the second body is ruled.
+
+### Q24 — who is on the squadron's roster on this day
+
+| Surface | Reads an archived man | Ruling |
+|---|---|---|
+| The crew list | by today's mark, on every day | none → **F4** |
+| A published day's "Free all day", Insights' "who is not flying" | the roster the day went out with (`rosterShown`, `issuedRoster`) | D44, D45 |
+| The ALL AVAIL crowd | by his stints / archive date | D327, D297 |
+| The Leave War | by stints (`inSquadron`) | D320, D323 (slice 6/7) |
+
+### Q25 (the schedule's side) — is he away that day, and how many are available
+
+The day panel's "Leave / downchit" counts whole-day inputs only (`avail.ts dayOff`), a placeholder input never (`:93-95`); a waiting leave bid is no input and counts nobody here. MATCH on the schedule's side (D711, D712, D1357); the war's side is slice 6's.
+
+### Q33 (the schedule's side) — what a flying count includes
+
+The day heading and Insights count a flying line with nobody on it (D1009), and leave out a standby row with nobody seated (D1062) — **F8** for a half-crewed one.
+
+## Coverage ledger
+
+Classes: C (list 1), W (list 2a), G-D / G-N / G-S (lists 3a, 3b, 3c); list 2b had no line tagged 4. Step B: Q15, Q18, Q20–Q25, Q33 above.
+
+**Items in my lists:** C 176 · W 1,430 · G-D 18 · G-N 115 · G-S 55 — 1,794.
+**Dropped as plainly another slice's:** C 85 · W 691 · G-D 13 · G-N about 95 · G-S about 40 — each named below with the slice it goes to.
+**Checked:** every other line, below. **Added that the keyword guess missed:** none needed beyond the step-B questions; the Legend strings (W1987–W1990) were in the list.
+**Left:** none. The 521 W lines marked "label" were passed by a mechanical split (a string with none of the rule words — can, only, never, not, earn, count, warn, flag, need, limit, clash, conflict, already, must, until, unless, free, tasked, available, busy, rest, may) and spot-read in a listing; the 218 others were read one by one.
+
+### List 1 (C)
+
+- C0001 · engine/assumedlanding.test.ts:1 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0002 · engine/assumedlanding.test.ts:4-6 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0003 · engine/assumedlanding.test.ts:9 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0004 · engine/assumedlanding.test.ts:60 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0005 · engine/assumedlanding.test.ts:65 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0006 · engine/assumedlanding.test.ts:68 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0008 · engine/assumedlanding.test.ts:76 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0009 · engine/assumedlanding.test.ts:83 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0011 · engine/assumedlanding.test.ts:90 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0012 · engine/assumedlanding.test.ts:97 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0013 · engine/assumedlanding.test.ts:110-112 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0014 · engine/assumedlanding.test.ts:119-121 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0015 · engine/assumedlanding.test.ts:128 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0017 · engine/assumedlanding.test.ts:136 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0018 · engine/assumedlanding.test.ts:146 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0019 · engine/assumedlanding.test.ts:159 · MATCH · D2046 ("every check that reads the landing")
+- C0020 · engine/assumedlanding.test.ts:172-174 · OPEN READING · F7 (D2073/D2080: a plain desk with no END keeps the assumed hour)
+- C0021 · engine/assumedlanding.test.ts:202-203 · OPEN READING · F7 (same)
+- C0022 · engine/assumedlanding.test.ts:219 · OPEN READING · F7 (same)
+- C0023 · engine/assumedlanding.test.ts:226 · OPEN READING · F7 (same, the order rule D2073 Astra read)
+- C0025 · engine/avail.ts:36 · MATCH · D2046
+- C0027 · engine/daystart-default-rally.test.ts:97-100 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0028 · engine/daystart-default-rally.test.ts:175 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0029 · engine/daystart-default-rally.test.ts:191 · dropped → slice 2 (a published day keeps its settings, D2005)
+- C0030 · engine/drafts.test.ts:712 · MATCH · not a reading (matched "his call" in code)
+- C0031 · engine/dutyrest.test.ts:65 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0032 · engine/dutyrest.test.ts:114-116 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0033 · engine/dutyrest.test.ts:136 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0034 · engine/dutyrest.test.ts:314 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0035 · engine/eventkind.test.ts:8 · MATCH · plain sense
+- C0036 · engine/events.ts:273 · MATCH · Logic "Assumed sim length" / "Assumed length, no end time" (D2005, D360)
+- C0037 · engine/events.ts:337 · MATCH · D2046, D2047
+- C0038 · engine/events.ts:419 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0039 · engine/events.ts:460 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0040 · engine/events.ts:514 · OPEN READING · F7 (events.ts keeps the plainer end — rests on the same reading)
+- C0041 · engine/faceattrs.ts:96 · dropped → slice 2 (a published day keeps its settings, D2005)
+- C0042 · engine/longday-msg.test.ts:4 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0043 · engine/longday-msg.test.ts:38 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0044 · engine/longday-msg.test.ts:52 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0045 · engine/longday-msg.test.ts:67-68 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0046 · engine/official-flags.test.ts:424 · dropped → slice 2 (published record)
+- C0048 · engine/oil.ts:96 · dropped → slice 1 (OIL) — D2046 part read: MATCH
+- C0050 · engine/oil.ts:240 · dropped → slice 1 (OIL) — D2046 part read: MATCH
+- C0053 · engine/oilev.ts:663 · dropped → slice 1 (OIL) — D2046 part read: MATCH
+- C0054 · engine/oilflighttimes.test.ts:16 · MATCH · history note (D36, D44); no rule of its own
+- C0056 · engine/oilopenrow.test.ts:51 · dropped → slice 1 (OIL) — D2046 part read: MATCH
+- C0060 · engine/oilplaceholderclaim.test.ts:426 · dropped → slice 1 (OIL) — D2046 part read: MATCH
+- C0061 · engine/oilseat-refusal.test.ts:47 · MATCH · plain sense
+- C0062 · engine/oilworkstart.test.ts:62 · MATCH · D505 scope reading approved by D2017 ("a whole-wave 06:00 and a typed VL RALLY 07:00 has VL report at 07:00")
+- C0063 · engine/oilworkstart.test.ts:207-208 · dropped → slice 1 (OIL) — D2046 part read: MATCH
+- C0064 · engine/publish.ts:569 · dropped → slice 2 (published record)
+- C0065 · engine/publish.ts:736 · dropped → slice 2 (published record)
+- C0066 · engine/published-day-logic.test.ts:8 · dropped → slice 2 (published record)
+- C0067 · engine/published-day-logic.test.ts:121-122 · dropped → slice 2 (published record)
+- C0068 · engine/published-day-logic.test.ts:150 · dropped → slice 2 (published record)
+- C0069 · engine/published-day-logic.test.ts:163 · dropped → slice 2 (published record)
+- C0071 · engine/rally-workspan.test.ts:127 · MATCH · D2017 (as C0062)
+- C0073 · engine/ruleflex.test.ts:304 · MATCH · not a reading
+- C0074 · engine/rules.ts:57 · MATCH · D2046, D2047 (60 min)
+- C0075 · engine/rulescheck-batch2.test.ts:73-77 · dropped → slice 5 (inputs) — read: no day rule
+- C0076 · engine/rulescheck-batch2.test.ts:82 · dropped → slice 5 (inputs) — read: no day rule
+- C0077 · engine/rulescheck-batch2.test.ts:87 · dropped → slice 5 (inputs) — read: no day rule
+- C0079 · engine/rulescheck-batch2.test.ts:97 · dropped → slice 5 (inputs) — read: no day rule
+- C0081 · engine/rulescheck-batch2.test.ts:105 · dropped → slice 5 (inputs) — read: no day rule
+- C0083 · engine/rulesfirst-1-report-times.test.ts:88 · MATCH · D2017 (as C0062)
+- C0084 · engine/rulesfirst-1-report-times.test.ts:112 · MATCH · D2017 (as C0062)
+- C0085 · engine/rulesfirst-2-standby.test.ts:194 · OPEN READING · F8 (D1062 "nobody seated" = neither seat)
+- C0086 · engine/rulesfirst-3-crew-rest.test.ts:107 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0087 · engine/rulesfirst-3-crew-rest.test.ts:110 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0088 · engine/rulesfirst-3-crew-rest.test.ts:117 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0089 · engine/rulesfirst-3-crew-rest.test.ts:121 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0090 · engine/rulesfirst-3-crew-rest.test.ts:230-234 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0091 · engine/rulesfirst-3-crew-rest.test.ts:245-246 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0092 · engine/rulesfirst-3-crew-rest.test.ts:250 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0093 · engine/rulesfirst-4-availability.test.ts:141 · MATCH · D360 (its question said "the same default the rest of the schedule already uses"); rules review W47
+- C0094 · engine/rulesfirst-4-availability.test.ts:145 · MATCH · D360, as C0093
+- C0095 · engine/rulesfirst-7-published-day.test.ts:142 · dropped → slice 2 (published record)
+- C0096 · engine/rulesfirst-7-published-day.test.ts:159 · dropped → slice 2 (published record)
+- C0097 · engine/rulesfirst-8-oil-hours.test.ts:83 · dropped → slice 1 (OIL) — D2046 part read: MATCH
+- C0098 · engine/rulesfirst-8-oil-hours.test.ts:247 · dropped → slice 1 (OIL) — D2046 part read: MATCH
+- C0099 · engine/rulesfirst-9-oil-earners.test.ts:135 · dropped → slice 1 (OIL) — D2046 part read: MATCH
+- C0100 · engine/schema.test.ts:157 · MATCH · schema, D2046 fltLen kept with a published day (D2005)
+- C0101 · engine/sort.test.ts:53 · MATCH · plain sense (sort test)
+- C0102 · engine/validate.ts:219 · MATCH · D2046 + approved words D2071 (spec §3)
+- C0103 · engine/validate.ts:520 · MATCH · D2010 as D2046 changes it; words D2071
+- C0104 · engine/validate.ts:553 · MATCH · D2005 (the judged day decides)
+- C0105 · engine/validate.ts:556 · MATCH · D2005, D2046
+- C0106 · engine/validate.ts:697 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0107 · engine/validate.ts:1263-1264 · MATCH · D2053 + approved words (spec §3, D2071)
+- C0108 · engine/warnwords.test.ts:216 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0109 · engine/warnwords.test.ts:222 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0110 · engine/warnwords.test.ts:232 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0111 · engine/warnwords.test.ts:237 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0112 · engine/warnwords.test.ts:242 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0113 · engine/warnwords.test.ts:250 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0114 · engine/warnwords.test.ts:321-324 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0115 · engine/warnwords.test.ts:328-329 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0117 · leavewar/assumedlanding-published.test.ts:1 · dropped → slices 6/7 (Leave War)
+- C0118 · leavewar/assumedlanding-published.test.ts:5 · dropped → slices 6/7 (Leave War)
+- C0124 · leavewar/engine/leaveyear.ts:223 · dropped → slices 6/7 (Leave War)
+- C0126 · leavewar/groupinput.test.ts:207-209 · dropped → slices 6/7 (Leave War)
+- C0127 · leavewar/groupinput.test.ts:336 · dropped → slices 6/7 (Leave War)
+- C0129 · leavewar/m4decide.test.ts:186 · dropped → slices 6/7 (Leave War)
+- C0130 · leavewar/m4decide.test.ts:231 · dropped → slices 6/7 (Leave War)
+- C0131 · leavewar/m4decide.test.ts:281 · dropped → slices 6/7 (Leave War)
+- C0133 · leavewar/multi-sqn-fixread11.test.ts:643 · dropped → slices 6/7 (Leave War)
+- C0136 · leavewar/onerecord-write.test.ts:212 · dropped → slices 6/7 (Leave War)
+- C0140 · leavewar/postout-outcomes.test.ts:238 · dropped → slices 6/7 (Leave War)
+- C0141 · leavewar/postout-outcomes.test.ts:314 · dropped → slices 6/7 (Leave War)
+- C0143 · leavewar/sans-ahead-walk152.test.tsx:139 · dropped → slices 6/7 (Leave War)
+- C0144 · leavewar/sans-before.test.tsx:5 · dropped → slices 6/7 (Leave War)
+- C0145 · leavewar/sans-from-date.test.ts:10 · dropped → slices 6/7 (Leave War)
+- C0146 · leavewar/state/store.ts:4196 · dropped → slices 6/7 (Leave War)
+- C0147 · leavewar/sync.ts:811 · dropped → slices 6/7 (Leave War)
+- C0155 · leavewar/ui/bubblewords.ts:4 · dropped → slices 6/7 (Leave War)
+- C0156 · leavewar/ui/chrome.test.tsx:115 · dropped → slices 6/7 (Leave War)
+- C0158 · leavewar/ui/daypanel.test.tsx:63 · dropped → slices 6/7 (Leave War)
+- C0159 · leavewar/ui/dragwords.test.tsx:193 · dropped → slices 6/7 (Leave War)
+- C0164 · leavewar/ui/Matrix.tsx:99 · dropped → slices 6/7 (Leave War)
+- C0165 · leavewar/ui/Matrix.tsx:1106 · dropped → slices 6/7 (Leave War)
+- C0167 · leavewar/ui/namepuck.test.tsx:93 · dropped → slices 6/7 (Leave War)
+- C0170 · leavewar/ui/SelectSheet.tsx:121 · dropped → slices 6/7 (Leave War)
+- C0172 · published-day-logic-reads.test.ts:3 · dropped → slice 2 (published record)
+- C0173 · published-day-logic-reads.test.ts:46-48 · dropped → slice 2 (published record)
+- C0174 · published-day-logic-reads.test.ts:52 · dropped → slice 2 (published record)
+- C0175 · published-day-logic-reads.test.ts:56-57 · dropped → slice 2 (published record)
+- C0176 · published-day-logic-reads.test.ts:67-68 · dropped → slice 2 (published record)
+- C0181 · state/multi-sqn-job2-inputs.test.ts:82 · dropped → slice 3
+- C0184 · state/notices.ts:179 · dropped → slice 9 / 3
+- C0185 · state/notices.ts:225 · dropped → slice 9 / 3
+- C0186 · state/notices.ts:1119 · dropped → slice 9 / 3
+- C0187 · state/notices.ts:1198 · dropped → slice 9 / 3
+- C0189 · state/perms.ts:439 · dropped → slice 3
+- C0194 · state/person-delete.ts:200 · MATCH · not a reading (delete is slice 3)
+- C0195 · state/quals-write.test.ts:211 · dropped → slice 3
+- C0197 · state/reshape-plan-audit.test.ts:6 · dropped → slice 3
+- C0198 · state/signin-kinds-gate.test.ts:67-68 · dropped → slice 3
+- C0200 · testing/refwin.ts:630 · MATCH · test reference (parity), prints no screen words
+- C0201 · testing/refwin.ts:638 · MATCH · as C0200
+- C0202 · testing/refwin.ts:672 · MATCH · as C0200
+- C0203 · testing/refwin.ts:678 · MATCH · as C0200
+- C0204 · tracker/leftovers.test.tsx:1196 · dropped → slice 8
+- C0208 · ui/audit-e-commit-relink.test.tsx:264 · dropped → slice 5 (inputs) — read: no day rule
+- C0216 · ui/batch2.test.tsx:410 · dropped → slice 5 (inputs) — read: no day rule
+- C0217 · ui/bellnotices-scenarios.test.tsx:431 · dropped → slice 9 / 3
+- C0219 · ui/crewrest-ui.test.ts:119 · MATCH · D2010/D2071 crew-rest words
+- C0220 · ui/everyweekday.test.tsx:154 · dropped → slice 5 (inputs) — read: no day rule
+- C0227 · ui/histlist.test.tsx:267-269 · MATCH · history-line spacing, words of D2053
+- C0229 · ui/html.test.ts:924 · MATCH · "this call site" — not a reading; manual ground order frozen by a move (drag-reordering, settled)
+- C0232 · ui/inputedit.tsx:2222 · dropped → slice 5 (inputs) — read: no day rule
+- C0234 · ui/inputscal-model.ts:147 · dropped → slice 5 (inputs) — read: no day rule
+- C0235 · ui/inputscal-model.ts:232 · dropped → slice 5 (inputs) — read: no day rule
+- C0236 · ui/inputslist.test.tsx:403 · dropped → slice 5 (inputs) — read: no day rule
+- C0237 · ui/inputssettings.test.tsx:8 · dropped → slice 5 (inputs) — read: no day rule
+- C0238 · ui/latepub.test.tsx:6 · dropped → slice 2 (published record)
+- C0239 · ui/latepub.test.tsx:409 · dropped → slice 2 (published record)
+- C0240 · ui/logic-html.ts:59 · MATCH · D2046/D2047 rule text (A flight)
+- C0241 · ui/logic-html.ts:106 · MATCH · D2046, D2079 rule text
+- C0242 · ui/logic-html.ts:203 · MATCH · D2046 (OIL text is slice 1)
+- C0243 · ui/logic.test.tsx:653-656 · MATCH · D1990, D2046
+- C0244 · ui/logic.test.tsx:661 · MATCH · D2079/D2080 (the AVALON/BB desk part answered by D2080)
+- C0245 · ui/logic.test.tsx:667-668 · MATCH · D2046/D2047/D2053, words approved D2071 (spec 2026-11-15 §3) — expected result read
+- C0246 · ui/logic.test.tsx:672-674 · MATCH · D2046, D2047
+- C0248 · ui/OilDayList.tsx:85 · dropped → slice 1 (OIL) — D2046 part read: MATCH
+- C0252 · ui/oilscreenwords.test.ts:39-41 · dropped → slice 1 (OIL) — D2046 part read: MATCH
+- C0254 · ui/oilsign.ts:121 · dropped → slice 1 (OIL) — D2046 part read: MATCH
+- C0255 · ui/oilworkstart.test.tsx:68 · dropped → slice 1 (OIL) — D2046 part read: MATCH
+- C0258 · ui/pendlist.ts:535 · dropped → slice 1 (OIL) — D2046 part read: MATCH
+- C0267 · ui/QualsPage.tsx:823 · MATCH · plain sense, no rule (and Quals is slice 3)
+- C0268 · ui/sanscal-model.ts:1 · dropped → slice 5 (inputs) — read: no day rule
+- C0269 · ui/sanscal-model.ts:67 · dropped → slice 5 (inputs) — read: no day rule
+- C0270 · ui/schedule-tab.test.tsx:395 · dropped → slice 5 (inputs) — read: no day rule
+- C0271 · ui/UsersPanel.tsx:230 · MATCH · "his callsign" — not a reading
+- C0272 · ui/UsersPanel.tsx:258 · MATCH · not a reading (and Users is slice 3)
+- C0273 · ui/weeknav.ts:65 · MATCH · "assumed" in its plain sense (week key is a Monday) — no rule
+- C0275 · ui/windowreads.test.tsx:244 · dropped → slice 5 (inputs) — read: no day rule
+
+### List 2a (W)
+
+- W0705 · state/flyplan-model.suite.ts:50 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W0706 · state/flyplan-model.ts:26 · MATCH · label, heading, control name or code string — states no rule
+- W0707 · state/flyplan-model.ts:189 · MATCH · label, heading, control name or code string — states no rule
+- W0708 · state/flyplan.ts:71 · MATCH · label, heading, control name or code string — states no rule
+- W0709 · state/flyplan.ts:89 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W0710 · state/flyplan.ts:97 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W0711 · state/flyplan.ts:114 · MATCH · label, heading, control name or code string — states no rule
+- W0712 · state/flyplan.ts:145 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W0713 · state/flyplan.ts:150 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W0714 · state/flyplan.ts:166 · MATCH · label, heading, control name or code string — states no rule
+- W0715 · state/flyplan.ts:167 · MATCH · label, heading, control name or code string — states no rule
+- W0716 · state/flyplan.ts:184 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W0717 · state/flyplan.ts:192 · MATCH · label, heading, control name or code string — states no rule
+- W0718 · state/flyplan.ts:221 · MATCH · label, heading, control name or code string — states no rule
+- W0719 · state/flyplan.ts:221 · MATCH · label, heading, control name or code string — states no rule
+- W0727 · state/mission-roles.ts:61 · MATCH · label, heading, control name or code string — states no rule
+- W0728 · state/mission-roles.ts:64 · MATCH · label, heading, control name or code string — states no rule
+- W0729 · state/mission-roles.ts:66 · MATCH · label, heading, control name or code string — states no rule
+- W0731 · state/mission-roles.ts:131 · MATCH · label, heading, control name or code string — states no rule
+- W0732 · state/mission-roles.ts:141 · MATCH · label, heading, control name or code string — states no rule
+- W0733 · state/mission-roles.ts:143 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W0734 · state/mission-roles.ts:148 · MATCH · label, heading, control name or code string — states no rule
+- W0735 · state/mission-roles.ts:153 · MATCH · label, heading, control name or code string — states no rule
+- W0736 · state/mission-roles.ts:161 · MATCH · label, heading, control name or code string — states no rule
+- W0797 · state/sched-commit.ts:246 · MATCH · label, heading, control name or code string — states no rule
+- W0798 · state/sched-commit.ts:262 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W0799 · state/sched-commit.ts:489 · MATCH · label, heading, control name or code string — states no rule
+- W0800 · state/sched-commit.ts:723 · MATCH · label, heading, control name or code string — states no rule
+- W0801 · state/sched-commit.ts:893 · MATCH · label, heading, control name or code string — states no rule
+- W0802 · state/sched-commit.ts:894 · MATCH · label, heading, control name or code string — states no rule
+- W0803 · state/store.ts:1032 · MATCH · label, heading, control name or code string — states no rule
+- W0804 · state/store.ts:1032 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W0805 · state/store.ts:1034 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W0806 · state/typing-hold.ts:44 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W0832 · state/view.ts:836 · MATCH
+- W0833 · state/view.ts:836 · MATCH
+- W0835 · state/weekrows.ts:113 · MATCH · label, heading, control name or code string — states no rule
+- W0836 · state/weekrows.ts:193 · MATCH · label, heading, control name or code string — states no rule
+- W0837 · state/weekrows.ts:251 · MATCH · label, heading, control name or code string — states no rule
+- W0838 · state/weekrows.ts:295 · MATCH · label, heading, control name or code string — states no rule
+- W1562 · ui/AvailWindow.tsx:223 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1567 · ui/AvailWindow.tsx:279 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1568 · ui/AvailWindow.tsx:280 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1571 · ui/AvailWindow.tsx:345 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1572 · ui/AvailWindow.tsx:347 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1581 · ui/board-html.ts:66 · MATCH · label, heading, control name or code string — states no rule
+- W1582 · ui/board-html.ts:92 · MATCH · label, heading, control name or code string — states no rule
+- W1583 · ui/board-html.ts:131 · MATCH · label, heading, control name or code string — states no rule
+- W1584 · ui/board-html.ts:132 · MATCH · label, heading, control name or code string — states no rule
+- W1585 · ui/board-html.ts:141 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1586 · ui/board-html.ts:149 · MATCH · label, heading, control name or code string — states no rule
+- W1587 · ui/board-html.ts:178 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1588 · ui/board-html.ts:178 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1589 · ui/board-html.ts:179 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1590 · ui/board-html.ts:189 · MATCH · label, heading, control name or code string — states no rule
+- W1591 · ui/board-html.ts:191 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1592 · ui/board-html.ts:201 · MATCH · label, heading, control name or code string — states no rule
+- W1593 · ui/board-html.ts:201 · MATCH · label, heading, control name or code string — states no rule
+- W1594 · ui/board-html.ts:204 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1595 · ui/board-html.ts:216 · MATCH · label, heading, control name or code string — states no rule
+- W1596 · ui/board-html.ts:216 · MATCH · label, heading, control name or code string — states no rule
+- W1597 · ui/board-html.ts:216 · MATCH · label, heading, control name or code string — states no rule
+- W1598 · ui/board-html.ts:216 · MATCH · label, heading, control name or code string — states no rule
+- W1599 · ui/board-html.ts:216 · MATCH · label, heading, control name or code string — states no rule
+- W1600 · ui/board-html.ts:266 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1601 · ui/board-html.ts:268 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1602 · ui/board-html.ts:269 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1603 · ui/board-html.ts:270 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1604 · ui/board-html.ts:271 · MATCH · label, heading, control name or code string — states no rule
+- W1605 · ui/board-html.ts:274 · MATCH · label, heading, control name or code string — states no rule
+- W1606 · ui/board-html.ts:396 · MATCH · label, heading, control name or code string — states no rule
+- W1607 · ui/board-html.ts:417 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1608 · ui/board-html.ts:418 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1609 · ui/board-html.ts:419 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1610 · ui/board-html.ts:420 · MATCH · label, heading, control name or code string — states no rule
+- W1611 · ui/board-html.ts:426 · MATCH · label, heading, control name or code string — states no rule
+- W1612 · ui/board-html.ts:431 · MATCH · label, heading, control name or code string — states no rule
+- W1613 · ui/board-html.ts:431 · MATCH · label, heading, control name or code string — states no rule
+- W1614 · ui/board-html.ts:432 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1615 · ui/board-html.ts:435 · MATCH · label, heading, control name or code string — states no rule
+- W1616 · ui/board-html.ts:435 · MATCH · label, heading, control name or code string — states no rule
+- W1617 · ui/board-html.ts:436 · MATCH · label, heading, control name or code string — states no rule
+- W1618 · ui/board-html.ts:436 · MATCH · label, heading, control name or code string — states no rule
+- W1619 · ui/board-html.ts:465 · MATCH · label, heading, control name or code string — states no rule
+- W1620 · ui/board-html.ts:489 · MATCH · label, heading, control name or code string — states no rule
+- W1621 · ui/board-html.ts:493 · MATCH · label, heading, control name or code string — states no rule
+- W1622 · ui/board-html.ts:493 · MATCH · label, heading, control name or code string — states no rule
+- W1623 · ui/board-html.ts:535 · MATCH · label, heading, control name or code string — states no rule
+- W1624 · ui/board-html.ts:558 · MATCH · label, heading, control name or code string — states no rule
+- W1625 · ui/board-html.ts:563 · MATCH · label, heading, control name or code string — states no rule
+- W1626 · ui/board-html.ts:589 · MATCH · label, heading, control name or code string — states no rule
+- W1627 · ui/board-html.ts:635 · MATCH · label, heading, control name or code string — states no rule
+- W1628 · ui/board-html.ts:635 · MATCH · label, heading, control name or code string — states no rule
+- W1629 · ui/board-html.ts:635 · MATCH · label, heading, control name or code string — states no rule
+- W1630 · ui/board-html.ts:638 · MATCH · label, heading, control name or code string — states no rule
+- W1631 · ui/board-html.ts:639 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1632 · ui/board-html.ts:649 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1633 · ui/board-html.ts:838 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1634 · ui/board-html.ts:844 · MATCH · D945, D949 (rejected)
+- W1635 · ui/board-html.ts:859 · MATCH · label, heading, control name or code string — states no rule
+- W1636 · ui/board-html.ts:859 · MATCH · label, heading, control name or code string — states no rule
+- W1637 · ui/board-html.ts:861 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1638 · ui/board-html.ts:884 · MATCH · label, heading, control name or code string — states no rule
+- W1639 · ui/board-html.ts:889 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1640 · ui/board.ts:62 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1641 · ui/board.ts:148 · MATCH · label, heading, control name or code string — states no rule
+- W1642 · ui/board.ts:179 · MATCH · label, heading, control name or code string — states no rule
+- W1643 · ui/board.ts:179 · MATCH · label, heading, control name or code string — states no rule
+- W1644 · ui/board.ts:183 · MATCH · label, heading, control name or code string — states no rule
+- W1645 · ui/board.ts:184 · MATCH · label, heading, control name or code string — states no rule
+- W1646 · ui/board.ts:191 · MATCH · label, heading, control name or code string — states no rule
+- W1647 · ui/board.ts:194 · MATCH · label, heading, control name or code string — states no rule
+- W1648 · ui/board.ts:194 · MATCH · label, heading, control name or code string — states no rule
+- W1649 · ui/board.ts:194 · MATCH · label, heading, control name or code string — states no rule
+- W1650 · ui/board.ts:195 · MATCH · label, heading, control name or code string — states no rule
+- W1651 · ui/board.ts:195 · MATCH · label, heading, control name or code string — states no rule
+- W1652 · ui/board.ts:213 · MATCH · label, heading, control name or code string — states no rule
+- W1653 · ui/board.ts:213 · MATCH · label, heading, control name or code string — states no rule
+- W1654 · ui/board.ts:213 · MATCH · label, heading, control name or code string — states no rule
+- W1655 · ui/board.ts:213 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1656 · ui/board.ts:214 · MATCH · label, heading, control name or code string — states no rule
+- W1657 · ui/board.ts:253 · MATCH · label, heading, control name or code string — states no rule
+- W1658 · ui/board.ts:274 · MATCH · label, heading, control name or code string — states no rule
+- W1659 · ui/board.ts:333 · MATCH · label, heading, control name or code string — states no rule
+- W1660 · ui/board.ts:338 · MATCH · label, heading, control name or code string — states no rule
+- W1661 · ui/board.ts:343 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1662 · ui/board.ts:352 · MATCH · label, heading, control name or code string — states no rule
+- W1663 · ui/board.ts:353 · MATCH · label, heading, control name or code string — states no rule
+- W1664 · ui/board.ts:358 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1665 · ui/board.ts:359 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1666 · ui/board.ts:360 · MATCH · label, heading, control name or code string — states no rule
+- W1667 · ui/board.ts:361 · MATCH · label, heading, control name or code string — states no rule
+- W1668 · ui/board.ts:376 · MATCH · label, heading, control name or code string — states no rule
+- W1669 · ui/board.ts:391 · MATCH · label, heading, control name or code string — states no rule
+- W1670 · ui/board.ts:391 · MATCH · label, heading, control name or code string — states no rule
+- W1671 · ui/board.ts:391 · MATCH · label, heading, control name or code string — states no rule
+- W1672 · ui/board.ts:431 · MATCH · label, heading, control name or code string — states no rule
+- W1673 · ui/board.ts:431 · MATCH · label, heading, control name or code string — states no rule
+- W1674 · ui/board.ts:505 · MATCH · label, heading, control name or code string — states no rule
+- W1675 · ui/board.ts:511 · MATCH
+- W1676 · ui/board.ts:542 · MISMATCH · F10 (same family; the hidden half "flags no puck and is not counted" MATCH D469)
+- W1677 · ui/board.ts:546 · MISMATCH · F10 (hide tooltip "comes back if the situation changes" — D2001)
+- W1678 · ui/board.ts:554 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1679 · ui/board.ts:557 · MATCH
+- W1680 · ui/board.ts:849 · MATCH · label, heading, control name or code string — states no rule
+- W1681 · ui/board.ts:850 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1682 · ui/board.ts:939 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1683 · ui/board.ts:939 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1684 · ui/board.ts:998 · MATCH · label, heading, control name or code string — states no rule
+- W1685 · ui/board.ts:1011 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1686 · ui/board.ts:1011 · MATCH · label, heading, control name or code string — states no rule
+- W1687 · ui/board.ts:1082 · MATCH · label, heading, control name or code string — states no rule
+- W1688 · ui/board.ts:1109 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1689 · ui/board.ts:1109 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1690 · ui/board.ts:1139 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1691 · ui/board.ts:1139 · MATCH · label, heading, control name or code string — states no rule
+- W1692 · ui/board.ts:1150 · MATCH · label, heading, control name or code string — states no rule
+- W1693 · ui/board.ts:1161 · MATCH · label, heading, control name or code string — states no rule
+- W1694 · ui/board.ts:1168 · MATCH · label, heading, control name or code string — states no rule
+- W1695 · ui/board.ts:1186 · MATCH · label, heading, control name or code string — states no rule
+- W1696 · ui/board.ts:1200 · MATCH · label, heading, control name or code string — states no rule
+- W1697 · ui/board.ts:1207 · MATCH · label, heading, control name or code string — states no rule
+- W1698 · ui/board.ts:1223 · MATCH · label, heading, control name or code string — states no rule
+- W1699 · ui/board.ts:1255 · MATCH · label, heading, control name or code string — states no rule
+- W1700 · ui/board.ts:1575 · MATCH · label, heading, control name or code string — states no rule
+- W1701 · ui/board.ts:1628 · MATCH · D2065 (a SPARE's own checks stay)
+- W1702 · ui/board.ts:1714 · MATCH · label, heading, control name or code string — states no rule
+- W1703 · ui/board.ts:1714 · MATCH · label, heading, control name or code string — states no rule
+- W1704 · ui/board.ts:1716 · MATCH · label, heading, control name or code string — states no rule
+- W1705 · ui/board.ts:1726 · MATCH · label, heading, control name or code string — states no rule
+- W1706 · ui/board.ts:1749 · MATCH · label, heading, control name or code string — states no rule
+- W1707 · ui/board.ts:1750 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1708 · ui/board.ts:1752 · MATCH · label, heading, control name or code string — states no rule
+- W1709 · ui/board.ts:1759 · MATCH · label, heading, control name or code string — states no rule
+- W1710 · ui/board.ts:1765 · MATCH · label, heading, control name or code string — states no rule
+- W1711 · ui/board.ts:1778 · MATCH · label, heading, control name or code string — states no rule
+- W1712 · ui/board.ts:1789 · MATCH · label, heading, control name or code string — states no rule
+- W1713 · ui/board.ts:1790 · MATCH · label, heading, control name or code string — states no rule
+- W1714 · ui/board.ts:1815 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1715 · ui/board.ts:1839 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1716 · ui/board.ts:1892 · MATCH · label, heading, control name or code string — states no rule
+- W1717 · ui/board.ts:1897 · MATCH · label, heading, control name or code string — states no rule
+- W1718 · ui/board.ts:1902 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1719 · ui/board.ts:1903 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1720 · ui/board.ts:1907 · MATCH · label, heading, control name or code string — states no rule
+- W1721 · ui/board.ts:1910 · MATCH · label, heading, control name or code string — states no rule
+- W1722 · ui/board.ts:1928 · MATCH · label, heading, control name or code string — states no rule
+- W1723 · ui/board.ts:1953 · MATCH · label, heading, control name or code string — states no rule
+- W1724 · ui/board.ts:1955 · MATCH · label, heading, control name or code string — states no rule
+- W1725 · ui/board.ts:1972 · MATCH · label, heading, control name or code string — states no rule
+- W1726 · ui/board.ts:1985 · MATCH · label, heading, control name or code string — states no rule
+- W1727 · ui/board.ts:1988 · MATCH · label, heading, control name or code string — states no rule
+- W1728 · ui/board.ts:1996 · MATCH · label, heading, control name or code string — states no rule
+- W1729 · ui/board.ts:1998 · MATCH · label, heading, control name or code string — states no rule
+- W1730 · ui/board.ts:2000 · MATCH · D1042, D1062
+- W1731 · ui/board.ts:2051 · MATCH · label, heading, control name or code string — states no rule
+- W1732 · ui/boardland.ts:66 · MATCH · label, heading, control name or code string — states no rule
+- W1733 · ui/boardland.ts:84 · MATCH · label, heading, control name or code string — states no rule
+- W1734 · ui/boardland.ts:98 · MATCH · label, heading, control name or code string — states no rule
+- W1735 · ui/caldrag.ts:94 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1736 · ui/caldrag.ts:114 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1778 · ui/DaysWindow.tsx:195 · MATCH · label, heading, control name or code string — states no rule
+- W1779 · ui/DaysWindow.tsx:208 · MATCH · label, heading, control name or code string — states no rule
+- W1780 · ui/DaysWindow.tsx:210 · MATCH · label, heading, control name or code string — states no rule
+- W1781 · ui/DaysWindow.tsx:211 · MATCH · label, heading, control name or code string — states no rule
+- W1782 · ui/DaysWindow.tsx:215 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1783 · ui/DaysWindow.tsx:216 · MATCH · label, heading, control name or code string — states no rule
+- W1784 · ui/DaysWindow.tsx:226 · MATCH · label, heading, control name or code string — states no rule
+- W1785 · ui/DaysWindow.tsx:245 · MATCH · label, heading, control name or code string — states no rule
+- W1786 · ui/DaysWindow.tsx:257 · MATCH · label, heading, control name or code string — states no rule
+- W1787 · ui/DaysWindow.tsx:269 · MATCH · label, heading, control name or code string — states no rule
+- W1788 · ui/DayTplModal.tsx:19 · MATCH · label, heading, control name or code string — states no rule
+- W1789 · ui/DayTplModal.tsx:65 · MATCH · label, heading, control name or code string — states no rule
+- W1790 · ui/DayTplModal.tsx:65 · MATCH · label, heading, control name or code string — states no rule
+- W1791 · ui/DayTplModal.tsx:76 · MATCH · label, heading, control name or code string — states no rule
+- W1792 · ui/DayTplModal.tsx:81 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1793 · ui/DayTplModal.tsx:82 · MATCH · label, heading, control name or code string — states no rule
+- W1794 · ui/DayTplModal.tsx:93 · MATCH · label, heading, control name or code string — states no rule
+- W1795 · ui/DayTplModal.tsx:94 · MATCH · label, heading, control name or code string — states no rule
+- W1796 · ui/DayTplModal.tsx:101 · MATCH · label, heading, control name or code string — states no rule
+- W1797 · ui/DayTplModal.tsx:102 · MATCH · label, heading, control name or code string — states no rule
+- W1798 · ui/DayTplModal.tsx:103 · MATCH · label, heading, control name or code string — states no rule
+- W1826 · ui/drag.ts:291 · MATCH · label, heading, control name or code string — states no rule
+- W1827 · ui/drag.ts:468 · MATCH
+- W1834 · ui/DutyTplModal.tsx:10 · MATCH · label, heading, control name or code string — states no rule
+- W1835 · ui/DutyTplModal.tsx:28 · MATCH · label, heading, control name or code string — states no rule
+- W1836 · ui/DutyTplModal.tsx:29 · MATCH · scSeatHit, settled waves & duties
+- W1837 · ui/DutyTplModal.tsx:34 · MATCH · D1994, D2019, D2026
+- W1838 · ui/DutyTplModal.tsx:35 · MATCH · D1994, D2019
+- W1839 · ui/DutyTplModal.tsx:90 · MATCH · label, heading, control name or code string — states no rule
+- W1840 · ui/DutyTplModal.tsx:90 · MATCH · label, heading, control name or code string — states no rule
+- W1841 · ui/DutyTplModal.tsx:101 · MATCH · label, heading, control name or code string — states no rule
+- W1842 · ui/DutyTplModal.tsx:103 · MATCH · label, heading, control name or code string — states no rule
+- W1843 · ui/DutyTplModal.tsx:107 · MATCH · label, heading, control name or code string — states no rule
+- W1844 · ui/DutyTplModal.tsx:109 · MATCH · label, heading, control name or code string — states no rule
+- W1845 · ui/DutyTplModal.tsx:114 · MATCH · label, heading, control name or code string — states no rule
+- W1846 · ui/DutyTplModal.tsx:114 · MATCH · label, heading, control name or code string — states no rule
+- W1847 · ui/DutyTplModal.tsx:114 · MATCH · label, heading, control name or code string — states no rule
+- W1848 · ui/DutyTplModal.tsx:118 · MATCH · label, heading, control name or code string — states no rule
+- W1849 · ui/DutyTplModal.tsx:120 · MATCH · label, heading, control name or code string — states no rule
+- W1850 · ui/DutyTplModal.tsx:133 · MATCH · label, heading, control name or code string — states no rule
+- W1851 · ui/DutyTplModal.tsx:140 · MATCH · label, heading, control name or code string — states no rule
+- W1852 · ui/DutyTplModal.tsx:151 · MATCH · label, heading, control name or code string — states no rule
+- W1853 · ui/DutyTplModal.tsx:152 · MATCH · label, heading, control name or code string — states no rule
+- W1854 · ui/DutyTplModal.tsx:161 · MATCH · label, heading, control name or code string — states no rule
+- W1855 · ui/DutyTplModal.tsx:162 · MATCH · label, heading, control name or code string — states no rule
+- W1856 · ui/DutyTplModal.tsx:163 · MATCH · label, heading, control name or code string — states no rule
+- W1857 · ui/edgescroll.ts:60 · MATCH · label, heading, control name or code string — states no rule
+- W1858 · ui/edgescroll.ts:147 · MATCH · label, heading, control name or code string — states no rule
+- W1859 · ui/EditWeek.tsx:272 · MATCH · label, heading, control name or code string — states no rule
+- W1860 · ui/EveryWeekday.tsx:30 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1861 · ui/EveryWeekday.tsx:57 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1862 · ui/EveryWeekday.tsx:60 · MATCH · label, heading, control name or code string — states no rule
+- W1863 · ui/EveryWeekday.tsx:61 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1864 · ui/EveryWeekday.tsx:62 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1865 · ui/EveryWeekday.tsx:69 · MATCH · label, heading, control name or code string — states no rule
+- W1866 · ui/EveryWeekday.tsx:70 · MATCH · label, heading, control name or code string — states no rule
+- W1867 · ui/EveryWeekday.tsx:81 · MATCH · label, heading, control name or code string — states no rule
+- W1868 · ui/EveryWeekday.tsx:86 · MATCH · label, heading, control name or code string — states no rule
+- W1869 · ui/EveryWeekday.tsx:89 · MATCH · label, heading, control name or code string — states no rule
+- W1870 · ui/EveryWeekday.tsx:92 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1871 · ui/EveryWeekday.tsx:94 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1872 · ui/EveryWeekday.tsx:95 · MATCH · label, heading, control name or code string — states no rule
+- W1873 · ui/EveryWeekday.tsx:100 · MATCH · label, heading, control name or code string — states no rule
+- W1874 · ui/EveryWeekday.tsx:106 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1875 · ui/EveryWeekday.tsx:110 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1876 · ui/EveryWeekday.tsx:111 · MATCH · label, heading, control name or code string — states no rule
+- W1877 · ui/EveryWeekday.tsx:124 · MATCH · label, heading, control name or code string — states no rule
+- W1878 · ui/EveryWeekday.tsx:126 · MATCH · label, heading, control name or code string — states no rule
+- W1900 · ui/histbubble.ts:396 · MATCH · label, heading, control name or code string — states no rule
+- W1901 · ui/histbubble.ts:409 · MATCH · label, heading, control name or code string — states no rule
+- W1902 · ui/hlchips-model.ts:13 · MATCH · label, heading, control name or code string — states no rule
+- W1903 · ui/hlchips-model.ts:13 · MATCH · label, heading, control name or code string — states no rule
+- W1904 · ui/hlchips-model.ts:13 · MATCH · label, heading, control name or code string — states no rule
+- W1905 · ui/hlchips-model.ts:13 · MATCH · label, heading, control name or code string — states no rule
+- W1906 · ui/hlchips-model.ts:17 · MATCH · label, heading, control name or code string — states no rule
+- W1907 · ui/hlchips-model.ts:17 · MATCH · label, heading, control name or code string — states no rule
+- W1908 · ui/hlchips-model.ts:18 · MATCH · label, heading, control name or code string — states no rule
+- W1909 · ui/hlchips-model.ts:18 · MATCH · label, heading, control name or code string — states no rule
+- W1910 · ui/hlchips-model.ts:21 · MATCH · label, heading, control name or code string — states no rule
+- W1911 · ui/hlchips-model.ts:21 · MATCH · label, heading, control name or code string — states no rule
+- W1912 · ui/hlchips-model.ts:22 · MATCH · label, heading, control name or code string — states no rule
+- W1913 · ui/hlchips-model.ts:22 · MATCH · label, heading, control name or code string — states no rule
+- W1914 · ui/hlchips-model.ts:22 · MATCH · label, heading, control name or code string — states no rule
+- W1915 · ui/hlchips.tsx:33 · MATCH · label, heading, control name or code string — states no rule
+- W1947 · ui/html.ts:202 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1948 · ui/html.ts:210 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1949 · ui/html.ts:215 · MATCH · label, heading, control name or code string — states no rule
+- W1950 · ui/html.ts:318 · MATCH · label, heading, control name or code string — states no rule
+- W1953 · ui/html.ts:322 · MATCH · label, heading, control name or code string — states no rule
+- W1954 · ui/html.ts:336 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1955 · ui/html.ts:336 · MATCH · label, heading, control name or code string — states no rule
+- W1956 · ui/html.ts:354 · MATCH · label, heading, control name or code string — states no rule
+- W1957 · ui/html.ts:368 · MATCH · label, heading, control name or code string — states no rule
+- W1959 · ui/html.ts:371 · MATCH · label, heading, control name or code string — states no rule
+- W1960 · ui/html.ts:387 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1962 · ui/html.ts:388 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1964 · ui/html.ts:404 · MATCH · label, heading, control name or code string — states no rule
+- W1965 · ui/html.ts:426 · MATCH · label, heading, control name or code string — states no rule
+- W1966 · ui/html.ts:428 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1967 · ui/html.ts:432 · MATCH · label, heading, control name or code string — states no rule
+- W1968 · ui/html.ts:432 · MATCH · label, heading, control name or code string — states no rule
+- W1969 · ui/html.ts:432 · MATCH · label, heading, control name or code string — states no rule
+- W1970 · ui/html.ts:433 · MATCH · label, heading, control name or code string — states no rule
+- W1971 · ui/html.ts:434 · MATCH · label, heading, control name or code string — states no rule
+- W1972 · ui/html.ts:439 · MATCH · label, heading, control name or code string — states no rule
+- W1973 · ui/html.ts:441 · MATCH · label, heading, control name or code string — states no rule
+- W1974 · ui/html.ts:442 · MATCH · label, heading, control name or code string — states no rule
+- W1975 · ui/html.ts:443 · MATCH · label, heading, control name or code string — states no rule
+- W1976 · ui/html.ts:444 · MATCH · label, heading, control name or code string — states no rule
+- W1977 · ui/html.ts:445 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1978 · ui/html.ts:446 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1979 · ui/html.ts:447 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1980 · ui/html.ts:448 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1981 · ui/html.ts:449 · MATCH · label, heading, control name or code string — states no rule
+- W1982 · ui/html.ts:450 · MATCH · label, heading, control name or code string — states no rule
+- W1983 · ui/html.ts:451 · MATCH · label, heading, control name or code string — states no rule
+- W1984 · ui/html.ts:452 · MATCH · label, heading, control name or code string — states no rule
+- W1985 · ui/html.ts:453 · MATCH · label, heading, control name or code string — states no rule
+- W1986 · ui/html.ts:454 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1987 · ui/html.ts:455 · MISMATCH · F5 (Legend "misses flight brief" — D2424 later than D2078)
+- W1988 · ui/html.ts:456 · MISMATCH · F5
+- W1989 · ui/html.ts:457 · MISMATCH · F5
+- W1990 · ui/html.ts:458 · MISMATCH · F5
+- W1991 · ui/html.ts:459 · MATCH · label, heading, control name or code string — states no rule
+- W1993 · ui/html.ts:536 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1994 · ui/html.ts:537 · MATCH · label, heading, control name or code string — states no rule
+- W1995 · ui/html.ts:539 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1996 · ui/html.ts:553 · MATCH · label, heading, control name or code string — states no rule
+- W1998 · ui/html.ts:583 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W1999 · ui/html.ts:585 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2000 · ui/html.ts:606 · MATCH · label, heading, control name or code string — states no rule
+- W2001 · ui/html.ts:606 · MATCH · label, heading, control name or code string — states no rule
+- W2002 · ui/html.ts:606 · MATCH · label, heading, control name or code string — states no rule
+- W2003 · ui/html.ts:606 · MATCH · label, heading, control name or code string — states no rule
+- W2004 · ui/html.ts:606 · MATCH · label, heading, control name or code string — states no rule
+- W2005 · ui/html.ts:730 · MATCH · label, heading, control name or code string — states no rule
+- W2006 · ui/html.ts:733 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2008 · ui/html.ts:735 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2009 · ui/html.ts:736 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2010 · ui/html.ts:750 · MATCH · label, heading, control name or code string — states no rule
+- W2011 · ui/html.ts:770 · MATCH · label, heading, control name or code string — states no rule
+- W2012 · ui/html.ts:850 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2013 · ui/html.ts:864 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2014 · ui/html.ts:864 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2015 · ui/html.ts:865 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2016 · ui/html.ts:865 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2017 · ui/html.ts:918 · MATCH · label, heading, control name or code string — states no rule
+- W2018 · ui/html.ts:918 · MATCH · label, heading, control name or code string — states no rule
+- W2019 · ui/html.ts:918 · MATCH · see F3
+- W2020 · ui/html.ts:919 · MATCH · label, heading, control name or code string — states no rule
+- W2021 · ui/html.ts:936 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2022 · ui/html.ts:943 · MATCH · see F3
+- W2023 · ui/html.ts:946 · MATCH · label, heading, control name or code string — states no rule
+- W2024 · ui/html.ts:946 · MATCH · day panel strip (D1120 reading (4) — see F3)
+- W2025 · ui/html.ts:1003 · MATCH · label, heading, control name or code string — states no rule
+- W2028 · ui/html.ts:1029 · MATCH · label, heading, control name or code string — states no rule
+- W2029 · ui/html.ts:1091 · MATCH · label, heading, control name or code string — states no rule
+- W2030 · ui/html.ts:1092 · MATCH · label, heading, control name or code string — states no rule
+- W2031 · ui/html.ts:1093 · MATCH · label, heading, control name or code string — states no rule
+- W2032 · ui/html.ts:1116 · MATCH · label, heading, control name or code string — states no rule
+- W2033 · ui/html.ts:1118 · MATCH · label, heading, control name or code string — states no rule
+- W2034 · ui/html.ts:1121 · MATCH · label, heading, control name or code string — states no rule
+- W2035 · ui/html.ts:1170 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2037 · ui/html.ts:1193 · MATCH · D410
+- W2038 · ui/html.ts:1211 · MISMATCH · F10 (as W1676)
+- W2039 · ui/html.ts:1216 · MISMATCH · F10
+- W2040 · ui/html.ts:1223 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2041 · ui/html.ts:1231 · MATCH · label, heading, control name or code string — states no rule
+- W2043 · ui/html.ts:1248 · MATCH · label, heading, control name or code string — states no rule
+- W2044 · ui/html.ts:1281 · MATCH · label, heading, control name or code string — states no rule
+- W2045 · ui/html.ts:1343 · MATCH · label, heading, control name or code string — states no rule
+- W2046 · ui/html.ts:1344 · MATCH · label, heading, control name or code string — states no rule
+- W2047 · ui/html.ts:1380 · MATCH · label, heading, control name or code string — states no rule
+- W2048 · ui/html.ts:1382 · MATCH · label, heading, control name or code string — states no rule
+- W2049 · ui/html.ts:1388 · MATCH · label, heading, control name or code string — states no rule
+- W2050 · ui/html.ts:1414 · MATCH · label, heading, control name or code string — states no rule
+- W2051 · ui/html.ts:1427 · MATCH · label, heading, control name or code string — states no rule
+- W2052 · ui/html.ts:1429 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2054 · ui/html.ts:1461 · MATCH · D1996
+- W2055 · ui/html.ts:1462 · MATCH · D2065
+- W2056 · ui/html.ts:1464 · MATCH · label, heading, control name or code string — states no rule
+- W2057 · ui/html.ts:1465 · MATCH · label, heading, control name or code string — states no rule
+- W2058 · ui/html.ts:1480 · MATCH · D1061
+- W2059 · ui/html.ts:1480 · MATCH · label, heading, control name or code string — states no rule
+- W2060 · ui/html.ts:1481 · MATCH · label, heading, control name or code string — states no rule
+- W2061 · ui/html.ts:1481 · MATCH · label, heading, control name or code string — states no rule
+- W2062 · ui/html.ts:1482 · MATCH · D1046
+- W2063 · ui/html.ts:1482 · MATCH · label, heading, control name or code string — states no rule
+- W2064 · ui/html.ts:1483 · MATCH · label, heading, control name or code string — states no rule
+- W2065 · ui/html.ts:1535 · MATCH · label, heading, control name or code string — states no rule
+- W2066 · ui/html.ts:1535 · MATCH · label, heading, control name or code string — states no rule
+- W2067 · ui/html.ts:1550 · MATCH · label, heading, control name or code string — states no rule
+- W2068 · ui/html.ts:1596 · MATCH · D949
+- W2069 · ui/html.ts:1692 · MATCH · label, heading, control name or code string — states no rule
+- W2071 · ui/html.ts:1696 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2072 · ui/html.ts:1698 · MATCH · label, heading, control name or code string — states no rule
+- W2073 · ui/html.ts:1700 · MATCH · label, heading, control name or code string — states no rule
+- W2074 · ui/html.ts:1708 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2075 · ui/html.ts:1708 · MATCH · label, heading, control name or code string — states no rule
+- W2077 · ui/html.ts:1710 · MATCH · label, heading, control name or code string — states no rule
+- W2078 · ui/html.ts:1712 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2079 · ui/html.ts:1712 · MATCH · label, heading, control name or code string — states no rule
+- W2082 · ui/html.ts:1747 · MATCH · label, heading, control name or code string — states no rule
+- W2087 · ui/html.ts:1811 · MATCH · label, heading, control name or code string — states no rule
+- W2088 · ui/html.ts:1811 · MATCH · label, heading, control name or code string — states no rule
+- W2092 · ui/html.ts:1822 · MATCH · label, heading, control name or code string — states no rule
+- W2093 · ui/html.ts:1822 · MATCH · label, heading, control name or code string — states no rule
+- W2095 · ui/html.ts:1823 · MATCH · label, heading, control name or code string — states no rule
+- W2096 · ui/html.ts:1826 · MATCH · label, heading, control name or code string — states no rule
+- W2097 · ui/html.ts:1839 · MATCH · label, heading, control name or code string — states no rule
+- W2098 · ui/html.ts:1839 · MATCH · label, heading, control name or code string — states no rule
+- W2099 · ui/html.ts:1840 · MATCH · label, heading, control name or code string — states no rule
+- W2100 · ui/html.ts:1840 · MATCH · label, heading, control name or code string — states no rule
+- W2101 · ui/html.ts:1841 · MATCH · label, heading, control name or code string — states no rule
+- W2102 · ui/html.ts:1887 · MATCH · label, heading, control name or code string — states no rule
+- W2103 · ui/html.ts:1911 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2104 · ui/html.ts:1921 · MATCH · label, heading, control name or code string — states no rule
+- W2105 · ui/html.ts:1923 · MATCH
+- W2106 · ui/html.ts:1932 · MATCH · label, heading, control name or code string — states no rule
+- W2107 · ui/html.ts:1932 · MATCH · label, heading, control name or code string — states no rule
+- W2108 · ui/html.ts:1933 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2109 · ui/html.ts:1934 · MATCH · label, heading, control name or code string — states no rule
+- W2110 · ui/html.ts:1934 · MATCH · label, heading, control name or code string — states no rule
+- W2111 · ui/html.ts:1943 · MATCH · label, heading, control name or code string — states no rule
+- W2112 · ui/html.ts:1943 · MATCH · label, heading, control name or code string — states no rule
+- W2113 · ui/html.ts:1943 · MATCH · label, heading, control name or code string — states no rule
+- W2114 · ui/html.ts:1944 · MATCH · label, heading, control name or code string — states no rule
+- W2115 · ui/html.ts:2016 · MATCH · label, heading, control name or code string — states no rule
+- W2116 · ui/html.ts:2031 · MATCH · label, heading, control name or code string — states no rule
+- W2117 · ui/html.ts:2032 · MATCH · label, heading, control name or code string — states no rule
+- W2118 · ui/html.ts:2079 · MATCH · label, heading, control name or code string — states no rule
+- W2119 · ui/html.ts:2092 · MATCH · label, heading, control name or code string — states no rule
+- W2120 · ui/html.ts:2121 · MATCH · label, heading, control name or code string — states no rule
+- W2121 · ui/html.ts:2163 · MATCH · label, heading, control name or code string — states no rule
+- W2122 · ui/html.ts:2163 · MATCH · label, heading, control name or code string — states no rule
+- W2124 · ui/html.ts:2243 · MATCH · label, heading, control name or code string — states no rule
+- W2126 · ui/html.ts:2314 · MATCH · label, heading, control name or code string — states no rule
+- W2127 · ui/html.ts:2314 · MATCH · label, heading, control name or code string — states no rule
+- W2128 · ui/html.ts:2315 · MATCH · label, heading, control name or code string — states no rule
+- W2129 · ui/html.ts:2355 · MATCH · label, heading, control name or code string — states no rule
+- W2132 · ui/html.ts:2445 · MATCH · label, heading, control name or code string — states no rule
+- W2133 · ui/html.ts:2471 · MATCH · label, heading, control name or code string — states no rule
+- W2135 · ui/html.ts:2474 · MATCH · label, heading, control name or code string — states no rule
+- W2137 · ui/html.ts:2475 · MATCH · label, heading, control name or code string — states no rule
+- W2138 · ui/html.ts:2483 · MATCH · label, heading, control name or code string — states no rule
+- W2139 · ui/html.ts:2485 · MATCH · label, heading, control name or code string — states no rule
+- W2140 · ui/html.ts:2496 · MATCH · label, heading, control name or code string — states no rule
+- W2142 · ui/html.ts:2498 · MATCH · label, heading, control name or code string — states no rule
+- W2144 · ui/html.ts:2525 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2145 · ui/html.ts:2527 · MATCH · label, heading, control name or code string — states no rule
+- W2146 · ui/html.ts:2531 · MATCH · label, heading, control name or code string — states no rule
+- W2147 · ui/html.ts:2540 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2150 · ui/html.ts:2587 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2151 · ui/html.ts:2593 · MATCH · label, heading, control name or code string — states no rule
+- W2152 · ui/html.ts:2595 · MATCH · label, heading, control name or code string — states no rule
+- W2153 · ui/html.ts:2600 · MATCH · label, heading, control name or code string — states no rule
+- W2154 · ui/html.ts:2600 · MATCH · see F3
+- W2155 · ui/html.ts:2602 · MATCH · label, heading, control name or code string — states no rule
+- W2156 · ui/html.ts:2603 · MATCH
+- W2157 · ui/html.ts:2615 · MISMATCH · F10 (as W1676)
+- W2404 · ui/insights-html.ts:20 · MATCH · label, heading, control name or code string — states no rule
+- W2412 · ui/insights-html.ts:45 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2414 · ui/insights-html.ts:50 · MATCH · label, heading, control name or code string — states no rule
+- W2416 · ui/insights-html.ts:53 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2419 · ui/insights-html.ts:58 · MATCH · label, heading, control name or code string — states no rule
+- W2421 · ui/interactions.ts:87 · MATCH · label, heading, control name or code string — states no rule
+- W2422 · ui/interactions.ts:91 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2423 · ui/interactions.ts:222 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2424 · ui/interactions.ts:223 · MATCH · label, heading, control name or code string — states no rule
+- W2425 · ui/interactions.ts:225 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2426 · ui/interactions.ts:228 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2427 · ui/interactions.ts:229 · MATCH · label, heading, control name or code string — states no rule
+- W2428 · ui/interactions.ts:375 · MATCH · label, heading, control name or code string — states no rule
+- W2429 · ui/interactions.ts:380 · MATCH · label, heading, control name or code string — states no rule
+- W2430 · ui/interactions.ts:381 · MATCH · label, heading, control name or code string — states no rule
+- W2431 · ui/interactions.ts:382 · MATCH · label, heading, control name or code string — states no rule
+- W2432 · ui/interactions.ts:383 · MATCH · label, heading, control name or code string — states no rule
+- W2433 · ui/interactions.ts:385 · MATCH · label, heading, control name or code string — states no rule
+- W2434 · ui/interactions.ts:385 · MATCH · label, heading, control name or code string — states no rule
+- W2435 · ui/interactions.ts:386 · MATCH · label, heading, control name or code string — states no rule
+- W2437 · ui/interactions.ts:467 · MATCH · label, heading, control name or code string — states no rule
+- W2438 · ui/interactions.ts:591 · MATCH · label, heading, control name or code string — states no rule
+- W2439 · ui/interactions.ts:1045 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2441 · ui/interactions.ts:1068 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2442 · ui/interactions.ts:1246 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2444 · ui/interactions.ts:1262 · MATCH · label, heading, control name or code string — states no rule
+- W2445 · ui/interactions.ts:1281 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2446 · ui/interactions.ts:1341 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2447 · ui/interactions.ts:1345 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2448 · ui/interactions.ts:1352 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2449 · ui/interactions.ts:1352 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2450 · ui/interactions.ts:1386 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2451 · ui/interactions.ts:1553 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2453 · ui/interactions.ts:1564 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2455 · ui/interactions.ts:1576 · MATCH · label, heading, control name or code string — states no rule
+- W2457 · ui/interactions.ts:1579 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2459 · ui/interactions.ts:1662 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2461 · ui/interactions.ts:1701 · MATCH · label, heading, control name or code string — states no rule
+- W2462 · ui/interactions.ts:1702 · MATCH · label, heading, control name or code string — states no rule
+- W2463 · ui/interactions.ts:1707 · MATCH · label, heading, control name or code string — states no rule
+- W2464 · ui/interactions.ts:1707 · MATCH · label, heading, control name or code string — states no rule
+- W2465 · ui/interactions.ts:1841 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2466 · ui/interactions.ts:1845 · MATCH · label, heading, control name or code string — states no rule
+- W2467 · ui/interactions.ts:1849 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2468 · ui/interactions.ts:1851 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2469 · ui/interactions.ts:1858 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2470 · ui/interactions.ts:1873 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2471 · ui/interactions.ts:1873 · MISMATCH · F10
+- W2472 · ui/interactions.ts:1888 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2474 · ui/interactions.ts:1904 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2475 · ui/interactions.ts:1905 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2476 · ui/interactions.ts:1905 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2477 · ui/interactions.ts:2060 · MATCH · label, heading, control name or code string — states no rule
+- W2479 · ui/interactions.ts:2061 · MATCH · label, heading, control name or code string — states no rule
+- W2480 · ui/logic-html.ts:39 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2481 · ui/logic-html.ts:41 · MATCH · label, heading, control name or code string — states no rule
+- W2482 · ui/logic-html.ts:42 · MATCH · label, heading, control name or code string — states no rule
+- W2492 · ui/logic-html.ts:65 · MATCH · label, heading, control name or code string — states no rule
+- W2494 · ui/logic-html.ts:66 · MATCH · D1996
+- W2498 · ui/logic-html.ts:74 · MATCH · label, heading, control name or code string — states no rule
+- W2502 · ui/logic-html.ts:105 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2503 · ui/logic-html.ts:108 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2504 · ui/logic-html.ts:109 · MATCH · D778 (a Personal input is not work), D804
+- W2505 · ui/logic-html.ts:110 · MATCH · crew rest for a flying member (D932/D933)
+- W2506 · ui/logic-html.ts:111 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2507 · ui/logic-html.ts:112 · MATCH · label, heading, control name or code string — states no rule
+- W2509 · ui/logic-html.ts:114 · MATCH · D1045, D2065
+- W2510 · ui/logic-html.ts:118 · MATCH · label, heading, control name or code string — states no rule
+- W2511 · ui/logic-html.ts:120 · MATCH · D1993, D1998 (standing by is not a task, D1120) — rule text
+- W2514 · ui/logic-html.ts:130 · MATCH · label, heading, control name or code string — states no rule
+- W2518 · ui/logic-html.ts:138 · MATCH · D509, D502
+- W2519 · ui/logic-html.ts:142 · MATCH · label, heading, control name or code string — states no rule
+- W2525 · ui/logic-html.ts:158 · MATCH · label, heading, control name or code string — states no rule
+- W2527 · ui/logic-html.ts:165 · MATCH · label, heading, control name or code string — states no rule
+- W2528 · ui/logic-html.ts:166 · MATCH · AAR instructor flag (D185 live)
+- W2529 · ui/logic-html.ts:168 · MATCH · label, heading, control name or code string — states no rule
+- W2530 · ui/logic-html.ts:168 · MATCH · quals pairing (slice 3 for Quals)
+- W2533 · ui/logic-html.ts:179 · MATCH · D2055, D2072
+- W2534 · ui/logic-html.ts:180 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2535 · ui/logic-html.ts:181 · MATCH · label, heading, control name or code string — states no rule
+- W2538 · ui/logic-html.ts:184 · MATCH · D178, D1357 (taken off closes nothing)
+- W2539 · ui/logic-html.ts:188 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2541 · ui/logic-html.ts:190 · MATCH · canSpare, D2065, D605
+- W2542 · ui/logic-html.ts:195 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2543 · ui/logic-html.ts:195 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2544 · ui/logic-html.ts:197 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2545 · ui/logic-html.ts:198 · MATCH · label, heading, control name or code string — states no rule
+- W2547 · ui/logic-html.ts:204 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2549 · ui/logic-html.ts:206 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2550 · ui/logic-html.ts:207 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2551 · ui/logic-html.ts:208 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2552 · ui/logic-html.ts:210 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2553 · ui/logic-html.ts:211 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2554 · ui/logic-html.ts:212 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2555 · ui/logic-html.ts:213 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2556 · ui/logic-html.ts:214 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2557 · ui/logic-html.ts:215 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2559 · ui/logic-html.ts:218 · MATCH · D751 (long day grey), D2074
+- W2560 · ui/LogicPage.tsx:36 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2561 · ui/LogicPage.tsx:37 · MATCH · label, heading, control name or code string — states no rule
+- W2565 · ui/LogicPage.tsx:98 · MATCH · label, heading, control name or code string — states no rule
+- W2574 · ui/LogicPage.tsx:354 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2580 · ui/LogicPage.tsx:441 · MATCH · label, heading, control name or code string — states no rule
+- W2585 · ui/LogicPage.tsx:458 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2631 · ui/mission-role-offer.ts:144 · MATCH · label, heading, control name or code string — states no rule
+- W2632 · ui/mission-role-offer.ts:144 · MATCH · label, heading, control name or code string — states no rule
+- W2633 · ui/mission-role-offer.ts:144 · MATCH · label, heading, control name or code string — states no rule
+- W2634 · ui/mission-role-offer.ts:144 · MATCH · label, heading, control name or code string — states no rule
+- W2635 · ui/Modals.tsx:62 · MATCH · label, heading, control name or code string — states no rule
+- W2636 · ui/Modals.tsx:163 · MATCH · label, heading, control name or code string — states no rule
+- W2637 · ui/Modals.tsx:164 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2638 · ui/Modals.tsx:170 · MATCH · label, heading, control name or code string — states no rule
+- W2639 · ui/Modals.tsx:170 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2640 · ui/Modals.tsx:207 · MATCH · label, heading, control name or code string — states no rule
+- W2641 · ui/Modals.tsx:208 · MATCH · label, heading, control name or code string — states no rule
+- W2644 · ui/MoveBand.tsx:21 · MATCH · label, heading, control name or code string — states no rule
+- W2645 · ui/navfold.ts:11 · MATCH · label, heading, control name or code string — states no rule
+- W2646 · ui/navfold.ts:30 · MATCH · label, heading, control name or code string — states no rule
+- W2732 · ui/palette-html.ts:95 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2733 · ui/palette-html.ts:98 · MATCH · label, heading, control name or code string — states no rule
+- W2734 · ui/palette-html.ts:124 · MATCH · label, heading, control name or code string — states no rule
+- W2735 · ui/palette-html.ts:125 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2736 · ui/palette-html.ts:200 · MATCH · label, heading, control name or code string — states no rule
+- W2737 · ui/palette-html.ts:202 · MATCH · label, heading, control name or code string — states no rule
+- W2738 · ui/palette-html.ts:248 · MATCH · label, heading, control name or code string — states no rule
+- W2739 · ui/palette-html.ts:253 · MATCH · D33 (placeholder silent)
+- W2740 · ui/palette-html.ts:300 · MATCH · label, heading, control name or code string — states no rule
+- W2741 · ui/pan.ts:680 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2742 · ui/pan.ts:686 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2743 · ui/pan.ts:754 · MATCH · label, heading, control name or code string — states no rule
+- W2744 · ui/pan.ts:878 · MATCH · label, heading, control name or code string — states no rule
+- W2745 · ui/peek.ts:67 · MATCH · label, heading, control name or code string — states no rule
+- W2746 · ui/peek.ts:95 · MATCH · label, heading, control name or code string — states no rule
+- W2747 · ui/peek.ts:123 · MATCH · label, heading, control name or code string — states no rule
+- W2748 · ui/peek.ts:147 · MATCH · label, heading, control name or code string — states no rule
+- W2749 · ui/peek.ts:159 · MATCH · label, heading, control name or code string — states no rule
+- W2750 · ui/peek.ts:159 · MATCH · label, heading, control name or code string — states no rule
+- W2751 · ui/peek.ts:159 · MATCH · label, heading, control name or code string — states no rule
+- W2752 · ui/peek.ts:160 · MATCH · label, heading, control name or code string — states no rule
+- W2753 · ui/peek.ts:170 · MATCH · label, heading, control name or code string — states no rule
+- W2754 · ui/peek.ts:173 · MATCH · label, heading, control name or code string — states no rule
+- W2755 · ui/peek.ts:173 · MATCH · label, heading, control name or code string — states no rule
+- W2756 · ui/peek.ts:173 · MATCH · label, heading, control name or code string — states no rule
+- W2757 · ui/peek.ts:173 · MATCH · label, heading, control name or code string — states no rule
+- W2758 · ui/peek.ts:173 · MATCH · label, heading, control name or code string — states no rule
+- W2759 · ui/peek.ts:189 · MATCH · label, heading, control name or code string — states no rule
+- W2760 · ui/peek.ts:203 · MATCH · label, heading, control name or code string — states no rule
+- W2761 · ui/peek.ts:247 · MATCH · label, heading, control name or code string — states no rule
+- W2762 · ui/peek.ts:274 · MATCH · label, heading, control name or code string — states no rule
+- W2763 · ui/peek.ts:279 · MATCH
+- W2783 · ui/printpdf.ts:44 · MATCH · label, heading, control name or code string — states no rule
+- W2784 · ui/printpdf.ts:68 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2785 · ui/printpdf.ts:99 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2904 · ui/SchedBoard.tsx:101 · MATCH · label, heading, control name or code string — states no rule
+- W2905 · ui/SchedBoard.tsx:464 · MATCH · label, heading, control name or code string — states no rule
+- W2906 · ui/SchedBoard.tsx:482 · MATCH · label, heading, control name or code string — states no rule
+- W2907 · ui/SchedBoard.tsx:482 · MATCH · label, heading, control name or code string — states no rule
+- W2908 · ui/SchedBoard.tsx:485 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2909 · ui/SchedBoard.tsx:486 · MATCH · label, heading, control name or code string — states no rule
+- W2910 · ui/SchedBoard.tsx:486 · MATCH · label, heading, control name or code string — states no rule
+- W2911 · ui/SchedBoard.tsx:489 · MATCH · label, heading, control name or code string — states no rule
+- W2912 · ui/SchedBoard.tsx:489 · MATCH · label, heading, control name or code string — states no rule
+- W2913 · ui/SchedBoard.tsx:489 · MATCH · label, heading, control name or code string — states no rule
+- W2914 · ui/SchedBoard.tsx:490 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2915 · ui/SchedBoard.tsx:490 · MATCH · label, heading, control name or code string — states no rule
+- W2916 · ui/SchedBoard.tsx:520 · MATCH · label, heading, control name or code string — states no rule
+- W2917 · ui/SchedBoard.tsx:527 · MATCH · label, heading, control name or code string — states no rule
+- W2918 · ui/SchedBoard.tsx:537 · MATCH · label, heading, control name or code string — states no rule
+- W2919 · ui/SchedBoard.tsx:540 · MATCH · label, heading, control name or code string — states no rule
+- W2920 · ui/SchedBoard.tsx:553 · MATCH · label, heading, control name or code string — states no rule
+- W2921 · ui/SchedBoard.tsx:554 · MATCH · label, heading, control name or code string — states no rule
+- W2922 · ui/SchedBoard.tsx:560 · MATCH · label, heading, control name or code string — states no rule
+- W2923 · ui/SchedBoard.tsx:582 · MATCH · label, heading, control name or code string — states no rule
+- W2924 · ui/SchedBoard.tsx:614 · MATCH · label, heading, control name or code string — states no rule
+- W2925 · ui/SchedBoard.tsx:614 · MATCH · label, heading, control name or code string — states no rule
+- W2926 · ui/SchedBoard.tsx:620 · MATCH · label, heading, control name or code string — states no rule
+- W2927 · ui/SchedBoard.tsx:620 · MATCH · label, heading, control name or code string — states no rule
+- W2928 · ui/SchedBoard.tsx:643 · MATCH · label, heading, control name or code string — states no rule
+- W2929 · ui/SchedBoard.tsx:646 · MATCH · label, heading, control name or code string — states no rule
+- W2930 · ui/SchedBoard.tsx:652 · MATCH · label, heading, control name or code string — states no rule
+- W2931 · ui/SchedBoard.tsx:652 · MATCH · label, heading, control name or code string — states no rule
+- W2932 · ui/SchedBoard.tsx:654 · MATCH · label, heading, control name or code string — states no rule
+- W2933 · ui/SchedBoard.tsx:675 · MATCH · label, heading, control name or code string — states no rule
+- W2934 · ui/SchedBoard.tsx:679 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2935 · ui/SchedBoard.tsx:691 · MATCH · label, heading, control name or code string — states no rule
+- W2936 · ui/SchedBoard.tsx:692 · MATCH · label, heading, control name or code string — states no rule
+- W2937 · ui/SchedBoard.tsx:695 · MATCH · label, heading, control name or code string — states no rule
+- W2938 · ui/SchedBoard.tsx:695 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2939 · ui/SchedBoard.tsx:696 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2940 · ui/SchedBoard.tsx:696 · MATCH · label, heading, control name or code string — states no rule
+- W2941 · ui/SchedBoard.tsx:698 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2942 · ui/SchedBoard.tsx:714 · MATCH · label, heading, control name or code string — states no rule
+- W2943 · ui/SchedBoard.tsx:726 · MATCH · label, heading, control name or code string — states no rule
+- W2944 · ui/SchedBoard.tsx:738 · MATCH · label, heading, control name or code string — states no rule
+- W2945 · ui/SchedBoard.tsx:744 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2946 · ui/SchedBoard.tsx:759 · MATCH · label, heading, control name or code string — states no rule
+- W2947 · ui/SchedBoard.tsx:759 · MATCH · label, heading, control name or code string — states no rule
+- W2948 · ui/SchedBoard.tsx:761 · MATCH · label, heading, control name or code string — states no rule
+- W2949 · ui/SchedBoard.tsx:785 · MATCH · label, heading, control name or code string — states no rule
+- W2950 · ui/SchedBoard.tsx:786 · MATCH · label, heading, control name or code string — states no rule
+- W2951 · ui/SchedBoard.tsx:795 · MATCH · label, heading, control name or code string — states no rule
+- W2952 · ui/SchedBoard.tsx:806 · MATCH · label, heading, control name or code string — states no rule
+- W2953 · ui/SchedBoard.tsx:807 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2954 · ui/SchedBoard.tsx:828 · MATCH · label, heading, control name or code string — states no rule
+- W2955 · ui/SchedBoard.tsx:844 · MATCH · label, heading, control name or code string — states no rule
+- W2956 · ui/SchedBoard.tsx:845 · MATCH · label, heading, control name or code string — states no rule
+- W2957 · ui/SchedBoard.tsx:849 · MATCH · label, heading, control name or code string — states no rule
+- W2958 · ui/SchedBoard.tsx:851 · MATCH · label, heading, control name or code string — states no rule
+- W2959 · ui/SchedBoard.tsx:851 · MATCH · label, heading, control name or code string — states no rule
+- W2960 · ui/SchedBoard.tsx:907 · MATCH · label, heading, control name or code string — states no rule
+- W2961 · ui/SchedBoard.tsx:909 · MATCH · label, heading, control name or code string — states no rule
+- W2962 · ui/SchedBoard.tsx:910 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2963 · ui/SchedBoard.tsx:912 · MATCH · label, heading, control name or code string — states no rule
+- W2964 · ui/SchedBoard.tsx:912 · MATCH · label, heading, control name or code string — states no rule
+- W2965 · ui/SchedBoard.tsx:916 · MATCH · label, heading, control name or code string — states no rule
+- W2966 · ui/SchedBoard.tsx:916 · MATCH · label, heading, control name or code string — states no rule
+- W2967 · ui/SchedBoard.tsx:919 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2968 · ui/SchedBoard.tsx:933 · MATCH · label, heading, control name or code string — states no rule
+- W2969 · ui/SchedBoard.tsx:934 · MATCH · label, heading, control name or code string — states no rule
+- W2970 · ui/SchedBoard.tsx:935 · MATCH · label, heading, control name or code string — states no rule
+- W2971 · ui/SchedBoard.tsx:938 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2972 · ui/SchedBoard.tsx:941 · MATCH · label, heading, control name or code string — states no rule
+- W2973 · ui/SchedBoard.tsx:941 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2974 · ui/SchedBoard.tsx:943 · MATCH · label, heading, control name or code string — states no rule
+- W2975 · ui/SchedBoard.tsx:951 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2976 · ui/SchedBoard.tsx:992 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W2977 · ui/ScheduleInsightsMenu.tsx:20 · MATCH · label, heading, control name or code string — states no rule
+- W2978 · ui/ScheduleInsightsMenu.tsx:20 · MATCH · label, heading, control name or code string — states no rule
+- W2979 · ui/ScheduleInsightsMenu.tsx:26 · MATCH · label, heading, control name or code string — states no rule
+- W2980 · ui/ScheduleInsightsMenu.tsx:53 · MATCH · label, heading, control name or code string — states no rule
+- W2981 · ui/ScheduleInsightsMenu.tsx:70 · MATCH · label, heading, control name or code string — states no rule
+- W2982 · ui/ScheduleInsightsMenu.tsx:74 · MATCH · label, heading, control name or code string — states no rule
+- W2983 · ui/ScheduleInsightsMenu.tsx:76 · MATCH · label, heading, control name or code string — states no rule
+- W2984 · ui/SecDefaultSnackbar.tsx:53 · MATCH · label, heading, control name or code string — states no rule
+- W2985 · ui/SecDefaultSnackbar.tsx:58 · MATCH · label, heading, control name or code string — states no rule
+- W2986 · ui/SecDefaultSnackbar.tsx:59 · MATCH · label, heading, control name or code string — states no rule
+- W2987 · ui/SecDefaultSnackbar.tsx:60 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W3033 · ui/topbits.tsx:108 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W3034 · ui/topbits.tsx:132 · MATCH · label, heading, control name or code string — states no rule
+- W3035 · ui/topbits.tsx:156 · MATCH · label, heading, control name or code string — states no rule
+- W3036 · ui/topbits.tsx:158 · MATCH · label, heading, control name or code string — states no rule
+- W3111 · ui/WaveTplModal.tsx:26 · MATCH · label, heading, control name or code string — states no rule
+- W3112 · ui/WaveTplModal.tsx:106 · MATCH · label, heading, control name or code string — states no rule
+- W3113 · ui/WaveTplModal.tsx:106 · MATCH · label, heading, control name or code string — states no rule
+- W3114 · ui/WaveTplModal.tsx:111 · MATCH · label, heading, control name or code string — states no rule
+- W3115 · ui/WaveTplModal.tsx:112 · MATCH · label, heading, control name or code string — states no rule
+- W3116 · ui/WaveTplModal.tsx:112 · MATCH · label, heading, control name or code string — states no rule
+- W3117 · ui/WaveTplModal.tsx:112 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W3118 · ui/WaveTplModal.tsx:118 · MATCH · label, heading, control name or code string — states no rule
+- W3119 · ui/WaveTplModal.tsx:128 · MATCH · label, heading, control name or code string — states no rule
+- W3120 · ui/WaveTplModal.tsx:132 · MATCH · label, heading, control name or code string — states no rule
+- W3121 · ui/WaveTplModal.tsx:135 · MATCH · label, heading, control name or code string — states no rule
+- W3122 · ui/WaveTplModal.tsx:140 · MATCH · read; a rule-stating string with no clash found (its other slice, if tagged, owns its own rule)
+- W3123 · ui/WaveTplModal.tsx:141 · MATCH · label, heading, control name or code string — states no rule
+- W3124 · ui/WaveTplModal.tsx:141 · MATCH · label, heading, control name or code string — states no rule
+- W3125 · ui/WaveTplModal.tsx:142 · MATCH · label, heading, control name or code string — states no rule
+- W3126 · ui/WaveTplModal.tsx:148 · MATCH · label, heading, control name or code string — states no rule
+- W3127 · ui/WaveTplModal.tsx:153 · MATCH · label, heading, control name or code string — states no rule
+- W3128 · ui/WaveTplModal.tsx:165 · MATCH · label, heading, control name or code string — states no rule
+- W3129 · ui/WaveTplModal.tsx:174 · MATCH · label, heading, control name or code string — states no rule
+- W3130 · ui/WaveTplModal.tsx:175 · MATCH · label, heading, control name or code string — states no rule
+- W3131 · ui/WaveTplModal.tsx:182 · MATCH · label, heading, control name or code string — states no rule
+- W3132 · ui/WaveTplModal.tsx:183 · MATCH · label, heading, control name or code string — states no rule
+- W3133 · ui/WaveTplModal.tsx:184 · MATCH · label, heading, control name or code string — states no rule
+- W3134 · ui/WaveTplModal.tsx:197 · MATCH · label, heading, control name or code string — states no rule
+- W3135 · ui/WaveTplModal.tsx:197 · MATCH · label, heading, control name or code string — states no rule
+- W3136 · ui/WaveTplModal.tsx:214 · MATCH · label, heading, control name or code string — states no rule
+- W3137 · ui/WaveTplModal.tsx:216 · MATCH · label, heading, control name or code string — states no rule
+- W3138 · ui/WaveTplModal.tsx:219 · MATCH · label, heading, control name or code string — states no rule
+- W3139 · ui/WaveTplModal.tsx:221 · MATCH · label, heading, control name or code string — states no rule
+- W3140 · ui/WaveTplModal.tsx:225 · MATCH · label, heading, control name or code string — states no rule
+- W3141 · ui/WaveTplModal.tsx:227 · MATCH · label, heading, control name or code string — states no rule
+- W3142 · ui/WaveTplModal.tsx:231 · MATCH · label, heading, control name or code string — states no rule
+- W3143 · ui/WaveTplModal.tsx:237 · MATCH · label, heading, control name or code string — states no rule
+- W3144 · ui/WeekCal.tsx:80 · MATCH · label, heading, control name or code string — states no rule
+- W3145 · ui/WeekCal.tsx:109 · MATCH · label, heading, control name or code string — states no rule
+- W3146 · ui/WeekCal.tsx:113 · MATCH · label, heading, control name or code string — states no rule
+- W3147 · ui/WeekCal.tsx:116 · MATCH · label, heading, control name or code string — states no rule
+- W0010 · leavewar/ui/ApprovalsPage.tsx:474 · dropped → slice 6/7 (not the schedule's day)
+- W0038 · leavewar/ui/BalancesPage.tsx:689 · dropped → slice 6/7 (not the schedule's day)
+- W0042 · leavewar/ui/BalancesPage.tsx:749 · dropped → slice 6/7 (not the schedule's day)
+- W0061 · leavewar/ui/BidPicker.tsx:410 · dropped → slice 6/7 (not the schedule's day)
+- W0062 · leavewar/ui/BidPicker.tsx:411 · dropped → slice 6/7 (not the schedule's day)
+- W0063 · leavewar/ui/BidPicker.tsx:421 · dropped → slice 6/7 (not the schedule's day)
+- W0064 · leavewar/ui/BidPicker.tsx:536 · dropped → slice 6/7 (not the schedule's day)
+- W0066 · leavewar/ui/BidPicker.tsx:646 · dropped → slice 6/7 (not the schedule's day)
+- W0069 · leavewar/ui/BidPicker.tsx:730 · dropped → slice 6/7 (not the schedule's day)
+- W0070 · leavewar/ui/BidPicker.tsx:743 · dropped → slice 6/7 (not the schedule's day)
+- W0071 · leavewar/ui/BidPicker.tsx:744 · dropped → slice 6/7 (not the schedule's day)
+- W0072 · leavewar/ui/BidPicker.tsx:744 · dropped → slice 6/7 (not the schedule's day)
+- W0079 · leavewar/ui/BidPicker.tsx:861 · dropped → slice 6/7 (not the schedule's day)
+- W0096 · leavewar/ui/BidPicker.tsx:1138 · dropped → slice 6/7 (not the schedule's day)
+- W0098 · leavewar/ui/BidPicker.tsx:1152 · dropped → slice 6/7 (not the schedule's day)
+- W0100 · leavewar/ui/BidPicker.tsx:1163 · dropped → slice 6/7 (not the schedule's day)
+- W0101 · leavewar/ui/BidPicker.tsx:1164 · dropped → slice 6/7 (not the schedule's day)
+- W0102 · leavewar/ui/BidPicker.tsx:1171 · dropped → slice 6/7 (not the schedule's day)
+- W0104 · leavewar/ui/BidPicker.tsx:1187 · dropped → slice 6/7 (not the schedule's day)
+- W0122 · leavewar/ui/bubblewords.ts:43 · dropped → slice 6/7 (not the schedule's day)
+- W0143 · leavewar/ui/Chrome.tsx:472 · dropped → slice 6/7 (not the schedule's day)
+- W0144 · leavewar/ui/Chrome.tsx:473 · dropped → slice 6/7 (not the schedule's day)
+- W0150 · leavewar/ui/Chrome.tsx:512 · dropped → slice 6/7 (not the schedule's day)
+- W0151 · leavewar/ui/Chrome.tsx:515 · dropped → slice 6/7 (not the schedule's day)
+- W0159 · leavewar/ui/Chrome.tsx:574 · dropped → slice 6/7 (not the schedule's day)
+- W0162 · leavewar/ui/Chrome.tsx:577 · dropped → slice 6/7 (not the schedule's day)
+- W0163 · leavewar/ui/Chrome.tsx:580 · dropped → slice 6/7 (not the schedule's day)
+- W0169 · leavewar/ui/Chrome.tsx:586 · dropped → slice 6/7 (not the schedule's day)
+- W0170 · leavewar/ui/Chrome.tsx:587 · dropped → slice 6/7 (not the schedule's day)
+- W0173 · leavewar/ui/Chrome.tsx:592 · dropped → slice 6/7 (not the schedule's day)
+- W0179 · leavewar/ui/Chrome.tsx:600 · dropped → slice 6/7 (not the schedule's day)
+- W0180 · leavewar/ui/Chrome.tsx:605 · dropped → slice 6/7 (not the schedule's day)
+- W0182 · leavewar/ui/Chrome.tsx:606 · dropped → slice 6/7 (not the schedule's day)
+- W0183 · leavewar/ui/Chrome.tsx:607 · dropped → slice 6/7 (not the schedule's day)
+- W0184 · leavewar/ui/Chrome.tsx:608 · dropped → slice 6/7 (not the schedule's day)
+- W0185 · leavewar/ui/Chrome.tsx:609 · dropped → slice 6/7 (not the schedule's day)
+- W0190 · leavewar/ui/clashwhat.ts:14 · dropped → slice 6/7 (not the schedule's day)
+- W0194 · leavewar/ui/ClosedNoteSheet.tsx:48 · dropped → slice 6/7 (not the schedule's day)
+- W0203 · leavewar/ui/CounterForm.tsx:150 · dropped → slice 6/7 (not the schedule's day)
+- W0221 · leavewar/ui/CounterForm.tsx:441 · dropped → slice 6/7 (not the schedule's day)
+- W0242 · leavewar/ui/CreditForm.tsx:89 · dropped → slice 6/7 (not the schedule's day)
+- W0245 · leavewar/ui/CreditForm.tsx:118 · dropped → slice 6/7 (not the schedule's day)
+- W0246 · leavewar/ui/CreditForm.tsx:120 · dropped → slice 6/7 (not the schedule's day)
+- W0253 · leavewar/ui/DayList.tsx:171 · dropped → slice 6/7 (not the schedule's day)
+- W0254 · leavewar/ui/DayList.tsx:217 · dropped → slice 6/7 (not the schedule's day)
+- W0255 · leavewar/ui/DayList.tsx:218 · dropped → slice 6/7 (not the schedule's day)
+- W0256 · leavewar/ui/DayList.tsx:219 · dropped → slice 6/7 (not the schedule's day)
+- W0257 · leavewar/ui/DayList.tsx:250 · dropped → slice 6/7 (not the schedule's day)
+- W0258 · leavewar/ui/DayList.tsx:300 · dropped → slice 6/7 (not the schedule's day)
+- W0259 · leavewar/ui/DayList.tsx:304 · dropped → slice 6/7 (not the schedule's day)
+- W0260 · leavewar/ui/DayList.tsx:305 · dropped → slice 6/7 (not the schedule's day)
+- W0261 · leavewar/ui/DayList.tsx:317 · dropped → slice 6/7 (not the schedule's day)
+- W0262 · leavewar/ui/DayList.tsx:343 · dropped → slice 6/7 (not the schedule's day)
+- W0263 · leavewar/ui/DayList.tsx:347 · dropped → slice 6/7 (not the schedule's day)
+- W0264 · leavewar/ui/DayList.tsx:363 · dropped → slice 6/7 (not the schedule's day)
+- W0265 · leavewar/ui/DayList.tsx:365 · dropped → slice 6/7 (not the schedule's day)
+- W0266 · leavewar/ui/DayList.tsx:366 · dropped → slice 6/7 (not the schedule's day)
+- W0267 · leavewar/ui/DayList.tsx:397 · dropped → slice 6/7 (not the schedule's day)
+- W0268 · leavewar/ui/DayList.tsx:415 · dropped → slice 6/7 (not the schedule's day)
+- W0269 · leavewar/ui/DayList.tsx:417 · dropped → slice 6/7 (not the schedule's day)
+- W0270 · leavewar/ui/DayList.tsx:421 · dropped → slice 6/7 (not the schedule's day)
+- W0271 · leavewar/ui/DayList.tsx:427 · dropped → slice 6/7 (not the schedule's day)
+- W0272 · leavewar/ui/DayList.tsx:433 · dropped → slice 6/7 (not the schedule's day)
+- W0273 · leavewar/ui/DayList.tsx:435 · dropped → slice 6/7 (not the schedule's day)
+- W0274 · leavewar/ui/DayList.tsx:442 · dropped → slice 6/7 (not the schedule's day)
+- W0275 · leavewar/ui/DayList.tsx:446 · dropped → slice 6/7 (not the schedule's day)
+- W0276 · leavewar/ui/DayPanel.tsx:76 · dropped → slice 6/7 (not the schedule's day)
+- W0277 · leavewar/ui/DayPanel.tsx:77 · dropped → slice 6/7 (not the schedule's day)
+- W0278 · leavewar/ui/DayPanel.tsx:80 · dropped → slice 6/7 (not the schedule's day)
+- W0279 · leavewar/ui/DayPanel.tsx:81 · dropped → slice 6/7 (not the schedule's day)
+- W0281 · leavewar/ui/EventSheet.tsx:88 · dropped → slice 6/7 (not the schedule's day)
+- W0282 · leavewar/ui/EventSheet.tsx:89 · dropped → slice 6/7 (not the schedule's day)
+- W0291 · leavewar/ui/EventSheet.tsx:271 · dropped → slice 6/7 (not the schedule's day)
+- W0309 · leavewar/ui/EventSheet.tsx:547 · dropped → slice 6/7 (not the schedule's day)
+- W0323 · leavewar/ui/EventsSheet.tsx:249 · dropped → slice 6/7 (not the schedule's day)
+- W0329 · leavewar/ui/FlyEdit.tsx:222 · dropped → slice 6/7 (not the schedule's day)
+- W0330 · leavewar/ui/FlyEdit.tsx:225 · dropped → slice 6/7 (not the schedule's day)
+- W0332 · leavewar/ui/FlyEdit.tsx:252 · dropped → slice 6/7 (not the schedule's day)
+- W0333 · leavewar/ui/FlyEdit.tsx:253 · dropped → slice 6/7 (not the schedule's day)
+- W0337 · leavewar/ui/FlyEdit.tsx:283 · dropped → slice 6/7 (not the schedule's day)
+- W0339 · leavewar/ui/FlyEdit.tsx:283 · dropped → slice 6/7 (not the schedule's day)
+- W0343 · leavewar/ui/FlyRows.tsx:93 · dropped → slice 6/7 (not the schedule's day)
+- W0346 · leavewar/ui/FlyRows.tsx:396 · dropped → slice 6/7 (not the schedule's day)
+- W0351 · leavewar/ui/GradesSheet.tsx:26 · dropped → slice 6/7 (not the schedule's day)
+- W0359 · leavewar/ui/GradesSheet.tsx:223 · dropped → slice 6/7 (not the schedule's day)
+- W0365 · leavewar/ui/GradesSheet.tsx:266 · dropped → slice 6/7 (not the schedule's day)
+- W0370 · leavewar/ui/ManningSheet.tsx:30 · dropped → slice 6/7 (not the schedule's day)
+- W0371 · leavewar/ui/ManningSheet.tsx:31 · dropped → slice 6/7 (not the schedule's day)
+- W0372 · leavewar/ui/ManningSheet.tsx:32 · dropped → slice 6/7 (not the schedule's day)
+- W0380 · leavewar/ui/Matrix.tsx:98 · dropped → slice 6/7 (not the schedule's day)
+- W0381 · leavewar/ui/Matrix.tsx:100 · dropped → slice 6/7 (not the schedule's day)
+- W0385 · leavewar/ui/Matrix.tsx:761 · dropped → slice 6/7 (not the schedule's day)
+- W0388 · leavewar/ui/Matrix.tsx:817 · dropped → slice 6/7 (not the schedule's day)
+- W0412 · leavewar/ui/Matrix.tsx:4539 · dropped → slice 6/7 (not the schedule's day)
+- W0416 · leavewar/ui/Matrix.tsx:4560 · dropped → slice 6/7 (not the schedule's day)
+- W0419 · leavewar/ui/Matrix.tsx:4904 · dropped → slice 6/7 (not the schedule's day)
+- W0423 · leavewar/ui/MatrixRows.tsx:484 · dropped → slice 6/7 (not the schedule's day)
+- W0424 · leavewar/ui/MatrixRows.tsx:486 · dropped → slice 6/7 (not the schedule's day)
+- W0425 · leavewar/ui/MatrixRows.tsx:487 · dropped → slice 6/7 (not the schedule's day)
+- W0427 · leavewar/ui/OilAmount.tsx:23 · dropped → slice 6/7 (not the schedule's day)
+- W0431 · leavewar/ui/OilAmount.tsx:32 · dropped → slice 6/7 (not the schedule's day)
+- W0433 · leavewar/ui/oilamountwords.ts:28 · dropped → slice 6/7 (not the schedule's day)
+- W0440 · leavewar/ui/OilTracker.tsx:510 · dropped → slice 6/7 (not the schedule's day)
+- W0451 · leavewar/ui/OilTracker.tsx:601 · dropped → slice 6/7 (not the schedule's day)
+- W0469 · leavewar/ui/OilTracker.tsx:850 · dropped → slice 6/7 (not the schedule's day)
+- W0483 · leavewar/ui/OpenDatesSheet.tsx:182 · dropped → slice 6/7 (not the schedule's day)
+- W0484 · leavewar/ui/OpenDatesSheet.tsx:184 · dropped → slice 6/7 (not the schedule's day)
+- W0492 · leavewar/ui/OpenDatesSheet.tsx:257 · dropped → slice 6/7 (not the schedule's day)
+- W0493 · leavewar/ui/OpenDatesSheet.tsx:268 · dropped → slice 6/7 (not the schedule's day)
+- W0494 · leavewar/ui/OpenDatesSheet.tsx:269 · dropped → slice 6/7 (not the schedule's day)
+- W0498 · leavewar/ui/outcomewords.ts:19 · dropped → slice 6/7 (not the schedule's day)
+- W0499 · leavewar/ui/outcomewords.ts:20 · dropped → slice 6/7 (not the schedule's day)
+- W0516 · leavewar/ui/PersonWindow.tsx:273 · dropped → slice 6/7 (not the schedule's day)
+- W0532 · leavewar/ui/ReqPanel.tsx:114 · dropped → slice 6/7 (not the schedule's day)
+- W0536 · leavewar/ui/ReqPanel.tsx:143 · dropped → slice 6/7 (not the schedule's day)
+- W0539 · leavewar/ui/ReqPanel.tsx:147 · dropped → slice 6/7 (not the schedule's day)
+- W0541 · leavewar/ui/ReqPanel.tsx:159 · dropped → slice 6/7 (not the schedule's day)
+- W0552 · leavewar/ui/SelectSheet.tsx:187 · dropped → slice 6/7 (not the schedule's day)
+- W0559 · leavewar/ui/SelectSheet.tsx:417 · dropped → slice 6/7 (not the schedule's day)
+- W0567 · leavewar/ui/SelectSheet.tsx:488 · dropped → slice 6/7 (not the schedule's day)
+- W0583 · leavewar/ui/SettingsSheet.tsx:246 · dropped → slice 6/7 (not the schedule's day)
+- W0613 · leavewar/ui/SettingsSheet.tsx:458 · dropped → slice 6/7 (not the schedule's day)
+- W0622 · leavewar/ui/SheetActions.tsx:15 · dropped → slice 6/7 (not the schedule's day)
+- W0625 · leavewar/ui/WarSheet.tsx:21 · dropped → slice 6/7 (not the schedule's day)
+- W0629 · leavewar/ui/WarSheet.tsx:83 · dropped → slice 6/7 (not the schedule's day)
+- W0678 · state/changebatch.ts:56 · dropped → slice 2 (not the schedule's day)
+- W0679 · state/changebatch.ts:56 · dropped → slice 2 (not the schedule's day)
+- W0680 · state/changelines.ts:240 · dropped → slice 2 (not the schedule's day)
+- W0681 · state/changelines.ts:242 · dropped → slice 2 (not the schedule's day)
+- W0682 · state/changelines.ts:242 · dropped → slice 2 (not the schedule's day)
+- W0683 · state/changelines.ts:346 · dropped → slice 2 (not the schedule's day)
+- W0684 · state/changelines.ts:346 · dropped → slice 2 (not the schedule's day)
+- W0685 · state/changelines.ts:364 · dropped → slice 2 (not the schedule's day)
+- W0686 · state/changelines.ts:364 · dropped → slice 2 (not the schedule's day)
+- W0687 · state/changelines.ts:483 · dropped → slice 2 (not the schedule's day)
+- W0689 · state/cutoff.ts:53 · dropped → slice 5 (not the schedule's day)
+- W0690 · state/cutoff.ts:94 · dropped → slice 5 (not the schedule's day)
+- W0691 · state/cutoff.ts:97 · dropped → slice 5 (not the schedule's day)
+- W0692 · state/cutoff.ts:100 · dropped → slice 5 (not the schedule's day)
+- W0693 · state/cutoff.ts:101 · dropped → slice 5 (not the schedule's day)
+- W0695 · state/cutoff.ts:148 · dropped → slice 5 (not the schedule's day)
+- W0696 · state/demoseed.ts:122 · dropped → slice 10 (not the schedule's day)
+- W0697 · state/demoseed.ts:127 · dropped → slice 10 (not the schedule's day)
+- W0698 · state/demoseed.ts:129 · dropped → slice 10 (not the schedule's day)
+- W0699 · state/demoseed.ts:137 · dropped → slice 10 (not the schedule's day)
+- W0701 · state/docs.ts:53 · dropped → slice 5 (not the schedule's day)
+- W0702 · state/docs.ts:91 · dropped → slice 5 (not the schedule's day)
+- W0703 · state/docs.ts:92 · dropped → slice 5 (not the schedule's day)
+- W0704 · state/docs.ts:93 · dropped → slice 5 (not the schedule's day)
+- W0720 · state/history.ts:148 · dropped → slice 2 (not the schedule's day)
+- W0721 · state/history.ts:149 · dropped → slice 2 (not the schedule's day)
+- W0722 · state/holderbase.ts:39 · dropped → slice 10 (not the schedule's day)
+- W0723 · state/holderbase.ts:39 · dropped → slice 10 (not the schedule's day)
+- W0753 · state/notices.ts:1215 · dropped → slice 9 (not the schedule's day)
+- W0755 · state/people-settings-commit.ts:381 · dropped → slice 10 (not the schedule's day)
+- W0758 · state/people-settings-commit.ts:390 · dropped → slice 10 (not the schedule's day)
+- W0759 · state/perms.ts:80 · dropped → slice 3 (not the schedule's day)
+- W0771 · state/person-delete.ts:151 · dropped → slice 3 (not the schedule's day)
+- W0772 · state/person-delete.ts:165 · dropped → slice 3 (not the schedule's day)
+- W0773 · state/person-delete.ts:182 · dropped → slice 3 (not the schedule's day)
+- W0774 · state/person-delete.ts:183 · dropped → slice 3 (not the schedule's day)
+- W0775 · state/person-delete.ts:335 · dropped → slice 3 (not the schedule's day)
+- W0777 · state/quals-write.ts:53 · dropped → slice 3 (not the schedule's day)
+- W0780 · state/quals-write.ts:56 · dropped → slice 3 (not the schedule's day)
+- W0781 · state/quals-write.ts:61 · dropped → slice 3 (not the schedule's day)
+- W0782 · state/quals-write.ts:135 · dropped → slice 3 (not the schedule's day)
+- W0784 · state/reports.ts:37 · dropped → slice 10 (not the schedule's day)
+- W0785 · state/reports.ts:38 · dropped → slice 10 (not the schedule's day)
+- W0786 · state/reports.ts:39 · dropped → slice 10 (not the schedule's day)
+- W0787 · state/roster-add.ts:40 · dropped → slice 3 (not the schedule's day)
+- W0788 · state/roster-add.ts:59 · dropped → slice 3 (not the schedule's day)
+- W0789 · state/roster-add.ts:77 · dropped → slice 3 (not the schedule's day)
+- W0790 · state/roster-add.ts:107 · dropped → slice 3 (not the schedule's day)
+- W0791 · state/roster-add.ts:108 · dropped → slice 3 (not the schedule's day)
+- W0792 · state/roster-add.ts:139 · dropped → slice 3 (not the schedule's day)
+- W0793 · state/roster-add.ts:140 · dropped → slice 3 (not the schedule's day)
+- W0795 · state/roster-restore.ts:90 · dropped → slice 10 (not the schedule's day)
+- W0796 · state/roster-restore.ts:96 · dropped → slice 10 (not the schedule's day)
+- W0807 · state/units-model.ts:124 · dropped → slice 3 (not the schedule's day)
+- W0808 · state/units-model.ts:137 · dropped → slice 3 (not the schedule's day)
+- W0809 · state/units-model.ts:137 · dropped → slice 3 (not the schedule's day)
+- W0810 · state/units-model.ts:262 · dropped → slice 3 (not the schedule's day)
+- W0811 · state/units-model.ts:262 · dropped → slice 3 (not the schedule's day)
+- W0813 · state/units.ts:183 · dropped → slice 3 (not the schedule's day)
+- W0814 · state/units.ts:201 · dropped → slice 3 (not the schedule's day)
+- W0820 · state/units.ts:228 · dropped → slice 3 (not the schedule's day)
+- W0824 · state/units.ts:264 · dropped → slice 3 (not the schedule's day)
+- W0825 · state/units.ts:265 · dropped → slice 3 (not the schedule's day)
+- W0826 · state/units.ts:266 · dropped → slice 3 (not the schedule's day)
+- W0828 · state/units.ts:284 · dropped → slice 3 (not the schedule's day)
+- W0829 · state/units.ts:310 · dropped → slice 3 (not the schedule's day)
+- W0856 · tracker/app/core.js:227 · dropped → slice 8 (not the schedule's day)
+- W0878 · tracker/app/core.js:2147 · dropped → slice 8 (not the schedule's day)
+- W0919 · tracker/app/core.js:4642 · dropped → slice 8 (not the schedule's day)
+- W0920 · tracker/app/core.js:4643 · dropped → slice 8 (not the schedule's day)
+- W0929 · tracker/app/core.js:5412 · dropped → slice 8 (not the schedule's day)
+- W1013 · tracker/app/fileFormat.js:79 · dropped → slice 8 (not the schedule's day)
+- W1014 · tracker/app/fileFormat.js:81 · dropped → slice 8 (not the schedule's day)
+- W1039 · tracker/app/fileFormat.js:277 · dropped → slice 8 (not the schedule's day)
+- W1041 · tracker/app/fileFormat.js:290 · dropped → slice 8 (not the schedule's day)
+- W1084 · tracker/components/ArrangeTools.jsx:110 · dropped → slice 8 (not the schedule's day)
+- W1092 · tracker/components/FlexSettings.jsx:108 · dropped → slice 8 (not the schedule's day)
+- W1104 · tracker/components/Header.jsx:246 · dropped → slice 8 (not the schedule's day)
+- W1128 · tracker/components/Header.jsx:297 · dropped → slice 8 (not the schedule's day)
+- W1129 · tracker/components/Header.jsx:307 · dropped → slice 8 (not the schedule's day)
+- W1140 · tracker/components/Legend.jsx:22 · dropped → slice 8 (not the schedule's day)
+- W1143 · tracker/components/Legend.jsx:49 · dropped → slice 8 (not the schedule's day)
+- W1150 · tracker/components/Legend.jsx:123 · dropped → slice 8 (not the schedule's day)
+- W1166 · tracker/components/Modals.jsx:251 · dropped → slice 8 (not the schedule's day)
+- W1171 · tracker/components/Modals.jsx:254 · dropped → slice 8 (not the schedule's day)
+- W1207 · tracker/components/Pop.jsx:57 · dropped → slice 8 (not the schedule's day)
+- W1220 · tracker/components/ShowAllPanel.jsx:39 · dropped → slice 8 (not the schedule's day)
+- W1228 · tracker/components/ShowAllPanel.jsx:97 · dropped → slice 8 (not the schedule's day)
+- W1232 · tracker/components/ShowAllPanel.jsx:117 · dropped → slice 8 (not the schedule's day)
+- W1241 · tracker/components/SidePanel.jsx:59 · dropped → slice 8 (not the schedule's day)
+- W1242 · tracker/components/SidePanel.jsx:60 · dropped → slice 8 (not the schedule's day)
+- W1245 · tracker/components/SidePanel.jsx:73 · dropped → slice 8 (not the schedule's day)
+- W1251 · tracker/components/SidePanel.jsx:215 · dropped → slice 8 (not the schedule's day)
+- W1252 · tracker/components/SidePanel.jsx:234 · dropped → slice 8 (not the schedule's day)
+- W1254 · tracker/components/SidePanel.jsx:277 · dropped → slice 8 (not the schedule's day)
+- W1257 · tracker/components/SidePanel.jsx:301 · dropped → slice 8 (not the schedule's day)
+- W1266 · tracker/components/SidePanel.jsx:352 · dropped → slice 8 (not the schedule's day)
+- W1267 · tracker/components/SidePanel.jsx:355 · dropped → slice 8 (not the schedule's day)
+- W1268 · tracker/components/SidePanel.jsx:356 · dropped → slice 8 (not the schedule's day)
+- W1269 · tracker/components/SidePanel.jsx:363 · dropped → slice 8 (not the schedule's day)
+- W1324 · tracker/data/eventInfo.js:2 · dropped → slice 8 (not the schedule's day)
+- W1364 · tracker/data/eventInfo.js:2 · dropped → slice 8 (not the schedule's day)
+- W1365 · tracker/data/eventInfo.js:2 · dropped → slice 8 (not the schedule's day)
+- W1368 · tracker/data/eventInfo.js:2 · dropped → slice 8 (not the schedule's day)
+- W1373 · tracker/data/eventInfo.js:2 · dropped → slice 8 (not the schedule's day)
+- W1384 · tracker/data/eventInfo.js:2 · dropped → slice 8 (not the schedule's day)
+- W1387 · tracker/data/eventInfo.js:2 · dropped → slice 8 (not the schedule's day)
+- W1412 · tracker/data/eventInfo.js:2 · dropped → slice 8 (not the schedule's day)
+- W1431 · tracker/data/eventInfo.js:2 · dropped → slice 8 (not the schedule's day)
+- W1434 · tracker/data/eventInfo.js:2 · dropped → slice 8 (not the schedule's day)
+- W1442 · tracker/data/eventInfo.js:2 · dropped → slice 8 (not the schedule's day)
+- W1445 · tracker/data/eventInfo.js:2 · dropped → slice 8 (not the schedule's day)
+- W1467 · tracker/data/eventInfo.js:2 · dropped → slice 8 (not the schedule's day)
+- W1468 · tracker/data/eventInfo.js:2 · dropped → slice 8 (not the schedule's day)
+- W1477 · tracker/data/eventInfo.js:2 · dropped → slice 8 (not the schedule's day)
+- W1478 · tracker/data/eventInfo.js:2 · dropped → slice 8 (not the schedule's day)
+- W1496 · ui/AccessScreen.tsx:40 · dropped → slice 3 (not the schedule's day)
+- W1497 · ui/AccessScreen.tsx:91 · dropped → slice 3 (not the schedule's day)
+- W1498 · ui/AccessScreen.tsx:102 · dropped → slice 3 (not the schedule's day)
+- W1500 · ui/AccessScreen.tsx:106 · dropped → slice 3 (not the schedule's day)
+- W1501 · ui/AccessScreen.tsx:108 · dropped → slice 3 (not the schedule's day)
+- W1503 · ui/AccessScreen.tsx:142 · dropped → slice 3 (not the schedule's day)
+- W1504 · ui/AccessScreen.tsx:148 · dropped → slice 3 (not the schedule's day)
+- W1506 · ui/AccessScreen.tsx:173 · dropped → slice 3 (not the schedule's day)
+- W1508 · ui/AccessScreen.tsx:179 · dropped → slice 3 (not the schedule's day)
+- W1509 · ui/AccessScreen.tsx:182 · dropped → slice 3 (not the schedule's day)
+- W1510 · ui/AccessScreen.tsx:183 · dropped → slice 3 (not the schedule's day)
+- W1511 · ui/AccessScreen.tsx:185 · dropped → slice 3 (not the schedule's day)
+- W1512 · ui/AccessScreen.tsx:188 · dropped → slice 3 (not the schedule's day)
+- W1513 · ui/AccessScreen.tsx:193 · dropped → slice 3 (not the schedule's day)
+- W1515 · ui/AdminPage.tsx:45 · dropped → slice 10 (not the schedule's day)
+- W1524 · ui/AdminPage.tsx:123 · dropped → slice 10 (not the schedule's day)
+- W1528 · ui/AdminPage.tsx:185 · dropped → slice 10 (not the schedule's day)
+- W1530 · ui/AdminPage.tsx:187 · dropped → slice 10 (not the schedule's day)
+- W1531 · ui/AdminPage.tsx:194 · dropped → slice 10 (not the schedule's day)
+- W1532 · ui/AdminPage.tsx:195 · dropped → slice 10 (not the schedule's day)
+- W1533 · ui/AdminPage.tsx:197 · dropped → slice 10 (not the schedule's day)
+- W1534 · ui/AdminPage.tsx:247 · dropped → slice 10 (not the schedule's day)
+- W1539 · ui/AdminPage.tsx:294 · dropped → slice 10 (not the schedule's day)
+- W1540 · ui/AdminPage.tsx:295 · dropped → slice 10 (not the schedule's day)
+- W1541 · ui/AdminPage.tsx:296 · dropped → slice 10 (not the schedule's day)
+- W1542 · ui/AdminPage.tsx:297 · dropped → slice 10 (not the schedule's day)
+- W1543 · ui/AdminPage.tsx:298 · dropped → slice 10 (not the schedule's day)
+- W1544 · ui/AdminPage.tsx:299 · dropped → slice 10 (not the schedule's day)
+- W1548 · ui/AdminPage.tsx:313 · dropped → slice 10 (not the schedule's day)
+- W1552 · ui/AdminPage.tsx:339 · dropped → slice 10 (not the schedule's day)
+- W1554 · ui/ALPanel.tsx:26 · dropped → slice 2 (not the schedule's day)
+- W1555 · ui/ALPanel.tsx:26 · dropped → slice 2 (not the schedule's day)
+- W1558 · ui/ALPanel.tsx:70 · dropped → slice 2 (not the schedule's day)
+- W1559 · ui/ALPanel.tsx:74 · dropped → slice 2 (not the schedule's day)
+- W1737 · ui/calpick.ts:62 · dropped → slice 5 (not the schedule's day)
+- W1738 · ui/changesmodel.ts:404 · dropped → slice 2 (not the schedule's day)
+- W1739 · ui/ChangesWindow.tsx:81 · dropped → slice 2 (not the schedule's day)
+- W1740 · ui/ChangesWindow.tsx:89 · dropped → slice 2 (not the schedule's day)
+- W1741 · ui/ChangesWindow.tsx:90 · dropped → slice 2 (not the schedule's day)
+- W1742 · ui/ChangesWindow.tsx:188 · dropped → slice 2 (not the schedule's day)
+- W1743 · ui/ChangesWindow.tsx:190 · dropped → slice 2 (not the schedule's day)
+- W1744 · ui/ChangesWindow.tsx:192 · dropped → slice 2 (not the schedule's day)
+- W1745 · ui/ChangesWindow.tsx:194 · dropped → slice 2 (not the schedule's day)
+- W1746 · ui/ChangesWindow.tsx:194 · dropped → slice 2 (not the schedule's day)
+- W1749 · ui/ChangesWindow.tsx:237 · dropped → slice 2 (not the schedule's day)
+- W1750 · ui/ChangesWindow.tsx:237 · dropped → slice 2 (not the schedule's day)
+- W1751 · ui/ChangesWindow.tsx:237 · dropped → slice 2 (not the schedule's day)
+- W1752 · ui/ChangesWindow.tsx:242 · dropped → slice 2 (not the schedule's day)
+- W1753 · ui/ChangesWindow.tsx:258 · dropped → slice 2 (not the schedule's day)
+- W1754 · ui/ChangesWindow.tsx:259 · dropped → slice 2 (not the schedule's day)
+- W1755 · ui/ChangesWindow.tsx:268 · dropped → slice 2 (not the schedule's day)
+- W1756 · ui/ChangesWindow.tsx:269 · dropped → slice 2 (not the schedule's day)
+- W1757 · ui/ChangesWindow.tsx:270 · dropped → slice 2 (not the schedule's day)
+- W1758 · ui/ChangesWindow.tsx:285 · dropped → slice 2 (not the schedule's day)
+- W1759 · ui/ChangesWindow.tsx:285 · dropped → slice 2 (not the schedule's day)
+- W1760 · ui/ChangesWindow.tsx:286 · dropped → slice 2 (not the schedule's day)
+- W1761 · ui/ChangesWindow.tsx:286 · dropped → slice 2 (not the schedule's day)
+- W1762 · ui/ChangesWindow.tsx:296 · dropped → slice 2 (not the schedule's day)
+- W1763 · ui/ChangesWindow.tsx:327 · dropped → slice 2 (not the schedule's day)
+- W1764 · ui/ChangesWindow.tsx:329 · dropped → slice 2 (not the schedule's day)
+- W1765 · ui/CutFields.tsx:34 · dropped → slice 5 (not the schedule's day)
+- W1766 · ui/CutFields.tsx:35 · dropped → slice 5 (not the schedule's day)
+- W1767 · ui/CutFields.tsx:36 · dropped → slice 5 (not the schedule's day)
+- W1768 · ui/CutFields.tsx:40 · dropped → slice 5 (not the schedule's day)
+- W1769 · ui/CutFields.tsx:46 · dropped → slice 5 (not the schedule's day)
+- W1770 · ui/CutFields.tsx:49 · dropped → slice 5 (not the schedule's day)
+- W1771 · ui/DateBox.tsx:116 · dropped → slice 5 (not the schedule's day)
+- W1772 · ui/DateCal.tsx:527 · dropped → slice 5 (not the schedule's day)
+- W1773 · ui/DateCal.tsx:532 · dropped → slice 5 (not the schedule's day)
+- W1774 · ui/DateCal.tsx:533 · dropped → slice 5 (not the schedule's day)
+- W1775 · ui/DateCal.tsx:537 · dropped → slice 5 (not the schedule's day)
+- W1776 · ui/DateCal.tsx:538 · dropped → slice 5 (not the schedule's day)
+- W1777 · ui/DateCal.tsx:552 · dropped → slice 5 (not the schedule's day)
+- W1799 · ui/DocConfirm.tsx:42 · dropped → slice 5 (not the schedule's day)
+- W1800 · ui/DocConfirm.tsx:45 · dropped → slice 5 (not the schedule's day)
+- W1802 · ui/DocConfirm.tsx:53 · dropped → slice 5 (not the schedule's day)
+- W1803 · ui/DocConfirm.tsx:54 · dropped → slice 5 (not the schedule's day)
+- W1804 · ui/DocViewer.tsx:154 · dropped → slice 5 (not the schedule's day)
+- W1805 · ui/DocViewer.tsx:168 · dropped → slice 5 (not the schedule's day)
+- W1806 · ui/DocViewer.tsx:171 · dropped → slice 5 (not the schedule's day)
+- W1807 · ui/DocViewer.tsx:179 · dropped → slice 5 (not the schedule's day)
+- W1808 · ui/DocViewer.tsx:182 · dropped → slice 5 (not the schedule's day)
+- W1810 · ui/DraftsModal.tsx:86 · dropped → slice 2 (not the schedule's day)
+- W1812 · ui/DraftsModal.tsx:95 · dropped → slice 2 (not the schedule's day)
+- W1814 · ui/DraftsModal.tsx:117 · dropped → slice 2 (not the schedule's day)
+- W1815 · ui/DraftsModal.tsx:120 · dropped → slice 2 (not the schedule's day)
+- W1816 · ui/DraftsModal.tsx:121 · dropped → slice 2 (not the schedule's day)
+- W1817 · ui/DraftsModal.tsx:125 · dropped → slice 2 (not the schedule's day)
+- W1818 · ui/DraftsModal.tsx:131 · dropped → slice 2 (not the schedule's day)
+- W1822 · ui/DraftsModal.tsx:157 · dropped → slice 2 (not the schedule's day)
+- W1823 · ui/DraftsModal.tsx:157 · dropped → slice 2 (not the schedule's day)
+- W1824 · ui/DraftsModal.tsx:167 · dropped → slice 2 (not the schedule's day)
+- W1825 · ui/DraftsModal.tsx:168 · dropped → slice 2 (not the schedule's day)
+- W1828 · ui/Drawer.tsx:89 · dropped → slice 10 (not the schedule's day)
+- W1833 · ui/Drawer.tsx:116 · dropped → slice 10 (not the schedule's day)
+- W1881 · ui/floatwin.ts:83 · dropped → slice 10 (not the schedule's day)
+- W1882 · ui/FloatWindow.tsx:269 · dropped → slice 10 (not the schedule's day)
+- W1883 · ui/FloatWindow.tsx:269 · dropped → slice 10 (not the schedule's day)
+- W1890 · ui/HelpPage.tsx:85 · dropped → slice 10 (not the schedule's day)
+- W1916 · ui/HolidaysPanel.tsx:70 · dropped → slice 10 (not the schedule's day)
+- W1917 · ui/HolidaysPanel.tsx:71 · dropped → slice 10 (not the schedule's day)
+- W1918 · ui/HolidaysPanel.tsx:92 · dropped → slice 10 (not the schedule's day)
+- W1919 · ui/HolidaysPanel.tsx:97 · dropped → slice 10 (not the schedule's day)
+- W1920 · ui/HolidaysPanel.tsx:157 · dropped → slice 10 (not the schedule's day)
+- W1921 · ui/HolidaysPanel.tsx:187 · dropped → slice 10 (not the schedule's day)
+- W1922 · ui/HolidaysPanel.tsx:188 · dropped → slice 10 (not the schedule's day)
+- W1923 · ui/HolidaysPanel.tsx:190 · dropped → slice 10 (not the schedule's day)
+- W1924 · ui/HolidaysPanel.tsx:191 · dropped → slice 10 (not the schedule's day)
+- W1925 · ui/HolidaysPanel.tsx:193 · dropped → slice 10 (not the schedule's day)
+- W1926 · ui/HolidaysPanel.tsx:197 · dropped → slice 10 (not the schedule's day)
+- W1927 · ui/HolidaysPanel.tsx:199 · dropped → slice 10 (not the schedule's day)
+- W1928 · ui/HolidaysPanel.tsx:200 · dropped → slice 10 (not the schedule's day)
+- W1929 · ui/HolidaysPanel.tsx:231 · dropped → slice 10 (not the schedule's day)
+- W1930 · ui/HolidaysPanel.tsx:248 · dropped → slice 10 (not the schedule's day)
+- W1931 · ui/HolidaysPanel.tsx:261 · dropped → slice 10 (not the schedule's day)
+- W1932 · ui/HolidaysPanel.tsx:262 · dropped → slice 10 (not the schedule's day)
+- W1933 · ui/HolidaysPanel.tsx:264 · dropped → slice 10 (not the schedule's day)
+- W1934 · ui/HolidaysPanel.tsx:265 · dropped → slice 10 (not the schedule's day)
+- W1935 · ui/HolidaysPanel.tsx:308 · dropped → slice 10 (not the schedule's day)
+- W1936 · ui/HolidaysPanel.tsx:330 · dropped → slice 10 (not the schedule's day)
+- W1937 · ui/HolidaysPanel.tsx:355 · dropped → slice 10 (not the schedule's day)
+- W1938 · ui/HolidaysPanel.tsx:371 · dropped → slice 10 (not the schedule's day)
+- W1939 · ui/HolidaysPanel.tsx:377 · dropped → slice 10 (not the schedule's day)
+- W1940 · ui/HolidaysPanel.tsx:382 · dropped → slice 10 (not the schedule's day)
+- W1941 · ui/HolidaysPanel.tsx:387 · dropped → slice 10 (not the schedule's day)
+- W1942 · ui/HolidaysPanel.tsx:399 · dropped → slice 10 (not the schedule's day)
+- W1943 · ui/HolidaysPanel.tsx:409 · dropped → slice 10 (not the schedule's day)
+- W1944 · ui/HolidaysPanel.tsx:409 · dropped → slice 10 (not the schedule's day)
+- W1945 · ui/HolidaysPanel.tsx:413 · dropped → slice 10 (not the schedule's day)
+- W1946 · ui/HolidaysPanel.tsx:414 · dropped → slice 10 (not the schedule's day)
+- W2158 · ui/icons.tsx:268 · dropped → slice 10 (not the schedule's day)
+- W2164 · ui/inputedit.tsx:170 · dropped → slice 5 (not the schedule's day)
+- W2165 · ui/inputedit.tsx:263 · dropped → slice 5 (not the schedule's day)
+- W2168 · ui/inputedit.tsx:319 · dropped → slice 5 (not the schedule's day)
+- W2169 · ui/inputedit.tsx:345 · dropped → slice 5 (not the schedule's day)
+- W2171 · ui/inputedit.tsx:397 · dropped → slice 5 (not the schedule's day)
+- W2172 · ui/inputedit.tsx:432 · dropped → slice 5 (not the schedule's day)
+- W2173 · ui/inputedit.tsx:461 · dropped → slice 5 (not the schedule's day)
+- W2176 · ui/inputedit.tsx:488 · dropped → slice 5 (not the schedule's day)
+- W2178 · ui/inputedit.tsx:614 · dropped → slice 5 (not the schedule's day)
+- W2179 · ui/inputedit.tsx:755 · dropped → slice 5 (not the schedule's day)
+- W2186 · ui/inputedit.tsx:982 · dropped → slice 5 (not the schedule's day)
+- W2194 · ui/inputedit.tsx:1357 · dropped → slice 5 (not the schedule's day)
+- W2195 · ui/inputedit.tsx:1373 · dropped → slice 5 (not the schedule's day)
+- W2201 · ui/inputedit.tsx:1867 · dropped → slice 5 (not the schedule's day)
+- W2206 · ui/inputedit.tsx:2159 · dropped → slice 5 (not the schedule's day)
+- W2210 · ui/inputedit.tsx:2274 · dropped → slice 5 (not the schedule's day)
+- W2219 · ui/InputsCal.tsx:1036 · dropped → slice 5 (not the schedule's day)
+- W2220 · ui/InputsCal.tsx:1037 · dropped → slice 5 (not the schedule's day)
+- W2232 · ui/InputsCal.tsx:1168 · dropped → slice 5 (not the schedule's day)
+- W2233 · ui/InputsCal.tsx:1169 · dropped → slice 5 (not the schedule's day)
+- W2246 · ui/InputsCal.tsx:1334 · dropped → slice 5 (not the schedule's day)
+- W2249 · ui/InputsCal.tsx:1351 · dropped → slice 5 (not the schedule's day)
+- W2252 · ui/InputsCal.tsx:1360 · dropped → slice 5 (not the schedule's day)
+- W2255 · ui/InputsCal.tsx:1361 · dropped → slice 5 (not the schedule's day)
+- W2257 · ui/InputsCal.tsx:1362 · dropped → slice 5 (not the schedule's day)
+- W2258 · ui/InputsCal.tsx:1447 · dropped → slice 5 (not the schedule's day)
+- W2275 · ui/InputsPage.tsx:636 · dropped → slice 5 (not the schedule's day)
+- W2311 · ui/InputsPage.tsx:975 · dropped → slice 5 (not the schedule's day)
+- W2312 · ui/InputsPage.tsx:976 · dropped → slice 5 (not the schedule's day)
+- W2314 · ui/InputsPage.tsx:985 · dropped → slice 5 (not the schedule's day)
+- W2315 · ui/InputsPage.tsx:986 · dropped → slice 5 (not the schedule's day)
+- W2324 · ui/InputsSettings.tsx:92 · dropped → slice 5 (not the schedule's day)
+- W2351 · ui/InputWindow.tsx:988 · dropped → slice 5 (not the schedule's day)
+- W2356 · ui/InputWindow.tsx:1039 · dropped → slice 5 (not the schedule's day)
+- W2357 · ui/InputWindow.tsx:1040 · dropped → slice 5 (not the schedule's day)
+- W2363 · ui/InputWindow.tsx:1081 · dropped → slice 5 (not the schedule's day)
+- W2376 · ui/InputWindow.tsx:1220 · dropped → slice 5 (not the schedule's day)
+- W2378 · ui/InputWindow.tsx:1224 · dropped → slice 5 (not the schedule's day)
+- W2379 · ui/InputWindow.tsx:1225 · dropped → slice 5 (not the schedule's day)
+- W2600 · ui/MedClashConfirm.tsx:96 · dropped → slice 5 (not the schedule's day)
+- W2601 · ui/MedClashConfirm.tsx:101 · dropped → slice 5 (not the schedule's day)
+- W2602 · ui/MedClashConfirm.tsx:102 · dropped → slice 5 (not the schedule's day)
+- W2603 · ui/MedClashConfirm.tsx:123 · dropped → slice 5 (not the schedule's day)
+- W2604 · ui/MedClashConfirm.tsx:125 · dropped → slice 5 (not the schedule's day)
+- W2605 · ui/MedClashConfirm.tsx:126 · dropped → slice 5 (not the schedule's day)
+- W2606 · ui/MedClashConfirm.tsx:129 · dropped → slice 5 (not the schedule's day)
+- W2607 · ui/MedClashConfirm.tsx:131 · dropped → slice 5 (not the schedule's day)
+- W2608 · ui/MedClashConfirm.tsx:139 · dropped → slice 5 (not the schedule's day)
+- W2609 · ui/MedClashConfirm.tsx:141 · dropped → slice 5 (not the schedule's day)
+- W2610 · ui/MedicalView.tsx:109 · dropped → slice 5 (not the schedule's day)
+- W2611 · ui/MedicalView.tsx:109 · dropped → slice 5 (not the schedule's day)
+- W2612 · ui/MedicalView.tsx:125 · dropped → slice 5 (not the schedule's day)
+- W2613 · ui/MedicalView.tsx:131 · dropped → slice 5 (not the schedule's day)
+- W2614 · ui/MedicalView.tsx:238 · dropped → slice 5 (not the schedule's day)
+- W2615 · ui/MedicalView.tsx:248 · dropped → slice 5 (not the schedule's day)
+- W2616 · ui/MedicalView.tsx:250 · dropped → slice 5 (not the schedule's day)
+- W2617 · ui/MedicalView.tsx:258 · dropped → slice 5 (not the schedule's day)
+- W2618 · ui/MedicalView.tsx:265 · dropped → slice 5 (not the schedule's day)
+- W2619 · ui/MedicalView.tsx:273 · dropped → slice 5 (not the schedule's day)
+- W2620 · ui/MedicalView.tsx:276 · dropped → slice 5 (not the schedule's day)
+- W2621 · ui/MedicalView.tsx:278 · dropped → slice 5 (not the schedule's day)
+- W2622 · ui/MedicalView.tsx:281 · dropped → slice 5 (not the schedule's day)
+- W2623 · ui/MedicalView.tsx:307 · dropped → slice 5 (not the schedule's day)
+- W2624 · ui/MedicalView.tsx:312 · dropped → slice 5 (not the schedule's day)
+- W2625 · ui/MedicalView.tsx:317 · dropped → slice 5 (not the schedule's day)
+- W2626 · ui/MedicalView.tsx:322 · dropped → slice 5 (not the schedule's day)
+- W2627 · ui/MedicalView.tsx:325 · dropped → slice 5 (not the schedule's day)
+- W2628 · ui/MedicalView.tsx:326 · dropped → slice 5 (not the schedule's day)
+- W2629 · ui/MedicalView.tsx:331 · dropped → slice 5 (not the schedule's day)
+- W2642 · ui/MonthJump.tsx:64 · dropped → slice 5 (not the schedule's day)
+- W2643 · ui/MonthJump.tsx:75 · dropped → slice 5 (not the schedule's day)
+- W2647 · ui/OilConfirm.tsx:79 · dropped → slice 1 (not the schedule's day)
+- W2648 · ui/OilConfirm.tsx:79 · dropped → slice 1 (not the schedule's day)
+- W2649 · ui/OilConfirm.tsx:80 · dropped → slice 1 (not the schedule's day)
+- W2650 · ui/OilConfirm.tsx:80 · dropped → slice 1 (not the schedule's day)
+- W2651 · ui/OilConfirm.tsx:132 · dropped → slice 1 (not the schedule's day)
+- W2652 · ui/OilConfirm.tsx:137 · dropped → slice 1 (not the schedule's day)
+- W2653 · ui/OilConfirm.tsx:137 · dropped → slice 1 (not the schedule's day)
+- W2654 · ui/OilConfirm.tsx:140 · dropped → slice 1 (not the schedule's day)
+- W2655 · ui/OilConfirm.tsx:150 · dropped → slice 1 (not the schedule's day)
+- W2657 · ui/OilConfirm.tsx:160 · dropped → slice 1 (not the schedule's day)
+- W2658 · ui/oilday.ts:46 · dropped → slice 1 (not the schedule's day)
+- W2659 · ui/oilday.ts:63 · dropped → slice 1 (not the schedule's day)
+- W2660 · ui/oilday.ts:63 · dropped → slice 1 (not the schedule's day)
+- W2661 · ui/oilday.ts:77 · dropped → slice 1 (not the schedule's day)
+- W2662 · ui/oilday.ts:80 · dropped → slice 1 (not the schedule's day)
+- W2663 · ui/oilday.ts:81 · dropped → slice 1 (not the schedule's day)
+- W2664 · ui/OilDayList.tsx:68 · dropped → slice 1 (not the schedule's day)
+- W2665 · ui/OilDayList.tsx:74 · dropped → slice 1 (not the schedule's day)
+- W2666 · ui/OilDayList.tsx:74 · dropped → slice 1 (not the schedule's day)
+- W2667 · ui/OilDayList.tsx:74 · dropped → slice 1 (not the schedule's day)
+- W2668 · ui/OilDayList.tsx:77 · dropped → slice 1 (not the schedule's day)
+- W2669 · ui/OilDayList.tsx:80 · dropped → slice 1 (not the schedule's day)
+- W2670 · ui/OilDayList.tsx:81 · dropped → slice 1 (not the schedule's day)
+- W2671 · ui/OilDayList.tsx:127 · dropped → slice 1 (not the schedule's day)
+- W2672 · ui/OilDayList.tsx:132 · dropped → slice 1 (not the schedule's day)
+- W2673 · ui/OilDayList.tsx:140 · dropped → slice 1 (not the schedule's day)
+- W2674 · ui/OilDayList.tsx:141 · dropped → slice 1 (not the schedule's day)
+- W2677 · ui/oilmode.ts:535 · dropped → slice 1 (not the schedule's day)
+- W2679 · ui/oilmode.ts:543 · dropped → slice 1 (not the schedule's day)
+- W2680 · ui/oilmode.ts:548 · dropped → slice 1 (not the schedule's day)
+- W2682 · ui/oilmode.ts:549 · dropped → slice 1 (not the schedule's day)
+- W2683 · ui/oilmode.ts:556 · dropped → slice 1 (not the schedule's day)
+- W2685 · ui/oilmode.ts:562 · dropped → slice 1 (not the schedule's day)
+- W2686 · ui/oilmode.ts:563 · dropped → slice 1 (not the schedule's day)
+- W2687 · ui/oilmode.ts:576 · dropped → slice 1 (not the schedule's day)
+- W2688 · ui/oilmode.ts:612 · dropped → slice 1 (not the schedule's day)
+- W2689 · ui/oilmode.ts:613 · dropped → slice 1 (not the schedule's day)
+- W2690 · ui/oilmode.ts:617 · dropped → slice 1 (not the schedule's day)
+- W2691 · ui/oilmode.ts:622 · dropped → slice 1 (not the schedule's day)
+- W2693 · ui/oilmode.ts:639 · dropped → slice 1 (not the schedule's day)
+- W2694 · ui/oilmode.ts:640 · dropped → slice 1 (not the schedule's day)
+- W2695 · ui/oilmode.ts:641 · dropped → slice 1 (not the schedule's day)
+- W2696 · ui/oilmode.ts:642 · dropped → slice 1 (not the schedule's day)
+- W2697 · ui/oilmode.ts:643 · dropped → slice 1 (not the schedule's day)
+- W2699 · ui/oilmode.ts:658 · dropped → slice 1 (not the schedule's day)
+- W2700 · ui/oilmode.ts:715 · dropped → slice 1 (not the schedule's day)
+- W2701 · ui/oilmode.ts:767 · dropped → slice 1 (not the schedule's day)
+- W2702 · ui/oilmode.ts:769 · dropped → slice 1 (not the schedule's day)
+- W2703 · ui/oilmode.ts:777 · dropped → slice 1 (not the schedule's day)
+- W2705 · ui/oilmode.ts:964 · dropped → slice 1 (not the schedule's day)
+- W2706 · ui/oilmode.ts:967 · dropped → slice 1 (not the schedule's day)
+- W2707 · ui/oilmode.ts:968 · dropped → slice 1 (not the schedule's day)
+- W2713 · ui/oilwait.ts:33 · dropped → slice 1 (not the schedule's day)
+- W2718 · ui/oilwait.ts:45 · dropped → slice 1 (not the schedule's day)
+- W2719 · ui/oilwait.ts:46 · dropped → slice 1 (not the schedule's day)
+- W2720 · ui/oilwait.ts:47 · dropped → slice 1 (not the schedule's day)
+- W2725 · ui/OilWaitSheet.tsx:124 · dropped → slice 1 (not the schedule's day)
+- W2727 · ui/owncal.ts:84 · dropped → slice 5 (not the schedule's day)
+- W2728 · ui/pagedownload.ts:16 · dropped → slice 10 (not the schedule's day)
+- W2729 · ui/pagedownload.ts:35 · dropped → slice 10 (not the schedule's day)
+- W2730 · ui/pageload.tsx:39 · dropped → slice 10 (not the schedule's day)
+- W2731 · ui/pageload.tsx:41 · dropped → slice 10 (not the schedule's day)
+- W2764 · ui/pendlist.ts:367 · dropped → slice 2 (not the schedule's day)
+- W2765 · ui/pendlist.ts:370 · dropped → slice 2 (not the schedule's day)
+- W2767 · ui/pendlist.ts:521 · dropped → slice 2 (not the schedule's day)
+- W2770 · ui/pendlist.ts:563 · dropped → slice 2 (not the schedule's day)
+- W2771 · ui/pendlist.ts:669 · dropped → slice 2 (not the schedule's day)
+- W2772 · ui/pendlist.ts:675 · dropped → slice 2 (not the schedule's day)
+- W2773 · ui/pendlist.ts:676 · dropped → slice 2 (not the schedule's day)
+- W2774 · ui/pendlist.ts:678 · dropped → slice 2 (not the schedule's day)
+- W2775 · ui/pendlist.ts:679 · dropped → slice 2 (not the schedule's day)
+- W2776 · ui/peoplepick-model.ts:43 · dropped → slice 3 (not the schedule's day)
+- W2778 · ui/peoplepick-model.ts:65 · dropped → slice 3 (not the schedule's day)
+- W2779 · ui/PeoplePick.tsx:192 · dropped → slice 3 (not the schedule's day)
+- W2780 · ui/PeoplePick.tsx:220 · dropped → slice 3 (not the schedule's day)
+- W2781 · ui/PeoplePick.tsx:241 · dropped → slice 3 (not the schedule's day)
+- W2782 · ui/PeoplePick.tsx:280 · dropped → slice 3 (not the schedule's day)
+- W2786 · ui/QualsPage.tsx:162 · dropped → slice 3 (not the schedule's day)
+- W2787 · ui/QualsPage.tsx:172 · dropped → slice 3 (not the schedule's day)
+- W2788 · ui/QualsPage.tsx:173 · dropped → slice 3 (not the schedule's day)
+- W2789 · ui/QualsPage.tsx:174 · dropped → slice 3 (not the schedule's day)
+- W2790 · ui/QualsPage.tsx:175 · dropped → slice 3 (not the schedule's day)
+- W2791 · ui/QualsPage.tsx:178 · dropped → slice 3 (not the schedule's day)
+- W2792 · ui/QualsPage.tsx:179 · dropped → slice 3 (not the schedule's day)
+- W2793 · ui/QualsPage.tsx:180 · dropped → slice 3 (not the schedule's day)
+- W2794 · ui/QualsPage.tsx:181 · dropped → slice 3 (not the schedule's day)
+- W2795 · ui/QualsPage.tsx:182 · dropped → slice 3 (not the schedule's day)
+- W2796 · ui/QualsPage.tsx:183 · dropped → slice 3 (not the schedule's day)
+- W2797 · ui/QualsPage.tsx:190 · dropped → slice 3 (not the schedule's day)
+- W2798 · ui/QualsPage.tsx:198 · dropped → slice 3 (not the schedule's day)
+- W2799 · ui/QualsPage.tsx:201 · dropped → slice 3 (not the schedule's day)
+- W2800 · ui/QualsPage.tsx:209 · dropped → slice 3 (not the schedule's day)
+- W2801 · ui/QualsPage.tsx:237 · dropped → slice 3 (not the schedule's day)
+- W2802 · ui/QualsPage.tsx:240 · dropped → slice 3 (not the schedule's day)
+- W2803 · ui/QualsPage.tsx:243 · dropped → slice 3 (not the schedule's day)
+- W2804 · ui/QualsPage.tsx:246 · dropped → slice 3 (not the schedule's day)
+- W2805 · ui/QualsPage.tsx:249 · dropped → slice 3 (not the schedule's day)
+- W2806 · ui/QualsPage.tsx:252 · dropped → slice 3 (not the schedule's day)
+- W2807 · ui/QualsPage.tsx:255 · dropped → slice 3 (not the schedule's day)
+- W2808 · ui/QualsPage.tsx:263 · dropped → slice 3 (not the schedule's day)
+- W2810 · ui/QualsPage.tsx:538 · dropped → slice 3 (not the schedule's day)
+- W2811 · ui/QualsPage.tsx:545 · dropped → slice 3 (not the schedule's day)
+- W2812 · ui/QualsPage.tsx:563 · dropped → slice 3 (not the schedule's day)
+- W2813 · ui/QualsPage.tsx:908 · dropped → slice 3 (not the schedule's day)
+- W2814 · ui/QualsPage.tsx:1155 · dropped → slice 3 (not the schedule's day)
+- W2815 · ui/QualsPage.tsx:1157 · dropped → slice 3 (not the schedule's day)
+- W2816 · ui/QualsPage.tsx:1176 · dropped → slice 3 (not the schedule's day)
+- W2817 · ui/QualsPage.tsx:1176 · dropped → slice 3 (not the schedule's day)
+- W2818 · ui/QualsPage.tsx:1181 · dropped → slice 3 (not the schedule's day)
+- W2819 · ui/QualsPage.tsx:1181 · dropped → slice 3 (not the schedule's day)
+- W2820 · ui/QualsPage.tsx:1189 · dropped → slice 3 (not the schedule's day)
+- W2821 · ui/QualsPage.tsx:1190 · dropped → slice 3 (not the schedule's day)
+- W2822 · ui/QualsPage.tsx:1193 · dropped → slice 3 (not the schedule's day)
+- W2823 · ui/QualsPage.tsx:1197 · dropped → slice 3 (not the schedule's day)
+- W2825 · ui/QualsPage.tsx:1204 · dropped → slice 3 (not the schedule's day)
+- W2826 · ui/QualsPage.tsx:1210 · dropped → slice 3 (not the schedule's day)
+- W2827 · ui/QualsPage.tsx:1211 · dropped → slice 3 (not the schedule's day)
+- W2828 · ui/QualsPage.tsx:1212 · dropped → slice 3 (not the schedule's day)
+- W2829 · ui/QualsPage.tsx:1213 · dropped → slice 3 (not the schedule's day)
+- W2830 · ui/QualsPage.tsx:1214 · dropped → slice 3 (not the schedule's day)
+- W2831 · ui/QualsPage.tsx:1215 · dropped → slice 3 (not the schedule's day)
+- W2833 · ui/QualsPage.tsx:1219 · dropped → slice 3 (not the schedule's day)
+- W2834 · ui/QualsPage.tsx:1226 · dropped → slice 3 (not the schedule's day)
+- W2835 · ui/QualsPage.tsx:1227 · dropped → slice 3 (not the schedule's day)
+- W2836 · ui/QualsPage.tsx:1228 · dropped → slice 3 (not the schedule's day)
+- W2837 · ui/QualsPage.tsx:1238 · dropped → slice 3 (not the schedule's day)
+- W2839 · ui/reqdoor.ts:156 · dropped → slice 5 (not the schedule's day)
+- W2840 · ui/reqdoor.ts:278 · dropped → slice 5 (not the schedule's day)
+- W2841 · ui/reqdoor.ts:278 · dropped → slice 5 (not the schedule's day)
+- W2843 · ui/reqdoor.ts:382 · dropped → slice 5 (not the schedule's day)
+- W2846 · ui/sanscal-model.ts:102 · dropped → slice 5 (not the schedule's day)
+- W2847 · ui/sanscal-model.ts:103 · dropped → slice 5 (not the schedule's day)
+- W2848 · ui/SansCal.tsx:77 · dropped → slice 5 (not the schedule's day)
+- W2849 · ui/SansCal.tsx:78 · dropped → slice 5 (not the schedule's day)
+- W2850 · ui/SansCal.tsx:79 · dropped → slice 5 (not the schedule's day)
+- W2851 · ui/SansCal.tsx:79 · dropped → slice 5 (not the schedule's day)
+- W2852 · ui/SansCal.tsx:80 · dropped → slice 5 (not the schedule's day)
+- W2853 · ui/SansCal.tsx:119 · dropped → slice 5 (not the schedule's day)
+- W2855 · ui/SansCal.tsx:122 · dropped → slice 5 (not the schedule's day)
+- W2856 · ui/SansCal.tsx:129 · dropped → slice 5 (not the schedule's day)
+- W2857 · ui/SansCal.tsx:302 · dropped → slice 5 (not the schedule's day)
+- W2858 · ui/SansCal.tsx:306 · dropped → slice 5 (not the schedule's day)
+- W2859 · ui/SansCal.tsx:307 · dropped → slice 5 (not the schedule's day)
+- W2860 · ui/SansCal.tsx:314 · dropped → slice 5 (not the schedule's day)
+- W2862 · ui/SansCal.tsx:322 · dropped → slice 5 (not the schedule's day)
+- W2863 · ui/SansCal.tsx:325 · dropped → slice 5 (not the schedule's day)
+- W2864 · ui/SansCal.tsx:325 · dropped → slice 5 (not the schedule's day)
+- W2865 · ui/SansCal.tsx:336 · dropped → slice 5 (not the schedule's day)
+- W2866 · ui/SansCal.tsx:337 · dropped → slice 5 (not the schedule's day)
+- W2867 · ui/SansCal.tsx:337 · dropped → slice 5 (not the schedule's day)
+- W2868 · ui/SansCal.tsx:338 · dropped → slice 5 (not the schedule's day)
+- W2869 · ui/SansCal.tsx:338 · dropped → slice 5 (not the schedule's day)
+- W2871 · ui/SansCal.tsx:339 · dropped → slice 5 (not the schedule's day)
+- W2872 · ui/SansCal.tsx:340 · dropped → slice 5 (not the schedule's day)
+- W2873 · ui/SansDay.tsx:59 · dropped → slice 5 (not the schedule's day)
+- W2874 · ui/SansDay.tsx:103 · dropped → slice 5 (not the schedule's day)
+- W2875 · ui/SansDay.tsx:110 · dropped → slice 5 (not the schedule's day)
+- W2876 · ui/SansDay.tsx:116 · dropped → slice 5 (not the schedule's day)
+- W2877 · ui/SansDay.tsx:140 · dropped → slice 5 (not the schedule's day)
+- W2878 · ui/SansDay.tsx:140 · dropped → slice 5 (not the schedule's day)
+- W2879 · ui/SansDay.tsx:140 · dropped → slice 5 (not the schedule's day)
+- W2880 · ui/SansDay.tsx:142 · dropped → slice 5 (not the schedule's day)
+- W2881 · ui/SansDay.tsx:143 · dropped → slice 5 (not the schedule's day)
+- W2882 · ui/SansDay.tsx:144 · dropped → slice 5 (not the schedule's day)
+- W2883 · ui/SansDay.tsx:145 · dropped → slice 5 (not the schedule's day)
+- W2884 · ui/SansDay.tsx:152 · dropped → slice 5 (not the schedule's day)
+- W2885 · ui/SansDay.tsx:154 · dropped → slice 5 (not the schedule's day)
+- W2886 · ui/SansDay.tsx:156 · dropped → slice 5 (not the schedule's day)
+- W2887 · ui/SansDay.tsx:157 · dropped → slice 5 (not the schedule's day)
+- W2888 · ui/SansDay.tsx:163 · dropped → slice 5 (not the schedule's day)
+- W2889 · ui/SansDay.tsx:166 · dropped → slice 5 (not the schedule's day)
+- W2890 · ui/SansSettings.tsx:69 · dropped → slice 5 (not the schedule's day)
+- W2891 · ui/SansSettings.tsx:73 · dropped → slice 5 (not the schedule's day)
+- W2892 · ui/SansSettings.tsx:75 · dropped → slice 5 (not the schedule's day)
+- W2894 · ui/SansSettings.tsx:101 · dropped → slice 5 (not the schedule's day)
+- W2895 · ui/SansSettings.tsx:103 · dropped → slice 5 (not the schedule's day)
+- W2896 · ui/SansSettings.tsx:104 · dropped → slice 5 (not the schedule's day)
+- W2897 · ui/SansSettings.tsx:107 · dropped → slice 5 (not the schedule's day)
+- W2898 · ui/SansSettings.tsx:111 · dropped → slice 5 (not the schedule's day)
+- W2900 · ui/SansSettings.tsx:118 · dropped → slice 5 (not the schedule's day)
+- W2901 · ui/SansSettings.tsx:119 · dropped → slice 5 (not the schedule's day)
+- W2902 · ui/SaveStatus.tsx:99 · dropped → slice 10 (not the schedule's day)
+- W2903 · ui/SaveStatus.tsx:112 · dropped → slice 10 (not the schedule's day)
+- W2989 · ui/Shell.tsx:368 · dropped → slice 10 (not the schedule's day)
+- W2990 · ui/Shell.tsx:370 · dropped → slice 10 (not the schedule's day)
+- W3001 · ui/Shell.tsx:443 · dropped → slice 10 (not the schedule's day)
+- W3006 · ui/Shell.tsx:481 · dropped → slice 10 (not the schedule's day)
+- W3023 · ui/Shell.tsx:656 · dropped → slice 10 (not the schedule's day)
+- W3024 · ui/Shell.tsx:657 · dropped → slice 10 (not the schedule's day)
+- W3026 · ui/Shell.tsx:712 · dropped → slice 10 (not the schedule's day)
+- W3027 · ui/Shell.tsx:713 · dropped → slice 10 (not the schedule's day)
+- W3039 · ui/topstate.ts:170 · dropped → slice 10 (not the schedule's day)
+- W3040 · ui/topstate.ts:171 · dropped → slice 10 (not the schedule's day)
+- W3041 · ui/topstate.ts:175 · dropped → slice 10 (not the schedule's day)
+- W3042 · ui/topstate.ts:191 · dropped → slice 10 (not the schedule's day)
+- W3043 · ui/topstate.ts:191 · dropped → slice 10 (not the schedule's day)
+- W3044 · ui/topstate.ts:192 · dropped → slice 10 (not the schedule's day)
+- W3045 · ui/topstate.ts:192 · dropped → slice 10 (not the schedule's day)
+- W3048 · ui/UpchitConfirm.tsx:62 · dropped → slice 5 (not the schedule's day)
+- W3049 · ui/UpchitConfirm.tsx:72 · dropped → slice 5 (not the schedule's day)
+- W3050 · ui/UpchitConfirm.tsx:73 · dropped → slice 5 (not the schedule's day)
+- W3051 · ui/UpchitConfirm.tsx:73 · dropped → slice 5 (not the schedule's day)
+- W3052 · ui/UpchitConfirm.tsx:76 · dropped → slice 5 (not the schedule's day)
+- W3053 · ui/UpchitConfirm.tsx:79 · dropped → slice 5 (not the schedule's day)
+- W3054 · ui/UpchitConfirm.tsx:88 · dropped → slice 5 (not the schedule's day)
+- W3055 · ui/UpchitConfirm.tsx:90 · dropped → slice 5 (not the schedule's day)
+- W3056 · ui/UpchitConfirm.tsx:96 · dropped → slice 5 (not the schedule's day)
+- W3057 · ui/UpchitConfirm.tsx:100 · dropped → slice 5 (not the schedule's day)
+- W3059 · ui/UsersPanel.tsx:37 · dropped → slice 3 (not the schedule's day)
+- W3061 · ui/UsersPanel.tsx:57 · dropped → slice 3 (not the schedule's day)
+- W3064 · ui/UsersPanel.tsx:66 · dropped → slice 3 (not the schedule's day)
+- W3065 · ui/UsersPanel.tsx:74 · dropped → slice 3 (not the schedule's day)
+- W3066 · ui/UsersPanel.tsx:86 · dropped → slice 3 (not the schedule's day)
+- W3067 · ui/UsersPanel.tsx:87 · dropped → slice 3 (not the schedule's day)
+- W3068 · ui/UsersPanel.tsx:89 · dropped → slice 3 (not the schedule's day)
+- W3069 · ui/UsersPanel.tsx:91 · dropped → slice 3 (not the schedule's day)
+- W3070 · ui/UsersPanel.tsx:97 · dropped → slice 3 (not the schedule's day)
+- W3071 · ui/UsersPanel.tsx:107 · dropped → slice 3 (not the schedule's day)
+- W3072 · ui/UsersPanel.tsx:111 · dropped → slice 3 (not the schedule's day)
+- W3073 · ui/UsersPanel.tsx:114 · dropped → slice 3 (not the schedule's day)
+- W3074 · ui/UsersPanel.tsx:118 · dropped → slice 3 (not the schedule's day)
+- W3075 · ui/UsersPanel.tsx:120 · dropped → slice 3 (not the schedule's day)
+- W3076 · ui/UsersPanel.tsx:136 · dropped → slice 3 (not the schedule's day)
+- W3079 · ui/UsersPanel.tsx:153 · dropped → slice 3 (not the schedule's day)
+- W3080 · ui/UsersPanel.tsx:154 · dropped → slice 3 (not the schedule's day)
+- W3082 · ui/UsersPanel.tsx:178 · dropped → slice 3 (not the schedule's day)
+- W3083 · ui/UsersPanel.tsx:189 · dropped → slice 3 (not the schedule's day)
+- W3085 · ui/UsersPanel.tsx:194 · dropped → slice 3 (not the schedule's day)
+- W3087 · ui/UsersPanel.tsx:211 · dropped → slice 3 (not the schedule's day)
+- W3088 · ui/UsersPanel.tsx:219 · dropped → slice 3 (not the schedule's day)
+- W3089 · ui/UsersPanel.tsx:220 · dropped → slice 3 (not the schedule's day)
+- W3090 · ui/UsersPanel.tsx:255 · dropped → slice 3 (not the schedule's day)
+- W3091 · ui/UsersPanel.tsx:268 · dropped → slice 3 (not the schedule's day)
+- W3094 · ui/UsersPanel.tsx:333 · dropped → slice 3 (not the schedule's day)
+- W3095 · ui/UsersPanel.tsx:341 · dropped → slice 3 (not the schedule's day)
+- W3097 · ui/UsersPanel.tsx:356 · dropped → slice 3 (not the schedule's day)
+- W3098 · ui/UsersPanel.tsx:359 · dropped → slice 3 (not the schedule's day)
+- W3099 · ui/UsersPanel.tsx:377 · dropped → slice 3 (not the schedule's day)
+- W3100 · ui/UsersPanel.tsx:407 · dropped → slice 3 (not the schedule's day)
+- W3101 · ui/UsersPanel.tsx:430 · dropped → slice 3 (not the schedule's day)
+- W3103 · ui/UsersPanel.tsx:446 · dropped → slice 3 (not the schedule's day)
+- W3104 · ui/UsersPanel.tsx:535 · dropped → slice 3 (not the schedule's day)
+- W3106 · ui/UsersPanel.tsx:548 · dropped → slice 3 (not the schedule's day)
+- W3107 · ui/UsersPanel.tsx:566 · dropped → slice 3 (not the schedule's day)
+- W3108 · ui/UsersPanel.tsx:571 · dropped → slice 3 (not the schedule's day)
+- W3148 · ui/WelcomeBack.tsx:31 · dropped → slice 10 (not the schedule's day)
+- W3149 · ui/WelcomeBack.tsx:32 · dropped → slice 10 (not the schedule's day)
+- W3150 · ui/WelcomeBack.tsx:33 · dropped → slice 10 (not the schedule's day)
+
+### Lists 3a, 3b, 3c (G-D, G-N, G-S)
+
+- GD002 · raptor-port/docs/mock/2026-11-05-access-wait/ · dropped → slice 3/10 (access screen)
+- GD003 · raptor-port/docs/mock/2026-11-05-backlog-sizing/ · dropped → not a design (backlog sizing page)
+- GD005 · raptor-port/docs/mock/2026-11-05-font-inherit/ · dropped → slice 10
+- GD006 · raptor-port/docs/mock/2026-11-05-keys-windows/ · dropped → slice 10 (keys and windows, D1645–D1648)
+- GD011 · raptor-port/docs/mock/2026-11-05-save-band/ · dropped → slice 10 (save band)
+- GD013 · raptor-port/docs/mock/2026-11-06-lw-cell-combos/ · dropped → slice 6
+- GD014 · raptor-port/docs/mock/2026-11-08-chat20-tracker-questions.html · dropped → slice 8
+- GD015 · raptor-port/docs/mock/2026-11-08-lw-pin-last-frame/ · dropped → slice 6
+- GD016 · raptor-port/docs/mock/2026-11-08-not-kept-band/ · dropped → slice 10
+- GD017 · raptor-port/docs/mock/2026-11-12-approvals-scroll/ · dropped → slice 6
+- GD018 · raptor-port/docs/mock/2026-11-15-warn-words/ · MATCH · D2071 (the reworded warnings approved), D2074
+- GD023 · raptor-port/docs/mock/2026-11-17-caps-r1/ · OPEN READING · F11 (caps and ops limits, paused D2186)
+- GD024 · raptor-port/docs/mock/2026-11-17-held-fixes/ · Q1 → MISMATCH F6 (already filed [STANDBY-NO-TIMES-SEAT]); Q2 MATCH (D2021, put to him); Q3–Q8 small fixes put to him, his word awaited — questions, not readings (Q3–Q7 slice 2/10, Q8 slice 5)
+- GD025 · raptor-port/docs/mock/2026-11-17-lw-balances-align/ · dropped → slice 7
+- GD026 · raptor-port/docs/mock/2026-11-17-lw-grid-hover/ · dropped → slice 6
+- GD035 · raptor-port/docs/mock/2026-11-17-trk-small/ · dropped → slice 8
+- GD043 · raptor-port/docs/mock/2026-11-22-sched-right-edge/ · MATCH · D2293 (built as drawn)
+- GD044 · raptor-port/docs/mock/2026-11-23-sans-before-shading/ · dropped → slice 5 (SANS days before his date)
+- GN001 · design.md:91 · dropped → slice 10
+- GN002 · how-we-work.md:112 · dropped → slice 10/12
+- GN004 · inputs.md:82 · dropped → slice 5
+- GN005 · inputs.md:157 · dropped → slice 5
+- GN006 · inputs.md:158 · dropped → slice 5
+- GN007 · leave-war.md:111 · dropped → slice 6/7
+- GN008 · leave-war.md:112 · dropped → slice 6/7
+- GN009 · leave-war.md:113 · dropped → slice 6/7
+- GN010 · leave-war.md:114 · dropped → slice 6/7
+- GN011 · leave-war.md:115 · dropped → slice 6/7
+- GN012 · leave-war.md:116 · dropped → slice 6/7
+- GN013 · leave-war.md:117 · dropped → slice 6/7
+- GN014 · leave-war.md:118 · dropped → slice 6/7
+- GN016 · leave-war.md:318 · dropped → slice 6/7
+- GN021 · people-accounts.md:145 · dropped → slice 3
+- GN022 · people-accounts.md:146 · dropped → slice 3
+- GN023 · people-accounts.md:147 · dropped → slice 3
+- GN026 · people-accounts.md:150 · dropped → slice 3
+- GN027 · people-accounts.md:151 · dropped → slice 3
+- GN037 · people-accounts.md:162 · dropped → slice 3
+- GN038 · people-accounts.md:163 · dropped → slice 3
+- GN039 · scheduler.md:92 · MATCH · D1573, D1529
+- GN040 · scheduler.md:103 · dropped → slice 5 (SANS reminder) / 9 (bell)
+- GN041 · scheduler.md:104 · dropped → slice 5 (SANS reminder) / 9 (bell)
+- GN042 · scheduler.md:105 · dropped → slice 5 (SANS reminder) / 9 (bell)
+- GN043 · scheduler.md:123 · MATCH · D2058 — built since (validate.ts conflict line "dekit to"), the page line still says not built (for the host)
+- GN044 · scheduler.md:131 · MATCH · D2068, D2069, D2071 — built since; page line stale
+- GN045 · scheduler.md:133 · MATCH · D2046, D2047 — built; page line stale
+- GN046 · scheduler.md:134 · MATCH · D2053 — built; page line stale
+- GN047 · scheduler.md:158 · dropped → slice 1/2 (D2054)
+- GN048 · scheduler.md:175 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN049 · scheduler.md:176 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN050 · scheduler.md:177 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN051 · scheduler.md:178 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN052 · scheduler.md:179 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN053 · scheduler.md:180 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN054 · scheduler.md:181 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN055 · scheduler.md:182 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN056 · scheduler.md:183 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN057 · scheduler.md:184 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN058 · scheduler.md:185 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN059 · scheduler.md:186 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN060 · scheduler.md:187 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN061 · scheduler.md:188 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN062 · scheduler.md:189 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN063 · scheduler.md:190 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN064 · scheduler.md:191 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN065 · scheduler.md:192 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN066 · scheduler.md:193 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN067 · scheduler.md:194 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN068 · scheduler.md:195 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN069 · scheduler.md:196 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN070 · scheduler.md:197 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN071 · scheduler.md:198 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN072 · scheduler.md:199 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN073 · scheduler.md:200 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN074 · scheduler.md:201 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN075 · scheduler.md:202 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN076 · scheduler.md:203 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN077 · scheduler.md:204 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN078 · scheduler.md:205 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN079 · scheduler.md:206 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN080 · scheduler.md:207 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN081 · scheduler.md:208 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN082 · scheduler.md:209 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN083 · scheduler.md:210 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN084 · scheduler.md:211 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN085 · scheduler.md:212 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN086 · scheduler.md:213 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN087 · scheduler.md:214 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN088 · scheduler.md:215 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN089 · scheduler.md:216 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN090 · scheduler.md:217 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN091 · scheduler.md:218 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN092 · scheduler.md:219 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN093 · scheduler.md:220 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN094 · scheduler.md:221 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN095 · scheduler.md:222 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN096 · scheduler.md:223 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN097 · scheduler.md:224 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN098 · scheduler.md:225 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN099 · scheduler.md:226 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN100 · scheduler.md:227 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN101 · scheduler.md:228 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN102 · scheduler.md:229 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN103 · scheduler.md:230 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN104 · scheduler.md:231 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN105 · scheduler.md:232 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN106 · scheduler.md:233 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN107 · scheduler.md:234 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN108 · scheduler.md:235 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN109 · scheduler.md:236 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN110 · scheduler.md:237 · MATCH · D2112
+- GN111 · scheduler.md:238 · dropped → slice 3/12 (multi-squadron and detachments, design only)
+- GN112 · scheduler.md:239 · OPEN READING · F11
+- GN113 · scheduler.md:240 · MATCH · D2021 (put to him, held-fixes Q2)
+- GN114 · scheduler.md:241 · dropped → slice 2 (day lock, DB step)
+- GN115 · scheduler.md:242 · dropped → slice 2
+- GN116 · scheduler.md:243 · dropped → slice 2 (its D1751 readings are slice 2's)
+- GN117 · scheduler.md:244 · dropped → slice 2
+- GN118 · scheduler.md:245 · dropped → slice 2 (its "not yet checked with him" reading is slice 2's)
+- GN119 · scheduler.md:246 · dropped → slice 2/3
+- GN120 · scheduler.md:247 · MATCH · D1383 (not built, no reading)
+- GN121 · scheduler.md:248 · MATCH · D1099–D1101 — to be designed with him first; its readings told and left to that round
+- GN122 · scheduler.md:249 · MATCH · D1121 (filed)
+- GN123 · scheduler.md:250 · MATCH · D361 (filed)
+- GN124 · scheduler.md:251 · MATCH · D161 (slice 10)
+- GN125 · scheduler.md:311 · MATCH · D1577
+- GN126 · scheduler.md:342 · MATCH · D837, D839 (slice 10 words)
+- GN127 · scheduler.md:373 · MATCH · D2331, D2425, D2426 (filed); see F5 for what the filing leaves out
+- GN128 · scheduler.md:374 · MATCH for the window · D2424, D2427; the Legend and short names left out → F5
+- GN129 · scheduler.md:375 · dropped → slice 1
+- GN130 · scheduler.md:451 · dropped → slice 9 / 3 (delete list, bell take-back lines)
+- GN131 · scheduler.md:456 · dropped → slice 9 / 3 (delete list, bell take-back lines)
+- GN132 · scheduler.md:512 · dropped → slice 6
+- GS001 · specs/2026-09-12-amendment-core-build-brief.md · dropped → not a design of a day rule (architecture, process or review record)
+- GS003 · specs/2026-09-12-amendment-model-design-brief.md · dropped → not a design of a day rule (architecture, process or review record)
+- GS008 · specs/2026-09-13-stable-ids-step1a-spec.md · dropped → not a design of a day rule (architecture, process or review record)
+- GS009 · specs/2026-09-13-sync-delete-undo-integrity-spec.md · dropped → not a design of a day rule (architecture, process or review record)
+- GS010 · specs/2026-09-13-trk-csid-course-ids-spec.md · dropped → not a design of a day rule (architecture, process or review record)
+- GS011 · specs/2026-09-13-trk-csid-syllabus-ids-spec.md · dropped → not a design of a day rule (architecture, process or review record)
+- GS012 · specs/2026-09-14-arch-stack-1c-personid-spec.md · dropped → not a design of a day rule (architecture, process or review record)
+- GS013 · specs/2026-09-15-crewrest-flagging-plan-v2.md · dropped → slice 2
+- GS014 · specs/2026-09-16-arch-stack-2-command-layer-design.md · dropped → not a design of a day rule (architecture, process or review record)
+- GS015 · specs/2026-09-16-arch-stack-2-command-layer-review-log.md · dropped → not a design of a day rule (architecture, process or review record)
+- GS016 · specs/2026-09-16-flag-export.md · dropped → slice 2 (D1644 holds it)
+- GS017 · specs/2026-09-17-arch-stack-2-followup1-scheduler-routing-plan.md · dropped → not a design of a day rule (architecture, process or review record)
+- GS018 · specs/2026-09-17-arch-stack-2-followup1-scheduler-routing-review-log.md · dropped → not a design of a day rule (architecture, process or review record)
+- GS019 · specs/2026-09-17-arch-stack-3-global-undo-design.md · dropped → not a design of a day rule (architecture, process or review record)
+- GS020 · specs/2026-09-17-arch-stack-cmdl-finish-design.md · dropped → not a design of a day rule (architecture, process or review record)
+- GS022 · specs/2026-09-17-doc-correctness-sweep.md · dropped → not a design of a day rule (architecture, process or review record)
+- GS023 · specs/2026-09-18-global-undo-phase2-cutover-plan.md · dropped → not a design of a day rule (architecture, process or review record)
+- GS024 · specs/2026-09-19-arch-stack-4-clash-catalogue.md · dropped → not a design of a day rule (architecture, process or review record)
+- GS025 · specs/2026-09-19-arch-stack-4-one-absence-design.md · dropped → not a design of a day rule (architecture, process or review record)
+- GS026 · specs/2026-09-20-one-absence-behaviour-register.md · dropped → not a design of a day rule (architecture, process or review record)
+- GS029 · specs/2026-09-22-backlog-process-attack.md · dropped → not a design of a day rule (architecture, process or review record)
+- GS030 · specs/2026-09-22-oil-seats-final-read-fable.md · dropped → slice 1
+- GS032 · specs/2026-09-24-spring-clean-backlog-classification.md · dropped → not a design of a day rule (architecture, process or review record)
+- GS033 · specs/2026-09-24-spring-clean-handoff-classification.md · dropped → not a design of a day rule (architecture, process or review record)
+- GS034 · specs/2026-09-24-spring-clean-meaning-astra.md · dropped → not a design of a day rule (architecture, process or review record)
+- GS035 · specs/2026-09-24-spring-clean-meaning-fable.md · dropped → not a design of a day rule (architecture, process or review record)
+- GS036 · specs/2026-09-24-spring-clean-moves-report.md · dropped → not a design of a day rule (architecture, process or review record)
+- GS038 · specs/2026-09-25-published-face-live-inputs.md · dropped → slice 2/5
+- GS042 · specs/2026-09-28-small-fixes-final-read-fable.md · dropped → not a design of a day rule (architecture, process or review record)
+- GS045 · specs/2026-10-02-workflow-skills-fusion.md · dropped → not a design of a day rule (architecture, process or review record)
+- GS047 · specs/2026-10-03-workflow-ui-scope.md · dropped → not a design of a day rule (architecture, process or review record)
+- GS048 · specs/2026-10-05-caps-ops-limits.md · OPEN READING · F11
+- GS049 · specs/2026-10-07-expired-guide-text.md · dropped → not a design of a day rule (architecture, process or review record)
+- GS051 · specs/2026-10-07-start-context-audit.md · dropped → not a design of a day rule (architecture, process or review record)
+- GS052 · specs/2026-10-15-compact-when-ready.md · dropped → not a design of a day rule (architecture, process or review record)
+- GS053 · specs/2026-10-15-overnight-skill-draft.md · dropped → not a design of a day rule (architecture, process or review record)
+- GS054 · specs/2026-10-16-words-pass.md · dropped → not a design of a day rule (architecture, process or review record)
+- GS055 · specs/2026-10-21-leave-war-overhaul.md · dropped → not a design of a day rule (architecture, process or review record)
+- GS056 · specs/2026-10-21-single-seat.md · MATCH · D1099 — designed with him first; readings left to that round
+- GS057 · specs/2026-10-29-drawing-check-guide-wording.md · dropped → not a design of a day rule (architecture, process or review record)
+- GS058 · specs/2026-11-03-data-one-master-check.md · dropped → not a design of a day rule (architecture, process or review record)
+- GS059 · specs/2026-11-11-engine-rules-review-report.md · MATCH · the rules check's report; his answers D1983–D2022 recorded
+- GS060 · specs/2026-11-11-engine-rules-review-results-1.md · MATCH · as GS059 (report times; D505 reading answered by D2017)
+- GS061 · specs/2026-11-11-engine-rules-review-results-2.md · MATCH · as GS059 (standby; D1062 reading → F8)
+- GS062 · specs/2026-11-11-engine-rules-review-results-3.md · MATCH · as GS059
+- GS063 · specs/2026-11-11-engine-rules-review-results-4.md · MATCH · as GS059 (W47 → D360)
+- GS064 · specs/2026-11-11-engine-rules-review-results-5.md · MATCH · as GS059
+- GS065 · specs/2026-11-11-engine-rules-review-results-6.md · MATCH · as GS059
+- GS066 · specs/2026-11-11-engine-rules-review-results-7.md · dropped → slice 2
+- GS067 · specs/2026-11-11-engine-rules-review-results-9.md · dropped → slice 1
+- GS068 · specs/2026-11-11-engine-rules-review-worklist.md · MATCH · as GS059
+- GS070 · specs/2026-11-17-caps-design.md · OPEN READING · F11
+- GS071 · specs/leavewar-sync.md · dropped → not a design of a day rule (architecture, process or review record)
+- GS080 · plans/2026-09-30-db-readiness-phase6-plan.md · dropped → slice 2
+- GS082 · plans/2026-10-01-warn-hide-kept-plan.md · MATCH · D469, D471 (hidden warning kept; built)
+
+### Closing count
+
+- C: 176 in the list — 91 checked (44 the assumed-landing family, MATCH; the rest by hand), 85 dropped to slices 1, 2, 3, 5, 6/7, 8, 9.
+- W: 1,430 in the list — 739 checked (218 read one by one, 521 labels passed), 691 dropped by file to slices 1, 2, 3, 5, 6/7, 8, 9, 10.
+- G: 188 in the lists — the day's own designs checked, the rest dropped by subject.
+- Nothing left.

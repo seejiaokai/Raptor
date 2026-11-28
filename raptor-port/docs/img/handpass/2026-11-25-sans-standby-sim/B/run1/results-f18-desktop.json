@@ -1,0 +1,121 @@
+[
+ {
+  "scn": "f18",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "f18",
+  "size": "desktop",
+  "id": "f18.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "f18-f18.post-postout-open-desktop.png, f18-f18.post-postout-sheet-desktop.png"
+ },
+ {
+  "scn": "f18",
+  "size": "desktop",
+  "id": "f18.wk1",
+  "what": "set-up: A Fri 17 SC SPARE · B Sat 18 AVALON MAIN (FLIES ticked) · C Sun 19 BB MAIN — Ranger on each",
+  "ok": true,
+  "note": "\"Ranger planned\" / \"Ranger planned\" / \"the BB shift has no usable times, so nobody on it earns OIL for this day\""
+ },
+ {
+  "scn": "f18",
+  "size": "desktop",
+  "id": "f18.E",
+  "what": "set-up: a new flying line on Wed (+ Wave → Flying wave) 13:00–14:00",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 3\",\"kind\":\"\",\"standalone\":false,\"cs\":\"T13\",\"to\":\"13:00\",\"ld\":\"14:00\",\"n\":1}"
+ },
+ {
+  "scn": "f18",
+  "size": "desktop",
+  "id": "f18.wk2",
+  "what": "set-up: D Tue 21 untimed AMT rear seat · E Wed 22 T13 13:00–14:00 FCP · F Fri 24 untimed OFT front seat then cancelled · G Sat 25 a new duty desk row — Ranger on each",
+  "ok": true,
+  "note": "\"Ranger — SANS from Fri 17 Jul: no availability filed\" / \"Ranger — SANS from Fri 17 Jul: no availability filed\" / \"Ranger — SANS from Fri 17 Jul: no availability filed\" / cancelled true / \"Duty has no usable times, so nobody on it earns OIL for this day\""
+ },
+ {
+  "scn": "f18",
+  "size": "desktop",
+  "id": "f18.mon",
+  "what": "the demo week 2 already holds Ranger on Mon 20 (flying lines) — a saved week counts them",
+  "ok": "REC",
+  "note": "[\"WAVE 1 08:40–10:05,08:40–10:05\",\"WAVE 2 10:30–11:55\"] · Jul 20: .waves[0].formations[0].aircraft[0].p .waves[1].formations[0].aircraft[0].p | Jul 21: .sims.amt[0].w | Jul 22: .waves[2].formations[0].aircraft[0].p | Jul 23: .ground[1].more[0] | Jul 24: .sims.oft[1].p | Jul 25: .dutywaves[0].rows[1].id | Jul 26: nothing"
+ },
+ {
+  "scn": "f18",
+  "size": "desktop",
+  "id": "f18.wk",
+  "what": "Edit Schedule left on week 1 (the standby week)",
+  "ok": "REC",
+  "note": "13/07/2026"
+ },
+ {
+  "scn": "f18",
+  "size": "desktop",
+  "id": "f18.bell1",
+  "what": "his reminder names D and E (Tue 21, Wed 22) and the demo Mon 20 flight — never A, B, C (standby), F (cancelled) or G (duty desk)",
+  "ok": true,
+  "note": "lit true · 1 line(s) · Mark all read in view · [unread] \"You're SANS from Fri 17 Jul.\" \"\" \"You're planned on Mon 20, Tue 21, Wed 22 Jul with nothing filed. Tap to file for availability.\"",
+  "pics": "f18-f18-bell1-desktop.png"
+ },
+ {
+  "scn": "f18",
+  "size": "desktop",
+  "id": "f18.tap",
+  "what": "the reminder tapped: what it opened (D2340: the first listed day)",
+  "ok": "REC",
+  "note": "page \"inputs\" · month \"July 2026\" · window \"⠿Mon 20 JulDay flying✕FigurePilotsWSOsRequired to fly––Available2718SANS committ\"",
+  "pics": "f18-f18-tap-tapped-desktop.png, f18-f18-tap-after-desktop.png"
+ },
+ {
+  "scn": "f18",
+  "size": "desktop",
+  "id": "f18.hex",
+  "what": "N11: Hex (another member) signed in — no reminder about Ranger's days",
+  "ok": true,
+  "note": "lit false · 0 line(s) · Mark all read none · empty",
+  "pics": "f18-f18-hex-desktop.png"
+ },
+ {
+  "scn": "f18",
+  "size": "desktop",
+  "id": "f18.saber",
+  "what": "N11: Saber's bell carries no SANS reminder of Ranger's",
+  "ok": true,
+  "note": "lit false · 0 line(s) · Mark all read none · empty",
+  "pics": "f18-f18-saber-desktop.png"
+ },
+ {
+  "scn": "f18",
+  "size": "desktop",
+  "id": "f18.offD",
+  "what": "set-up: Saber removes the Tue 21 AMT row (D)",
+  "ok": true,
+  "note": "note \"Sim row removed — AMT · B AMT\"",
+  "pics": "f18-f18-offD-srdel-desktop.png"
+ },
+ {
+  "scn": "f18",
+  "size": "desktop",
+  "id": "f18.bell2",
+  "what": "D off: the reminder drops Tue 21 (Mon 20, Wed 22 Jul)",
+  "ok": true,
+  "note": "lit false · 1 line(s) · Mark all read none · [read] \"You're SANS from Fri 17 Jul.\" \"\" \"You're planned on Mon 20, Wed 22 Jul with nothing filed. Tap to file for availability.\"",
+  "pics": "f18-f18-bell2-desktop.png"
+ },
+ {
+  "scn": "f18",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

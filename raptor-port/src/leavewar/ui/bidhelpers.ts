@@ -12,6 +12,14 @@ export function readApprove(viewer = getState().viewer): boolean {
   try { return localStorage.getItem(approveKey(viewer)) !== 'off' } catch { return true }
 }
 
+/** a decide button's look for the state it stands in (his D2881 — the war's one decided look, SheetActions.tsx's head):
+ *  the decided one solid and ringed, the other grey, nothing while waiting — `mine` is the state the button decides
+ *  ("approved" for Approve) */
+export function decideLook(state: string | null | undefined, mine: 'approved' | 'refused'): string {
+  if (state !== 'approved' && state !== 'refused') return ''
+  return state === mine ? ' lit dec-ring' : ' dec-off'
+}
+
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 /** "9–11 Nov" (one month), "30 Nov – 2 Dec" (one year), "30 Dec 26 – 2 Jan 27" (across a year's end, where only the year
  *  tells the span from its mirror); one day reads "9 Nov". The window's own title — the one-day window's "Tue 3 Nov"

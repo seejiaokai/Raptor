@@ -98,6 +98,8 @@
   .appr-bal { font-weight: 700; }
   .appr-bal small { font-size: 10.5px; font-weight: 500; color: var(--ink-3); }
   .appr-bal.neg { color: var(--hard); }
+  /* his balance never typed: the amber "–" (D2823 — question 23's item 3; "Not typed" did not fit the column) */
+  .appr-bal .nt { color: #F2C879; font-weight: 600; }
   .appr-avail { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; }
   .appr-av { display: grid; grid-template-columns: 40px auto; column-gap: 6px; align-items: baseline; font-variant-numeric: tabular-nums; font-weight: 700; }
   /* a row's name stands right against its number; a name longer than its column runs out to the left, never over the number */
@@ -113,10 +115,17 @@
   .appr-btns { display: flex; gap: 8px; justify-content: flex-end; }
   /* the built size and row height, in his drawings' colours (D1427 — r22-2-desk at rest, r22-3-desk lit; measured off the
      drawings): at rest a dark fill with a faint edge, the words green and red; lit, solid green or red with dark words */
-  .appr-ok, .appr-no { min-height: 36px; min-width: 100px; padding: 0 12px; border-radius: 8px; border: 1px solid #27303B; background: #12161B;
+  /* …and with the decided look's drawn mark before the word (his D2881, "size unchanged") still 100 wide, the pair one
+     width, their edges where they were: the side padding 12 → 3 and the mark 12px with a 4px gap (below), so the mark
+     and "Approved" stand clear inside the edge (the words centred in the 100: about 6px each side in this PC's letters,
+     4 in Arial's wider ones) — the phone line keeps its own padding below */
+  .appr-ok, .appr-no { min-height: 36px; min-width: 100px; padding: 0 3px; border-radius: 8px; border: 1px solid #27303B; background: #12161B;
     font: inherit; font-size: 14px; font-weight: 800; cursor: pointer; white-space: nowrap; }
-  .appr-ok { color: #7EE2A0; }
-  .appr-no { color: #FF8A92; }
+  .appr-btns .dec-ic { width: 12px; height: 12px; margin-right: 4px; }
+  /* …at rest the faint edge its own colour, its words' colour at 45%, and lit the window's cyan ring, the other grey — the
+     war's one decided look, its recipe in bidpicker.css (THE DECIDED LOOK — his D2881) */
+  .appr-ok { color: #7EE2A0; border-color: rgba(126, 226, 160, .45); }
+  .appr-no { color: #FF8A92; border-color: rgba(255, 138, 146, .45); }
   .appr-ok.lit { background: #3FBF6F; border-color: #3FBF6F; color: #06210F; }
   .appr-no.lit { background: #E5535F; border-color: #E5535F; color: #2A0507; }
   .appr-ok:disabled:not(.lit), .appr-no:disabled:not(.lit) { opacity: .4; cursor: default; }

@@ -1,0 +1,23 @@
+msq-s4w-lib v1 who=wc run=r10b-overseas port=4755
+wc-r10 v1
+tick false
+fix 15  act hasc | LL | kids:c k-ll s-w whole
+portions 
+fix 21  act hasc | LL | kids:c k-ll s-w top
+fix OD  act hasc | OD | kids:c k-od s-a whole jl jr raptor /  act hasc | OD | kids:c k-od s-a whole jl jr raptor
+posted {"line":"On 14 Dec: archived.","card":""} gone act hasc | PO | kids:c whole
+ROW PASS | fixture | desk-chromium overseas | pending LL 15 Dec, AM LL 21 Dec, OD 16–18 Dec on Cinch and Anvil, then Post out overseas from 14 Dec | saw: line: On 14 Dec: archived. card:  | 20 Dec: gone weekend act hasc | PO | kids:c whole
+ROW RECORD | A1/F-S8 OD middle day | desk-chromium overseas | tap Cinch's OD on 17 Dec (gone) and Anvil's on 17 Dec (ordinary) | saw: GONE: bid-picker: Cinch 16–18 Dec Auto-approve ✕ No manning row turns amber or red OD Whole day · change it on the Inputs page till 18 Dec Document Whole day AM PM All 3 days Thu 17 LL 19 OL 19 OIL −3 CCL 0 FCL −3 PL −3 EL −3 CL −3 CSE OD Grant OIL ⋯ ### ORDINARY: bid-picker: Anvil 16–18 Dec Auto-approve ✕ No manning row is amber or red OD Whole day · change it on the Inputs page till 18 Dec Docum
+tick on true
+ROW PASS | A1/F-S7(e) R3b/D1541 | desk-chromium overseas | gone day 15 Dec holding his pending LL: window=bid-picker; Auto-approve on; LL pressed again | saw: before: gone outlv act hasc bx-gone selcell | LL | kids:c k-ll s-w whole | after: gone outlv act hasc bx-gone | LL | kids:c k-ll s-a whole | said(now): [] | said(+600ms): [] | toast: 
+ROW PASS | A1 R3c-2 | desk-chromium overseas | closed the window, opened the same day again | saw: window: bid-picker: Cinch Tue 15 Dec Auto-approve ✕ Placed Saber · Thu 26 Nov, 18:10 · Approved Saber · Thu 26 Nov, 18:10 Approved Refuse ⇄Move Delete till 15 Dec Document Whole day AM PM Pick a range LL 22 OL 22 OIL 0 CCL 3 FCL 0 PL 0 EL 0 CL 0 CSE OD Grant OIL ⋯ | said: []
+ROW PASS | A10 AM-only gone day | desk-chromium overseas | tap Cinch's AM LL on 21 Dec (gone) | saw: bid-picker: Cinch Mon 21 Dec Auto-approve ✕ No manning row turns amber or red Placed Saber · Thu 26 Nov, 18:10 Approve Refuse ⇄Move Delete till 21 Dec Document Whole day AM PM Pick a range <LL 22 <OL 22 <OIL −0.5 <CCL 2.5 <FCL −0.5 <PL −0.5 <EL −0.5 <CL −0.5 CSE OD Grant OIL ⋯
+cell 21 gone outlv act hasc bx-gone | LL | kids:c k-ll s-w top
+ROW PASS | F-S7(a) empty gone day | desk-chromium overseas | tap Cinch's empty gone day 22 Dec | saw: postout-sheet: Cinch Post out ✕ POSTING ✓ Overseas Sqn Delete SANS PO FROM Mon 14 Dec 26 ▾ On 14 Dec: archived. ↶Undo post out | leave buttons: 0 | "Place leave": 0
+ROW RECORD | F-S7(b) drag straddling P | desk-chromium overseas | drag Cinch 10–14 Dec (14 Dec gone), Auto-approve on, LL | saw: sheet: select-sheet: Cinch 10–14 Dec · 5 days Auto-approve ✕ No manning row turns amber or red till 14 Dec Document Whole day AM PM LL 19 OL 19 OIL −3 CCL 0 FCL −3 PL −3 EL −3 CL −3 CSE OD Grant OIL ⋯ | notes: [] | toast:  | cells: 10: act hasc/LL ; 11: act hasc/LL ; 12:weekend act hasc/LL ; 13:weekend act pofin bx-last hasc/LL PO ; 14:gone outlv act hasc bx-gone/LL
+ROW RECORD | F-S7(c) drag wholly after P | desk-chromium overseas | drag Cinch 22–23 Dec (both gone) | saw: sheet: select-sheet: Cinch 22–27 Dec · 6 days Auto-approve ✕ No manning row turns amber or red till 27 Dec Document Whole day AM PM LL 16 OL 16 OIL −3 CCL 0 FCL −3 PL −3 EL −3 CL −3 CSE OD Grant OIL ⋯ | more: sel-extra-row=CSE OD Grant OIL ⋯ Attach Other Post out Post in ; sel-more-menu=Attach Other Post out Post in ; sel-file-ATCH=Attach ; sel-file-OTH=Other ; sel-postout=Post out ; sel-postin=Po
+appr lines ["appr-line-snap: Cinch IP posting out 14 Dec · Overseas Sqn LL Mon 21 Dec, AM › 0.5 day 19 26 Nov 18:10 · by Saber Approve Refuse"]
+STEP ERROR F-S7f-approvals bring: could not bring into view: [data-testid="appr-line-snap"] [data-testid="appr-approve"]
+ROW NOT REACHED | F-S7f-approvals | desk-chromium overseas | step threw | saw: bring: could not bring into view: [data-testid="appr-line-snap"] [data-testid="appr-approve"]
+errors []
+DONE 5 PASS 0 FAIL 4 OTHER of 9

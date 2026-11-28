@@ -168,51 +168,22 @@ describe('the OIL control on the day sheet', () => {
   })
 })
 
-describe('placing leave on a day outside the posting dates', () => {
-  it('the posting sheet hands the day to the bid sheet, and back on close', () => {
-    setPostOut(P, '2026-02-01')
-    render(<Matrix />)
-    const day = '2026-09-08'
-    fireEvent.click(screen.getByTestId(`cell-${P}-${day}`))
-    // The common tap still manages the POSTING — that is what he means most
-    // of the time, and it must not change.
-    expect(screen.getByTestId('postout-sheet')).toBeTruthy()
-    expect(screen.queryByTestId('bid-picker')).toBeNull()
-    // …with one button through to placing something.
-    fireEvent.click(screen.getByTestId('postout-place'))
-    expect(screen.queryByTestId('postout-sheet')).toBeNull()
-    expect(screen.getByTestId('bid-picker')).toBeTruthy()
-  })
-
-  it('the leave placed there actually lands, on a day he has already left', () => {
-    setPostOut(P, '2026-02-01')
-    render(<Matrix />)
-    const day = '2026-09-08'
-    fireEvent.click(screen.getByTestId(`cell-${P}-${day}`))
-    fireEvent.click(screen.getByTestId('postout-place'))
-    fireEvent.click(screen.getByTestId('bid-LL'))
-    expect(getState().grid[P]?.[day]).toBe('LL')
-  })
-
-  it('and OIL can be recorded there too, which is why the button says both', () => {
-    setPostOut(P, '2026-02-01')
-    render(<Matrix />)
-    const day = '2026-09-08'
-    fireEvent.click(screen.getByTestId(`cell-${P}-${day}`))
-    fireEvent.click(screen.getByTestId('postout-place'))
-    fireEvent.click(more('bid-oil'))
-    fireEvent.change(screen.getByTestId('oil-why'), { target: { value: 'Clearing' } })
-    fireEvent.click(screen.getByTestId('oil-give'))
-    expect(creditOn(P, day)?.note).toBe('Clearing')
-  })
-
-  it('the switch is for THAT cell only — the next day opens on the posting sheet again', () => {
+/* "PLACE LEAVE OR OIL HERE INSTEAD…" IS GONE (his D2727, 26 Nov 26 — "ok remove it"). This block held his 20 Sep 26 wish:
+   four tests of the button that handed a gone day to the bid sheet ("hands the day to the bid sheet, and back on close",
+   "the leave placed there actually lands…", "and OIL can be recorded there too…", "the switch is for THAT cell only…").
+   They pinned a door he has now removed, so they are replaced by its absence; an input for such a day is filed from the
+   Inputs page, which takes any date, and OIL from the OIL tracker (D79) — both unchanged and pinned where they live. */
+describe('a day outside the posting dates opens the posting sheet only (D2727)', () => {
+  it('the posting sheet, with no way through to the bid sheet — and the next day the same', () => {
     setPostOut(P, '2026-02-01')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-2026-09-08`))
-    fireEvent.click(screen.getByTestId('postout-place'))
-    expect(screen.getByTestId('bid-picker')).toBeTruthy()
-    fireEvent.click(screen.getByTestId('bid-cancel'))
+    // The common tap still manages the POSTING — that is what he means most of the time, and it must not change.
+    expect(screen.getByTestId('postout-sheet')).toBeTruthy()
+    expect(screen.queryByTestId('bid-picker')).toBeNull()
+    expect(screen.queryByTestId('postout-place')).toBeNull()
+    expect(screen.queryByText(/Place leave or OIL here instead/)).toBeNull()
+    fireEvent.click(screen.getByTestId('postout-cancel'))
     fireEvent.click(screen.getByTestId(`cell-${P}-2026-09-09`))
     expect(screen.getByTestId('postout-sheet')).toBeTruthy()
   })

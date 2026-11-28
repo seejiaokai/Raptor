@@ -468,7 +468,12 @@ export const DEFAULT_FIGURE_ID = 'lve'
 /** The numbers a two-line box shows: his figure on top, and each used line's days under it. Since M5a the box beside a
  *  name reads the one engine (ui/MatrixRows.tsx nameLines); the old reader of a FIGURE here (`figureLines`) went with the
  *  figures sheet and the phone's frozen copy that called it. */
-export interface FigureLines { top: number; used: { label: string; tone: Tone; value: number }[] }
+export interface FigureLines {
+  top: number
+  used: { label: string; tone: Tone; value: number }[]
+  /** his balance was never typed (D2746): the box draws the amber "–" in place of `top`, no words (D2823) */
+  nt?: true
+}
 
 /* (`selectableFigure` — which figures the grid's drag down a column could credit — went with that drag, D1491; M5a) */
 

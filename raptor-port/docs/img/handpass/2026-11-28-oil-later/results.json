@@ -1,0 +1,68 @@
+{
+ "R": [
+  {
+   "sc": "P",
+   "size": "desktop",
+   "step": "✕ signs nothing",
+   "pass": true,
+   "note": "{\"cur\":\"— name —\",\"sked\":\"— name —\",\"plan\":\"— name —\",\"appr\":\"— name —\",\"pub\":\"Publish day [locked]\",\"count\":\"(no count)\",\"pending\":false}"
+  },
+  {
+   "sc": "P",
+   "size": "desktop",
+   "step": "Escape signs nothing",
+   "pass": true,
+   "note": "{\"cur\":\"— name —\",\"sked\":\"— name —\",\"plan\":\"— name —\",\"appr\":\"— name —\",\"pub\":\"Publish day [locked]\",\"count\":\"(no count)\",\"pending\":false}"
+  },
+  {
+   "sc": "P",
+   "size": "desktop",
+   "step": "published; the note does not call the Training unanswered",
+   "pass": true,
+   "note": "Saturday published and approved"
+  },
+  {
+   "sc": "P",
+   "size": "desktop",
+   "step": "View-only Sched — RECORD what it shows of the sign-off",
+   "pass": null,
+   "note": "APPROVEDCinch"
+  },
+  {
+   "sc": "P",
+   "size": "desktop",
+   "step": "the Leave War credits Bane his Saturday (Yes · FO)",
+   "pass": true,
+   "note": "FO*"
+  },
+  {
+   "sc": "P",
+   "size": "phone",
+   "step": "✕ signs nothing",
+   "pass": true,
+   "note": "{\"cur\":\"— name —\",\"sked\":\"— name —\",\"plan\":\"— name —\",\"appr\":\"— name —\",\"pub\":\"Publish day [locked]\",\"count\":\"(no count)\",\"pending\":false}"
+  },
+  {
+   "sc": "P",
+   "size": "phone",
+   "step": "published; the note does not call the Training unanswered",
+   "pass": true,
+   "note": "Saturday published and approved"
+  },
+  {
+   "sc": "P",
+   "size": "phone",
+   "step": "View-only Sched — RECORD what it shows of the sign-off",
+   "pass": null,
+   "note": ""
+  },
+  {
+   "sc": "P",
+   "size": "phone",
+   "step": "the Leave War credits Bane his Saturday (Yes · FO)",
+   "pass": true,
+   "note": "FO*"
+  }
+ ],
+ "errs": []
+}

@@ -1,0 +1,17 @@
+msq-s4w-lib v1 who=wc run=r18-webkit port=4755
+wc-r18 v1
+in view after DEC: 2026-12-01,2026-12-02,2026-12-03,2026-12-04,2026-12-05,2026-12-06,2026-12-07,2026-12-08,2026-12-09,2026-12-10,2026-12-11,2026-12-12,2026-12-13,2026-12-14
+posted gone act hasc | PO | c whole
+ROW PASS | A1 phone: gone day holding his pending LL | phone-webkit | Piston: pending LL 8 Dec; Post out Delete 7 Dec; tap 8 Dec | saw: bid-picker: Piston Tue 8 Dec Auto-approve ✕ No manning row turns amber or red Placed Saber · Thu 26 Nov, 18:22 Approve Refuse ⇄Move Delete till 8 Dec Document Whole day AM PM Pick a range LL −1 OL −1 OIL −1 CCL −1 FCL −1 PL −1 EL −1 CL −1 CSE OD Grant OIL ⋯ | cell y 388–406, sheet top 551, hit the cell
+ROW PASS | A1 phone R3b | phone-webkit | Auto-approve on, LL pressed again | saw: ["span-note: 8 Dec 26 kept pending — He posts out on 7 Dec: refuse or delete it."] / +600ms ["span-note: 8 Dec 26 kept pending — He posts out on 7 Dec: refuse or delete it."] | cell gone outlv act hasc bx-gone selcell | LL | c k-ll s-w whole
+ROW PASS | A1 phone R3c-2 | phone-webkit | closed by ✕, the day tapped again | saw: []
+ROW PASS | A1 phone: empty gone day | phone-webkit | tap Piston's empty 9 Dec | saw: postout-sheet: Piston Post out ✕ POSTING Overseas Sqn ✓ Delete SANS PO FROM Mon 7 Dec 26 ▾ On 7 Dec the app deletes him automatically. Days he flew keep his puck. ↶Undo post out | cell y 388–406, sheet top 535, hit the cell | leave buttons 0
+ROW PASS | A3 phone: new Post in | phone-webkit | Sidewinder 8 Dec → ⋯ → Post in | saw: bid-picker: Sidewinder Post in ✕ PI FROM Tue 8 Dec 26 ▾ Their first day in the squadron. Days before it are blank and count nobody — leave can still be dated there. Post in
+ROW PASS | A3/D2743 phone: pre-post-in day holding an entry | phone-webkit | tap Sidewinder's 3 Dec (holds his LL, before his 8 Dec post-in) | saw: bid-picker: Sidewinder Thu 3 Dec Auto-approve ✕ No manning row turns amber or red Placed Saber · Thu 26 Nov, 18:23 Approve Refuse ⇄Move Delete till 3 Dec Document Whole day AM PM Pick a range LL 11 OL 11 OIL −1 CCL −1 FCL −1 PL −1 EL −1 CL −1 CSE OD Grant OIL ⋯ | cell y 442–460, sheet top 551, hit the cell
+ROW PASS | A3/D2743 phone: empty pre-post-in day | phone-webkit | tap Sidewinder's empty 2 Dec | saw: postin-sheet: Sidewinder Post in ✕ PI FROM Tue 8 Dec 26 ▾ Posted in on 8 Dec 26 — on the manpower from that day. Days before it count nobody, but leave can still be dated there. ↶Undo post in | cell y 442–460, sheet top 628, hit the cell
+ROW PASS | A3 phone Q3 | phone-webkit | press the day under the open Post in sheet, then again | saw: first: none (covered false at cell-mamba-2026-12-02) | second: postin-sheet (covered false at cell-mamba-2026-12-02)
+ranger 10 gone act hasc | PO | c whole dec open
+ROW PASS | A8 phone: Ranger his in-service day | phone-webkit | as Ranger tap 2026-12-04, ⋯ | saw: bid-picker: Ranger Fri 4 Dec ✕ No manning row turns amber or red till 4 Dec Document Whole day AM PM Pick a range LL 11.5 OL 11.5 OIL −1 CCL 1 FCL 4 PL 0.5 EL 3 CL −1 CSE OD ⋯ | ⋯ bid-more-menu=Attach | posting parts 
+ROW RECORD | A8 phone: Ranger a blank day after his post-out | phone-webkit | as Ranger tap 2026-12-10, ⋯ | saw: bid-picker: Ranger Thu 10 Dec ✕ No manning row turns amber or red till 10 Dec Document Whole day AM PM Pick a range LL 11.5 OL 11.5 OIL −1 CCL 1 FCL 4 PL 0.5 EL 3 CL −1 CSE OD ⋯ | ⋯ bid-more-menu=Attach | posting parts 
+errors []
+DONE 9 PASS 0 FAIL 1 OTHER of 10

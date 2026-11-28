@@ -111,6 +111,10 @@ describe('the selection sheet', () => {
     expect(screen.queryByTestId('sel-pending')).toBeNull()
     const row = screen.getByTestId('sel-approve').closest('.bidsheet-row')!
     expect([...row.querySelectorAll('button.approve, button.refuse')].map(b => b.textContent)).toEqual(['Approve', 'Refuse'])
+    /* each its drawn tick or cross before its word, and never ringed or grey — a picked range is never one decided state
+       (his D2881) */
+    expect([...row.querySelectorAll('button.approve, button.refuse')].map(b => b.querySelector('svg.dec-ic')?.getAttribute('data-mark'))).toEqual(['approve', 'refuse'])
+    for (const b of row.querySelectorAll('button.approve, button.refuse')) expect(b.className).not.toMatch(/dec-ring|dec-off/)
   })
 
   it('no Medical row for anyone, and no Decide row for a member', () => {

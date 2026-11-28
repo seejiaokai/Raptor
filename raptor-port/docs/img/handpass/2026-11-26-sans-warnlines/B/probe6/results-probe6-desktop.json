@@ -1,0 +1,54 @@
+[
+ {
+  "scn": "probe6",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "probe6",
+  "size": "desktop",
+  "id": "harpoon",
+  "what": "a tight-turn man's pucks on Wed 15 (demo, no SANS): week against board",
+  "ok": "REC",
+  "note": "week[flying line@Wed(2.0.0.0.p):no ring/TT ; flying line@Wed(2.1.0.0.p):no ring/TT] paint [\"none |  | rgba(0, 0, 0, 0)\",\"none |  | rgba(0, 0, 0, 0)\"] ·· board[flying line(2.0.0.0.p):no ring/TT ; flying line(2.1.0.0.p):no ring/TT ; crew list (week):no ring/TT] paint [\"none |  | rgba(0, 0, 0, 0)\",\"none |  | rgba(0, 0, 0, 0)\",\"rgb(138, 150, 163) 2px 0px 0px 0px inset |  | rgba(0, 0, 0, 0)\"]",
+  "pics": "probe6-week-harpoon-clip-desktop.png, probe6-board-harpoon-clip-desktop.png"
+ },
+ {
+  "scn": "probe6",
+  "size": "desktop",
+  "id": "harpoon-open",
+  "what": "the same, Wed 15's list opened",
+  "ok": "REC",
+  "note": "week[flying line@Wed(2.0.0.0.p):amber/TT ; flying line@Wed(2.1.0.0.p):amber/TT] class [\"puck wfoc advf\",\"puck wfoc advf\"]",
+  "pics": "probe6-week-open-harpoon-clip-desktop.png"
+ },
+ {
+  "scn": "probe6",
+  "size": "desktop",
+  "id": "dirty",
+  "what": "a tight-turn man's pucks on Wed 15 (demo, no SANS): week against board",
+  "ok": "REC",
+  "note": "week[flying line@Wed(2.0.0.0.w):no ring/TT ; flying line@Wed(2.1.0.0.w):no ring/TT] paint [\"none |  | rgba(0, 0, 0, 0)\",\"none |  | rgba(0, 0, 0, 0)\"] ·· board[flying line(2.0.0.0.w):no ring/TT ; flying line(2.1.0.0.w):no ring/TT ; crew list (week):no ring/TT] paint [\"none |  | rgba(0, 0, 0, 0)\",\"none |  | rgba(0, 0, 0, 0)\",\"rgb(138, 150, 163) 2px 0px 0px 0px inset |  | rgba(0, 0, 0, 0)\"]",
+  "pics": "probe6-week-dirty-clip-desktop.png, probe6-board-dirty-clip-desktop.png"
+ },
+ {
+  "scn": "probe6",
+  "size": "desktop",
+  "id": "dirty-open",
+  "what": "the same, Wed 15's list opened",
+  "ok": "REC",
+  "note": "week[flying line@Wed(2.0.0.0.w):amber/TT ; flying line@Wed(2.1.0.0.w):amber/TT] class [\"puck r wfoc advf\",\"puck r wfoc advf\"]",
+  "pics": "probe6-week-open-dirty-clip-desktop.png"
+ },
+ {
+  "scn": "probe6",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

@@ -298,8 +298,10 @@ describe('Approvals’ one writer (8.3, 8.5)', () => {
       expect(decideRequests([lineOf('bane', [DAYS[0]!], 'approved')])[0]!.kind, 'Approvals').toBe('done')
       expect(setBidStates([{ personId: 'bane', date: DAYS[1]! }], 'approved').decided, 'the bid windows').toBe(1)
     })
-    /* THE FIXES' ROUND 2, R2-4: "Approve what I enter" (placeApproved) kept a refused day pending with a guessed reason */
-    it('"Approve what I enter" on his days from the date: kept pending, with the door’s reason (R2-4)', () => {
+    /* THE FIXES' ROUND 2, R2-4: "Approve what I enter" (placeApproved) kept a refused day pending with a guessed reason —
+       since D1541 a posting with no Delete outcome refuses nothing, so here it lands approved; the kept-pending case (a
+       Delete posting) is held by R2-4's one-day and drag-window tests in m4page.test.tsx and the browser's R3b */
+    it('"Approve what I enter" on his days from a posting that is no Delete: placed approved, nothing pending (R2-4, D1541)', () => {
       setMemberTodayForTests('2026-01-20')
       expect(setPostOut('bane', DAYS[1]!, 'none')).toBe(true)
       const r = placeApproved([{ personId: 'bane', date: DAYS[2]! }], 'LL')

@@ -1,0 +1,29 @@
+msq-s4w-lib v1 who=wb run=r4 port=4754
+wb-r4 v1
+rows ["row-dice:Reaper","row-shaft:Anvil","row-snap:Cinch","row-pump:Piston","row-bane:Ranger","row-stiff:Saber","row-mamba:Sidewinder","row-nact:Warden","row-slipway:Drifter","row-razer:Ridge","row-glass:Basher","row-freak:Echo","row-slash:Blade","row-taipan:Cobra","row-beams:Comet","row-chaps:Forge","row-boosh:Havoc","row-prowler:Hunter","row-harpoon:Trident","row-split:Vandal","row-dj:Ace","row-salsa:Saint","row-bruise:Gambit","row-pike:Nomad","row-casper:Outlaw","row-fantom:Diesel","row-vegas:Vapor","row-drill:Ledger","row-nasty:Quill","row-dirty:Relay"]
+ROW PASS | F-S5(a) | desk chromium | new PO sheet, SANS chosen, date → 21 Dec (On 21 Dec: becomes SANS. | Mon 21 Dec 26 ▾); exit: ✕ [landed on [object Object]]; then tap Cinch 14 Dec; then ⋯ → Post out | saw: after exit: [page=leavewar] gone=[] 14Dec.class=" act" | next tap: [bid leaveBtns head=Cinch Mon 14 Dec Auto-approve ✕ page=leavewar] | reopened PO: overseas=✓ Overseas Sqn[on] ; delete=Delete ; sans=SANS ; date=Mon 14 Dec 26 ▾ ; line=On 14 Dec: archived.
+ROW PASS | F-S5(b) | desk chromium | new PO sheet, SANS chosen, date → 21 Dec (On 21 Dec: becomes SANS. | Mon 21 Dec 26 ▾); exit: Escape (focus where it is); then tap Cinch 14 Dec; then ⋯ → Post out | saw: after exit: [page=leavewar] gone=[] 14Dec.class="act" | next tap: [bid leaveBtns head=Cinch Mon 14 Dec Auto-approve ✕ page=leavewar] | reopened PO: overseas=✓ Overseas Sqn[on] ; delete=Delete ; sans=SANS ; date=Mon 14 Dec 26 ▾ ; line=On 14 Dec: archived.
+ROW FAIL | F-S5(c) | desk chromium | new PO sheet, SANS chosen, date → 21 Dec (On 21 Dec: becomes SANS. | Mon 21 Dec 26 ▾); exit: a press on the day itself [landed on ERR press: [data-testid="cell-snap-2026-12-14"] is covered at its centre by sheet-scrim]; then tap Cinch 14 Dec; then ⋯ → Post out | saw: after exit: [bid poNew head=Cinch Post out ✕ page=leavewar] gone=[] 14Dec.class="act selcell" | next tap: [] | reopened PO: 
+ROW RECORD | F-S5(d1) | desk chromium | new PO sheet, SANS chosen, date → 21 Dec (On 21 Dec: becomes SANS. | Mon 21 Dec 26 ▾); exit: a press on the top bar's blank part [landed on sheet-scrim]; then tap Cinch 14 Dec; then ⋯ → Post out | saw: after exit: [page=leavewar] gone=[] 14Dec.class="act" | next tap: [bid leaveBtns head=Cinch Mon 14 Dec Auto-approve ✕ page=leavewar] | reopened PO: overseas=✓ Overseas Sqn[on] ; delete=Delete ; sans=SANS ; date=Mon 14 Dec 26 ▾ ; line=On 14 Dec: archived.
+ROW RECORD | F-S5(d2) | desk chromium | new PO sheet, SANS chosen, date → 21 Dec (On 21 Dec: becomes SANS. | Mon 21 Dec 26 ▾); exit: a press on the blank grid bar (between Bidding closed and Legend) [landed on sheet-scrim]; then tap Cinch 14 Dec; then ⋯ → Post out | saw: after exit: [page=leavewar] gone=[] 14Dec.class="act" | next tap: [bid leaveBtns head=Cinch Mon 14 Dec Auto-approve ✕ page=leavewar] | reopened PO: overseas=✓ Overseas Sqn[on] ; delete=Delete ; sans=SANS ; date=Mon 14 Dec 26 ▾ ; line=On 14 Dec: archived.
+ROW RECORD | F-S5(e) | desk chromium | new PO sheet, SANS chosen, date → 21 Dec (On 21 Dec: becomes SANS. | Mon 21 Dec 26 ▾); exit: a press on ANOTHER man's day (Anvil, 14 Dec) [landed on sheet-scrim]; then tap Cinch 14 Dec; then ⋯ → Post out | saw: after exit: [page=leavewar] gone=[] 14Dec.class="act" | next tap: [bid leaveBtns head=Cinch Mon 14 Dec Auto-approve ✕ page=leavewar] | reopened PO: overseas=✓ Overseas Sqn[on] ; delete=Delete ; sans=SANS ; date=Mon 14 Dec 26 ▾ ; line=On 14 Dec: archived.
+ROW RECORD | F-S5(f) | desk chromium | new PO sheet, SANS chosen, date → 21 Dec (On 21 Dec: becomes SANS. | Mon 21 Dec 26 ▾); exit: a press on another day of Cinch's row (10 Dec) [landed on ERR press: [data-testid="cell-snap-2026-12-10"] is covered at its centre by sheet-scrim]; then tap Cinch 14 Dec; then ⋯ → Post out | saw: after exit: [bid poNew head=Cinch Post out ✕ page=leavewar] gone=[] 14Dec.class="act selcell" | next tap: [] | reopened PO: 
+ERROR locator.boundingBox: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('[data-testid="cell-snap-2026-12-14"]').first()[22m
+
+    at Module.press (C:\Users\User\projects\Raptor\.claude\worktrees\msq-s4-walk-c1b6e5\raptor-port\scripts\handpass\msq\msq-s4w-lib.mjs:123:23)
+    at day (C:\Users\User\AppData\Roaming\Claude\side-session-notes\local_eeb07289-ed8b-483b-8502-00962970c7d1\s4-chat201\wb\wb-h.mjs:39:44)
+    at after (C:\Users\User\AppData\Roaming\Claude\side-session-notes\local_eeb07289-ed8b-483b-8502-00962970c7d1\s4-chat201\wb\wb-r4.mjs:21:11)
+    at async file:///C:/Users/User/AppData/Roaming/Claude/side-session-notes/local_eeb07289-ed8b-483b-8502-00962970c7d1/s4-chat201/wb/wb-r4.mjs:57:15
+errors branch []
+errors []
+DONE 2 PASS 1 FAIL 4 OTHER of 7
+ROW RECORD | F-S5(d1) main | desk chromium main | main: PO rows in the window, SANS, 21 Dec; exit: a press on the top bar's blank part [landed on sheet-scrim] | saw: [page=leavewar] gone=[]
+ROW RECORD | F-S5(d2) main | desk chromium main | main: PO rows in the window, SANS, 21 Dec; exit: a press on the blank grid bar (between Bidding closed and Legend) [landed on sheet-scrim] | saw: [page=leavewar] gone=[]
+ROW RECORD | F-S5(e) main | desk chromium main | main: PO rows in the window, SANS, 21 Dec; exit: a press on ANOTHER man's day (Anvil, 14 Dec) [landed on sheet-scrim] | saw: [page=leavewar] gone=[]
+ROW RECORD | F-S5(f) main | desk chromium main | main: PO rows in the window, SANS, 21 Dec; exit: a press on another day of Cinch's row (10 Dec) [landed on ERR press: [data-testid="cell-snap-2026-12-10"] is covered at its centre by sheet-scrim] | saw: [bid leaveBtns poNew head=Cinch Mon 14 Dec Auto-approve ✕ page=leavewar] gone=[]
+ROW RECORD | F-S5(b) main | desk chromium main | main: PO rows in the window, SANS, 21 Dec; exit: Escape (focus where it is) | saw: [page=leavewar] gone=[]
+errors main []
+errors []
+DONE 2 PASS 1 FAIL 9 OTHER of 12

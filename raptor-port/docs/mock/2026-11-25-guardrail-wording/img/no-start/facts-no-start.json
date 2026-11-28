@@ -1,0 +1,86 @@
+[
+ {
+  "scene": "NS",
+  "size": "desktop",
+  "what": "Monday ATTACH row (as it ships)",
+  "v": {
+   "i": 8,
+   "row": {
+    "prog": "ATTACH",
+    "str": "",
+    "end": "",
+    "who": "bruise",
+    "rmks": "Keen for any wave",
+    "srcType": "Attach",
+    "src": "imrldi1wg0jccvm",
+    "srcv": "16ney8h",
+    "rid": "rimrldi1wg0jccvm"
+   }
+  }
+ },
+ {
+  "scene": "NS",
+  "size": "desktop",
+  "what": "Thursday: items a start-and-end rule would flag",
+  "v": [
+   "flight WAVE 1 VL: start \"\" end \"14:10\"",
+   "sim oft EP-4: start \"\" end \"1030\"",
+   "duty SXO: start \"\" end \"\""
+  ]
+ },
+ {
+  "scene": "NS",
+  "size": "desktop",
+  "what": "Thursday warnings today",
+  "v": [
+   "DOUBLE_BOOK: Conflict: HQ ENGAGEMENT 08:45–16:30 & RU AD (T/O 12:45, landing 14:10)",
+   "DOUBLE_BOOK: Conflict: RU BFM (T/O 16:45, landing 18:10) & APPOINTMENT 17:00–18:30",
+   "NO_BRIEF: Misses RU AD brief 10:25–12:45: HQ ENGAGEMENT 08:45–16:30",
+   "DEBRIEF: Misses RU AD debrief 14:10–16:10: HQ ENGAGEMENT 08:45–16:30",
+   "DEBRIEF: Misses RU BFM debrief 18:10–20:10: APPOINTMENT 17:00–18:30",
+   "ILLEGAL_CREW: Crew not authorised: OCU pilot Wildcard & CAT D WSO Pixel on RU AD (T/O 12:45). An OCU needs an instructor in the other seat."
+  ]
+ },
+ {
+  "scene": "NS",
+  "size": "phone",
+  "what": "Monday ATTACH row (as it ships)",
+  "v": {
+   "i": 8,
+   "row": {
+    "prog": "ATTACH",
+    "str": "",
+    "end": "",
+    "who": "bruise",
+    "rmks": "Keen for any wave",
+    "srcType": "Attach",
+    "src": "imrldi1wg0jccvm",
+    "srcv": "16ney8h",
+    "rid": "rimrldi1wg0jccvm"
+   }
+  }
+ },
+ {
+  "scene": "NS",
+  "size": "phone",
+  "what": "Thursday: items a start-and-end rule would flag",
+  "v": [
+   "flight WAVE 1 VL: start \"\" end \"14:10\"",
+   "sim oft EP-4: start \"\" end \"1030\"",
+   "duty SXO: start \"\" end \"\""
+  ]
+ },
+ {
+  "scene": "NS",
+  "size": "phone",
+  "what": "Thursday warnings today",
+  "v": [
+   "DOUBLE_BOOK: Conflict: HQ ENGAGEMENT 08:45–16:30 & RU AD (T/O 12:45, landing 14:10)",
+   "DOUBLE_BOOK: Conflict: RU BFM (T/O 16:45, landing 18:10) & APPOINTMENT 17:00–18:30",
+   "NO_BRIEF: Misses RU AD brief 10:25–12:45: HQ ENGAGEMENT 08:45–16:30",
+   "DEBRIEF: Misses RU AD debrief 14:10–16:10: HQ ENGAGEMENT 08:45–16:30",
+   "DEBRIEF: Misses RU BFM debrief 18:10–20:10: APPOINTMENT 17:00–18:30",
+   "ILLEGAL_CREW: Crew not authorised: OCU pilot Wildcard & CAT D WSO Pixel on RU AD (T/O 12:45). An OCU needs an instructor in the other seat."
+  ]
+ }
+]

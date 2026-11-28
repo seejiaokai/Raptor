@@ -1,0 +1,54 @@
+msq-s4w-lib v1 who=wd run=p1 port=4756
+wd-probe v1
+{"id":"row-dice","cls":"","name":"Reaper","ncells":306,"firstCell":"cell-dice-2026-03-01"}
+{"id":"row-shaft","cls":"","name":"Anvil","ncells":306,"firstCell":"cell-shaft-2026-03-01"}
+{"id":"row-snap","cls":"","name":"Cinch","ncells":306,"firstCell":"cell-snap-2026-03-01"}
+{"id":"row-pump","cls":"","name":"Piston","ncells":306,"firstCell":"cell-pump-2026-03-01"}
+{"id":"row-bane","cls":"","name":"Ranger","ncells":306,"firstCell":"cell-bane-2026-03-01"}
+{"id":"row-stiff","cls":"me","name":"Saber","ncells":306,"firstCell":"cell-stiff-2026-03-01"}
+{"id":"row-mamba","cls":"","name":"Sidewinder","ncells":306,"firstCell":"cell-mamba-2026-03-01"}
+{"id":"row-nact","cls":"","name":"Warden","ncells":306,"firstCell":"cell-nact-2026-03-01"}
+{"id":"row-slipway","cls":"","name":"Drifter","ncells":306,"firstCell":"cell-slipway-2026-03-01"}
+{"id":"row-razer","cls":"","name":"Ridge","ncells":306,"firstCell":"cell-razer-2026-03-01"}
+{"id":"row-glass","cls":"","name":"Basher","ncells":306,"firstCell":"cell-glass-2026-03-01"}
+{"id":"row-freak","cls":"","name":"Echo","ncells":306,"firstCell":"cell-freak-2026-03-01"}
+{"id":"row-slash","cls":"","name":"Blade","ncells":306,"firstCell":"cell-slash-2026-03-01"}
+{"id":"row-taipan","cls":"","name":"Cobra","ncells":306,"firstCell":"cell-taipan-2026-03-01"}
+{"id":"row-beams","cls":"","name":"Comet","ncells":306,"firstCell":"cell-beams-2026-03-01"}
+{"id":"row-chaps","cls":"","name":"Forge","ncells":306,"firstCell":"cell-chaps-2026-03-01"}
+{"id":"row-boosh","cls":"","name":"Havoc","ncells":306,"firstCell":"cell-boosh-2026-03-01"}
+{"id":"row-prowler","cls":"","name":"Hunter","ncells":306,"firstCell":"cell-prowler-2026-03-01"}
+{"id":"row-harpoon","cls":"","name":"Trident","ncells":306,"firstCell":"cell-harpoon-2026-03-01"}
+{"id":"row-split","cls":"","name":"Vandal","ncells":306,"firstCell":"cell-split-2026-03-01"}
+{"id":"row-dj","cls":"","name":"Ace","ncells":306,"firstCell":"cell-dj-2026-03-01"}
+{"id":"row-salsa","cls":"","name":"Saint","ncells":306,"firstCell":"cell-salsa-2026-03-01"}
+{"id":"row-bruise","cls":"","name":"Gambit","ncells":306,"firstCell":"cell-bruise-2026-03-01"}
+{"id":"row-pike","cls":"","name":"Nomad","ncells":306,"firstCell":"cell-pike-2026-03-01"}
+{"id":"row-casper","cls":"","name":"Outlaw","ncells":306,"firstCell":"cell-casper-2026-03-01"}
+{"id":"row-fantom","cls":"","name":"Diesel","ncells":306,"firstCell":"cell-fantom-2026-03-01"}
+{"id":"row-vegas","cls":"","name":"Vapor","ncells":306,"firstCell":"cell-vegas-2026-03-01"}
+{"id":"row-drill","cls":"","name":"Ledger","ncells":306,"firstCell":"cell-drill-2026-03-01"}
+{"id":"row-nasty","cls":"","name":"Quill","ncells":306,"firstCell":"cell-nasty-2026-03-01"}
+{"id":"row-dirty","cls":"","name":"Relay","ncells":306,"firstCell":"cell-dirty-2026-03-01"}
+{"id":"row-stuff","cls":"","name":"Scope","ncells":306,"firstCell":"cell-stuff-2026-03-01"}
+{"id":"row-wolf","cls":"","name":"Static","ncells":306,"firstCell":"cell-wolf-2026-03-01"}
+{"id":"row-ammo","cls":"","name":"Cinder","ncells":306,"firstCell":"cell-ammo-2026-03-01"}
+{"id":"row-pain","cls":"","name":"Rune","ncells":306,"firstCell":"cell-pain-2026-03-01"}
+{"id":"row-psy","cls":"","name":"Cutter","ncells":306,"firstCell":"cell-psy-2026-03-01"}
+{"id":"row-spaceman","cls":"","name":"Dash","ncells":306,"firstCell":"cell-spaceman-2026-03-01"}
+{"id":"row-plasma","cls":"","name":"Fable","ncells":306,"firstCell":"cell-plasma-2026-03-01"}
+{"id":"row-riddler","cls":"","name":"Ghost","ncells":306,"firstCell":"cell-riddler-2026-03-01"}
+{"id":"row-sufa","cls":"","name":"Grit","ncells":306,"firstCell":"cell-sufa-2026-03-01"}
+{"id":"row-rocky","cls":"","name":"Hex","ncells":306,"firstCell":"cell-rocky-2026-03-01"}
+{"id":"row-xray","cls":"","name":"Ryder","ncells":306,"firstCell":"cell-xray-2026-03-01"}
+{"id":"row-divot","cls":"","name":"Vector","ncells":306,"firstCell":"cell-divot-2026-03-01"}
+{"id":"row-shrek","cls":"","name":"Wisp","ncells":306,"firstCell":"cell-shrek-2026-03-01"}
+{"id":"row-prism","cls":"","name":"Recon","ncells":306,"firstCell":"cell-prism-2026-03-01"}
+{"id":"row-haowen","cls":"","name":"Talisman","ncells":306,"firstCell":"cell-haowen-2026-03-01"}
+{"id":"row-bapster","cls":"","name":"Wildcard","ncells":306,"firstCell":"cell-bapster-2026-03-01"}
+{"id":"row-spanner","cls":"","name":"Cotter","ncells":306,"firstCell":"cell-spanner-2026-03-01"}
+{"id":"row-torque","cls":"","name":"Ratchet","ncells":306,"firstCell":"cell-torque-2026-03-01"}
+{"id":"row-gizmo","cls":"","name":"Widget","ncells":306,"firstCell":"cell-gizmo-2026-03-01"}
+chain ["cell-snap-2026-12-14| act","row-snap|","|mxbody","|mx","|mx-wrap","|mx-outer lw-sda lw-pinsda"]
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

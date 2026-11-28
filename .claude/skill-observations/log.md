@@ -1546,6 +1546,61 @@ sides.
 **Suggested improvement:** A runner loop wraps each run in a time limit (`timeout 600 node …`) and prints the exit code beside the result counts, so a hang costs one limit and shows as such; the script's `finish` closes each browser with its own short limit.
 **Principle:** In a queue of independent runs, bound each one, so a stall in teardown cannot hold the rest.
 
+### Observation 1070: A handoff's opening line told the next chat to work in a folder its file tools refuse
+
+**Status:** OPEN
+**Date:** 25 Nov 26
+**Session context:** chat 182, the SANS leftovers — the opening line said "In the main Raptor folder, switch to claude/sans-leftovers-179"; the chat started in its own worktree (numbered past 1069, held on another branch)
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** the opening line's "where to work" sentence
+
+**Issue:** The new chat switched the main folder to the branch, then found its Write tool refused every file there ("This session is running in an isolated git worktree … edits there … may corrupt the user's primary working copy"). It put the main folder back to detached and checked the branch out in its own worktree instead. Two minutes lost, and a risk: a chat that did not test a write first could have run a build, a test or a commit in one folder while its edits landed in another.
+**Suggested improvement:** In the session-handoff skill's opening-line template, name the branch, not a folder: "check out <branch> where your file tools write (your own worktree, or the main folder if you started there); make one write first, and if it is refused, check out the branch where it is allowed". Keep any named folder as a fallback only.
+**Principle:** A handoff can say which branch the work is on, but not which folder the next session may write to — that depends on how the session was started; tell it to prove one write before switching anything.
+
+### Observation 1075: a walker's new scripts failed the pull request's code check after the walk
+
+**Status:** OPEN
+**Date:** 2026-11-25
+**Session context:** chat 185 closing the bug check of the SANS standby / untimed-sim batch (pull request 848); numbered past 1074, the highest on another open branch
+**Skill:** New skill candidate: walk-scripts (raptor-port/docs/walk-scripts.md)
+**Type:** open-source
+**Phase/Area:** writing a walk script; committing the walk
+
+**Issue:** Two walk scripts committed with the walk's pictures copied page data out with JSON.parse(JSON.stringify(...)) inside page.evaluate. The pull request's code check (React Doctor, run on every changed file, scripts included) failed on both lines; it was found only when the run came back red, after the walk was committed and pushed.
+**Suggested improvement:** In the walk-scripts guide's "before you commit a walk" steps, run the project's changed-files lint (lint:changed) on the new scripts before the walk's commit, and give the standard disable-comment reason for an in-page JSON copy (the data leaves the page as JSON anyway).
+**Principle:** Anything committed is checked by the same gate as product code; run the gate's changed-files check on helper scripts before committing them, not only on source files.
+
+### Observation 1076: A rule that turns a silent case into a flag breaks every test that leaned on the silence
+
+**Status:** OPEN
+**Date:** 25 Nov 26
+**Session context:** Chat 186, the warning list's SANS line for "nothing filed" (owner D2579): 36 older tests in 19 files failed once the seed's SANS men, planned with nothing filed, started raising the line.
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** after the red-first tests go green — the full suite
+
+**Issue:** The new behaviour was built red-first and its own tests passed, but the change made a case that had always been silent raise a warning. Dozens of tests about other things (tight turns, hidden warnings, day counts, parity with the original app) had quietly depended on that silence through shared seed data. Updating their expected counts would have hidden the dependency; each had to be sorted by subject.
+**Suggested improvement:** In the skill, after green: when a change makes a previously silent case raise something, search the tests for every reader of the seed data that case touches, and sort each failing test by its subject — a test ABOUT the rule follows the new rule; a test where the case is incidental gets a named fixture that makes its premise explicit (here `coverSans`), never a bumped count.
+**Principle:** Silence is an implicit precondition. When it ends, make the precondition explicit in the tests that relied on it, instead of rewriting their numbers.
+
+### Observation 1077: A helper's report file belongs in the session's scratch folder, not a shared work folder
+
+**Status:** OPEN
+**Date:** 25 Nov 26
+**Session context:** chats 179 and 181 — blind code reads and walkers writing their reports to files (numbered past 1063, held on another branch; renumbered 1064 -> 1068 at chat 182's merge of main)
+**Skill:** dispatching-parallel-agents
+**Type:** open-source
+**Phase/Area:** the brief's "write your report to a file" instruction
+
+**Issue:** In chat 179 one subagent was refused writing its report under a shared work folder on another drive and returned the report as text instead (the walkers in the same run could write there). In chat 181 every helper told to write under the session's own scratch folder wrote its report without trouble.
+**Suggested improvement:** In the dispatching guide's brief template, name the session's scratch folder as the default place for a helper's report file; a shared work folder only where the helper is known to have write access to it, with "if the write is refused, return the whole report as text" as the fallback line.
+**Principle:** Point a helper's output at a location its sandbox is sure to allow, and give it a stated fallback, so a refused write never silently loses the report.
+
+
+(Merge of main into claude/sans-warnlines-185, chat 186, 25 Nov 26: this entry was numbered 1068 on that branch, a number main also used; renumbered 1077.)
+
 ### Observation 1079: The handoff's "next chat number" lags when parallel chats are unmerged
 
 **Status:** OPEN
@@ -1558,6 +1613,250 @@ sides.
 **Issue:** The next free chat number was taken from the merged handoff file only. Parallel chats' blocks live on their own unmerged branches, so the merged file named a number four behind; one of the "free" numbers was already a live session's title.
 **Suggested improvement:** In the session-handoff skill, before writing "Next chat number", take the highest of: the merged handoff, every remote branch's commit subjects (`git log --all --since=7.days --format=%s | grep -o '^Chat [0-9]*'`) and the open session titles (list_sessions); a new chat re-checks the same three before naming itself.
 **Principle:** A counter shared by parallel workers must be read from every place they write, not from the one that is merged.
+
+### Observation 1089: "Could not read main's side" was a whole-tree file limit, not main's side
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** chat 203, pull request 850's code check (React Doctor 0.9.18) red on GitHub and on the PC
+**Skill:** New skill candidate: gate-failure triage
+**Type:** open-source
+**Phase/Area:** reading a failed check before fixing it
+
+**Issue:** The code check said the tool "could not read origin/main's side". The known cause (a raw NUL byte in a changed file) was checked and ruled out, then the changed-file count, then the base; an hour went before a helper instrumented the tool's own code and found the real gate: a fixed 5,000-file limit on the WHOLE tree's JS/TS files (5,017 here, 4,763 of them walk scripts), which skips one check, marks the head scan incomplete and so never starts the comparison. The wrapper script tested the "degraded" flag first and printed only that, hiding the skipped-check reason that named the limit.
+**Suggested improvement:** When a check wraps a tool, print every reason the tool's report gives (degraded AND skipped-check reasons), not the first matched; and when a failure's message names one cause, read the tool's own report fields before testing hypotheses about that cause. Numbered over the other branches' 1086–1088.
+**Principle:** A wrapper's summary of a failure is a hypothesis; the tool's raw report is the evidence — read every field of it before chasing the summary's named cause.
+
+### Observation 1090: A fix made after staging a merge never entered the merge commit
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** chat 203, bringing main into claude/sans-warnlines-185
+**Skill:** New skill candidate: merge-conflict resolution
+**Type:** open-source
+**Phase/Area:** committing a resolved merge
+
+**Issue:** The clashes were resolved and staged (git add -A), the document check then failed, a fix was made in the working files, the check passed — and the merge was committed from the index, without the fix. The pushed merge carried the doubled ruling row; it was caught only by a later git status.
+**Suggested improvement:** After any fix made between staging and committing, stage again (or commit with the changed paths named) and read git status --short before the commit; a check that passes on the working files proves nothing about the index.
+**Principle:** A check run on the working tree vouches for the working tree, not for what the commit will hold.
+
+### Observation 1095: An exported copy for an outside reader made from memory, not from the guide's steps
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** chat 207 — a copy of the branch for Astra's blind scenario design (numbered past other branches' 1091–1094)
+**Skill:** New skill candidate: outside-reader-copy (today the steps live in `raptor-port/docs/codex-guide.md`)
+**Type:** open-source
+**Phase/Area:** making the reader's copy
+
+**Issue:** The host typed the export from memory as a plain `git archive HEAD`; it pulled about 5.4 GB of old pictures and ran past five minutes before being stopped and redone. The guide's step 1 already gives the picture-free export (the same failure it records from 19 Nov 26), and its step 2 (take this round's handoff block and evidence sheet out of the copy) was skipped too.
+**Suggested improvement:** One script in the repo that makes the copy — picture-free export, this round's handoff block and sheets replaced by a line, `git init` and commit, the checks of step 3 — so the steps are run, never retyped; the guide's step list points to it.
+**Principle:** A multi-step recipe that is retyped each time will be retyped from memory; put it in a script the guide names.
+
+### Observation 1096: A comparison run drove another walker's server, and the printed build name was not checked
+
+**Status:** OPEN
+**Date:** 27 Nov 26
+**Session context:** chat 207 — comparing walker C's phone tap on this build, `main` and the commit before the column change
+**Skill:** New skill candidate: build-comparison runs (today `raptor-port/docs/walk-scripts.md`)
+**Type:** open-source
+**Phase/Area:** serving a second build beside running walkers
+
+**Issue:** The loop served `main`'s build on a port a walker already held; the second server failed to start, the curl printed the walker's build name (the branch's), and the run went on — its "main" result was the branch again. Only reading the printed name afterwards caught it.
+**Suggested improvement:** A comparison script takes the expected main-script name per build and stops when the served page names another; ports come from a free-port check, never a fixed list beside live walkers.
+**Principle:** A run that prints the identity of what it tested must also refuse to go on when that identity is wrong.
+
+### Observation 1101: "Only stored data" judged without asking whether a saved copy is re-compared against a moving input
+
+**Status:** OPEN
+**Date:** 27 Nov 26
+**Session context:** chat 208 — building his SANS warning-line answers; a new field added to each warning for the drop's note. (Numbered past other branches' 1097–1100.)
+**Skill:** bug-check order (§2b, "what is not a finding")
+**Type:** open-source
+**Phase/Area:** the host's own triage of a designer's warning, before the reads
+
+**Issue:** A scenario designer warned that a changed warning could make a published day read as changed. The host waved it off as "only data already stored" (D56). Both blind code readers then found the real case: the new field was SAVED with each published day and COMPARED against a fresh judgement, and one of its inputs (a posting's start date) changes by itself with time — so NEW days published after the change would also turn "Not yet signed" when the posting ran. The walk could not see it either: nothing shows on screen until the clock crosses the date.
+**Suggested improvement:** In §2b, before applying "only stored data": for every field a change adds to anything that is saved and later compared (a published copy, a snapshot, a hash), ask "can today's re-computation of this field differ from the saved one without anyone changing anything — a date passing, a posting running, a setting moving?" If yes, it hurts new data and is a finding. Add the same question to the code reader's brief.
+**Principle:** Data saved and later compared against a fresh computation breaks whenever an input of that computation can change by itself; "old data only" holds only when nothing saved from now on can drift.
+### Observation 1085: A helper agent may be refused writing its report to a file
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** chat 196, S4 bug check — two blind code-reader helpers (Opus, Fable) and a drawing-check helper (numbered past 1084, the highest on another open branch)
+**Skill:** New skill candidate: reader and walker briefs (the bug-check order's section 4 briefs)
+**Type:** open-source
+**Phase/Area:** a reader brief naming where the helper writes its report
+
+**Issue:** Both code-reader helpers were told to write their whole report to a scratch file; the file tool refused each, saying subagents should return findings as text. Each returned the report in its final message, which the host saved by hand. The drawing-check helper wrote its report file without trouble, so the refusal is not constant.
+**Suggested improvement:** A reader brief asks for the report both ways — written to the named file where the tool allows it, and returned whole in the final message — and the host saves the returned copy when the file is missing. The working note that says helper reports are written to a file gets the same line.
+**Principle:** When a delegated worker's output must survive, ask for it on two channels and check which one arrived, since a tool can refuse one of them without warning.
+
+### Observation 1091: A walker resumed after the app restarts loses its file writes — the host saves its report
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** chat 201, the S4 posting sheet's fanned-out walk (four Opus walkers); numbered past 1090 on other open branches
+**Skill:** New skill candidate: fanned-out walk (`raptor-port/docs/walk-scripts.md` §2, the walker's brief)
+**Type:** open-source
+**Phase/Area:** the walker's brief — "write your report to a named file", and resuming a stopped helper
+
+**Issue:** the desktop app restarted mid-walk and stopped two of four background walkers. Resumed by a message, both
+finished, but each was refused when it wrote its report file ("a helper may not write report files") and handed the
+whole report back in its message instead; the two walkers never stopped wrote theirs. The host had to save both
+reports itself, and the background lock-refresh loop the host had started died with the restart too, so the checks
+lock sat stale for 32 minutes while other chats waited on it.
+**Suggested improvement:** in walk-scripts.md §2 and the host's resume step: (1) after a restart, before resuming any
+helper, refresh every lock the host holds and restart its refresh loop; (2) a resumed helper's brief says "if the
+report file write is refused, hand the whole report back in your message" — and the host saves it to the named file
+at once; (3) the host checks each helper's report file exists before counting the walk.
+**Principle:** a restart silently drops a session's background loops and can narrow a resumed helper's permissions;
+recheck every standing resource (locks, loops, write rights) after a restart, before relying on what was set up before.
+
+### Observation 1102: A blank "never set" state must also blank every value saved alongside the first real entry
+
+**Status:** OPEN
+**Date:** 2026-11-27
+**Session context:** chat 208, the Leave War's "Not typed" balance build (numbered past 1096, the highest on the open branches)
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** choosing the red tests for a new "empty until first entered" state
+
+**Issue:** A figure was made to read "Not typed" (empty boxes) instead of a count from 0, but the count kept running underneath. The first save of the main figure copied a companion part (the carried-forward days) from that hidden count, so a first entry silently saved a value nobody saw or typed. Both blind code readers caught it; the build's own red tests, all about what the screen shows, did not.
+**Suggested improvement:** when a test list is written for a new "not yet set" state over a value still computed underneath, add one red test per save door: the FIRST real entry into the blank state writes only what the person typed, and every companion part saved with it comes from what was shown (blank → its zero), never from the hidden computed value.
+**Principle:** hiding a computed default on screen does not remove it from the save path; test that the first write after a blank state takes nothing the person could not see.
+
+
+### Observation 1110: A "keep both sides" merge of the handoff file drops a block's closing marker
+
+**Status:** OPEN
+**Date:** 28 Nov 26
+**Session context:** chat A213 bringing `main` into `claude/sans-warnlines-185`; numbered past other branches' 1103–1109.
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** resolving a clash in the handoff file at a merge
+
+**Issue:** Two branches each rewrote a different block of the handoff file at the same place. Git's clash region held each side's block WITHOUT its closing `<!-- /now -->` (the shared closing line sat after the region), so "keep both sides" left the first block unclosed. The document check still passed; it was seen only by reading the result.
+**Suggested improvement:** after any merge that touches the handoff file, count opening and closing block markers and require them equal (a line in the merge steps, or the document check failing on an unclosed block).
+**Principle:** when a merge keeps both sides of a clash between two delimited blocks, the delimiter both sides shared appears once — check the block markers balance before committing.
+
+### Observation 1108: A blind reader opened the forbidden file before it reached the brief's exclusion
+
+**Status:** OPEN
+**Date:** 28 Nov 26
+**Session context:** [OIL-LATER-PASSES-ON] bug check, chat 210 — Astra's blind scenario design (numbered past 1107, held on another branch)
+**Skill:** claudex-loop
+**Type:** open-source
+**Phase/Area:** building a brief for the other provider — blindness rules
+
+**Issue:** The command line said only "read the brief at <path> and do what it asks"; the brief listed the files the reader must not open. The reader explored the repository first, opened the handoff file (which describes the build and its known open points), and only then read the brief and its exclusion. Its report said so. The scenario list was therefore only partly blind.
+**Suggested improvement:** In the brief-building step, put the blindness rules in the command line itself, before the pointer to the brief: "Do not open X, Y, Z. First read <brief>." Ask the reader to state at the top of its report whether it opened anything on the excluded list.
+**Principle:** A reader explores before it reads instructions held in a file; any rule that must hold from the first step goes in the prompt itself, not only in a file the prompt points to.
+
+### Observation 1114: a jsdom test of a "within N ms" guard fails on a busy CI runner
+
+**Status:** OPEN
+**Date:** 28 Nov 26
+**Session context:** chat 197, pull request 861's one red unit test (numbered past 1112–1113, held on other open branches)
+**Skill:** systematic-debugging
+**Type:** open-source
+**Phase/Area:** test failures that pass locally — before calling a red a flake
+
+**Issue:** A double-tap guard counts a press only if its window closes within 1 s of it (`performance.now()`). In a real browser the close follows its press within a frame; in jsdom the close waits for the whole save and re-render, which on a CI runner running four test files at once once took over 1 s. The test failed on GitHub only; locally every tap took under 100 ms. Re-running would have hidden it, and it would have come back.
+**Suggested improvement:** In the skill's "flaky / passes locally" branch, add one step: list every wall-clock comparison on the path (`performance.now`, `Date.now`, timers measured against real time) and ask whether a synchronous test gesture's own compute time can cross the threshold. If so, reproduce it red first with an injected clock that jumps at each reading, then fix the TEST so the gesture runs with the clock standing still (a helper that pins `performance.now` for the gesture), never with a longer wait or a bigger threshold.
+**Principle:** When an app measures human timing with the wall clock, a test that simulates the human must not let machine speed be part of what is measured. Freeze the clock for the simulated gesture, and prove it with a deliberately slow clock.
+
+### Observation 1058: A record script's all-or-nothing restore erased a helper's live edit
+
+**Status:** OPEN
+**Date:** 25 Nov 26
+**Session context:** chat 173, the readings-lapse fix — the host recorded a ruling while an Opus helper was editing DECISIONS.md in the same working copy
+**Skill:** New skill candidate: helpers-in-one-working-copy
+**Type:** open-source
+**Phase/Area:** running a record-keeping script beside a helper that writes the same files
+
+**Issue:** the host ran the rulings script while a builder helper was adding a block to DECISIONS.md. The script failed on an unrelated check and "put every file back exactly as it was" — restoring DECISIONS.md over the helper's insert. The helper reported the block done; two blind readers then found it missing.
+**Suggested improvement:** before running any script that rewrites or restores shared files, check no helper is writing in that working copy (or give the helper its own worktree); after such a run, re-check the files a running helper reported changing.
+**Principle:** a tool that restores files on failure is a writer too; two writers in one copy need the same care as two people.
+
+### Observation 1063: A shared working folder switched branch under the host and its helpers
+
+**Status:** OPEN
+**Date:** 25 Nov 26
+**Session context:** chat 180, [READINGS-LAPSE-FIX] round 2 and drawings (numbered past 1061–1062 on other branches)
+**Skill:** New skill candidate: session-start (where a chat works)
+**Type:** open-source
+**Phase/Area:** choosing a working copy at the start of a chat; briefing helpers
+
+**Issue:** the chat started in the main checkout, switched it to its job's branch tip on a detached HEAD, and briefed two helpers to write there. Minutes later another chat switched the same checkout to its own branch. The helpers' new files survived only because they were untracked; the sources they read vanished mid-job (one helper read them out of git by commit), and the host had to move to the job's own worktree and copy the helpers' output across.
+**Suggested improvement:** a chat whose job has its own branch works in that branch's own worktree from its first write, never in a checkout other chats start in; every helper's brief names that worktree as its only place to read and write.
+**Principle:** a working copy shared by several live sessions is not a place to do work, only a place to start from; give each job its own copy before the first write.
+
+### Observation 1081: A published artifact page blocks styles a script adds — test the switch where it is served
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** chat 180 — an interactive mock-up (the amendment-colours try-out) published as a claude.ai Artifact; numbered past 1080, the highest on other branches
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** interactive mock-ups / testing before showing
+
+**Issue:** The try-out's colour switch wrote a new `<style>` element from script. Every local Playwright check passed, but on the published page the host's security rules blocked the added style, so the switch did nothing on the owner's screen and he saw the old colours under the new label. A second fault on the same page: plain `<a href>` links to full-size pictures replaced the whole page inside the viewer, with no way back on an iPhone.
+
+**Suggested improvement:** Add to the mock-up guide's interactive section: (1) never add style elements or stylesheets from script on a page that will be published — keep all CSS fixed in the page and change only classes and CSS variables (`element.style.setProperty`); (2) picture links open with `target="_blank"`; (3) the page's test asserts both (no `createElement('style')`, every picture link has a target).
+
+**Principle:** A local test does not reproduce the host's security policy: anything that depends on the page being served (styles injected by script, navigation inside a framed viewer) must be ruled out by construction and checked by a test, because the local run will pass.
+
+### Observation 1082: Searching every branch for the next free lesson number
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** Chat 192 writing D2737 as a design-guide lesson
+**Skill:** New skill candidate: next-free-number (lessons, rulings, skill notes)
+**Type:** open-source
+**Phase/Area:** taking a number before writing a numbered entry
+
+**Issue:** `git grep` over every remote ref failed with "Argument list too long" (about 150 branches), so the first search found nothing; a loop of `git show <ref>:<file>` per branch found lessons up to 147 on another branch. The fresh reader, searching fewer branches, then advised renumbering to 102, a number already taken there.
+**Suggested improvement:** One small script that takes a file and a heading pattern, loops `git show` over every ref (never one `git grep` with all refs as arguments), and prints the highest number and which branch holds it; the lesson, ruling and skill-note steps call it, and a reader's brief names the number already checked so it does not re-advise.
+**Principle:** A search that fails on too many arguments must fail loudly, not read as "none found"; numbering checks across many branches belong in one tested script, not retyped per chat.
+
+### Observation 1083: Answers to follow-up questions skipped the pre-send check
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** Chat 192 taking his answers on the rulings audit's round-2 page
+**Skill:** New skill candidate: answering-his-follow-ups (D2140's check applied to chat replies)
+**Type:** open-source
+**Phase/Area:** replying in chat to "is this still applicable?" / "shouldn't X be able to…?"
+
+**Issue:** Taking over a questions page another chat wrote, the agent summarised it for him and changed one recommendation (H) to match a try-out's default without saying the page recommended otherwise, and passed the try-out builder's defaults off as recommendations. Then it answered three follow-ups from one area file and a code grep each, never searching the rulings on main and the open branches (this branch was 97 commits behind main; two other branches held about 120 newer rulings). He noticed: "seems like u are making errors", and asked for an Opus and a Fable check.
+**Suggested improvement:** Before re-presenting a page someone else wrote, or answering any follow-up that recommends something: (1) search every rulings source by subject, including main and every open branch of that area; (2) never change a page's recommendation in a summary without naming the change and why; (3) mark a builder's default as the builder's, not as a recommendation; (4) when the branch is far behind main, bring main in (or read main's rulings) before answering.
+**Principle:** A chat reply that recommends something is "put to him" as much as a page is, and needs the same check; a summary must not quietly change what the source it summarises says.
+
+### Observation 1099: An overnight run of pushes used up the day's preview builds
+
+**Status:** OPEN
+**Date:** 27 Nov 26
+**Session context:** chat 202's /overnight run — one build job ([END-TIME-GUARD]) through a FULL check, with three fix rounds and re-walks, each pushed as it landed
+**Skill:** overnight
+**Type:** open-source
+**Phase/Area:** Part 2, "At every commit" (the branch pushed at each commit)
+
+**Issue:** The build branch was pushed about ten times in the night (build, reads, walk, three fixes, three re-walks, records). Every push of a code branch starts a preview build. With the other chats' pushes, the preview host refused the morning's build ("Deployment rate limited — retry in 24 hours"), so the morning report had no preview link for his look, the one thing the night was for. Numbered after 1097–1098 on other branches.
+**Suggested improvement:** In Part 2, push a code branch only when a pushed state is needed (the pull request opened for its checks, a fix ready for its re-walk is not one — walkers work from the local checkout), and batch evidence and pictures into one push at the end; before the last push, check the preview host's remaining builds for the day, so the final state is the one that gets a preview.
+**Principle:** When a scarce daily allowance (preview builds, API calls) is spent by every intermediate save, the final deliverable can be the one that gets refused; batch intermediate saves locally and spend the allowance on the state someone will look at.
+
+### Observation 1113: A long-lived records branch brought level with main trips two checks that exist only for the merge
+
+**Status:** OPEN
+**Date:** 28 Nov 26
+**Session context:** chat 211 — bringing main (317 commits ahead) into the records branch claude/readings-lapse-fix-fdbb3c before its own pull request (1111 and 1112 are held on other branches)
+**Skill:** New skill candidate: merge-main-into-long-branch (beside records-merge.mjs's own steps)
+**Type:** open-source
+**Phase/Area:** after the clashes are settled, before the commit
+
+**Issue:** two failures came from the merge itself, not from either side. (1) A size limit had to rise because both sides' lines were joined; raising it inside the merge commit failed the document check ("a ceiling changed in a commit that also touches raptor-port/src" — the merge brings main's code in), so the unpushed merge commit had to be amended and the raise moved to its own commit. (2) While the merge was uncommitted, the branch's new readings check counted main's code comments as "lines this branch adds" (it diffs against the old merge base) and listed eleven; once committed they were not new.
+**Suggested improvement:** records-merge.mjs's closing advice (or the shipping steps' merge section) says: settle the clashes, commit the merge with every limit as main had it, then raise any limit the joined lines need in a separate notes-only commit; and read a check's "new" findings again after the merge commit, never during it.
+**Principle:** A check that compares against a merge base gives answers about the merge-in-progress, not the branch; commit the merge first, then judge what the check says, and keep changes that a check confines to notes-only commits out of a merge commit.
 
 ### Observation 1092: A window copied for a mock-up loses what its lists show
 

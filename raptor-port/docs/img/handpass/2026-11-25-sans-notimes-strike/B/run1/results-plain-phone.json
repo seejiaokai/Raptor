@@ -1,0 +1,152 @@
+[
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "plain-pl.post-postout-open-phone.png, plain-pl.post-postout-sheet-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.0",
+  "what": "Saber opens Edit Schedule",
+  "ok": "REC",
+  "note": "page editsched",
+  "pics": "plain-pl-0-editsched-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.line",
+  "what": "set-up: a new flying line on Sat (+ Wave → Flying wave), no times typed",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 1\",\"kind\":\"\",\"standalone\":false,\"cs\":\"\",\"to\":\"\",\"ld\":\"\",\"n\":1}"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.1",
+  "what": "the Scheduler Board of Sat 18 → + Wave → Flying wave: a new line, no times",
+  "ok": "REC",
+  "note": "{\"label\":\"WAVE 1\",\"kind\":\"\",\"standalone\":false,\"cs\":\"\",\"to\":\"\",\"ld\":\"\",\"n\":1}",
+  "pics": "plain-pl-1-line-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.2",
+  "what": "the seat tapped: the crew list reads (Ranger)",
+  "ok": "REC",
+  "note": "armed 5.0.0.0.p · [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" printed \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" · \"SANS Avail · 0 free\"",
+  "pics": "plain-pl-2-armed-clip-phone.png, plain-pl-2-sans-clip-phone.png, plain-pl-2-armed-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.3",
+  "what": "his name tapped: placed; the note at the foot",
+  "ok": "REC",
+  "note": "placed true · note \"the WAVE 1 line has no usable times, so nobody on it earns OIL for this day\"",
+  "pics": "plain-pl-3-note-clip-phone.png, plain-pl-3-picked-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.4",
+  "what": "take-off 13:00 and landing 14:00 typed",
+  "ok": true,
+  "note": "{\"to\":\"13:00\",\"ld\":\"14:00\"}",
+  "pics": "plain-pl-4-times-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.5",
+  "what": "the board's Undo takes back the last change (the landing)",
+  "ok": true,
+  "note": "{\"to\":\"13:00\",\"ld\":\"\"} · note \"Undid: a landing time\"",
+  "pics": "plain-pl-5-undo-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.6",
+  "what": "the board's Redo puts it back",
+  "ok": true,
+  "note": "{\"to\":\"13:00\",\"ld\":\"14:00\"} · note \"Redid: a landing time\"",
+  "pics": "plain-pl-6-redo-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.7",
+  "what": "the board closed by ✓ Done",
+  "ok": "REC",
+  "note": "board open 1 · page editsched",
+  "pics": "plain-pl-7-done-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.8",
+  "what": "the Scheduler Board of Sat 18 opened again",
+  "ok": "REC",
+  "note": "SBDAY 5",
+  "pics": "plain-pl-8-board-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.9",
+  "what": "the day's warning list opened: no line for nothing filed (unchanged)",
+  "ok": true,
+  "note": "head \"▾⚠ 1 issue\" · 1 row(s) · Ranger's: none · SANS: none",
+  "pics": "plain-pl-9-warn-clip-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.10",
+  "what": "as Ranger: the bell opened — his SANS reminder names Sat 18",
+  "ok": true,
+  "note": "lit true · 1 line(s) · Mark all read in view · [unread] \"You're SANS from Fri 17 Jul.\" \"\" \"You're planned on Sat 18 Jul with nothing filed. Tap to file for availability.\"",
+  "pics": "plain-pl-10-bell-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.11",
+  "what": "the reminder tapped: the SANS calendar on Sat 18 with its day window",
+  "ok": true,
+  "note": "page \"inputs\" · month \"Jul 2026\" · window \"⠿Sat 18 JulNo flying set✕FigurePilotsWSOsRequired to fly––Available2718SANS comm\"",
+  "pics": "plain-pl-11-tapped-phone.png, plain-pl-11-after-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.12",
+  "what": "what the tap opened closed by its ✕",
+  "ok": true,
+  "note": "day window shown after ✕: 0",
+  "pics": "plain-pl-12-closed-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

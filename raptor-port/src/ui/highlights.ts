@@ -13,6 +13,7 @@ import { HOOKS } from '../engine/hooks'
 import { isNewFlag, NEWFLAGS } from '../state/dropflag'
 import { hsSet, hsSync, panForget } from './pan'
 import { paintLand } from './lift'
+import { paintTimeGaps } from './timegap-paint'
 
 /* A ONE-SHOT callback run at the end of the next highlight pass — i.e. in the
    SAME task as the innerHTML swap that just changed the layout, before the
@@ -43,6 +44,9 @@ export function warnOnBoard(){return SBDAY!=null&&!!WFOCUS&&WFOCUS.di===SBDAY;}
    Anything that was not red used to light amber, so three men with a long work day and nothing else read as advised. */
 const litSev=(el:any,sev:any)=>{ if(sev==='note')el.classList.add('notef'); else if(sev!=='hard')el.classList.add('advf'); };
 export function refreshHighlights(){
+  /* [END-TIME-GUARD] the outline round each empty time box the rule names (ui/timegap-paint.ts) — here because every
+     surface calls this pass after it draws, the section held round the caret included (D2853) */
+  paintTimeGaps();
   const wf=warnFocusMap();
   const hlActive=HLSET.size>0||!!SEARCH;
   const selActive=!!SELID;

@@ -1,0 +1,146 @@
+[
+ [
+  "F-S28",
+  "desk chromium",
+  "o5 Comet 14 Dec: ⋯ → Post out, ✕, the day again, ⋯ → Post in, Post in",
+  "the Post in sheet alone; the result is exactly the post-in shown (days before blank)",
+  "sheet \"Comet Post in ✕ PI FROM Mon 14 Dec 26 ▾ Their first day in the squadron. Days before it are blank and count nobody — leave can still be dated there. Post in\"; blank days 11-26…12-13",
+  "FAIL",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r9/005-desk-chromium-fs28-o5-pi.png"
+ ],
+ [
+  "F-S28",
+  "desk chromium",
+  "o6 Forge: Post in 21 Dec, then a Post out dated BEFORE it (15 Dec)",
+  "RECORD (refused? what shows)",
+  "a pre-post-in day (14 Dec) opens [piOld head=Forge Post in ✕ page=leavewar]",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r9/006-desk-chromium-fs28-o6-preday.png , img/handpass/2026-11-26-msq-s4-walk/wb/r9/007-desk-chromium-fs28-o6-after.png"
+ ],
+ [
+  "F-S28",
+  "desk chromium",
+  "o9 existing Reaper (Overseas 21 Dec): Delete chip (card up), then PO from → today",
+  "RECORD which question shows — \"Delete Reaper?\" or \"Delete Reaper now?\" (both grey since D2744)",
+  "date box pressable with the chip's card up; card then: \"Delete Reaper? On 21 Dec the app deletes him automatically. Days he flew keep his puck. Delete Cancel\"; after the date: \"none\" ",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r9/010-desk-chromium-fs28-o9-a.png , img/handpass/2026-11-26-msq-s4-walk/wb/r9/011-desk-chromium-fs28-o9-b.png"
+ ],
+ [
+  "F-S28",
+  "desk chromium",
+  "o10 existing Echo (Overseas 21 Dec): PO from → today 26 Nov",
+  "runs at once (S11 a): archived, account suspended (or \"archived.\" with no sign-in); no question for Overseas",
+  "card none; line \"On 26 Nov: archived.\"; sheet [poOld head=Echo Post out ✕ page=leavewar]; gone from 11-26",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r9/012-desk-chromium-fs28-o10.png"
+ ],
+ [
+  "F-S28",
+  "desk chromium",
+  "o1 new: SANS chip, then date 22 Dec, Post out (Sidewinder)",
+  "ends with exactly the posting last shown: the line read just before the last press = the grid, Admin → Users and a reopen of the sheet",
+  "line \"On 22 Dec: becomes SANS.\" | grid from 12-22 | reopen: ✓ SANS | Tue 22 Dec 26 ▾ | On 22 Dec: becomes SANS. | Admin → Users: Sidewinder no sign-in · Pilot · CAT IP POSTING OUT 22 DEC · SANS",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r9/001-desk-chromium-fs28-o1-line.png , img/handpass/2026-11-26-msq-s4-walk/wb/r9/013-desk-chromium-fs28-admin.png"
+ ],
+ [
+  "F-S28",
+  "desk chromium",
+  "o2 new: date 23 Dec, then Delete chip, Post out → card → Delete (Drifter)",
+  "ends with exactly the posting last shown: the line read just before the last press = the grid, Admin → Users and a reopen of the sheet",
+  "line \"On 23 Dec the app deletes him automatically. Days he flew keep his puck.\" | grid from 12-23 | reopen: ✓ Delete | Wed 23 Dec 26 ▾ | On 23 Dec the app deletes him automatically. Days he flew ke | Admin → Users: Drifter no sign-in · Pilot · CAT A POSTING OUT 23 DEC · AUTO DELETE",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r9/002-desk-chromium-fs28-o2-line.png , img/handpass/2026-11-26-msq-s4-walk/wb/r9/013-desk-chromium-fs28-admin.png"
+ ],
+ [
+  "F-S28",
+  "desk chromium",
+  "o3 new: Delete → card → Cancel → SANS → Post out (Blade)",
+  "ends with exactly the posting last shown: the line read just before the last press = the grid, Admin → Users and a reopen of the sheet",
+  "line \"On 14 Dec: becomes SANS.\" | grid from 12-14 | reopen: ✓ SANS | Mon 14 Dec 26 ▾ | On 14 Dec: becomes SANS. | Admin → Users: Blade no sign-in · Pilot · CAT IP POSTING OUT 14 DEC · SANS",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r9/003-desk-chromium-fs28-o3-line.png , img/handpass/2026-11-26-msq-s4-walk/wb/r9/013-desk-chromium-fs28-admin.png"
+ ],
+ [
+  "F-S28",
+  "desk chromium",
+  "o4 new: Delete → card → change date to 24 Dec [date box NOT pressable with the card up (covered by askcard-sub); Cancel first; card after the change: gone] → Post out → card → Delete (Cobra)",
+  "ends with exactly the posting last shown: the line read just before the last press = the grid, Admin → Users and a reopen of the sheet",
+  "line \"On 24 Dec the app deletes him automatically. Days he flew keep his puck.\" | grid from 12-24 | reopen: ✓ Delete | Thu 24 Dec 26 ▾ | On 24 Dec the app deletes him automatically. Days he flew ke | Admin → Users: Cobra no sign-in · Pilot · CAT IP POSTING OUT 24 DEC · AUTO DELETE",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r9/004-desk-chromium-fs28-o4-line.png , img/handpass/2026-11-26-msq-s4-walk/wb/r9/013-desk-chromium-fs28-admin.png"
+ ],
+ [
+  "F-S28",
+  "desk chromium",
+  "o7 existing: date → 24 Dec, then SANS (Havoc)",
+  "ends with exactly the posting last shown: the line read just before the last press = the grid, Admin → Users and a reopen of the sheet",
+  "line \"On 24 Dec: becomes SANS.\" | grid from 12-24 | reopen: ✓ SANS | Thu 24 Dec 26 ▾ | On 24 Dec: becomes SANS. | Admin → Users: Havoc no sign-in · Pilot · CAT IP POSTING OUT 24 DEC · SANS",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r9/008-desk-chromium-fs28-o7-line.png , img/handpass/2026-11-26-msq-s4-walk/wb/r9/013-desk-chromium-fs28-admin.png"
+ ],
+ [
+  "F-S28",
+  "desk chromium",
+  "o8 existing: SANS, then date → 24 Dec (Hunter)",
+  "ends with exactly the posting last shown: the line read just before the last press = the grid, Admin → Users and a reopen of the sheet",
+  "line \"On 24 Dec: becomes SANS.\" | grid from 12-24 | reopen: ✓ SANS | Thu 24 Dec 26 ▾ | On 24 Dec: becomes SANS. | Admin → Users: Hunter ad2 · Pilot · CAT IP POSTING OUT 24 DEC · SANS ADMIN",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r9/009-desk-chromium-fs28-o8-line.png , img/handpass/2026-11-26-msq-s4-walk/wb/r9/013-desk-chromium-fs28-admin.png"
+ ],
+ [
+  "F-S29",
+  "desk chromium",
+  "Anvil posted out Overseas from 21 Dec; his ordinary 14 Dec → ⋯ → Post out → Post out",
+  "RECORD what ⋯ offers and with which date and chip the sheet opens; pressing Post out MOVES the one posting, never makes a second (as on main)",
+  "⋯: [\"Attach\",\"Other\",\"Post out\",\"Post in\"]; sheet chip \"✓ Overseas Sqn\" date \"Mon 14 Dec 26 ▾\"; after: gone from 12-14 (18 days); reopened: ✓ Overseas Sqn | Mon 14 Dec 26 ▾ | On 14 Dec: archived.",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r9/014-desk-chromium-fs29-menu.png , img/handpass/2026-11-26-msq-s4-walk/wb/r9/015-desk-chromium-fs29-sheet.png , img/handpass/2026-11-26-msq-s4-walk/wb/r9/016-desk-chromium-fs29-after.png"
+ ],
+ [
+  "F-S29",
+  "desk chromium",
+  "his last day in (13 Dec, the yellow line) tapped",
+  "an ordinary day's window (leave buttons)",
+  "[bid leaveBtns head=Anvil Sun 13 Dec Auto-approve ✕ page=leavewar]",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r9/017-desk-chromium-fs29-lastday.png"
+ ],
+ [
+  "F-S38",
+  "desk chromium",
+  "Ridge's 2026-11-10 (bidding closed, in the past) → ⋯ → Post out",
+  "posting sheets are the admin's, open at any time (D328); where the one-day window does not open on main, none here either — RECORD",
+  "day: [bid leaveBtns head=Ridge Tue 10 Nov Auto-approve ✕ page=leavewar]; Post out: [bid poNew head=Ridge Post out ✕ page=leavewar] date \"Tue 10 Nov 26 ▾\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r9/018-desk-chromium-fs38-day-2026-11-10.png , img/handpass/2026-11-26-msq-s4-walk/wb/r9/019-desk-chromium-fs38-po-2026-11-10.png"
+ ],
+ [
+  "F-S38",
+  "desk chromium",
+  "Ridge's 2026-11-25 (bidding closed, in the past) → ⋯ → Post out",
+  "posting sheets are the admin's, open at any time (D328); where the one-day window does not open on main, none here either — RECORD",
+  "day: [bid leaveBtns head=Ridge Wed 25 Nov Auto-approve ✕ page=leavewar]; Post out: [bid poNew head=Ridge Post out ✕ page=leavewar] date \"Wed 25 Nov 26 ▾\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r9/020-desk-chromium-fs38-day-2026-11-25.png , img/handpass/2026-11-26-msq-s4-walk/wb/r9/021-desk-chromium-fs38-po-2026-11-25.png"
+ ],
+ [
+  "F-S38",
+  "desk chromium",
+  "Ridge's 2026-11-26 (bidding closed, today) → ⋯ → Post out",
+  "posting sheets are the admin's, open at any time (D328); where the one-day window does not open on main, none here either — RECORD",
+  "day: [bid leaveBtns head=Ridge Thu 26 Nov Auto-approve ✕ page=leavewar]; Post out: [bid poNew head=Ridge Post out ✕ page=leavewar] date \"Thu 26 Nov 26 ▾\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r9/022-desk-chromium-fs38-day-2026-11-26.png , img/handpass/2026-11-26-msq-s4-walk/wb/r9/023-desk-chromium-fs38-po-2026-11-26.png"
+ ],
+ [
+  "F-S38",
+  "desk chromium",
+  "Basher posted out Overseas from 2 Nov (line \"On 2 Nov: archived.\"); then his gone day 2026-11-02 in November tapped",
+  "RECORD: the existing sheet opens on a past gone day (D328 \"open at any time\")",
+  "gone 11-02…11-30; tap → [poOld head=Basher Post out ✕ page=leavewar]",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r9/024-desk-chromium-fs38-pastgone.png"
+ ]
+]

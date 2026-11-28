@@ -1,0 +1,722 @@
+[
+ [
+  "A13/F-S20 new Post out (Cinch)",
+  "m701",
+  "day → ⋯ → Post out",
+  "sheet inside window, page no wider than window (lesson 17), head + ✕ one line, 3 chips in 1 row(s) (contract: two to a line ≤520, one row above), no chip word cut/wrapped, PO from half width, Post out in accent",
+  "docW 701/vw 701; sheet {\"x\":70.5,\"y\":604.3,\"w\":560,\"h\":281.7,\"r\":630.5,\"b\":886} inside=true; head oneLine=true who=\"Cinch\" act=\"Post out\"; chips [[\"✓ Overseas Sqn\",83.5,684.3,174,30,false,1],[\"Delete\",263.5,684.3,174,30,false,1],[\"SANS\",443.5,684.3,174,30,false,1]] rows=1; dateHalfOff=0; main rgb(59, 198, 232) vs rgb(59, 198, 232); wrapped=[] overflow=[]; edges {\"formL\":83.5,\"formR\":617.5,\"chipsL\":83.5,\"chipsR\":617.5,\"lineL\":83.5,\"lineR\":617.5,\"mainL\":83.5}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/003-701x900-chromium-postout.png"
+ ],
+ [
+  "A13/F-S20 day in sight",
+  "m701",
+  "the tapped day against the sheet top",
+  "RECORD (≥701: day-in-sight not required)",
+  "{\"cellY\":477,\"cellB\":499,\"sheetTop\":604,\"hit\":false,\"at\":\"sheet-scrim\"}",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/003-701x900-chromium-postout.png"
+ ],
+ [
+  "A13/F-S20 chip chip-delete",
+  "m701",
+  "press po-delete",
+  "chips unmoved, chosen chip no taller/wider (lesson 27); line names the outcome; button stays under the hand",
+  "chips [[\"Overseas Sqn\",false],[\"✓ Delete\",true],[\"SANS\",false]]; chips moved []; button move [0,0]; sheet top/height change [0,0]; line \"On 7 Dec the app deletes him automatically. Days he flew keep his puck.\"; wrapped []; docW 701",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/004-701x900-chromium-chip-delete.png"
+ ],
+ [
+  "A13/F-S20 chip chip-sans",
+  "m701",
+  "press po-sans",
+  "chips unmoved, chosen chip no taller/wider (lesson 27); line names the outcome; button stays under the hand",
+  "chips [[\"Overseas Sqn\",false],[\"Delete\",false],[\"✓ SANS\",true]]; chips moved []; button move [0,0]; sheet top/height change [0,0]; line \"On 7 Dec: becomes SANS.\"; wrapped []; docW 701",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/005-701x900-chromium-chip-sans.png"
+ ],
+ [
+  "A13/F-S20 chip chip-none",
+  "m701",
+  "press po-sans",
+  "chips unmoved, chosen chip no taller/wider (lesson 27); line names the outcome; button stays under the hand",
+  "chips [[\"Overseas Sqn\",false],[\"Delete\",false],[\"SANS\",false]]; chips moved []; button move [0,0]; sheet top/height change [0,0]; line \"On 7 Dec: off the manpower, nothing else.\"; wrapped []; docW 701",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/006-701x900-chromium-chip-none.png"
+ ],
+ [
+  "A13/F-S20 chip chip-overseas",
+  "m701",
+  "press po-overseas",
+  "chips unmoved, chosen chip no taller/wider (lesson 27); line names the outcome; button stays under the hand",
+  "chips [[\"✓ Overseas Sqn\",true],[\"Delete\",false],[\"SANS\",false]]; chips moved []; button move [0,0]; sheet top/height change [0,0]; line \"On 7 Dec: archived.\"; wrapped []; docW 701",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/007-701x900-chromium-chip-overseas.png"
+ ],
+ [
+  "A13/F-S20 Delete card",
+  "m701",
+  "Delete → Post out",
+  "\"Delete Cinch?\" card inside window, its Delete dashed grey as tall as Cancel (D2732 Q4), no words cut, page no wider",
+  "card {\"x\":83.5,\"y\":706.3,\"w\":300,\"h\":125.9,\"r\":383.5,\"b\":832.2} inside=true txt=\"Delete Cinch?On 7 Dec the app deletes him automatically. Days he flew keep his p\" go {\"x\":235.1,\"y\":783.2,\"w\":62,\"h\":36,\"r\":297.1,\"b\":819.2} dashed bg rgb(26, 31, 38) cancel {\"x\":305.1,\"y\":783.2,\"w\":65.4,\"h\":36,\"r\":370.5,\"b\":819.2} bg rgb(59, 198, 232) overflow=false; docW 701; wrapped []",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/009-701x900-chromium-card.png"
+ ],
+ [
+  "A13/F-S20 card Cancel",
+  "m701",
+  "Cancel",
+  "card gone, the sheet still open with Delete chosen",
+  "card gone; sheet open; chips [[\"Overseas Sqn\",false],[\"✓ Delete\",true],[\"SANS\",false]]",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/010-701x900-chromium-card-cancel.png"
+ ],
+ [
+  "A13/F-S20 date calendar",
+  "m701",
+  "press PO from",
+  "the calendar opens wholly on screen, page no wider than window",
+  "{\"cls\":\"dcal-layer\",\"x\":0,\"y\":0,\"w\":701,\"h\":900,\"r\":701,\"b\":900,\"inside\":true,\"docW\":701}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/011-701x900-chromium-date-open.png"
+ ],
+ [
+  "A13/F-S20 date calendar Escape",
+  "m701",
+  "Escape with the calendar open",
+  "one Escape closes the calendar only, the sheet stays (lesson 19)",
+  "sheet open; date \"Mon 7 Dec 26▾\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/012-701x900-chromium-date-esc.png"
+ ],
+ [
+  "A13/F-S20 resize while open",
+  "m701→700",
+  "window resized with the Post out sheet open",
+  "sheet stays whole and inside, chips 1 row(s), nothing cut, page no wider",
+  "sheet {\"x\":70,\"y\":604.3,\"w\":560,\"h\":281.7,\"r\":630,\"b\":886} inside=true; rows=1; chips [[\"✓ Overseas Sqn\",174,30,false,1],[\"Delete\",174,30,false,1],[\"SANS\",174,30,false,1]]; docW 700/700; head oneLine true; dateHalfOff 0",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/013-701x900-chromium-resized-700.png"
+ ],
+ [
+  "A13/F-S20 resize back",
+  "700→m701",
+  "resized back",
+  "as before the resize",
+  "sheet open; rows=1; docW 701",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/014-701x900-chromium-resized-back.png"
+ ],
+ [
+  "A13/F-S20 new Post in (Cinch)",
+  "m701",
+  "day → ⋯ → Post in",
+  "head one line, PI from half width, strip edges with the button, Post in in accent, inside, page no wider",
+  "sheet {\"x\":70.5,\"y\":649.7,\"w\":560,\"h\":236.3,\"r\":630.5,\"b\":886} inside=true; head true; halfOff 0; edges {\"formL\":83.5,\"formR\":617.5,\"chipsR\":0,\"lineL\":83.5,\"lineR\":617.5,\"mainL\":83.5}; main rgb(59, 198, 232); line \"Their first day in the squadron. Days before it are blank and count nobody — leave can still be dated there.\"; docW 701",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/015-701x900-chromium-postin.png"
+ ],
+ [
+  "F-S19/F-S21 ground crew (Cotter) Post out",
+  "m701",
+  "Cotter day → ⋯ → Post out",
+  "Overseas Sqn and Delete only (D1709), equal width/height, side by side, half-width date, inside, no cut words",
+  "chips [[\"✓ Overseas Sqn\",83.5,684.3,264,30,false],[\"Delete\",353.5,684.3,264,30,false]]; halfOff 0; inside true; docW 701; head \"Cotter\" oneLine true; sight {\"cellY\":685,\"cellB\":707,\"sheetTop\":604,\"hit\":false,\"at\":\"po-delete\"}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/017-701x900-chromium-cotter-postout.png"
+ ],
+ [
+  "A13/F-S20 existing posting sheet",
+  "m701",
+  "Post out confirmed (fixture: day class \"gone act hasc\"), then tap a gone day",
+  "head one line, Undo post out alone at foot, inside, page no wider, chips one row (≤520 two to a line), no cut words",
+  "sheet {\"x\":70.5,\"y\":604.3,\"w\":560,\"h\":281.7,\"r\":630.5,\"b\":886} inside true; head \"Cinch\" \"Post out\" oneLine true; chips [[\"✓ Overseas Sqn\",684.3,174,30,false],[\"Delete\",684.3,174,30,false],[\"SANS\",684.3,174,30,false]]; foot [{\"t\":\"↶Undo post out\",\"x\":83.5,\"y\":841,\"w\":142.7,\"h\":32,\"r\":226.2,\"b\":873}]; docW 701; wrapped []; sight {\"cellY\":367,\"cellB\":389,\"sheetTop\":604,\"hit\":false,\"at\":\"sheet-scrim\"}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/018-701x900-chromium-existing.png"
+ ],
+ [
+  "A13/F-S20 existing sheet Delete card",
+  "m701",
+  "press its Delete chip",
+  "card inside the window, dashed Delete as tall as Cancel, no cut words",
+  "card {\"x\":263.5,\"y\":723.3,\"w\":300,\"h\":125.9,\"r\":563.5,\"b\":849.2} inside true \"Delete Cinch?On 7 Dec the app deletes him automatically. Days he flew keep his p\" go dashed h 36/36; docW 701",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/019-701x900-chromium-existing-card.png"
+ ],
+ [
+  "A13/F-S20 Undo post out",
+  "m701",
+  "Undo post out",
+  "the day no longer gone",
+  "class \" act\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/021-701x900-chromium-undone.png"
+ ],
+ [
+  "A13/F-S20 drag window Post out",
+  "m701",
+  "drag → ⋯ → Post out",
+  "3 chips 1 row(s), half-width date, inside, no cut words, page no wider, accent button",
+  "sheet {\"x\":70.5,\"y\":604.3,\"w\":560,\"h\":281.7,\"r\":630.5,\"b\":886} inside true; chips [[\"✓ Overseas Sqn\",684.3,174,30,false],[\"Delete\",684.3,174,30,false],[\"SANS\",684.3,174,30,false]] rows 1; halfOff 0; main rgb(59, 198, 232); docW 701; head \"Cinch|Post out\" true; wrapped []",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/022-701x900-chromium-drag-postout.png"
+ ],
+ [
+  "A13/F-S20 drag window Delete card",
+  "m701",
+  "Delete → Post out",
+  "card inside, dashed Delete as tall as Cancel",
+  "card {\"x\":83.5,\"y\":706.3,\"w\":300,\"h\":125.9,\"r\":383.5,\"b\":832.2} inside true \"Delete Cinch?On 9 Dec the app deletes him automatically. Days he flew keep his p\" dashed 36/36; docW 701",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/023-701x900-chromium-drag-card.png"
+ ],
+ [
+  "F-S19 drag window Post in (measured)",
+  "m701",
+  "drag → ⋯ → Post in",
+  "PI from label over a half-width box; strip left/right edges with the form; Post in accent; head one line; inside",
+  "halfOff 0; edges {\"formL\":83.5,\"formR\":617.5,\"chipsR\":0,\"lineL\":83.5,\"lineR\":617.5,\"mainL\":83.5}; main rgb(59, 198, 232) \"Post in\"; head \"Cinch|Post in\" true; inside true; docW 701; line \"Their first day in the squadron. Days before it are blank and count nobody — leave can still be dated there.\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/024-701x900-chromium-drag-postin.png"
+ ],
+ [
+  "A13/F-S20 new Post out (Cinch)",
+  "m720",
+  "day → ⋯ → Post out",
+  "sheet inside window, page no wider than window (lesson 17), head + ✕ one line, 3 chips in 1 row(s) (contract: two to a line ≤520, one row above), no chip word cut/wrapped, PO from half width, Post out in accent",
+  "docW 720/vw 720; sheet {\"x\":80,\"y\":604.3,\"w\":560,\"h\":281.7,\"r\":640,\"b\":886} inside=true; head oneLine=true who=\"Cinch\" act=\"Post out\"; chips [[\"✓ Overseas Sqn\",93,684.3,174,30,false,1],[\"Delete\",273,684.3,174,30,false,1],[\"SANS\",453,684.3,174,30,false,1]] rows=1; dateHalfOff=0; main rgb(59, 198, 232) vs rgb(59, 198, 232); wrapped=[] overflow=[]; edges {\"formL\":93,\"formR\":627,\"chipsL\":93,\"chipsR\":627,\"lineL\":93,\"lineR\":627,\"mainL\":93}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/027-720x900-chromium-postout.png"
+ ],
+ [
+  "A13/F-S20 day in sight",
+  "m720",
+  "the tapped day against the sheet top",
+  "RECORD (≥701: day-in-sight not required)",
+  "{\"cellY\":477,\"cellB\":499,\"sheetTop\":604,\"hit\":false,\"at\":\"sheet-scrim\"}",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/027-720x900-chromium-postout.png"
+ ],
+ [
+  "A13/F-S20 chip chip-delete",
+  "m720",
+  "press po-delete",
+  "chips unmoved, chosen chip no taller/wider (lesson 27); line names the outcome; button stays under the hand",
+  "chips [[\"Overseas Sqn\",false],[\"✓ Delete\",true],[\"SANS\",false]]; chips moved []; button move [0,0]; sheet top/height change [0,0]; line \"On 7 Dec the app deletes him automatically. Days he flew keep his puck.\"; wrapped []; docW 720",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/028-720x900-chromium-chip-delete.png"
+ ],
+ [
+  "A13/F-S20 chip chip-sans",
+  "m720",
+  "press po-sans",
+  "chips unmoved, chosen chip no taller/wider (lesson 27); line names the outcome; button stays under the hand",
+  "chips [[\"Overseas Sqn\",false],[\"Delete\",false],[\"✓ SANS\",true]]; chips moved []; button move [0,0]; sheet top/height change [0,0]; line \"On 7 Dec: becomes SANS.\"; wrapped []; docW 720",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/029-720x900-chromium-chip-sans.png"
+ ],
+ [
+  "A13/F-S20 chip chip-none",
+  "m720",
+  "press po-sans",
+  "chips unmoved, chosen chip no taller/wider (lesson 27); line names the outcome; button stays under the hand",
+  "chips [[\"Overseas Sqn\",false],[\"Delete\",false],[\"SANS\",false]]; chips moved []; button move [0,0]; sheet top/height change [0,0]; line \"On 7 Dec: off the manpower, nothing else.\"; wrapped []; docW 720",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/030-720x900-chromium-chip-none.png"
+ ],
+ [
+  "A13/F-S20 chip chip-overseas",
+  "m720",
+  "press po-overseas",
+  "chips unmoved, chosen chip no taller/wider (lesson 27); line names the outcome; button stays under the hand",
+  "chips [[\"✓ Overseas Sqn\",true],[\"Delete\",false],[\"SANS\",false]]; chips moved []; button move [0,0]; sheet top/height change [0,0]; line \"On 7 Dec: archived.\"; wrapped []; docW 720",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/031-720x900-chromium-chip-overseas.png"
+ ],
+ [
+  "A13/F-S20 Delete card",
+  "m720",
+  "Delete → Post out",
+  "\"Delete Cinch?\" card inside window, its Delete dashed grey as tall as Cancel (D2732 Q4), no words cut, page no wider",
+  "card {\"x\":93,\"y\":706.3,\"w\":300,\"h\":125.9,\"r\":393,\"b\":832.2} inside=true txt=\"Delete Cinch?On 7 Dec the app deletes him automatically. Days he flew keep his p\" go {\"x\":244.6,\"y\":783.2,\"w\":62,\"h\":36,\"r\":306.6,\"b\":819.2} dashed bg rgb(26, 31, 38) cancel {\"x\":314.6,\"y\":783.2,\"w\":65.4,\"h\":36,\"r\":380,\"b\":819.2} bg rgb(59, 198, 232) overflow=false; docW 720; wrapped []",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/033-720x900-chromium-card.png"
+ ],
+ [
+  "A13/F-S20 card Cancel",
+  "m720",
+  "Cancel",
+  "card gone, the sheet still open with Delete chosen",
+  "card gone; sheet open; chips [[\"Overseas Sqn\",false],[\"✓ Delete\",true],[\"SANS\",false]]",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/034-720x900-chromium-card-cancel.png"
+ ],
+ [
+  "A13/F-S20 date calendar",
+  "m720",
+  "press PO from",
+  "the calendar opens wholly on screen, page no wider than window",
+  "{\"cls\":\"dcal-layer\",\"x\":0,\"y\":0,\"w\":720,\"h\":900,\"r\":720,\"b\":900,\"inside\":true,\"docW\":720}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/035-720x900-chromium-date-open.png"
+ ],
+ [
+  "A13/F-S20 date calendar Escape",
+  "m720",
+  "Escape with the calendar open",
+  "one Escape closes the calendar only, the sheet stays (lesson 19)",
+  "sheet open; date \"Mon 7 Dec 26▾\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/036-720x900-chromium-date-esc.png"
+ ],
+ [
+  "A13/F-S20 resize while open",
+  "m720→760",
+  "window resized with the Post out sheet open",
+  "sheet stays whole and inside, chips 1 row(s), nothing cut, page no wider",
+  "sheet {\"x\":100,\"y\":604.3,\"w\":560,\"h\":281.7,\"r\":660,\"b\":886} inside=true; rows=1; chips [[\"✓ Overseas Sqn\",174,30,false,1],[\"Delete\",174,30,false,1],[\"SANS\",174,30,false,1]]; docW 760/760; head oneLine true; dateHalfOff 0",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/037-720x900-chromium-resized-760.png"
+ ],
+ [
+  "A13/F-S20 resize back",
+  "760→m720",
+  "resized back",
+  "as before the resize",
+  "sheet open; rows=1; docW 720",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/038-720x900-chromium-resized-back.png"
+ ],
+ [
+  "A13/F-S20 new Post in (Cinch)",
+  "m720",
+  "day → ⋯ → Post in",
+  "head one line, PI from half width, strip edges with the button, Post in in accent, inside, page no wider",
+  "sheet {\"x\":80,\"y\":649.7,\"w\":560,\"h\":236.3,\"r\":640,\"b\":886} inside=true; head true; halfOff 0; edges {\"formL\":93,\"formR\":627,\"chipsR\":0,\"lineL\":93,\"lineR\":627,\"mainL\":93}; main rgb(59, 198, 232); line \"Their first day in the squadron. Days before it are blank and count nobody — leave can still be dated there.\"; docW 720",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/039-720x900-chromium-postin.png"
+ ],
+ [
+  "F-S19/F-S21 ground crew (Cotter) Post out",
+  "m720",
+  "Cotter day → ⋯ → Post out",
+  "Overseas Sqn and Delete only (D1709), equal width/height, side by side, half-width date, inside, no cut words",
+  "chips [[\"✓ Overseas Sqn\",93,684.3,264,30,false],[\"Delete\",363,684.3,264,30,false]]; halfOff 0; inside true; docW 720; head \"Cotter\" oneLine true; sight {\"cellY\":685,\"cellB\":707,\"sheetTop\":604,\"hit\":false,\"at\":\"po-delete\"}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/041-720x900-chromium-cotter-postout.png"
+ ],
+ [
+  "A13/F-S20 existing posting sheet",
+  "m720",
+  "Post out confirmed (fixture: day class \"gone act hasc\"), then tap a gone day",
+  "head one line, Undo post out alone at foot, inside, page no wider, chips one row (≤520 two to a line), no cut words",
+  "sheet {\"x\":80,\"y\":604.3,\"w\":560,\"h\":281.7,\"r\":640,\"b\":886} inside true; head \"Cinch\" \"Post out\" oneLine true; chips [[\"✓ Overseas Sqn\",684.3,174,30,false],[\"Delete\",684.3,174,30,false],[\"SANS\",684.3,174,30,false]]; foot [{\"t\":\"↶Undo post out\",\"x\":93,\"y\":841,\"w\":142.7,\"h\":32,\"r\":235.7,\"b\":873}]; docW 720; wrapped []; sight {\"cellY\":367,\"cellB\":389,\"sheetTop\":604,\"hit\":false,\"at\":\"sheet-scrim\"}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/042-720x900-chromium-existing.png"
+ ],
+ [
+  "A13/F-S20 existing sheet Delete card",
+  "m720",
+  "press its Delete chip",
+  "card inside the window, dashed Delete as tall as Cancel, no cut words",
+  "card {\"x\":273,\"y\":723.3,\"w\":300,\"h\":125.9,\"r\":573,\"b\":849.2} inside true \"Delete Cinch?On 7 Dec the app deletes him automatically. Days he flew keep his p\" go dashed h 36/36; docW 720",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/043-720x900-chromium-existing-card.png"
+ ],
+ [
+  "A13/F-S20 Undo post out",
+  "m720",
+  "Undo post out",
+  "the day no longer gone",
+  "class \" act\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/045-720x900-chromium-undone.png"
+ ],
+ [
+  "A13/F-S20 drag window Post out",
+  "m720",
+  "drag → ⋯ → Post out",
+  "3 chips 1 row(s), half-width date, inside, no cut words, page no wider, accent button",
+  "sheet {\"x\":80,\"y\":604.3,\"w\":560,\"h\":281.7,\"r\":640,\"b\":886} inside true; chips [[\"✓ Overseas Sqn\",684.3,174,30,false],[\"Delete\",684.3,174,30,false],[\"SANS\",684.3,174,30,false]] rows 1; halfOff 0; main rgb(59, 198, 232); docW 720; head \"Cinch|Post out\" true; wrapped []",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/046-720x900-chromium-drag-postout.png"
+ ],
+ [
+  "A13/F-S20 drag window Delete card",
+  "m720",
+  "Delete → Post out",
+  "card inside, dashed Delete as tall as Cancel",
+  "card {\"x\":93,\"y\":706.3,\"w\":300,\"h\":125.9,\"r\":393,\"b\":832.2} inside true \"Delete Cinch?On 9 Dec the app deletes him automatically. Days he flew keep his p\" dashed 36/36; docW 720",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/047-720x900-chromium-drag-card.png"
+ ],
+ [
+  "F-S19 drag window Post in (measured)",
+  "m720",
+  "drag → ⋯ → Post in",
+  "PI from label over a half-width box; strip left/right edges with the form; Post in accent; head one line; inside",
+  "halfOff 0; edges {\"formL\":93,\"formR\":627,\"chipsR\":0,\"lineL\":93,\"lineR\":627,\"mainL\":93}; main rgb(59, 198, 232) \"Post in\"; head \"Cinch|Post in\" true; inside true; docW 720; line \"Their first day in the squadron. Days before it are blank and count nobody — leave can still be dated there.\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/048-720x900-chromium-drag-postin.png"
+ ],
+ [
+  "A13/F-S20 new Post out (Cinch)",
+  "m760",
+  "day → ⋯ → Post out",
+  "sheet inside window, page no wider than window (lesson 17), head + ✕ one line, 3 chips in 1 row(s) (contract: two to a line ≤520, one row above), no chip word cut/wrapped, PO from half width, Post out in accent",
+  "docW 760/vw 760; sheet {\"x\":100,\"y\":604.3,\"w\":560,\"h\":281.7,\"r\":660,\"b\":886} inside=true; head oneLine=true who=\"Cinch\" act=\"Post out\"; chips [[\"✓ Overseas Sqn\",113,684.3,174,30,false,1],[\"Delete\",293,684.3,174,30,false,1],[\"SANS\",473,684.3,174,30,false,1]] rows=1; dateHalfOff=0; main rgb(59, 198, 232) vs rgb(59, 198, 232); wrapped=[] overflow=[]; edges {\"formL\":113,\"formR\":647,\"chipsL\":113,\"chipsR\":647,\"lineL\":113,\"lineR\":647,\"mainL\":113}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/051-760x900-chromium-postout.png"
+ ],
+ [
+  "A13/F-S20 day in sight",
+  "m760",
+  "the tapped day against the sheet top",
+  "RECORD (≥701: day-in-sight not required)",
+  "{\"cellY\":477,\"cellB\":499,\"sheetTop\":604,\"hit\":false,\"at\":\"sheet-scrim\"}",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/051-760x900-chromium-postout.png"
+ ],
+ [
+  "A13/F-S20 chip chip-delete",
+  "m760",
+  "press po-delete",
+  "chips unmoved, chosen chip no taller/wider (lesson 27); line names the outcome; button stays under the hand",
+  "chips [[\"Overseas Sqn\",false],[\"✓ Delete\",true],[\"SANS\",false]]; chips moved []; button move [0,0]; sheet top/height change [0,0]; line \"On 7 Dec the app deletes him automatically. Days he flew keep his puck.\"; wrapped []; docW 760",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/052-760x900-chromium-chip-delete.png"
+ ],
+ [
+  "A13/F-S20 chip chip-sans",
+  "m760",
+  "press po-sans",
+  "chips unmoved, chosen chip no taller/wider (lesson 27); line names the outcome; button stays under the hand",
+  "chips [[\"Overseas Sqn\",false],[\"Delete\",false],[\"✓ SANS\",true]]; chips moved []; button move [0,0]; sheet top/height change [0,0]; line \"On 7 Dec: becomes SANS.\"; wrapped []; docW 760",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/053-760x900-chromium-chip-sans.png"
+ ],
+ [
+  "A13/F-S20 chip chip-none",
+  "m760",
+  "press po-sans",
+  "chips unmoved, chosen chip no taller/wider (lesson 27); line names the outcome; button stays under the hand",
+  "chips [[\"Overseas Sqn\",false],[\"Delete\",false],[\"SANS\",false]]; chips moved []; button move [0,0]; sheet top/height change [0,0]; line \"On 7 Dec: off the manpower, nothing else.\"; wrapped []; docW 760",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/054-760x900-chromium-chip-none.png"
+ ],
+ [
+  "A13/F-S20 chip chip-overseas",
+  "m760",
+  "press po-overseas",
+  "chips unmoved, chosen chip no taller/wider (lesson 27); line names the outcome; button stays under the hand",
+  "chips [[\"✓ Overseas Sqn\",true],[\"Delete\",false],[\"SANS\",false]]; chips moved []; button move [0,0]; sheet top/height change [0,0]; line \"On 7 Dec: archived.\"; wrapped []; docW 760",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/055-760x900-chromium-chip-overseas.png"
+ ],
+ [
+  "A13/F-S20 Delete card",
+  "m760",
+  "Delete → Post out",
+  "\"Delete Cinch?\" card inside window, its Delete dashed grey as tall as Cancel (D2732 Q4), no words cut, page no wider",
+  "card {\"x\":113,\"y\":706.3,\"w\":300,\"h\":125.9,\"r\":413,\"b\":832.2} inside=true txt=\"Delete Cinch?On 7 Dec the app deletes him automatically. Days he flew keep his p\" go {\"x\":264.6,\"y\":783.2,\"w\":62,\"h\":36,\"r\":326.6,\"b\":819.2} dashed bg rgb(26, 31, 38) cancel {\"x\":334.6,\"y\":783.2,\"w\":65.4,\"h\":36,\"r\":400,\"b\":819.2} bg rgb(59, 198, 232) overflow=false; docW 760; wrapped []",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/057-760x900-chromium-card.png"
+ ],
+ [
+  "A13/F-S20 card Cancel",
+  "m760",
+  "Cancel",
+  "card gone, the sheet still open with Delete chosen",
+  "card gone; sheet open; chips [[\"Overseas Sqn\",false],[\"✓ Delete\",true],[\"SANS\",false]]",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/058-760x900-chromium-card-cancel.png"
+ ],
+ [
+  "A13/F-S20 date calendar",
+  "m760",
+  "press PO from",
+  "the calendar opens wholly on screen, page no wider than window",
+  "{\"cls\":\"dcal-layer\",\"x\":0,\"y\":0,\"w\":760,\"h\":900,\"r\":760,\"b\":900,\"inside\":true,\"docW\":760}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/059-760x900-chromium-date-open.png"
+ ],
+ [
+  "A13/F-S20 date calendar Escape",
+  "m760",
+  "Escape with the calendar open",
+  "one Escape closes the calendar only, the sheet stays (lesson 19)",
+  "sheet open; date \"Mon 7 Dec 26▾\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/060-760x900-chromium-date-esc.png"
+ ],
+ [
+  "A13/F-S20 resize while open",
+  "m760→720",
+  "window resized with the Post out sheet open",
+  "sheet stays whole and inside, chips 1 row(s), nothing cut, page no wider",
+  "sheet {\"x\":80,\"y\":604.3,\"w\":560,\"h\":281.7,\"r\":640,\"b\":886} inside=true; rows=1; chips [[\"✓ Overseas Sqn\",174,30,false,1],[\"Delete\",174,30,false,1],[\"SANS\",174,30,false,1]]; docW 720/720; head oneLine true; dateHalfOff 0",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/061-760x900-chromium-resized-720.png"
+ ],
+ [
+  "A13/F-S20 resize back",
+  "720→m760",
+  "resized back",
+  "as before the resize",
+  "sheet open; rows=1; docW 760",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/062-760x900-chromium-resized-back.png"
+ ],
+ [
+  "A13/F-S20 new Post in (Cinch)",
+  "m760",
+  "day → ⋯ → Post in",
+  "head one line, PI from half width, strip edges with the button, Post in in accent, inside, page no wider",
+  "sheet {\"x\":100,\"y\":649.7,\"w\":560,\"h\":236.3,\"r\":660,\"b\":886} inside=true; head true; halfOff 0; edges {\"formL\":113,\"formR\":647,\"chipsR\":0,\"lineL\":113,\"lineR\":647,\"mainL\":113}; main rgb(59, 198, 232); line \"Their first day in the squadron. Days before it are blank and count nobody — leave can still be dated there.\"; docW 760",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/063-760x900-chromium-postin.png"
+ ],
+ [
+  "F-S19/F-S21 ground crew (Cotter) Post out",
+  "m760",
+  "Cotter day → ⋯ → Post out",
+  "Overseas Sqn and Delete only (D1709), equal width/height, side by side, half-width date, inside, no cut words",
+  "chips [[\"✓ Overseas Sqn\",113,684.3,264,30,false],[\"Delete\",383,684.3,264,30,false]]; halfOff 0; inside true; docW 760; head \"Cotter\" oneLine true; sight {\"cellY\":685,\"cellB\":707,\"sheetTop\":604,\"hit\":false,\"at\":\"po-overseas\"}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/065-760x900-chromium-cotter-postout.png"
+ ],
+ [
+  "A13/F-S20 existing posting sheet",
+  "m760",
+  "Post out confirmed (fixture: day class \"gone act hasc\"), then tap a gone day",
+  "head one line, Undo post out alone at foot, inside, page no wider, chips one row (≤520 two to a line), no cut words",
+  "sheet {\"x\":100,\"y\":604.3,\"w\":560,\"h\":281.7,\"r\":660,\"b\":886} inside true; head \"Cinch\" \"Post out\" oneLine true; chips [[\"✓ Overseas Sqn\",684.3,174,30,false],[\"Delete\",684.3,174,30,false],[\"SANS\",684.3,174,30,false]]; foot [{\"t\":\"↶Undo post out\",\"x\":113,\"y\":841,\"w\":142.7,\"h\":32,\"r\":255.7,\"b\":873}]; docW 760; wrapped []; sight {\"cellY\":367,\"cellB\":389,\"sheetTop\":604,\"hit\":false,\"at\":\"sheet-scrim\"}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/066-760x900-chromium-existing.png"
+ ],
+ [
+  "A13/F-S20 existing sheet Delete card",
+  "m760",
+  "press its Delete chip",
+  "card inside the window, dashed Delete as tall as Cancel, no cut words",
+  "card {\"x\":293,\"y\":723.3,\"w\":300,\"h\":125.9,\"r\":593,\"b\":849.2} inside true \"Delete Cinch?On 7 Dec the app deletes him automatically. Days he flew keep his p\" go dashed h 36/36; docW 760",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/067-760x900-chromium-existing-card.png"
+ ],
+ [
+  "A13/F-S20 Undo post out",
+  "m760",
+  "Undo post out",
+  "the day no longer gone",
+  "class \" act\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/069-760x900-chromium-undone.png"
+ ],
+ [
+  "A13/F-S20 drag window Post out",
+  "m760",
+  "drag → ⋯ → Post out",
+  "3 chips 1 row(s), half-width date, inside, no cut words, page no wider, accent button",
+  "sheet {\"x\":100,\"y\":604.3,\"w\":560,\"h\":281.7,\"r\":660,\"b\":886} inside true; chips [[\"✓ Overseas Sqn\",684.3,174,30,false],[\"Delete\",684.3,174,30,false],[\"SANS\",684.3,174,30,false]] rows 1; halfOff 0; main rgb(59, 198, 232); docW 760; head \"Cinch|Post out\" true; wrapped []",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/070-760x900-chromium-drag-postout.png"
+ ],
+ [
+  "A13/F-S20 drag window Delete card",
+  "m760",
+  "Delete → Post out",
+  "card inside, dashed Delete as tall as Cancel",
+  "card {\"x\":113,\"y\":706.3,\"w\":300,\"h\":125.9,\"r\":413,\"b\":832.2} inside true \"Delete Cinch?On 9 Dec the app deletes him automatically. Days he flew keep his p\" dashed 36/36; docW 760",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/071-760x900-chromium-drag-card.png"
+ ],
+ [
+  "F-S19 drag window Post in (measured)",
+  "m760",
+  "drag → ⋯ → Post in",
+  "PI from label over a half-width box; strip left/right edges with the form; Post in accent; head one line; inside",
+  "halfOff 0; edges {\"formL\":113,\"formR\":647,\"chipsR\":0,\"lineL\":113,\"lineR\":647,\"mainL\":113}; main rgb(59, 198, 232) \"Post in\"; head \"Cinch|Post in\" true; inside true; docW 760; line \"Their first day in the squadron. Days before it are blank and count nobody — leave can still be dated there.\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/072-760x900-chromium-drag-postin.png"
+ ],
+ [
+  "A13/F-S20 new Post out (Cinch)",
+  "mid",
+  "day → ⋯ → Post out",
+  "sheet inside window, page no wider than window (lesson 17), head + ✕ one line, 3 chips in 1 row(s) (contract: two to a line ≤520, one row above), no chip word cut/wrapped, PO from half width, Post out in accent",
+  "docW 1024/vw 1024; sheet {\"x\":232,\"y\":472.3,\"w\":560,\"h\":281.7,\"r\":792,\"b\":754} inside=true; head oneLine=true who=\"Cinch\" act=\"Post out\"; chips [[\"✓ Overseas Sqn\",245,552.3,174,30,false,1],[\"Delete\",425,552.3,174,30,false,1],[\"SANS\",605,552.3,174,30,false,1]] rows=1; dateHalfOff=0; main rgb(59, 198, 232) vs rgb(59, 198, 232); wrapped=[] overflow=[]; edges {\"formL\":245,\"formR\":779,\"chipsL\":245,\"chipsR\":779,\"lineL\":245,\"lineR\":779,\"mainL\":245}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/075-1024x768-chromium-postout.png"
+ ],
+ [
+  "A13/F-S20 day in sight",
+  "mid",
+  "the tapped day against the sheet top",
+  "RECORD (≥701: day-in-sight not required)",
+  "{\"cellY\":312,\"cellB\":334,\"sheetTop\":472,\"hit\":false,\"at\":\"sheet-scrim\"}",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/075-1024x768-chromium-postout.png"
+ ],
+ [
+  "A13/F-S20 chip chip-delete",
+  "mid",
+  "press po-delete",
+  "chips unmoved, chosen chip no taller/wider (lesson 27); line names the outcome; button stays under the hand",
+  "chips [[\"Overseas Sqn\",false],[\"✓ Delete\",true],[\"SANS\",false]]; chips moved []; button move [0,0]; sheet top/height change [0,0]; line \"On 7 Dec the app deletes him automatically. Days he flew keep his puck.\"; wrapped []; docW 1024",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/076-1024x768-chromium-chip-delete.png"
+ ],
+ [
+  "A13/F-S20 chip chip-sans",
+  "mid",
+  "press po-sans",
+  "chips unmoved, chosen chip no taller/wider (lesson 27); line names the outcome; button stays under the hand",
+  "chips [[\"Overseas Sqn\",false],[\"Delete\",false],[\"✓ SANS\",true]]; chips moved []; button move [0,0]; sheet top/height change [0,0]; line \"On 7 Dec: becomes SANS.\"; wrapped []; docW 1024",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/077-1024x768-chromium-chip-sans.png"
+ ],
+ [
+  "A13/F-S20 chip chip-none",
+  "mid",
+  "press po-sans",
+  "chips unmoved, chosen chip no taller/wider (lesson 27); line names the outcome; button stays under the hand",
+  "chips [[\"Overseas Sqn\",false],[\"Delete\",false],[\"SANS\",false]]; chips moved []; button move [0,0]; sheet top/height change [0,0]; line \"On 7 Dec: off the manpower, nothing else.\"; wrapped []; docW 1024",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/078-1024x768-chromium-chip-none.png"
+ ],
+ [
+  "A13/F-S20 chip chip-overseas",
+  "mid",
+  "press po-overseas",
+  "chips unmoved, chosen chip no taller/wider (lesson 27); line names the outcome; button stays under the hand",
+  "chips [[\"✓ Overseas Sqn\",true],[\"Delete\",false],[\"SANS\",false]]; chips moved []; button move [0,0]; sheet top/height change [0,0]; line \"On 7 Dec: archived.\"; wrapped []; docW 1024",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/079-1024x768-chromium-chip-overseas.png"
+ ],
+ [
+  "A13/F-S20 Delete card",
+  "mid",
+  "Delete → Post out",
+  "\"Delete Cinch?\" card inside window, its Delete dashed grey as tall as Cancel (D2732 Q4), no words cut, page no wider",
+  "card {\"x\":245,\"y\":574.3,\"w\":300,\"h\":125.9,\"r\":545,\"b\":700.2} inside=true txt=\"Delete Cinch?On 7 Dec the app deletes him automatically. Days he flew keep his p\" go {\"x\":396.6,\"y\":651.2,\"w\":62,\"h\":36,\"r\":458.6,\"b\":687.2} dashed bg rgb(26, 31, 38) cancel {\"x\":466.6,\"y\":651.2,\"w\":65.4,\"h\":36,\"r\":532,\"b\":687.2} bg rgb(59, 198, 232) overflow=false; docW 1024; wrapped []",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/081-1024x768-chromium-card.png"
+ ],
+ [
+  "A13/F-S20 card Cancel",
+  "mid",
+  "Cancel",
+  "card gone, the sheet still open with Delete chosen",
+  "card gone; sheet open; chips [[\"Overseas Sqn\",false],[\"✓ Delete\",true],[\"SANS\",false]]",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/082-1024x768-chromium-card-cancel.png"
+ ],
+ [
+  "A13/F-S20 date calendar",
+  "mid",
+  "press PO from",
+  "the calendar opens wholly on screen, page no wider than window",
+  "{\"cls\":\"dcal-layer\",\"x\":0,\"y\":0,\"w\":1024,\"h\":768,\"r\":1024,\"b\":768,\"inside\":true,\"docW\":1024}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/083-1024x768-chromium-date-open.png"
+ ],
+ [
+  "A13/F-S20 date calendar Escape",
+  "mid",
+  "Escape with the calendar open",
+  "one Escape closes the calendar only, the sheet stays (lesson 19)",
+  "sheet open; date \"Mon 7 Dec 26▾\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/084-1024x768-chromium-date-esc.png"
+ ],
+ [
+  "A13/F-S20 resize while open",
+  "mid→701",
+  "window resized with the Post out sheet open",
+  "sheet stays whole and inside, chips 1 row(s), nothing cut, page no wider",
+  "sheet {\"x\":70.5,\"y\":472.3,\"w\":560,\"h\":281.7,\"r\":630.5,\"b\":754} inside=true; rows=1; chips [[\"✓ Overseas Sqn\",174,30,false,1],[\"Delete\",174,30,false,1],[\"SANS\",174,30,false,1]]; docW 701/701; head oneLine true; dateHalfOff 0",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/085-1024x768-chromium-resized-701.png"
+ ],
+ [
+  "A13/F-S20 resize back",
+  "701→mid",
+  "resized back",
+  "as before the resize",
+  "sheet open; rows=1; docW 1024",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/086-1024x768-chromium-resized-back.png"
+ ],
+ [
+  "A13/F-S20 new Post in (Cinch)",
+  "mid",
+  "day → ⋯ → Post in",
+  "head one line, PI from half width, strip edges with the button, Post in in accent, inside, page no wider",
+  "sheet {\"x\":232,\"y\":517.7,\"w\":560,\"h\":236.3,\"r\":792,\"b\":754} inside=true; head true; halfOff 0; edges {\"formL\":245,\"formR\":779,\"chipsR\":0,\"lineL\":245,\"lineR\":779,\"mainL\":245}; main rgb(59, 198, 232); line \"Their first day in the squadron. Days before it are blank and count nobody — leave can still be dated there.\"; docW 1024",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/087-1024x768-chromium-postin.png"
+ ],
+ [
+  "F-S19/F-S21 ground crew (Cotter) Post out",
+  "mid",
+  "Cotter day → ⋯ → Post out",
+  "Overseas Sqn and Delete only (D1709), equal width/height, side by side, half-width date, inside, no cut words",
+  "chips [[\"✓ Overseas Sqn\",245,552.3,264,30,false],[\"Delete\",515,552.3,264,30,false]]; halfOff 0; inside true; docW 1024; head \"Cotter\" oneLine true; sight {\"cellY\":553,\"cellB\":575,\"sheetTop\":472,\"hit\":false,\"at\":\"po-delete\"}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/089-1024x768-chromium-cotter-postout.png"
+ ],
+ [
+  "A13/F-S20 existing posting sheet",
+  "mid",
+  "Post out confirmed (fixture: day class \"gone act hasc\"), then tap a gone day",
+  "head one line, Undo post out alone at foot, inside, page no wider, chips one row (≤520 two to a line), no cut words",
+  "sheet {\"x\":232,\"y\":472.3,\"w\":560,\"h\":281.7,\"r\":792,\"b\":754} inside true; head \"Cinch\" \"Post out\" oneLine true; chips [[\"✓ Overseas Sqn\",552.3,174,30,false],[\"Delete\",552.3,174,30,false],[\"SANS\",552.3,174,30,false]]; foot [{\"t\":\"↶Undo post out\",\"x\":245,\"y\":709,\"w\":142.7,\"h\":32,\"r\":387.7,\"b\":741}]; docW 1024; wrapped []; sight {\"cellY\":312,\"cellB\":334,\"sheetTop\":472,\"hit\":false,\"at\":\"sheet-scrim\"}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/090-1024x768-chromium-existing.png"
+ ],
+ [
+  "A13/F-S20 existing sheet Delete card",
+  "mid",
+  "press its Delete chip",
+  "card inside the window, dashed Delete as tall as Cancel, no cut words",
+  "card {\"x\":425,\"y\":591.3,\"w\":300,\"h\":125.9,\"r\":725,\"b\":717.2} inside true \"Delete Cinch?On 7 Dec the app deletes him automatically. Days he flew keep his p\" go dashed h 36/36; docW 1024",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/091-1024x768-chromium-existing-card.png"
+ ],
+ [
+  "A13/F-S20 Undo post out",
+  "mid",
+  "Undo post out",
+  "the day no longer gone",
+  "class \" act\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/093-1024x768-chromium-undone.png"
+ ],
+ [
+  "A13/F-S20 drag window Post out",
+  "mid",
+  "drag → ⋯ → Post out",
+  "3 chips 1 row(s), half-width date, inside, no cut words, page no wider, accent button",
+  "sheet {\"x\":232,\"y\":472.3,\"w\":560,\"h\":281.7,\"r\":792,\"b\":754} inside true; chips [[\"✓ Overseas Sqn\",552.3,174,30,false],[\"Delete\",552.3,174,30,false],[\"SANS\",552.3,174,30,false]] rows 1; halfOff 0; main rgb(59, 198, 232); docW 1024; head \"Cinch|Post out\" true; wrapped []",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/094-1024x768-chromium-drag-postout.png"
+ ],
+ [
+  "A13/F-S20 drag window Delete card",
+  "mid",
+  "Delete → Post out",
+  "card inside, dashed Delete as tall as Cancel",
+  "card {\"x\":245,\"y\":574.3,\"w\":300,\"h\":125.9,\"r\":545,\"b\":700.2} inside true \"Delete Cinch?On 9 Dec the app deletes him automatically. Days he flew keep his p\" dashed 36/36; docW 1024",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/095-1024x768-chromium-drag-card.png"
+ ],
+ [
+  "F-S19 drag window Post in (measured)",
+  "mid",
+  "drag → ⋯ → Post in",
+  "PI from label over a half-width box; strip left/right edges with the form; Post in accent; head one line; inside",
+  "halfOff 0; edges {\"formL\":245,\"formR\":779,\"chipsR\":0,\"lineL\":245,\"lineR\":779,\"mainL\":245}; main rgb(59, 198, 232) \"Post in\"; head \"Cinch|Post in\" true; inside true; docW 1024; line \"Their first day in the squadron. Days before it are blank and count nobody — leave can still be dated there.\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r1m/096-1024x768-chromium-drag-postin.png"
+ ]
+]

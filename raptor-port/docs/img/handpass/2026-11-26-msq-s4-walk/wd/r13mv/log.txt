@@ -1,0 +1,12 @@
+msq-s4w-lib v1 who=wd run=r13mv port=4756
+wd-lib v1
+wd-move v1
+bringIn [data-testid="cell-stiff-2026-12-03"] 0 {"x":730,"y":552,"w":24,"h":22} scroll 0 185
+desk-chromium Move [data-testid="decide-shift"] {"txt":"⇄Move","h":32,"bg":"rgb(26, 31, 38)","border":"solid 1px rgb(42, 49, 58)","radius":"9px","font":"12.5px 700","color":"rgb(182, 192, 203)","arrow":"⇄ rgb(59, 198, 232) 12.5px"}
+desk-chromium Undo {"txt":"↶Undo post out","h":32,"bg":"rgb(26, 31, 38)","border":"solid 1px rgb(42, 49, 58)","radius":"9px","font":"12.5px 700","color":"rgb(182, 192, 203)","arrow":"↶ rgb(59, 198, 232) 12.5px"}
+ROW PASS | F-S22/F-S44 Undo post out built as Move is | desk-chromium | Move on a day with a leave bid; Undo post out on an existing posting | saw: Move {"txt":"⇄Move","h":32,"bg":"rgb(26, 31, 38)","border":"solid 1px rgb(42, 49, 58)","radius":"9px","font":"12.5px 700","color":"rgb(182, 192, 203)","arrow":"⇄ rgb(59, 198, 232) 12.5px"} | Undo {"txt":"↶Undo post out","h":32,"bg":"rgb(26, 31, 38)","border":"solid 1px rgb(42, 49, 58)","radius":"9px","font":"12.5px 700","color":"rgb(182, 192, 203)","arrow":"↶ rgb(59, 198, 232) 12.5px"}
+desk-chromium errors []
+phone-webkit Move [data-testid="decide-shift"] {"txt":"⇄Move","h":30.3,"bg":"rgb(26, 31, 38)","border":"solid 1px rgb(42, 49, 58)","radius":"9px","font":"12.5px 700","color":"rgb(182, 192, 203)","arrow":"⇄ rgb(59, 198, 232) 12.5px"}
+phone-webkit Undo {"txt":"↶Undo post out","h":30.3,"bg":"rgb(26, 31, 38)","border":"solid 1px rgb(42, 49, 58)","radius":"9px","font":"12.5px 700","color":"rgb(182, 192, 203)","arrow":"↶ rgb(59, 198, 232) 12.5px"}
+ROW PASS | F-S22/F-S44 Undo post out built as Move is | phone-webkit | Move on a day with a leave bid; Undo post out on an existing posting | saw: Move {"txt":"⇄Move","h":30.3,"bg":"rgb(26, 31, 38)","border":"solid 1px rgb(42, 49, 58)","radius":"9px","font":"12.5px 700","color":"rgb(182, 192, 203)","arrow":"⇄ rgb(59, 198, 232) 12.5px"} | Undo {"txt":"↶Undo post out","h":30.3,"bg":"rgb(26, 31, 38)","border":"solid 1px rgb(42, 49, 58)","radius":"9px","font":"12.5px 700","color":"rgb(182, 192, 203)","arrow":"↶ rgb(59, 198, 232) 12.5px"}
+phone-webkit errors []

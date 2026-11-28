@@ -1,0 +1,92 @@
+[
+ [
+  "lesson 27 chips under the finger (402)",
+  "phone-chromium",
+  "Post out sheet: tap Delete",
+  "the chips stay where they were when a choice is made (a control tapped again and again must not move — the standing rule, 2 Sep 26; lesson 27; F-S19)",
+  "chip moves [-16.6,-16.6,-16.6]; sheet top 542.3 → 525.7, height 317.7 → 334.3; line \"On 7 Dec the app deletes him automatically. Days he flew keep his puck.\" 34.7 → 51.3 tall",
+  "FAIL",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r9cm/005-phone-chromium-cm-delete-at-lift.png ; img/handpass/2026-11-26-msq-s4-walk/wd/r9cm/006-phone-chromium-cm-delete.png"
+ ],
+ [
+  "lesson 27 a tap where SANS was",
+  "phone-chromium",
+  "tap at SANS's place before the change (112,673) — under it now: po-form",
+  "SANS chosen",
+  "chips now [[\"Overseas Sqn\",false],[\"Delete\",false],[\"✓ SANS\",true]]; sheet open",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r9cm/007-phone-chromium-cm-tap-old-sans-at-lift.png ; img/handpass/2026-11-26-msq-s4-walk/wd/r9cm/008-phone-chromium-cm-after-old-sans.png"
+ ],
+ [
+  "lesson 27 chosen chip height (402)",
+  "phone-chromium",
+  "po-overseas chosen",
+  "the chosen chip (with its ✓) no taller than the others (F-S19, lesson 27)",
+  "[[\"✓ Overseas Sqn\",30,622.3],[\"Delete\",30,622.3],[\"SANS\",30,658.3]]",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r9cm/009-phone-chromium-cm-chosen-po-overseas.png"
+ ],
+ [
+  "lesson 27 chosen chip height (402)",
+  "phone-chromium",
+  "po-delete chosen",
+  "the chosen chip (with its ✓) no taller than the others (F-S19, lesson 27)",
+  "[[\"Overseas Sqn\",30,605.7],[\"✓ Delete\",30,605.7],[\"SANS\",30,641.7]]",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r9cm/010-phone-chromium-cm-chosen-po-delete.png"
+ ],
+ [
+  "lesson 27 chosen chip height (402)",
+  "phone-chromium",
+  "po-sans chosen",
+  "the chosen chip (with its ✓) no taller than the others (F-S19, lesson 27)",
+  "[[\"Overseas Sqn\",30,622.3],[\"Delete\",30,622.3],[\"✓ SANS\",30,658.3]]",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r9cm/011-phone-chromium-cm-chosen-po-sans.png"
+ ],
+ [
+  "lesson 27 chips under the finger (402)",
+  "phone-webkit",
+  "Post out sheet: tap Delete",
+  "the chips stay where they were when a choice is made (a control tapped again and again must not move — the standing rule, 2 Sep 26; lesson 27; F-S19)",
+  "chip moves [-16.6,-16.6,-16.6]; sheet top 552.3 → 535.7, height 307.7 → 324.3; line \"On 7 Dec the app deletes him automatically. Days he flew keep his puck.\" 34.7 → 51.3 tall",
+  "FAIL",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r9cm/016-phone-webkit-cm-delete-at-lift.png ; img/handpass/2026-11-26-msq-s4-walk/wd/r9cm/017-phone-webkit-cm-delete.png"
+ ],
+ [
+  "lesson 27 a tap where SANS was",
+  "phone-webkit",
+  "tap at SANS's place before the change (112,679) — under it now: po-form",
+  "SANS chosen",
+  "chips now [[\"Overseas Sqn\",false],[\"Delete\",false],[\"✓ SANS\",true]]; sheet open",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r9cm/018-phone-webkit-cm-tap-old-sans-at-lift.png ; img/handpass/2026-11-26-msq-s4-walk/wd/r9cm/019-phone-webkit-cm-after-old-sans.png"
+ ],
+ [
+  "lesson 27 chosen chip height (402)",
+  "phone-webkit",
+  "po-overseas chosen",
+  "the chosen chip (with its ✓) no taller than the others (F-S19, lesson 27)",
+  "[[\"✓ Overseas Sqn\",30,629.3],[\"Delete\",30,629.3],[\"SANS\",28,665.3]]",
+  "FAIL",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r9cm/020-phone-webkit-cm-chosen-po-overseas.png"
+ ],
+ [
+  "lesson 27 chosen chip height (402)",
+  "phone-webkit",
+  "po-delete chosen",
+  "the chosen chip (with its ✓) no taller than the others (F-S19, lesson 27)",
+  "[[\"Overseas Sqn\",30,612.7],[\"✓ Delete\",30,612.7],[\"SANS\",28,648.7]]",
+  "FAIL",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r9cm/021-phone-webkit-cm-chosen-po-delete.png"
+ ],
+ [
+  "lesson 27 chosen chip height (402)",
+  "phone-webkit",
+  "po-sans chosen",
+  "the chosen chip (with its ✓) no taller than the others (F-S19, lesson 27)",
+  "[[\"Overseas Sqn\",28,629.3],[\"Delete\",28,629.3],[\"✓ SANS\",30,663.3]]",
+  "FAIL",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r9cm/022-phone-webkit-cm-chosen-po-sans.png"
+ ]
+]

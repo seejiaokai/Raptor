@@ -51,7 +51,8 @@ export interface ApprLine {
 
 export interface ApprFigures {
   days: number
-  bal: { counter: CounterName; label: string; value: number } | null
+  /** `nt`: that kind's balance was never typed — the column reads the amber "–", no words (D2746, D2823) */
+  bal: { counter: CounterName; label: string; value: number; nt?: true } | null
   /** his seat's Available row at its lowest over the days, and its level; null where he is never counted */
   avail: { label: string; value: number; level: WhatIfLevel | null } | null
   /** each Manning row the request turns amber or red, at its lowest */
@@ -152,7 +153,9 @@ export function figuresOf(line: ApprLine, who: Person | undefined): ApprFigures 
   if (spends) {
     const kind = BAL_KINDS.find(k => KIND_COUNTER[k] === spends.counter)
     const value = spends.counter === 'oil' ? oilLedgerOf(ctx, line.personId).balance : kind ? leaveFiguresOf(line.personId).kinds[kind].war : null
-    if (value !== null) bal = { counter: spends.counter, label: spends.counter === 'annual' ? '' : counterLabel(spends.counter), value }
+    /* OIL is counted from its awards, never typed; any other kind may never have been typed (D2746) */
+    const nt = spends.counter !== 'oil' && !!kind && leaveFiguresOf(line.personId).kinds[kind].notTyped
+    if (value !== null) bal = { counter: spends.counter, label: spends.counter === 'annual' ? '' : counterLabel(spends.counter), value, ...(nt ? { nt: true as const } : {}) }
   }
   /* LOWEST AVAIL — this request's own what-if, day by day */
   /* a SANS man — drawn in the SANS group, or not on the war at all while SANS is off it (D1215, D1221): then the war's

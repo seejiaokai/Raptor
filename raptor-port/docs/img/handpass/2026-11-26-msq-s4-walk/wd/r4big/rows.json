@@ -1,0 +1,173 @@
+[
+ [
+  "F-S23 short window: the one-day window",
+  "1440x500",
+  "tap Cinch 7 Dec",
+  "RECORD (as on main): how the bid window behaves when short",
+  "sheet {\"x\":440,\"y\":221,\"w\":560,\"h\":265,\"r\":1000,\"b\":486} inside true",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r4big/002-1440x500-chromium-short-bid.png"
+ ],
+ [
+  "F-S23 short window: Post out sheet",
+  "1440x500",
+  "⋯ → Post out",
+  "every part reachable — fits or scrolls inside itself; ✕ in sight; button inside the screen",
+  "sheet {\"x\":440,\"y\":204.3,\"w\":560,\"h\":281.7,\"r\":1000,\"b\":486} inside true; ✕ {\"x\":968.4,\"y\":226.3,\"w\":18.6,\"h\":17,\"r\":987,\"b\":243.3} in=true; button {\"x\":453,\"y\":441,\"w\":86.8,\"h\":32,\"r\":539.8,\"b\":473} in=true; inner scroller null; docW 1440",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r4big/003-1440x500-chromium-short-postout.png"
+ ],
+ [
+  "F-S23 short window: the card",
+  "1440x500",
+  "Delete → Post out",
+  "the card inside the screen, hanging from its button",
+  "card {\"x\":453,\"y\":306.3,\"w\":300,\"h\":125.9,\"r\":753,\"b\":432.2} inside true; button {\"x\":453,\"y\":441,\"w\":87,\"h\":32}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r4big/004-1440x500-chromium-short-card.png"
+ ],
+ [
+  "F-S23 short window: scroll the sheet with the card up",
+  "1440x500",
+  "wheel up over the sheet with the card open",
+  "RECORD: does the card follow, stay, or close?",
+  "card before {\"x\":453,\"y\":306.3,\"w\":300,\"h\":125.9,\"r\":753,\"b\":432.2}; after {\"x\":453,\"y\":306.3,\"w\":300,\"h\":125.9,\"r\":753,\"b\":432.2}; button after {\"x\":453,\"y\":441,\"w\":87,\"h\":32}",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r4big/005-1440x500-chromium-short-card-scrolled.png"
+ ],
+ [
+  "F-S23 short window: existing posting sheet",
+  "1440x500",
+  "tap a gone day",
+  "every part reachable; ✕ in sight; Undo post out inside the screen or the sheet scrolls",
+  "sheet {\"x\":440,\"y\":204.3,\"w\":560,\"h\":281.7,\"r\":1000,\"b\":486} inside true; ✕ {\"x\":968.4,\"y\":226.3,\"w\":18.6,\"h\":17,\"r\":987,\"b\":243.3}; undo {\"t\":\"↶Undo post out\",\"x\":453,\"y\":441,\"w\":142.7,\"h\":32,\"r\":595.7,\"b\":473}",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r4big/006-1440x500-chromium-short-existing.png"
+ ],
+ [
+  "F-S23 short window: the one-day window",
+  "1440x500-main",
+  "tap Cinch 7 Dec",
+  "RECORD (as on main): how the bid window behaves when short",
+  "sheet {\"x\":440,\"y\":221,\"w\":560,\"h\":265,\"r\":1000,\"b\":486} inside true",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r4big/008-1440x500-chromium-main-short-bid.png"
+ ],
+ [
+  "F-S23 short window: Post out sheet",
+  "1440x500-main",
+  "⋯ → Post out",
+  "every part reachable — fits or scrolls inside itself; ✕ in sight; button inside the screen",
+  "sheet {\"x\":440,\"y\":82.3,\"w\":560,\"h\":403.7,\"r\":1000,\"b\":486} inside true; ✕ {\"x\":968.4,\"y\":104.3,\"w\":18.6,\"h\":17,\"r\":987,\"b\":121.3} in=true; button null in=null; inner scroller null; docW 1440",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r4big/009-1440x500-chromium-main-short-postout.png"
+ ],
+ [
+  "F-S25 new Post out (no zoom)",
+  "1536x864",
+  "day → ⋯ → Post out",
+  "sheet width and chips row as drawn, not stretched; half-width date",
+  "sheet {\"x\":488,\"y\":568.3,\"w\":560,\"h\":281.7,\"r\":1048,\"b\":850}; chips [[\"✓ Overseas Sqn\",174,30],[\"Delete\",174,30],[\"SANS\",174,30]]; halfOff 0; docW 1536",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r4big/010-1536x864-chromium-wide-postout.png"
+ ],
+ [
+  "F-S25 the card (no zoom)",
+  "1536x864",
+  "Delete → Post out",
+  "card Delete as tall as Cancel, dashed, inside",
+  "go {\"x\":652.6,\"y\":747.2,\"w\":62,\"h\":36,\"r\":714.6,\"b\":783.2} cancel {\"x\":722.6,\"y\":747.2,\"w\":65.4,\"h\":36,\"r\":788,\"b\":783.2} dashed inside true",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r4big/011-1536x864-chromium-wide-card.png"
+ ],
+ [
+  "F-S25 grid zoomed out",
+  "1536x864",
+  "Ctrl+wheel ×4 over the grid",
+  "the grid zooms out (assert it changed)",
+  "cell width 27 → 11",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r4big/012-1536x864-chromium-wide-zoomed.png"
+ ],
+ [
+  "F-S25 Post out with the grid zoomed out",
+  "1536x864",
+  "day → ⋯ → Post out, grid zoomed",
+  "the sheet does not zoom with the grid (as on main): same width and chip sizes",
+  "sheet {\"x\":488,\"y\":568.3,\"w\":560,\"h\":281.7,\"r\":1048,\"b\":850} vs {\"x\":488,\"y\":568.3,\"w\":560,\"h\":281.7,\"r\":1048,\"b\":850}; chips [[174,30],[174,30],[174,30]]; halfOff 0",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r4big/013-1536x864-chromium-wide-zoomed-postout.png"
+ ],
+ [
+  "F-S25 card with the grid zoomed out",
+  "1536x864",
+  "Delete → Post out",
+  "the card still hangs from the button; Delete as tall as Cancel",
+  "card {\"x\":501,\"y\":670.3,\"w\":300,\"h\":125.9,\"r\":801,\"b\":796.2} button {\"x\":501,\"y\":805,\"w\":87,\"h\":32} go h 36 cancel h 36",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r4big/014-1536x864-chromium-wide-zoomed-card.png"
+ ],
+ [
+  "F-S25 existing sheet, grid zoomed",
+  "1536x864",
+  "tap a gone day",
+  "Undo post out alone, sheet not zoomed",
+  "sheet {\"x\":488,\"y\":568.3,\"w\":560,\"h\":281.7,\"r\":1048,\"b\":850}; foot [{\"t\":\"↶Undo post out\",\"x\":501,\"y\":805,\"w\":142.7,\"h\":32,\"r\":643.7,\"b\":837}]; chips [[174,30],[174,30],[174,30]]",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r4big/015-1536x864-chromium-wide-zoomed-existing.png"
+ ],
+ [
+  "F-S25 new Post out (no zoom)",
+  "2560x1440",
+  "day → ⋯ → Post out",
+  "sheet width and chips row as drawn, not stretched; half-width date",
+  "sheet {\"x\":1000,\"y\":1144.3,\"w\":560,\"h\":281.7,\"r\":1560,\"b\":1426}; chips [[\"✓ Overseas Sqn\",174,30],[\"Delete\",174,30],[\"SANS\",174,30]]; halfOff 0; docW 2560",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r4big/016-2560x1440-chromium-wide-postout.png"
+ ],
+ [
+  "F-S25 the card (no zoom)",
+  "2560x1440",
+  "Delete → Post out",
+  "card Delete as tall as Cancel, dashed, inside",
+  "go {\"x\":1164.6,\"y\":1323.2,\"w\":62,\"h\":36,\"r\":1226.6,\"b\":1359.2} cancel {\"x\":1234.6,\"y\":1323.2,\"w\":65.4,\"h\":36,\"r\":1300,\"b\":1359.2} dashed inside true",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r4big/017-2560x1440-chromium-wide-card.png"
+ ],
+ [
+  "F-S25 grid zoomed out",
+  "2560x1440",
+  "Ctrl+wheel ×4 over the grid",
+  "the grid zooms out (assert it changed)",
+  "cell width 27 → 11",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r4big/018-2560x1440-chromium-wide-zoomed.png"
+ ],
+ [
+  "F-S25 Post out with the grid zoomed out",
+  "2560x1440",
+  "day → ⋯ → Post out, grid zoomed",
+  "the sheet does not zoom with the grid (as on main): same width and chip sizes",
+  "sheet {\"x\":1000,\"y\":1144.3,\"w\":560,\"h\":281.7,\"r\":1560,\"b\":1426} vs {\"x\":1000,\"y\":1144.3,\"w\":560,\"h\":281.7,\"r\":1560,\"b\":1426}; chips [[174,30],[174,30],[174,30]]; halfOff 0",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r4big/019-2560x1440-chromium-wide-zoomed-postout.png"
+ ],
+ [
+  "F-S25 card with the grid zoomed out",
+  "2560x1440",
+  "Delete → Post out",
+  "the card still hangs from the button; Delete as tall as Cancel",
+  "card {\"x\":1013,\"y\":1246.3,\"w\":300,\"h\":125.9,\"r\":1313,\"b\":1372.2} button {\"x\":1013,\"y\":1381,\"w\":87,\"h\":32} go h 36 cancel h 36",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r4big/020-2560x1440-chromium-wide-zoomed-card.png"
+ ],
+ [
+  "F-S25 existing sheet, grid zoomed",
+  "2560x1440",
+  "tap a gone day",
+  "Undo post out alone, sheet not zoomed",
+  "sheet {\"x\":1000,\"y\":1144.3,\"w\":560,\"h\":281.7,\"r\":1560,\"b\":1426}; foot [{\"t\":\"↶Undo post out\",\"x\":1013,\"y\":1381,\"w\":142.7,\"h\":32,\"r\":1155.7,\"b\":1413}]; chips [[174,30],[174,30],[174,30]]",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wd/r4big/021-2560x1440-chromium-wide-zoomed-existing.png"
+ ]
+]

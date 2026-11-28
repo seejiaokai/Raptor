@@ -34,7 +34,8 @@ checks and the deploy are in `raptor-port/docs/gates-and-deploy.md`.
 - Finished jobs waiting on his "merge live" at once may merge as one — **open the steps first** (D822, D1930).
 - Change → its own tests green locally → commit and push to the session branch (one open pull request accumulates the
   lot) → open the pull request into `main` as soon as the job is built, so its checks run while the app is walked
-  (D1086) → once the work is ready for his look and its Vercel preview is Ready, send him the link.
+  (D1086) → once the work is ready for his look, send him the preview link — from now on from GitHub, not Vercel
+  (D2906; how, his GitHub Pages rulings of 27 Nov on the multi-squadron branches until they reach `main`).
 - The link and the pictures come whenever you need him to review something, and when the work is done — not after
   every push of unfinished work (D905, D906). Where the link is: the steps.
 - **Never push while that pull request's checks are running:** any push, even of notes, cancels the run in progress
@@ -54,12 +55,14 @@ checks and the deploy are in `raptor-port/docs/gates-and-deploy.md`.
   pushed between his word and the merge, except bringing `main` in when the branch is behind it (D1742, D78, D1746).
 - Then carry it the whole way without checking in — **open the steps for how to read each:** `main`'s own run green →
   a READY Production deployment whose commit holds the merge → one notification, with the link. A green check is not
-  done, and a merged pull request is not done (D143).
+  done, and a merged pull request is not done (D143). But a live build Vercel's daily limit refuses (its own message
+  says so; any other failure is chased) is left — no retry, no spare build, no Promote asked of him: done once `main`'s
+  run is green (the agent's reading, told to him), the report saying plainly it is not yet live (D2906).
 - A merge whose every changed file Vercel counts as a note — the notes-only list, and anything under
   `raptor-port/docs/`, a working guide there included (`raptor-port/scripts/vercel-ignore.mjs`) — normally starts no
   build: `main`'s own run green as above, then confirm the skip (`raptor-port/docs/gates-and-deploy.md`, "A notes-only
   push skips its build") and report it merged, without waiting for a new READY; if it builds instead, wait for READY
-  as above (D2032).
+  as above, unless its daily limit refuses it — then as above (D2032, D2906).
 - His "merge live" (or "merge now") means his own look is done — never ask him about it again (D1640). If his look
   brings a change — or bringing `main` in to settle a clash changed this branch's own app code — the fix and its
   records are pushed together and his look is asked again (D1742, D1746).
@@ -73,7 +76,7 @@ checks and the deploy are in `raptor-port/docs/gates-and-deploy.md`.
 - Come back sooner only for a red check you cannot fix, a genuine question, or a merge he told you to hold. Waiting is
   not a reason — schedule a check-in, never report "still building".
 - His look on his phone is the live look: the live app sits behind his sign-in, and the agent is never given a login
-  to it (D143).
+  to it (D143); after a refused build it shows the change only once a later merge builds (D2906).
 
 ## The checks
 

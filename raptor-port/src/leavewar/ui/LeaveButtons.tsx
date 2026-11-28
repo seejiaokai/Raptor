@@ -20,8 +20,9 @@ export function LeaveButtons({ portion, onPick, figure, filled, lit = null, test
   portion: Portion
   onPick: (code: string) => void
   /** what is left of the balance this leave spends once it is placed — null where it spends nothing (or the window names
-   *  no one man) */
-  figure?: (code: string) => number | null
+   *  no one man); 'nt' where that balance was never typed (D2746): the amber "–", not dimmed, no words (his D2823 —
+   *  question 23's item 4 as drawn) */
+  figure?: (code: string) => number | null | 'nt'
   /** the approved look (an admin placing with "Approve what I enter" ticked) — else the pending look */
   filled: boolean
   /** the leave the day already holds (round 3's change 7, his Q6): its button wears the window's ring, the cyan of a
@@ -39,14 +40,15 @@ export function LeaveButtons({ portion, onPick, figure, filled, lit = null, test
           <button
             key={t.type}
             data-testid={`${testPrefix}-${t.type}`}
-            className={`tchip lv k-${kindOf(t.type)} ${filled ? 's-a' : 's-w'}${f !== null && f <= 0 ? ' lv-dim' : ''}${lit === t.type ? ' lit' : ''}`}
+            className={`tchip lv k-${kindOf(t.type)} ${filled ? 's-a' : 's-w'}${typeof f === 'number' && f <= 0 ? ' lv-dim' : ''}${lit === t.type ? ' lit' : ''}`}
             aria-current={lit === t.type ? 'true' : undefined}
             title={t.label}
             onClick={() => onPick(code)}
           >
             {/* the chip says what the BOX will say — `<LL`, `LL>` — while the write still speaks the stored grammar */}
             <span className="lv-code">{displayCell(code)}</span>
-            {f !== null && <span className={`lv-fig${f < 0 ? ' lv-neg' : ''}`} data-testid={`${testPrefix}-${t.type}-left`}>{fig(f)}</span>}
+            {f === 'nt' && <span className="lv-fig lv-nt" data-testid={`${testPrefix}-${t.type}-left`}>–</span>}
+            {typeof f === 'number' && <span className={`lv-fig${f < 0 ? ' lv-neg' : ''}`} data-testid={`${testPrefix}-${t.type}-left`}>{fig(f)}</span>}
           </button>
         )
       })}

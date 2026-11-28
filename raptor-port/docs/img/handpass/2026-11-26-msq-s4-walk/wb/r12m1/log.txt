@@ -1,0 +1,10 @@
+msq-s4w-lib v1 who=wb run=r12m1 port=4754
+wb-r12 v1
+clock at start Thu Nov 26 2026 23:57:03
+ROW PASS | A17 / F-S36 set-up | desk chromium | clock Thu Nov 26 2026 23:57:13: Piston Overseas from 27 Nov ("On 27 Nov: archived."), Warden Delete from 27 Nov, through the app | saw: grid: Piston from 11-27, Warden from 11-27; Admin → Users {"Piston":"Piston no sign-in · Pilot · CAT IP POSTING OUT 27 NOV · OVERSEAS SQN","Warden":"Warden no sign-in · Pilot · CAT IP POSTING OUT 27 NOV · AUTO DELETE"}; bell: (no bell list)
+open at Thu Nov 26 2026 23:57:13 poOld head=Warden Post out ✕ page=leavewar
+ROW RECORD | A17 / F-S36 | desk chromium | Warden's existing (Delete, 27 Nov) sheet open from 23:5x; midnight passes (Fri Nov 27 2026 00:00:24); no reload | saw: before [poOld head=Warden Post out ✕ page=leavewar]; after [page=leavewar] ""; no Undo pressable; Warden rows on grid 1; Piston from 11-27
+ROW RECORD | A17 / F-S36 | desk chromium | after midnight: Warden's 27 Nov tapped; Admin → Users; Saber's bell; leave and come back; the bell again | saw: Warden 27 Nov → [page=leavewar] (row on grid: yes); Admin → Users {"Piston":"(no row)","Warden":"(no row)"}; bell 1: PistonFri 27 Nov Posted out · archived now WardenFri 27 Nov Posted out · deleted now Mark all read || bell 2: PistonFri 27 Nov Posted out · archived now WardenFri 27 Nov Posted out · deleted now Mark all read
+errors []
+errors []
+DONE 1 PASS 0 FAIL 2 OTHER of 3

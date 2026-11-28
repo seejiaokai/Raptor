@@ -1,0 +1,53 @@
+[
+ {
+  "scn": "print",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "print",
+  "size": "desktop",
+  "id": "pr.m",
+  "what": "set-up: Marlin on VL BFM 13:00 RCP, nothing filed: his line on Fri 17",
+  "ok": true,
+  "note": "\"Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)\""
+ },
+ {
+  "scn": "print",
+  "size": "desktop",
+  "id": "pr.draft-edit",
+  "what": "Export as PDF from editsched on a day carrying his line (draft): does the warning show in what prints? (RECORD, Chromium and WebKit print media)",
+  "ok": "REC",
+  "note": "printed page made · prints 0 · Friday: \"Friday Jul 17 Working draft — not yet signed Wave CS / Mission Rally Brief T/O Land FCP RCP Area Time Remarks Stores WAVE 1 VL BFM 10:40 13:00 14:00 Marlin A RESTRICTED \" · {\"sans\":false,\"check\":false,\"nf\":false,\"issue\":false}",
+  "pics": "print-draft-edit-print-chromium-desktop.png, print-draft-edit-print-desktop.pdf, print-draft-edit-print-webkit-desktop.png"
+ },
+ {
+  "scn": "print",
+  "size": "desktop",
+  "id": "pr.draft-view",
+  "what": "Export as PDF from viewsched (RECORD)",
+  "ok": "REC",
+  "note": "no Export as PDF drawn on viewsched at this size",
+  "pics": "print-draft-view-no-export-desktop.png"
+ },
+ {
+  "scn": "print",
+  "size": "desktop",
+  "id": "pr.pub",
+  "what": "Fri 17 published (\"Publish day\"): Export as PDF — does the warning show in print? (RECORD)",
+  "ok": "REC",
+  "note": "Friday: \"Friday Jul 17 Published — Original Wave CS / Mission Rally Brief T/O Land FCP RCP Area Time Remarks Stores WAVE 1 VL BFM 10:40 13:00 14:00 Marlin A RESTRICTED \" · {\"sans\":false,\"check\":false,\"nf\":false,\"issue\":false}",
+  "pics": "print-pub-print-chromium-desktop.png, print-pub-print-desktop.pdf, print-pub-print-webkit-desktop.png"
+ },
+ {
+  "scn": "print",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

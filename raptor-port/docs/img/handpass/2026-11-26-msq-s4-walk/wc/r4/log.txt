@@ -1,0 +1,7 @@
+msq-s4w-lib v1 who=wc run=r4 port=4755
+wc-r4 v1
+SEL ["sel-who=Anvil","sel-span=16–18 Dec · 3 days","sel-approve-tick=Auto-approve","sel-cancel=✕","sel-rmk-row=till 18 Dec Document","sel-remarks=","sel-tl=till 18 Dec","sel-till=on","sel-tilldate=till 18 Dec","sel-doc-row=Document","sel-portion-full=Whole day","sel-portion-am=AM","sel-portion-pm=PM","sel-LL=LL 16","sel-LL-left=16","sel-OL=OL 16","sel-OL-left=16","sel-OIL=OIL −3","sel-OIL-left=−3","sel-CCL=CCL −1","sel-CCL-left=−1","sel-FCL=FCL −3","sel-FCL-left=−3","sel-PL=PL −3","sel-PL-left=−3","sel-EL=EL −3","sel-EL-left=−3","sel-CL=CL −3","sel-CL-left=−3","sel-extra-row=CSE OD Grant OIL ⋯","sel-file-CSE=CSE","sel-file-OD=OD","sel-oil=Grant OIL","sel-more=⋯"]
+AFTER OD tids []
+DIALOG text none
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

@@ -1,0 +1,21 @@
+[
+  { "n": 1, "name": "the D2573 strike removed (the early return for a seat with no times)", "file": "src/engine/avail.ts",
+    "find": "&&sansGate(id,DAYS[r.di].dt,'fly',null,null,dayIso(String(CURWEEK),r.di)).status==='none')\n    return sansNoneWhy(p,dayIso(String(CURWEEK),r.di));",
+    "put": "&&sansGate(id,DAYS[r.di].dt,'fly',null,null,dayIso(String(CURWEEK),r.di)).status==='none'&&false)\n    return sansNoneWhy(p,dayIso(String(CURWEEK),r.di));",
+    "tests": ["src/engine/sans-notimes-strike.test.ts", "src/ui/sans-notimes-surfaces.test.tsx"] },
+  { "n": 2, "name": "the crew list's wire cut (an armed seat's reason for a struck man)", "file": "src/ui/palette-html.ts",
+    "find": "return armKey?slotBar(id,armKey,rules)", "put": "return armKey?''",
+    "tests": ["src/ui/sans-notimes-surfaces.test.tsx"] },
+  { "n": 3, "name": "the drag hover's wire cut", "file": "src/ui/drag.ts",
+    "find": "why = slotBar(id, String(key), undefined, DRAG.kind === 'slot' ? DRAG.key : undefined)", "put": "why = ''",
+    "tests": ["src/ui/sans-notimes-surfaces.test.tsx"] },
+  { "n": 4, "name": "the green rings' wire cut", "file": "src/ui/highlights.ts",
+    "find": "why=slotBar(id,raw)", "put": "why=''",
+    "tests": ["src/ui/sans-notimes-surfaces.test.tsx"] },
+  { "n": 5, "name": "the tap-to-plan note's wire cut", "file": "src/state/view.ts",
+    "find": "const why=slotBar(id,landed);", "put": "const why='';",
+    "tests": ["src/ui/sans-notimes-surfaces.test.tsx"] },
+  { "n": 6, "name": "the drop note's wire cut", "file": "src/ui/drag.ts",
+    "find": "let why = ''; try { why = slotBar(id, String(key)) } catch (_) { return false }", "put": "let why = ''",
+    "tests": ["src/ui/sans-notimes-surfaces.test.tsx"] }
+]

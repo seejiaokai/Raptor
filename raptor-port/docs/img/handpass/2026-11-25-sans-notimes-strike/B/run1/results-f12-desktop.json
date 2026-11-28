@@ -1,0 +1,184 @@
+[
+ {
+  "scn": "f12",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "f12",
+  "size": "desktop",
+  "id": "f12.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "f12-f12.post-postout-open-desktop.png, f12-f12.post-postout-sheet-desktop.png"
+ },
+ {
+  "scn": "f12",
+  "size": "desktop",
+  "id": "f12.line",
+  "what": "set-up: a new flying line on Sat (+ Wave → Flying wave), no times typed",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 1\",\"kind\":\"\",\"standalone\":false,\"cs\":\"\",\"to\":\"\",\"ld\":\"\",\"n\":1}"
+ },
+ {
+  "scn": "f12",
+  "size": "desktop",
+  "id": "f12.seat",
+  "what": "set-up: Ranger tapped into the FCP of the new Sat line (seat tapped, then his name)",
+  "ok": true,
+  "note": "armed 5.0.0.0.p · note \"the WAVE 1 line has no usable times, so nobody on it earns OIL for this day\"",
+  "pics": "f12-f12-seat5w0-note-clip-desktop.png, f12-f12-seat5w0-picked-desktop.png"
+ },
+ {
+  "scn": "f12",
+  "size": "desktop",
+  "id": "f12.empty-blank",
+  "what": "set-up: a new flying line on Sat (+ Wave → Flying wave), no times typed",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 2\",\"kind\":\"\",\"standalone\":false,\"cs\":\"\",\"to\":\"\",\"ld\":\"\",\"n\":1}"
+ },
+ {
+  "scn": "f12",
+  "size": "desktop",
+  "id": "f12.empty-timed",
+  "what": "set-up: a new flying line on Sat (+ Wave → Flying wave) 13:00–14:00",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 3\",\"kind\":\"\",\"standalone\":false,\"cs\":\"TIMED\",\"to\":\"13:00\",\"ld\":\"14:00\",\"n\":1}"
+ },
+ {
+  "scn": "f12",
+  "size": "desktop",
+  "id": "f12.1",
+  "what": "Ranger on the uncancelled blank flight: his bell names Sat 18",
+  "ok": true,
+  "note": "lit true · 1 line(s) · Mark all read in view · [unread] \"You're SANS from Fri 17 Jul.\" \"\" \"You're planned on Sat 18 Jul with nothing filed. Tap to file for availability.\"",
+  "pics": "f12-f12-bell0-desktop.png"
+ },
+ {
+  "scn": "f12",
+  "size": "desktop",
+  "id": "f12.cx1",
+  "what": "set-up: Saber cancels Ranger's blank line (CX, reason WX, Cancel line)",
+  "ok": true,
+  "note": "",
+  "pics": "f12-f12-l1-cx-desktop.png"
+ },
+ {
+  "scn": "f12",
+  "size": "desktop",
+  "id": "f12.2",
+  "what": "his only Sat 18 flight cancelled: the bell no longer names Sat 18 (D2568)",
+  "ok": true,
+  "note": "lit false · 0 line(s) · Mark all read none · empty",
+  "pics": "f12-f12-bell1-desktop.png"
+ },
+ {
+  "scn": "f12",
+  "size": "desktop",
+  "id": "f12.cx-blank",
+  "what": "set-up: Saber cancels the empty blank line",
+  "ok": true,
+  "note": "",
+  "pics": "f12-f12-blank-cx-desktop.png"
+ },
+ {
+  "scn": "f12",
+  "size": "desktop",
+  "id": "f12.cx-timed",
+  "what": "set-up: Saber cancels the empty timed line",
+  "ok": true,
+  "note": "",
+  "pics": "f12-f12-timed-cx-desktop.png"
+ },
+ {
+  "scn": "f12",
+  "size": "desktop",
+  "id": "f12.3a",
+  "what": "the cancelled BLANK line's FCP armed: Ranger",
+  "ok": "REC",
+  "note": "armed 5.1.0.0.p · [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" printed \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\"",
+  "pics": "f12-f12-cxblank-armed-clip-desktop.png, f12-f12-cxblank-sans-clip-desktop.png, f12-f12-cxblank-armed-desktop.png"
+ },
+ {
+  "scn": "f12",
+  "size": "desktop",
+  "id": "f12.3b",
+  "what": "the cancelled TIMED line's FCP armed: Ranger",
+  "ok": "REC",
+  "note": "armed 5.2.0.0.p · [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" printed \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\"",
+  "pics": "f12-f12-cxtimed-armed-clip-desktop.png, f12-f12-cxtimed-sans-clip-desktop.png, f12-f12-cxtimed-armed-desktop.png"
+ },
+ {
+  "scn": "f12",
+  "size": "desktop",
+  "id": "f12.3",
+  "what": "a cancelled blank line behaves as a cancelled timed one on the crew list (D2568 \"as built\": both strike, same words)",
+  "ok": true,
+  "note": "blank: [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" printed \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" · timed: [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" printed \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\""
+ },
+ {
+  "scn": "f12",
+  "size": "desktop",
+  "id": "f12.uncx",
+  "what": "set-up: Saber un-cancels Ranger's line",
+  "ok": true,
+  "note": "",
+  "pics": "f12-f12-l1-uncx-desktop.png"
+ },
+ {
+  "scn": "f12",
+  "size": "desktop",
+  "id": "f12.4",
+  "what": "un-cancelled: the bell names Sat 18 again",
+  "ok": true,
+  "note": "lit true · 1 line(s) · Mark all read in view · [unread] \"You're SANS from Fri 17 Jul.\" \"\" \"You're planned on Sat 18 Jul with nothing filed. Tap to file for availability.\"",
+  "pics": "f12-f12-bell2-desktop.png"
+ },
+ {
+  "scn": "f12",
+  "size": "desktop",
+  "id": "f12b.line",
+  "what": "set-up: a new flying line on Sat (+ Wave → Flying wave), no times typed",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 4\",\"kind\":\"\",\"standalone\":false,\"cs\":\"\",\"to\":\"\",\"ld\":\"\",\"n\":1}"
+ },
+ {
+  "scn": "f12",
+  "size": "desktop",
+  "id": "f12b.seat",
+  "what": "set-up: Ranger tapped into the FCP of the new Sat line (seat tapped, then his name)",
+  "ok": true,
+  "note": "armed 5.3.0.0.p · note \"the WAVE 1 line and the WAVE 4 line have no usable times, so nobody on them earns OIL for this day (+1 more)\"",
+  "pics": "f12-f12b-seat5w3-note-clip-desktop.png, f12-f12b-seat5w3-picked-desktop.png"
+ },
+ {
+  "scn": "f12",
+  "size": "desktop",
+  "id": "f12.cx2",
+  "what": "set-up: Saber cancels Ranger's first line again (his second blank line stays)",
+  "ok": true,
+  "note": "",
+  "pics": "f12-f12-l1again-cx-desktop.png"
+ },
+ {
+  "scn": "f12",
+  "size": "desktop",
+  "id": "f12.5",
+  "what": "one of his two Sat 18 flights cancelled: the bell still names Sat 18",
+  "ok": true,
+  "note": "lit true · 1 line(s) · Mark all read in view · [unread] \"You're SANS from Fri 17 Jul.\" \"\" \"You're planned on Sat 18 Jul with nothing filed. Tap to file for availability.\"",
+  "pics": "f12-f12-bell3-desktop.png"
+ },
+ {
+  "scn": "f12",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

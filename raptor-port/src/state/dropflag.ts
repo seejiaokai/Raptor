@@ -51,6 +51,8 @@ const rankOf = (w: any) => (w.sev === 'hard' ? 100 : 0) + (RANK[CHIP_OF[w.code]]
    is a different clash, and new (the bug check of 12 Nov 26) */
 export const warnKey = (w: any) => `${w.code}|${w.di}|${(w.who || []).join(',')}|${w.msg}`
   + (Array.isArray(w.items) ? '|@' + w.items.map(String).sort().join('&') : '')
+  /* a SANS line keys its event too (engine/validate.ts `sansDomain`, sans-hide-event.test.ts) */
+  + (w.sansDomain ? '|#' + w.sansDomain : '')
 
 /* warnings in `after` that `before` did not carry — hard and advisory only.
    A `before` that was never validated (byDay empty) cannot say what is new,
@@ -87,7 +89,10 @@ export function flagLine(w: any, dropDi: any) {
      named too (Astra's blind read, 16 Nov 26: the reworded lines leave the people to the drawer) */
   const ids = [...new Set<string>(w.who || [])]
   const cs = ids.map((id) => (PEOPLE[id] ? PEOPLE[id].cs : id)).filter(Boolean).join(', ')
-  let m = String(w.msg || '')
+  /* a SANS line speaks in the CREW LIST's words (owner D2753, 27 Nov 26 — "all as recommended", the SANS warning-lines
+     questions page, Q1): "Bolt — SANS — offered Fly only, not AMT", the same before and after the drop and whether or not
+     his line was hidden (the fallback, slotBar, says the same); the warning list keeps its longer line naming the event */
+  let m = String(w.crewWhy || w.msg || '')
   if (cs && m.indexOf(cs) !== 0) m = `${cs} — ${m}`
   if (w.di != null && w.di !== dropDi && w.day) m = `${String(w.day).slice(0, 3)} · ${m}`
   return m

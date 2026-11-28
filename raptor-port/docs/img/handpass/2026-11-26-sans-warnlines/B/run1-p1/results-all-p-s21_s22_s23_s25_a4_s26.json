@@ -1,0 +1,655 @@
+[
+ {
+  "scn": "s21",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s21",
+  "size": "phone",
+  "id": "s21.l1",
+  "what": "set-up: a flying line VL BFM T/O 13:00 LD 14:00 on Fri 17 (+ Wave, CS / MSN / T/O / LD typed)",
+  "ok": true,
+  "note": "{\"cs\":\"VL\",\"msn\":\"BFM\",\"to\":\"13:00\",\"ld\":\"14:00\"}"
+ },
+ {
+  "scn": "s21",
+  "size": "phone",
+  "id": "s21.tap",
+  "what": "board, tap-to-plan: Marlin into VL BFM's RCP — placed; the note reads \"Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)\"",
+  "ok": true,
+  "note": "placed true · note \"Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)\" · seen [\"Wave added\",\"Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)\"]",
+  "pics": "s21-s21-tap-armed-clip-phone.png, s21-s21-tap-sans-clip-phone.png, s21-s21-tap-armed-phone.png, s21-s21-tap-note-clip-phone.png, s21-s21-tap-picked-phone.png"
+ },
+ {
+  "scn": "s21",
+  "size": "phone",
+  "id": "s21.tap-reader",
+  "what": "the note: one, telling nobody to file; on the phone inside the screen, wrapped not cut (lesson 33, F21 RECORD)",
+  "ok": true,
+  "note": "{\"left\":12,\"right\":390,\"vw\":402,\"h\":50,\"lines\":2,\"cut\":false,\"opacity\":\"1\",\"n\":1}"
+ },
+ {
+  "scn": "s21",
+  "size": "phone",
+  "id": "s21.week",
+  "what": "Edit Schedule's week, tap-to-plan (seat pressed on the week, Marlin tapped in the crew panel) after the board's Undo (\"Undid: a change to the schedule\"): the note reads \"Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)\"",
+  "ok": true,
+  "note": "armed 4.0.0.0.w · placed true · note \"Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)\" · {\"left\":12,\"right\":390,\"vw\":402,\"h\":50,\"lines\":2,\"cut\":false,\"opacity\":\"1\",\"n\":1}",
+  "pics": "s21-s21-week-earmed-clip-phone.png, s21-s21-week-esans-clip-phone.png, s21-s21-week-earmed-phone.png, s21-s21-week-enote-clip-phone.png, s21-s21-week-epicked-phone.png"
+ },
+ {
+  "scn": "s21",
+  "size": "phone",
+  "id": "s21.fo",
+  "what": "set-up: Saber files SANS oft all day for wrangler on 2026-07-17",
+  "ok": true,
+  "note": "{\"iid\":\"imrldjf8505m4w2\",\"people\":\"[{\\\"p\\\":\\\"wrangler\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077264085}]\",\"date\":\"Jul 17\",\"endDate\":null,\"sans\":{\"o\":true},\"allday\":true,\"e\":1439,\"remarks\":\"\",\"by\":\"stiff\"}",
+  "pics": "s21-s21.fo-form-phone.png, s21-s21.fo-saved-phone.png"
+ },
+ {
+  "scn": "s21",
+  "size": "phone",
+  "id": "s21.mis",
+  "what": "Otter (filed OFT only) tapped into VL ACM's RCP: the note reads \"Otter — SANS: offered OFT only today. Planned on VL ACM (T/O 15:00)\" (D2584 2a)",
+  "ok": true,
+  "note": "filed true · placed true · note \"Otter — SANS: offered OFT only today. Planned on VL ACM (T/O 15:00)\"",
+  "pics": "s21-s21-mis-armed-clip-phone.png, s21-s21-mis-sans-clip-phone.png, s21-s21-mis-armed-phone.png, s21-s21-mis-note-clip-phone.png, s21-s21-mis-picked-phone.png"
+ },
+ {
+  "scn": "s21",
+  "size": "phone",
+  "id": "s21.fp",
+  "what": "set-up: Saber files SANS fly 08:00–12:00 for badger on 2026-07-17",
+  "ok": true,
+  "note": "{\"iid\":\"imrldk0s6a5guj7\",\"people\":\"[{\\\"p\\\":\\\"badger\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077292022}]\",\"date\":\"Jul 17\",\"endDate\":null,\"sans\":{\"f\":true},\"allday\":false,\"s\":480,\"e\":720,\"remarks\":\"\",\"by\":\"stiff\"}",
+  "pics": "s21-s21.fp-form-phone.png, s21-s21.fp-saved-phone.png"
+ },
+ {
+  "scn": "s21",
+  "size": "phone",
+  "id": "s21.hrs",
+  "what": "Pixel (filed Fly 08:00–12:00) tapped into RU BFM's RCP: the note reads \"Pixel — SANS: available 08:00–12:00 only. Planned on RU BFM (T/O 17:00)\" (the hours line, unchanged)",
+  "ok": true,
+  "note": "filed true · placed true · note \"Pixel — SANS: available 08:00–12:00 only. Planned on RU BFM (T/O 17:00)\"",
+  "pics": "s21-s21-hrs-armed-clip-phone.png, s21-s21-hrs-sans-clip-phone.png, s21-s21-hrs-armed-phone.png, s21-s21-hrs-note-clip-phone.png, s21-s21-hrs-picked-phone.png"
+ },
+ {
+  "scn": "s21",
+  "size": "phone",
+  "id": "s21.sim",
+  "what": "Jester tapped into an untimed OFT \"EP-9\": the note reads \"Jester — SANS: no availability filed for today. Planned on Sim EP-9\" (the brief's sim tail)",
+  "ok": true,
+  "note": "row {\"label\":\"EP-9\",\"str\":\"\",\"end\":\"\"} · placed true · note \"Jester — SANS: no availability filed for today. Planned on Sim EP-9\"",
+  "pics": "s21-s21-sim-armed-clip-phone.png, s21-s21-sim-sans-clip-phone.png, s21-s21-sim-armed-phone.png, s21-s21-sim-note-clip-phone.png, s21-s21-sim-picked-phone.png"
+ },
+ {
+  "scn": "s21",
+  "size": "phone",
+  "id": "s21.list",
+  "what": "the day's list after the four plants, every place (the notes' lines stand in it)",
+  "ok": "REC",
+  "note": "EDIT bar \"⚠ 4 issues ▲\" [adv] · 4 line(s): [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || [adv ✕] SANS availability — not filed, or planned outside it Otter — SANS: offered OFT only today. Planned on VL ACM (T/O 15:00) ✕ || [adv ✕] SANS availability — not filed, or planned outside it Pixel — SANS: available 08:00–12:00 only. Planned on RU BFM (T/O 17:00) ✕ || [adv ✕] SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on Sim EP-9 ✕ ·· INFO \"Friday · Jul 17 · 1 X 1 X 1\" · Draft — not yet published 25 changes · 4 ADVISORY · 4 line(s): [] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [] Advisory · SANS availability — not filed, or planned outside it Otter — SANS: offered OFT only today. Planned on VL ACM (T/O 15:00) || [] Advisory · SANS availability — not filed, or planned outside it Pixel — SANS: available 08:00–12:00 only. Planned on RU BFM (T/O 17:00) || [] Advisory · SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on Sim EP-9 ·· BOARD head \"▾ ⚠ 4 issues\" · 4 line(s): [✕] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || [✕] Otter — SANS: offered OFT only today. Planned on VL ACM (T/O 15:00) ✕ || [✕] Pixel — SANS: available 08:00–12:00 only. Planned on RU BFM (T/O 17:00) ✕ || [✕] Jester — SANS: no availability filed for today. Planned on Sim EP-9 ✕ ·· PUCKS cards week[flying line@Fri(4.0.0.0.w):amber/A] board[flying line(4.0.0.0.w):amber/A ; crew list (week):amber/A] / wrangler week[flying line@Fri(4.1.0.0.w):amber/A ; SANS@Fri:amber/A] board[flying line(4.1.0.0.w):amber/A ; SANS:amber/A ; crew list (week):amber/A] / badger week[flying line@Fri(4.2.0.0.w):amber/A ; SANS@Fri:amber/A] board[flying line(4.2.0.0.w):amber/A ; SANS:amber/A ; crew list (week):amber/A] / ipman week[sim@Fri(s:4.oft.2.p):amber/A] board[sim(s:4.oft.2.p):amber/A ; crew list (week):amber/A]",
+  "pics": "s21-s21-all-e-list-clip-phone.png, s21-s21-all-ipop-clip-phone.png, s21-s21-all-b-clip-phone.png, s21-s21-all-board-phone.png"
+ },
+ {
+  "scn": "s21",
+  "size": "phone",
+  "id": "s21.list-words",
+  "what": "the list carries each line the notes named, word for word",
+  "ok": true,
+  "note": "SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || SANS availability — not filed, or planned outside it Otter — SANS: offered OFT only today. Planned on VL ACM (T/O 15:00) ✕ || SANS availability — not filed, or planned outside it Pixel — SANS: available 08:00–12:00 only. Planned on RU BFM (T/O 17:00) ✕ || SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on Sim EP-9 ✕"
+ },
+ {
+  "scn": "s21",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s22",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s22",
+  "size": "phone",
+  "id": "s22.l1",
+  "what": "set-up: VL BFM T/O 13:00 on Fri 17",
+  "ok": true,
+  "note": "{\"cs\":\"VL\",\"msn\":\"BFM\",\"to\":\"13:00\",\"ld\":\"14:00\"}"
+ },
+ {
+  "scn": "s22",
+  "size": "phone",
+  "id": "s22.note",
+  "what": "Bolt (on the SDO desk 07:30–17:30, nothing filed) tapped into VL BFM's FCP: the note (RECORD whether the SANS line is named after the red one)",
+  "ok": "REC",
+  "note": "placed true · note \"Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) (+3 more)\"",
+  "pics": "s22-s22-bolt-armed-clip-phone.png, s22-s22-bolt-sans-clip-phone.png, s22-s22-bolt-armed-phone.png, s22-s22-bolt-note-clip-phone.png, s22-s22-bolt-picked-phone.png"
+ },
+ {
+  "scn": "s22",
+  "size": "phone",
+  "id": "s22.note-red",
+  "what": "the note leads with the red conflict, tells nobody to file",
+  "ok": true,
+  "note": "\"Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) (+3 more)\""
+ },
+ {
+  "scn": "s22",
+  "size": "phone",
+  "id": "s22.list",
+  "what": "the list keeps Bolt's SANS line beside the red conflict (\"SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)\")",
+  "ok": true,
+  "note": "EDIT bar \"⚠ 4 issues · 1 warning ▲\" [hard] · 4 line(s): [hard ✕] Conflict Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) ✕ || [adv ✕] Misses flight brief Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 ✕ || [adv ✕] Misses flight debrief Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 ✕ || [adv ✕] SANS availability — not filed, or planned outside it Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ ·· INFO \"Friday · Jul 17 · 1\" · Draft — not yet published 6 changes · 1 WARNING 3 ADVISORY · 4 line(s): [] Warning · Conflict Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) || [] Advisory · Misses flight brief Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 || [] Advisory · Misses flight debrief Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 || [] Advisory · SANS availability — not filed, or planned outside it Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ·· BOARD head \"▾ ⚠ 4 issues · 1 warning\" · 4 line(s): [✕] Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) ✕ || [✕] Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 ✕ || [✕] Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 ✕ || [✕] Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ ·· PUCKS yeti week[flying line@Fri(4.0.0.0.p):red/C ; duty@Fri(d:4.0.0):red/C] board[flying line(4.0.0.0.p):red/C ; duty(d:4.0.0):red/C ; crew list (week):red/C]",
+  "pics": "s22-s22-a-e-list-clip-phone.png, s22-s22-a-ipop-clip-phone.png, s22-s22-a-b-clip-phone.png, s22-s22-a-board-phone.png"
+ },
+ {
+  "scn": "s22",
+  "size": "phone",
+  "id": "s22.chip",
+  "what": "Bolt's seat puck: which ring and chip win (RECORD — Fable expects the red one, not \"A\")",
+  "ok": "REC",
+  "note": "flying line(4.0.0.0.p):red/C ; duty(d:4.0.0):red/C ; crew list (week):red/C · week flying line@Fri(4.0.0.0.p):red/C ; duty@Fri(d:4.0.0):red/C"
+ },
+ {
+  "scn": "s22",
+  "size": "phone",
+  "id": "s22.chip-red",
+  "what": "his seat puck wears the red ring, not the amber \"A\" alone",
+  "ok": true,
+  "note": "flying line(4.0.0.0.p):red/C"
+ },
+ {
+  "scn": "s22",
+  "size": "phone",
+  "id": "s22.wso",
+  "what": "Marlin (WSO, SANS, nothing filed) tapped into RU ACM's FCP: placed or refused, and the note (RECORD)",
+  "ok": "REC",
+  "note": "placed true · note \"Marlin — Illegal seat: a WSO in the front seat of RU ACM (T/O 20:00) (+1 more)\"",
+  "pics": "s22-s22-wso-armed-clip-phone.png, s22-s22-wso-sans-clip-phone.png, s22-s22-wso-armed-phone.png, s22-s22-wso-note-clip-phone.png, s22-s22-wso-picked-phone.png"
+ },
+ {
+  "scn": "s22",
+  "size": "phone",
+  "id": "s22.wso-list",
+  "what": "the list and Marlin's pucks after it (RECORD)",
+  "ok": "REC",
+  "note": "EDIT bar \"⚠ 6 issues · 2 warnings ▲\" [hard] · 6 line(s): [hard ✕] Conflict Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) ✕ || [hard ✕] Illegal seat Marlin — Illegal seat: a WSO in the front seat of RU ACM (T/O 20:00) ✕ || [adv ✕] Misses flight brief Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 ✕ || [adv ✕] Misses flight debrief Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 ✕ || [adv ✕] SANS availability — not filed, or planned outside it Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on RU ACM (T/O 20:00) ✕ ·· INFO \"Friday · Jul 17 · 1 X 1\" · Draft — not yet published 12 changes · 2 WARNING 4 ADVISORY · 6 line(s): [] Warning · Conflict Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) || [] Warning · Illegal seat Marlin — Illegal seat: a WSO in the front seat of RU ACM (T/O 20:00) || [] Advisory · Misses flight brief Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 || [] Advisory · Misses flight debrief Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 || [] Advisory · SANS availability — not filed, or planned outside it Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on RU ACM (T/O 20:00) ·· BOARD head \"▾ ⚠ 6 issues · 2 warnings\" · 6 line(s): [✕] Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) ✕ || [✕] Marlin — Illegal seat: a WSO in the front seat of RU ACM (T/O 20:00) ✕ || [✕] Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 ✕ || [✕] Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 ✕ || [✕] Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || [✕] Marlin — SANS: no availability filed for today. Planned on RU ACM (T/O 20:00) ✕ ·· PUCKS cards week[flying line@Fri(4.1.0.0.p):red/Q] board[flying line(4.1.0.0.p):red/Q ; crew list (week):red/Q]",
+  "pics": "s22-s22-b-e-list-clip-phone.png, s22-s22-b-ipop-clip-phone.png, s22-s22-b-b-clip-phone.png, s22-s22-b-board-phone.png"
+ },
+ {
+  "scn": "s22",
+  "size": "phone",
+  "id": "s22.wso-sans",
+  "what": "Marlin's SANS line stands in the list whatever else the front seat raised",
+  "ok": true,
+  "note": "Conflict Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) ✕ || Illegal seat Marlin — Illegal seat: a WSO in the front seat of RU ACM (T/O 20:00) ✕ || Misses flight brief Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 ✕ || Misses flight debrief Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 ✕ || SANS availability — not filed, or planned outside it Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on RU ACM (T/O 20:00) ✕"
+ },
+ {
+  "scn": "s22",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "s23.lines",
+  "what": "set-up: VL BFM 09:00–10:00 and VL ACM 12:30–13:30 on Fri 17",
+  "ok": true,
+  "note": "[{\"cs\":\"VL\",\"msn\":\"BFM\",\"to\":\"09:00\",\"ld\":\"10:00\"},{\"cs\":\"VL\",\"msn\":\"ACM\",\"to\":\"12:30\",\"ld\":\"13:30\"}]"
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "s23.plant",
+  "what": "set-up: Jester (SANS pilot, nothing filed) tapped into both FCPs",
+  "ok": true,
+  "note": "\"Jester — SANS: no availability filed for today. Planned on VL BFM (T/O 09:00)\" / \"Jester — SANS: no availability filed for today. Planned on VL ACM (T/O 12:30) (+1 more)\""
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "s23.dt",
+  "what": "two sorties 150 min apart: the list and his pucks (RECORD the double-turn line)",
+  "ok": "REC",
+  "note": "EDIT bar \"⚠ 3 issues ▲\" [adv] · 3 line(s): [adv ✕] Double turning Jester — 1 person is double turning: Jester ✕ || [adv ✕] SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on VL BFM (T/O 09:00) ✕ || [adv ✕] SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on VL ACM (T/O 12:30) ✕ ·· INFO \"Friday · Jul 17 · 1 X 1\" · Draft — not yet published 12 changes · 3 ADVISORY · 3 line(s): [] Advisory · Double turning Jester — 1 person is double turning: Jester || [] Advisory · SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on VL BFM (T/O 09:00) || [] Advisory · SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on VL ACM (T/O 12:30) ·· BOARD head \"▾ ⚠ 3 issues\" · 3 line(s): [✕] Jester — 1 person is double turning: Jester ✕ || [✕] Jester — SANS: no availability filed for today. Planned on VL BFM (T/O 09:00) ✕ || [✕] Jester — SANS: no availability filed for today. Planned on VL ACM (T/O 12:30) ✕ ·· PUCKS ipman week[flying line@Fri(4.0.0.0.p):amber/A ; flying line@Fri(4.1.0.0.p):amber/A] board[flying line(4.0.0.0.p):amber/A ; flying line(4.1.0.0.p):amber/A ; crew list (week):amber/A]",
+  "pics": "s23-s23-dt-e-list-clip-phone.png, s23-s23-dt-ipop-clip-phone.png, s23-s23-dt-b-clip-phone.png, s23-s23-dt-board-phone.png"
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "s23.dt-A",
+  "what": "his seat pucks show \"A\", not \"DT\", while the SANS lines show (the built chip order, D2583)",
+  "ok": true,
+  "note": "flying line(4.0.0.0.p):amber/A ; flying line(4.1.0.0.p):amber/A"
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "s23.tt",
+  "what": "VL ACM retimed 11:00–12:00 (60 min after landing): the list and his pucks",
+  "ok": "REC",
+  "note": "EDIT bar \"⚠ 4 issues ▲\" [adv] · 4 line(s): [adv ✕] Tight turn Jester — Tight turn: VL BFM → VL ACM, 60 min (needs 120). VL BFM landing 10:00, VL ACM T/O 11:00 ✕ || [adv ✕] Double turning Jester — 1 person is double turning: Jester ✕ || [adv ✕] SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on VL BFM (T/O 09:00) ✕ || [adv ✕] SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on VL ACM (T/O 11:00) ✕ ·· INFO \"Friday · Jul 17 · 1 X 1\" · Draft — not yet published 14 changes · 4 ADVISORY · 4 line(s): [] Advisory · Tight turn Jester — Tight turn: VL BFM → VL ACM, 60 min (needs 120). VL BFM landing 10:00, VL ACM T/O 11:00 || [] Advisory · Double turning Jester — 1 person is double turning: Jester || [] Advisory · SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on VL BFM (T/O 09:00) || [] Advisory · SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on VL ACM (T/O 11:00) ·· BOARD head \"▾ ⚠ 4 issues\" · 4 line(s): [✕] Jester — Tight turn: VL BFM → VL ACM, 60 min (needs 120). VL BFM landing 10:00, VL ACM T/O 11:00 ✕ || [✕] Jester — 1 person is double turning: Jester ✕ || [✕] Jester — SANS: no availability filed for today. Planned on VL BFM (T/O 09:00) ✕ || [✕] Jester — SANS: no availability filed for today. Planned on VL ACM (T/O 11:00) ✕ ·· PUCKS ipman week[flying line@Fri(4.0.0.0.p):amber/A ; flying line@Fri(4.1.0.0.p):amber/A] board[flying line(4.0.0.0.p):amber/A ; flying line(4.1.0.0.p):amber/A ; crew list (week):amber/A]",
+  "pics": "s23-s23-tt-e-list-clip-phone.png, s23-s23-tt-ipop-clip-phone.png, s23-s23-tt-b-clip-phone.png, s23-s23-tt-board-phone.png"
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "s23.tt-A",
+  "what": "a tight turn stands in the list, and his seat pucks still show \"A\", not \"TT\"; one chip a puck",
+  "ok": true,
+  "note": "1 tight-turn line(s) · flying line(4.0.0.0.p):amber/A ; flying line(4.1.0.0.p):amber/A"
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "s23.hid",
+  "what": "both SANS lines hidden (✕): the list and his pucks",
+  "ok": "REC",
+  "note": "EDIT bar \"⚠ 2 issues ▲\" [adv] · 4 line(s): [adv ✕] Tight turn Jester — Tight turn: VL BFM → VL ACM, 60 min (needs 120). VL BFM landing 10:00, VL ACM T/O 11:00 ✕ || [adv ✕] Double turning Jester — 1 person is double turning: Jester ✕ || [adv HIDDEN struck [drawn icon: Flag this again]] SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on VL BFM (T/O 09:00) || [adv HIDDEN struck [drawn icon: Flag this again]] SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on VL ACM (T/O 11:00) ·· INFO \"Friday · Jul 17 · 1 X 1\" · Draft — not yet published 16 changes · 2 ADVISORY · 4 line(s): [] Advisory · Tight turn Jester — Tight turn: VL BFM → VL ACM, 60 min (needs 120). VL BFM landing 10:00, VL ACM T/O 11:00 || [] Advisory · Double turning Jester — 1 person is double turning: Jester || [HIDDEN struck ] Advisory · SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on VL BFM (T/O 09:00) || [HIDDEN struck ] Advisory · SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on VL ACM (T/O 11:00) ·· BOARD head \"▾ ⚠ 2 issues\" · 4 line(s): [✕] Jester — Tight turn: VL BFM → VL ACM, 60 min (needs 120). VL BFM landing 10:00, VL ACM T/O 11:00 ✕ || [✕] Jester — 1 person is double turning: Jester ✕ || [HIDDEN struck [drawn icon: Flag this again]] Jester — SANS: no availability filed for today. Planned on VL BFM (T/O 09:00) || [HIDDEN struck [drawn icon: Flag this again]] Jester — SANS: no availability filed for today. Planned on VL ACM (T/O 11:00) ·· PUCKS ipman week[flying line@Fri(4.0.0.0.p):no ring/TT ; flying line@Fri(4.1.0.0.p):no ring/TT] board[flying line(4.0.0.0.p):no ring/TT ; flying line(4.1.0.0.p):no ring/TT ; crew list (week):no ring/TT]",
+  "pics": "s23-s23-hid-e-list-clip-phone.png, s23-s23-hid-ipop-clip-phone.png, s23-s23-hid-b-clip-phone.png, s23-s23-hid-board-phone.png"
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "s23.hid-TT",
+  "what": "with the SANS lines hidden his pucks show the turn chip (\"TT\" or \"DT\"), the turn lines still standing (D475)",
+  "ok": true,
+  "note": "flying line(4.0.0.0.p):no ring/TT ; flying line(4.1.0.0.p):no ring/TT"
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "s23.file",
+  "what": "set-up: Saber files SANS fly all day for ipman on 2026-07-17",
+  "ok": true,
+  "note": "{\"iid\":\"imrldkg0j3zm457\",\"people\":\"[{\\\"p\\\":\\\"ipman\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077311763}]\",\"date\":\"Jul 17\",\"endDate\":null,\"sans\":{\"f\":true},\"allday\":true,\"e\":1439,\"remarks\":\"\",\"by\":\"stiff\"}",
+  "pics": "s23-s23.file-form-phone.png, s23-s23.file-saved-phone.png"
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "s23.filed",
+  "what": "Fly filed all day: no SANS line; the turn chip shows; the turn lines stay",
+  "ok": true,
+  "note": "EDIT bar \"⚠ 2 issues ▲\" [adv] · 2 line(s): [adv ✕] Tight turn Jester — Tight turn: VL BFM → VL ACM, 60 min (needs 120). VL BFM landing 10:00, VL ACM T/O 11:00 ✕ || [adv ✕] Double turning Jester — 1 person is double turning: Jester ✕ ·· INFO \"Friday · Jul 17 · 1 X 1\" · Draft — not yet published 19 changes · 2 ADVISORY · 2 line(s): [] Advisory · Tight turn Jester — Tight turn: VL BFM → VL ACM, 60 min (needs 120). VL BFM landing 10:00, VL ACM T/O 11:00 || [] Advisory · Double turning Jester — 1 person is double turning: Jester ·· BOARD head \"▾ ⚠ 2 issues\" · 2 line(s): [✕] Jester — Tight turn: VL BFM → VL ACM, 60 min (needs 120). VL BFM landing 10:00, VL ACM T/O 11:00 ✕ || [✕] Jester — 1 person is double turning: Jester ✕ ·· PUCKS ipman week[flying line@Fri(4.0.0.0.p):no ring/TT ; flying line@Fri(4.1.0.0.p):no ring/TT ; SANS@Fri:no ring/TT] board[flying line(4.0.0.0.p):no ring/TT ; flying line(4.1.0.0.p):no ring/TT ; SANS:no ring/TT ; crew list (week):no ring/TT]",
+  "pics": "s23-s23-filed-e-list-clip-phone.png, s23-s23-filed-ipop-clip-phone.png, s23-s23-filed-b-clip-phone.png, s23-s23-filed-board-phone.png"
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "s23.unfiled",
+  "what": "the filing deleted: both SANS lines back, \"A\" back on both seat pucks",
+  "ok": true,
+  "note": "Input deleted · EDIT bar \"⚠ 4 issues ▲\" [adv] · 4 line(s): [adv ✕] Tight turn Jester — Tight turn: VL BFM → VL ACM, 60 min (needs 120). VL BFM landing 10:00, VL ACM T/O 11:00 ✕ || [adv ✕] Double turning Jester — 1 person is double turning: Jester ✕ || [adv ✕] SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on VL BFM (T/O 09:00) ✕ || [adv ✕] SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on VL ACM (T/O 11:00) ✕ ·· INFO \"Friday · Jul 17 · 1 X 1\" · Draft — not yet published 20 changes · 4 ADVISORY · 4 line(s): [] Advisory · Tight turn Jester — Tight turn: VL BFM → VL ACM, 60 min (needs 120). VL BFM landing 10:00, VL ACM T/O 11:00 || [] Advisory · Double turning Jester — 1 person is double turning: Jester || [] Advisory · SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on VL BFM (T/O 09:00) || [] Advisory · SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on VL ACM (T/O 11:00) ·· BOARD head \"▾ ⚠ 4 issues\" · 4 line(s): [✕] Jester — Tight turn: VL BFM → VL ACM, 60 min (needs 120). VL BFM landing 10:00, VL ACM T/O 11:00 ✕ || [✕] Jester — 1 person is double turning: Jester ✕ || [✕] Jester — SANS: no availability filed for today. Planned on VL BFM (T/O 09:00) ✕ || [✕] Jester — SANS: no availability filed for today. Planned on VL ACM (T/O 11:00) ✕ ·· PUCKS ipman week[flying line@Fri(4.0.0.0.p):amber/A ; flying line@Fri(4.1.0.0.p):amber/A] board[flying line(4.0.0.0.p):amber/A ; flying line(4.1.0.0.p):amber/A ; crew list (week):amber/A]",
+  "pics": "s23-s23-unfiled-e-list-clip-phone.png, s23-s23-unfiled-ipop-clip-phone.png, s23-s23-unfiled-b-clip-phone.png, s23-s23-unfiled-board-phone.png"
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s25",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s25",
+  "size": "phone",
+  "id": "s25.set",
+  "what": "set-up: Marlin on VL BFM 13:00 RCP and Otter on VL ACM 16:00 RCP, nothing filed for either",
+  "ok": true,
+  "note": "\"Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)\" / \"Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00)\""
+ },
+ {
+  "scn": "s25",
+  "size": "phone",
+  "id": "s25.start",
+  "what": "both lines shown; Marlin's puck amber with \"A\" on the week and the board (line \"SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)\")",
+  "ok": true,
+  "note": "EDIT bar \"⚠ 2 issues ▲\" [adv] · 2 line(s): [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || [adv ✕] SANS availability — not filed, or planned outside it Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ✕ ·· INFO \"Friday · Jul 17 · 1 X 1\" · Draft — not yet published 12 changes · 2 ADVISORY · 2 line(s): [] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [] Advisory · SANS availability — not filed, or planned outside it Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ·· BOARD head \"▾ ⚠ 2 issues\" · 2 line(s): [✕] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || [✕] Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ✕ ·· PUCKS cards week[flying line@Fri(4.0.0.0.w):amber/A] board[flying line(4.0.0.0.w):amber/A ; crew list (week):amber/A] / wrangler week[flying line@Fri(4.1.0.0.w):amber/A] board[flying line(4.1.0.0.w):amber/A ; crew list (week):amber/A]",
+  "pics": "s25-s25-0-e-list-clip-phone.png, s25-s25-0-ipop-clip-phone.png, s25-s25-0-b-clip-phone.png, s25-s25-0-board-phone.png"
+ },
+ {
+  "scn": "s25",
+  "size": "phone",
+  "id": "s25.a-list",
+  "what": "(a) Edit Schedule: his line struck in place with the drawn Reset arrow, the count down by one; Otter's line untouched (N12)",
+  "ok": true,
+  "note": "count 2 → 1 · bar \"⚠ 1 issue ▲\" [adv] · 2 line(s): [adv HIDDEN struck [drawn icon: Flag this again]] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [adv ✕] SANS availability — not filed, or planned outside it Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ✕",
+  "pics": "s25-s25-a-e-list-clip-phone.png, s25-s25-a-ipop-clip-phone.png, s25-s25-a-b-clip-phone.png, s25-s25-a-board-phone.png"
+ },
+ {
+  "scn": "s25",
+  "size": "phone",
+  "id": "s25.a-pucks",
+  "what": "(a) his ring and \"A\" gone from every copy (week and board), Otter's kept (D469, D475)",
+  "ok": true,
+  "note": "Marlin week[flying line@Fri(4.0.0.0.w):no ring] board[flying line(4.0.0.0.w):no ring ; crew list (week):no ring] · Otter board[flying line(4.1.0.0.w):amber/A ; crew list (week):amber/A]"
+ },
+ {
+  "scn": "s25",
+  "size": "phone",
+  "id": "s25.a-board",
+  "what": "(a) the board's panel and the ⓘ popup agree: his line struck, the same count",
+  "ok": true,
+  "note": "board head \"▾ ⚠ 1 issue\" · 2 line(s): [HIDDEN struck [drawn icon: Flag this again]] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [✕] Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ✕ · ⓘ \"Friday · Jul 17 · 1 X 1\" · Draft — not yet published 13 changes · 1 ADVISORY · 2 line(s): [HIDDEN struck ] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [] Advisory · SANS availability — not filed, or planned outside it Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00)"
+ },
+ {
+  "scn": "s25",
+  "size": "phone",
+  "id": "s25.n12",
+  "what": "N12: Marlin's line on Tue 14 (the demo's) still shows — a hide is tied to that day's warning",
+  "ok": true,
+  "note": "bar \"⚠ 5 issues · 2 warnings ▲\" [hard] · 5 line(s): [hard ✕] Conflict Saint — Conflict: VL SAT (step 13:40, T/O 14:40) & APPOINTMENT 14:00–16:00 ✕ || [hard ✕] Crew rest (<12h) Outlaw — Crew rest: Monday landed 20:45 + 2h debrief (assumed) → ended 22:45 → clear 10:45. Report 06:00: 7h15 rest, needs 12h. ✕ || [adv ✕] Misses flight brief Saint — Misses VL SAT brief 12:20–14:40: APPOINTMENT 14:00–16:00 ✕ || [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on RU ACM (T/O 14:40) ✕ || [note ✕] Long day Static — Long day: 13h05 (limit 12h), 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) ✕",
+  "pics": "s25-s25-n12-tue-list-clip-phone.png"
+ },
+ {
+  "scn": "s25",
+  "size": "phone",
+  "id": "s25.b",
+  "what": "(b) flagged again: the line back unstruck with its ✕, the count back, his ring and \"A\" back",
+  "ok": true,
+  "note": "EDIT bar \"⚠ 2 issues ▲\" [adv] · 2 line(s): [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || [adv ✕] SANS availability — not filed, or planned outside it Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ✕ ·· INFO \"Friday · Jul 17 · 1 X 1\" · Draft — not yet published 14 changes · 2 ADVISORY · 2 line(s): [] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [] Advisory · SANS availability — not filed, or planned outside it Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ·· BOARD head \"▾ ⚠ 2 issues\" · 2 line(s): [✕] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || [✕] Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ✕ ·· PUCKS cards week[flying line@Fri(4.0.0.0.w):amber/A] board[flying line(4.0.0.0.w):amber/A ; crew list (week):amber/A]",
+  "pics": "s25-s25-b-e-list-clip-phone.png, s25-s25-b-ipop-clip-phone.png, s25-s25-b-b-clip-phone.png, s25-s25-b-board-phone.png"
+ },
+ {
+  "scn": "s25",
+  "size": "phone",
+  "id": "s25.c",
+  "what": "(c) hidden, then VL BFM retimed T/O 14:00 LD 15:00: does the line come back unhidden? (RECORD)",
+  "ok": "REC",
+  "note": "Marlin's line: SHOWN \"SANS: no availability filed for today. Planned on VL BFM (T/O 14:00)\" · EDIT bar \"⚠ 2 issues ▲\" [adv] · 2 line(s): [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 14:00) ✕ || [adv ✕] SANS availability — not filed, or planned outside it Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ✕ ·· INFO \"Friday · Jul 17 · 1 X 1\" · Draft — not yet published 17 changes · 2 ADVISORY · 2 line(s): [] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 14:00) || [] Advisory · SANS availability — not filed, or planned outside it Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ·· BOARD head \"▾ ⚠ 2 issues\" · 2 line(s): [✕] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 14:00) ✕ || [✕] Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ✕ ·· PUCKS cards week[flying line@Fri(4.0.0.0.w):amber/A] board[flying line(4.0.0.0.w):amber/A ; crew list (week):amber/A]",
+  "pics": "s25-s25-c-e-list-clip-phone.png, s25-s25-c-ipop-clip-phone.png, s25-s25-c-b-clip-phone.png, s25-s25-c-board-phone.png"
+ },
+ {
+  "scn": "s25",
+  "size": "phone",
+  "id": "s25.d0",
+  "what": "set-up: Marlin's line hidden before the filing",
+  "ok": true,
+  "note": "bar \"⚠ 1 issue ▲\" [adv] · 2 line(s): [adv HIDDEN struck [drawn icon: Flag this again]] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 14:00) || [adv ✕] SANS availability — not filed, or planned outside it Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ✕"
+ },
+ {
+  "scn": "s25",
+  "size": "phone",
+  "id": "s25.d-file",
+  "what": "set-up: Saber files SANS oft all day for cards on 2026-07-17",
+  "ok": true,
+  "note": "{\"iid\":\"imrldky58a0w8ku\",\"people\":\"[{\\\"p\\\":\\\"cards\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077335261}]\",\"date\":\"Jul 17\",\"endDate\":null,\"sans\":{\"o\":true},\"allday\":true,\"e\":1439,\"remarks\":\"\",\"by\":\"stiff\"}",
+  "pics": "s25-s25.d-file-form-phone.png, s25-s25.d-file-saved-phone.png"
+ },
+ {
+  "scn": "s25",
+  "size": "phone",
+  "id": "s25.d",
+  "what": "(d) Marlin filed OFT only: \"SANS: offered OFT only today. Planned on VL BFM (T/O …)\" SHOWN, not hidden; his ring and \"A\" back (the situation changed, D469)",
+  "ok": true,
+  "note": "EDIT bar \"⚠ 2 issues ▲\" [adv] · 2 line(s): [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: offered OFT only today. Planned on VL BFM (T/O 14:00) ✕ || [adv ✕] SANS availability — not filed, or planned outside it Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ✕ ·· INFO \"Friday · Jul 17 · 1 X 1\" · Draft — not yet published 19 changes · 2 ADVISORY · 2 line(s): [] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: offered OFT only today. Planned on VL BFM (T/O 14:00) || [] Advisory · SANS availability — not filed, or planned outside it Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ·· BOARD head \"▾ ⚠ 2 issues\" · 2 line(s): [✕] Marlin — SANS: offered OFT only today. Planned on VL BFM (T/O 14:00) ✕ || [✕] Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ✕ ·· PUCKS cards week[flying line@Fri(4.0.0.0.w):amber/A ; SANS@Fri:amber/A] board[flying line(4.0.0.0.w):amber/A ; SANS:amber/A ; crew list (week):amber/A]",
+  "pics": "s25-s25-d-e-list-clip-phone.png, s25-s25-d-ipop-clip-phone.png, s25-s25-d-b-clip-phone.png, s25-s25-d-board-phone.png"
+ },
+ {
+  "scn": "s25",
+  "size": "phone",
+  "id": "s25.d2",
+  "what": "the OFT filing deleted again: the line (RECORD shown / hidden and its words)",
+  "ok": "REC",
+  "note": "deleted · HIDDEN \"SANS: no availability filed for today. Planned on VL BFM (T/O 14:00)\" · EDIT bar \"⚠ 1 issue ▲\" [adv] · 2 line(s): [adv HIDDEN struck [drawn icon: Flag this again]] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 14:00) || [adv ✕] SANS availability — not filed, or planned outside it Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ✕ ·· INFO \"Friday · Jul 17 · 1 X 1\" · Draft — not yet published 20 changes · 1 ADVISORY · 2 line(s): [HIDDEN struck ] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 14:00) || [] Advisory · SANS availability — not filed, or planned outside it Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ·· BOARD head \"▾ ⚠ 1 issue\" · 2 line(s): [HIDDEN struck [drawn icon: Flag this again]] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 14:00) || [✕] Otter — SANS: no availability filed for today. Planned on VL ACM (T/O 16:00) ✕ ·· PUCKS cards week[flying line@Fri(4.0.0.0.w):no ring] board[flying line(4.0.0.0.w):no ring ; crew list (week):no ring]",
+  "pics": "s25-s25-d2-e-list-clip-phone.png, s25-s25-d2-ipop-clip-phone.png, s25-s25-d2-b-clip-phone.png, s25-s25-d2-board-phone.png"
+ },
+ {
+  "scn": "s25",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "a4",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "a4",
+  "size": "phone",
+  "id": "a4.plant",
+  "what": "Jester into an OFT \"EP-9\" 15:00–16:00: the note \"Jester — SANS: no availability filed for today. Planned on Sim EP-9 15:00–16:00\"",
+  "ok": true,
+  "note": "row {\"label\":\"EP-9\",\"str\":\"15:00\",\"end\":\"16:00\"} · \"Jester — SANS: no availability filed for today. Planned on Sim EP-9 15:00–16:00\"",
+  "pics": "a4-a4-plant-armed-clip-phone.png, a4-a4-plant-sans-clip-phone.png, a4-a4-plant-armed-phone.png, a4-a4-plant-note-clip-phone.png, a4-a4-plant-picked-phone.png"
+ },
+ {
+  "scn": "a4",
+  "size": "phone",
+  "id": "a4.hid",
+  "what": "set-up: his line hidden",
+  "ok": true,
+  "note": "bar \"✓ No issues ▲\" [calm] · 1 line(s): [adv HIDDEN struck [drawn icon: Flag this again]] SANS availability — not filed, or planned outside it Jester — SANS: no availability filed for today. Planned on Sim EP-9 15:00–16:00"
+ },
+ {
+  "scn": "a4",
+  "size": "phone",
+  "id": "a4.f0",
+  "what": "set-up: Saber files SANS fly all day for ipman on 2026-07-17",
+  "ok": true,
+  "note": "{\"iid\":\"imrldiogj7t1ry4\",\"people\":\"[{\\\"p\\\":\\\"ipman\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077229395}]\",\"date\":\"Jul 17\",\"endDate\":null,\"sans\":{\"f\":true},\"allday\":true,\"e\":1439,\"remarks\":\"\",\"by\":\"stiff\"}",
+  "pics": "a4-a4.f0-form-phone.png, a4-a4.f0-saved-phone.png"
+ },
+ {
+  "scn": "a4",
+  "size": "phone",
+  "id": "a4.f0",
+  "what": "Fly only, all day → \"offered Fly only today\": SHOWN, not hidden (a different fact, D469)",
+  "ok": true,
+  "note": "\"SANS: offered Fly only today. Planned on Sim EP-9 15:00–16:00\" · EDIT bar \"⚠ 1 issue ▲\" [adv] · 1 line(s): [adv ✕] SANS availability — not filed, or planned outside it Jester — SANS: offered Fly only today. Planned on Sim EP-9 15:00–16:00 ✕ ·· INFO \"Friday · Jul 17 · 0 X 0 X 0\" · Draft — not yet published 7 changes · 1 ADVISORY · 1 line(s): [] Advisory · SANS availability — not filed, or planned outside it Jester — SANS: offered Fly only today. Planned on Sim EP-9 15:00–16:00 ·· BOARD head \"▾ ⚠ 1 issue\" · 1 line(s): [✕] Jester — SANS: offered Fly only today. Planned on Sim EP-9 15:00–16:00 ✕ ·· PUCKS ipman week[sim@Fri(s:4.oft.2.p):amber/A ; SANS@Fri:amber/A] board[sim(s:4.oft.2.p):amber/A ; SANS:amber/A ; crew list (week):amber/A]",
+  "pics": "a4-a4-f0-e-list-clip-phone.png, a4-a4-f0-ipop-clip-phone.png, a4-a4-f0-b-clip-phone.png, a4-a4-f0-board-phone.png"
+ },
+ {
+  "scn": "a4",
+  "size": "phone",
+  "id": "a4.f1",
+  "what": "set-up: Saber files SANS oft 08:00–12:00 for ipman on 2026-07-17",
+  "ok": true,
+  "note": "{\"iid\":\"imrldjg8a5w23na\",\"people\":\"[{\\\"p\\\":\\\"ipman\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077265386}]\",\"date\":\"Jul 17\",\"endDate\":null,\"sans\":{\"o\":true},\"allday\":false,\"s\":480,\"e\":720,\"remarks\":\"\",\"by\":\"stiff\"}",
+  "pics": "a4-a4.f1-form-phone.png, a4-a4.f1-saved-phone.png"
+ },
+ {
+  "scn": "a4",
+  "size": "phone",
+  "id": "a4.f1",
+  "what": "OFT 08:00–12:00 → \"available 08:00–12:00 only\": SHOWN, not hidden (a different fact, D469)",
+  "ok": true,
+  "note": "\"SANS: available 08:00–12:00 only. Planned on Sim EP-9 15:00–16:00\" · EDIT bar \"⚠ 1 issue ▲\" [adv] · 1 line(s): [adv ✕] SANS availability — not filed, or planned outside it Jester — SANS: available 08:00–12:00 only. Planned on Sim EP-9 15:00–16:00 ✕ ·· INFO \"Friday · Jul 17 · 0 X 0 X 0\" · Draft — not yet published 9 changes · 1 ADVISORY · 1 line(s): [] Advisory · SANS availability — not filed, or planned outside it Jester — SANS: available 08:00–12:00 only. Planned on Sim EP-9 15:00–16:00 ·· BOARD head \"▾ ⚠ 1 issue\" · 1 line(s): [✕] Jester — SANS: available 08:00–12:00 only. Planned on Sim EP-9 15:00–16:00 ✕ ·· PUCKS ipman week[sim@Fri(s:4.oft.2.p):amber/A ; SANS@Fri:amber/A] board[sim(s:4.oft.2.p):amber/A ; SANS:amber/A ; crew list (week):amber/A]",
+  "pics": "a4-a4-f1-e-list-clip-phone.png, a4-a4-f1-ipop-clip-phone.png, a4-a4-f1-b-clip-phone.png, a4-a4-f1-board-phone.png"
+ },
+ {
+  "scn": "a4",
+  "size": "phone",
+  "id": "a4.f2",
+  "what": "set-up: Saber files SANS oft all day for ipman on 2026-07-17",
+  "ok": true,
+  "note": "{\"iid\":\"imrldk88w0fwq5d\",\"people\":\"[{\\\"p\\\":\\\"ipman\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077301696}]\",\"date\":\"Jul 17\",\"endDate\":null,\"sans\":{\"o\":true},\"allday\":true,\"e\":1439,\"remarks\":\"\",\"by\":\"stiff\"}",
+  "pics": "a4-a4.f2-form-phone.png, a4-a4.f2-saved-phone.png"
+ },
+ {
+  "scn": "a4",
+  "size": "phone",
+  "id": "a4.f2",
+  "what": "OFT all day: no SANS line for him, no ring",
+  "ok": true,
+  "note": "EDIT bar \"(no bar)\" [] · 0 line(s) ·· INFO \"Friday · Jul 17 · 0 X 0 X 0\" · Draft — not yet published 11 changes ·  · 0 line(s) ·· BOARD head \"▸ No conflicts flagged for Friday ✓\" · 0 line(s) · other [\"No conflicts flagged for this day ✓\"] ·· PUCKS ipman week[sim@Fri(s:4.oft.2.p):no ring ; SANS@Fri:no ring] board[sim(s:4.oft.2.p):no ring ; SANS:no ring ; crew list (week):no ring]",
+  "pics": "a4-a4-f2-e-list-phone.png, a4-a4-f2-ipop-clip-phone.png, a4-a4-f2-b-clip-phone.png, a4-a4-f2-board-phone.png"
+ },
+ {
+  "scn": "a4",
+  "size": "phone",
+  "id": "a4.reload",
+  "what": "after a reload and a fresh sign-in: still no SANS line for him",
+  "ok": true,
+  "note": "EDIT bar \"(no bar)\" [] · 0 line(s) ·· INFO \"Friday · Jul 17 · 0 X 0 X 0\" · Draft — not yet published 11 changes ·  · 0 line(s) ·· BOARD head \"▸ No conflicts flagged for Friday ✓\" · 0 line(s) · other [\"No conflicts flagged for this day ✓\"] ·· PUCKS ipman week[sim@Fri(s:4.oft.2.p):no ring ; SANS@Fri:no ring] board[sim(s:4.oft.2.p):no ring ; SANS:no ring ; crew list (week):no ring]",
+  "pics": "a4-a4-reload-e-list-phone.png, a4-a4-reload-ipop-clip-phone.png, a4-a4-reload-b-clip-phone.png, a4-a4-reload-board-phone.png"
+ },
+ {
+  "scn": "a4",
+  "size": "phone",
+  "id": "a4.none",
+  "what": "the filing deleted: \"no availability filed\" again — shown, or hidden by the first ✕? (RECORD)",
+  "ok": "REC",
+  "note": "deleted · HIDDEN \"SANS: no availability filed for today. Planned on Sim EP-9 15:00–16:00\"",
+  "pics": "a4-a4-none-e-list-clip-phone.png, a4-a4-none-ipop-clip-phone.png, a4-a4-none-b-clip-phone.png, a4-a4-none-board-phone.png"
+ },
+ {
+  "scn": "a4",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s26",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s26",
+  "size": "phone",
+  "id": "s26.m",
+  "what": "set-up: Marlin on VL BFM 13:00 RCP, nothing filed",
+  "ok": true,
+  "note": "\"Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)\""
+ },
+ {
+  "scn": "s26",
+  "size": "phone",
+  "id": "s26.f40a",
+  "what": "F40: the only issue is his SANS line — the bar amber, \"1 issue\" (in every place)",
+  "ok": true,
+  "note": "bar \"⚠ 1 issue ▲\" [daywarn adv] rgb(242, 214, 155) / rgba(229, 168, 59, 0.1) · board \"▾ ⚠ 1 issue\" · ⓘ Draft — not yet published 6 changes 1 ADVISORY",
+  "pics": "s26-s26-1-e-list-clip-phone.png, s26-s26-1-ipop-clip-phone.png, s26-s26-1-b-clip-phone.png, s26-s26-1-board-phone.png"
+ },
+ {
+  "scn": "s26",
+  "size": "phone",
+  "id": "s26.f40b",
+  "what": "a red conflict added (Bolt over his SDO desk): the bar turns red",
+  "ok": true,
+  "note": "\"Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) (+3 more)\" · bar \"⚠ 5 issues · 1 warning ▲\" [daywarn hard] · bar \"⚠ 5 issues · 1 warning ▲\" [hard] · 5 line(s): [hard ✕] Conflict Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) ✕ || [adv ✕] Misses flight brief Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 ✕ || [adv ✕] Misses flight debrief Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 ✕ || [adv ✕] SANS availability — not filed, or planned outside it Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕",
+  "pics": "s26-s26-2-e-list-clip-phone.png, s26-s26-2-ipop-clip-phone.png, s26-s26-2-b-clip-phone.png, s26-s26-2-board-phone.png"
+ },
+ {
+  "scn": "s26",
+  "size": "phone",
+  "id": "s26.a26-amber",
+  "what": "A26: the red line(s) hidden, the SANS lines still showing — the bar amber",
+  "ok": true,
+  "note": "bar \"⚠ 4 issues ▲\" [daywarn adv] · bar \"⚠ 4 issues ▲\" [adv] · 5 line(s): [hard HIDDEN struck [drawn icon: Flag this again]] Conflict Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) || [adv ✕] Misses flight brief Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 ✕ || [adv ✕] Misses flight debrief Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 ✕ || [adv ✕] SANS availability — not filed, or planned outside it Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ || [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕",
+  "pics": "s26-s26-3-e-list-clip-phone.png, s26-s26-3-ipop-clip-phone.png, s26-s26-3-b-clip-phone.png, s26-s26-3-board-phone.png"
+ },
+ {
+  "scn": "s26",
+  "size": "phone",
+  "id": "s26.none",
+  "what": "every issue hidden: a quiet \"✓ No issues\" bar, the lines struck under it; the board \"No conflicts flagged ✓\" with the struck lines; no ring or \"A\" on Marlin (D471, D472)",
+  "ok": true,
+  "note": "EDIT bar \"✓ No issues ▲\" [calm] · 5 line(s): [hard HIDDEN struck [drawn icon: Flag this again]] Conflict Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) || [adv HIDDEN struck [drawn icon: Flag this again]] Misses flight brief Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 || [adv HIDDEN struck [drawn icon: Flag this again]] Misses flight debrief Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 || [adv HIDDEN struck [drawn icon: Flag this again]] SANS availability — not filed, or planned outside it Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [adv HIDDEN struck [drawn icon: Flag this again]] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ·· INFO \"Friday · Jul 17 · 1\" · Draft — not yet published 12 changes ·  · 5 line(s): [HIDDEN struck ] Warning · Conflict Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) || [HIDDEN struck ] Advisory · Misses flight brief Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 || [HIDDEN struck ] Advisory · Misses flight debrief Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 || [HIDDEN struck ] Advisory · SANS availability — not filed, or planned outside it Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [HIDDEN struck ] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ·· BOARD head \"▾ No conflicts flagged for Friday ✓\" · 5 line(s): [HIDDEN struck [drawn icon: Flag this again]] Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) || [HIDDEN struck [drawn icon: Flag this again]] Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 || [HIDDEN struck [drawn icon: Flag this again]] Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 || [HIDDEN struck [drawn icon: Flag this again]] Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [HIDDEN struck [drawn icon: Flag this again]] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ·· PUCKS cards week[flying line@Fri(4.0.0.0.w):no ring] board[flying line(4.0.0.0.w):no ring ; crew list (week):no ring] / yeti week[flying line@Fri(4.0.0.0.p):no ring ; duty@Fri(d:4.0.0):no ring] board[flying line(4.0.0.0.p):no ring ; duty(d:4.0.0):no ring ; crew list (week):no ring]",
+  "pics": "s26-s26-4-e-list-clip-phone.png, s26-s26-4-ipop-clip-phone.png, s26-s26-4-b-clip-phone.png, s26-s26-4-board-phone.png"
+ },
+ {
+  "scn": "s26",
+  "size": "phone",
+  "id": "s26.bar-opens",
+  "what": "the \"✓ No issues\" bar, pressed, opens the list and shuts it again",
+  "ok": true,
+  "note": "open true · shut true",
+  "pics": "s26-s26-shut-list-clip-phone.png"
+ },
+ {
+  "scn": "s26",
+  "size": "phone",
+  "id": "s26.reload",
+  "what": "after a reload and signing in again: still every line hidden, the quiet bar",
+  "ok": true,
+  "note": "EDIT bar \"✓ No issues ▲\" [calm] · 5 line(s): [hard HIDDEN struck [drawn icon: Flag this again]] Conflict Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) || [adv HIDDEN struck [drawn icon: Flag this again]] Misses flight brief Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 || [adv HIDDEN struck [drawn icon: Flag this again]] Misses flight debrief Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 || [adv HIDDEN struck [drawn icon: Flag this again]] SANS availability — not filed, or planned outside it Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [adv HIDDEN struck [drawn icon: Flag this again]] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ·· INFO \"Friday · Jul 17 · 1\" · Draft — not yet published 12 changes ·  · 5 line(s): [HIDDEN struck ] Warning · Conflict Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) || [HIDDEN struck ] Advisory · Misses flight brief Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 || [HIDDEN struck ] Advisory · Misses flight debrief Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 || [HIDDEN struck ] Advisory · SANS availability — not filed, or planned outside it Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [HIDDEN struck ] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ·· BOARD head \"▾ No conflicts flagged for Friday ✓\" · 5 line(s): [HIDDEN struck [drawn icon: Flag this again]] Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) || [HIDDEN struck [drawn icon: Flag this again]] Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 || [HIDDEN struck [drawn icon: Flag this again]] Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 || [HIDDEN struck [drawn icon: Flag this again]] Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [HIDDEN struck [drawn icon: Flag this again]] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ·· PUCKS cards week[flying line@Fri(4.0.0.0.w):no ring] board[flying line(4.0.0.0.w):no ring ; crew list (week):no ring]",
+  "pics": "s26-s26-5-e-list-clip-phone.png, s26-s26-5-ipop-clip-phone.png, s26-s26-5-b-clip-phone.png, s26-s26-5-board-phone.png"
+ },
+ {
+  "scn": "s26",
+  "size": "phone",
+  "id": "s26.member",
+  "what": "as Ranger, View-only Sched: the day's lines struck, the bar quiet; no ✕ and no Reset arrow on any line (D469, D471, N14)",
+  "ok": true,
+  "note": "bar \"✓ No issues ▲\" [calm] · 5 line(s): [hard HIDDEN struck] Conflict Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) || [adv HIDDEN struck] Misses flight brief Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 || [adv HIDDEN struck] Misses flight debrief Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 || [adv HIDDEN struck] SANS availability — not filed, or planned outside it Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [adv HIDDEN struck] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)",
+  "pics": "s26-s26-ranger-list-clip-phone.png"
+ },
+ {
+  "scn": "s26",
+  "size": "phone",
+  "id": "s26.member-info",
+  "what": "as Ranger, the ⓘ popup on View-only Sched (RECORD)",
+  "ok": "REC",
+  "note": "\"Friday · Jul 17 · 1\" · Draft — not yet published 12 new ·  · 5 line(s): [HIDDEN struck ] Warning · Conflict Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) || [HIDDEN struck ] Advisory · Misses flight brief Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 || [HIDDEN struck ] Advisory · Misses flight debrief Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 || [HIDDEN struck ] Advisory · SANS availability — not filed, or planned outside it Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [HIDDEN struck ] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) · closed true",
+  "pics": "s26-s26-ranger-ipop-clip-phone.png"
+ },
+ {
+  "scn": "s26",
+  "size": "phone",
+  "id": "s26.reset",
+  "what": "Marlin's line flagged again: shown, the bar amber, his ring and \"A\" back",
+  "ok": true,
+  "note": "EDIT bar \"⚠ 1 issue ▲\" [adv] · 5 line(s): [hard HIDDEN struck [drawn icon: Flag this again]] Conflict Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) || [adv HIDDEN struck [drawn icon: Flag this again]] Misses flight brief Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 || [adv HIDDEN struck [drawn icon: Flag this again]] Misses flight debrief Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 || [adv HIDDEN struck [drawn icon: Flag this again]] SANS availability — not filed, or planned outside it Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [adv ✕] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ ·· INFO \"Friday · Jul 17 · 1\" · Draft — not yet published 13 changes · 1 ADVISORY · 5 line(s): [HIDDEN struck ] Warning · Conflict Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) || [HIDDEN struck ] Advisory · Misses flight brief Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 || [HIDDEN struck ] Advisory · Misses flight debrief Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 || [HIDDEN struck ] Advisory · SANS availability — not filed, or planned outside it Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [] Advisory · SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ·· BOARD head \"▾ ⚠ 1 issue\" · 5 line(s): [HIDDEN struck [drawn icon: Flag this again]] Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) || [HIDDEN struck [drawn icon: Flag this again]] Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 || [HIDDEN struck [drawn icon: Flag this again]] Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 || [HIDDEN struck [drawn icon: Flag this again]] Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [✕] Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) ✕ ·· PUCKS cards week[flying line@Fri(4.0.0.0.w):amber/A] board[flying line(4.0.0.0.w):amber/A ; crew list (week):amber/A]",
+  "pics": "s26-s26-6-e-list-clip-phone.png, s26-s26-6-ipop-clip-phone.png, s26-s26-6-b-clip-phone.png, s26-s26-6-board-phone.png"
+ },
+ {
+  "scn": "s26",
+  "size": "phone",
+  "id": "s26.member2",
+  "what": "as Ranger again: his line shown on View-only Sched",
+  "ok": true,
+  "note": "bar \"⚠ 1 issue ▲\" [adv] · 5 line(s): [hard HIDDEN struck] Conflict Bolt — Conflict: SDO duty 07:30–17:30 & VL BFM (T/O 13:00, landing 14:00) || [adv HIDDEN struck] Misses flight brief Bolt — Misses VL BFM brief 10:40–13:00: SDO duty 07:30–17:30 || [adv HIDDEN struck] Misses flight debrief Bolt — Misses VL BFM debrief 14:00–16:00: SDO duty 07:30–17:30 || [adv HIDDEN struck] SANS availability — not filed, or planned outside it Bolt — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00) || [adv] SANS availability — not filed, or planned outside it Marlin — SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)",
+  "pics": "s26-s26-ranger2-list-clip-phone.png"
+ },
+ {
+  "scn": "s26",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

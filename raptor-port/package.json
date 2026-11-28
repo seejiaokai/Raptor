@@ -17,6 +17,7 @@
     "smoke:tracker": "node scripts/tracker/smoke.mjs",
     "rulecheck": "node scripts/rulecheck.mjs",
     "docsize": "node scripts/docsize.mjs",
+    "readings": "node scripts/readings.mjs",
     "lint": "npx -y react-doctor@0.9.18 --verbose --no-telemetry",
     "lint:changed": "node scripts/code-check.mjs"
   },

@@ -1,0 +1,7 @@
+{
+  "f7": "Earned off a duty input that was accepted. Change that input and publish the day again, and the OIL changes to match.",
+  "d1": "Hide this warning — it flags no puck and is not counted; it stays hidden while the same man is on the same two items, even if their times change",
+  "f5note": "Warning hidden: no flag, not counted. It stays hidden while the same man is on the same two items, even if their times change.",
+  "f6approved": "On the working copy an input closes the man for the hours it covers, from the moment it is filed. SANS availability and an upchit close nothing, nor does an input a scheduler takes off the programme, cancels (CX) or marks information only.",
+  "f6": "On the working copy the man an input is for counts as taken for the hours it covers, as soon as it is filed. SANS availability and an upchit take nobody's hours. Once a scheduler rejects an input, cancels it (CX) or marks it Info only, it stops taking the man's hours."
+}

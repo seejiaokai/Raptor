@@ -1,0 +1,422 @@
+{
+ "desk-admin": {
+  "premise": {
+   "inputs": 7,
+   "ntInputs": 7,
+   "roNt": 0,
+   "roNtText": "",
+   "war": "Not typed"
+  },
+  "rowH": 40,
+  "A": {
+   "done": {
+    "ro": 0,
+    "war": 7,
+    "rule": 0,
+    "warW": 40
+   },
+   "probe": {
+    "war": {
+     "w": 40,
+     "h": 28,
+     "edge": "dashed rgba(242, 200, 121, 0.8)",
+     "color": "rgb(230, 237, 243)",
+     "name": "Not typed"
+    },
+    "ro": null,
+    "box": {
+     "w": 54,
+     "h": 28,
+     "edge": "dashed rgba(242, 200, 121, 0.8)",
+     "color": "rgb(241, 244, 247)",
+     "name": "Pelican LVE Official bal"
+    },
+    "warWordsShown": false
+   },
+   "moved": 0
+  },
+  "sizes": {
+   "2": {
+    "w": 54,
+    "h": 28,
+    "rad": "7px",
+    "edge": "rgba(242, 200, 121, 0.8)",
+    "style": "dashed",
+    "nt": true,
+    "val": ""
+   },
+   "3": {
+    "w": 44,
+    "h": 28,
+    "rad": "7px",
+    "edge": "rgba(242, 200, 121, 0.8)",
+    "style": "dashed",
+    "nt": true,
+    "val": ""
+   },
+   "7": {
+    "w": 44,
+    "h": 28,
+    "rad": "7px",
+    "edge": "rgba(242, 200, 121, 0.8)",
+    "style": "dashed",
+    "nt": true,
+    "val": ""
+   },
+   "8": {
+    "w": 44,
+    "h": 28,
+    "rad": "7px",
+    "edge": "rgba(242, 200, 121, 0.8)",
+    "style": "dashed",
+    "nt": true,
+    "val": ""
+   },
+   "9": {
+    "w": 44,
+    "h": 28,
+    "rad": "7px",
+    "edge": "rgba(242, 200, 121, 0.8)",
+    "style": "dashed",
+    "nt": true,
+    "val": ""
+   },
+   "10": {
+    "w": 44,
+    "h": 28,
+    "rad": "7px",
+    "edge": "rgba(242, 200, 121, 0.8)",
+    "style": "dashed",
+    "nt": true,
+    "val": ""
+   },
+   "11": {
+    "w": 44,
+    "h": 28,
+    "rad": "7px",
+    "edge": "rgba(242, 200, 121, 0.8)",
+    "style": "dashed",
+    "nt": true,
+    "val": ""
+   },
+   "cfCol": 3,
+   "warCol": 5
+  }
+ },
+ "desk-member": {
+  "premise": {
+   "inputs": 0,
+   "ntInputs": 0,
+   "roNt": 7,
+   "roNtText": "–|Not typed,–|Not typed,–|Not typed,–|Not typed,–|Not typed,–|Not typed,–|Not typed",
+   "war": "Not typed"
+  },
+  "rowH": 40,
+  "A": {
+   "done": {
+    "ro": 245,
+    "war": 7,
+    "rule": 0,
+    "warW": 40
+   },
+   "probe": {
+    "war": {
+     "w": 40,
+     "h": 28,
+     "edge": "dashed rgba(242, 200, 121, 0.8)",
+     "color": "rgb(230, 237, 243)",
+     "name": "Not typed"
+    },
+    "ro": {
+     "w": 54,
+     "h": 28,
+     "edge": "dashed rgba(242, 200, 121, 0.8)",
+     "color": "rgba(0, 0, 0, 0)",
+     "name": "Not typed"
+    },
+    "box": null,
+    "warWordsShown": false
+   },
+   "moved": 0
+  },
+  "sizes": {
+   "2": {
+    "w": 54,
+    "h": 28,
+    "rad": "7px",
+    "edge": "rgba(242, 200, 121, 0.8)",
+    "style": "dashed",
+    "nt": true,
+    "val": ""
+   },
+   "3": {
+    "w": 44,
+    "h": 28,
+    "rad": "7px",
+    "edge": "rgba(242, 200, 121, 0.8)",
+    "style": "dashed",
+    "nt": true,
+    "val": ""
+   },
+   "7": {
+    "w": 44,
+    "h": 28,
+    "rad": "7px",
+    "edge": "rgba(242, 200, 121, 0.8)",
+    "style": "dashed",
+    "nt": true,
+    "val": ""
+   },
+   "8": {
+    "w": 44,
+    "h": 28,
+    "rad": "7px",
+    "edge": "rgba(242, 200, 121, 0.8)",
+    "style": "dashed",
+    "nt": true,
+    "val": ""
+   },
+   "9": {
+    "w": 44,
+    "h": 28,
+    "rad": "7px",
+    "edge": "rgba(242, 200, 121, 0.8)",
+    "style": "dashed",
+    "nt": true,
+    "val": ""
+   },
+   "10": {
+    "w": 44,
+    "h": 28,
+    "rad": "7px",
+    "edge": "rgba(242, 200, 121, 0.8)",
+    "style": "dashed",
+    "nt": true,
+    "val": ""
+   },
+   "11": {
+    "w": 44,
+    "h": 28,
+    "rad": "7px",
+    "edge": "rgba(242, 200, 121, 0.8)",
+    "style": "dashed",
+    "nt": true,
+    "val": ""
+   },
+   "cfCol": 3,
+   "warCol": 5
+  }
+ },
+ "phone-zoom": {
+  "zoom": "0.548",
+  "fits": true
+ },
+ "phone-admin": {
+  "premise": {
+   "inputs": 7,
+   "ntInputs": 7,
+   "roNt": 0,
+   "roNtText": "",
+   "war": "Not typed"
+  },
+  "rowH": 27.390625,
+  "A": {
+   "done": {
+    "ro": 0,
+    "war": 7,
+    "rule": 0,
+    "warW": 44
+   },
+   "probe": {
+    "war": {
+     "w": 44,
+     "h": 30,
+     "edge": "dashed rgba(242, 200, 121, 0.8)",
+     "color": "rgb(201, 209, 217)",
+     "name": "Not typed"
+    },
+    "ro": null,
+    "box": {
+     "w": 54,
+     "h": 30,
+     "edge": "dashed rgba(242, 200, 121, 0.8)",
+     "color": "rgb(241, 244, 247)",
+     "name": "Pelican LVE Official bal"
+    },
+    "warWordsShown": false
+   },
+   "moved": 3.280000000000001
+  },
+  "sizes": {
+   "1": {
+    "w": 54,
+    "h": 30,
+    "rad": "7px",
+    "edge": "rgba(242, 200, 121, 0.8)",
+    "style": "dashed",
+    "nt": true,
+    "val": ""
+   },
+   "2": {
+    "w": 44,
+    "h": 30,
+    "rad": "7px",
+    "edge": "rgba(242, 200, 121, 0.8)",
+    "style": "dashed",
+    "nt": true,
+    "val": ""
+   },
+   "6": {
+    "w": 54,
+    "h": 30,
+    "rad": "7px",
+    "edge": "rgba(242, 200, 121, 0.8)",
+    "style": "dashed",
+    "nt": true,
+    "val": ""
+   },
+   "7": {
+    "w": 54,
+    "h": 30,
+    "rad": "7px",
+    "edge": "rgba(242, 200, 121, 0.8)",
+    "style": "dashed",
+    "nt": true,
+    "val": ""
+   },
+   "8": {
+    "w": 54,
+    "h": 30,
+    "rad": "7px",
+    "edge": "rgba(242, 200, 121, 0.8)",
+    "style": "dashed",
+    "nt": true,
+    "val": ""
+   },
+   "9": {
+    "w": 54,
+    "h": 30,
+    "rad": "7px",
+    "edge": "rgba(242, 200, 121, 0.8)",
+    "style": "dashed",
+    "nt": true,
+    "val": ""
+   },
+   "10": {
+    "w": 54,
+    "h": 30,
+    "rad": "7px",
+    "edge": "rgba(242, 200, 121, 0.8)",
+    "style": "dashed",
+    "nt": true,
+    "val": ""
+   },
+   "cfCol": 2,
+   "warCol": 4
+  }
+ },
+ "phone-member": {
+  "premise": {
+   "inputs": 0,
+   "ntInputs": 0,
+   "roNt": 7,
+   "roNtText": "–|Not typed,–|Not typed,–|Not typed,–|Not typed,–|Not typed,–|Not typed,–|Not typed",
+   "war": "Not typed"
+  },
+  "rowH": 27.390625,
+  "A": {
+   "done": {
+    "ro": 245,
+    "war": 7,
+    "rule": 0,
+    "warW": 44
+   },
+   "probe": {
+    "war": {
+     "w": 44,
+     "h": 30,
+     "edge": "dashed rgba(242, 200, 121, 0.8)",
+     "color": "rgb(201, 209, 217)",
+     "name": "Not typed"
+    },
+    "ro": {
+     "w": 54,
+     "h": 30,
+     "edge": "dashed rgba(242, 200, 121, 0.8)",
+     "color": "rgba(0, 0, 0, 0)",
+     "name": "Not typed"
+    },
+    "box": null,
+    "warWordsShown": false
+   },
+   "moved": 3.280000000000001
+  },
+  "sizes": {
+   "1": {
+    "w": 54,
+    "h": 30,
+    "rad": "7px",
+    "edge": "rgba(242, 200, 121, 0.8)",
+    "style": "dashed",
+    "nt": true,
+    "val": ""
+   },
+   "2": {
+    "w": 44,
+    "h": 30,
+    "rad": "7px",
+    "edge": "rgba(242, 200, 121, 0.8)",
+    "style": "dashed",
+    "nt": true,
+    "val": ""
+   },
+   "6": {
+    "w": 54,
+    "h": 30,
+    "rad": "7px",
+    "edge": "rgba(242, 200, 121, 0.8)",
+    "style": "dashed",
+    "nt": true,
+    "val": ""
+   },
+   "7": {
+    "w": 54,
+    "h": 30,
+    "rad": "7px",
+    "edge": "rgba(242, 200, 121, 0.8)",
+    "style": "dashed",
+    "nt": true,
+    "val": ""
+   },
+   "8": {
+    "w": 54,
+    "h": 30,
+    "rad": "7px",
+    "edge": "rgba(242, 200, 121, 0.8)",
+    "style": "dashed",
+    "nt": true,
+    "val": ""
+   },
+   "9": {
+    "w": 54,
+    "h": 30,
+    "rad": "7px",
+    "edge": "rgba(242, 200, 121, 0.8)",
+    "style": "dashed",
+    "nt": true,
+    "val": ""
+   },
+   "10": {
+    "w": 54,
+    "h": 30,
+    "rad": "7px",
+    "edge": "rgba(242, 200, 121, 0.8)",
+    "style": "dashed",
+    "nt": true,
+    "val": ""
+   },
+   "cfCol": 2,
+   "warCol": 4
+  }
+ }
+}

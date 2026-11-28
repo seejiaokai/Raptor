@@ -1,0 +1,202 @@
+[
+ [
+  "PASS",
+  "desk admin",
+  "the grid beside his name reads the amber \"–\" ([{\"text\":\"–\",\"cls\":\"fb nt\",\"color\":\"rgb(242, 200, 121)\",\"title\":\"Pelican: tap for his leave\",\"used\":\"1\"}])"
+ ],
+ [
+  "PASS",
+  "desk admin",
+  "its hover names no figure and no words (Pelican: tap for his leave)"
+ ],
+ [
+  "PASS",
+  "desk admin",
+  "Approvals' LVE BAL reads the amber \"–\" ({\"text\":\"–\",\"cls\":\"appr-bal\",\"color\":\"rgb(242, 200, 121)\"})"
+ ],
+ [
+  "PASS",
+  "desk admin",
+  "no \"Not typed\" on Approvals, shown or hovered ({\"text\":false,\"hint\":[]})"
+ ],
+ [
+  "PASS",
+  "desk admin",
+  "LL and OL read the amber \"–\" for what is left, not dimmed ([{\"id\":\"bid-LL\",\"fig\":\"–\",\"nt\":true,\"color\":\"rgb(242, 200, 121)\",\"dim\":false,\"op\":\"1\",\"title\":\"local leave\"},{\"id\":\"bid-OL\",\"fig\":\"–\",\"nt\":true,\"color\":\"rgb(242, 200, 121)\",\"dim\":false,\"op\":\"1\",\"title\":\"overseas leave\"}])"
+ ],
+ [
+  "PASS",
+  "desk admin",
+  "the five small kinds, never typed, the same (bid-CCL:– bid-FCL:– bid-PL:– bid-EL:– bid-CL:–)"
+ ],
+ [
+  "PASS",
+  "desk admin",
+  "no button hints \"Not typed\""
+ ],
+ [
+  "PASS",
+  "desk admin",
+  "his window's War bal reads the amber \"–\" (–, rgb(242, 200, 121))"
+ ],
+ [
+  "PASS",
+  "desk admin",
+  "no \"Not typed\" in his window, shown or hovered ({\"text\":false,\"hint\":0})"
+ ],
+ [
+  "PASS",
+  "desk admin",
+  "the small kinds: an empty dashed box where he can type, else the amber \"–\" (CCL:INPUT:\"\" FCL:INPUT:\"\" PL:INPUT:\"\" EL:INPUT:\"\" CL:INPUT:\"\")"
+ ],
+ [
+  "PASS",
+  "desk admin",
+  "the Balances page: no \"Not typed\", shown or hovered; War bal's empty outline kept ({\"text\":false,\"hint\":[],\"outline\":true,\"ro\":0,\"boxes\":7})"
+ ],
+ [
+  "PASS",
+  "desk admin",
+  "no page or console errors (none)"
+ ],
+ [
+  "PASS",
+  "desk pelican",
+  "My leave reads \"LVE –\", the dash amber ({\"text\":\"LVE –\",\"color\":\"rgb(242, 200, 121)\",\"figs\":\"MY LEAVE · next 1 Dec LVE – · OIL 0 · 1 pending ›\"})"
+ ],
+ [
+  "PASS",
+  "desk pelican",
+  "My leave's figures fit their line ({\"strip\":314,\"figsScroll\":142,\"figsW\":142})"
+ ],
+ [
+  "PASS",
+  "desk pelican",
+  "the grid beside his name reads the amber \"–\" ([{\"text\":\"–\",\"cls\":\"fb nt\",\"color\":\"rgb(242, 200, 121)\",\"title\":\"Pelican: tap for his leave\",\"used\":\"1\"}])"
+ ],
+ [
+  "PASS",
+  "desk pelican",
+  "its hover names no figure and no words (Pelican: tap for his leave)"
+ ],
+ [
+  "PASS",
+  "desk pelican",
+  "his window's War bal reads the amber \"–\" (–, rgb(242, 200, 121))"
+ ],
+ [
+  "PASS",
+  "desk pelican",
+  "no \"Not typed\" in his window, shown or hovered ({\"text\":false,\"hint\":0})"
+ ],
+ [
+  "PASS",
+  "desk pelican",
+  "the small kinds: an empty dashed box where he can type, else the amber \"–\" (CCL:INPUT:\"\" FCL:INPUT:\"\" PL:INPUT:\"\" EL:INPUT:\"\" CL:INPUT:\"\")"
+ ],
+ [
+  "PASS",
+  "desk pelican",
+  "no page or console errors (none)"
+ ],
+ [
+  "PASS",
+  "phone admin",
+  "the grid beside his name reads the amber \"–\" ([{\"text\":\"–\",\"cls\":\"fb nt\",\"color\":\"rgb(242, 200, 121)\",\"title\":\"Pelican: tap for his leave\",\"used\":\"1\"},{\"text\":\"–\",\"cls\":\"fb nt\",\"color\":\"rgb(242, 200, 121)\",\"title\":\"\",\"used\":\"1\"}])"
+ ],
+ [
+  "PASS",
+  "phone admin",
+  "its hover names no figure and no words (Pelican: tap for his leave | )"
+ ],
+ [
+  "PASS",
+  "phone admin",
+  "Approvals' LVE BAL reads the amber \"–\" ({\"text\":\"–\",\"cls\":\"appr-bal\",\"color\":\"rgb(242, 200, 121)\"})"
+ ],
+ [
+  "PASS",
+  "phone admin",
+  "no \"Not typed\" on Approvals, shown or hovered ({\"text\":false,\"hint\":[]})"
+ ],
+ [
+  "PASS",
+  "phone admin",
+  "LL and OL read the amber \"–\" for what is left, not dimmed ([{\"id\":\"bid-LL\",\"fig\":\"–\",\"nt\":true,\"color\":\"rgb(242, 200, 121)\",\"dim\":false,\"op\":\"1\",\"title\":\"local leave\"},{\"id\":\"bid-OL\",\"fig\":\"–\",\"nt\":true,\"color\":\"rgb(242, 200, 121)\",\"dim\":false,\"op\":\"1\",\"title\":\"overseas leave\"}])"
+ ],
+ [
+  "PASS",
+  "phone admin",
+  "the five small kinds, never typed, the same (bid-CCL:– bid-FCL:– bid-PL:– bid-EL:– bid-CL:–)"
+ ],
+ [
+  "PASS",
+  "phone admin",
+  "no button hints \"Not typed\""
+ ],
+ [
+  "PASS",
+  "phone admin",
+  "his window's War bal reads the amber \"–\" (–, rgb(242, 200, 121))"
+ ],
+ [
+  "PASS",
+  "phone admin",
+  "no \"Not typed\" in his window, shown or hovered ({\"text\":false,\"hint\":0})"
+ ],
+ [
+  "PASS",
+  "phone admin",
+  "the small kinds: an empty dashed box where he can type, else the amber \"–\" (CCL:INPUT:\"\" FCL:INPUT:\"\" PL:INPUT:\"\" EL:INPUT:\"\" CL:INPUT:\"\")"
+ ],
+ [
+  "PASS",
+  "phone admin",
+  "the Balances page: no \"Not typed\", shown or hovered; War bal's empty outline kept ({\"text\":false,\"hint\":[],\"outline\":true,\"ro\":0,\"boxes\":7})"
+ ],
+ [
+  "PASS",
+  "phone admin",
+  "no page or console errors (none)"
+ ],
+ [
+  "PASS",
+  "phone pelican",
+  "My leave reads \"LVE –\", the dash amber ({\"text\":\"LVE –\",\"color\":\"rgb(242, 200, 121)\",\"figs\":\"MY LEAVE · next 1 Dec LVE – · OIL 0 · 1 pending ›\"})"
+ ],
+ [
+  "PASS",
+  "phone pelican",
+  "My leave's figures fit their line ({\"strip\":217,\"figsScroll\":142,\"figsW\":142})"
+ ],
+ [
+  "PASS",
+  "phone pelican",
+  "the grid beside his name reads the amber \"–\" ([{\"text\":\"–\",\"cls\":\"fb nt\",\"color\":\"rgb(242, 200, 121)\",\"title\":\"Pelican: tap for his leave\",\"used\":\"1\"},{\"text\":\"–\",\"cls\":\"fb nt\",\"color\":\"rgb(242, 200, 121)\",\"title\":\"\",\"used\":\"1\"}])"
+ ],
+ [
+  "PASS",
+  "phone pelican",
+  "its hover names no figure and no words (Pelican: tap for his leave | )"
+ ],
+ [
+  "PASS",
+  "phone pelican",
+  "his window's War bal reads the amber \"–\" (–, rgb(242, 200, 121))"
+ ],
+ [
+  "PASS",
+  "phone pelican",
+  "no \"Not typed\" in his window, shown or hovered ({\"text\":false,\"hint\":0})"
+ ],
+ [
+  "PASS",
+  "phone pelican",
+  "the small kinds: an empty dashed box where he can type, else the amber \"–\" (CCL:INPUT:\"\" FCL:INPUT:\"\" PL:INPUT:\"\" EL:INPUT:\"\" CL:INPUT:\"\")"
+ ],
+ [
+  "PASS",
+  "phone pelican",
+  "no page or console errors (none)"
+ ]
+]

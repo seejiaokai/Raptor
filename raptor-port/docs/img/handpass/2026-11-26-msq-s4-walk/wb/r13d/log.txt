@@ -1,0 +1,15 @@
+msq-s4w-lib v1 who=wb run=r13d port=4754
+wb-r13 v1
+pressed at Ace: SPAN.acc-name
+ace sheet text Ace no sign-in · Pilot · CAT A SIGN-IN (DEFENCE MAIL) ROLE Member — own inputs, quals and bids Admin — schedules and manages Give sign-in Archive Delete Cancel Anvil no sign-in · Pilot · CAT IP Basher no sign-in · WSO · CAT IW Blade no sign-in · Pilot · CAT IP Bolt no sign-in · Pilot · CAT C Cinch no sign-in · Pilot · CAT IP Cinder no sign-in · WSO · CAT B Cobra no sign-in · Pilot · CAT IP Comet no sign-in · Pilot · CAT IP Condor no sign-in · Pilot · CAT OCU Cotter no sign-in · Personnel Cutter no sign-in · WSO · CAT C Dash no sign-in · WSO · CAT C Diesel no sign-in · Pilot · CAT D Drifter no 
+ace buttons ["Archive [] bg rgb(26, 31, 38) border solid rgb(42, 49, 58) 70×28 @660,404","Delete [] bg rgb(26, 31, 38) border solid rgba(240, 85, 95, 0.5) 62×28 @736,404","Cancel [] bg rgb(26, 31, 38) border solid rgb(42, 49, 58) 65×28 @804,404"]
+ROW RECORD | F-S43 | desk chromium | Admin → Users: Ace's row → Delete → its own question | saw: question "Tap again to delete Ace"; buttons: ["Archive [] bg rgb(26, 31, 38) border solid rgb(42, 49, 58) 70×28 @660,404","Cancel [] bg rgb(26, 31, 38) border solid rgb(42, 49, 58) 65×28 @900,404"]
+ROW NOT REACHED | F-S43 | desk chromium | Archive | saw: no Archive button found
+restore sheet Ace no sign-in · Pilot · CAT A Anvil no sign-in · Pilot · CAT IP Basher no sign-in · WSO · CAT IW Blade no sign-in · Pilot · CAT IP Bolt no sign-in · Pilot · CAT C Cinch no sign-in · Pilot · CAT IP Cinder no sign-in · WSO · CAT B Cobra no sign-in · Pilot · CAT IP Comet no sign-in · Pilot · CAT IP Condor no sign-in · Pilot · CAT OCU Cotter no sign-in · Personnel Cutter no sign-in · WSO · CAT C Dash no sign-in · WSO · CAT C Diesel no sign-in · Pilot · CAT D Drifter no sign-in · Pilot · CAT A Echo 
+ROW RECORD | F-S43 | desk chromium | Admin → Users: the archived Ace opened (callsign, Post in date, Restore, Delete) | saw: []
+ERROR Error: pressLoc: not on screen
+    at pressLoc (file:///C:/Users/User/AppData/Roaming/Claude/side-session-notes/local_eeb07289-ed8b-483b-8502-00962970c7d1/s4-chat201/wb/wb-h.mjs:66:60)
+    at async file:///C:/Users/User/AppData/Roaming/Claude/side-session-notes/local_eeb07289-ed8b-483b-8502-00962970c7d1/s4-chat201/wb/wb-r13.mjs:39:29
+errors []
+errors []
+DONE 0 PASS 0 FAIL 3 OTHER of 3

@@ -1,0 +1,739 @@
+{
+ "state": "nopick-phone",
+ "drawing": {
+  "script": "docs/mock/2026-11-25-sans-d2588/draw.mjs",
+  "shot": "col-nopick-phone"
+ },
+ "recorded": "2026-11-26T17:09:04.593Z",
+ "drawnOn": "the frozen build D:/raptor-work/c185-build (index-SXKkjfaJ.js)",
+ "checkout": "ab72316f4",
+ "viewport": {
+  "w": 402,
+  "h": 874
+ },
+ "dpr": 3,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "sec": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 158,
+    "y": 573,
+    "w": 230,
+    "h": 227
+   },
+   "ink": {
+    "x": 158,
+    "y": 573,
+    "w": 139,
+    "h": 218
+   },
+   "text": "SANS Avail · 5 free Bolt C F Jester B A · 08:00–10:00 Kraken D F/O Rebel B O Zenith C A Marlin A Otter D Pixel D Scribe D Tally O Zulu O",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "1px solid rgb(42, 49, 58)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.rall.rsans"
+  },
+  "head": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 158,
+    "y": 573,
+    "w": 230,
+    "h": 10
+   },
+   "ink": {
+    "x": 158,
+    "y": 573,
+    "w": 104.5,
+    "h": 10
+   },
+   "text": "SANS Avail · 5 free",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(178, 77, 234)",
+     "0px none rgb(178, 77, 234)",
+     "0px none rgb(178, 77, 234)",
+     "0px none rgb(178, 77, 234)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(178, 77, 234)",
+    "align": "start",
+    "justify": "normal",
+    "font": "700 9px",
+    "spacing": "0.63px"
+   },
+   "tag": "div.rh2"
+  },
+  "row-yeti": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 158,
+    "y": 587,
+    "w": 230,
+    "h": 15
+   },
+   "ink": {
+    "x": 163,
+    "y": 588,
+    "w": 80.1,
+    "h": 13
+   },
+   "text": "Bolt C F",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.rsans-row"
+  },
+  "name-yeti": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 158,
+    "y": 587,
+    "w": 74,
+    "h": 15
+   },
+   "ink": {
+    "x": 163,
+    "y": 588,
+    "w": 64.2,
+    "h": 13
+   },
+   "text": "Bolt C",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(110, 106, 46)",
+    "image": "",
+    "edge": [
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)"
+    ],
+    "corners": [
+     "3px",
+     "3px",
+     "3px",
+     "3px"
+    ],
+    "shadow": "none",
+    "color": "rgb(251, 250, 240)",
+    "align": "start",
+    "justify": "normal",
+    "font": "600 9px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.puck.sm.san"
+  },
+  "let-yeti": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 238,
+    "y": 589.5,
+    "w": 5.1,
+    "h": 10
+   },
+   "ink": {
+    "x": 238,
+    "y": 589.5,
+    "w": 5.1,
+    "h": 10
+   },
+   "text": "F",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 8.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.rsans-b.sw-mark"
+  },
+  "row-romeo": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 158,
+    "y": 644,
+    "w": 230,
+    "h": 15
+   },
+   "ink": {
+    "x": 163,
+    "y": 645,
+    "w": 81.5,
+    "h": 13
+   },
+   "text": "Rebel B O",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.rsans-row"
+  },
+  "name-romeo": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 158,
+    "y": 644,
+    "w": 74,
+    "h": 15
+   },
+   "ink": {
+    "x": 163,
+    "y": 645,
+    "w": 64.2,
+    "h": 13
+   },
+   "text": "Rebel B",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(110, 106, 46)",
+    "image": "",
+    "edge": [
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)"
+    ],
+    "corners": [
+     "3px",
+     "3px",
+     "3px",
+     "3px"
+    ],
+    "shadow": "none",
+    "color": "rgb(251, 250, 240)",
+    "align": "start",
+    "justify": "normal",
+    "font": "600 9px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.puck.sm.san"
+  },
+  "let-romeo": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 238,
+    "y": 646.5,
+    "w": 6.5,
+    "h": 10
+   },
+   "ink": {
+    "x": 238,
+    "y": 646.5,
+    "w": 6.5,
+    "h": 10
+   },
+   "text": "O",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 8.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.rsans-b.sw-mark"
+  },
+  "row-ipman": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 158,
+    "y": 606,
+    "w": 230,
+    "h": 15
+   },
+   "ink": {
+    "x": 163,
+    "y": 607,
+    "w": 134,
+    "h": 13
+   },
+   "text": "Jester B A · 08:00–10:00",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.rsans-row"
+  },
+  "name-ipman": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 158,
+    "y": 606,
+    "w": 74,
+    "h": 15
+   },
+   "ink": {
+    "x": 163,
+    "y": 607,
+    "w": 64.2,
+    "h": 13
+   },
+   "text": "Jester B",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(110, 106, 46)",
+    "image": "",
+    "edge": [
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)"
+    ],
+    "corners": [
+     "3px",
+     "3px",
+     "3px",
+     "3px"
+    ],
+    "shadow": "none",
+    "color": "rgb(251, 250, 240)",
+    "align": "start",
+    "justify": "normal",
+    "font": "600 9px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.puck.sm.san"
+  },
+  "let-ipman": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 238,
+    "y": 608.5,
+    "w": 59.1,
+    "h": 10
+   },
+   "ink": {
+    "x": 238,
+    "y": 608.5,
+    "w": 59,
+    "h": 10
+   },
+   "text": "A · 08:00–10:00",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 8.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.rsans-b.sw-mark"
+  },
+  "row-krait": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 158,
+    "y": 625,
+    "w": 230,
+    "h": 15
+   },
+   "ink": {
+    "x": 163,
+    "y": 626,
+    "w": 89,
+    "h": 13
+   },
+   "text": "Kraken D F/O",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.rsans-row"
+  },
+  "name-krait": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 158,
+    "y": 625,
+    "w": 74,
+    "h": 15
+   },
+   "ink": {
+    "x": 163,
+    "y": 626,
+    "w": 64.2,
+    "h": 13
+   },
+   "text": "Kraken D",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(110, 106, 46)",
+    "image": "",
+    "edge": [
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)"
+    ],
+    "corners": [
+     "3px",
+     "3px",
+     "3px",
+     "3px"
+    ],
+    "shadow": "none",
+    "color": "rgb(251, 250, 240)",
+    "align": "start",
+    "justify": "normal",
+    "font": "600 9px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.puck.sm.san"
+  },
+  "let-krait": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 238,
+    "y": 627.5,
+    "w": 14,
+    "h": 10
+   },
+   "ink": {
+    "x": 238,
+    "y": 627.5,
+    "w": 14,
+    "h": 10
+   },
+   "text": "F/O",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 8.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.rsans-b.sw-mark"
+  },
+  "row-vinci": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 158,
+    "y": 663,
+    "w": 230,
+    "h": 15
+   },
+   "ink": {
+    "x": 163,
+    "y": 664,
+    "w": 80.6,
+    "h": 13
+   },
+   "text": "Zenith C A",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.rsans-row"
+  },
+  "name-vinci": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 158,
+    "y": 663,
+    "w": 74,
+    "h": 15
+   },
+   "ink": {
+    "x": 163,
+    "y": 664,
+    "w": 64.2,
+    "h": 13
+   },
+   "text": "Zenith C",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(110, 106, 46)",
+    "image": "",
+    "edge": [
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)"
+    ],
+    "corners": [
+     "3px",
+     "3px",
+     "3px",
+     "3px"
+    ],
+    "shadow": "none",
+    "color": "rgb(251, 250, 240)",
+    "align": "start",
+    "justify": "normal",
+    "font": "600 9px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.puck.sm.san"
+  },
+  "let-vinci": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 238,
+    "y": 665.5,
+    "w": 5.6,
+    "h": 10
+   },
+   "ink": {
+    "x": 238,
+    "y": 665.5,
+    "w": 5.6,
+    "h": 10
+   },
+   "text": "A",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 8.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.rsans-b.sw-mark"
+  }
+ },
+ "approved": {
+  "picture": "col-nopick-phone.png",
+  "identical": true
+ }
+}

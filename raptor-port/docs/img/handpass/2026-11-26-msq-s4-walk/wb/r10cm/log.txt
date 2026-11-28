@@ -1,0 +1,6 @@
+msq-s4w-lib v1 who=wb run=r10cm port=4754
+wb-r10 v1
+ROW RECORD | F-S15 ring main | desk chromium main | the posting rows / sheet: Tab through, the ring on each stop | saw: bid-approve-tick: solid 2px rgb(59, 198, 232) | none ; bid-cancel: auto 1px rgb(16, 16, 16) | none ; bid-remarks: none 3px rgb(241, 244, 247) | none ; bid-till: auto 1px rgb(16, 16, 16) | none ; : solid 2px rgb(59, 198, 232) | none ; portion-full: auto 1px rgb(16, 16, 16) | none
+errors []
+errors []
+DONE 0 PASS 0 FAIL 1 OTHER of 1

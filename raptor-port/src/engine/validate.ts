@@ -5,7 +5,7 @@ import { overlap, hm24, lgT, parseHM } from './time'
 import { collectEvents, shiftEvHard, scSeatHits, avSeatHits } from './events'
 import { reportingIssuesForDay,stated } from './reporting'
 import { HOOKS } from './hooks'
-import { sansGate, SANS_LABEL } from './avail'
+import { sansGate, SANS_LABEL, sansOfferedWords, sansCrewWhy } from './avail'
 import { seedRunIn, datedRestSeed, dayHidesIn, nextMondayWorked, nextMondayDay, nextMondayHides, windowDiverges, windowFiling, windowInputs, filingDivergesAt } from './weekctx'
 import { setWorld, setFiling, clearFiling } from './world'
 import { CURWEEK, isStandalone, saExempt, saAnyFlies } from './waves'
@@ -34,7 +34,7 @@ export const WCODE:any={DOUBLE_BOOK:'Conflict',DNIF_FLY:'Downchit + planned',LEA
   PAX_CREW:'Incentive passenger — crew pairing needs approval',
   SHIFT_SOFT:'Overlaps standby',
   SC_INTIME:'Busy before a standby shift',
-  SANS_AVAIL:'SANS availability — planned outside the availability filed',
+  SANS_AVAIL:'SANS availability — not filed, or planned outside it',
   OIL_NO_TIMES:'No OIL earned — a row has no usable times',
   FLT_NO_LEN:'Flight times — take-off and landing are the same',
   SA_FLY_NO_TIME:'Standby line flies — no start or end',
@@ -73,7 +73,7 @@ export const chipText=(c:any)=>CHIP_TEXT[c]||c;
    silently freezing the flag. */
 export const RANK:any={LD:0,DT:1,TT:2,A:3,SD:4,SB:5,DB:6,NB:7,CP:8,CR:9,RUN:10,CPH:11,C:12,Q:13};
 export const CHIP_LABEL:any={DT:'Double turn',TT:'Tight turn',C:'Conflict (two events at once)',
-  A:'Advisory — on shift and also down for a ground event or programme item, or planned outside SANS availability',CR:'Crew rest breach (<{crewRest})',Q:'Qual / illegal seat',
+  A:'Advisory — on shift and also down for a ground event or programme item; or SANS availability not filed, or planned outside it',CR:'Crew rest breach (<{crewRest})',Q:'Qual / illegal seat',
   NB:'Misses flight brief',DB:'Misses flight debrief',SB:'Misses sim brief',SD:'Misses sim debrief',LD:'Long day (>{longDay})',
   RUN:'Days in a row',
   CP:'Crew pairing — this pairing needs approval',CPH:'Crew pairing — not an authorised pairing'};
@@ -799,7 +799,9 @@ function validateCore(){
       /* D2001: a clash is its two items, so two clashes worded the same are two warnings — each hidden by its own pair;
          the same pair met again (two legs of one sortie pair) still collapses */
       const its=extra&&Array.isArray(extra.items)?'|@'+extra.items.map(String).sort().join('&'):'';
-      const k=code+'|'+who.join(',')+'|'+msg+its; if(seen.has(k))return; seen.add(k);
+      /* a SANS line is its event too (sans-hide-event.test.ts): an OFT and an AMT worded the same are two lines */
+      const sd=extra&&extra.sansDomain?'|#'+extra.sansDomain:'';
+      const k=code+'|'+who.join(',')+'|'+msg+its+sd; if(seen.has(k))return; seen.add(k);
       const w={sev:s,code,who,day:day.dow,di,msg,key,...(extra||{})};ws.push(w);all.push(w);};
     const kOf=(e:any)=>e&&(e.slot||e.key)||null;   // byE events carry slot (fly/shift) or key (the rest)
     /* one side of a conflict line ([WARN-WORDS-STANDALONE]): a sortie by the end of it the other item `o` falls in
@@ -1523,8 +1525,14 @@ function validateCore(){
        programme event carries no matching key, so it never reaches
        sansGate — "any ground event can also be planned" is the owner's rule
        for slotBar too, and the two must not drift apart.
-       ONLY 'not-offered' and 'window' raise. 'none' — nothing filed at all —
-       is DELIBERATELY silent here: the owner's own example only ever
+       'not-offered', 'window' AND 'none' raise (owner D2579 / D2584 Q3, 25 Nov 26 — "ok we can do it as a amber line as
+       well"): nothing filed is one amber line stating the fact and telling nobody to file, "SANS: no availability filed
+       for today. Planned on VL BFM (T/O 13:00)"; a seat with no times too, as the crew list strikes him there (D2573).
+       The mismatch line says what he DID offer (D2584 2a): "SANS: offered Fly only today. Planned on …". Every one
+       wears the amber ring and "A" (D2583). This REPLACES the old silence on 'none' kept below for its history — the
+       seed's SANS flyers with no record now raise it in a test that reads INPUTS pristine (testing/sanscover.ts covers
+       them where SANS is not the test's subject); the demo boots with records for six of them (state/demoseed.ts), the
+       other four showing the line. The old reasoning: the owner's own example only ever
        describes planting AGAINST a filed record ("indicates A and O…
        planned for F"), and firing on a bare no-record would put this
        Advisory on every seeded SANS flyer the demo week already carries
@@ -1535,22 +1543,51 @@ function validateCore(){
        planting says the same — it simply never becomes a persistent
        Advisory. 'ok' and 'na' are not a problem and need no comment. */
     const sansChecks:any[]=[];
-    day.fly.forEach((e:any)=>sansChecks.push({id:e.id,domain:'fly',s:Math.min(e.report,e.step),en:e.dekit,to:e.to,label:e.label,key:e.key}));   // `to` names the line ([WARN-WORDS-STANDALONE])
+    /* never a standby line, flying or not (owner D2584 Q4, answering D2576, D2578): `shift` marks an SC / AVALON / BB row */
+    day.fly.forEach((e:any)=>!e.shift&&sansChecks.push({id:e.id,domain:'fly',s:Math.min(e.report,e.step),en:e.dekit,to:e.to,label:e.label,key:e.key}));   // `to` names the line ([WARN-WORDS-STANDALONE])
     day.events.forEach((e:any)=>{ const m=/^s:\d+\.(amt|oft)\./.exec(String(e.key||'')); if(!m)return;
-      sansChecks.push({id:e.id,domain:m[1],s:e.s,en:e.e,label:e.label,key:e.key}); });
+      sansChecks.push({id:e.id,domain:m[1],s:e.s,en:e.e,label:e.label,key:e.key,ae:!!e.ae}); });   // `ae`: an end nobody typed (events.ts assumedEnd; D2754)
+    /* AN OFT OR AMT WITH NO START YET (owner D2585, 25 Nov 26 — found by the bug check's two blind reads, chat 182): its people
+       sit in `blank`, not `events`, so the crew list struck a man whose filing does not offer the sim while this list said
+       nothing. Checked with an unknown window (NaN — `noWin` drops a 'window' answer): 'not offering …' and, since owner
+       D2579 (25 Nov 26), nothing filed warn, as for an untimed flight. */
+    (day.blank||[]).forEach((e:any)=>{ const m=/^s:\d+\.(amt|oft)\.\d+$/.exec(String(e.key||'')); if(!m||e.kind!=='sim')return;
+      sansChecks.push({id:e.id,domain:m[1],s:NaN,en:NaN,label:e.label,key:e.key}); });
     /* (only a man SANS ON THIS DAY — D2313: a day before his SANS date asks no SANS availability of him) */
     const sansIso=dayIso(String(CURWEEK),di);
     sansChecks.forEach((c:any)=>{ const p=PEOPLE[c.id]; if(!p||!sansOnP(p,sansIso))return;
       const g=sansGate(c.id,day.dt,c.domain,c.s,c.en,sansIso);
-      if(g.status!=='not-offered'&&g.status!=='window')return;
+      if(g.status!=='not-offered'&&g.status!=='window'&&g.status!=='none')return;
       /* [BLANK-LINE-SANS-WORDS]: a seat with no times yet has nothing to hold his offered window against — no clash to
          word, as the crew list (which strikes him only against a window) already says */
       if(g.status==='window'&&noWin(c.s,c.en))return;
       markRing(di,c.id,'adv','SANS_AVAIL');markChip(di,c.id,'A','SANS_AVAIL');
-      const reason=g.status==='not-offered'?`not offering ${SANS_LABEL[c.domain]} today`
+      /* D2584 Q3 / 2a — "no availability filed for today"; what he offered, "offered Fly only today" */
+      const reason=g.status==='none'?'no availability filed for today'
+        :g.status==='not-offered'?(sansOfferedWords(g.offered)?`offered ${sansOfferedWords(g.offered)} today`:`not offering ${SANS_LABEL[c.domain]} today`)
         :`available ${hm24(g.off.s)}–${hm24(g.off.e)} only`;
       /* [WARN-WORDS-STANDALONE]: "SANS: available 08:00–12:00 only. Planned on VL BFM (T/O 13:00)" */
-      add('adv','SANS_AVAIL',[c.id],`SANS: ${reason}. Planned on ${c.domain==='fly'?flightTag(c.label,c.to):whatAt(rowName({label:c.label,kind:'sim'}),c.s,c.en)}`,c.key);
+      /* `sansDomain` (fly / oft / amt) is part of the line's identity — its dedupe, its hide (warnhide.ts hideKey) and the
+         drop's note (dropflag.ts warnKey) — since D2584 2a's words no longer name the event: a hidden OFT line must not
+         hide an AMT line worded the same (D469; Astra's read, chat 207 — sans-hide-event.test.ts) */
+      /* A SIM NAMED AS OFT OR AMT (owner D2754, 27 Nov 26 — "all as recommended", the SANS warning-lines questions page,
+         Q2; Fable's words, chat 207): "OFT EP-9 10:00–11:00", "AMT BOX 13:00–14:00" — the row's own name after the sim's
+         kind, never the bare "Sim EP-9" that left OFT and AMT apart unsaid; an end nobody typed is marked "(end
+         assumed)", as the flying lines say "landing assumed"; no times, "(no times yet)"; a row with no name, "this OFT
+         row". The flying lines keep their words. */
+      /* the row's own name is what follows the "Sim " the day's events put in front (events.ts) — a row its scheduler
+         named "SIM" or "Sim" keeps that name (Astra's read, chat 208: "this OFT row" is for a row with NO name, and two
+         rows at once, one named so and one blank, read as one line) */
+      const simWhat=()=>{ const nm=String(c.label==null?'':c.label).replace(/^Sim /,'').trim();
+        const head=nm?`${SANS_LABEL[c.domain]} ${nm}`:`this ${SANS_LABEL[c.domain]} row`;
+        return noWin(c.s,c.en)?`${head} (no times yet)`:`${head} ${rng(c.s,c.en)}${c.ae?' (end assumed)':''}`; };
+      /* `crewWhy`: the crew list's words for the same answer, which the note after the drop reads (owner D2753 —
+         dropflag.ts flagLine); the line itself keeps the event it names. NEVER PART OF THE PUBLISHED RECORD: the words
+         name a SANS posting's start while it has not run, and the line does not, so the posting running on its date
+         would turn a published day "Not yet signed" with nothing to show (both blind reads of chat 208) — it is left
+         out where a day's warnings are saved at issue (HOOKS.issuedWarn, below) and where they are compared
+         (publish.ts warnSliceKey). */
+      add('adv','SANS_AVAIL',[c.id],`SANS: ${reason}. Planned on ${c.domain==='fly'?flightTag(c.label,c.to):simWhat()}`,c.key,{sansDomain:c.domain,crewWhy:sansCrewWhy(g,p,sansIso,c.domain)});
     });
     /* Q (sims) — the sim box guards its FRONT seat like the jet (ground crew,
        a WSO, an IW-in-FCP record — none may occupy it). The REAR seat has no
@@ -1943,7 +1980,8 @@ HOOKS.issuedWarn=(di:number)=>{ validate(); const s=warnSliceOf(OFFICIAL,di), g=
   const wo=warns.filter((x:any)=>x.off).map((x:any)=>hideKey(x));
   const out:any={...s,face};
   if(wo.length){ out.wo=wo; const f=sh.fz||{}; out.shown={sev:(f.sev||{})[+di]||null,chip:(f.chip||{})[+di]||null,dash:(f.dash||{})[+di]||null}; }
-  return JSON.parse(JSON.stringify(out)); };
+  /* a SANS line's note words (`crewWhy`, owner D2753) are the live drop note's only — never saved with the version */
+  return JSON.parse(JSON.stringify(out,(k:string,v:any)=>k==='crewWhy'?undefined:v)); };
 /* THE HIDE STATE OF A PUBLISHED DAY, FOR ITS PENDING COMPARISON (publish.ts hideDelta — D471): every warning of today's
    judgement of the ISSUED day that the WORKING copy also raises (a warning only the issued day has is the content
    comparison's business; one only the working copy has goes out with the edit that raised it — Fable F3), with whether

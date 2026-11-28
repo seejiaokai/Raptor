@@ -1,0 +1,19 @@
+msq-s4w-lib v1 who=host run=f1b port=4753
+host-f1 v1
+phone-webkit card up {"sheet":true,"card":true,"gone":0}
+phone-webkit outside at [30,120] lab View
+phone-webkit after one tap outside {"sheet":false,"card":false,"gone":0}
+ROW RECORD | F1 | phone-webkit | card up → one tap on VIEW | saw: {"sheet":false,"card":false,"gone":0}
+phone-webkit-main card up {"sheet":true,"card":true,"gone":0}
+phone-webkit-main outside at [30,120] lab View
+phone-webkit-main after one tap outside {"sheet":false,"card":false,"gone":0}
+ROW RECORD | F1 | phone-webkit-main | card up → one tap on VIEW | saw: {"sheet":false,"card":false,"gone":0}
+desk-chromium card up {"sheet":true,"card":true,"gone":0}
+desk-chromium outside at [40,160] sheetscrim 
+desk-chromium after one tap outside {"sheet":false,"card":false,"gone":0}
+ROW RECORD | F1 | desk-chromium | card up → one tap on VIEW | saw: {"sheet":false,"card":false,"gone":0}
+desk-chromium-main card up {"sheet":true,"card":true,"gone":0}
+desk-chromium-main outside at [40,160] sheetscrim 
+desk-chromium-main after one tap outside {"sheet":false,"card":false,"gone":0}
+ROW RECORD | F1 | desk-chromium-main | card up → one tap on VIEW | saw: {"sheet":false,"card":false,"gone":0}
+host-f1 done

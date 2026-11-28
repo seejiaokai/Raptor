@@ -338,21 +338,80 @@
   border: 1px dashed var(--ink-3);
 }
 
-/* Post-out: a management action, not a bid — a muted grey chip set apart from
-   the coloured bid/decision chips (owner, 18 Aug 26). The row gives it a top
-   rule so it reads as a step below the bidding controls, not one of them. */
+/* A management row below the bidding controls — the OIL panel's rows: a top rule so it reads as a step below them, not
+   one of them. (Post out and Post in sat here too, as a muted, hatched grey chip set apart from the coloured bid buttons
+   — his direction of 18 Aug 26. That direction was given when the posting sat AMONG the bid buttons; way C takes the
+   posting onto a sheet of its own, where "Post out" is the app's blue main button (his D2653 b, 26 Nov 26), so the
+   hatched `.dchip.po` is set aside: see THE POSTING SHEET, WAY C, below.) */
 .bidsheet .bidsheet-row.postout {
   border-top: 1px solid var(--edge);
   margin-top: 4px;
   padding-top: 10px;
 }
-.bidsheet .dchip.po {
-  background: repeating-linear-gradient(45deg, var(--panel-2), var(--panel-2) 5px, rgba(120, 130, 145, .16) 5px, rgba(120, 130, 145, .16) 8px);
-  color: var(--ink-2);
-  border: 1px solid var(--edge);
+
+/* THE POSTING SHEET, WAY C (his D2648, D2653; his go D2732; lesson 105) — the five posting sheets (Post out and Post in
+   from a day, from a drag, and an existing posting's) laid out from OutcomeChips.tsx's parts: the choices first, equal,
+   one row at a desk and two to a line on a phone; "PO from" (its label over its box, the box half the width); the line
+   of what happens on a strip one step off the sheet; an amber line; the one button. Measured from the approved drawings
+   (the batch branch's scripts/handpass/n191/draw-s4.mjs, pictures docs/mock/2026-11-25-msq-pick-guard-q3/drawn/s4-*):
+   12px between the parts, 10px above an amber line, every colour the app's own. Its rules live here, under the sheet's
+   own selector — never ui/postout.css, which Admin → Users' rows share (the plan §21.5 finding 1). */
+.bidsheet .po-form { margin-top: 12px; }
+.bidsheet .po-form > * + * { margin-top: 12px; }
+.bidsheet .po-form > .po-warn { margin-top: 10px; }
+.bidsheet .po-form .lab {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  font-weight: 600;
 }
-.bidsheet .dchip.po:hover {
-  border-color: var(--ink-3);
+.bidsheet .po-chips {
+  display: grid;
+  grid-template-columns: repeat(var(--po-n, 3), minmax(0, 1fr));
+  /* every line of chips as tall as the tallest: on a phone (two to a line) WebKit gave the chosen chip's "✓ " a 2px
+     taller line, so SANS alone on the second line stood shorter than the two above it (the walk, W-D FAIL 2 —
+     chat 201, 26 Nov 26; pinned by e2e/msq-s4-posting-leavewar.spec.ts "every chip as tall as the tallest") */
+  grid-auto-rows: 1fr;
+  gap: 6px;
+  min-width: 0;
+}
+/* the chosen one's ✓ is inline, so it stands no taller than its neighbours (the designer's note for the build) */
+.bidsheet .po-chips .pchip { white-space: nowrap; text-align: center; min-width: 0; }
+.bidsheet .po-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.bidsheet .po-f { min-width: 0; }
+.bidsheet .po-f .datebox { display: flex; width: 100%; box-sizing: border-box; }
+.bidsheet .po-line {
+  background: var(--panel-2);
+  border-radius: 9px;
+  padding: 9px 12px;
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+.bidsheet .po-warn,
+.bidsheet .po-foot { display: flex; }
+/* "Post out" / "Post in": the app's main button's colours (.abtn.primary), in the posting button's own box and letters —
+   no button changes size (D487) */
+.bidsheet .dchip.po-main {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border: 1px solid var(--accent);
+}
+.bidsheet .dchip.po-main:disabled { opacity: .45; cursor: default; }
+/* "Delete Cinch?": the card's Delete in the Leave War's one Delete look, a dashed grey edge, never red (his D2732 Q4,
+   D332) — on the Leave War's cards only; its own box kept, the same height as Cancel beside it. The app-wide reddish
+   .abtn.danger is untouched. */
+.bidsheet .askcard .abtn.po-del {
+  background: var(--panel-2);
+  color: var(--ink-2);
+  border: 1px dashed var(--ink-3);
+}
+.bidsheet .askcard .abtn.po-del:hover { color: var(--ink); border-color: var(--ink-2); }
+@media (max-width: 520px) {
+  .bidsheet .po-chips { grid-template-columns: 1fr 1fr; }
 }
 
 .bidsheet .dateinput {
@@ -1765,6 +1824,8 @@
 .bidsheet .tchip.lv .lv-fig { font-weight: 500; font-variant-numeric: tabular-nums; opacity: .9; }
 .bidsheet .tchip.lv .lv-neg { color: var(--hard); opacity: 1; }
 .bidsheet .tchip.lv.lv-dim { opacity: .55; }
+/* a kind never typed: the amber "–" for what is left, the button not dimmed (D2823 — question 23's item 4 as drawn) */
+.bidsheet .tchip.lv .lv-nt { color: #F2C879; font-weight: 600; opacity: 1; }
 
 /* "APPROVE WHAT I ENTER" (D1147, D1187 — in the title bar, at its right end before ✕; M3 5.5): a quiet tick, the
    title bar's small words; it pushes itself and the ✕ to the right together. */
@@ -1865,14 +1926,61 @@
    bid windows and the day's list, never the OIL panel's green "Give FO") rest grey, as Move does, their words in their
    colours; the decided one is solid in its colour with dark words — 9.1 : 1 green, 5.6 : 1 red — and its word is the
    state ("Approved", "Refused"). The solid colours are the chips' own green and red at full strength. */
+/* …and at rest each wears a faint edge of its own colour, its words' colour at 45% (his D2881 — drawing E3-pending) */
 .bidsheet .dchip.dec.approve,
-.bidsheet .dl-acts .dchip.dec.approve { background: var(--panel-2); color: #8FE0A8; border-color: var(--edge); }
+.bidsheet .dl-acts .dchip.dec.approve { background: var(--panel-2); color: #8FE0A8; border-color: rgba(143, 224, 168, .45); }
 .bidsheet .dchip.dec.refuse,
-.bidsheet .dl-acts .dchip.dec.refuse { background: var(--panel-2); color: #FFA6AD; border-color: var(--edge); }
+.bidsheet .dl-acts .dchip.dec.refuse { background: var(--panel-2); color: #FFA6AD; border-color: rgba(255, 166, 173, .45); }
 .bidsheet .dchip.dec.approve.lit,
 .bidsheet .dl-acts .dchip.dec.approve.lit { background: #57C97A; color: #0b1116; border-color: #57C97A; }
 .bidsheet .dchip.dec.refuse.lit,
 .bidsheet .dl-acts .dchip.dec.refuse.lit { background: #F0555F; color: #0b1116; border-color: #F0555F; }
+
+/* THE DECIDED LOOK (his D2881, 28 Nov 26 — "A, solid + cyan ring", answering D2880 "Doesn't feel like approved is
+   selected"; drawing of record docs/mock/2026-11-27-decide-buttons/img/trio-E3-*.png): ONE RECIPE for every place the
+   war decides — the bid windows, the day's list, the picked-days sheet and Approvals (approvals.css keeps only his
+   drawings' colours, D1427), the classes given by bidhelpers.ts decideLook, the mark SheetActions.tsx DecideMark. The decided one keeps its
+   solid fill and dark words and wears the window's own "this one is picked" mark, the lit leave button's cyan ring below
+   (.tchip.lv.lit) — a line, never a glow (D881); the other turns grey, its fill, size and place as at rest, still
+   pressable; each carries a drawn tick or cross before its word, in its words' colour. Size, row and words unchanged
+   (Approvals' desktop pair keeps its 100 width — approvals.css). */
+.bidsheet .dchip.dec,
+.appr-btns > .appr-ok,
+.appr-btns > .appr-no { display: inline-flex; align-items: center; justify-content: center; }
+.dec-ic { width: 14px; height: 14px; flex: none; margin-right: 5px; }
+.dec-ring { outline: 2px solid var(--accent); outline-offset: 2px; }
+.bidsheet .dchip.dec.dec-off,
+.bidsheet .dl-acts .dchip.dec.dec-off,
+.appr-btns > .dec-off { color: #7d8794; border-color: var(--edge); }
+/* THE KEYBOARD ON A DECIDE BUTTON (his D842 "one ring, never two" — a picked answer with the keys on it shows ONE ring, a
+   little thicker; D1646 / D1771 the app's cyan focus ring; D2881 the decided one's ring). The decided one: the same cyan
+   ring in the same place, 3px with the keys on it, so the keys show and it is still one ring. Any other decide button —
+   the grey one, or one waiting: the app's cyan focus ring, never the browser's white one, drawn ON its own edge (offset
+   -1px) so a focused grey button never wears the decided one's ring beside it. Weighed to beat Approvals' own
+   `.appr-ok:focus-visible` (approvals.css), whatever order the two files load in. */
+.bidsheet .dchip.dec:focus-visible,
+.appr-btns > .appr-ok:focus-visible,
+.appr-btns > .appr-no:focus-visible { outline: 2px solid var(--accent); outline-offset: -1px; }
+.bidsheet .dchip.dec.dec-ring:focus-visible,
+.appr-btns > .appr-ok.dec-ring:focus-visible,
+.appr-btns > .appr-no.dec-ring:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+/* on a phone the mark and the window's decide words a little smaller, as drawn (E3-*-phone: 12px, the words .9 of the
+   row's), and the decide buttons' side padding 2px with no letter spacing (the four even columns kept — D1330), so
+   "Approved" or "Refused" and its mark stand inside the edge down to 360 wide (his D1387, lesson 59) */
+@media (max-width: 600px) {
+  .dec-ic { width: 12px; height: 12px; margin-right: 4px; }
+  /* the smaller words keep the row's height: stretched to Move and Delete beside them (31 tall alone, the row 32) */
+  .bidsheet .dchip.dec { font-size: 11.5px; align-self: stretch; }
+  .bidsheet .bp-acts > .dchip.dec,
+  .bidsheet .dl-acts.bp-acts .dchip.dec { letter-spacing: 0; padding-left: 2px; padding-right: 2px; }
+}
+/* narrower than 380 (a 375 or 360 phone): the window's mark 11px and its gap 3px, so "Approved" and its mark keep about
+   1.5px clear of the edge at 360 in Apple-like (Arial) letters — at 390 and 402 the drawing's 12px and 4px stand */
+@media (max-width: 379px) {
+  .bidsheet .dchip.dec .dec-ic { width: 11px; height: 11px; margin-right: 3px; }
+}
+/* Approvals' phone line (`.appr-l1`, drawn below 700 wide) draws no mark at all (his D2921, ApprovalsPage.tsx): even at
+   9px it pushed a half-day date onto a second line at 390 wide and a third at 360 */
 
 /* REMARKS AND DOCUMENT ON ONE ROW (change 4): the box takes the room, then its "till", then the Document button */
 .bidsheet .bp-words { flex-wrap: nowrap; align-items: flex-start; }

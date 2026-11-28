@@ -1,0 +1,28 @@
+msq-s4w-lib v1 who=wa run=r1 port=4753
+wa-lib v1
+wa-r1-explore v1
+phone-chromium page 1503 874 0 rows 49
+phone-chromium row-dice@334 row-shaft@352 row-snap@369 row-pump@387 row-bane@405 row-stiff@424 row-mamba@441 row-nact@459 row-slipway@477 row-razer@495 row-glass@512 row-freak@530 row-slash@573 row-taipan@592 row-beams@610 row-chaps@628 row-boosh@646 row-prowler@664 row-harpoon@681 row-split@699 row-dj@742 row-salsa@760 row-bruise@778 row-pike@797 row-casper@815 row-fantom@833 row-vegas@851 row-drill@894 row-nasty@912 row-dirty@930 row-stuff@948 row-wolf@966 row-ammo@1009 row-pain@1027 row-psy@1045 row-spaceman@1063 row-plasma@1080 row-riddler@1098 row-sufa@1116 row-rocky@1134 row-xray@1152 row-divot@1169 row-shrek@1187 row-prism@1230 row-haowen@1248 row-bapster@1265 row-spanner@1308 row-torque@1326 row-gizmo@1344
+phone-chromium drag 200,650->250 scrollY 0 -> 385
+phone-chromium drag 200,650->250 scrollY 385 -> 629
+phone-chromium drag 200,250->650 scrollY 629 -> 244
+ROW PASS | drag-proof | phone-chromium | finger/wheel drags over the grid | saw: [{"before":0,"after":385},{"before":385,"after":629},{"before":629,"after":244}]
+phone-chromium drag 200,750->150 scrollY 244 -> 629
+phone-chromium drag 200,750->150 scrollY 629 -> 629
+phone-chromium drag 200,750->150 scrollY 629 -> 629
+phone-chromium drag 200,750->150 scrollY 629 -> 629
+phone-chromium drag 200,750->150 scrollY 629 -> 629
+phone-chromium drag 200,750->150 scrollY 629 -> 629
+phone-chromium drag 200,750->150 scrollY 629 -> 629
+phone-chromium drag 200,750->150 scrollY 629 -> 629
+phone-chromium drag 200,750->150 scrollY 629 -> 629
+phone-chromium drag 200,750->150 scrollY 629 -> 629
+phone-chromium drag 200,750->150 scrollY 629 -> 629
+phone-chromium drag 200,750->150 scrollY 629 -> 629
+phone-chromium at foot, scrollY 629 last rows row-prism@601 row-haowen@619 row-bapster@636 row-spanner@679 row-torque@697 row-gizmo@715
+phone-chromium errors []
+phone-webkit page 1501 874 0 rows 49
+phone-webkit row-dice@335 row-shaft@353 row-snap@371 row-pump@388 row-bane@406 row-stiff@424 row-mamba@442 row-nact@459 row-slipway@477 row-razer@494 row-glass@512 row-freak@530 row-slash@573 row-taipan@592 row-beams@610 row-chaps@627 row-boosh@645 row-prowler@663 row-harpoon@680 row-split@698 row-dj@742 row-salsa@760 row-bruise@778 row-pike@796 row-casper@813 row-fantom@832 row-vegas@849 row-drill@893 row-nasty@911 row-dirty@929 row-stuff@947 row-wolf@964 row-ammo@1009 row-pain@1026 row-psy@1044 row-spaceman@1062 row-plasma@1079 row-riddler@1097 row-sufa@1114 row-rocky@1132 row-xray@1150 row-divot@1167 row-shrek@1185 row-prism@1229 row-haowen@1246 row-bapster@1264 row-spanner@1308 row-torque@1325 row-gizmo@1343
+phone-webkit ERROR mouse.wheel: Mouse wheel is not supported in mobile WebKit
+phone-webkit errors []
+wa-r1 done

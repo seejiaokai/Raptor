@@ -1,0 +1,26 @@
+[
+ {
+  "scn": "form",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "form",
+  "size": "desktop",
+  "id": "fm.skip",
+  "what": "F26 is a phone scenario",
+  "ok": "REC",
+  "note": "desktop: not walked here"
+ },
+ {
+  "scn": "form",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

@@ -1,0 +1,137 @@
+[
+ [
+  "A8 setup",
+  "desk-chromium",
+  "Saber: open Dec for bidding; Ranger pending LL 3 and 23 Dec; Post in 7 Dec; Post out (no outcome) 21 Dec",
+  "the fixture landed",
+  "Dec: open | line: On 21 Dec: off the manpower, nothing else. | 2 Dec gone act |  | kids: | 3 Dec gone outlv act hasc | LL | kids:c k-ll s-w whole | 22 Dec gone act hasc | PO | kids:c whole | 23 Dec gone outlv act hasc bx-gone | LL | kids:c k-ll s-w whole",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r14/001-desk-chromium-r14-setup.png"
+ ],
+ [
+  "A8/F-S14 Ranger his own in-service day",
+  "desk-chromium",
+  "as Ranger (RANGER · MEMBER) tap 2026-12-14 (his own in-service day), ⋯",
+  "no Post out / Post in / date editor / Undo posting anywhere (D328); his own day → bid window, ⋯ Attach alone (D1326, D1378); gone/pre days — RECORD (F-S14(6) reading)",
+  "bid-picker: Ranger Mon 14 Dec ✕ No manning row turns amber or red till 14 Dec Document Whole day AM PM Pick a range LL 9.5 OL 9.5 OIL −1 CCL 1 FCL 4 PL 0.5 EL 3 CL −1 CSE OD ⋯ | ⋯: bid-more-menu=Attach items: bid-file-CSE=CSE;bid-file-OD=OD;bid-file-ATCH=Attach | posting parts: ",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r14/002-desk-chromium-r14-ranger-2026-12-14.png"
+ ],
+ [
+  "A8/F-S14 Ranger a blank day before his post-in",
+  "desk-chromium",
+  "as Ranger (RANGER · MEMBER) tap 2026-12-02 (a blank day before his post-in), ⋯",
+  "no Post out / Post in / date editor / Undo posting anywhere (D328); his own day → bid window, ⋯ Attach alone (D1326, D1378); gone/pre days — RECORD (F-S14(6) reading)",
+  "bid-picker: Ranger Wed 2 Dec ✕ No manning row turns amber or red till 2 Dec Document Whole day AM PM Pick a range LL 9.5 OL 9.5 OIL −1 CCL 1 FCL 4 PL 0.5 EL 3 CL −1 CSE OD ⋯ | ⋯: bid-more-menu=Attach items: bid-file-CSE=CSE;bid-file-OD=OD;bid-file-ATCH=Attach | posting parts: ",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r14/003-desk-chromium-r14-ranger-2026-12-02.png"
+ ],
+ [
+  "A8/F-S14 Ranger a blank day after his post-out",
+  "desk-chromium",
+  "as Ranger (RANGER · MEMBER) tap 2026-12-24 (a blank day after his post-out), ⋯",
+  "no Post out / Post in / date editor / Undo posting anywhere (D328); his own day → bid window, ⋯ Attach alone (D1326, D1378); gone/pre days — RECORD (F-S14(6) reading)",
+  "bid-picker: Ranger Thu 24 Dec ✕ No manning row turns amber or red till 24 Dec Document Whole day AM PM Pick a range LL 9.5 OL 9.5 OIL −1 CCL 1 FCL 4 PL 0.5 EL 3 CL −1 CSE OD ⋯ | ⋯: bid-more-menu=Attach items: bid-file-CSE=CSE;bid-file-OD=OD;bid-file-ATCH=Attach | posting parts: ",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r14/004-desk-chromium-r14-ranger-2026-12-24.png"
+ ],
+ [
+  "A8/F-S14 Ranger his gone day holding his LL",
+  "desk-chromium",
+  "as Ranger (RANGER · MEMBER) tap 2026-12-23 (his gone day holding his LL)",
+  "no Post out / Post in / date editor / Undo posting anywhere (D328); his own day → bid window, ⋯ Attach alone (D1326, D1378); gone/pre days — RECORD (F-S14(6) reading)",
+  "daylist: LL Pending Placed Saber · Thu 26 Nov, 18:18 ⇄Move Delete till 23 Dec Document | ⋯:  | posting parts: ",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r14/005-desk-chromium-r14-ranger-2026-12-23.png"
+ ],
+ [
+  "A8/F-S14 Ranger his pre-post-in day holding his LL",
+  "desk-chromium",
+  "as Ranger (RANGER · MEMBER) tap 2026-12-03 (his pre-post-in day holding his LL)",
+  "no Post out / Post in / date editor / Undo posting anywhere (D328); his own day → bid window, ⋯ Attach alone (D1326, D1378); gone/pre days — RECORD (F-S14(6) reading)",
+  "daylist: LL Pending Placed Saber · Thu 26 Nov, 18:18 ⇄Move Delete till 3 Dec Document | ⋯:  | posting parts: ",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r14/006-desk-chromium-r14-ranger-2026-12-03.png"
+ ],
+ [
+  "F-S14(2) Ranger taps Cinch",
+  "desk-chromium",
+  "as Ranger tap Cinch 2026-12-14",
+  "no posting door (D328)",
+  "nothing opened | posting parts: ",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r14/007-desk-chromium-r14-ranger-cinch-2026-12-14.png"
+ ],
+ [
+  "F-S14(2) Ranger taps Cinch",
+  "desk-chromium",
+  "as Ranger tap Cinch 2026-12-01",
+  "no posting door (D328)",
+  "nothing opened | posting parts: ",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r14/008-desk-chromium-r14-ranger-cinch-2026-12-01.png"
+ ],
+ [
+  "F-S14(3) Ranger drags his own days",
+  "desk-chromium",
+  "drag 14–16 Dec, ⋯",
+  "no Post out / Post in in the drag window's ⋯ (D328)",
+  "select-sheet: Ranger 14–16 Dec · 3 days ✕ No manning row turns amber or red till 16 Dec Document Whole day AM PM LL 7.5 OL 7.5 OIL −3 CCL −1 FCL 2 PL −1.5 EL 1 CL −3 CSE OD ⋯ | ⋯: sel-file-CSE=CSE;sel-file-OD=OD;sel-more-menu=Attach;sel-file-ATCH=Attach | posting parts: ",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r14/009-desk-chromium-r14-ranger-drag.png"
+ ],
+ [
+  "F-S14(8) Ranger drags his own gone days",
+  "desk-chromium",
+  "drag 24–25 Dec (after his post-out)",
+  "RECORD; no posting door (D328)",
+  "select-sheet: Ranger 24–25 Dec · 2 days ✕ No manning row turns amber or red till 25 Dec Document Whole day AM PM LL 9.5 OL 9.5 OIL −1 CCL 1 FCL 4 PL 0.5 EL 3 CL −1 CSE OD ⋯ | ⋯: sel-file-CSE=CSE;sel-file-OD=OD;sel-more-menu=Attach;sel-file-ATCH=Attach | posting parts: ",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r14/010-desk-chromium-r14-ranger-drag-gone.png"
+ ],
+ [
+  "F-S14(4) Ranger drags Cinch's days",
+  "desk-chromium",
+  "drag Cinch 14–15 Dec",
+  "no posting door; RECORD what shows",
+  "nothing opened | posting parts: ",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r14/011-desk-chromium-r14-ranger-drag-cinch.png"
+ ],
+ [
+  "F-S14(5) keyboard",
+  "desk-chromium",
+  "Tab ×30 through his own bid window",
+  "nothing named Post out / Post in can be focused",
+  "bid-cancel › bid-remarks › bid-till › Document › portion-full › portion-am › portion-pm › span-range › bid-LL › bid-OL › bid-OIL › bid-CCL › bid-FCL › bid-PL › bid-EL › bid-CL › bid-file-CSE › bid-file-OD › bid-more › bid-cancel › bid-remarks › bid-till › Document › portion-full › portion-am › portion-pm › span-range › bid-LL › bid-OL › bid-OIL",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r14/012-desk-chromium-r14-ranger-keys.png"
+ ],
+ [
+  "A8 bidding closed: own in-service day",
+  "desk-chromium",
+  "Dec closed (closed); Ranger taps 2026-12-14",
+  "ordinary member restrictions, no posting door (D1177, D1211, D328)",
+  "dialog[closed-note]: Ranger Mon 14 Dec ✕ Bidding is closed. To change your leave, seek management’s approval, then file it on the Inputs page. Your approved leave updates here by itself. CSE OD ⋯ Open the Inputs page | ⋯:  | posting parts: ",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r14/013-desk-chromium-r14-closed-2026-12-14.png"
+ ],
+ [
+  "A8 bidding closed: blank day after his post-out",
+  "desk-chromium",
+  "Dec closed (closed); Ranger taps 2026-12-24",
+  "ordinary member restrictions, no posting door (D1177, D1211, D328)",
+  "dialog[closed-note]: Ranger Thu 24 Dec ✕ Bidding is closed. To change your leave, seek management’s approval, then file it on the Inputs page. Your approved leave updates here by itself. CSE OD ⋯ Open the Inputs page | ⋯:  | posting parts: ",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r14/014-desk-chromium-r14-closed-2026-12-24.png"
+ ],
+ [
+  "A8 bidding closed: gone day holding his LL",
+  "desk-chromium",
+  "Dec closed (closed); Ranger taps 2026-12-23",
+  "ordinary member restrictions, no posting door (D1177, D1211, D328)",
+  "daylist: LL Pending Placed Saber · Thu 26 Nov, 18:18 Delete till 23 Dec Document | ⋯:  | posting parts: ",
+  "RECORD",
+  "img/handpass/2026-11-26-msq-s4-walk/wc/r14/015-desk-chromium-r14-closed-2026-12-23.png"
+ ]
+]

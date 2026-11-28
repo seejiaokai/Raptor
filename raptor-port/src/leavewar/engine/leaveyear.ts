@@ -273,7 +273,10 @@ function runYears(kind: BalKind, t: TypedBal, net: Map<number, number>, thisYear
 }
 
 /** One kind's figures for a person. `cf` is LVE's carried forward, this year's (0 for every other kind). */
-export interface KindFigures { kind: BalKind; app: number; war: number; pending: number; cf: number; typed: TypedBal | null }
+/** `notTyped`: no figure was ever typed for this kind and no old opening stands for one (D2746, question 11 A, 26 Nov 26) —
+ *  the screens read "Not typed" where the figure stands and the below-zero question waits; the figures underneath still
+ *  count from 0 (typedOrStart), as D1492's reading had them, so the moment a figure is typed nothing else moves. */
+export interface KindFigures { kind: BalKind; app: number; war: number; pending: number; cf: number; typed: TypedBal | null; notTyped: boolean }
 export interface PersonFigures {
   kinds: Record<BalKind, KindFigures>
   /** his approved LVE days charged from 1 Jan of this year up to today (the LVE tile's "3 taken") */
@@ -300,14 +303,39 @@ function withWhatIf(days: DayRecs, f: WhatIf | undefined): DayRecs {
   return out
 }
 
+/** THE DATES BEFORE HIS POST-IN DATE (D2747, question 12 A, 26 Nov 26): a leave there still shows on the grid but never
+ *  comes off his balance — his old squadron's leave, already in the figure typed from the official leave app; the same
+ *  for a man back from overseas, his days away. "Before his post-in date" is any day before his CURRENT stint that falls
+ *  in none of his earlier ones — before the earliest, or in any gap between them (the plan's step 2, widened to every
+ *  gap by the scenario designers' fault, 27 Nov 26): a day of an earlier stint here was his leave here and
+ *  still counts, so a figure typed during that stint stays right; a day after a posting out is untouched (D1541 — the
+ *  next squadron may refuse it). A man the count has no record of, or one here always, has none.
+ *  The dates are left out of the CHARGES, not of the leave: a leave across his post-in date is charged whole — its run,
+ *  weekends and holidays as they fall — and only its days before the date are dropped; the snapshot's days are dropped
+ *  by the same test, so the order of typing and approving never matters, nor a post-in date moved later. */
+function beforePostIn(w: LeaveYearWorld, pid: string): (date: string) => boolean {
+  const p = w.ctx.people?.find(x => x.id === pid)
+  if (!p || p.from === null) return () => false
+  const from = p.from
+  /* EVERY day before his current stint that falls in none of his earlier stints — not only the gap right before the current
+     one (`gapBeforeCurrent`, the posting sheet's door): a man away twice had the older gap's leave deducted (both scenario
+     designers, 27 Nov 26). `beforeFirstStint` is the same test's first case. */
+  return d => d < from && !(p.past ?? []).some(s => !(s.from && d < s.from) && d <= s.to)
+}
+function dropDates<T>(m: Map<string, T>, out: (date: string) => boolean): Map<string, T> {
+  for (const d of [...m.keys()]) if (out(d)) m.delete(d)
+  return m
+}
+
 /** EVERY FIGURE OF ONE PERSON (§1.3–1.4): App bal, carried forward, Pending and War bal for each kind, and the tiles'
  *  taken figures. `whatIf` adds a fill to his pending leave (War bal then answers "what is left if I place this"). */
 export function personFigures(w: LeaveYearWorld, pid: string, days: DayRecs, whatIf?: WhatIf): PersonFigures {
   const thisYear = yearOf(w.today)
   const pend = withWhatIf(days, whatIf)
-  const nowCh = chargesOf(w, pid, viewRow(days, isApproved))
+  const notHere = beforePostIn(w, pid)
+  const nowCh = dropDates(chargesOf(w, pid, viewRow(days, isApproved)), notHere)
   const warCh = whatIf || [...days.values()].some(l => l.some(c => c.kind === 'request' && c.state !== 'refused'))
-    ? chargesOf(w, pid, viewRow(pend, isApprovedOrPending))
+    ? dropDates(chargesOf(w, pid, viewRow(pend, isApprovedOrPending)), notHere)
     : nowCh
   const grade = (y: number) => gradeDaysOn(w, pid, y)
   const kinds = {} as Record<BalKind, KindFigures>
@@ -315,7 +343,7 @@ export function personFigures(w: LeaveYearWorld, pid: string, days: DayRecs, wha
     const counter = KIND_COUNTER[kind]
     const t = typedOrStart(w, pid, kind)
     const y0 = yearOf(t.day)
-    const snap = t.snap.length ? amountsFor(chargesOf(w, pid, snapRow(t.snap, kind)), counter) : new Map<string, number>()
+    const snap = t.snap.length ? amountsFor(dropDates(chargesOf(w, pid, snapRow(t.snap, kind)), notHere), counter) : new Map<string, number>()
     const netOf = (charges: Map<string, Taken[]>) => {
       const net = new Map<number, number>()
       const now = amountsFor(charges, counter)
@@ -335,7 +363,9 @@ export function personFigures(w: LeaveYearWorld, pid: string, days: DayRecs, wha
     }
     const app = runYears(kind, t, netOf(nowCh), thisYear, grade)
     const war = warCh === nowCh ? app : runYears(kind, t, netOf(warCh), thisYear, grade)
-    kinds[kind] = { kind, app: app.total, war: war.total, pending: tidy(app.total - war.total), cf: app.cf, typed: w.balances[pid]?.[kind] ?? null }
+    const typed = w.balances[pid]?.[kind] ?? null
+    const old = w.openings[pid]?.[counter]
+    kinds[kind] = { kind, app: app.total, war: war.total, pending: tidy(app.total - war.total), cf: app.cf, typed, notTyped: !typed && !(typeof old === 'number' && Number.isFinite(old)) }
   }
   const from = jan1(thisYear)
   let lveTaken = 0

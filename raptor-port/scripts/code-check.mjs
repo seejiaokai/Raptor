@@ -114,7 +114,13 @@ export function read(report, base) {
     const e = report.error
     return fail(base, `React Doctor reported an error: ${typeof e === 'string' ? e : e.message || JSON.stringify(e)}`)
   }
-  if (report.baselineDegraded) return fail(base, `React Doctor could not read ${base}'s side, so it compared nothing (its own pass/fail is switched off then)`)
+  /* "Could not read main's side" is often not main's side at all (his D2752, 26 Nov 26): React Doctor 0.9.18 never starts
+     the comparison once a check of the BRANCH's own scan is skipped — above all its file limit, more than 5,000 JS/TS files
+     in the whole tree — and says only "degraded". So every reason the report gives for a skipped check is named here. */
+  if (report.baselineDegraded) {
+    const why = (report.projects || []).flatMap((p) => Object.entries(p.skippedCheckReasons || {}).map(([k, v]) => `${k}: ${v}`))
+    return fail(base, `React Doctor could not read ${base}'s side, so it compared nothing (its own pass/fail is switched off then)${why.length ? ` — it gave: ${why.join('; ')}` : ''}`)
+  }
   if (report.mode !== 'baseline' || !report.baseline) return fail(base, `React Doctor did not compare against ${base} (mode "${report.mode}")`)
   const skipped = (report.projects || []).flatMap((p) => p.skippedChecks || [])
   if (skipped.length) return fail(base, `React Doctor skipped part of the check: ${skipped.map((s) => (typeof s === 'string' ? s : JSON.stringify(s))).join(', ')}`)

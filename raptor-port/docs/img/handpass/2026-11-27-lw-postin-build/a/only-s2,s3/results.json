@@ -1,0 +1,87 @@
+[
+ {
+  "id": "s2 STOPPED",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "locator.scrollIntoViewIfNeeded: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"bal-LVE-osp9\"]').first()\u001b[22m\n",
+  "pics": [
+   "s2-zz-stopped"
+  ]
+ },
+ {
+  "id": "s3.0 Hawk, here since 5 Jan, 24 typed, LL Mon 13 Apr approved: deducted",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "expected Official 23 / War 23 on both surfaces; saw Balances off=23 cf=0 pend=– war=23 | window off=23 pend=– war=23 taken=\"1 taken\"",
+  "pics": [
+   "s3-01-typed-13apr-bal",
+   "s3-01-typed-13apr-pw"
+  ]
+ },
+ {
+  "id": "s3.1 posted out Overseas Sqn from Wed 1 Apr (the bid window's ⋯ → Post out)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "ok",
+  "pics": [
+   "s3-02-postout-1apr"
+  ]
+ },
+ {
+  "id": "s3.2 Restore on Admin → Users with post-in Mon 1 Jun",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "ok",
+  "pics": [
+   "s3-03-restore-1jun"
+  ]
+ },
+ {
+  "id": "s3.3 back once: 13 Apr was a day away — not deducted",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "expected Official 24 / War 24 on both surfaces; saw Balances off=24 cf=0 pend=– war=24 | window off=24 pend=– war=24 taken=\"0 taken\"",
+  "pics": [
+   "s3-04-back-once-bal",
+   "s3-04-back-once-pw"
+  ]
+ },
+ {
+  "id": "s3.4 posted out again Overseas Sqn from Tue 1 Sep",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "ok",
+  "pics": [
+   "s3-05-postout-1sep"
+  ]
+ },
+ {
+  "id": "s3.5 Restore again with post-in Mon 2 Nov",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "ok",
+  "pics": [
+   "s3-06-restore-2nov"
+  ]
+ },
+ {
+  "id": "s3.6 back twice: 13 Apr (the FIRST gap) still not deducted",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "expected Official 24 / War 24 on both surfaces; saw Balances off=24 cf=0 pend=– war=24 | window off=24 pend=– war=24 taken=\"0 taken\"",
+  "pics": [
+   "s3-07-back-twice-bal",
+   "s3-07-back-twice-pw"
+  ]
+ },
+ {
+  "id": "s3.7 after a reload: the same",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "expected Official 24 / War 24 on both surfaces; saw Balances off=24 cf=0 pend=– war=24 | window off=24 pend=– war=24 taken=\"0 taken\"",
+  "pics": [
+   "s3-08-after-reload-bal",
+   "s3-08-after-reload-pw"
+  ]
+ }
+]

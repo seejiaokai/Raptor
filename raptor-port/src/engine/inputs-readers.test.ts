@@ -79,7 +79,6 @@ const RECORDS: Record<string, string> = {
   'ui/owncal.ts': 'the Inputs calendar\'s notes and day titles, through the Inputs page\'s door (writeInputs) — it writes planning records only, never an input',
   'ui/InputsSettings.tsx': 'the late cut-off\'s count of inputs',
   'ui/interactions.ts': 'the schedule\'s hands on an input',
-  'ui/oilsign.ts': 'the sign-off box’s OIL question: whether the day’s one list holds an input not yet left for Later — reads the records by id (D2294)',
   'ui/oilputback.ts':'what a whole-day replacement (a load, a plan switch) put back that still needs an OIL answer — reads the records (D865)',
   'ui/MedicalView.tsx': 'the Medical tab',
   'ui/DocViewer.tsx': 'the document viewer — finds the input it shows again by its id (inpById) after an undo put the records back (D1645, 5 Nov 26)',

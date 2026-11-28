@@ -1,0 +1,185 @@
+[
+ {
+  "scene": "F3",
+  "size": "desktop",
+  "what": "staged: the input Ranger filed",
+  "v": [
+   {
+    "who": [
+     "Ace"
+    ],
+    "by": "Ranger"
+   }
+  ]
+ },
+ {
+  "scene": "F3",
+  "size": "desktop",
+  "what": "Hex opens it: the line (today)",
+  "v": "Only Ace or an admin can change this."
+ },
+ {
+  "scene": "F3",
+  "size": "desktop",
+  "what": "the Delete key on its card (today)",
+  "v": "Only Ace or an admin can delete this input"
+ },
+ {
+  "scene": "F3",
+  "size": "phone",
+  "what": "Hex opens it: the line (today)",
+  "v": "Only Ace or an admin can change this."
+ },
+ {
+  "scene": "F1",
+  "size": "desktop",
+  "what": "the day's OIL list opened by itself",
+  "v": 1
+ },
+ {
+  "scene": "F1",
+  "size": "desktop",
+  "what": "the two records after Saber's \"No to all\" (every field: is anything stamped with who answered?)",
+  "v": [
+   {
+    "type": "Training",
+    "allday": false,
+    "s": 780,
+    "e": 900,
+    "date": "Jul 17",
+    "yr": 2026,
+    "remarks": "",
+    "mod": "2026-07-15",
+    "title": "Sim prep",
+    "iid": "imrldi5zdj2x9c6",
+    "by": "bane",
+    "modBy": "stiff",
+    "at": 1784077205449,
+    "modAt": 1784077212041,
+    "ord": -1024,
+    "acc": "g",
+    "oil": {
+     "2026-07-17": 0
+    }
+   },
+   {
+    "type": "Training",
+    "allday": false,
+    "s": 540,
+    "e": 720,
+    "date": "Jul 17",
+    "yr": 2026,
+    "remarks": "",
+    "mod": "2026-07-15",
+    "title": "Range brief",
+    "u": "u142",
+    "iid": "imrldi40l6evs11",
+    "by": "bane",
+    "modBy": "stiff",
+    "at": 1784077202901,
+    "modAt": 1784077212041,
+    "ord": 0,
+    "acc": "g",
+    "oil": {
+     "2026-07-17": 0
+    }
+   }
+  ]
+ },
+ {
+  "scene": "F1",
+  "size": "desktop",
+  "what": "the ALL AVAIL window (today)",
+  "v": {
+   "hint": "Whoever filed this “Range brief” answered No to OIL, so by default nobody behind it earns. Tap an unlit puck to credit a man; tap a lit one to stop his credit.",
+   "win": "availwin front"
+  }
+ },
+ {
+  "scene": "F1",
+  "size": "desktop",
+  "what": "a man behind ALL AVAIL in the window: hover words (today)",
+  "v": "Reaper — whoever filed this “Range brief” answered No to OIL; tap to credit him anyway"
+ },
+ {
+  "scene": "F1",
+  "size": "desktop",
+  "what": "Ranger's puck on Sim prep: hover words (today)",
+  "v": "Ranger answered No for this “Sim prep” — tap to put him on it anyway"
+ },
+ {
+  "scene": "F1",
+  "size": "phone",
+  "what": "the ALL AVAIL window (today)",
+  "v": {
+   "hint": "Whoever filed this “Range brief” answered No to OIL, so by default nobody behind it earns. Tap an unlit puck to credit a man; tap a lit one to stop his credit.",
+   "win": "availwin front"
+  }
+ },
+ {
+  "scene": "F1",
+  "size": "phone",
+  "what": "a man behind ALL AVAIL in the window: hover words (today)",
+  "v": "Reaper — whoever filed this “Range brief” answered No to OIL; tap to credit him anyway"
+ },
+ {
+  "scene": "F1",
+  "size": "phone",
+  "what": "Ranger's puck on Sim prep: hover words (today)",
+  "v": "Ranger answered No for this “Sim prep” — tap to put him on it anyway"
+ },
+ {
+  "scene": "F2",
+  "size": "desktop",
+  "what": "Saturday published: the note",
+  "v": "Saturday 18 Jul published and approved. The SXO desk has no usable times, so nobody on it earns OIL."
+ },
+ {
+  "scene": "F2",
+  "size": "desktop",
+  "what": "prowler's Sat 18 box",
+  "v": "HO*"
+ },
+ {
+  "scene": "F2",
+  "size": "desktop",
+  "what": "prowler's card: \"Where it came from\" (today)",
+  "v": "Earned off the published schedule — change the schedule and the OIL follows."
+ },
+ {
+  "scene": "F2",
+  "size": "desktop",
+  "what": "bane's Sat 18 box",
+  "v": "HO*"
+ },
+ {
+  "scene": "F2",
+  "size": "desktop",
+  "what": "bane's card: \"Where it came from\" (today)",
+  "v": "Earned off the published schedule — change the schedule and the OIL follows."
+ },
+ {
+  "scene": "F2",
+  "size": "phone",
+  "what": "prowler's Sat 18 box",
+  "v": "HO*"
+ },
+ {
+  "scene": "F2",
+  "size": "phone",
+  "what": "prowler's card: \"Where it came from\" (today)",
+  "v": "Earned off the published schedule — change the schedule and the OIL follows."
+ },
+ {
+  "scene": "F2",
+  "size": "phone",
+  "what": "bane's Sat 18 box",
+  "v": "HO*"
+ },
+ {
+  "scene": "F2",
+  "size": "phone",
+  "what": "bane's card: \"Where it came from\" (today)",
+  "v": "Earned off the published schedule — change the schedule and the OIL follows."
+ }
+]

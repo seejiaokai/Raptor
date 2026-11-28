@@ -1,0 +1,22 @@
+msq-s4w-lib v1 who=wd run=r11shift port=4756
+wd-lib v1
+wd-shift v1
+phone-branch after DEC {"cellX":148.2,"cellY":423.6,"winX":0,"winY":0,"scrollers":["week:12","mx-wrap:6948"]}
+phone-branch before tap {"cellX":148.2,"cellY":423.6,"winX":0,"winY":0,"scrollers":["week:12","mx-wrap:6948"]}
+phone-branch after tap {"cellX":148.2,"cellY":423.6,"winX":0,"winY":0,"scrollers":["week:12","mx-wrap:6948"]}
+ROW RECORD | F-S44 the grid sideways when the one-day window opens (no posting) | phone-branch | DEC, tap Saber 3 Dec | saw: before {"cellX":148.2,"cellY":423.6,"winX":0,"winY":0,"scrollers":["week:12","mx-wrap:6948"]} after {"cellX":148.2,"cellY":423.6,"winX":0,"winY":0,"scrollers":["week:12","mx-wrap:6948"]}
+phone-main after DEC {"cellX":148.5,"cellY":423.6,"winX":0,"winY":0,"scrollers":["week:12","mx-wrap:6883"]}
+phone-main before tap {"cellX":148.5,"cellY":423.6,"winX":0,"winY":0,"scrollers":["week:12","mx-wrap:6883"]}
+phone-main after tap {"cellX":148.5,"cellY":423.6,"winX":0,"winY":0,"scrollers":["week:12","mx-wrap:6883"]}
+ROW RECORD | F-S44 the grid sideways when the one-day window opens (no posting) | phone-main | DEC, tap Saber 3 Dec | saw: before {"cellX":148.5,"cellY":423.6,"winX":0,"winY":0,"scrollers":["week:12","mx-wrap:6883"]} after {"cellX":148.5,"cellY":423.6,"winX":0,"winY":0,"scrollers":["week:12","mx-wrap:6883"]}
+bringIn [data-testid="cell-stiff-2026-12-03"] 0 {"x":752,"y":552,"w":24,"h":22} scroll 0 185
+desk-branch after DEC {"cellX":751.8,"cellY":552,"winX":0,"winY":0,"scrollers":["week:0","mx-wrap:8034","mx-hbar:8035"]}
+desk-branch before tap {"cellX":875.8,"cellY":367,"winX":0,"winY":185,"scrollers":["week:0","mx-wrap:7718","mx-hbar:7718"]}
+desk-branch after tap {"cellX":875.8,"cellY":367,"winX":0,"winY":185,"scrollers":["week:0","mx-wrap:7718","mx-hbar:7718"]}
+ROW RECORD | F-S44 the grid sideways when the one-day window opens (no posting) | desk-branch | DEC, tap Saber 3 Dec | saw: before {"cellX":875.8,"cellY":367,"winX":0,"winY":185,"scrollers":["week:0","mx-wrap:7718","mx-hbar:7718"]} after {"cellX":875.8,"cellY":367,"winX":0,"winY":185,"scrollers":["week:0","mx-wrap:7718","mx-hbar:7718"]}
+bringIn [data-testid="cell-stiff-2026-12-03"] 0 {"x":753,"y":552,"w":24,"h":22} scroll 0 185
+desk-main after DEC {"cellX":752.5,"cellY":552,"winX":0,"winY":0,"scrollers":["week:0","mx-wrap:8077","mx-hbar:8077"]}
+desk-main before tap {"cellX":919.8,"cellY":367,"winX":0,"winY":185,"scrollers":["week:0","mx-wrap:7674","mx-hbar:7674"]}
+desk-main after tap {"cellX":919.8,"cellY":367,"winX":0,"winY":185,"scrollers":["week:0","mx-wrap:7674","mx-hbar:7674"]}
+ROW RECORD | F-S44 the grid sideways when the one-day window opens (no posting) | desk-main | DEC, tap Saber 3 Dec | saw: before {"cellX":919.8,"cellY":367,"winX":0,"winY":185,"scrollers":["week:0","mx-wrap:7674","mx-hbar:7674"]} after {"cellX":919.8,"cellY":367,"winX":0,"winY":185,"scrollers":["week:0","mx-wrap:7674","mx-hbar:7674"]}
+wd-shift done

@@ -1,0 +1,38 @@
+[
+ [
+  "A16 / F-S31",
+  "desk chromium main",
+  "new sheet with the Delete card up; leave: top bar Inputs, wait 2.5 s, top bar Leave War [leavewar→inputs]",
+  "leaving clears the armed card; the grid draws at once on return; the sheet gone or whole (RECORD which, beside main); nothing posted (posting contract; lesson 10)",
+  "card before UP; on return [page=leavewar] card gone; month lit DEC; Cinch gone 0; Piston from 12-21",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r11m/001-desk-chromium-main-a16-new-topbar-armed.png , img/handpass/2026-11-26-msq-s4-walk/wb/r11m/002-desk-chromium-main-a16-new-topbar-first-at-lift.png , img/handpass/2026-11-26-msq-s4-walk/wb/r11m/003-desk-chromium-main-a16-new-topbar-settled.png"
+ ],
+ [
+  "A16 / F-S31",
+  "desk chromium main",
+  "drag sheet with the Delete card up; leave: top bar Inputs, wait 2.5 s, top bar Leave War [inputs]",
+  "leaving clears the armed card; the grid draws at once on return; the sheet gone or whole (RECORD which, beside main); nothing posted (posting contract; lesson 10)",
+  "card before UP; on return [leaveBtns sel selPo head=Cinch 15–18 Dec · 4 days Auto-approve ✕ page=leavewar] card gone; month lit DEC; Cinch gone 0; Piston from 12-21",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r11m/004-desk-chromium-main-a16-drag-topbar-armed.png , img/handpass/2026-11-26-msq-s4-walk/wb/r11m/005-desk-chromium-main-a16-drag-topbar-first-at-lift.png , img/handpass/2026-11-26-msq-s4-walk/wb/r11m/006-desk-chromium-main-a16-drag-topbar-settled.png"
+ ],
+ [
+  "A16 / F-S31",
+  "desk chromium main",
+  "old sheet with the Delete card up; leave: top bar Inputs, wait 2.5 s, top bar Leave War [leavewar→inputs]",
+  "leaving clears the armed card; the grid draws at once on return; the sheet gone or whole (RECORD which, beside main); nothing posted (posting contract; lesson 10)",
+  "card before UP; on return [page=leavewar] card gone; month lit DEC; Cinch gone 0; Piston from 12-21",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r11m/007-desk-chromium-main-a16-old-topbar-armed.png , img/handpass/2026-11-26-msq-s4-walk/wb/r11m/008-desk-chromium-main-a16-old-topbar-first-at-lift.png , img/handpass/2026-11-26-msq-s4-walk/wb/r11m/009-desk-chromium-main-a16-old-topbar-settled.png"
+ ],
+ [
+  "A16",
+  "desk chromium main",
+  "Piston's posting changed to SANS, Delete armed then cancelled; reload; signed in again",
+  "saved postings survive the reload; the cancelled choice does not (posting / persistence contract)",
+  "line before reload \"On 21 Dec: becomes SANS.\"; after: gone from 12-21; reopened line \"On 21 Dec: becomes SANS.\"",
+  "PASS",
+  "img/handpass/2026-11-26-msq-s4-walk/wb/r11m/010-desk-chromium-main-a16-reload.png"
+ ]
+]

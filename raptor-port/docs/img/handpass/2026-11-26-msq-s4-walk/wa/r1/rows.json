@@ -1,0 +1,11 @@
+[
+ [
+  "drag-proof",
+  "phone-chromium",
+  "finger/wheel drags over the grid",
+  "scrollY moves",
+  "[{\"before\":0,\"after\":385},{\"before\":385,\"after\":629},{\"before\":629,\"after\":244}]",
+  "PASS",
+  ""
+ ]
+]
