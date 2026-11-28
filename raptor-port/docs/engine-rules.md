@@ -3448,7 +3448,9 @@ line (`docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md`).**
   list, the input's own "OIL?" sign or a bell line — leaves the names already signed; every other part of an input
   (who, type, filing, standing, window) still binds. **Only the answer to a question open at signing (D2868, D2869 —
   27 Nov 26):** the binding keeps each input's answer as it stood (`oa`, `oilev.ts oilAnsKept`); one the names were
-  signed over that has since changed, or been taken away, takes them down (`publish.ts oilAnsBoundOk`). On a published
+  signed over that has since changed, or been taken away, takes them down (`publish.ts oilAnsBoundOk`). A name signed
+  while the question stood open stays through every later change of that answer — its first answer and any change after
+  it (D2895, 28 Nov 26): the binding keeps that answer as unanswered, so no later answer is one it was signed over. On a published
   day the comparison key keeps the answer, so it is still a change waiting (the count, the publish button), but the
   binding's `pd` is read with the open-at-signing answers unanswered (`pendingKeyAtSign`), so that answer leaves the
   names there too (narrows D103, AM11). The Logic check (`orv`, D592 (4)) reads the same answers as at signing
