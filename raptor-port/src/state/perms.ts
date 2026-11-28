@@ -4122,7 +4122,9 @@ function acctLineViolation(env: CommitEnvelope): string | null {
     if (replayed && replayed(c)) continue
     const n: any = c.op === 'delete' ? null : c.after
     if (c.before != null || !n) return `an account line no change of his access owes (${where})`
-    if (!shape(n) || String(n.day) !== today) return `a bell line not as the pass writes it (${where})`
+    /* (…its id the row it is saved under, as the writer mints it — U2 fix round 4, part 1, Fable's proof 2; the app's
+       own ids are refused before this, reservedLineIdViolation) */
+    if (!shape(n) || String(n.day) !== today || String(n.id) !== String(c.id)) return `a bell line not as the pass writes it (${where})`
     const list = owed.get(String(n.to)) ?? []
     const i = list.findIndex(x => !!x && deepEqual(x.p, n.what[0]) && (n.by ?? null) === (x.app ? null : self))
     if (i < 0) return `an account line no change of his access owes (${where})`
@@ -4176,7 +4178,7 @@ function planLineViolation(env: CommitEnvelope): string | null {
       if (!acct || p.c !== 'moved' || !(d <= today && d > addDays(today, -MOVES_TOLD_DAYS)) || planMovedLineId(acct.id, d, n.u, String(n.to)) !== String(n.id)
         || String(n.to) === pid
         /* TOLD ONCE: a line of this move already stood — its squadron line to any reader, or the mover's own */
-        || moveTold(acct.id, d, n.u, stood)
+        || moveTold(acct.id, d, n.u, stood, pid)
         // eslint-disable-next-line react-doctor/js-set-map-lookups -- one look in a list worked out afresh for this line's own man and day, never the same list twice
         || !homeChangesBefore(pid, addDays(d, -1), d, rows).includes(d)
         || !planLinesOf(pid, movedParts(accessIn(acct, rows, addDays(d, -1)), accessIn(acct, rows, d))).some(l => l.u === n.u && deepEqual(l.part, p))
@@ -4224,7 +4226,9 @@ function planLineViolation(env: CommitEnvelope): string | null {
       return `a squadron's Plan line taken away by no Undo of its change (${where})`
     }
     if (b != null && !isReplay) return `a squadron's Plan line not as its writer writes it (${where})`
-    if (!isReplay && (!shape(n, today) || self == null || String(n.by ?? '') !== self)) return `a squadron's Plan line not as its writer writes it (${where})`
+    /* (…its id the row it is saved under, as the writer mints it — U2 fix round 4, part 1; the app's own ids are refused
+       before this, reservedLineIdViolation) */
+    if (!isReplay && (!shape(n, today) || self == null || String(n.by ?? '') !== self || String(n.id) !== String(c.id))) return `a squadron's Plan line not as its writer writes it (${where})`
     if (isReplay && (lineMalformed(n) || n.what.length !== 1 || n.what[0].k !== 'sqplan')) return `a squadron's Plan line not as its writer writes it (${where})`
     const p: any = n.what[0]
     const o = owed.get(`${String(n.to)}|${String(p.who)}|${String(n.u)}`)
@@ -4265,6 +4269,35 @@ function postingFailedViolation(env: CommitEnvelope): string | null {
     if (!f || f.key !== key || n.u !== f.unit || String(n.id) !== poFailedLineId(key, String(n.to))
       // eslint-disable-next-line react-doctor/js-set-map-lookups -- one look in the audience of this line's own squadron, worked out afresh for it
       || !adminLineAudience(f.unit, today).includes(String(n.to))) return `a posting-failed line for a posting that did not fail (${where})`
+  }
+  return null
+}
+/* THE IDS THE APP GIVES ITS OWN LINES ARE NEVER A PERSON'S (U2 fix round 4, part 1 — the security, Opus and Fable
+   readers' squat; docs/data-model.md §11, the Notice row — together, D200). Each family below is a fixed id the app mints
+   for a line it alone writes, so a second load or a second browser finds it and writes nothing: a move's squadron line
+   and the mover's own (acctlines.ts planMovedLineId, movedLineId — the `account.told` command), a posting that could not
+   run (notices.ts poFailedLineId — `posting.failed`), and the two lines the bell works out and never stores, a stretch
+   of bidding ended (`lwend:`) and a posting with nothing to run (`po:`) — leavewar/sync.ts endedLines, postedLinesOf. A
+   person's own lines are minted (`n…`). This gate never asked a person's line its id, so an ordinary line he may
+   write — a member's to the admin who filed his leave, an admin's "View of 150 ended" or "Suspended" — saved under a
+   move's id, marked that move told before it happened (acctlines.ts moveTold, which now asks the line too), and an
+   exact id held made the app's own line impossible to write at all. So a line a signed-in person PUTS under one of
+   these ids is refused, whatever its words, before every other door of the bell. Not asked: the app itself (the
+   system actor — its own writers above); a restore's verified replay (undo/timeline.ts verifiedReplay), which puts back,
+   image for image, what a step of his recorded — the app's own line an earlier step took away among them; and
+   another device's change or a seed, each judged where it was made (the read record's rule, ownershipChecks). */
+const APP_LINE_IDS = ['sqplan:mv:', 'acct:mv:', 'pofail:', 'lwend:', 'po:'] as const
+function reservedLineIdViolation(env: CommitEnvelope): string | null {
+  const a = env.actor
+  if (!a || a.role === 'system' || env.origin === 'remote' || env.origin === 'seed') return null
+  let replayed: ((c: Change) => boolean) | null | undefined
+  for (const c of env.changes) {
+    if (c.collection !== 'notices' || c.op === 'delete') continue
+    const ids = [String(c.id), String((c.after as any)?.id ?? '')]
+    if (!ids.some(id => APP_LINE_IDS.some(p => id.startsWith(p)))) continue
+    if (replayed === undefined) replayed = env.origin === 'restore' && REPLAY ? REPLAY(env) : null
+    if (replayed && replayed(c)) continue
+    return `a bell line under an id only the app gives its own lines (${c.collection}/${c.id})`
   }
   return null
 }
@@ -4343,6 +4376,9 @@ function ownershipChecks(env: CommitEnvelope): string | null {
   const failBad = postingFailedViolation(env)
   if (failBad) return failBad
   if (env.type === 'posting.failed') return null
+  /* (the app's own lines' ids, a person's never — before the account, Plan and every other bell door: above) */
+  const idBad = reservedLineIdViolation(env)
+  if (idBad) return idBad
   /* HIS OWN ACCOUNT'S LINES (§16 D6′): before ownsLine and "a bell line about nothing" (adminOwnerViolation), after every
      check of the rows themselves, so a command refused for its own change keeps that refusal's words */
   const acctBad = acctLineViolation(env)

@@ -16,7 +16,7 @@ import { PEOPLE } from '../engine/people'
 import { addDays } from './flyplan-model'
 import { ACCOUNTS_LIST, ACCOUNT_PFX, levelAcct, readAccounts, seedAccounts, adminLineAudience, adminLineAudienceOn, type Account } from './accounts'
 import { me } from './perms'
-import { NOTICES, noticeAccount, noticePlanLine, type NoticePart, type AcctChange } from './notices'
+import { NOTICES, noticeAccount, noticePlanLine, isAcctNotice, isPlanLine, type NoticePart, type AcctChange } from './notices'
 import { unitRows, unitRowsBefore, unitRowsAfter, todayIso, homeBefore, levelBefore, grantBefore, homeChangesOn } from './units'
 import type { UnitRows, GrantLevel } from './units-model'
 
@@ -243,10 +243,29 @@ export function acctFollowUps(forward: ReadonlyArray<{ collection: string; id: s
  *  planLineViolation, `account.told`) refuses a line for one told before its command — `notices` is the bell as the
  *  caller reads it: live for the writer, as it stood before the command for the gate. The moments stay, as the audience
  *  of the FIRST telling. The fixed ids, and the old lines coming back on an Undo of a take-away (D2310), are untouched. */
-export function moveTold(accountId: string, day: string, unit: string, notices: ReadonlyArray<{ id?: unknown }>): boolean {
+/* …AND A LINE COUNTS ONLY WHERE IT IS THAT MOVE'S LINE, AS THE WRITER WRITES IT (U2 fix round 4, part 1 — the security,
+   Opus and Fable readers' squat): judged on the bare id, an ordinary line a person may write — a member's to the admin
+   who filed his leave, an admin's "View of 150 ended" or "Suspended" — saved under a move's fixed id marked that move
+   told before it happened, and 149's admins were never told "Plan of 149 ended: he moved to 150". So the stored line
+   must be, part for part, what writeMoveLines writes: the squadron's line (notices.ts noticePlanLine) one `sqplan`
+   part "moved" about the mover, of that squadron and day, by the app, about no input; the mover's own (noticeAccount)
+   one `acct` part "Plan of that squadron ended" by his move, to him, by the app, on that day, its very fixed id. The
+   gate refuses a person's line under these ids as well (perms.ts reservedLineIdViolation). `pid` — the mover's person,
+   from his account where the caller does not hand it in. */
+export function moveTold(accountId: string, day: string, unit: string, notices: ReadonlyArray<{ id?: unknown }>,
+  pid: string | null = ACCOUNTS_LIST.find(a => a.id === accountId)?.pid ?? null): boolean {
+  if (pid == null) return false
+  const who = String(pid)
   const squadron = planMovedLineId(accountId, day, unit, '')
   const own = movedLineId(accountId, day, { k: 'acct', c: 'planEnd', u: unit })
-  return notices.some(n => { const id = String(n?.id ?? ''); return id === own || id.startsWith(squadron) })
+  return notices.some((n: any) => {
+    if (!n || typeof n !== 'object' || !Array.isArray(n.what) || n.what.length !== 1) return false
+    const id = String(n.id ?? ''), p: any = n.what[0]
+    if (!p || typeof p !== 'object' || n.by != null || n.iid !== '' || String(n.day) !== day) return false
+    if (id.startsWith(squadron)) return isPlanLine(n) && p.k === 'sqplan' && p.c === 'moved' && String(p.who) === who && n.u === unit
+    if (id === own) return isAcctNotice(n) && p.k === 'acct' && p.c === 'planEnd' && p.u === unit && p.why === 'moved' && String(n.to) === who
+    return false
+  })
 }
 /** THE MOVES THAT HAVE TAKEN EFFECT, not yet told (D11, D11′): every account whose squadron changed on a day up to today,
  *  within the last month (a move older than that is past telling — demo data, D56), each line its fixed id. */
@@ -281,7 +300,7 @@ export function planMovesOwed(today: string = todayIso()): Array<{ to: string; u
     for (const d of homeChangesOn(pid, addDays(today, -MOVES_TOLD_DAYS), today)) {
       for (const l of planLinesOf(pid, movedParts(accessIn(a, rows, addDays(d, -1)), accessIn(a, rows, d)))) {
         /* (told once — U2 fix round 3, fix 5: a line of this move stored already, and no further reader is owed it) */
-        if (moveTold(a.id, d, l.u, NOTICES)) continue
+        if (moveTold(a.id, d, l.u, NOTICES, pid)) continue
         /* (the first telling's audience, as it stood on the move day by the records — U2 fix round 1, fix 8: a man made
            an admin since gets none) */
         for (const to of adminLineAudienceOn(l.u, d, rows)) {

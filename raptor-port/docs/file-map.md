@@ -2205,3 +2205,14 @@ date of a 149 admin go through), `src/ui/msq-s2-u2fix2-postsheet.test.tsx` (the 
   telling refused at the gate, what marks a move told; `restoreIntoForce`'s two more cases).
 - `src/state/msq-s2-u2fix3-moveday-opus2.test.ts`, `-astra2.test.ts`, `-fable1.test.ts`, `-security1.test.ts`,
   `-security4.test.ts` (fix 5: the four readers' proofs, one file each, as they wrote them).
+
+Chat A216, 28 Nov 26 — step U2's fourth fix round, part 1 (a move's fixed id squatted by an ordinary line; the security,
+Opus and Fable readers of round 3). **Changed:** `src/state/acctlines.ts` (`moveTold` counts a stored line only where it
+is that move's line as `writeMoveLines` writes it — kind, part, mover, squadron, day, no signer, no input; the mover's
+person handed in by `planMovesOwed` and the gate), `src/state/perms.ts` (`reservedLineIdViolation`, asked before the
+account, Plan and every other bell door: a signed-in person's line under an id the app gives its own lines —
+`sqplan:mv:`, `acct:mv:`, `pofail:`, `lwend:`, `po:` — is refused, a verified replay apart; the person branches of
+`acctLineViolation` and `planLineViolation` ask the line's id to be the row it is saved under). **New (test):**
+- `src/state/msq-s2-u2fix4-squat.test.ts` (the three readers' proofs, every case kept, the squat now refused at the gate;
+  the squat already on the bell not marking the move told; each reserved family refused for a member and an admin; the
+  honest telling).
