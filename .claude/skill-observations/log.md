@@ -1752,6 +1752,19 @@ recheck every standing resource (locks, loops, write rights) after a restart, be
 **Suggested improvement:** In the brief-building step, put the blindness rules in the command line itself, before the pointer to the brief: "Do not open X, Y, Z. First read <brief>." Ask the reader to state at the top of its report whether it opened anything on the excluded list.
 **Principle:** A reader explores before it reads instructions held in a file; any rule that must hold from the first step goes in the prompt itself, not only in a file the prompt points to.
 
+### Observation 1114: a jsdom test of a "within N ms" guard fails on a busy CI runner
+
+**Status:** OPEN
+**Date:** 28 Nov 26
+**Session context:** chat 197, pull request 861's one red unit test (numbered past 1112–1113, held on other open branches)
+**Skill:** systematic-debugging
+**Type:** open-source
+**Phase/Area:** test failures that pass locally — before calling a red a flake
+
+**Issue:** A double-tap guard counts a press only if its window closes within 1 s of it (`performance.now()`). In a real browser the close follows its press within a frame; in jsdom the close waits for the whole save and re-render, which on a CI runner running four test files at once once took over 1 s. The test failed on GitHub only; locally every tap took under 100 ms. Re-running would have hidden it, and it would have come back.
+**Suggested improvement:** In the skill's "flaky / passes locally" branch, add one step: list every wall-clock comparison on the path (`performance.now`, `Date.now`, timers measured against real time) and ask whether a synchronous test gesture's own compute time can cross the threshold. If so, reproduce it red first with an injected clock that jumps at each reading, then fix the TEST so the gesture runs with the clock standing still (a helper that pins `performance.now` for the gesture), never with a longer wait or a bigger threshold.
+**Principle:** When an app measures human timing with the wall clock, a test that simulates the human must not let machine speed be part of what is measured. Freeze the clock for the simulated gesture, and prove it with a deliberately slow clock.
+
 ### Observation 1058: A record script's all-or-nothing restore erased a helper's live edit
 
 **Status:** OPEN

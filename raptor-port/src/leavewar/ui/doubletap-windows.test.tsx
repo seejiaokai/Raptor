@@ -12,23 +12,24 @@ import { INPUTS } from '../../engine/inputs'
 import { initStore, lwHistInit, setRole } from '../state/store'
 import { setLwOnScreen } from '../state/screen'
 import { memoryBackend } from '../state/storage'
-import { elevenCounters } from '../testkit'
+import { atOneMoment, elevenCounters } from '../testkit'
 import { askLw } from './lwnav'
 import { Matrix } from './Matrix'
 
 const ISNAP = JSON.stringify(INPUTS)
 const CELL = 'cell-asics-2026-01-29'
 const picker = () => screen.queryByTestId('bid-picker')
-/* a finger's tap: its press (a touch) and then its click */
-const tap = (el: Element, x = 10, y = 10) => {
+/* a finger's tap: its press (a touch) and then its click — at one moment on the clock, whatever the machine's speed
+   (testkit `atOneMoment`) */
+const tap = (el: Element, x = 10, y = 10) => atOneMoment(() => {
   el.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 3, pointerType: 'touch', button: 0, clientX: x, clientY: y }))
   fireEvent.click(el, { detail: 1, clientX: x, clientY: y })
-}
-/* a mouse's click: its press and then its click, `detail` the browser's count */
-const mouse = (el: Element, detail: number, x = 10, y = 10) => {
+})
+/* a mouse's click: its press and then its click, `detail` the browser's count — at one moment, as a tap */
+const mouse = (el: Element, detail: number, x = 10, y = 10) => atOneMoment(() => {
   el.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 1, pointerType: 'mouse', button: 0, clientX: x, clientY: y }))
   fireEvent.click(el, { detail, clientX: x, clientY: y })
-}
+})
 /* the second tap, where the first one landed: a day's cell behind the window that just closed */
 const second = (what: string) => {
   tap(screen.getByTestId(CELL))
@@ -101,6 +102,25 @@ describe('a double tap on another window\'s closing button ([LW-DOUBLETAP-OTHER-
     tap(screen.getByTestId('event-delete'))
     expect(screen.queryByTestId('event-sheet'), 'deleted and closed').toBeNull()
     second('the event window\'s Delete')
+  })
+
+  /* THE SAME ON A SLOW MACHINE (the gates of 28 Nov 26, pull request 861: GitHub's busy runner took past 1 s between the
+     Save's press and the window's close, so the guard did not arm and the test above failed on the machine's speed). The
+     machine's slowness is played here by a clock that leaps 1.2 s at every reading; a tap stays one moment all the same
+     (testkit `atOneMoment`), so the guard is judged on what the person did, never on how long jsdom took to draw. Red
+     first: without it this failed with GitHub's very words. */
+  it('the event window\'s Save on a slow machine — the clock leaping 1.2 s at each reading', () => {
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('event-0-2026-01-05'))
+    fireEvent.change(screen.getByTestId('event-text'), { target: { value: 'Range day' } })
+    const real = performance.now
+    let at = real.call(performance)
+    performance.now = () => (at += 1200)
+    try {
+      tap(screen.getByTestId('event-apply'))
+      expect(screen.queryByTestId('event-sheet'), 'saved and closed').toBeNull()
+    } finally { delete (performance as { now?: unknown }).now }
+    second('the event window\'s Save, on a slow machine')
   })
 
   it('the counter form\'s ✕, and its Cancel', async () => {

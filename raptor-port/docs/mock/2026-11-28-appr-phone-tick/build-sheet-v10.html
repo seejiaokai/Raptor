@@ -1,0 +1,243 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Leave Window Build Sheet</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one calm column, the question first, then the pictures as a two-up grid that drops to one on a phone. */
+:root{
+  --bg:#0e1217; --panel:#181d24; --panel-2:#1f252e; --edge:rgba(138,150,163,.28);
+  --ink:#e8edf3; --ink-2:#a9b3bf; --ink-3:#7d8794; --accent:#3fd0f0; --mark:#FFD23F; --go:#57C97A;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  color-scheme:dark;
+}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--sans);-webkit-text-size-adjust:100%}
+.wrap{max-width:860px;margin:0 auto;padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1{font-size:22px;line-height:1.25;margin:0 0 4px;text-wrap:balance}
+h2{font-size:17px;margin:32px 0 10px;text-wrap:balance}
+p{margin:0 0 8px}
+.lede{color:var(--ink-2);margin-bottom:18px}
+.ask{background:var(--panel);border:1px solid var(--edge);border-radius:14px;padding:16px;display:grid;gap:10px}
+.ask .q{font-size:18px;font-weight:700}
+.qn{display:inline-block;font:800 13px/22px var(--sans);background:var(--accent);color:#0b1116;border-radius:7px;padding:0 9px;margin-right:6px;vertical-align:2px;letter-spacing:.02em}
+.ask .when{color:var(--ink-2)}
+.opts{display:grid;gap:8px}
+.opt{display:flex;gap:10px;align-items:flex-start;background:var(--panel-2);border-radius:10px;padding:10px 12px}
+.opt b{color:var(--ink)}
+.opt .k{flex:none;width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font-weight:800;background:#11161c;border:1px solid var(--edge)}
+.opt.rec .k{background:var(--go);color:#0b1116;border-color:var(--go)}
+.reply{color:var(--ink-2);font-size:14px}
+.reply code{background:#11161c;border:1px solid var(--edge);border-radius:6px;padding:1px 6px;color:var(--ink);font-family:inherit}
+.seg{display:inline-flex;background:#11161c;border:1px solid var(--edge);border-radius:10px;padding:3px;gap:3px;margin:4px 0 14px}
+.seg button{font:600 14px var(--sans);color:var(--ink-2);background:none;border:0;border-radius:7px;padding:6px 14px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--panel-2);color:var(--ink);box-shadow:inset 0 0 0 1px var(--accent)}
+.seg button:focus-visible,.shot:focus-visible,.close:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:620px){.grid{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--panel);border:1px solid var(--edge);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.card.wide{grid-column:1/-1}
+.shot{display:block;width:100%;background:#0b0f13;border:0;padding:0;cursor:zoom-in}
+.shot img{display:block;width:100%;height:auto;max-height:560px;object-fit:contain;object-position:top center}
+.cap{padding:10px 12px 12px;display:grid;gap:2px}
+.cap .t{font-weight:700}
+.cap .d{color:var(--ink-2);font-size:14px}
+.pen{display:inline-block;width:1em;height:1em;vertical-align:-.15em;color:var(--ink)}
+.new{display:inline-block;font:800 11px/17px var(--sans);background:var(--mark);color:#15171c;border-radius:9px;padding:0 6px;margin-right:4px;vertical-align:1px}
+.note{color:var(--ink-3);font-size:13px;margin-top:10px}
+.fresh{color:var(--mark)}
+.round{background:var(--panel);border:1px solid var(--mark);border-radius:12px;padding:10px 14px;margin:12px 0}
+.round b{color:var(--mark)}
+details{background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:4px 14px;margin-top:10px}
+summary{cursor:pointer;padding:10px 0;font-weight:700}
+details ul{margin:0 0 12px;padding-left:18px;display:grid;gap:6px}
+details li{color:var(--ink-2)}
+details li b{color:var(--ink)}
+.zoom{position:fixed;inset:0;background:rgba(5,8,11,.94);z-index:50;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.zoom .bar{display:flex;justify-content:flex-end;padding:10px max(12px,env(safe-area-inset-right,0px)) 10px 12px}
+.close{font:700 15px var(--sans);color:var(--ink);background:var(--panel-2);border:1px solid var(--edge);border-radius:10px;padding:8px 16px;cursor:pointer}
+.zoom .pic{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:0 max(8px,env(safe-area-inset-left,0px)) 16px max(8px,env(safe-area-inset-right,0px))}
+.zoom img{display:block;max-width:100%;height:auto;margin:0 auto}
+@media (prefers-reduced-motion:no-preference){.card{transition:border-color .15s} .card:hover{border-color:rgba(63,208,240,.45)}}
+</style>
+
+<div class="wrap">
+  <h1>What we would build</h1>
+  <p class="lede">Everything you ruled on the Leave War window, the period list and "To review", drawn on the real app. Yellow marks show what is new since your last look.</p>
+
+  <div class="round" style="border-color:var(--accent)"><b style="color:var(--accent)">Five questions, numbered 1 to 5.</b> Answer in one line, for example: <code style="font-family:inherit">4:1 3:1 2:1 1:A 5:1</code> (my recommendations).</div>
+
+  <div class="round"><b>New since your last look</b> (in yellow below): every card shows its people as small pucks, one person too · pressing Cutter on a group leave shows only his puck · a course or overseas-duty day keeps the leave buttons, so leave can still go on it (my first drawing left them off by mistake) · a member edits his own approved leave · questions 2 to 5 are new.</div>
+
+  <section class="ask" aria-labelledby="q4" style="border-color:var(--mark);margin-bottom:12px">
+    <div class="q" id="q4"><span class="qn">Question 4</span> <span class="fresh">New · from the Approve / Refuse build ·</span> On Approvals on a phone, the new tick and cross take a little room. On a 390-wide phone a half-day date's "›" drops to a second line. Keep the tick there?</div>
+    <div class="when">When: an admin goes through Approvals on a phone. Your iPhone is 402 wide, where it still fits on one line; many iPhones are 390.</div>
+    <div class="grid">
+      <figure class="card" style="margin:0"><button type="button" class="shot" data-src="img/q4-approvals-390.png" aria-label="Enlarge: Approvals at 390 wide"><img src="img/q4-approvals-390.png" alt="Approvals at 390 wide"></button><figcaption class="cap"><span class="t">390 wide</span><span class="d">"23 Jan AM" and its "›" on two lines.</span></figcaption></figure>
+      <figure class="card" style="margin:0"><button type="button" class="shot" data-src="img/q4-approvals-402.png" aria-label="Enlarge: Approvals at 402 wide"><img src="img/q4-approvals-402.png" alt="Approvals at 402 wide"></button><figcaption class="cap"><span class="t">Your iPhone, 402 wide</span><span class="d">"10 Feb AM" fits on one line…</span></figcaption></figure>
+      <figure class="card" style="margin:0"><button type="button" class="shot" data-src="img/q4-approvals-402-may.png" aria-label="Enlarge: Approvals at 402 wide, a May date"><img src="img/q4-approvals-402-may.png" alt="Approvals at 402 wide, a May date"></button><figcaption class="cap"><span class="t"><span class="fresh">…but "28 May PM" doesn't, even at 402</span></span><span class="d">Its "›" drops to a second line on your own phone.</span></figcaption></figure>
+      <figure class="card" style="margin:0"><button type="button" class="shot" data-src="img/q4-approvals-360.png" aria-label="Enlarge: Approvals at 360 wide"><img src="img/q4-approvals-360.png" alt="Approvals at 360 wide"></button><figcaption class="cap"><span class="t"><span class="fresh">360 wide (a small phone), found by the walk</span></span><span class="d">Dates take three lines and every row grows taller. Today they take two and the rows don't grow.</span></figcaption></figure>
+      <figure class="card" style="margin:0"><button type="button" class="shot" data-src="img/q4-approvals-390-notick.png" aria-label="Enlarge: option 1 at 390 wide"><img src="img/q4-approvals-390-notick.png" alt="Option 1 at 390 wide"></button><figcaption class="cap"><span class="t"><span class="fresh">Option 1 at 390 wide</span></span><span class="d">No tick or cross: "23 Jan AM ›" back on one line.</span></figcaption></figure>
+      <figure class="card" style="margin:0"><button type="button" class="shot" data-src="img/q4-approvals-360-notick.png" aria-label="Enlarge: option 1 at 360 wide"><img src="img/q4-approvals-360-notick.png" alt="Option 1 at 360 wide"></button><figcaption class="cap"><span class="t"><span class="fresh">Option 1 at 360 wide</span></span><span class="d">Two lines, as today, and the row stays its usual height.</span></figcaption></figure>
+    </div>
+    <div class="opts">
+      <div class="opt rec"><span class="k">1</span><div><b>No tick or cross on Approvals' phone line only.</b> (Recommended.) The picked one still stands out (solid, cyan ring, the other grey), and the dates go back to how they fit today on every phone. Desktop and the bid windows keep the tick and cross.</div></div>
+      <div class="opt"><span class="k">2</span><div><b>Keep them everywhere.</b> As you ruled; on a 390 phone the "›" of a half-day date sits on its own line, and on a 360 phone I'd still have to shrink something so the rows don't grow.</div></div>
+    </div>
+    <div class="reply">Reply in the chat: <code>4:1</code> or <code>4:2</code>.</div>
+  </section>
+
+  <section class="ask" aria-labelledby="q3" style="border-color:var(--mark);margin-bottom:12px">
+    <div class="q" id="q3"><span class="qn">Question 3</span> <span class="fresh">New ·</span> Ranger's LL on Thu 3 Dec is approved. His plans change, so he moves it to Fri 4 Dec himself (or makes it AM). Is it still approved?</div>
+    <div class="when">When: a member changes his own leave on the Leave War after it was approved. Deleting it always just removes it.</div>
+    <div class="grid" id="mem"></div>
+    <div class="opts">
+      <div class="opt rec"><span class="k">1</span><div><b>Stays approved; the admins' bell tells them.</b> (Recommended.) It's the same as when he changes his leave on the Inputs page today, so both pages give the same result.</div></div>
+      <div class="opt"><span class="k">2</span><div><b>Goes back to waiting for an admin.</b> Safer for manning, but the same change on the Inputs page would stay approved, so the two pages would differ.</div></div>
+    </div>
+    <div class="reply">Reply in the chat: <code>3:1</code> or <code>3:2</code>.</div>
+  </section>
+
+  <section class="ask" aria-labelledby="q2" style="border-color:var(--mark)">
+    <div class="q" id="q2"><span class="qn">Question 2</span> <span class="fresh">New ·</span> Cutter has an approved LL on Wed 9 Dec. You tap OL on it. What happens?</div>
+    <div class="when">When: an admin or Cutter wants to swap the kind of a leave already on a day. Leave never goes on top of leave.</div>
+    <div class="grid" id="opt"></div>
+    <div class="opts">
+      <div class="opt rec"><span class="k">1</span><div><b>Tap OL again to replace it.</b> (Recommended.) The first tap only shows the line; the second makes it OL. Its remarks and Document stay with it. The Leave War already asks for a second tap when leave would go below zero.</div></div>
+      <div class="opt"><span class="k">2</span><div><b>Delete it first, then add OL.</b> The tap only shows the line. Deleting also drops its remarks and Document, so they are typed and attached again.</div></div>
+    </div>
+    <div class="reply">Reply in the chat: <code>2:1</code> or <code>2:2</code>. The words are a draft; they get a polish before the build.</div>
+  </section>
+
+  <section class="ask" aria-labelledby="q1" style="margin-top:12px">
+    <div class="q" id="q1"><span class="qn">Question 1</span> Build these as drawn?</div>
+    <div class="when">When: every time you tap a day on the Leave War, pick a leave period, or review inputs on the schedule.</div>
+    <div class="opts">
+      <div class="opt rec"><span class="k">A</span><div><b>Yes, build them as drawn.</b> (Recommended.) It is what you already chose, put together in one place.</div></div>
+      <div class="opt"><span class="k">B</span><div><b>Change something first.</b> Tell me which picture and what.</div></div>
+    </div>
+    <div class="reply">Reply in the chat: <code>1:A</code>, or <code>1:B</code> with what to change.</div>
+  </section>
+
+  <section class="ask" aria-labelledby="q5" style="border-color:var(--mark);margin-top:12px">
+    <div class="q" id="q5"><span class="qn">Question 5</span> <span class="fresh">New ·</span> Viper is on an Attach (staff work) all week. He wants leave on the Friday. Can he still put it on the Leave War?</div>
+    <div class="when">When: someone attached elsewhere asks for leave on one of those days. Today the leave buttons stay on a course, overseas-duty or Other day, and the app already lets leave go on an Attach day too; the rule just doesn't name Attach yet.</div>
+    <div class="opts">
+      <div class="opt rec"><span class="k">1</span><div><b>Yes, like an Other day.</b> (Recommended.) The leave buttons stay on an Attach day, as the app already does. Nothing on screen changes; the rule names Attach.</div></div>
+      <div class="opt"><span class="k">2</span><div><b>No.</b> The leave buttons go on an Attach day, as on a medical or leave day. This changes what the app does today.</div></div>
+    </div>
+    <div class="reply">Reply in the chat: <code>5:1</code> or <code>5:2</code>. The course card in the pictures below shows how a day keeps its leave buttons.</div>
+  </section>
+
+  <h2>Show pictures as</h2>
+  <div class="seg" role="group" aria-label="Picture size">
+    <button type="button" id="segPhone" aria-pressed="true">iPhone</button>
+    <button type="button" id="segDesk" aria-pressed="false">Desktop</button>
+  </div>
+
+  <h2>Pictures for question 1 · The Leave War day window</h2>
+  <div class="grid" id="war"></div>
+  <p class="note">The <svg class="pen" viewBox="0 0 24 24" aria-hidden="true"><g transform="rotate(-45 12 12)" fill="currentColor"><rect x="8.5" y="1" width="7" height="4.6" rx="2.4"/><rect x="8.5" y="6.4" width="7" height="12.2" rx=".3"/><path d="M8.5 19.4h7l-2.6 3.1a1.2 1.2 0 0 1-1.8 0Z"/></g></svg> shows only on things a card can't fully change: a course, overseas duty, Other, Attach, medical, group, or leave with set hours. Plain leave and bids have none.</p>
+
+  <h2>Pictures for question 1 · Leave periods: "+ New period" on top</h2>
+  <div class="grid" id="periods"></div>
+
+  <h2>Pictures for question 1 · The schedule: "To review" replaces Personal Inputs</h2>
+  <div class="grid" id="review"></div>
+
+  <details>
+    <summary>Still open, for later rounds (not asked now)</summary>
+    <ul>
+      <li><b>F1</b> One page, "Availability", for the Leave War and the Inputs page. Recommended: yes, step by step.</li>
+      <li><b>F4</b> Approvals opens on "All", person by person, as you expect. Recommended: yes.</li>
+      <li><b>B</b> "Change for Cutter only" on the Inputs page and the schedule too. Recommended: yes.</li>
+      <li><b>D</b> A group's overseas duty or course is one item on both pages; half days offered. Recommended: yes.</li>
+      <li><b>E</b> An admin can add men to leave that came from one man's approved bid. Recommended: yes, built last.</li>
+      <li><b>3</b> On the grid, a group's box shows nothing extra; a tap rings the others in the group. Recommended: yes.</li>
+      <li><b>5</b> Swapping a man on a leave row passes on only the leave type and days. Recommended: yes.</li>
+      <li><b>7</b> A medical or posting out over one man of a group splits only him off. Recommended: yes.</li>
+      <li><b>Words</b> The cards' small line "Placed Saber" could read "Placed by Saber", as the Inputs page says it. Your call; it changes built words on the whole Leave War.</li>
+    </ul>
+  </details>
+  <details>
+    <summary>Removed: answered, or no longer needed</summary>
+    <ul>
+      <li><b>F2, F3, F5, F7, F8, 6, 9</b> answered by you. <b>C</b> (a member moves his own approved leave): answered by you, wider — he can move, delete and swap it.</li>
+      <li><b>F6</b> (one window for every tap) and <b>4</b> (a group leave's window): now the drawings above.</li>
+      <li><b>8</b> ("Change for Cutter only" on the Leave War): built into the group card as you drew it.</li>
+      <li><b>A</b> replaced by F1. <b>1</b> (one row under Unavailable) and <b>2</b> (the "Blocked" notes): already ruled; built as drawn before.</li>
+    </ul>
+  </details>
+</div>
+
+<div class="zoom" id="zoom" hidden role="dialog" aria-modal="true" aria-label="Picture, enlarged">
+  <div class="bar"><button type="button" class="close" id="zoomClose">Close</button></div>
+  <div class="pic" id="zoomPic"></div>
+</div>
+
+<script>
+const PEN = '<svg class="pen" viewBox="0 0 24 24" aria-hidden="true"><g transform="rotate(-45 12 12)" fill="currentColor"><rect x="8.5" y="1" width="7" height="4.6" rx="2.4"/><rect x="8.5" y="6.4" width="7" height="12.2" rx=".3"/><path d="M8.5 19.4h7l-2.6 3.1a1.2 1.2 0 0 1-1.8 0Z"/></g></svg>'
+const NEW = n => `<span class="new">${n}</span>`
+/* each picture: its file stem, whether a marked version exists, its title and one line */
+const WAR = [
+  ['b2-pending', false, 'A bid waiting', 'Its own card: Approve, Refuse, Move, Delete, its remarks, and its leave buttons to change LL to OL in one tap. <span class="fresh">Now every card shows its people as small pucks, one person too.</span>'],
+  ['b3-inputs-ll', false, 'Leave filed on the Inputs page', 'The same card and buttons as leave placed on the Leave War.'],
+  ['b6-two', false, 'Two things on one day', 'Each card has its own buttons, so you always know what you are changing.'],
+  ['b7-group', true, 'Group leave', `${NEW(1)} the ${PEN} opens the full leave. ${NEW(2)} Move and Delete added.`],
+  ['b7b-cutter-only', true, '<span class="fresh">Group leave, Cutter pressed</span>', `<span class="fresh">${NEW(1)} Cutter pressed: ${NEW(2)} only his puck shows. "3 pax" shows all three again.</span>`],
+  ['b8-half', false, 'Leave for the morning (AM)', 'Its card as above. The free afternoon keeps the usual buttons to add leave.'],
+  ['b4-medical', true, 'Medical', `No Move or Delete. Its Document, and ${NEW(1)} the ${PEN} for its details.`],
+  ['b5-course', true, 'Course from the Inputs page', `Move, Delete and remarks right here. ${NEW(1)} the ${PEN} for its title and hours. <span class="fresh">Leave can still be added on a course day: the leave buttons stay.</span>`],
+  ['b9-pencil-open', false, `After the ${PEN} on the course`, 'Its own window opens over the Leave War. Close it and you are back where you were.'],
+  ['b1-empty', false, 'An empty day', 'As today. The manning line now sits under the date.'],
+  ['m1-own-approved', true, '<span class="fresh">Ranger (a member), his own approved leave</span>', `<span class="fresh">${NEW(1)} Move and Delete. ${NEW(2)} Whole day / AM / PM and the leave buttons to swap it. No Approve or Refuse.</span>`],
+]
+const PER = [['p1-periods', true, 'The period list', `${NEW(1)} "+ New period" is now the first line. Deleting or archiving a period comes later, drawn first.`]]
+const REV = [
+  ['t1-none', true, 'Nothing to review', `${NEW(1)} "To review" is just its heading. ${NEW(2)} Each input on the Ground Programme has Reject on its own row.`],
+  ['t2-one', true, 'One rejected input', 'It waits in "To review", where you can accept it again. Its row has left the Ground Programme.'],
+]
+/* the phone keeps two pictures where the desktop has one */
+const PHONE_SPLIT = { 't1-none': ['t1-review', 't1-ground'], 't2-one': ['t2-review'] }
+let size = 'phone'
+try { const s = localStorage.getItem('size'); if (s === 'desktop' || s === 'phone') size = s } catch (e) {}
+function files(stem, marked) {
+  if (size === 'phone' && PHONE_SPLIT[stem]) return PHONE_SPLIT[stem]
+  return [marked ? stem : stem + '-clean']
+}
+function draw(id, list) {
+  const el = document.getElementById(id)
+  el.innerHTML = list.map(([stem, marked, t, d]) => {
+    const pics = files(stem, marked).map(f => `<button type="button" class="shot" data-src="img/${f}-${size}.png" aria-label="Enlarge: ${t.replace(/<[^>]+>/g, '')}"><img src="img/${f}-${size}.png" alt="${t.replace(/<[^>]+>/g, '')}" loading="lazy"></button>`).join('')
+    const wide = size === 'desktop' && (stem.startsWith('t') || stem === 'b9-pencil-open') ? ' wide' : ''
+    return `<figure class="card${wide}" style="margin:0">${pics}<figcaption class="cap"><span class="t">${t}</span><span class="d">${d}</span></figcaption></figure>`
+  }).join('')
+}
+const OPT = [
+  ['b3o1-replace-tap', true, 'Option 1', `${NEW(1)} "Only one kind of leave a day. Tap OL again to change this LL to OL."`],
+  ['b3o2-delete-first', true, 'Option 2', `${NEW(1)} "Only one kind of leave a day. Delete this LL first, then add OL."`],
+]
+const MEM = [['m1-own-approved', true, 'Ranger, his own approved LL', `${NEW(1)} Move and Delete. ${NEW(2)} the leave buttons. No Approve or Refuse.`]]
+function all() { draw('mem', MEM); draw('opt', OPT); draw('war', WAR); draw('periods', PER); draw('review', REV) }
+function setSize(s) {
+  size = s
+  document.getElementById('segPhone').setAttribute('aria-pressed', s === 'phone')
+  document.getElementById('segDesk').setAttribute('aria-pressed', s === 'desktop')
+  try { localStorage.setItem('size', s) } catch (e) {}
+  all()
+}
+document.getElementById('segPhone').onclick = () => setSize('phone')
+document.getElementById('segDesk').onclick = () => setSize('desktop')
+const zoom = document.getElementById('zoom'), zpic = document.getElementById('zoomPic')
+let opener = null
+document.addEventListener('click', e => {
+  const b = e.target.closest('.shot'); if (!b) return
+  opener = b
+  const img = new Image(); img.src = b.dataset.src; img.alt = b.getAttribute('aria-label') || ''
+  zpic.replaceChildren(img)
+  zoom.hidden = false; document.getElementById('zoomClose').focus()
+})
+function shut() { zoom.hidden = true; zpic.replaceChildren(); opener?.focus() }
+document.getElementById('zoomClose').onclick = shut
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !zoom.hidden) shut() })
+setSize(size)
+</script>
+
+</body></html>
