@@ -208,7 +208,8 @@ describe('a holiday on a date no leave period covers WAITS — and is saved by i
     open(`${FREE}-03-01`); fill(`${FREE}-08-09`)
     fireEvent.click(t('hol-save'))
     expect(t('hol-err').textContent).toBe(`No leave period covers 9 Aug ${String(FREE).slice(2)} yet.`)
-    expect(t('hol-waiting').textContent).toBe('It is kept here, and saved by itself as soon as a leave period covers it.')
+    /* his D2900 (settling D2837's words): the holiday is held only by its open form, and the line says so */
+    expect(t('hol-waiting').textContent).toBe('It is kept only while this window stays open, and saved by itself as soon as a leave period covers it.')
     expect(t('hol-wait-create').textContent).toBe(`Create the ${FREE} leave period`)
     expect(q('hol-wait-period')).toBeNull()
     fireEvent.click(t('hol-wait-create'))

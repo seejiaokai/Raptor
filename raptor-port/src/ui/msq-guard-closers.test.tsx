@@ -121,7 +121,7 @@ describe('the Calendar\'s forms — each closed by the Calendar\'s ✕, the form
     await app('hunter')
     await openHolidayNoLeave()
     expect(named(), 'the premise: refused at Save and kept waiting').toBe('holiday')
-    expect(tid('hol-waiting'), 'the premise: "It is kept here…" is said').not.toBeNull()
+    expect(tid('hol-waiting'), 'the premise: "It is kept only while this window stays open…" is said').not.toBeNull()
     expect(await closeAlone('holiday'), 'nothing written').toEqual([])
     expect([DAYSWIN, tid('win-holiday')], 'closed').toEqual([null, null])
     await doing(() => { expect(createOilPeriodFor('2031'), 'the premise: the 2031 leave period made').toBe('created') })

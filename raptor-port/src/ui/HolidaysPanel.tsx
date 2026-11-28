@@ -413,7 +413,9 @@ export function HolidayForm({ line, year, onClose }: {
       {err && <p className="every-err" data-testid="hol-err" role="alert">{err}</p>}
       {waiting && gap && (
         <div className="hol-wait">
-          <p className="hol-waiting" data-testid="hol-waiting" role="status">It is kept here, and saved by itself as soon as a leave period covers it.</p>
+          {/* his D2900 (settling D2837's words): the waiting holiday is held only by this open form — its ✕, the Calendar's ✕
+              and a squadron switch all drop it — so the line says "only while this window stays open", never "kept here" */}
+          <p className="hol-waiting" data-testid="hol-waiting" role="status">It is kept only while this window stays open, and saved by itself as soon as a leave period covers it.</p>
           {wholeYear(gap)
             ? <button type="button" className="abtn" data-testid="hol-wait-create" onClick={createYear}>Create the {gap.from.slice(0, 4)} leave period</button>
             : <button type="button" className="abtn" data-testid="hol-wait-period" onClick={() => openNewPeriod(gap.from, gap.to)}>Add a leave period for {gapSaid(gap)}…</button>}

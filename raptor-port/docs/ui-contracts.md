@@ -8312,8 +8312,9 @@ The Inputs / SANS redesign, plan §3.4. `ui/DaysWindow.tsx`, on the windows shel
     taken away on the Leave War meanwhile. Any edit takes the line down.
   - Every box carries 16px text.
 - **A holiday on a date no leave period covers WAITS.** Refused for that reason (and only that one), the form keeps
-  what he typed and shows, under the red line, an amber box: "It is kept here, and saved by itself as soon as a leave
-  period covers it." with ONE button for that date — "Create the 2031 leave period" where no period reaches the year,
+  what he typed and shows, under the red line, an amber box: "It is kept only while this window stays open, and saved by
+  itself as soon as a leave period covers it." (his D2900, settling D2837's words: the holiday is held only by its open
+  form) with ONE button for that date — "Create the 2031 leave period" where no period reaches the year,
   else "Add a leave period for 1 Apr – 31 Dec…" (the run its first day sits in). The moment any period holds its first
   day the holiday is saved and the form closes. If that period ends before its last day, the store's sentence shows
   and nothing is saved. An edit, Cancel or ✕ ends the wait.

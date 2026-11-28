@@ -150,9 +150,9 @@ const handedClose = (id: GuardRowId, otherwise?: () => void) => (): void => { co
 /* the Input window, both its shapes: its Cancel (ui/InputWindow.tsx `close` — the question sheets over it go with it) */
 const closeInputWindow = shut(() => setInpEdit(null))
 /* THE CALENDAR'S ✕ (ui/DaysWindow.tsx `close`), for itself and the three forms drawn inside it — Every Monday, a holiday,
-   a holiday sheet read in — which unmount with it. A holiday kept waiting for a leave period ("It is kept here, and saved
-   by itself as soon as a leave period covers it") is held only by its open form, so it is dropped, as the Calendar's own
-   ✕ drops it today (his D2837; the form's new words are drawn later). A day class pressed was stored at the press */
+   a holiday sheet read in — which unmount with it. A holiday kept waiting for a leave period ("It is kept only while
+   this window stays open, and saved by itself as soon as a leave period covers it" — his D2900) is held only by its open
+   form, so it is dropped, as the Calendar's own ✕ drops it today (his D2837). A day class pressed was stored at the press */
 const closeCalendar = shut(() => setDaysWin(null))
 
 const FLOAT_ROW: Record<FloatId, Omit<GuardRow, 'id' | 'where' | 'open'>> = {

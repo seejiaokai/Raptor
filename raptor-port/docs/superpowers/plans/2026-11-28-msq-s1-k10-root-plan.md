@@ -414,6 +414,18 @@ blind Fable (D2443).
 
 ## 9. A question for him (brief item 9) — one card
 
+**ANSWERED 28 Nov 26 — his "all questions as recommended" (the coordinator's record, D2899, page question 43): A.** A
+moved man's open record still listed on his old squadron's list — a leave across his move, a waiting medical record, a
+Medical tab set to another day — opens read only there: everything shown, nothing to change; only he, his new
+squadron's admins or a master admin change it. K10-d is no longer held by Q1. **The read-only line's words** (D2899:
+"go to the wording step first", D2441) are already drafted by Opus and reviewed by a fresh Fable
+(`docs/superpowers/briefs/2026-11-28-msq-s1-words-fable-review.md` §3): built with or after `[XFER]`'s gate change,
+"Ranger moved to 149 on Thu 16 Jul, so this input is 149's. Only Ranger or an admin of 149 can change it."; built
+before it (the likely order), the stop-gap that makes no "who" claim, "Ranger moved to 149 on Thu 16 Jul, so this input
+is 149's. It can be changed only on 149's page."; the move-ahead pair as drafted. They are new words on screen, so they
+are drawn on the real app for his look before K10-d builds them (D1625) — the picture he answered carried draft words
+marked as draft.
+
 **Q1 — Ranger's leave, looked at on his old squadron's list after he has moved**
 
 *Example:* Ranger (member) has leave from Tue 14 to Sat 18 Jul. On Thu 16 Jul he moves from 142 to 149, so the leave
